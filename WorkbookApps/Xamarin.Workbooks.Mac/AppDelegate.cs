@@ -19,28 +19,28 @@ using Xamarin.Interactive.Mac;
 
 namespace Xamarin.Workbooks.Mac
 {
-	[Register ("AppDelegate")]
-	public class AppDelegate : NSApplicationDelegate
-	{
-		[DllImport ("libc")]
-		static extern /* pid_t -> int32_t */ int getppid ();
+    [Register ("AppDelegate")]
+    public class AppDelegate : NSApplicationDelegate
+    {
+        [DllImport ("libc")]
+        static extern /* pid_t -> int32_t */ int getppid ();
 
-		public override void DidFinishLaunching (NSNotification notification)
-		{
-			var ppid = getppid ();
+        public override void DidFinishLaunching (NSNotification notification)
+        {
+            var ppid = getppid ();
 
-			NSWorkspace.Notifications.ObserveDidTerminateApplication ((sender, e) => {
-				if (e.Application.ProcessIdentifier == ppid)
-					NSApplication.SharedApplication.Terminate (e.Application);
-			});
+            NSWorkspace.Notifications.ObserveDidTerminateApplication ((sender, e) => {
+                if (e.Application.ProcessIdentifier == ppid)
+                    NSApplication.SharedApplication.Terminate (e.Application);
+            });
 
-			var agent = new MacAgent ();
+            var agent = new MacAgent ();
 
-			agent.Start (new AgentStartOptions {
-				ClientSessionKind = ClientSessionKind.Workbook
-			});
+            agent.Start (new AgentStartOptions {
+                ClientSessionKind = ClientSessionKind.Workbook
+            });
 
-			DebuggingSupport.LaunchClientAppForDebugging (agent);
-		}
-	}
+            DebuggingSupport.LaunchClientAppForDebugging (agent);
+        }
+    }
 }

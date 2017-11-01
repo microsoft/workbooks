@@ -12,20 +12,20 @@ using Xamarin.Forms;
 
 namespace Xamarin.Workbooks.Forms
 {
-	public partial class App : Application
-	{
-		public App (params Page [] extraPages)
-		{
-			InitializeComponent ();
+    public partial class App : Application
+    {
+        public App (params Page [] extraPages)
+        {
+            InitializeComponent ();
 
-			// Some extra pages are in shared code here, rather than provided by callers.
-			var realPages = extraPages.Concat (new [] {
-				new ListViewPage ()
-			}).ToArray ();
+            // Some extra pages are in shared code here, rather than provided by callers.
+            var realPages = extraPages.Concat (new [] {
+                new ListViewPage ()
+            }).ToArray ();
 
-			MainPage = new NavigationPage (new MainPage (realPages));
-			// MainPage = new TabbedPageDemoPage ();
-			// MainPage = new MasterDetailPageNavigation.MainMasterDetailPage ();
-		}
-	}
+            MainPage = new NavigationPage (new MainPage (realPages));
+            // MainPage = new TabbedPageDemoPage ();
+            // MainPage = new MasterDetailPageNavigation.MainMasterDetailPage ();
+        }
+    }
 }

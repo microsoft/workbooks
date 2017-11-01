@@ -11,9 +11,9 @@ using Xamarin.Interactive.Representations;
 
 namespace Xamarin.Interactive.CodeAnalysis.Workbooks
 {
-	public static class EvaluationContextGlobalsExtensions
-	{
-		public static VerbatimHtml AsHtml (this string str)
-			=> new VerbatimHtml (str);
-	}
+    public static class EvaluationContextGlobalsExtensions
+    {
+        public static VerbatimHtml AsHtml (this string str)
+            => new VerbatimHtml (str);
+    }
 }

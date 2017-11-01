@@ -13,34 +13,34 @@ using JavaScriptCore;
 
 namespace Xamarin.CrossBrowser
 {
-	public partial class CssRule : WrappedObject
-	{
-		internal CssRule (JSValue underlyingJSValue) : base (underlyingJSValue)
-		{
-		}
+    public partial class CssRule : WrappedObject
+    {
+        internal CssRule (JSValue underlyingJSValue) : base (underlyingJSValue)
+        {
+        }
 
-		public string CssText {
-			get {
-				return UnderlyingJSValue.GetProperty ("cssText").ToNullableString ();
-			}
-		}
+        public string CssText {
+            get {
+                return UnderlyingJSValue.GetProperty ("cssText").ToNullableString ();
+            }
+        }
 
-		public CssRule ParentRule {
-			get {
-				return Wrap<CssRule> (UnderlyingJSValue.GetProperty ("parentRule"));
-			}
-		}
+        public CssRule ParentRule {
+            get {
+                return Wrap<CssRule> (UnderlyingJSValue.GetProperty ("parentRule"));
+            }
+        }
 
-		public CssStyleSheet ParentStyleSheet {
-			get {
-				return Wrap<CssStyleSheet> (UnderlyingJSValue.GetProperty ("parentStyleSheet"));
-			}
-		}
+        public CssStyleSheet ParentStyleSheet {
+            get {
+                return Wrap<CssStyleSheet> (UnderlyingJSValue.GetProperty ("parentStyleSheet"));
+            }
+        }
 
-		public CssRuleType Type {
-			get {
-				return (CssRuleType)UnderlyingJSValue.GetProperty ("type").ToUInt32 ();
-			}
-		}
-	}
+        public CssRuleType Type {
+            get {
+                return (CssRuleType)UnderlyingJSValue.GetProperty ("type").ToUInt32 ();
+            }
+        }
+    }
 }

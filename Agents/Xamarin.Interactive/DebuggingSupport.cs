@@ -21,12 +21,12 @@ using Xamarin.Interactive.Logging;
 
 namespace Xamarin.Interactive
 {
-	static class DebuggingSupport
-	{
-		const string TAG = nameof (DebuggingSupport);
+    static class DebuggingSupport
+    {
+        const string TAG = nameof (DebuggingSupport);
 
-		public static void LaunchClientAppForDebugging (Agent agent)
-		{
+        public static void LaunchClientAppForDebugging (Agent agent)
+        {
 #if !NETSTANDARD2_0 && DEBUG
 			if (!Debugger.IsAttached)
 				return;
@@ -83,6 +83,6 @@ namespace Xamarin.Interactive
 						Log.Error (TAG, task.Exception);
 				});
 #endif
-		}
-	}
+        }
+    }
 }

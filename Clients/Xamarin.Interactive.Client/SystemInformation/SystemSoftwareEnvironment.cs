@@ -12,19 +12,19 @@ using System.Collections.Generic;
 
 namespace Xamarin.Interactive.SystemInformation
 {
-	sealed class SystemSoftwareEnvironment : ISoftwareEnvironment
-	{
-		public string Name { get; } = "system";
+    sealed class SystemSoftwareEnvironment : ISoftwareEnvironment
+    {
+        public string Name { get; } = "system";
 
-		readonly List<ISoftwareComponent> components = new List<ISoftwareComponent> ();
+        readonly List<ISoftwareComponent> components = new List<ISoftwareComponent> ();
 
-		public void Add (ISoftwareComponent component)
-			=> components.Add (component ?? throw new ArgumentNullException (nameof (component)));
+        public void Add (ISoftwareComponent component)
+            => components.Add (component ?? throw new ArgumentNullException (nameof (component)));
 
-		public IEnumerator<ISoftwareComponent> GetEnumerator ()
-			=> components.GetEnumerator ();
+        public IEnumerator<ISoftwareComponent> GetEnumerator ()
+            => components.GetEnumerator ();
 
-		IEnumerator IEnumerable.GetEnumerator ()
-			=> GetEnumerator ();
-	}
+        IEnumerator IEnumerable.GetEnumerator ()
+            => GetEnumerator ();
+    }
 }

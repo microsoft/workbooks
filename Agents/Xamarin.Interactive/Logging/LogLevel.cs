@@ -10,14 +10,14 @@ using System;
 
 namespace Xamarin.Interactive.Logging
 {
-	[Serializable]
-	public enum LogLevel
-	{
-		Verbose,
-		Debug,
-		Info,
-		Warning,
-		Error,
-		Critical
-	}
+    [Serializable]
+    public enum LogLevel
+    {
+        Verbose,
+        Debug,
+        Info,
+        Warning,
+        Error,
+        Critical
+    }
 }

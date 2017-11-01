@@ -16,142 +16,142 @@ using Xamarin.Interactive.Messages;
 
 namespace Xamarin.Interactive.Client.Windows
 {
-	sealed class WpfMessageViewDelegate : IStatusMessageViewDelegate, INotifyPropertyChanged
-	{
-		public event PropertyChangedEventHandler PropertyChanged;
+    sealed class WpfMessageViewDelegate : IStatusMessageViewDelegate, INotifyPropertyChanged
+    {
+        public event PropertyChangedEventHandler PropertyChanged;
 
-		MessageAction topMessageAction;
-		Message topMessage;
+        MessageAction topMessageAction;
+        Message topMessage;
 
-		public WpfMessageViewDelegate (Window window)
-		{
-			window.CommandBindings.Add (new CommandBinding (
-				ActionCommand,
-				ActionCommandExecute));
-		}
+        public WpfMessageViewDelegate (Window window)
+        {
+            window.CommandBindings.Add (new CommandBinding (
+                ActionCommand,
+                ActionCommandExecute));
+        }
 
-		public RoutedUICommand ActionCommand { get; } = new RoutedUICommand();
+        public RoutedUICommand ActionCommand { get; } = new RoutedUICommand();
 
-		void ActionCommandExecute(object sender, RoutedEventArgs args)
-		{
-			if (topMessage != null && topMessageAction != null)
-				topMessage.ActionResponseHandler(topMessage, topMessageAction);
-		}
+        void ActionCommandExecute(object sender, RoutedEventArgs args)
+        {
+            if (topMessage != null && topMessageAction != null)
+                topMessage.ActionResponseHandler(topMessage, topMessageAction);
+        }
 
-		string statusBarText;
-		public string StatusBarText {
-			get { return statusBarText; }
-			set {
-				if (statusBarText != value) {
-					statusBarText = value;
-					NotifyPropertyChanged ();
-				}
-			}
-		}
+        string statusBarText;
+        public string StatusBarText {
+            get { return statusBarText; }
+            set {
+                if (statusBarText != value) {
+                    statusBarText = value;
+                    NotifyPropertyChanged ();
+                }
+            }
+        }
 
-		string statusBarDetailedText;
-		public string StatusBarDetailedText {
-			get { return statusBarDetailedText; }
-			set {
-				if (statusBarDetailedText != value) {
-					statusBarDetailedText = String.IsNullOrEmpty (value) ? null : value;
-					NotifyPropertyChanged ();
-				}
-			}
-		}
+        string statusBarDetailedText;
+        public string StatusBarDetailedText {
+            get { return statusBarDetailedText; }
+            set {
+                if (statusBarDetailedText != value) {
+                    statusBarDetailedText = String.IsNullOrEmpty (value) ? null : value;
+                    NotifyPropertyChanged ();
+                }
+            }
+        }
 
-		bool isStatusBarVisible;
+        bool isStatusBarVisible;
 
-		public bool IsStatusBarVisible {
-			get { return isStatusBarVisible; }
-			set {
-				if (isStatusBarVisible != value) {
-					isStatusBarVisible = value;
-					NotifyPropertyChanged ();
-				}
-			}
-		}
+        public bool IsStatusBarVisible {
+            get { return isStatusBarVisible; }
+            set {
+                if (isStatusBarVisible != value) {
+                    isStatusBarVisible = value;
+                    NotifyPropertyChanged ();
+                }
+            }
+        }
 
-		bool isActionButtonVisible;
+        bool isActionButtonVisible;
 
-		public bool IsActionButtonVisible {
-			get { return isActionButtonVisible; }
-			set {
-				if (isActionButtonVisible != value) {
-					isActionButtonVisible = value;
-					NotifyPropertyChanged ();
-				}
-			}
-		}
+        public bool IsActionButtonVisible {
+            get { return isActionButtonVisible; }
+            set {
+                if (isActionButtonVisible != value) {
+                    isActionButtonVisible = value;
+                    NotifyPropertyChanged ();
+                }
+            }
+        }
 
-		bool isSpinning;
-		public bool IsSpinning {
-			get { return isSpinning; }
-			set {
-				if (isSpinning != value) {
-					isSpinning = value;
-					NotifyPropertyChanged ();
-				}
-			}
-		}
+        bool isSpinning;
+        public bool IsSpinning {
+            get { return isSpinning; }
+            set {
+                if (isSpinning != value) {
+                    isSpinning = value;
+                    NotifyPropertyChanged ();
+                }
+            }
+        }
 
-		void NotifyPropertyChanged ([CallerMemberName] string propertyName = null)
-			=> PropertyChanged?.Invoke (this, new PropertyChangedEventArgs (propertyName));
+        void NotifyPropertyChanged ([CallerMemberName] string propertyName = null)
+            => PropertyChanged?.Invoke (this, new PropertyChangedEventArgs (propertyName));
 
-		bool IStatusMessageViewDelegate.CanDisplayMessage (Message message)
-		{
-			switch (message.Kind) {
-			case MessageKind.Status:
-				return true;
-			case MessageKind.Alert:
-				if (message.Actions.Length != 1)
-					return false;
+        bool IStatusMessageViewDelegate.CanDisplayMessage (Message message)
+        {
+            switch (message.Kind) {
+            case MessageKind.Status:
+                return true;
+            case MessageKind.Alert:
+                if (message.Actions.Length != 1)
+                    return false;
 
-				switch (message.AffirmativeAction?.Id) {
-				case MessageAction.DismissActionId:
-				case MessageAction.RetryActionId:
-					return true;
-				}
+                switch (message.AffirmativeAction?.Id) {
+                case MessageAction.DismissActionId:
+                case MessageAction.RetryActionId:
+                    return true;
+                }
 
-				return false;
-			}
+                return false;
+            }
 
-			return false;
-		}
+            return false;
+        }
 
-		void IStatusMessageViewDelegate.StartSpinner ()
-			=> IsSpinning = true;
+        void IStatusMessageViewDelegate.StartSpinner ()
+            => IsSpinning = true;
 
-		void IStatusMessageViewDelegate.StopSpinner ()
-			=> IsSpinning = false;
+        void IStatusMessageViewDelegate.StopSpinner ()
+            => IsSpinning = false;
 
-		void IStatusMessageViewDelegate.DisplayMessage (Message message)
-		{
-			topMessageAction = message.Kind == MessageKind.Alert ? message.AffirmativeAction : null;
-			topMessage = message;
+        void IStatusMessageViewDelegate.DisplayMessage (Message message)
+        {
+            topMessageAction = message.Kind == MessageKind.Alert ? message.AffirmativeAction : null;
+            topMessage = message;
 
-			StatusBarText = message.Text;
-			StatusBarDetailedText = message.DetailedText;
-			IsStatusBarVisible = true;
+            StatusBarText = message.Text;
+            StatusBarDetailedText = message.DetailedText;
+            IsStatusBarVisible = true;
 
-			if (topMessageAction != null) {
-				ActionCommand.Text = topMessageAction.Label;
-				// Fake property change notification to get button text updated
-				NotifyPropertyChanged (nameof (ActionCommand));
-				IsActionButtonVisible = true;
-			} else
-				IsActionButtonVisible = false;
-		}
+            if (topMessageAction != null) {
+                ActionCommand.Text = topMessageAction.Label;
+                // Fake property change notification to get button text updated
+                NotifyPropertyChanged (nameof (ActionCommand));
+                IsActionButtonVisible = true;
+            } else
+                IsActionButtonVisible = false;
+        }
 
-		void IStatusMessageViewDelegate.DisplayIdle ()
-		{
-			topMessageAction = null;
-			topMessage = null;
+        void IStatusMessageViewDelegate.DisplayIdle ()
+        {
+            topMessageAction = null;
+            topMessage = null;
 
-			StatusBarText = Catalog.GetString ("Ready");
-			StatusBarDetailedText = null;
-			IsStatusBarVisible = false;
-			IsActionButtonVisible = false;
-		}
-	}
+            StatusBarText = Catalog.GetString ("Ready");
+            StatusBarDetailedText = null;
+            IsStatusBarVisible = false;
+            IsActionButtonVisible = false;
+        }
+    }
 }

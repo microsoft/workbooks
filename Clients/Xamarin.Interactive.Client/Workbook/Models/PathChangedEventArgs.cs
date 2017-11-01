@@ -12,17 +12,17 @@ using Xamarin.Interactive.Core;
 
 namespace Xamarin.Interactive.Workbook.Models
 {
-	sealed class PathChangedEventArgs : EventArgs
-	{
-		public FilePath OldPath { get; }
-		public FilePath OldBasePath => OldPath.DirectoryExists ? OldPath : OldPath.ParentDirectory;
-		public FilePath NewPath { get; }
-		public FilePath NewBasePath => NewPath.DirectoryExists ? NewPath : NewPath.ParentDirectory;
+    sealed class PathChangedEventArgs : EventArgs
+    {
+        public FilePath OldPath { get; }
+        public FilePath OldBasePath => OldPath.DirectoryExists ? OldPath : OldPath.ParentDirectory;
+        public FilePath NewPath { get; }
+        public FilePath NewBasePath => NewPath.DirectoryExists ? NewPath : NewPath.ParentDirectory;
 
-		public PathChangedEventArgs (FilePath oldPath, FilePath newPath)
-		{
-			OldPath = oldPath;
-			NewPath = newPath;
-		}
-	}
+        public PathChangedEventArgs (FilePath oldPath, FilePath newPath)
+        {
+            OldPath = oldPath;
+            NewPath = newPath;
+        }
+    }
 }

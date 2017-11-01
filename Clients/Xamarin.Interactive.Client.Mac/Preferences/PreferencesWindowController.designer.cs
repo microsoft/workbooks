@@ -9,12 +9,12 @@ using System.CodeDom.Compiler;
 
 namespace Xamarin.Interactive.Preferences
 {
-	[Register ("PreferencesWindowController")]
-	partial class PreferencesWindowController
-	{
-		
-		void ReleaseDesignerOutlets ()
-		{
-		}
-	}
+    [Register ("PreferencesWindowController")]
+    partial class PreferencesWindowController
+    {
+        
+        void ReleaseDesignerOutlets ()
+        {
+        }
+    }
 }

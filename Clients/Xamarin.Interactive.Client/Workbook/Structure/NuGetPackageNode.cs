@@ -14,25 +14,25 @@ using Xamarin.Interactive.TreeModel;
 
 namespace Xamarin.Interactive.Workbook.Structure
 {
-	sealed class NuGetPackageNode : TreeNode
-	{
-		public static RoutedUICommand RemovePackage = new RoutedUICommand (
-			Catalog.GetString ("Remove Package"),
-			"Remove",
-			typeof (NuGetPackageNode));
+    sealed class NuGetPackageNode : TreeNode
+    {
+        public static RoutedUICommand RemovePackage = new RoutedUICommand (
+            Catalog.GetString ("Remove Package"),
+            "Remove",
+            typeof (NuGetPackageNode));
 
-		public NuGetPackageNode (InteractivePackage package)
-		{
-			IconName = "nuget";
-			RepresentedObject = package;
-			Name = package.Identity.Id;
-			// Version is set if the package has been restored, otherwise use SupportedVersionRange to show
-			// what's in the manifest.
-			ToolTip = $"{Name} {package.Identity.Version?.ToString () ?? package.SupportedVersionRange?.ToString ()}";
+        public NuGetPackageNode (InteractivePackage package)
+        {
+            IconName = "nuget";
+            RepresentedObject = package;
+            Name = package.Identity.Id;
+            // Version is set if the package has been restored, otherwise use SupportedVersionRange to show
+            // what's in the manifest.
+            ToolTip = $"{Name} {package.Identity.Version?.ToString () ?? package.SupportedVersionRange?.ToString ()}";
 
-			Commands = new [] {
-				RemovePackage
-			};
-		}
-	}
+            Commands = new [] {
+                RemovePackage
+            };
+        }
+    }
 }

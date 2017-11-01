@@ -8,6 +8,6 @@
 
 namespace Xamarin.CrossBrowser
 {
-	public delegate void ScriptAction (dynamic thisObject, dynamic [] arguments);
-	public delegate dynamic ScriptFunc (dynamic thisObject, dynamic [] arguments);
+    public delegate void ScriptAction (dynamic thisObject, dynamic [] arguments);
+    public delegate dynamic ScriptFunc (dynamic thisObject, dynamic [] arguments);
 }

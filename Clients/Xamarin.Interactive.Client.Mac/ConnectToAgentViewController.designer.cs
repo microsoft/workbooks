@@ -9,50 +9,50 @@ using System.CodeDom.Compiler;
 
 namespace Xamarin.Interactive.Client.Mac
 {
-	[Register ("ConnectToAgentViewController")]
-	partial class ConnectToAgentViewController
-	{
-		[Outlet]
-		AppKit.NSTextField clientSessionUriTextField { get; set; }
+    [Register ("ConnectToAgentViewController")]
+    partial class ConnectToAgentViewController
+    {
+        [Outlet]
+        AppKit.NSTextField clientSessionUriTextField { get; set; }
 
-		[Outlet]
-		AppKit.NSButton connectButton { get; set; }
+        [Outlet]
+        AppKit.NSButton connectButton { get; set; }
 
-		[Outlet]
-		AppKit.NSButton liveInspectionRadioButton { get; set; }
+        [Outlet]
+        AppKit.NSButton liveInspectionRadioButton { get; set; }
 
-		[Outlet]
-		AppKit.NSTextField locationTextField { get; set; }
+        [Outlet]
+        AppKit.NSTextField locationTextField { get; set; }
 
-		[Outlet]
-		AppKit.NSButton workbookRadioButton { get; set; }
-		
-		void ReleaseDesignerOutlets ()
-		{
-			if (connectButton != null) {
-				connectButton.Dispose ();
-				connectButton = null;
-			}
+        [Outlet]
+        AppKit.NSButton workbookRadioButton { get; set; }
+        
+        void ReleaseDesignerOutlets ()
+        {
+            if (connectButton != null) {
+                connectButton.Dispose ();
+                connectButton = null;
+            }
 
-			if (liveInspectionRadioButton != null) {
-				liveInspectionRadioButton.Dispose ();
-				liveInspectionRadioButton = null;
-			}
+            if (liveInspectionRadioButton != null) {
+                liveInspectionRadioButton.Dispose ();
+                liveInspectionRadioButton = null;
+            }
 
-			if (locationTextField != null) {
-				locationTextField.Dispose ();
-				locationTextField = null;
-			}
+            if (locationTextField != null) {
+                locationTextField.Dispose ();
+                locationTextField = null;
+            }
 
-			if (workbookRadioButton != null) {
-				workbookRadioButton.Dispose ();
-				workbookRadioButton = null;
-			}
+            if (workbookRadioButton != null) {
+                workbookRadioButton.Dispose ();
+                workbookRadioButton = null;
+            }
 
-			if (clientSessionUriTextField != null) {
-				clientSessionUriTextField.Dispose ();
-				clientSessionUriTextField = null;
-			}
-		}
-	}
+            if (clientSessionUriTextField != null) {
+                clientSessionUriTextField.Dispose ();
+                clientSessionUriTextField = null;
+            }
+        }
+    }
 }

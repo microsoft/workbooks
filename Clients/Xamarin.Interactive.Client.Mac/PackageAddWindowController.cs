@@ -16,44 +16,44 @@ using Xamarin.Interactive.NuGet;
 
 namespace Xamarin.Interactive.Client.Mac
 {
-	sealed partial class PackageAddWindowController : NSWindowController
-	{
-		readonly PackageViewModel package;
-		readonly CancellationTokenSource cancellationTokenSource;
+    sealed partial class PackageAddWindowController : NSWindowController
+    {
+        readonly PackageViewModel package;
+        readonly CancellationTokenSource cancellationTokenSource;
 
-		public PackageAddWindowController (IntPtr handle) : base (handle)
-		{
-		}
+        public PackageAddWindowController (IntPtr handle) : base (handle)
+        {
+        }
 
-		[Export ("initWithCoder:")]
-		public PackageAddWindowController (NSCoder coder) : base (coder)
-		{
-		}
+        [Export ("initWithCoder:")]
+        public PackageAddWindowController (NSCoder coder) : base (coder)
+        {
+        }
 
-		public PackageAddWindowController (PackageViewModel package, CancellationTokenSource cancellationTokenSource)
-			: base ("PackageAddWindow")
-		{
-			this.package = package;
-			this.cancellationTokenSource = cancellationTokenSource;
-		}
+        public PackageAddWindowController (PackageViewModel package, CancellationTokenSource cancellationTokenSource)
+            : base ("PackageAddWindow")
+        {
+            this.package = package;
+            this.cancellationTokenSource = cancellationTokenSource;
+        }
 
-		public override void AwakeFromNib ()
-		{
-			progressIndicator.StartAnimation (this);
+        public override void AwakeFromNib ()
+        {
+            progressIndicator.StartAnimation (this);
 
-			statusTextField.StringValue = $"Adding {package.DisplayName} to workbook…";
+            statusTextField.StringValue = $"Adding {package.DisplayName} to workbook…";
 
-			cancelButton.Activated += (sender, e) => {
-				cancelButton.Enabled = false;
-				try {
-					cancellationTokenSource.Cancel ();
-				} catch (ObjectDisposedException) { }
-				Close ();
-			};
-		}
+            cancelButton.Activated += (sender, e) => {
+                cancelButton.Enabled = false;
+                try {
+                    cancellationTokenSource.Cancel ();
+                } catch (ObjectDisposedException) { }
+                Close ();
+            };
+        }
 
-		public new PackageAddWindow Window {
-			get { return (PackageAddWindow)base.Window; }
-		}
-	}
+        public new PackageAddWindow Window {
+            get { return (PackageAddWindow)base.Window; }
+        }
+    }
 }

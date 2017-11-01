@@ -8,10 +8,10 @@
 
 namespace Xamarin.Interactive.Client
 {
-	enum ClientSessionKind
-	{
-		Unknown,
-		Workbook,
-		LiveInspection
-	}
+    enum ClientSessionKind
+    {
+        Unknown,
+        Workbook,
+        LiveInspection
+    }
 }

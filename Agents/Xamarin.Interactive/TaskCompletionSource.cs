@@ -10,12 +10,12 @@ using System.Threading.Tasks;
 
 namespace Xamarin.Interactive
 {
-	sealed class TaskCompletionSource : TaskCompletionSource<TaskCompletionSource.Void>
-	{
-		internal struct Void
-		{
-		}
+    sealed class TaskCompletionSource : TaskCompletionSource<TaskCompletionSource.Void>
+    {
+        internal struct Void
+        {
+        }
 
-		public void SetResult () => SetResult (new Void ());
-	}
+        public void SetResult () => SetResult (new Void ());
+    }
 }

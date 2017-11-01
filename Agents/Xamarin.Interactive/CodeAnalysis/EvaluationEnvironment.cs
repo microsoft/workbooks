@@ -12,12 +12,12 @@ using Xamarin.Interactive.Core;
 
 namespace Xamarin.Interactive.CodeAnalysis
 {
-	[Serializable]
-	struct EvaluationEnvironment
-	{
-		public FilePath WorkingDirectory { get; }
+    [Serializable]
+    struct EvaluationEnvironment
+    {
+        public FilePath WorkingDirectory { get; }
 
-		public EvaluationEnvironment (FilePath workingDirectory)
-			=> WorkingDirectory = workingDirectory;
-	}
+        public EvaluationEnvironment (FilePath workingDirectory)
+            => WorkingDirectory = workingDirectory;
+    }
 }

@@ -13,24 +13,24 @@ using Foundation;
 
 namespace Xamarin.Interactive.Client.Mac.Views
 {
-	[Register (nameof (XIIconThemeOutlineCellView))]
-	sealed class XIIconThemeOutlineCellView : NSTableCellView
-	{
-		XIIconThemeOutlineCellView (IntPtr handle) : base (handle)
-		{
-		}
+    [Register (nameof (XIIconThemeOutlineCellView))]
+    sealed class XIIconThemeOutlineCellView : NSTableCellView
+    {
+        XIIconThemeOutlineCellView (IntPtr handle) : base (handle)
+        {
+        }
 
-		public string IconName { get; set; }
+        public string IconName { get; set; }
 
-		public override NSBackgroundStyle BackgroundStyle {
-			get { return base.BackgroundStyle; }
-			set {
-				base.BackgroundStyle = value;
-				ImageView.Image = Theme.Current.GetIcon (
-					IconName,
-					16,
-					value == NSBackgroundStyle.Dark);
-			}
-		}
-	}
+        public override NSBackgroundStyle BackgroundStyle {
+            get { return base.BackgroundStyle; }
+            set {
+                base.BackgroundStyle = value;
+                ImageView.Image = Theme.Current.GetIcon (
+                    IconName,
+                    16,
+                    value == NSBackgroundStyle.Dark);
+            }
+        }
+    }
 }

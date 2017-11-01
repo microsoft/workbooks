@@ -10,11 +10,11 @@ using System;
 
 namespace Xamarin.Interactive.Reflection
 {
-	[Flags]
-	enum ResolveOperationOptions
-	{
-		None = 0,
-		ResolveReferences = 1 << 0,
-		SkipGacCache = 1 << 1
-	}
+    [Flags]
+    enum ResolveOperationOptions
+    {
+        None = 0,
+        ResolveReferences = 1 << 0,
+        SkipGacCache = 1 << 1
+    }
 }

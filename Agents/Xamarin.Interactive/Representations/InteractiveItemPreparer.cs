@@ -9,5 +9,5 @@
 
 namespace Xamarin.Interactive.Representations
 {
-	delegate void InteractiveItemPreparer (RepresentedObject result, int depth, object item);
+    delegate void InteractiveItemPreparer (RepresentedObject result, int depth, object item);
 }

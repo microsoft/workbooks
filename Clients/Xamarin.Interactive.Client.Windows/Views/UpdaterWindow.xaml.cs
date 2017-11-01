@@ -25,165 +25,165 @@ using Xamarin.Interactive.Preferences;
 
 namespace Xamarin.Interactive.Client.Windows.Views
 {
-	sealed partial class UpdaterWindow : MetroWindow
-	{
-		readonly IDisposable preferenceChangeSubscription;
+    sealed partial class UpdaterWindow : MetroWindow
+    {
+        readonly IDisposable preferenceChangeSubscription;
 
-		public readonly UpdaterViewModel updaterViewModel;
+        public readonly UpdaterViewModel updaterViewModel;
 
-		public UpdaterWindow (UpdateItem updateItem)
-		{
-			if (updateItem == null)
-				throw new ArgumentNullException (nameof (updateItem));
+        public UpdaterWindow (UpdateItem updateItem)
+        {
+            if (updateItem == null)
+                throw new ArgumentNullException (nameof (updateItem));
 
-			updaterViewModel = new WpfUpdaterViewModel (this, updateItem);
-			DataContext = updaterViewModel;
+            updaterViewModel = new WpfUpdaterViewModel (this, updateItem);
+            DataContext = updaterViewModel;
 
-			InitializeComponent ();
+            InitializeComponent ();
 
-			new XcbWebView (webBrowser);
-			webBrowser.Loaded += (o, e) => webBrowser.NavigateToString (updaterViewModel.ReleaseNotes);
-			webBrowser.Navigating += (o, e) => {
-				if (e.Uri != null) {
-					Process.Start (e.Uri.ToString ());
-					e.Cancel = true;
-				}
-			};
+            new XcbWebView (webBrowser);
+            webBrowser.Loaded += (o, e) => webBrowser.NavigateToString (updaterViewModel.ReleaseNotes);
+            webBrowser.Navigating += (o, e) => {
+                if (e.Uri != null) {
+                    Process.Start (e.Uri.ToString ());
+                    e.Cancel = true;
+                }
+            };
 
-			remindMeLaterButton.Click += (o, e) => Close ();
-			downloadButton.Click += (o, e) => updaterViewModel.StartDownloadAsync ().Forget ();
-			cancelButton.Click += (o, e) => updaterViewModel.CancelDownload ();
+            remindMeLaterButton.Click += (o, e) => Close ();
+            downloadButton.Click += (o, e) => updaterViewModel.StartDownloadAsync ().Forget ();
+            cancelButton.Click += (o, e) => updaterViewModel.CancelDownload ();
 
-			preferenceChangeSubscription = PreferenceStore.Default.Subscribe (ObservePreferenceChange);
-		}
+            preferenceChangeSubscription = PreferenceStore.Default.Subscribe (ObservePreferenceChange);
+        }
 
-		public bool IsWorking => updaterViewModel.IsProgressBarVisible;
+        public bool IsWorking => updaterViewModel.IsProgressBarVisible;
 
-		public Versioning.ReleaseVersion UpdateReleaseVersion => updaterViewModel.UpdateItem.ReleaseVersion;
+        public Versioning.ReleaseVersion UpdateReleaseVersion => updaterViewModel.UpdateItem.ReleaseVersion;
 
-		void ObservePreferenceChange (PreferenceChange obj)
-		{
-			if (obj.Key == Prefs.Updater.Channel.Key) {
-				Close ();
-				App.CheckForUpdatesInBackground (userInitiated: true);
-			}
-		}
+        void ObservePreferenceChange (PreferenceChange obj)
+        {
+            if (obj.Key == Prefs.Updater.Channel.Key) {
+                Close ();
+                App.CheckForUpdatesInBackground (userInitiated: true);
+            }
+        }
 
-		protected override void OnClosing (CancelEventArgs e)
-		{
-			if (IsWorking) {
-				e.Cancel = true;
-				return;
-			}
+        protected override void OnClosing (CancelEventArgs e)
+        {
+            if (IsWorking) {
+                e.Cancel = true;
+                return;
+            }
 
-			base.OnClosing (e);
-		}
+            base.OnClosing (e);
+        }
 
-		protected override void OnClosed (EventArgs e)
-		{
-			base.OnClosed (e);
+        protected override void OnClosed (EventArgs e)
+        {
+            base.OnClosed (e);
 
-			preferenceChangeSubscription.Dispose ();
+            preferenceChangeSubscription.Dispose ();
 
-			App.CheckNeedsExit ();
-		}
+            App.CheckNeedsExit ();
+        }
 
-		void Hyperlink_Click (object sender, RoutedEventArgs e)
-			=> Commands.Commands.ShowOptions.Execute (OptionsWindow.Tab.Updater);
+        void Hyperlink_Click (object sender, RoutedEventArgs e)
+            => Commands.Commands.ShowOptions.Execute (OptionsWindow.Tab.Updater);
 
-		sealed class WpfUpdaterViewModel : UpdaterViewModel
-		{
-			const string TAG = nameof (WpfUpdaterViewModel);
+        sealed class WpfUpdaterViewModel : UpdaterViewModel
+        {
+            const string TAG = nameof (WpfUpdaterViewModel);
 
-			readonly Window ownerWindow;
+            readonly Window ownerWindow;
 
-			public WpfUpdaterViewModel (Window ownerWindow, UpdateItem updateItem)
-				: base (ClientInfo.FullProductName, updateItem)
-			{
-				if (ownerWindow == null)
-					throw new ArgumentNullException (nameof (ownerWindow));
+            public WpfUpdaterViewModel (Window ownerWindow, UpdateItem updateItem)
+                : base (ClientInfo.FullProductName, updateItem)
+            {
+                if (ownerWindow == null)
+                    throw new ArgumentNullException (nameof (ownerWindow));
 
-				this.ownerWindow = ownerWindow;
-			}
+                this.ownerWindow = ownerWindow;
+            }
 
-			MetroDialogWindow CreateDialog (string title, string message)
-				=> new MetroDialogWindow {
-					Owner = ownerWindow,
-					WindowStartupLocation = WindowStartupLocation.CenterOwner,
-					Width = ownerWindow.Width,
-					Title = title,
-					Message = message
-				};
+            MetroDialogWindow CreateDialog (string title, string message)
+                => new MetroDialogWindow {
+                    Owner = ownerWindow,
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                    Width = ownerWindow.Width,
+                    Title = title,
+                    Message = message
+                };
 
-			void DeleteUpdate ()
-			{
-				try {
-					File.Delete (DownloadItem.TargetFile);
-				} catch (Exception ex) {
-					Log.Error (TAG, $"unable to delete file {DownloadItem.TargetFile}", ex);
-				}
-			}
+            void DeleteUpdate ()
+            {
+                try {
+                    File.Delete (DownloadItem.TargetFile);
+                } catch (Exception ex) {
+                    Log.Error (TAG, $"unable to delete file {DownloadItem.TargetFile}", ex);
+                }
+            }
 
-			protected override Task InstallUpdateAsync ()
-			{
-				MainThread.Ensure ();
+            protected override Task InstallUpdateAsync ()
+            {
+                MainThread.Ensure ();
 
-				var window = CreateDialog (
-					Catalog.Format (Catalog.GetString (
-						"{0} must be closed before continuing.",
-						comment: "{0} is the application name"),
-						AppName),
-					Catalog.Format (Catalog.GetString (
-						"The update was downloaded successfully and is ready " +
-						"to be installed, but {0} must be closed first.",
-						comment: "{0} is the application name"),
-						AppName));
+                var window = CreateDialog (
+                    Catalog.Format (Catalog.GetString (
+                        "{0} must be closed before continuing.",
+                        comment: "{0} is the application name"),
+                        AppName),
+                    Catalog.Format (Catalog.GetString (
+                        "The update was downloaded successfully and is ready " +
+                        "to be installed, but {0} must be closed first.",
+                        comment: "{0} is the application name"),
+                        AppName));
 
-				window.ButtonStyle = MessageDialogStyle.AffirmativeAndNegative;
-				window.AffirmativeButtonText = Catalog.GetString ("Quit & Install Update");
-				window.NegativeButtonText = Catalog.GetString ("Cancel Update");
+                window.ButtonStyle = MessageDialogStyle.AffirmativeAndNegative;
+                window.AffirmativeButtonText = Catalog.GetString ("Quit & Install Update");
+                window.NegativeButtonText = Catalog.GetString ("Cancel Update");
 
-				window.ShowDialog ();
+                window.ShowDialog ();
 
-				if (window.Result != MessageDialogResult.Affirmative) {
-					DeleteUpdate ();
-					ownerWindow.Close ();
-					return Task.CompletedTask;
-				}
+                if (window.Result != MessageDialogResult.Affirmative) {
+                    DeleteUpdate ();
+                    ownerWindow.Close ();
+                    return Task.CompletedTask;
+                }
 
-				Process.Start (DownloadItem.TargetFile).WaitForInputIdle (2000);
-				App.Current.Shutdown ();
+                Process.Start (DownloadItem.TargetFile).WaitForInputIdle (2000);
+                App.Current.Shutdown ();
 
-				return Task.CompletedTask;
-			}
+                return Task.CompletedTask;
+            }
 
-			protected override void RunErrorDialog (bool isDownloadError, string message)
-			{
-				MainThread.Ensure ();
+            protected override void RunErrorDialog (bool isDownloadError, string message)
+            {
+                MainThread.Ensure ();
 
-				MetroDialogWindow dialog;
+                MetroDialogWindow dialog;
 
-				if (isDownloadError) {
-					dialog = CreateDialog (Catalog.GetString ("Download Failed"), message);
-					dialog.ButtonStyle = MessageDialogStyle.AffirmativeAndNegative;
-					dialog.AffirmativeButtonText = Catalog.GetString ("Download & Install Manually");
-					dialog.NegativeButtonText = Catalog.GetString ("Cancel");
-				} else {
-					dialog = CreateDialog (Catalog.GetString ("Installation Failed"), message);
-					dialog.ButtonStyle = MessageDialogStyle.Affirmative;
-					dialog.AffirmativeButtonText = Catalog.GetString ("Close");
-				}
+                if (isDownloadError) {
+                    dialog = CreateDialog (Catalog.GetString ("Download Failed"), message);
+                    dialog.ButtonStyle = MessageDialogStyle.AffirmativeAndNegative;
+                    dialog.AffirmativeButtonText = Catalog.GetString ("Download & Install Manually");
+                    dialog.NegativeButtonText = Catalog.GetString ("Cancel");
+                } else {
+                    dialog = CreateDialog (Catalog.GetString ("Installation Failed"), message);
+                    dialog.ButtonStyle = MessageDialogStyle.Affirmative;
+                    dialog.AffirmativeButtonText = Catalog.GetString ("Close");
+                }
 
-				dialog.ShowDialog ();
+                dialog.ShowDialog ();
 
-				if (dialog.Result == MessageDialogResult.Affirmative && isDownloadError) {
-					try {
-						Process.Start (UpdateItem.DownloadUrl.ToString ());
-					} catch (Exception e) {
-						Log.Error (TAG, $"unable to Process.Start({UpdateItem.DownloadUrl})", e);
-					}
-				}
-			}
-		}
-	}
+                if (dialog.Result == MessageDialogResult.Affirmative && isDownloadError) {
+                    try {
+                        Process.Start (UpdateItem.DownloadUrl.ToString ());
+                    } catch (Exception e) {
+                        Log.Error (TAG, $"unable to Process.Start({UpdateItem.DownloadUrl})", e);
+                    }
+                }
+            }
+        }
+    }
 }

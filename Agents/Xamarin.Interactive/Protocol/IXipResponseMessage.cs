@@ -10,8 +10,8 @@ using System;
 
 namespace Xamarin.Interactive.Protocol
 {
-	interface IXipResponseMessage
-	{
-		Guid RequestId { get; }
-	}
+    interface IXipResponseMessage
+    {
+        Guid RequestId { get; }
+    }
 }

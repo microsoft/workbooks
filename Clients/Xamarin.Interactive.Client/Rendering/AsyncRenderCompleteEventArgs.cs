@@ -10,16 +10,16 @@ using System;
 
 namespace Xamarin.Interactive.Rendering
 {
-	sealed class AsyncRenderCompleteEventArgs : EventArgs
-	{
-		public RenderState RenderState { get; }
+    sealed class AsyncRenderCompleteEventArgs : EventArgs
+    {
+        public RenderState RenderState { get; }
 
-		public AsyncRenderCompleteEventArgs (RenderState renderState)
-		{
-			if (renderState == null)
-				throw new ArgumentNullException (nameof (renderState));
+        public AsyncRenderCompleteEventArgs (RenderState renderState)
+        {
+            if (renderState == null)
+                throw new ArgumentNullException (nameof (renderState));
 
-			RenderState = renderState;
-		}
-	}
+            RenderState = renderState;
+        }
+    }
 }

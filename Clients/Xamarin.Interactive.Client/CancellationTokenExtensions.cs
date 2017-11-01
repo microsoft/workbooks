@@ -10,11 +10,11 @@ using System.Threading;
 
 namespace Xamarin.Interactive
 {
-	static class CancellationTokenExtensions
-	{
-		public static CancellationToken LinkWith (this CancellationToken a, CancellationToken b)
-			=> b == default (CancellationToken)
-				? a
-				: CancellationTokenSource.CreateLinkedTokenSource (a, b).Token;
-	}
+    static class CancellationTokenExtensions
+    {
+        public static CancellationToken LinkWith (this CancellationToken a, CancellationToken b)
+            => b == default (CancellationToken)
+                ? a
+                : CancellationTokenSource.CreateLinkedTokenSource (a, b).Token;
+    }
 }

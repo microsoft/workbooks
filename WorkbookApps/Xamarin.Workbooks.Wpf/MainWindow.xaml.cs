@@ -10,11 +10,11 @@ using System.Windows;
 
 namespace Xamarin.Workbooks.Wpf
 {
-	public partial class MainWindow : Window
-	{
-		public MainWindow ()
-		{
-			InitializeComponent ();
-		}
-	}
+    public partial class MainWindow : Window
+    {
+        public MainWindow ()
+        {
+            InitializeComponent ();
+        }
+    }
 }

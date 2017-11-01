@@ -13,21 +13,21 @@ using AppKit;
 
 namespace Xamarin.Interactive.Client.Mac
 {
-	sealed partial class LogWindow : NSPanel
-	{
-		public LogWindow (IntPtr handle) : base (handle)
-		{
-		}
+    sealed partial class LogWindow : NSPanel
+    {
+        public LogWindow (IntPtr handle) : base (handle)
+        {
+        }
 
-		[Export ("initWithCoder:")]
-		public LogWindow (NSCoder coder) : base (coder)
-		{
-		}
+        [Export ("initWithCoder:")]
+        public LogWindow (NSCoder coder) : base (coder)
+        {
+        }
 
-		public override void AwakeFromNib ()
-		{
-			Level = NSWindowLevel.Normal;
-			TitleVisibility = NSWindowTitleVisibility.Hidden;
-		}
-	}
+        public override void AwakeFromNib ()
+        {
+            Level = NSWindowLevel.Normal;
+            TitleVisibility = NSWindowTitleVisibility.Hidden;
+        }
+    }
 }

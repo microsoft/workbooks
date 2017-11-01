@@ -14,28 +14,28 @@ using System.Threading;
 
 namespace Xamarin.Interactive.Logging
 {
-	sealed class LogProvider : ILogProvider
-	{
-		static readonly bool isDebuggerAttached = Debugger.IsAttached;
-		static readonly TextWriter stderr = Console.Error;
+    sealed class LogProvider : ILogProvider
+    {
+        static readonly bool isDebuggerAttached = Debugger.IsAttached;
+        static readonly TextWriter stderr = Console.Error;
 
-		readonly ReaderWriterLockSlim rwlock = new ReaderWriterLockSlim ();
-		readonly List<LogEntry> entries = new List<LogEntry> ();
+        readonly ReaderWriterLockSlim rwlock = new ReaderWriterLockSlim ();
+        readonly List<LogEntry> entries = new List<LogEntry> ();
 
-		public event EventHandler<LogEntry> EntryAdded;
+        public event EventHandler<LogEntry> EntryAdded;
 
-		public LogLevel LogLevel { get; set; }
+        public LogLevel LogLevel { get; set; }
 
-		public LogProvider (LogLevel logLevel)
-		{
-			LogLevel = logLevel;
-		}
+        public LogProvider (LogLevel logLevel)
+        {
+            LogLevel = logLevel;
+        }
 
-		public void Commit (LogEntry entry)
-		{
-			var ignoreEntry = entry.Level < LogLevel;
+        public void Commit (LogEntry entry)
+        {
+            var ignoreEntry = entry.Level < LogLevel;
 
-			try {
+            try {
 #if DEBUG
 				if (isDebuggerAttached) {
 					Debug.WriteLine (entry);
@@ -43,32 +43,32 @@ namespace Xamarin.Interactive.Logging
 				}
 #endif
 
-				if (ignoreEntry)
-					return;
+                if (ignoreEntry)
+                    return;
 
-				stderr.WriteLine (entry);
-			} finally {
-				if (!ignoreEntry) {
-					rwlock.EnterWriteLock ();
-					try {
-						entries.Add (entry);
-					} finally {
-						rwlock.ExitWriteLock ();
-					}
+                stderr.WriteLine (entry);
+            } finally {
+                if (!ignoreEntry) {
+                    rwlock.EnterWriteLock ();
+                    try {
+                        entries.Add (entry);
+                    } finally {
+                        rwlock.ExitWriteLock ();
+                    }
 
-					EntryAdded?.Invoke (this, entry);
-				}
-			}
-		}
+                    EntryAdded?.Invoke (this, entry);
+                }
+            }
+        }
 
-		public LogEntry [] GetEntries ()
-		{
-			rwlock.EnterReadLock ();
-			try {
-				return entries.ToArray ();
-			} finally {
-				rwlock.ExitReadLock ();
-			}
-		}
-	}
+        public LogEntry [] GetEntries ()
+        {
+            rwlock.EnterReadLock ();
+            try {
+                return entries.ToArray ();
+            } finally {
+                rwlock.ExitReadLock ();
+            }
+        }
+    }
 }

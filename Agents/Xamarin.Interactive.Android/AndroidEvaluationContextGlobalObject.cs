@@ -17,24 +17,24 @@ using Xamarin.Interactive.CodeAnalysis;
 
 namespace Xamarin.Interactive.Android
 {
-	public sealed class AndroidEvaluationContextGlobalObject : EvaluationContextGlobalObject
-	{
-		readonly AndroidAgent agent;
-		
-		internal AndroidEvaluationContextGlobalObject (AndroidAgent agent) : base (agent)
-			=> this.agent = agent;
+    public sealed class AndroidEvaluationContextGlobalObject : EvaluationContextGlobalObject
+    {
+        readonly AndroidAgent agent;
+        
+        internal AndroidEvaluationContextGlobalObject (AndroidAgent agent) : base (agent)
+            => this.agent = agent;
 
-		[InteractiveHelp (Description = "Return a screenshot of the given view")]
-		public static Bitmap Capture (View view)
-		{
-			if (view == null)
-				throw new ArgumentNullException (nameof(view));
+        [InteractiveHelp (Description = "Return a screenshot of the given view")]
+        public static Bitmap Capture (View view)
+        {
+            if (view == null)
+                throw new ArgumentNullException (nameof(view));
 
-			return ViewRenderer.Render (view, skipChildren: false);
-		}
+            return ViewRenderer.Render (view, skipChildren: false);
+        }
 
-		[InteractiveHelp (Description = "All known Activities for the current app")]
-		public IReadOnlyList<Activity> StartedActivities =>
-			agent.ActivityTracker?.StartedActivities ?? new List<Activity> ();
-	}
+        [InteractiveHelp (Description = "All known Activities for the current app")]
+        public IReadOnlyList<Activity> StartedActivities =>
+            agent.ActivityTracker?.StartedActivities ?? new List<Activity> ();
+    }
 }

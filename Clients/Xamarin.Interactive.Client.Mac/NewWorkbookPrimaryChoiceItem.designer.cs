@@ -9,26 +9,26 @@ using System.CodeDom.Compiler;
 
 namespace Xamarin.Interactive.Client.Mac
 {
-	[Register ("NewWorkbookPrimaryChoiceItem")]
-	partial class NewWorkbookPrimaryChoiceItem
-	{
-		[Outlet]
-		AppKit.NSImageView imageView { get; set; }
+    [Register ("NewWorkbookPrimaryChoiceItem")]
+    partial class NewWorkbookPrimaryChoiceItem
+    {
+        [Outlet]
+        AppKit.NSImageView imageView { get; set; }
 
-		[Outlet]
-		AppKit.NSTextField label { get; set; }
-		
-		void ReleaseDesignerOutlets ()
-		{
-			if (imageView != null) {
-				imageView.Dispose ();
-				imageView = null;
-			}
+        [Outlet]
+        AppKit.NSTextField label { get; set; }
+        
+        void ReleaseDesignerOutlets ()
+        {
+            if (imageView != null) {
+                imageView.Dispose ();
+                imageView = null;
+            }
 
-			if (label != null) {
-				label.Dispose ();
-				label = null;
-			}
-		}
-	}
+            if (label != null) {
+                label.Dispose ();
+                label = null;
+            }
+        }
+    }
 }

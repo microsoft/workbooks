@@ -11,8 +11,8 @@ using Xamarin.Interactive.Workbook.Models;
 
 namespace Xamarin.Interactive.Workbook.Views
 {
-	abstract class CellEditorView : AbstractEditor
-	{
-		public abstract Cell Cell { get; }
-	}
+    abstract class CellEditorView : AbstractEditor
+    {
+        public abstract Cell Cell { get; }
+    }
 }

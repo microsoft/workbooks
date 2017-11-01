@@ -10,7 +10,7 @@ using Xamarin.Forms;
 
 namespace Xamarin.Interactive.Forms
 {
-	class WorkbookApplication : Application
-	{
-	}
+    class WorkbookApplication : Application
+    {
+    }
 }

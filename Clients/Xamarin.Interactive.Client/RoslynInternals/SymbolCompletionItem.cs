@@ -17,30 +17,30 @@ using Microsoft.CodeAnalysis.Completion;
 
 namespace Xamarin.Interactive.RoslynInternals
 {
-	static class SymbolCompletionItem
-	{
-		static readonly Type symbolCompletionItemType = typeof (CompletionItem).Assembly.GetType (
-			"Microsoft.CodeAnalysis.Completion.Providers.SymbolCompletionItem");
+    static class SymbolCompletionItem
+    {
+        static readonly Type symbolCompletionItemType = typeof (CompletionItem).Assembly.GetType (
+            "Microsoft.CodeAnalysis.Completion.Providers.SymbolCompletionItem");
 
-		static readonly MethodInfo getSymbolsAsync = symbolCompletionItemType.GetMethod ("GetSymbolsAsync");
+        static readonly MethodInfo getSymbolsAsync = symbolCompletionItemType.GetMethod ("GetSymbolsAsync");
 
-		static PropertyInfo taskOfImmutableSymbolArrayTypeResultProperty;
+        static PropertyInfo taskOfImmutableSymbolArrayTypeResultProperty;
 
-		public static Task<ImmutableArray<ISymbol>> GetSymbolsAsync (CompletionItem item, Document document, CancellationToken cancellationToken)
-		{
-			return ((Task)getSymbolsAsync.Invoke (null, new object [] {
-				item,
-				document,
-				cancellationToken
-			})).ContinueWith (task => {
-				if (taskOfImmutableSymbolArrayTypeResultProperty == null)
-					taskOfImmutableSymbolArrayTypeResultProperty = task
-						.GetType ()
-						.GetProperty ("Result");
+        public static Task<ImmutableArray<ISymbol>> GetSymbolsAsync (CompletionItem item, Document document, CancellationToken cancellationToken)
+        {
+            return ((Task)getSymbolsAsync.Invoke (null, new object [] {
+                item,
+                document,
+                cancellationToken
+            })).ContinueWith (task => {
+                if (taskOfImmutableSymbolArrayTypeResultProperty == null)
+                    taskOfImmutableSymbolArrayTypeResultProperty = task
+                        .GetType ()
+                        .GetProperty ("Result");
 
-				return (ImmutableArray<ISymbol>)
-					taskOfImmutableSymbolArrayTypeResultProperty.GetValue (task);
-			});
-		}
-	}
+                return (ImmutableArray<ISymbol>)
+                    taskOfImmutableSymbolArrayTypeResultProperty.GetValue (task);
+            });
+        }
+    }
 }

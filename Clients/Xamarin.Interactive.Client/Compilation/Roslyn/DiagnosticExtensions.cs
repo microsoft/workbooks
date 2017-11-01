@@ -12,11 +12,11 @@ using Microsoft.CodeAnalysis;
 
 namespace Xamarin.Interactive.Compilation.Roslyn
 {
-	static class DiagnosticExtensions
-	{
-		public static FilteredDiagnostics Filter (
-			this IReadOnlyList<Diagnostic> diagnostics,
-			int maxCount = 5)
-			=> new FilteredDiagnostics (diagnostics, maxCount);
-	}
+    static class DiagnosticExtensions
+    {
+        public static FilteredDiagnostics Filter (
+            this IReadOnlyList<Diagnostic> diagnostics,
+            int maxCount = 5)
+            => new FilteredDiagnostics (diagnostics, maxCount);
+    }
 }

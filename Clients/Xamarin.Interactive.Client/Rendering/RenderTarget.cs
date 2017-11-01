@@ -10,22 +10,22 @@ using Xamarin.CrossBrowser;
 
 namespace Xamarin.Interactive.Rendering
 {
-	struct RenderTarget
-	{
-		public RendererRepresentation Representation { get; }
-		public HtmlElement InlineTarget { get; }
-		public HtmlElement ExpandedTarget { get; }
+    struct RenderTarget
+    {
+        public RendererRepresentation Representation { get; }
+        public HtmlElement InlineTarget { get; }
+        public HtmlElement ExpandedTarget { get; }
 
-		public bool IsExpanded => ExpandedTarget != null;
+        public bool IsExpanded => ExpandedTarget != null;
 
-		public RenderTarget (
-			RendererRepresentation representation,
-			HtmlElement inlineTarget,
-			HtmlElement expandedTarget)
-		{
-			Representation = representation;
-			InlineTarget = inlineTarget;
-			ExpandedTarget = expandedTarget;
-		}
-	}
+        public RenderTarget (
+            RendererRepresentation representation,
+            HtmlElement inlineTarget,
+            HtmlElement expandedTarget)
+        {
+            Representation = representation;
+            InlineTarget = inlineTarget;
+            ExpandedTarget = expandedTarget;
+        }
+    }
 }

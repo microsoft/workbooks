@@ -18,40 +18,40 @@ using Xamarin.Interactive.Remote;
 
 namespace Xamarin.Interactive.Client.Mac.ViewInspector
 {
-	sealed class InspectViewMaterial : NSImage
-	{
-		const string TAG = nameof (InspectViewMaterial);
+    sealed class InspectViewMaterial : NSImage
+    {
+        const string TAG = nameof (InspectViewMaterial);
 
-		public static InspectViewMaterial Create (InspectView inspectView, bool renderImage = true)
-		{
-			if (inspectView == null)
-				throw new ArgumentNullException (nameof (inspectView));
+        public static InspectViewMaterial Create (InspectView inspectView, bool renderImage = true)
+        {
+            if (inspectView == null)
+                throw new ArgumentNullException (nameof (inspectView));
 
-			if (Math.Abs (inspectView.Width) < Single.Epsilon ||
-				Math.Abs (inspectView.Height) < Single.Epsilon)
-				return null;
+            if (Math.Abs (inspectView.Width) < Single.Epsilon ||
+                Math.Abs (inspectView.Height) < Single.Epsilon)
+                return null;
 
-			if (renderImage && inspectView.BestCapturedImage != null) {
-				try {
-					NativeExceptionHandler.Trap ();
-					return new InspectViewMaterial (inspectView.BestCapturedImage);
-				} catch (Exception e) {
-					Log.Error (TAG, $"Exception creating NSImage from byte[] " +
-						$"(length={inspectView.CapturedImage.Length})", e);
-				} finally {
-					NativeExceptionHandler.Release ();
-				}
-			}
+            if (renderImage && inspectView.BestCapturedImage != null) {
+                try {
+                    NativeExceptionHandler.Trap ();
+                    return new InspectViewMaterial (inspectView.BestCapturedImage);
+                } catch (Exception e) {
+                    Log.Error (TAG, $"Exception creating NSImage from byte[] " +
+                        $"(length={inspectView.CapturedImage.Length})", e);
+                } finally {
+                    NativeExceptionHandler.Release ();
+                }
+            }
 
-			return new InspectViewMaterial (inspectView.Width, inspectView.Height);
-		}
+            return new InspectViewMaterial (inspectView.Width, inspectView.Height);
+        }
 
-		InspectViewMaterial (byte [] imageData) : base (NSData.FromArray (imageData))
-		{
-		}
+        InspectViewMaterial (byte [] imageData) : base (NSData.FromArray (imageData))
+        {
+        }
 
-		InspectViewMaterial (double width, double height) : base (new CGSize (width, height))
-		{
-		}
-	}
+        InspectViewMaterial (double width, double height) : base (new CGSize (width, height))
+        {
+        }
+    }
 }

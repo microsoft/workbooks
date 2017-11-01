@@ -14,29 +14,29 @@ using Xamarin.Interactive.Serialization;
 
 namespace Xamarin.Interactive.Representations
 {
-	[Serializable]
-	public sealed class VerbatimHtml : IRepresentationObject
-	{
-		readonly string content;
+    [Serializable]
+    public sealed class VerbatimHtml : IRepresentationObject
+    {
+        readonly string content;
 
-		public VerbatimHtml (StringBuilder builder)
-		{
-			content = builder?.ToString ();
-		}
+        public VerbatimHtml (StringBuilder builder)
+        {
+            content = builder?.ToString ();
+        }
 
-		public VerbatimHtml (string content)
-		{
-			this.content = content;
-		}
+        public VerbatimHtml (string content)
+        {
+            this.content = content;
+        }
 
-		public override string ToString ()
-		{
-			return content;
-		}
+        public override string ToString ()
+        {
+            return content;
+        }
 
-		void ISerializableObject.Serialize (ObjectSerializer serializer)
-		{
-			throw new NotImplementedException ();
-		}
-	}
+        void ISerializableObject.Serialize (ObjectSerializer serializer)
+        {
+            throw new NotImplementedException ();
+        }
+    }
 }

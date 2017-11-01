@@ -9,34 +9,34 @@ using System.CodeDom.Compiler;
 
 namespace Xamarin.Interactive.Client.Mac
 {
-	[Register ("PackageAddWindowController")]
-	partial class PackageAddWindowController
-	{
-		[Outlet]
-		AppKit.NSButton cancelButton { get; set; }
+    [Register ("PackageAddWindowController")]
+    partial class PackageAddWindowController
+    {
+        [Outlet]
+        AppKit.NSButton cancelButton { get; set; }
 
-		[Outlet]
-		AppKit.NSProgressIndicator progressIndicator { get; set; }
+        [Outlet]
+        AppKit.NSProgressIndicator progressIndicator { get; set; }
 
-		[Outlet]
-		AppKit.NSTextField statusTextField { get; set; }
-		
-		void ReleaseDesignerOutlets ()
-		{
-			if (progressIndicator != null) {
-				progressIndicator.Dispose ();
-				progressIndicator = null;
-			}
+        [Outlet]
+        AppKit.NSTextField statusTextField { get; set; }
+        
+        void ReleaseDesignerOutlets ()
+        {
+            if (progressIndicator != null) {
+                progressIndicator.Dispose ();
+                progressIndicator = null;
+            }
 
-			if (statusTextField != null) {
-				statusTextField.Dispose ();
-				statusTextField = null;
-			}
+            if (statusTextField != null) {
+                statusTextField.Dispose ();
+                statusTextField = null;
+            }
 
-			if (cancelButton != null) {
-				cancelButton.Dispose ();
-				cancelButton = null;
-			}
-		}
-	}
+            if (cancelButton != null) {
+                cancelButton.Dispose ();
+                cancelButton = null;
+            }
+        }
+    }
 }

@@ -10,8 +10,8 @@ using ICSharpCode.NRefactory.CSharp;
 
 namespace ApiDump
 {
-	public interface IVisitorTool
-	{
-		IAstVisitor Visitor { get; }
-	}
+    public interface IVisitorTool
+    {
+        IAstVisitor Visitor { get; }
+    }
 }

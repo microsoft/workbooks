@@ -14,10 +14,10 @@ using Xamarin.Interactive.Representations;
 
 namespace Xamarin.Interactive.Core
 {
-	[Serializable]
-	sealed class SetObjectMemberResponse
-	{
-		public bool Success { get; set; }
-		public InteractiveObject UpdatedValue { get; set; }
-	}
+    [Serializable]
+    sealed class SetObjectMemberResponse
+    {
+        public bool Success { get; set; }
+        public InteractiveObject UpdatedValue { get; set; }
+    }
 }

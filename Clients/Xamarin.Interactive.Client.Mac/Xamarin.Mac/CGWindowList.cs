@@ -14,25 +14,25 @@ using Foundation;
 
 namespace CoreGraphics
 {
-	[Flags]
-	enum CGWindowListOptions : uint
-	{
-		All = 0,
-		OnScreenOnly = 1 << 0,
-		OnScreenAboveWindow = 1 << 1,
-		OnScreenBelowWindow = 1 << 2,
-		IncludingWindow = 1 << 3,
-		ExcludeDesktopElements = 1 << 4
-	}
+    [Flags]
+    enum CGWindowListOptions : uint
+    {
+        All = 0,
+        OnScreenOnly = 1 << 0,
+        OnScreenAboveWindow = 1 << 1,
+        OnScreenBelowWindow = 1 << 2,
+        IncludingWindow = 1 << 3,
+        ExcludeDesktopElements = 1 << 4
+    }
 
-	static class CGWindowList
-	{
-		[DllImport (Constants.CoreGraphicsLibrary)]
-		static extern IntPtr CGWindowListCopyWindowInfo (CGWindowListOptions options, uint relativeToWindowId);
+    static class CGWindowList
+    {
+        [DllImport (Constants.CoreGraphicsLibrary)]
+        static extern IntPtr CGWindowListCopyWindowInfo (CGWindowListOptions options, uint relativeToWindowId);
 
-		public static NSDictionary [] CopyWindowInfo (CGWindowListOptions options, uint relativeToWindowId)
-		{
-			return NSArray.ArrayFromHandle<NSDictionary> (CGWindowListCopyWindowInfo (options, relativeToWindowId));
-		}
-	}
+        public static NSDictionary [] CopyWindowInfo (CGWindowListOptions options, uint relativeToWindowId)
+        {
+            return NSArray.ArrayFromHandle<NSDictionary> (CGWindowListCopyWindowInfo (options, relativeToWindowId));
+        }
+    }
 }

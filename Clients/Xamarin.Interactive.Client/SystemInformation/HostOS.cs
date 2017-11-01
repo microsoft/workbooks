@@ -8,9 +8,9 @@
 
 namespace Xamarin.Interactive.SystemInformation
 {
-	enum HostOS
-	{
-		macOS,
-		Windows
-	}
+    enum HostOS
+    {
+        macOS,
+        Windows
+    }
 }

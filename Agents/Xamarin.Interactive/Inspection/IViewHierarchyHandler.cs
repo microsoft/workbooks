@@ -8,9 +8,9 @@
 
 namespace Xamarin.Interactive.Inspection
 {
-	interface IViewHierarchyHandler
-	{
-		bool TryGetHighlightedView (double x, double y, bool clear, out IInspectView highlightedView);
-		bool TryGetRepresentedView (object view, bool withSubviews, out IInspectView representedView);
-	}
+    interface IViewHierarchyHandler
+    {
+        bool TryGetHighlightedView (double x, double y, bool clear, out IInspectView highlightedView);
+        bool TryGetRepresentedView (object view, bool withSubviews, out IInspectView representedView);
+    }
 }

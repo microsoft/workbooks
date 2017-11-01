@@ -13,27 +13,27 @@ using Foundation;
 
 namespace Xamarin.Interactive.Client.Mac.Menu
 {
-	[Register ("XIDebugMenuItem")]
-	sealed class XIDebugMenuItem : NSMenuItem
-	{
-		public XIDebugMenuItem (NSCoder coder) : base (coder)
-		{
-		}
+    [Register ("XIDebugMenuItem")]
+    sealed class XIDebugMenuItem : NSMenuItem
+    {
+        public XIDebugMenuItem (NSCoder coder) : base (coder)
+        {
+        }
 
-		public XIDebugMenuItem (IntPtr handle) : base (handle)
-		{
-		}
+        public XIDebugMenuItem (IntPtr handle) : base (handle)
+        {
+        }
 
-		public override bool Hidden {
-			get {
-				return
+        public override bool Hidden {
+            get {
+                return
 #if DEBUG
 					false;
 #else
-					true;
+                    true;
 #endif
-			}
-			set { }
-		}
-	}
+            }
+            set { }
+        }
+    }
 }

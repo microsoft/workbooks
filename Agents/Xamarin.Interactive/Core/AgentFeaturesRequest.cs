@@ -12,13 +12,13 @@ using System.Threading.Tasks;
 
 namespace Xamarin.Interactive.Core
 {
-	[Serializable]
-	sealed class AgentFeaturesRequest : MainThreadRequest<AgentFeatures>
-	{
-		protected override Task<AgentFeatures> HandleAsync (Agent agent)
-			=> Task.FromResult(new AgentFeatures (agent
-				.ViewHierarchyHandlerManager
-				.AvailableHierarchyKinds
-				.ToArray ()));
-	}
+    [Serializable]
+    sealed class AgentFeaturesRequest : MainThreadRequest<AgentFeatures>
+    {
+        protected override Task<AgentFeatures> HandleAsync (Agent agent)
+            => Task.FromResult(new AgentFeatures (agent
+                .ViewHierarchyHandlerManager
+                .AvailableHierarchyKinds
+                .ToArray ()));
+    }
 }

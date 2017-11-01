@@ -9,18 +9,18 @@ using System.CodeDom.Compiler;
 
 namespace Xamarin.Interactive.Client.Mac
 {
-	[Register ("VisualRepViewController")]
-	partial class VisualRepViewController
-	{
-		[Outlet]
-		public Xamarin.Interactive.Client.Mac.ViewInspector.InspectorSCNView scnView { get; set; }
-		
-		void ReleaseDesignerOutlets ()
-		{
-			if (scnView != null) {
-				scnView.Dispose ();
-				scnView = null;
-			}
-		}
-	}
+    [Register ("VisualRepViewController")]
+    partial class VisualRepViewController
+    {
+        [Outlet]
+        public Xamarin.Interactive.Client.Mac.ViewInspector.InspectorSCNView scnView { get; set; }
+        
+        void ReleaseDesignerOutlets ()
+        {
+            if (scnView != null) {
+                scnView.Dispose ();
+                scnView = null;
+            }
+        }
+    }
 }

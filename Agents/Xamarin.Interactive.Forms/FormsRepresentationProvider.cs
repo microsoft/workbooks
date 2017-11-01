@@ -16,40 +16,40 @@ using XIR = Xamarin.Interactive.Representations;
 
 namespace Xamarin.Interactive.Forms
 {
-	sealed class FormsRepresentationProvider : XIR.RepresentationProvider
-	{
-		public override IEnumerable<object> ProvideRepresentations (object obj)
-		{
-			yield return ProvideSingleRepresentation (obj);
-		}
+    sealed class FormsRepresentationProvider : XIR.RepresentationProvider
+    {
+        public override IEnumerable<object> ProvideRepresentations (object obj)
+        {
+            yield return ProvideSingleRepresentation (obj);
+        }
 
-		ISerializableObject ProvideSingleRepresentation (object obj)
-		{
-			if (obj is XF.Color) {
-				var color = (XF.Color)obj;
-				return new XIR.Representation (new XIR.Color (color.R, color.G, color.B, color.A), true);
-			}
+        ISerializableObject ProvideSingleRepresentation (object obj)
+        {
+            if (obj is XF.Color) {
+                var color = (XF.Color)obj;
+                return new XIR.Representation (new XIR.Color (color.R, color.G, color.B, color.A), true);
+            }
 
-			return null;
-		}
+            return null;
+        }
 
-		public override bool TryConvertFromRepresentation (
-			IRepresentedType representedType,
-			object [] representations,
-			out object represented)
-		{
-			represented = null;
+        public override bool TryConvertFromRepresentation (
+            IRepresentedType representedType,
+            object [] representations,
+            out object represented)
+        {
+            represented = null;
 
-			XIR.Color color;
-			if (TryFindMatchingRepresentation<XF.Color, XIR.Color> (
-				representedType,
-				representations,
-				out color)) {
-				represented = new XF.Color (color.Red, color.Green, color.Blue, color.Alpha);
-				return true;
-			}
+            XIR.Color color;
+            if (TryFindMatchingRepresentation<XF.Color, XIR.Color> (
+                representedType,
+                representations,
+                out color)) {
+                represented = new XF.Color (color.Red, color.Green, color.Blue, color.Alpha);
+                return true;
+            }
 
-			return base.TryConvertFromRepresentation (representedType, representations, out represented);
-		}
-	}
+            return base.TryConvertFromRepresentation (representedType, representations, out represented);
+        }
+    }
 }

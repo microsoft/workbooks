@@ -21,82 +21,82 @@ using Xamarin.Interactive.Logging;
 using Xamarin.Interactive.Messages;
 
 [assembly: AgentProcessManager.Registration (
-	"console",
-	typeof (AgentProcessManager<ConsoleAgentProcess>))]
+    "console",
+    typeof (AgentProcessManager<ConsoleAgentProcess>))]
 
 namespace Xamarin.Interactive.Client.AgentProcesses
 {
-	sealed class ConsoleAgentProcess : IAgentProcess
-	{
-		const string TAG = nameof(ConsoleAgentProcess);
-		const string monoPath = "/Library/Frameworks/Mono.framework/Commands/mono64";
+    sealed class ConsoleAgentProcess : IAgentProcess
+    {
+        const string TAG = nameof(ConsoleAgentProcess);
+        const string monoPath = "/Library/Frameworks/Mono.framework/Commands/mono64";
 
-		Process workbookAppProcess;
+        Process workbookAppProcess;
 
-		public WorkbookAppInstallation WorkbookApp { get; }
+        public WorkbookAppInstallation WorkbookApp { get; }
 
-		public event EventHandler UnexpectedlyTerminated;
+        public event EventHandler UnexpectedlyTerminated;
 
-		public ConsoleAgentProcess (WorkbookAppInstallation workbookApp)
-			=> WorkbookApp = workbookApp ?? throw new ArgumentNullException (nameof (workbookApp));
+        public ConsoleAgentProcess (WorkbookAppInstallation workbookApp)
+            => WorkbookApp = workbookApp ?? throw new ArgumentNullException (nameof (workbookApp));
 
-		public Task StartAgentProcessAsync (
-			IdentifyAgentRequest identifyAgentRequest,
-			IMessageService messageService,
-			CancellationToken cancellationToken)
-		{
-			if (InteractiveInstallation.Default.IsMac && !File.Exists (monoPath))
-				throw new UserPresentableException (
-					Catalog.GetString ("Xamarin install missing."));
+        public Task StartAgentProcessAsync (
+            IdentifyAgentRequest identifyAgentRequest,
+            IMessageService messageService,
+            CancellationToken cancellationToken)
+        {
+            if (InteractiveInstallation.Default.IsMac && !File.Exists (monoPath))
+                throw new UserPresentableException (
+                    Catalog.GetString ("Xamarin install missing."));
 
-			string processName;
+            string processName;
 
-			var processArgs = ProcessArguments.Create (
-				identifyAgentRequest.ToCommandLineArguments ());
+            var processArgs = ProcessArguments.Create (
+                identifyAgentRequest.ToCommandLineArguments ());
 
-			if (InteractiveInstallation.Default.IsMac) {
-				processName = monoPath;
-				processArgs = processArgs.Insert (0, WorkbookApp.AppPath);
-			} else {
-				processName = WorkbookApp.AppPath;
-			}
+            if (InteractiveInstallation.Default.IsMac) {
+                processName = monoPath;
+                processArgs = processArgs.Insert (0, WorkbookApp.AppPath);
+            } else {
+                processName = WorkbookApp.AppPath;
+            }
 
-			workbookAppProcess = new Process {
-				StartInfo = new ProcessStartInfo {
-					FileName = processName,
-					Arguments = processArgs.ToString (),
-					UseShellExecute = false,
-					CreateNoWindow = true,
-				},
-				EnableRaisingEvents = true,
-			};
+            workbookAppProcess = new Process {
+                StartInfo = new ProcessStartInfo {
+                    FileName = processName,
+                    Arguments = processArgs.ToString (),
+                    UseShellExecute = false,
+                    CreateNoWindow = true,
+                },
+                EnableRaisingEvents = true,
+            };
 
-			workbookAppProcess.Exited += HandleWorkbookAppProcessExited;
-			workbookAppProcess.Start ();
+            workbookAppProcess.Exited += HandleWorkbookAppProcessExited;
+            workbookAppProcess.Start ();
 
-			return Task.CompletedTask;
-		}
+            return Task.CompletedTask;
+        }
 
-		void HandleWorkbookAppProcessExited (object sender, EventArgs e)
-		{
-			workbookAppProcess.Exited -= HandleWorkbookAppProcessExited;
-			UnexpectedlyTerminated?.Invoke (this, EventArgs.Empty);
-		}
+        void HandleWorkbookAppProcessExited (object sender, EventArgs e)
+        {
+            workbookAppProcess.Exited -= HandleWorkbookAppProcessExited;
+            UnexpectedlyTerminated?.Invoke (this, EventArgs.Empty);
+        }
 
-		public Task TerminateAgentProcessAsync ()
-		{
-			if (workbookAppProcess != null) {
-				try {
-					workbookAppProcess.Exited -= HandleWorkbookAppProcessExited;
-					workbookAppProcess.Kill ();
-					workbookAppProcess.WaitForExit ();
-				} catch (Exception e) {
-					Log.Error (TAG, e);
-				}
-				workbookAppProcess = null;
-			}
+        public Task TerminateAgentProcessAsync ()
+        {
+            if (workbookAppProcess != null) {
+                try {
+                    workbookAppProcess.Exited -= HandleWorkbookAppProcessExited;
+                    workbookAppProcess.Kill ();
+                    workbookAppProcess.WaitForExit ();
+                } catch (Exception e) {
+                    Log.Error (TAG, e);
+                }
+                workbookAppProcess = null;
+            }
 
-			return Task.CompletedTask;
-		}
-	}
+            return Task.CompletedTask;
+        }
+    }
 }

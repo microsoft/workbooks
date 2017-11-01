@@ -10,19 +10,19 @@ using System;
 
 namespace Xamarin.Interactive.Rendering
 {
-	[AttributeUsage (AttributeTargets.Class, AllowMultiple = true)]
-	public sealed class RendererAttribute : Attribute
-	{
-		public Type SourceType { get; }
-		public bool ExactMatchRequired { get; }
+    [AttributeUsage (AttributeTargets.Class, AllowMultiple = true)]
+    public sealed class RendererAttribute : Attribute
+    {
+        public Type SourceType { get; }
+        public bool ExactMatchRequired { get; }
 
-		public RendererAttribute (Type sourceType, bool exactMatchRequired = true)
-		{
-			if (sourceType == null)
-				throw new ArgumentNullException (nameof(sourceType));
+        public RendererAttribute (Type sourceType, bool exactMatchRequired = true)
+        {
+            if (sourceType == null)
+                throw new ArgumentNullException (nameof(sourceType));
 
-			SourceType = sourceType;
-			ExactMatchRequired = exactMatchRequired;
-		}
-	}
+            SourceType = sourceType;
+            ExactMatchRequired = exactMatchRequired;
+        }
+    }
 }

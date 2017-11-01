@@ -13,10 +13,10 @@ using mshtml;
 
 namespace Xamarin.CrossBrowser
 {
-	public partial class UIEvent : Event
-	{
-		internal UIEvent (ScriptContext context, IDOMUIEvent comObject) : base (context, (IDOMEvent)comObject)
-		{
-		}
-	}
+    public partial class UIEvent : Event
+    {
+        internal UIEvent (ScriptContext context, IDOMUIEvent comObject) : base (context, (IDOMEvent)comObject)
+        {
+        }
+    }
 }

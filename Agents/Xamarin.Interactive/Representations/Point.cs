@@ -13,21 +13,21 @@ using Xamarin.Interactive.Serialization;
 
 namespace Xamarin.Interactive.Representations
 {
-	[Serializable]
-	public sealed class Point : IRepresentationObject
-	{
-		public Point (double x, double y)
-		{
-			X = x;
-			Y = y;
-		}
+    [Serializable]
+    public sealed class Point : IRepresentationObject
+    {
+        public Point (double x, double y)
+        {
+            X = x;
+            Y = y;
+        }
 
-		public double X { get; }
-		public double Y { get; }
+        public double X { get; }
+        public double Y { get; }
 
-		void ISerializableObject.Serialize (ObjectSerializer serializer)
-		{
-			throw new NotImplementedException ();
-		}
-	}
+        void ISerializableObject.Serialize (ObjectSerializer serializer)
+        {
+            throw new NotImplementedException ();
+        }
+    }
 }

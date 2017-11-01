@@ -11,16 +11,16 @@ using System.Windows.Input;
 
 namespace Xamarin.Interactive.Client.Windows.Commands
 {
-	class CloseWindowCommand : ICommand
-	{
-		#pragma warning disable 67
-		public event EventHandler CanExecuteChanged;
-		#pragma warning restore 67
+    class CloseWindowCommand : ICommand
+    {
+        #pragma warning disable 67
+        public event EventHandler CanExecuteChanged;
+        #pragma warning restore 67
 
-		public bool CanExecute (object parameter)
-			=> parameter is Window;
+        public bool CanExecute (object parameter)
+            => parameter is Window;
 
-		public void Execute (object parameter)
-			=> (parameter as Window)?.Close ();
-	}
+        public void Execute (object parameter)
+            => (parameter as Window)?.Close ();
+    }
 }

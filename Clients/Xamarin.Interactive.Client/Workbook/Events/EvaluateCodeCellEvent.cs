@@ -13,10 +13,10 @@ using Xamarin.Interactive.Editor.Events;
 
 namespace Xamarin.Interactive.Workbook.Events
 {
-	sealed class EvaluateCodeCellEvent : EditorEvent
-	{
-		public EvaluateCodeCellEvent (IEditor source, LinePosition cursor) : base (source, cursor)
-		{
-		}
-	}
+    sealed class EvaluateCodeCellEvent : EditorEvent
+    {
+        public EvaluateCodeCellEvent (IEditor source, LinePosition cursor) : base (source, cursor)
+        {
+        }
+    }
 }

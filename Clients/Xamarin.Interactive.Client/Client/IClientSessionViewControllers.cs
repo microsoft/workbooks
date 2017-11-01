@@ -12,10 +12,10 @@ using Xamarin.Interactive.Workbook.Models;
 
 namespace Xamarin.Interactive.Client
 {
-	interface IClientSessionViewControllers
-	{
-		MessageViewController Messages { get; }
-		History ReplHistory { get; }
-		WorkbookTargetsViewController WorkbookTargets { get; }
-	}
+    interface IClientSessionViewControllers
+    {
+        MessageViewController Messages { get; }
+        History ReplHistory { get; }
+        WorkbookTargetsViewController WorkbookTargets { get; }
+    }
 }

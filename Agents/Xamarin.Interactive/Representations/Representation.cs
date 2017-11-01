@@ -12,26 +12,26 @@ using Xamarin.Interactive.Serialization;
 
 namespace Xamarin.Interactive.Representations
 {
-	[Serializable]
-	public struct Representation : IRepresentationObject
-	{
-		public static readonly Representation Empty = new Representation ();
+    [Serializable]
+    public struct Representation : IRepresentationObject
+    {
+        public static readonly Representation Empty = new Representation ();
 
-		public object Value { get; }
-		public bool CanEdit { get; }
+        public object Value { get; }
+        public bool CanEdit { get; }
 
-		public Representation (object value, bool canEdit = false)
-		{
-			Value = value;
-			CanEdit = canEdit;
-		}
+        public Representation (object value, bool canEdit = false)
+        {
+            Value = value;
+            CanEdit = canEdit;
+        }
 
-		internal Representation With (object value, bool canEdit)
-			=> new Representation (value, canEdit);
+        internal Representation With (object value, bool canEdit)
+            => new Representation (value, canEdit);
 
-		void ISerializableObject.Serialize (ObjectSerializer serializer)
-		{
-			throw new NotImplementedException ();
-		}
-	}
+        void ISerializableObject.Serialize (ObjectSerializer serializer)
+        {
+            throw new NotImplementedException ();
+        }
+    }
 }

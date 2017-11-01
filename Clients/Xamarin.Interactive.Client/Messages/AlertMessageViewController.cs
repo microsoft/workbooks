@@ -10,34 +10,34 @@ using System;
 
 namespace Xamarin.Interactive.Messages
 {
-	sealed class AlertMessageViewController : IMessageService
-	{
-		readonly IAlertMessageViewDelegate viewDelegate;
+    sealed class AlertMessageViewController : IMessageService
+    {
+        readonly IAlertMessageViewDelegate viewDelegate;
 
-		public AlertMessageViewController (IAlertMessageViewDelegate viewDelegate)
-		{
-			if (viewDelegate == null)
-				throw new ArgumentNullException (nameof (viewDelegate));
+        public AlertMessageViewController (IAlertMessageViewDelegate viewDelegate)
+        {
+            if (viewDelegate == null)
+                throw new ArgumentNullException (nameof (viewDelegate));
 
-			this.viewDelegate = viewDelegate;
-		}
+            this.viewDelegate = viewDelegate;
+        }
 
-		public bool CanHandleMessage (Message message)
-			=> message.Kind == MessageKind.Alert;
+        public bool CanHandleMessage (Message message)
+            => message.Kind == MessageKind.Alert;
 
-		public Message PushMessage (Message message)
-		{
-			if (message == null)
-				throw new ArgumentNullException (nameof (message));
+        public Message PushMessage (Message message)
+        {
+            if (message == null)
+                throw new ArgumentNullException (nameof (message));
 
-			message = message.WithMessageService (this);
+            message = message.WithMessageService (this);
 
-			MainThread.Post (() => viewDelegate.DisplayMessage (message));
+            MainThread.Post (() => viewDelegate.DisplayMessage (message));
 
-			return message;
-		}
+            return message;
+        }
 
-		public void DismissMessage (int messageId)
-			=> MainThread.Post (() => viewDelegate.DismissMessage (messageId));
-	}
+        public void DismissMessage (int messageId)
+            => MainThread.Post (() => viewDelegate.DismissMessage (messageId));
+    }
 }

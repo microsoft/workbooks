@@ -16,52 +16,52 @@ using Xamarin.Interactive.Serialization;
 
 namespace Xamarin.Interactive.Tests
 {
-	sealed class TestAgent : Agent
-	{
-		static Stack<Action<TestAgent>> allocHandlers = new Stack<Action<TestAgent>> ();
+    sealed class TestAgent : Agent
+    {
+        static Stack<Action<TestAgent>> allocHandlers = new Stack<Action<TestAgent>> ();
 
-		public static void PushAllocHandler (Action<TestAgent> handler)
-		{
-			lock (allocHandlers)
-				allocHandlers.Push (handler);
-		}
+        public static void PushAllocHandler (Action<TestAgent> handler)
+        {
+            lock (allocHandlers)
+                allocHandlers.Push (handler);
+        }
 
-		public event EventHandler Stopped;
+        public event EventHandler Stopped;
 
-		public IdentifyAgentRequest IdentifyAgentRequest { get; set; }
+        public IdentifyAgentRequest IdentifyAgentRequest { get; set; }
 
-		public TestAgent (IdentifyAgentRequest identifyAgentRequest)
-			: base (unitTestContext: true)
-		{
-			Identity = new AgentIdentity (
-				AgentType.Test,
-				Sdk.FromEntryAssembly ("Test"),
-				nameof (TestAgent));
+        public TestAgent (IdentifyAgentRequest identifyAgentRequest)
+            : base (unitTestContext: true)
+        {
+            Identity = new AgentIdentity (
+                AgentType.Test,
+                Sdk.FromEntryAssembly ("Test"),
+                nameof (TestAgent));
 
-			IdentifyAgentRequest = identifyAgentRequest;
+            IdentifyAgentRequest = identifyAgentRequest;
 
-			Action<TestAgent> allocHandler = null;
+            Action<TestAgent> allocHandler = null;
 
-			lock (allocHandlers) {
-				if (allocHandlers.Count > 0)
-					allocHandler = allocHandlers.Pop ();
-			}
+            lock (allocHandlers) {
+                if (allocHandlers.Count > 0)
+                    allocHandler = allocHandlers.Pop ();
+            }
 
-			allocHandler?.Invoke (this);
-		}
+            allocHandler?.Invoke (this);
+        }
 
-		public new void Stop ()
-		{
-			base.Stop ();
-			Stopped?.Invoke (this, EventArgs.Empty);
-		}
+        public new void Stop ()
+        {
+            base.Stop ();
+            Stopped?.Invoke (this, EventArgs.Empty);
+        }
 
-		protected override IdentifyAgentRequest GetIdentifyAgentRequest ()
-			=> IdentifyAgentRequest;
+        protected override IdentifyAgentRequest GetIdentifyAgentRequest ()
+            => IdentifyAgentRequest;
 
-		public override InspectView GetVisualTree (string hierarchyKind)
-		{
-			throw new NotImplementedException ();
-		}
-	}
+        public override InspectView GetVisualTree (string hierarchyKind)
+        {
+            throw new NotImplementedException ();
+        }
+    }
 }

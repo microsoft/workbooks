@@ -9,26 +9,26 @@ using System.CodeDom.Compiler;
 
 namespace Xamarin.Interactive.Client.Mac.Roslyn
 {
-	[Register ("RoslynWorkspaceExplorerWindowController")]
-	partial class RoslynWorkspaceExplorerWindowController
-	{
-		[Outlet]
-		AppKit.NSOutlineView outlineView { get; set; }
+    [Register ("RoslynWorkspaceExplorerWindowController")]
+    partial class RoslynWorkspaceExplorerWindowController
+    {
+        [Outlet]
+        AppKit.NSOutlineView outlineView { get; set; }
 
-		[Outlet]
-		AppKit.NSOutlineView syntaxOutlineView { get; set; }
-		
-		void ReleaseDesignerOutlets ()
-		{
-			if (outlineView != null) {
-				outlineView.Dispose ();
-				outlineView = null;
-			}
+        [Outlet]
+        AppKit.NSOutlineView syntaxOutlineView { get; set; }
+        
+        void ReleaseDesignerOutlets ()
+        {
+            if (outlineView != null) {
+                outlineView.Dispose ();
+                outlineView = null;
+            }
 
-			if (syntaxOutlineView != null) {
-				syntaxOutlineView.Dispose ();
-				syntaxOutlineView = null;
-			}
-		}
-	}
+            if (syntaxOutlineView != null) {
+                syntaxOutlineView.Dispose ();
+                syntaxOutlineView = null;
+            }
+        }
+    }
 }

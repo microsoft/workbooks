@@ -10,14 +10,14 @@ using System;
 
 namespace Xamarin.Interactive.Editor
 {
-	[Flags]
-	enum KeyModifier
-	{
-		None = 0 << 0,
-		Mod = 1 << 0,
-		Meta = 1 << 1,
-		Ctrl = 1 << 2,
-		Alt = 1 << 3,
-		Shift = 1 << 4
-	}
+    [Flags]
+    enum KeyModifier
+    {
+        None = 0 << 0,
+        Mod = 1 << 0,
+        Meta = 1 << 1,
+        Ctrl = 1 << 2,
+        Alt = 1 << 3,
+        Shift = 1 << 4
+    }
 }

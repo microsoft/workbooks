@@ -15,13 +15,13 @@ using Xamarin.Interactive.Android;
 
 namespace Xamarin.Workbooks.Android
 {
-	class ActivityTrackerStub : IActivityTracker
-	{
-		public ActivityTrackerStub (Activity activity)
-		{
-			StartedActivities = new List<Activity> { activity };
-		}
+    class ActivityTrackerStub : IActivityTracker
+    {
+        public ActivityTrackerStub (Activity activity)
+        {
+            StartedActivities = new List<Activity> { activity };
+        }
 
-		public IReadOnlyList<Activity> StartedActivities { get; }
-	}
+        public IReadOnlyList<Activity> StartedActivities { get; }
+    }
 }

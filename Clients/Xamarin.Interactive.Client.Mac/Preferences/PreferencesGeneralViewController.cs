@@ -15,64 +15,64 @@ using Xamarin.Interactive.Client;
 
 namespace Xamarin.Interactive.Preferences
 {
-	sealed partial class PreferencesGeneralViewController : PreferencesViewController
-	{
-		PreferencesGeneralViewController (IntPtr handle) : base (handle)
-		{
-		}
+    sealed partial class PreferencesGeneralViewController : PreferencesViewController
+    {
+        PreferencesGeneralViewController (IntPtr handle) : base (handle)
+        {
+        }
 
-		[Export ("fontSize")]
-		nfloat FontSize {
-			get { return (nfloat)Prefs.UI.Font.GetSize (); }
-			set { Prefs.UI.Font.Update (UIFontPreference.UpdateAction.Set, value); }
-		}
+        [Export ("fontSize")]
+        nfloat FontSize {
+            get { return (nfloat)Prefs.UI.Font.GetSize (); }
+            set { Prefs.UI.Font.Update (UIFontPreference.UpdateAction.Set, value); }
+        }
 
-		public override void ViewDidLoad ()
-		{
-			base.ViewDidLoad ();
+        public override void ViewDidLoad ()
+        {
+            base.ViewDidLoad ();
 
-			if (ClientInfo.Flavor != ClientFlavor.Inspector)
-				saveHistoryCheckButton.Hidden = true;
+            if (ClientInfo.Flavor != ClientFlavor.Inspector)
+                saveHistoryCheckButton.Hidden = true;
 
-			fontSizeStepper.MinValue = Prefs.UI.Font.MinFontSize;
-			fontSizeStepper.MaxValue = Prefs.UI.Font.MaxFontSize;
-			var fontSizeFormatter = (NSNumberFormatter)fontSizeTextField.Formatter;
-			fontSizeFormatter.Minimum = NSNumber.FromDouble (Prefs.UI.Font.MinFontSize);
-			fontSizeFormatter.Maximum = NSNumber.FromDouble (Prefs.UI.Font.MaxFontSize);
+            fontSizeStepper.MinValue = Prefs.UI.Font.MinFontSize;
+            fontSizeStepper.MaxValue = Prefs.UI.Font.MaxFontSize;
+            var fontSizeFormatter = (NSNumberFormatter)fontSizeTextField.Formatter;
+            fontSizeFormatter.Minimum = NSNumber.FromDouble (Prefs.UI.Font.MinFontSize);
+            fontSizeFormatter.Maximum = NSNumber.FromDouble (Prefs.UI.Font.MaxFontSize);
 
-			fontSizeTextField.FocusRingType = NSFocusRingType.None;
+            fontSizeTextField.FocusRingType = NSFocusRingType.None;
 
-			UpdateFont ();
+            UpdateFont ();
 
-			AddCheckButtonPreference (
-				Prefs.Editor.ShowLineNumbers,
-				showLineNumbersCheckButton);
-			
-			AddCheckButtonPreference (
-				Prefs.Submissions.ShowExecutionTimings,
-				showExecutionTimingsCheckButton);
+            AddCheckButtonPreference (
+                Prefs.Editor.ShowLineNumbers,
+                showLineNumbersCheckButton);
+            
+            AddCheckButtonPreference (
+                Prefs.Submissions.ShowExecutionTimings,
+                showExecutionTimingsCheckButton);
 
-			AddCheckButtonPreference (
-				Prefs.Repl.SaveHistory,
-				saveHistoryCheckButton);
-		}
+            AddCheckButtonPreference (
+                Prefs.Repl.SaveHistory,
+                saveHistoryCheckButton);
+        }
 
-		protected override void ObservePreferenceChange (PreferenceChange change)
-		{
-			base.ObservePreferenceChange (change);
+        protected override void ObservePreferenceChange (PreferenceChange change)
+        {
+            base.ObservePreferenceChange (change);
 
-			if (change.Key == Prefs.UI.Font.Key)
-				UpdateFont ();
-		}
+            if (change.Key == Prefs.UI.Font.Key)
+                UpdateFont ();
+        }
 
-		void UpdateFont ()
-		{
-			var fontSize = (nfloat)Prefs.UI.Font.GetSize ();
-			fontSizeTextField.DoubleValue = fontSize;
-			fontSizeStepper.DoubleValue = fontSize;
-		}
+        void UpdateFont ()
+        {
+            var fontSize = (nfloat)Prefs.UI.Font.GetSize ();
+            fontSizeTextField.DoubleValue = fontSize;
+            fontSizeStepper.DoubleValue = fontSize;
+        }
 
-		partial void ResetAllPreferences (NSObject sender)
-			=> PreferenceStore.Default.RemoveAll ();
-	}
+        partial void ResetAllPreferences (NSObject sender)
+            => PreferenceStore.Default.RemoveAll ();
+    }
 }

@@ -14,18 +14,18 @@ using System.Threading.Tasks;
 
 namespace Xamarin.Interactive.Core
 {
-	[Serializable]
-	sealed class SuccessResponse : IObjectReference
-	{
-		static readonly SuccessResponse singleton = new SuccessResponse ();
+    [Serializable]
+    sealed class SuccessResponse : IObjectReference
+    {
+        static readonly SuccessResponse singleton = new SuccessResponse ();
 
-		public static readonly Task<SuccessResponse> Task
-			= System.Threading.Tasks.Task.FromResult (singleton);
+        public static readonly Task<SuccessResponse> Task
+            = System.Threading.Tasks.Task.FromResult (singleton);
 
-		SuccessResponse ()
-		{
-		}
+        SuccessResponse ()
+        {
+        }
 
-		object IObjectReference.GetRealObject (StreamingContext context) => singleton;
-	}
+        object IObjectReference.GetRealObject (StreamingContext context) => singleton;
+    }
 }

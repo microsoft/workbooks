@@ -11,19 +11,19 @@ using Xamarin.Interactive.Messages;
 
 namespace Xamarin.Interactive.Tests
 {
-	sealed class TestMessageService : IMessageService
-	{
-		public bool CanHandleMessage (Message message)
-			=> true;
+    sealed class TestMessageService : IMessageService
+    {
+        public bool CanHandleMessage (Message message)
+            => true;
 
-		public void DismissMessage (int messageId)
-		{
-		}
+        public void DismissMessage (int messageId)
+        {
+        }
 
-		public Message PushMessage (Message message)
-		{
-			Log.Info (nameof (TestMessageService), message.Text);
-			return message;
-		}
-	}
+        public Message PushMessage (Message message)
+        {
+            Log.Info (nameof (TestMessageService), message.Text);
+            return message;
+        }
+    }
 }

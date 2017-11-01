@@ -10,9 +10,9 @@ using System;
 
 namespace Xamarin.Interactive.Events
 {
-	public interface IEvent
-	{
-		object Source { get; }
-		DateTime Timestamp { get; }
-	}
+    public interface IEvent
+    {
+        object Source { get; }
+        DateTime Timestamp { get; }
+    }
 }

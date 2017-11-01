@@ -10,10 +10,10 @@ using Foundation;
 
 namespace AppKit
 {
-	static class StoryboardExtensions
-	{
-		public static TController InstantiateController<TController> (
-			this NSStoryboard storyboard) where TController : NSObject
-			=> (TController)storyboard.InstantiateControllerWithIdentifier (typeof (TController).Name);
-	}
+    static class StoryboardExtensions
+    {
+        public static TController InstantiateController<TController> (
+            this NSStoryboard storyboard) where TController : NSObject
+            => (TController)storyboard.InstantiateControllerWithIdentifier (typeof (TController).Name);
+    }
 }

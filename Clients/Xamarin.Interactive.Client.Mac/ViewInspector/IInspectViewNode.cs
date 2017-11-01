@@ -10,10 +10,10 @@ using Xamarin.Interactive.Remote;
 
 namespace Xamarin.Interactive.Client.Mac.ViewInspector
 {
-	interface IInspectViewNode
-	{
-		InspectView InspectView { get; }
-		void Focus ();
-		void Blur ();
-	}
+    interface IInspectViewNode
+    {
+        InspectView InspectView { get; }
+        void Focus ();
+        void Blur ();
+    }
 }

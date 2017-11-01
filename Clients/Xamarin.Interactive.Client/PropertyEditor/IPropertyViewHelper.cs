@@ -9,9 +9,9 @@ using Xamarin.Interactive.Remote;
 
 namespace Xamarin.Interactive.PropertyEditor
 {
-	interface IPropertyViewHelper
-	{
-		object ToLocalValue (object prop);
-		object ToRemoteValue (object localValue);
-	}
+    interface IPropertyViewHelper
+    {
+        object ToLocalValue (object prop);
+        object ToRemoteValue (object localValue);
+    }
 }

@@ -10,15 +10,15 @@ using System.Windows.Input;
 
 namespace Xamarin.Interactive.Client.Windows.Commands
 {
-	sealed class ClearRecentFilesCommand : ICommand
-	{
-		#pragma warning disable 67
-		public event EventHandler CanExecuteChanged;
-		#pragma warning restore 67
+    sealed class ClearRecentFilesCommand : ICommand
+    {
+        #pragma warning disable 67
+        public event EventHandler CanExecuteChanged;
+        #pragma warning restore 67
 
-		public bool CanExecute (object parameter) => true;
+        public bool CanExecute (object parameter) => true;
 
-		public void Execute (object parameter)
-			=> App.RecentDocuments.Clear ();
-	}
+        public void Execute (object parameter)
+            => App.RecentDocuments.Clear ();
+    }
 }

@@ -13,25 +13,25 @@ using Xamarin.Interactive.Serialization;
 
 namespace Xamarin.Interactive.Representations
 {
-	[Serializable]
-	public sealed class Rectangle : IRepresentationObject
-	{
-		public Rectangle (double x, double y, double width, double height)
-		{
-			X = x;
-			Y = y;
-			Width = width;
-			Height = height;
-		}
+    [Serializable]
+    public sealed class Rectangle : IRepresentationObject
+    {
+        public Rectangle (double x, double y, double width, double height)
+        {
+            X = x;
+            Y = y;
+            Width = width;
+            Height = height;
+        }
 
-		public double X { get; }
-		public double Y { get; }
-		public double Width { get; }
-		public double Height { get; }
+        public double X { get; }
+        public double Y { get; }
+        public double Width { get; }
+        public double Height { get; }
 
-		void ISerializableObject.Serialize (ObjectSerializer serializer)
-		{
-			throw new NotImplementedException ();
-		}
-	}
+        void ISerializableObject.Serialize (ObjectSerializer serializer)
+        {
+            throw new NotImplementedException ();
+        }
+    }
 }

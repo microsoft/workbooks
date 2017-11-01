@@ -11,18 +11,18 @@ using System.Collections.Generic;
 
 namespace Xamarin.Interactive.Rendering
 {
-	interface IRenderer
-	{
-		string CssClass { get; }
-		bool IsEnabled { get; }
-		bool CanExpand { get; }
-		RenderState RenderState { get; }
+    interface IRenderer
+    {
+        string CssClass { get; }
+        bool IsEnabled { get; }
+        bool CanExpand { get; }
+        RenderState RenderState { get; }
 
-		void Bind (RenderState renderState);
-		IEnumerable<RendererRepresentation> GetRepresentations ();
-		void Render (RenderTarget target);
+        void Bind (RenderState renderState);
+        IEnumerable<RendererRepresentation> GetRepresentations ();
+        void Render (RenderTarget target);
 
-		void Expand ();
-		void Collapse ();
-	}
+        void Expand ();
+        void Collapse ();
+    }
 }

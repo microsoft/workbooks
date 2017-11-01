@@ -11,24 +11,24 @@ using CommonMark.Syntax;
 
 namespace Xamarin.Interactive.Workbook.Models
 {
-	sealed class YamlMetadataCell : Cell
-	{
-		sealed class YamlBuffer : ICellBuffer
-		{
-			public string Value { get; set; }
-			public int Length => Value == null ? 0 : Value.Length;
-		}
+    sealed class YamlMetadataCell : Cell
+    {
+        sealed class YamlBuffer : ICellBuffer
+        {
+            public string Value { get; set; }
+            public int Length => Value == null ? 0 : Value.Length;
+        }
 
-		public override ICellBuffer Buffer { get; } = new YamlBuffer ();
+        public override ICellBuffer Buffer { get; } = new YamlBuffer ();
 
-		public YamlMetadataCell (Block markdownBlock = null)
-		{
-			Buffer.Value = markdownBlock?.StringContent.ToString ();
-		}
+        public YamlMetadataCell (Block markdownBlock = null)
+        {
+            Buffer.Value = markdownBlock?.StringContent.ToString ();
+        }
 
-		public override Block ToMarkdownDocumentBlock ()
-			=> ToMarkdownDocumentBlock (
-				BlockTag.YamlBlock,
-				new FencedCodeData { FenceChar = '-' });
-	}
+        public override Block ToMarkdownDocumentBlock ()
+            => ToMarkdownDocumentBlock (
+                BlockTag.YamlBlock,
+                new FencedCodeData { FenceChar = '-' });
+    }
 }

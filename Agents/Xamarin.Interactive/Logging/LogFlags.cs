@@ -10,12 +10,12 @@ using System;
 
 namespace Xamarin.Interactive.Logging
 {
-	[Serializable]
-	[Flags]
-	enum LogFlags
-	{
-		None = 0 << 0,
-		NoFlair = 1 << 0,
-		SkipTelemetry = 1 << 1
-	}
+    [Serializable]
+    [Flags]
+    enum LogFlags
+    {
+        None = 0 << 0,
+        NoFlair = 1 << 0,
+        SkipTelemetry = 1 << 1
+    }
 }

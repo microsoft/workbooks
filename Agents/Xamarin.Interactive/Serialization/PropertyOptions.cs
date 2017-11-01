@@ -10,13 +10,13 @@ using System;
 
 namespace Xamarin.Interactive.Serialization
 {
-	[Flags]
-	public enum PropertyOptions
-	{
-		None = 0 << 0,
-		SerializeIfNull = 1 << 0,
-		SerializeIfEmpty = 1 << 1,
+    [Flags]
+    public enum PropertyOptions
+    {
+        None = 0 << 0,
+        SerializeIfNull = 1 << 0,
+        SerializeIfEmpty = 1 << 1,
 
-		Default = SerializeIfEmpty
-	}
+        Default = SerializeIfEmpty
+    }
 }

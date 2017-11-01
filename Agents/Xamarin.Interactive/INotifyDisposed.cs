@@ -10,9 +10,9 @@ using System;
 
 namespace Xamarin.Interactive
 {
-	interface INotifyDisposed : IDisposable
-	{
-		event EventHandler Disposed;
-		bool IsDisposed { get; }
-	}
+    interface INotifyDisposed : IDisposable
+    {
+        event EventHandler Disposed;
+        bool IsDisposed { get; }
+    }
 }

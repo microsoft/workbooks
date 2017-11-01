@@ -10,8 +10,8 @@ using System.ComponentModel;
 
 namespace Xamarin.Interactive.Workbook.Structure
 {
-	interface IWorkbookTitledNode : INotifyPropertyChanged
-	{
-		string Title { get; set; }
-	}
+    interface IWorkbookTitledNode : INotifyPropertyChanged
+    {
+        string Title { get; set; }
+    }
 }

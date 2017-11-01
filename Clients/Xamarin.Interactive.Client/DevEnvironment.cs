@@ -10,9 +10,9 @@ using Xamarin.Interactive.Core;
 
 namespace Xamarin.Interactive
 {
-	static class DevEnvironment
-	{
-		public static FilePath RepositoryRootDirectory { get; }
+    static class DevEnvironment
+    {
+        public static FilePath RepositoryRootDirectory { get; }
 
 #if DEBUG
 
@@ -30,5 +30,5 @@ namespace Xamarin.Interactive
 		}
 
 #endif
-	}
+    }
 }

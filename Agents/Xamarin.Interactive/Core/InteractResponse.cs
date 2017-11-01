@@ -13,9 +13,9 @@ using Xamarin.Interactive.Representations;
 
 namespace Xamarin.Interactive.Core
 {
-	[Serializable]
-	class InteractResponse
-	{
-		public IInteractiveObject Result { get; set; }
-	}
+    [Serializable]
+    class InteractResponse
+    {
+        public IInteractiveObject Result { get; set; }
+    }
 }

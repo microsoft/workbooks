@@ -13,18 +13,18 @@ using Xamarin.Interactive.Editor.Events;
 
 namespace Xamarin.Interactive.Editor
 {
-	interface IEditor : IDisposable
-	{
-		IObservable<EditorEvent> Events { get; }
-		bool IsDisposed { get; }
+    interface IEditor : IDisposable
+    {
+        IObservable<EditorEvent> Events { get; }
+        bool IsDisposed { get; }
 
-		void Focus ();
-		void OnBlur ();
-		void SetCursorPosition (AbstractCursorPosition cursorPosition);
+        void Focus ();
+        void OnBlur ();
+        void SetCursorPosition (AbstractCursorPosition cursorPosition);
 
-		IEnumerable<EditorCommand> GetCommands ();
-		bool TryGetCommand (string commandId, out EditorCommand command);
-		EditorCommandStatus GetCommandStatus (EditorCommand command);
-		void ExecuteCommand (EditorCommand command);
-	}
+        IEnumerable<EditorCommand> GetCommands ();
+        bool TryGetCommand (string commandId, out EditorCommand command);
+        EditorCommandStatus GetCommandStatus (EditorCommand command);
+        void ExecuteCommand (EditorCommand command);
+    }
 }

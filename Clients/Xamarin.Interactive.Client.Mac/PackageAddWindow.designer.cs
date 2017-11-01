@@ -1,7 +1,7 @@
 namespace Xamarin.Interactive.Client.Mac
 {
-	[global::Foundation.Register ("PackageAddWindow")]
-	partial class PackageAddWindow
-	{
-	}
+    [global::Foundation.Register ("PackageAddWindow")]
+    partial class PackageAddWindow
+    {
+    }
 }

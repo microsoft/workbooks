@@ -10,16 +10,16 @@ using System;
 
 namespace Xamarin.Interactive.Preferences
 {
-	struct PreferenceChange
-	{
-		public string Key { get; }
+    struct PreferenceChange
+    {
+        public string Key { get; }
 
-		internal PreferenceChange (string key)
-		{
-			if (key == null)
-				throw new ArgumentNullException (nameof (key));
+        internal PreferenceChange (string key)
+        {
+            if (key == null)
+                throw new ArgumentNullException (nameof (key));
 
-			Key = key;
-		}
-	}
+            Key = key;
+        }
+    }
 }

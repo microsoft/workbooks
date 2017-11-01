@@ -9,12 +9,12 @@ using System;
 
 namespace Xamarin.Interactive.Client.Windows.Views
 {
-	[Flags]
-	enum DisplayMode
-	{
-		None = 0,
-		Frames = 1,
-		Content = 1 << 1,
-		FramesAndContent = Frames | Content
-	}
+    [Flags]
+    enum DisplayMode
+    {
+        None = 0,
+        Frames = 1,
+        Content = 1 << 1,
+        FramesAndContent = Frames | Content
+    }
 }

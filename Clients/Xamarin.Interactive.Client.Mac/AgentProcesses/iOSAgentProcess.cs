@@ -25,212 +25,212 @@ using AppKit;
 using Foundation;
 
 [assembly: AgentProcessManager.Registration (
-	"ios-xamarinios",
-	typeof (AgentProcessManager<iOSAgentProcess>))]
+    "ios-xamarinios",
+    typeof (AgentProcessManager<iOSAgentProcess>))]
 
 namespace Xamarin.Interactive.Client.AgentProcesses
 {
-	sealed class iOSAgentProcess : IAgentProcess
-	{
-		const string TAG = nameof (iOSAgentProcess);
+    sealed class iOSAgentProcess : IAgentProcess
+    {
+        const string TAG = nameof (iOSAgentProcess);
 
-		const string simulatorDevice = "iphone,64";
+        const string simulatorDevice = "iphone,64";
 
-		FilePath sdkRoot;
-		string defaultSdkVersion;
+        FilePath sdkRoot;
+        string defaultSdkVersion;
 
-		NSTask mlaunchProcess;
-		NSObject terminatedObserver;
+        NSTask mlaunchProcess;
+        NSObject terminatedObserver;
 
-		public WorkbookAppInstallation WorkbookApp { get; }
+        public WorkbookAppInstallation WorkbookApp { get; }
 
-		public event EventHandler UnexpectedlyTerminated;
+        public event EventHandler UnexpectedlyTerminated;
 
-		public iOSAgentProcess (WorkbookAppInstallation workbookApp)
-			=> WorkbookApp = workbookApp ?? throw new ArgumentNullException (nameof (workbookApp));
+        public iOSAgentProcess (WorkbookAppInstallation workbookApp)
+            => WorkbookApp = workbookApp ?? throw new ArgumentNullException (nameof (workbookApp));
 
-		public async Task StartAgentProcessAsync (
-			IdentifyAgentRequest identifyAgentRequest,
-			IMessageService messageService,
-			CancellationToken cancellationToken)
-		{
+        public async Task StartAgentProcessAsync (
+            IdentifyAgentRequest identifyAgentRequest,
+            IMessageService messageService,
+            CancellationToken cancellationToken)
+        {
 
-			using (messageService.PushMessage (
-				Message.CreateInfoStatus (
-					Catalog.GetString ("Checking for usable iOS simulators…"))))
-				await InitializeXcodeSdkAsync (messageService);
+            using (messageService.PushMessage (
+                Message.CreateInfoStatus (
+                    Catalog.GetString ("Checking for usable iOS simulators…"))))
+                await InitializeXcodeSdkAsync (messageService);
 
-			await MainThread.SendAsync (() => StartSimulatorOnMainThread (identifyAgentRequest));
-		}
+            await MainThread.SendAsync (() => StartSimulatorOnMainThread (identifyAgentRequest));
+        }
 
-		void StartSimulatorOnMainThread (IdentifyAgentRequest identifyAgentRequest)
-		{
-			MainThread.Ensure ();
+        void StartSimulatorOnMainThread (IdentifyAgentRequest identifyAgentRequest)
+        {
+            MainThread.Ensure ();
 
-			var mlaunchPath = MTouchSdkTool.GetMlaunchPath ();
-			var mlaunchArguments = new List<string> {
-				"-vvvv",
-				"-sdkroot", sdkRoot,
-				"-launchsim", WorkbookApp.AppPath,
-				"-sdk", defaultSdkVersion,
-				"-device", simulatorDevice
-			};
+            var mlaunchPath = MTouchSdkTool.GetMlaunchPath ();
+            var mlaunchArguments = new List<string> {
+                "-vvvv",
+                "-sdkroot", sdkRoot,
+                "-launchsim", WorkbookApp.AppPath,
+                "-sdk", defaultSdkVersion,
+                "-device", simulatorDevice
+            };
 
-			mlaunchArguments.AddRange (identifyAgentRequest
-				.ToCommandLineArguments ()
-				.SelectMany (argument => new [] { "-argument", argument }));
+            mlaunchArguments.AddRange (identifyAgentRequest
+                .ToCommandLineArguments ()
+                .SelectMany (argument => new [] { "-argument", argument }));
 
-			Log.Info (TAG, mlaunchPath + " " + string.Join (" ", mlaunchArguments));
+            Log.Info (TAG, mlaunchPath + " " + string.Join (" ", mlaunchArguments));
 
-			mlaunchProcess = new NSTask {
-				LaunchPath = mlaunchPath,
-				Arguments = mlaunchArguments.ToArray (),
-				StandardInput = new NSPipe ()
-			};
+            mlaunchProcess = new NSTask {
+                LaunchPath = mlaunchPath,
+                Arguments = mlaunchArguments.ToArray (),
+                StandardInput = new NSPipe ()
+            };
 
-			terminatedObserver = mlaunchProcess.NotifyTerminated (
-				NSNotificationCenter.DefaultCenter,
-				task => {
-					terminatedObserver?.Dispose ();
-					terminatedObserver = null;
+            terminatedObserver = mlaunchProcess.NotifyTerminated (
+                NSNotificationCenter.DefaultCenter,
+                task => {
+                    terminatedObserver?.Dispose ();
+                    terminatedObserver = null;
 
-					UnexpectedlyTerminated?.Invoke (this, EventArgs.Empty);
-				});
+                    UnexpectedlyTerminated?.Invoke (this, EventArgs.Empty);
+                });
 
-			mlaunchProcess.Launch ();
-		}
+            mlaunchProcess.Launch ();
+        }
 
-		async Task InitializeXcodeSdkAsync (IMessageService messageService)
-		{
-			try {
-				sdkRoot = MTouchSdkTool.GetXcodeSdkRoot ();
-			} catch (Exception e) {
-				Log.Error (TAG, e);
-			}
+        async Task InitializeXcodeSdkAsync (IMessageService messageService)
+        {
+            try {
+                sdkRoot = MTouchSdkTool.GetXcodeSdkRoot ();
+            } catch (Exception e) {
+                Log.Error (TAG, e);
+            }
 
-			if (sdkRoot.IsNull || (Version.TryParse (
-				(NSString)NSBundle.FromPath (sdkRoot).InfoDictionary.ValueForKey (
-					(NSString)"CFBundleShortVersionString"), out var xcodeVersion)
-				&& xcodeVersion < MTouchSdkTool.RequiredMinimumXcodeVersion)) {
+            if (sdkRoot.IsNull || (Version.TryParse (
+                (NSString)NSBundle.FromPath (sdkRoot).InfoDictionary.ValueForKey (
+                    (NSString)"CFBundleShortVersionString"), out var xcodeVersion)
+                && xcodeVersion < MTouchSdkTool.RequiredMinimumXcodeVersion)) {
 
-				var ex = new UserPresentableException (
-					Catalog.GetString ("Required Xcode not found"),
-					Catalog.GetString (
-						$"Ensure Xcode {MTouchSdkTool.RequiredMinimumXcodeVersion} or " +
-						"later is installed and selected."));
+                var ex = new UserPresentableException (
+                    Catalog.GetString ("Required Xcode not found"),
+                    Catalog.GetString (
+                        $"Ensure Xcode {MTouchSdkTool.RequiredMinimumXcodeVersion} or " +
+                        "later is installed and selected."));
 
-				messageService.PushMessage (CreateInstallAlert (
-					ex,
-					Catalog.GetString ("Install Xcode"),
-					"https://aka.ms/xamint-download-xcode"));
+                messageService.PushMessage (CreateInstallAlert (
+                    ex,
+                    Catalog.GetString ("Install Xcode"),
+                    "https://aka.ms/xamint-download-xcode"));
 
-				throw ex;
-			}
+                throw ex;
+            }
 
-			MTouchListSimXml mtouchList;
-			try {
-				mtouchList = await MTouchSdkTool.MtouchListSimAsync (sdkRoot);
-			} catch (MlaunchNotFoundException) {
-				var ex = new UserPresentableException (
-					Catalog.GetString ("Missing Xamarin.iOS"),
-					Catalog.GetString ("Check that Xamarin is installed and up to date."));
+            MTouchListSimXml mtouchList;
+            try {
+                mtouchList = await MTouchSdkTool.MtouchListSimAsync (sdkRoot);
+            } catch (MlaunchNotFoundException) {
+                var ex = new UserPresentableException (
+                    Catalog.GetString ("Missing Xamarin.iOS"),
+                    Catalog.GetString ("Check that Xamarin is installed and up to date."));
 
-				messageService.PushMessage (CreateInstallAlert (
-					ex,
-					Catalog.GetString ("Install Xamarin"),
-					"https://aka.ms/xamint-install-xamarin"));
+                messageService.PushMessage (CreateInstallAlert (
+                    ex,
+                    Catalog.GetString ("Install Xamarin"),
+                    "https://aka.ms/xamint-install-xamarin"));
 
-				throw ex;
-			}
+                throw ex;
+            }
 
-			defaultSdkVersion = mtouchList?.Simulator?.SupportedRuntimes
-				?.Where (r => r.Name.StartsWith ("iOS", StringComparison.OrdinalIgnoreCase))
-				.Select (r => r.Name.Replace ("iOS ", ""))
-				.LastOrDefault ();
+            defaultSdkVersion = mtouchList?.Simulator?.SupportedRuntimes
+                ?.Where (r => r.Name.StartsWith ("iOS", StringComparison.OrdinalIgnoreCase))
+                .Select (r => r.Name.Replace ("iOS ", ""))
+                .LastOrDefault ();
 
-			if (defaultSdkVersion != null)
-				return;
+            if (defaultSdkVersion != null)
+                return;
 
-			throw new UserPresentableException (Catalog.GetString ("No iOS simulators found."));
-		}
+            throw new UserPresentableException (Catalog.GetString ("No iOS simulators found."));
+        }
 
-		static Message CreateInstallAlert (
-			UserPresentableException ex,
-			string installButtonTitle,
-			string installUrl)
-			=> Message
-				.CreateErrorAlert (ex)
-				.WithAction (new MessageAction (
-					MessageActionKind.Negative,
-					"close",
-					Catalog.GetString ("Close")))
-				.WithAction (new MessageAction (
-					MessageActionKind.Affirmative,
-					"install",
-					installButtonTitle))
-				.WithActionResponseHandler ((message, action) => {
-					if (action.Id == "install")
-						NSWorkspace.SharedWorkspace.OpenUrl (new NSUrl (installUrl));
-					message.Dispose ();
-				});
+        static Message CreateInstallAlert (
+            UserPresentableException ex,
+            string installButtonTitle,
+            string installUrl)
+            => Message
+                .CreateErrorAlert (ex)
+                .WithAction (new MessageAction (
+                    MessageActionKind.Negative,
+                    "close",
+                    Catalog.GetString ("Close")))
+                .WithAction (new MessageAction (
+                    MessageActionKind.Affirmative,
+                    "install",
+                    installButtonTitle))
+                .WithActionResponseHandler ((message, action) => {
+                    if (action.Id == "install")
+                        NSWorkspace.SharedWorkspace.OpenUrl (new NSUrl (installUrl));
+                    message.Dispose ();
+                });
 
-		public async Task TerminateAgentProcessAsync ()
-		{
-			NSPipe stdin = null;
+        public async Task TerminateAgentProcessAsync ()
+        {
+            NSPipe stdin = null;
 
-			if (terminatedObserver != null) {
-				NSNotificationCenter.DefaultCenter.RemoveObserver (terminatedObserver);
-				terminatedObserver.Dispose ();
-				terminatedObserver = null;
-			}
+            if (terminatedObserver != null) {
+                NSNotificationCenter.DefaultCenter.RemoveObserver (terminatedObserver);
+                terminatedObserver.Dispose ();
+                terminatedObserver = null;
+            }
 
-			try {
-				NativeExceptionHandler.Trap ();
+            try {
+                NativeExceptionHandler.Trap ();
 
-				if (mlaunchProcess == null || !mlaunchProcess.IsRunning)
-					return;
+                if (mlaunchProcess == null || !mlaunchProcess.IsRunning)
+                    return;
 
-				var procName = $"mlaunch (pid={mlaunchProcess.ProcessIdentifier})";
+                var procName = $"mlaunch (pid={mlaunchProcess.ProcessIdentifier})";
 
-				Log.Debug (TAG, $"Attempting to safely terminate {procName}...");
+                Log.Debug (TAG, $"Attempting to safely terminate {procName}...");
 
-				// "Press enter to terminate the application"
-				// (this is how XS does it in IPhoneDebuggerSession, anyway)
-				try {
-					stdin = (NSPipe)mlaunchProcess.StandardInput;
-					stdin.WriteHandle.WriteData (NSData.FromString ("\n"));
-					stdin.WriteHandle.CloseFile ();
-				} catch (Exception e) {
-					Log.Error (TAG, $"Exception trying to safely terminate {procName}", e);
-				}
+                // "Press enter to terminate the application"
+                // (this is how XS does it in IPhoneDebuggerSession, anyway)
+                try {
+                    stdin = (NSPipe)mlaunchProcess.StandardInput;
+                    stdin.WriteHandle.WriteData (NSData.FromString ("\n"));
+                    stdin.WriteHandle.CloseFile ();
+                } catch (Exception e) {
+                    Log.Error (TAG, $"Exception trying to safely terminate {procName}", e);
+                }
 
-				const int totalTimeout = 10000;
-				const int timeoutSteps = 20;
-				const int singleTimeout = totalTimeout / timeoutSteps;
+                const int totalTimeout = 10000;
+                const int timeoutSteps = 20;
+                const int singleTimeout = totalTimeout / timeoutSteps;
 
-				for (int i = 0; i < timeoutSteps; i++) {
-					if (mlaunchProcess == null || !mlaunchProcess.IsRunning) {
-						Log.Debug (TAG, $"{procName} terminated safely");
-						return;
-					}
+                for (int i = 0; i < timeoutSteps; i++) {
+                    if (mlaunchProcess == null || !mlaunchProcess.IsRunning) {
+                        Log.Debug (TAG, $"{procName} terminated safely");
+                        return;
+                    }
 
-					await Task.Delay (singleTimeout);
-				}
+                    await Task.Delay (singleTimeout);
+                }
 
-				try {
-					Log.Warning (TAG, $"Force-terminating {procName} after timeout");
-					mlaunchProcess.Terminate ();
-					mlaunchProcess.WaitUntilExit ();
-				} catch (Exception e) {
-					Log.Error (TAG, $"Exception trying to force-terminate {procName}", e);
-				}
-			} finally {
-				stdin?.Dispose ();
-				mlaunchProcess?.Dispose ();
-				mlaunchProcess = null;
+                try {
+                    Log.Warning (TAG, $"Force-terminating {procName} after timeout");
+                    mlaunchProcess.Terminate ();
+                    mlaunchProcess.WaitUntilExit ();
+                } catch (Exception e) {
+                    Log.Error (TAG, $"Exception trying to force-terminate {procName}", e);
+                }
+            } finally {
+                stdin?.Dispose ();
+                mlaunchProcess?.Dispose ();
+                mlaunchProcess = null;
 
-				NativeExceptionHandler.Release ();
-			}
-		}
-	}
+                NativeExceptionHandler.Release ();
+            }
+        }
+    }
 }

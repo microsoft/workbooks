@@ -11,8 +11,8 @@ using Foundation;
 
 namespace Xamarin.Interactive.Tests.InspectorSupport.Mac
 {
-	[Register ("AppDelegate")]
-	sealed class AppDelegate : NSApplicationDelegate
-	{
-	}
+    [Register ("AppDelegate")]
+    sealed class AppDelegate : NSApplicationDelegate
+    {
+    }
 }

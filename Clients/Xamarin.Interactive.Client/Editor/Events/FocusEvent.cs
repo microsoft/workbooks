@@ -8,10 +8,10 @@
 
 namespace Xamarin.Interactive.Editor.Events
 {
-	sealed class FocusEvent : EditorEvent
-	{
-		public FocusEvent (IEditor source) : base (source)
-		{
-		}
-	}
+    sealed class FocusEvent : EditorEvent
+    {
+        public FocusEvent (IEditor source) : base (source)
+        {
+        }
+    }
 }

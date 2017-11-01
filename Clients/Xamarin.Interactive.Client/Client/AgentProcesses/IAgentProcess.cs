@@ -15,17 +15,17 @@ using Xamarin.Interactive.Messages;
 
 namespace Xamarin.Interactive.Client.AgentProcesses
 {
-	interface IAgentProcess
-	{
-		event EventHandler UnexpectedlyTerminated;
+    interface IAgentProcess
+    {
+        event EventHandler UnexpectedlyTerminated;
 
-		WorkbookAppInstallation WorkbookApp { get; }
+        WorkbookAppInstallation WorkbookApp { get; }
 
-		Task StartAgentProcessAsync (
-			IdentifyAgentRequest identifyAgentRequest,
-			IMessageService messageService,
-			CancellationToken cancellationToken);
+        Task StartAgentProcessAsync (
+            IdentifyAgentRequest identifyAgentRequest,
+            IMessageService messageService,
+            CancellationToken cancellationToken);
 
-		Task TerminateAgentProcessAsync ();
-	}
+        Task TerminateAgentProcessAsync ();
+    }
 }

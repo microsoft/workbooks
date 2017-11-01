@@ -11,9 +11,9 @@ using System;
 
 namespace Xamarin.Interactive.Representations
 {
-	[Serializable]
-	public enum ColorSpace
-	{
-		Rgb
-	}
+    [Serializable]
+    public enum ColorSpace
+    {
+        Rgb
+    }
 }

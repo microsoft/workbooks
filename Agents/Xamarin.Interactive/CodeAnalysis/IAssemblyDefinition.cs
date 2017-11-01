@@ -8,13 +8,13 @@
 
 namespace Xamarin.Interactive.CodeAnalysis
 {
-	/// <summary>
+    /// <summary>
 	/// Represents a complete assembly as loaded in the agent.
 	/// </summary>
-	public interface IAssemblyDefinition
-	{
-		IAssemblyIdentity Identity { get; }
-		IAssemblyContent Content { get; }
-		IAssemblyEntryPoint EntryPoint { get; }
-	}
+    public interface IAssemblyDefinition
+    {
+        IAssemblyIdentity Identity { get; }
+        IAssemblyContent Content { get; }
+        IAssemblyEntryPoint EntryPoint { get; }
+    }
 }

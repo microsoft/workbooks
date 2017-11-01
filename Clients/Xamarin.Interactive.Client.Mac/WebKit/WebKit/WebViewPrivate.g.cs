@@ -31,20 +31,20 @@ using CoreAnimation;
 using CoreFoundation;
 
 namespace WebKit {
-	public unsafe static partial class WebViewPrivate  {
-		[CompilerGenerated]
-		const string selInspector = "inspector";
-		static readonly IntPtr selInspectorHandle = Selector.GetHandle ("inspector");
-		
-		[CompilerGenerated]
-		static readonly IntPtr class_ptr = Class.GetHandle ("WebView");
-		
-		[Export ("inspector")]
-		[CompilerGenerated]
-		public static WebInspector GetInspector (this WebView This)
-		{
-			return  Runtime.GetNSObject<WebInspector> (global::WebKit.Messaging.IntPtr_objc_msgSend (This.Handle, selInspectorHandle));
-		}
-		
-	} /* class WebViewPrivate */
+    public unsafe static partial class WebViewPrivate  {
+        [CompilerGenerated]
+        const string selInspector = "inspector";
+        static readonly IntPtr selInspectorHandle = Selector.GetHandle ("inspector");
+        
+        [CompilerGenerated]
+        static readonly IntPtr class_ptr = Class.GetHandle ("WebView");
+        
+        [Export ("inspector")]
+        [CompilerGenerated]
+        public static WebInspector GetInspector (this WebView This)
+        {
+            return  Runtime.GetNSObject<WebInspector> (global::WebKit.Messaging.IntPtr_objc_msgSend (This.Handle, selInspectorHandle));
+        }
+        
+    } /* class WebViewPrivate */
 }

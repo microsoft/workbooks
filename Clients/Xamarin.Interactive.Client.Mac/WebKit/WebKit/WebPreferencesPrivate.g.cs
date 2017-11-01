@@ -31,30 +31,30 @@ using CoreAnimation;
 using CoreFoundation;
 
 namespace WebKit {
-	public unsafe static partial class WebPreferencesPrivate  {
-		[CompilerGenerated]
-		const string selDeveloperExtrasEnabled = "developerExtrasEnabled";
-		static readonly IntPtr selDeveloperExtrasEnabledHandle = Selector.GetHandle ("developerExtrasEnabled");
-		[CompilerGenerated]
-		const string selSetDeveloperExtrasEnabled_ = "setDeveloperExtrasEnabled:";
-		static readonly IntPtr selSetDeveloperExtrasEnabled_Handle = Selector.GetHandle ("setDeveloperExtrasEnabled:");
-		
-		[CompilerGenerated]
-		static readonly IntPtr class_ptr = Class.GetHandle ("WebPreferences");
-		
-		[Export ("developerExtrasEnabled")]
-		[CompilerGenerated]
-		public static bool GetDeveloperExtrasEnabled (this WebPreferences This)
-		{
-			return global::WebKit.Messaging.bool_objc_msgSend (This.Handle, selDeveloperExtrasEnabledHandle);
-		}
-		
-		[Export ("setDeveloperExtrasEnabled:")]
-		[CompilerGenerated]
-		public static void SetDeveloperExtrasEnabled (this WebPreferences This, bool enabled)
-		{
-			global::WebKit.Messaging.void_objc_msgSend_bool (This.Handle, selSetDeveloperExtrasEnabled_Handle, enabled);
-		}
-		
-	} /* class WebPreferencesPrivate */
+    public unsafe static partial class WebPreferencesPrivate  {
+        [CompilerGenerated]
+        const string selDeveloperExtrasEnabled = "developerExtrasEnabled";
+        static readonly IntPtr selDeveloperExtrasEnabledHandle = Selector.GetHandle ("developerExtrasEnabled");
+        [CompilerGenerated]
+        const string selSetDeveloperExtrasEnabled_ = "setDeveloperExtrasEnabled:";
+        static readonly IntPtr selSetDeveloperExtrasEnabled_Handle = Selector.GetHandle ("setDeveloperExtrasEnabled:");
+        
+        [CompilerGenerated]
+        static readonly IntPtr class_ptr = Class.GetHandle ("WebPreferences");
+        
+        [Export ("developerExtrasEnabled")]
+        [CompilerGenerated]
+        public static bool GetDeveloperExtrasEnabled (this WebPreferences This)
+        {
+            return global::WebKit.Messaging.bool_objc_msgSend (This.Handle, selDeveloperExtrasEnabledHandle);
+        }
+        
+        [Export ("setDeveloperExtrasEnabled:")]
+        [CompilerGenerated]
+        public static void SetDeveloperExtrasEnabled (this WebPreferences This, bool enabled)
+        {
+            global::WebKit.Messaging.void_objc_msgSend_bool (This.Handle, selSetDeveloperExtrasEnabled_Handle, enabled);
+        }
+        
+    } /* class WebPreferencesPrivate */
 }

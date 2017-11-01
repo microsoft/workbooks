@@ -12,14 +12,14 @@ using System.Collections.Generic;
 
 namespace Xamarin.Interactive.Client.Updater
 {
-	[XmlRoot ("UpdateInfo")]
-	public class UpdateManifest
-	{
-		[XmlElement ("Application")]
-		public List<ApplicationNode> Applications { get; set; } = new List<ApplicationNode> ();
+    [XmlRoot ("UpdateInfo")]
+    public class UpdateManifest
+    {
+        [XmlElement ("Application")]
+        public List<ApplicationNode> Applications { get; set; } = new List<ApplicationNode> ();
 
-		public static UpdateManifest Deserialize (Stream stream)
-			=> (UpdateManifest)new XmlSerializer (typeof (UpdateManifest))
-				.Deserialize (new StreamReader (stream));
-	}
+        public static UpdateManifest Deserialize (Stream stream)
+            => (UpdateManifest)new XmlSerializer (typeof (UpdateManifest))
+                .Deserialize (new StreamReader (stream));
+    }
 }

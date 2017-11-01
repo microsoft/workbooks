@@ -8,9 +8,9 @@
 
 namespace Xamarin.Interactive.Workbook.Models
 {
-	interface ICellBuffer
-	{
-		string Value { get; set; }
-		int Length { get; }
-	}
+    interface ICellBuffer
+    {
+        string Value { get; set; }
+        int Length { get; }
+    }
 }

@@ -9,12 +9,12 @@ using System.CodeDom.Compiler;
 
 namespace Xamarin.Interactive.Client.Mac
 {
-	[Register ("SessionWindow")]
-	partial class SessionWindow
-	{
+    [Register ("SessionWindow")]
+    partial class SessionWindow
+    {
 
-		void ReleaseDesignerOutlets ()
-		{
-		}
-	}
+        void ReleaseDesignerOutlets ()
+        {
+        }
+    }
 }

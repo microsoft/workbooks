@@ -8,10 +8,10 @@
 
 namespace Xamarin.Interactive.Messages
 {
-	interface IMessageService
-	{
-		bool CanHandleMessage (Message message);
-		Message PushMessage (Message message);
-		void DismissMessage (int messageId);
-	}
+    interface IMessageService
+    {
+        bool CanHandleMessage (Message message);
+        Message PushMessage (Message message);
+        void DismissMessage (int messageId);
+    }
 }

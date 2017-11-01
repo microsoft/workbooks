@@ -14,20 +14,20 @@ using Xamarin.Interactive.Client.Updater;
 
 namespace Xamarin.Interactive.Client.Windows.Converters
 {
-	sealed class QueryFrequencyConverter :IValueConverter
-	{
-		public object Convert (object value, Type targetType, object parameter, CultureInfo culture)
-		{
-			var queryFrequency = default (QueryFrequency);
-			if (value is QueryFrequency)
-				queryFrequency = (QueryFrequency)value;
+    sealed class QueryFrequencyConverter :IValueConverter
+    {
+        public object Convert (object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            var queryFrequency = default (QueryFrequency);
+            if (value is QueryFrequency)
+                queryFrequency = (QueryFrequency)value;
 
-			return queryFrequency.ToLocalizedName ();
-		}
+            return queryFrequency.ToLocalizedName ();
+        }
 
-		public object ConvertBack (object value, Type targetType, object parameter, CultureInfo culture)
-		{
-			throw new NotImplementedException ();
-		}
-	}
+        public object ConvertBack (object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException ();
+        }
+    }
 }

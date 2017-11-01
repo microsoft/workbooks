@@ -13,15 +13,15 @@ using Xamarin.Interactive.Logging;
 
 namespace Xamarin.Interactive.Core
 {
-	[Serializable]
-	sealed class SetLogLevelRequest : MainThreadRequest<SuccessResponse>
-	{
-		public LogLevel LogLevel { get; set; }
+    [Serializable]
+    sealed class SetLogLevelRequest : MainThreadRequest<SuccessResponse>
+    {
+        public LogLevel LogLevel { get; set; }
 
-		protected override Task<SuccessResponse> HandleAsync (Agent agent)
-		{
-			agent.SetLogLevel (LogLevel);
-			return SuccessResponse.Task;
-		}
-	}
+        protected override Task<SuccessResponse> HandleAsync (Agent agent)
+        {
+            agent.SetLogLevel (LogLevel);
+            return SuccessResponse.Task;
+        }
+    }
 }

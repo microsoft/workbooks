@@ -10,11 +10,11 @@ using System;
 
 namespace Xamarin.Interactive.Representations.Reflection
 {
-	[Serializable]
-	public enum RepresentedMemberKind : byte
-	{
-		None,
-		Field,
-		Property
-	}
+    [Serializable]
+    public enum RepresentedMemberKind : byte
+    {
+        None,
+        Field,
+        Property
+    }
 }

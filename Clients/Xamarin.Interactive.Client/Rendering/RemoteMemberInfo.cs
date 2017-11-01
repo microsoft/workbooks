@@ -11,9 +11,9 @@ using Xamarin.Interactive.Representations.Reflection;
 
 namespace Xamarin.Interactive.Rendering
 {
-	sealed class RemoteMemberInfo
-	{
-		public long ObjectHandle { get; set; }
-		public RepresentedMemberInfo MemberInfo { get; set; }
-	}
+    sealed class RemoteMemberInfo
+    {
+        public long ObjectHandle { get; set; }
+        public RepresentedMemberInfo MemberInfo { get; set; }
+    }
 }

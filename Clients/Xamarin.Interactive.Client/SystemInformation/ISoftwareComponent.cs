@@ -10,12 +10,12 @@ using Newtonsoft.Json;
 
 namespace Xamarin.Interactive.SystemInformation
 {
-	interface ISoftwareComponent
-	{
-		string Name { get; }
-		string Version { get; }
-		bool IsInstalled { get; }
+    interface ISoftwareComponent
+    {
+        string Name { get; }
+        string Version { get; }
+        bool IsInstalled { get; }
 
-		void SerializeExtraProperties (JsonTextWriter writer);
-	}
+        void SerializeExtraProperties (JsonTextWriter writer);
+    }
 }

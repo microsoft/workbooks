@@ -10,9 +10,9 @@ using Xamarin.Interactive.Editor;
 
 namespace Xamarin.Interactive.Workbook.Views
 {
-	interface ICellView
-	{
-		IEditor Editor { get; }
-		void Focus (bool scrollIntoView = true);
-	}
+    interface ICellView
+    {
+        IEditor Editor { get; }
+        void Focus (bool scrollIntoView = true);
+    }
 }

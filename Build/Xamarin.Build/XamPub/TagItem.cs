@@ -10,19 +10,19 @@ using Newtonsoft.Json;
 
 namespace Xamarin.XamPub
 {
-	[JsonObject]
-	public sealed class TagItem
-	{
-		[JsonProperty ("tags")]
-		public string [] Tags { get; set; }
+    [JsonObject]
+    public sealed class TagItem
+    {
+        [JsonProperty ("tags")]
+        public string [] Tags { get; set; }
 
-		[JsonProperty ("message")]
-		public string Message { get; set; }
+        [JsonProperty ("message")]
+        public string Message { get; set; }
 
-		[JsonProperty ("hash")]
-		public string CommitHash { get; set; }
+        [JsonProperty ("hash")]
+        public string CommitHash { get; set; }
 
-		[JsonProperty ("githubRepo")]
-		public string GitHubRepo { get; set; }
-	}
+        [JsonProperty ("githubRepo")]
+        public string GitHubRepo { get; set; }
+    }
 }

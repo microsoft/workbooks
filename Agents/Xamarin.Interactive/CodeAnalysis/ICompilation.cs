@@ -8,20 +8,20 @@
 
 namespace Xamarin.Interactive.CodeAnalysis
 {
-	/// <summary>
+    /// <summary>
 	/// Represents the compilation state of a cell.
 	/// </summary>
-	public interface ICompilation
-	{
-		/// <summary>
+    public interface ICompilation
+    {
+        /// <summary>
 		/// An identifier that is unique to the cell being evaluated. This should be
 		/// passed to <see cref="IAgent.PublishEvaluation"/>.
 		/// </summary>
-		CodeCellId CodeCellId { get; }
+        CodeCellId CodeCellId { get; }
 
-		/// <summary>
+        /// <summary>
 		/// Information about the assembly produced by compiling the associated cell.
 		/// </summary>
-		IAssemblyDefinition Assembly { get; }
-	}
+        IAssemblyDefinition Assembly { get; }
+    }
 }

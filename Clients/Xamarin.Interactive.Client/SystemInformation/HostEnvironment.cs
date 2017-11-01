@@ -16,110 +16,110 @@ using Newtonsoft.Json;
 
 namespace Xamarin.Interactive.SystemInformation
 {
-	abstract class HostEnvironment
-	{
-		readonly TaskCompletionSource<IReadOnlyList<ISoftwareEnvironment>> loadSoftwareEnvironmentsTcs
-			= new TaskCompletionSource<IReadOnlyList<ISoftwareEnvironment>> ();
+    abstract class HostEnvironment
+    {
+        readonly TaskCompletionSource<IReadOnlyList<ISoftwareEnvironment>> loadSoftwareEnvironmentsTcs
+            = new TaskCompletionSource<IReadOnlyList<ISoftwareEnvironment>> ();
 
-		public bool IsMac => OSName == HostOS.macOS;
+        public bool IsMac => OSName == HostOS.macOS;
 
-		public abstract HostOS OSName { get; }
-		public abstract string OSVersionString { get; }
-		public abstract Version OSVersion { get; }
+        public abstract HostOS OSName { get; }
+        public abstract string OSVersionString { get; }
+        public abstract Version OSVersion { get; }
 
-		public virtual ulong? PhysicalMemory => null;
-		public virtual int? ProcessorCount => null;
-		public virtual int? ActiveProcessorCount => null;
+        public virtual ulong? PhysicalMemory => null;
+        public virtual int? ProcessorCount => null;
+        public virtual int? ActiveProcessorCount => null;
 
-		protected HostEnvironment (
-			Func<Task<IReadOnlyList<ISoftwareEnvironment>>> loadSoftwareEnvironmentsAsync = null)
-		{
-			if (loadSoftwareEnvironmentsAsync == null) {
-				loadSoftwareEnvironmentsTcs.SetResult (Array.Empty<ISoftwareEnvironment> ());
-				return;
-			}
+        protected HostEnvironment (
+            Func<Task<IReadOnlyList<ISoftwareEnvironment>>> loadSoftwareEnvironmentsAsync = null)
+        {
+            if (loadSoftwareEnvironmentsAsync == null) {
+                loadSoftwareEnvironmentsTcs.SetResult (Array.Empty<ISoftwareEnvironment> ());
+                return;
+            }
 
-			loadSoftwareEnvironmentsAsync ().ContinueWith (task => {
-				if (task.IsFaulted)
-					loadSoftwareEnvironmentsTcs.SetException (task.Exception);
-				else
-					loadSoftwareEnvironmentsTcs.SetResult (task.Result);
-			});
-		}
+            loadSoftwareEnvironmentsAsync ().ContinueWith (task => {
+                if (task.IsFaulted)
+                    loadSoftwareEnvironmentsTcs.SetException (task.Exception);
+                else
+                    loadSoftwareEnvironmentsTcs.SetResult (task.Result);
+            });
+        }
 
-		public Task<IReadOnlyList<ISoftwareEnvironment>> GetSoftwareEnvironmentsAsync ()
-			=> loadSoftwareEnvironmentsTcs.Task;
+        public Task<IReadOnlyList<ISoftwareEnvironment>> GetSoftwareEnvironmentsAsync ()
+            => loadSoftwareEnvironmentsTcs.Task;
 
-		public async Task WriteJsonAsync (JsonTextWriter writer)
-		{
-			writer.WriteStartObject ();
+        public async Task WriteJsonAsync (JsonTextWriter writer)
+        {
+            writer.WriteStartObject ();
 
-			writer.WritePropertyName ("os");
-			writer.WriteValue ($"{OSName} {OSVersionString}");
+            writer.WritePropertyName ("os");
+            writer.WriteValue ($"{OSName} {OSVersionString}");
 
-			writer.WritePropertyName ("ws");
-			writer.WriteValue (IntPtr.Size);
+            writer.WritePropertyName ("ws");
+            writer.WriteValue (IntPtr.Size);
 
-			writer.WritePropertyName ("cpuws");
-			writer.WriteValue (Environment.Is64BitOperatingSystem ? 8 : 4);
+            writer.WritePropertyName ("cpuws");
+            writer.WriteValue (Environment.Is64BitOperatingSystem ? 8 : 4);
 
-			if (ProcessorCount != null) {
-				writer.WritePropertyName ("ncpus");
-				writer.WriteValue (ProcessorCount.Value);
-			}
+            if (ProcessorCount != null) {
+                writer.WritePropertyName ("ncpus");
+                writer.WriteValue (ProcessorCount.Value);
+            }
 
-			if (ActiveProcessorCount != null) {
-				writer.WritePropertyName ("acpus");
-				writer.WriteValue (ActiveProcessorCount.Value);
-			}
+            if (ActiveProcessorCount != null) {
+                writer.WritePropertyName ("acpus");
+                writer.WriteValue (ActiveProcessorCount.Value);
+            }
 
-			if (PhysicalMemory != null) {
-				writer.WritePropertyName ("physmem");
-				writer.WriteValue (PhysicalMemory.Value / 1_073_741_824.0);
-			}
+            if (PhysicalMemory != null) {
+                writer.WritePropertyName ("physmem");
+                writer.WriteValue (PhysicalMemory.Value / 1_073_741_824.0);
+            }
 
-			var softwareEnvironments = await GetSoftwareEnvironmentsAsync ();
-			if (softwareEnvironments != null) {
-				writer.WritePropertyName ("environments");
-				writer.WriteStartObject ();
+            var softwareEnvironments = await GetSoftwareEnvironmentsAsync ();
+            if (softwareEnvironments != null) {
+                writer.WritePropertyName ("environments");
+                writer.WriteStartObject ();
 
-				var serializer = JsonSerializer.CreateDefault ();
+                var serializer = JsonSerializer.CreateDefault ();
 
-				foreach (var env in softwareEnvironments) {
-					var components = env.Where (c => c.IsInstalled).ToArray ();
-					if (components.Length > 0) {
-						writer.WritePropertyName (env.Name);
-						writer.WriteStartObject ();
+                foreach (var env in softwareEnvironments) {
+                    var components = env.Where (c => c.IsInstalled).ToArray ();
+                    if (components.Length > 0) {
+                        writer.WritePropertyName (env.Name);
+                        writer.WriteStartObject ();
 
-						foreach (var component in components) {
-							writer.WritePropertyName (component.Name);
-							writer.WriteStartObject ();
+                        foreach (var component in components) {
+                            writer.WritePropertyName (component.Name);
+                            writer.WriteStartObject ();
 
-							writer.WritePropertyName ("version");
-							writer.WriteValue (component.Version);
+                            writer.WritePropertyName ("version");
+                            writer.WriteValue (component.Version);
 
-							component.SerializeExtraProperties (writer);
+                            component.SerializeExtraProperties (writer);
 
-							writer.WriteEndObject ();
-						}
+                            writer.WriteEndObject ();
+                        }
 
-						writer.WriteEndObject ();
-					}
-				}
+                        writer.WriteEndObject ();
+                    }
+                }
 
-				writer.WriteEndObject ();
-			}
+                writer.WriteEndObject ();
+            }
 
-			writer.WriteEndObject ();
-		}
+            writer.WriteEndObject ();
+        }
 
-		public override string ToString ()
-		{
-			var writer = new StringWriter ();
-			WriteJsonAsync (new JsonTextWriter (writer) {
-				Formatting = Formatting.Indented
-			}).GetAwaiter ().GetResult ();
-			return writer.ToString ();
-		}
-	}
+        public override string ToString ()
+        {
+            var writer = new StringWriter ();
+            WriteJsonAsync (new JsonTextWriter (writer) {
+                Formatting = Formatting.Indented
+            }).GetAwaiter ().GetResult ();
+            return writer.ToString ();
+        }
+    }
 }

@@ -13,36 +13,36 @@ using System.Windows.Data;
 
 namespace Xamarin.Interactive.Client.Windows.Converters
 {
-	class MultipleToVisibilityConverter : MultipleToTypeConverter<Visibility> { }
+    class MultipleToVisibilityConverter : MultipleToTypeConverter<Visibility> { }
 
-	class MultipleToTypeConverter<T> : PredicateToTypeConverter<T>
-	{
-		public int Minimum { get; set; } = 1;
-	
-		public MultipleToTypeConverter ()
-		{
-			predicate = IsMultiple;
-		}
+    class MultipleToTypeConverter<T> : PredicateToTypeConverter<T>
+    {
+        public int Minimum { get; set; } = 1;
+    
+        public MultipleToTypeConverter ()
+        {
+            predicate = IsMultiple;
+        }
 
-		bool IsMultiple (object value)
-		{
-			var container = value as IList;
-			return (container?.Count ?? 0) > Minimum;
-		}
-	}
+        bool IsMultiple (object value)
+        {
+            var container = value as IList;
+            return (container?.Count ?? 0) > Minimum;
+        }
+    }
 
-	class PredicateToTypeConverter<T> : BoolToTypeConverter<T>, IValueConverter
-	{
-		protected Predicate<object> predicate;
+    class PredicateToTypeConverter<T> : BoolToTypeConverter<T>, IValueConverter
+    {
+        protected Predicate<object> predicate;
 
-		object IValueConverter.Convert (object value, Type targetType, object parameter, CultureInfo culture)
-		{
-			return base.Convert (predicate(value), targetType, parameter, culture);
-		}
+        object IValueConverter.Convert (object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return base.Convert (predicate(value), targetType, parameter, culture);
+        }
 
-		object IValueConverter.ConvertBack (object value, Type targetType, object parameter, CultureInfo culture)
-		{
-			throw new NotImplementedException ();
-		}
-	}
+        object IValueConverter.ConvertBack (object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException ();
+        }
+    }
 }

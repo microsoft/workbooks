@@ -13,27 +13,27 @@ using AppKit;
 
 namespace Xamarin.Interactive.Client.Mac
 {
-	[Register ("AutoFitTextField")]
-	sealed class AutoFitTextField : NSTextField
-	{
-		public AutoFitTextField (IntPtr handle) : base (handle)
-		{
-		}
+    [Register ("AutoFitTextField")]
+    sealed class AutoFitTextField : NSTextField
+    {
+        public AutoFitTextField (IntPtr handle) : base (handle)
+        {
+        }
 
-		[Export ("initWithCoder:")]
-		public AutoFitTextField (NSCoder coder) : base (coder)
-		{
-		}
+        [Export ("initWithCoder:")]
+        public AutoFitTextField (NSCoder coder) : base (coder)
+        {
+        }
 
-		public override void AwakeFromNib ()
-		{
-			var frame = Frame;
-			while (true) {
-				var size = AttributedStringValue.Size;
-				if (size.Width <= frame.Width && size.Height <= frame.Height)
-					break;
-				Font = NSFont.FromDescription (Font.FontDescriptor, Font.PointSize - 0.25f);
-			}
-		}
-	}
+        public override void AwakeFromNib ()
+        {
+            var frame = Frame;
+            while (true) {
+                var size = AttributedStringValue.Size;
+                if (size.Width <= frame.Width && size.Height <= frame.Height)
+                    break;
+                Font = NSFont.FromDescription (Font.FontDescriptor, Font.PointSize - 0.25f);
+            }
+        }
+    }
 }

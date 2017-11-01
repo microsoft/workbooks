@@ -9,8 +9,8 @@ using System.CodeDom.Compiler;
 
 namespace Xamarin.Interactive.Client.Mac
 {
-	[Register ("NewWorkbookWindow")]
-	partial class NewWorkbookWindow
-	{
-	}
+    [Register ("NewWorkbookWindow")]
+    partial class NewWorkbookWindow
+    {
+    }
 }

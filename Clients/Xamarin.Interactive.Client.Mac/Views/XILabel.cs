@@ -13,27 +13,27 @@ using Foundation;
 
 namespace Xamarin.Interactive.Client.Mac.Views
 {
-	[Register (nameof (XILabel))]
-	class XILabel : NSTextField
-	{
-		public XILabel (IntPtr handle) : base (handle)
-		{
-			Initialize ();
-		}
+    [Register (nameof (XILabel))]
+    class XILabel : NSTextField
+    {
+        public XILabel (IntPtr handle) : base (handle)
+        {
+            Initialize ();
+        }
 
-		public XILabel ()
-		{
-			Initialize ();
-		}
+        public XILabel ()
+        {
+            Initialize ();
+        }
 
-		void Initialize ()
-		{
-			ControlSize = NSControlSize.Regular;
-			Font = NSFont.SystemFontOfSize (NSFont.SystemFontSizeForControlSize (ControlSize));
-			Bezeled = false;
-			DrawsBackground = false;
-			Editable = false;
-			Selectable = false;
-		}
-	}
+        void Initialize ()
+        {
+            ControlSize = NSControlSize.Regular;
+            Font = NSFont.SystemFontOfSize (NSFont.SystemFontSizeForControlSize (ControlSize));
+            Bezeled = false;
+            DrawsBackground = false;
+            Editable = false;
+            Selectable = false;
+        }
+    }
 }

@@ -13,16 +13,16 @@ using AppKit;
 
 namespace Xamarin.Interactive.Client.Mac
 {
-	sealed partial class StatusToolbarView : NSButton
-	{
-		StatusToolbarView (IntPtr handle) : base (handle)
-		{
-			Cell = new NSButtonCell ();
-			BezelStyle = NSBezelStyle.TexturedRounded;
-			Title = String.Empty;
-			Enabled = false;
-		}
+    sealed partial class StatusToolbarView : NSButton
+    {
+        StatusToolbarView (IntPtr handle) : base (handle)
+        {
+            Cell = new NSButtonCell ();
+            BezelStyle = NSBezelStyle.TexturedRounded;
+            Title = String.Empty;
+            Enabled = false;
+        }
 
-		public override bool MouseDownCanMoveWindow => true;
-	}
+        public override bool MouseDownCanMoveWindow => true;
+    }
 }

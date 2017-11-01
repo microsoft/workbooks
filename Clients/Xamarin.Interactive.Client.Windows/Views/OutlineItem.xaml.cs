@@ -13,61 +13,61 @@ using Xamarin.Interactive.TreeModel;
 
 namespace Xamarin.Interactive.Client.Windows.Views
 {
-	public partial class OutlineItem : UserControl
-	{
-		public OutlineItem ()
-		{
-			InitializeComponent ();
-		}
+    public partial class OutlineItem : UserControl
+    {
+        public OutlineItem ()
+        {
+            InitializeComponent ();
+        }
 
-		public static readonly DependencyProperty ItemProperty =
-			DependencyProperty.Register (
-				nameof (Item),
-				typeof (TreeNode),
-				typeof (OutlineItem),
-				new PropertyMetadata (null));
+        public static readonly DependencyProperty ItemProperty =
+            DependencyProperty.Register (
+                nameof (Item),
+                typeof (TreeNode),
+                typeof (OutlineItem),
+                new PropertyMetadata (null));
 
-		internal TreeNode Item {
-			get { return (TreeNode)GetValue (ItemProperty); }
-			set { SetValue (ItemProperty, value); }
-		}
+        internal TreeNode Item {
+            get { return (TreeNode)GetValue (ItemProperty); }
+            set { SetValue (ItemProperty, value); }
+        }
 
-		void OnKeyDown (object sender, KeyEventArgs args)
-		{
-			switch (args.Key) {
-				case Key.Enter:
-					var box = sender as TextBox;
-					box?.GetBindingExpression (TextBox.TextProperty)?.UpdateSource ();
-					Item.IsEditing = false;
-					break;
-				case Key.Escape:
-					Item.IsEditing = false;
-					break;
-				default:
-					break;
-			}
-		}
+        void OnKeyDown (object sender, KeyEventArgs args)
+        {
+            switch (args.Key) {
+                case Key.Enter:
+                    var box = sender as TextBox;
+                    box?.GetBindingExpression (TextBox.TextProperty)?.UpdateSource ();
+                    Item.IsEditing = false;
+                    break;
+                case Key.Escape:
+                    Item.IsEditing = false;
+                    break;
+                default:
+                    break;
+            }
+        }
 
-		void OnRename (object sender, RoutedEventArgs e)
-		{
-			if (Item.IsRenamable) {
-				e.Handled = true;
-				Item.IsEditing = true;
-			}
-		}
+        void OnRename (object sender, RoutedEventArgs e)
+        {
+            if (Item.IsRenamable) {
+                e.Handled = true;
+                Item.IsEditing = true;
+            }
+        }
 
-		void OnEditorLoaded (object sender, RoutedEventArgs e)
-		{
-			var box = sender as TextBox;
-			box.Focus ();
-			box.SelectAll ();
-		}
+        void OnEditorLoaded (object sender, RoutedEventArgs e)
+        {
+            var box = sender as TextBox;
+            box.Focus ();
+            box.SelectAll ();
+        }
 
-		void OnDisplayLoaded (object sender, RoutedEventArgs e) =>
-			Item.IsEditing = false;
+        void OnDisplayLoaded (object sender, RoutedEventArgs e) =>
+            Item.IsEditing = false;
 
-		void OnLostFocus (object sender, RoutedEventArgs e) =>
-			Item.IsEditing = false;
+        void OnLostFocus (object sender, RoutedEventArgs e) =>
+            Item.IsEditing = false;
 
-	}
+    }
 }

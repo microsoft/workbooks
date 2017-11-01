@@ -13,20 +13,20 @@ using Foundation;
 
 namespace Xamarin.Interactive.Client.Mac.Menu
 {
-	[Register ("XIWorkbooksOnlyMenuItem")]
-	sealed class XIWorkbooksOnlyMenuItem : NSMenuItem
-	{
-		public XIWorkbooksOnlyMenuItem (NSCoder coder) : base (coder)
-		{
-		}
+    [Register ("XIWorkbooksOnlyMenuItem")]
+    sealed class XIWorkbooksOnlyMenuItem : NSMenuItem
+    {
+        public XIWorkbooksOnlyMenuItem (NSCoder coder) : base (coder)
+        {
+        }
 
-		public XIWorkbooksOnlyMenuItem (IntPtr handle) : base (handle)
-		{
-		}
+        public XIWorkbooksOnlyMenuItem (IntPtr handle) : base (handle)
+        {
+        }
 
-		public override bool Hidden {
-			get { return ClientInfo.Flavor != ClientFlavor.Workbooks; }
-			set { }
-		}
-	}
+        public override bool Hidden {
+            get { return ClientInfo.Flavor != ClientFlavor.Workbooks; }
+            set { }
+        }
+    }
 }

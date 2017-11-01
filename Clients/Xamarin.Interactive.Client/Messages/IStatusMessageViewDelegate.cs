@@ -8,12 +8,12 @@
 
 namespace Xamarin.Interactive.Messages
 {
-	interface IStatusMessageViewDelegate
-	{
-		bool CanDisplayMessage (Message message);
-		void StartSpinner ();
-		void StopSpinner ();
-		void DisplayMessage (Message message);
-		void DisplayIdle ();
-	}
+    interface IStatusMessageViewDelegate
+    {
+        bool CanDisplayMessage (Message message);
+        void StartSpinner ();
+        void StopSpinner ();
+        void DisplayMessage (Message message);
+        void DisplayIdle ();
+    }
 }

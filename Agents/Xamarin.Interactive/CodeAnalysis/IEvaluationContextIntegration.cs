@@ -8,8 +8,8 @@
 
 namespace Xamarin.Interactive.CodeAnalysis
 {
-	public interface IEvaluationContextIntegration
-	{
-		void IntegrateWith (IEvaluationContext evaluationContext);
-	}
+    public interface IEvaluationContextIntegration
+    {
+        void IntegrateWith (IEvaluationContext evaluationContext);
+    }
 }

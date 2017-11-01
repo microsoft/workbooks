@@ -21,15 +21,15 @@ using Foundation;
 
 namespace Xamarin.Interactive
 {
-	static class NativeExceptionHandler
-	{
-		struct Disposable : IDisposable
-		{
-			public void Dispose () => Release ();
-		}
+    static class NativeExceptionHandler
+    {
+        struct Disposable : IDisposable
+        {
+            public void Dispose () => Release ();
+        }
 
-		public class TrappedNativeException : Exception
-		{
+        public class TrappedNativeException : Exception
+        {
 #if IOS || MAC
 			public NSException NativeException { get; }
 
@@ -39,7 +39,7 @@ namespace Xamarin.Interactive
 				NativeException = realException;
 			}
 #endif
-		}
+        }
 
 #if IOS || MAC
 		[DllImport (Constants.ObjectiveCLibrary)]
@@ -76,12 +76,12 @@ namespace Xamarin.Interactive
 			}
 		}
 #else
-		public static IDisposable Trap ()
-			=> new Disposable ();
+        public static IDisposable Trap ()
+            => new Disposable ();
 
-		public static void Release ()
-		{
-		}
+        public static void Release ()
+        {
+        }
 #endif
-	}
+    }
 }

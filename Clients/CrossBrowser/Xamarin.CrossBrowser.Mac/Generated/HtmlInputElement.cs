@@ -13,28 +13,28 @@ using JavaScriptCore;
 
 namespace Xamarin.CrossBrowser
 {
-	public partial class HtmlInputElement : HtmlElement
-	{
-		internal HtmlInputElement (JSValue underlyingJSValue) : base (underlyingJSValue)
-		{
-		}
+    public partial class HtmlInputElement : HtmlElement
+    {
+        internal HtmlInputElement (JSValue underlyingJSValue) : base (underlyingJSValue)
+        {
+        }
 
-		public string Type {
-			get {
-				return UnderlyingJSValue.GetProperty ("type").ToNullableString ();
-			}
-			set {
-				UnderlyingJSValue.SetProperty (JSValue.From (value, UnderlyingJSValue.Context), "type");
-			}
-		}
+        public string Type {
+            get {
+                return UnderlyingJSValue.GetProperty ("type").ToNullableString ();
+            }
+            set {
+                UnderlyingJSValue.SetProperty (JSValue.From (value, UnderlyingJSValue.Context), "type");
+            }
+        }
 
-		public string Value {
-			get {
-				return UnderlyingJSValue.GetProperty ("value").ToNullableString ();
-			}
-			set {
-				UnderlyingJSValue.SetProperty (JSValue.From (value, UnderlyingJSValue.Context), "value");
-			}
-		}
-	}
+        public string Value {
+            get {
+                return UnderlyingJSValue.GetProperty ("value").ToNullableString ();
+            }
+            set {
+                UnderlyingJSValue.SetProperty (JSValue.From (value, UnderlyingJSValue.Context), "value");
+            }
+        }
+    }
 }

@@ -13,13 +13,13 @@ using Xamarin.Interactive.Editor.Events;
 
 namespace Xamarin.Interactive.Workbook.Events
 {
-	sealed class NavigateReplHistoryEvent : EditorEvent
-	{
-		public bool NavigatePrevious { get; }
-		public bool Handled { get; set; }
+    sealed class NavigateReplHistoryEvent : EditorEvent
+    {
+        public bool NavigatePrevious { get; }
+        public bool Handled { get; set; }
 
-		public NavigateReplHistoryEvent (IEditor source, LinePosition cursor, bool navigatePrevious)
-			: base (source, cursor)
-			=> NavigatePrevious = navigatePrevious;
-	}
+        public NavigateReplHistoryEvent (IEditor source, LinePosition cursor, bool navigatePrevious)
+            : base (source, cursor)
+            => NavigatePrevious = navigatePrevious;
+    }
 }

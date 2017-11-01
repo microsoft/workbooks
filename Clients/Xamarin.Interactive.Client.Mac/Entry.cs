@@ -14,28 +14,28 @@ using AppKit;
 
 namespace Xamarin.Interactive.Client.Mac
 {
-	static class Entry
-	{
-		static int Main (string [] args)
-		{
-			NSApplication.Init ();
+    static class Entry
+    {
+        static int Main (string [] args)
+        {
+            NSApplication.Init ();
 
-			if (args.Length > 0 && args [0] == "cli") {
-				ObjCRuntime.Runtime.ChangeToOriginalWorkingDirectory ();
+            if (args.Length > 0 && args [0] == "cli") {
+                ObjCRuntime.Runtime.ChangeToOriginalWorkingDirectory ();
 
-				var exitCode = CommandLineTool.Entry.Run (
-					args.Skip (1).ToArray (),
-					out var shouldExit);
+                var exitCode = CommandLineTool.Entry.Run (
+                    args.Skip (1).ToArray (),
+                    out var shouldExit);
 
-				if (shouldExit)
-					return exitCode;
+                if (shouldExit)
+                    return exitCode;
 
-				args = Array.Empty<string> ();
-			}
+                args = Array.Empty<string> ();
+            }
 
-			NSApplication.Main (args);
+            NSApplication.Main (args);
 
-			return 0;
-		}
-	}
+            return 0;
+        }
+    }
 }

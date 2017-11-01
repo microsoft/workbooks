@@ -9,18 +9,18 @@ using System.CodeDom.Compiler;
 
 namespace Xamarin.Interactive.Preferences
 {
-	[Register ("PreferencesDeveloperViewController")]
-	partial class PreferencesDeveloperViewController
-	{
-		[Outlet]
-		AppKit.NSPopUpButton inspectorPanePopupButton { get; set; }
-		
-		void ReleaseDesignerOutlets ()
-		{
-			if (inspectorPanePopupButton != null) {
-				inspectorPanePopupButton.Dispose ();
-				inspectorPanePopupButton = null;
-			}
-		}
-	}
+    [Register ("PreferencesDeveloperViewController")]
+    partial class PreferencesDeveloperViewController
+    {
+        [Outlet]
+        AppKit.NSPopUpButton inspectorPanePopupButton { get; set; }
+        
+        void ReleaseDesignerOutlets ()
+        {
+            if (inspectorPanePopupButton != null) {
+                inspectorPanePopupButton.Dispose ();
+                inspectorPanePopupButton = null;
+            }
+        }
+    }
 }

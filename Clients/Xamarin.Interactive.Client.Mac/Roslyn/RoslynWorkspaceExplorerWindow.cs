@@ -13,15 +13,15 @@ using AppKit;
 
 namespace Xamarin.Interactive.Client.Mac.Roslyn
 {
-	sealed partial class RoslynWorkspaceExplorerWindow : NSWindow
-	{
-		public RoslynWorkspaceExplorerWindow (IntPtr handle) : base (handle)
-		{
-		}
+    sealed partial class RoslynWorkspaceExplorerWindow : NSWindow
+    {
+        public RoslynWorkspaceExplorerWindow (IntPtr handle) : base (handle)
+        {
+        }
 
-		[Export ("initWithCoder:")]
-		public RoslynWorkspaceExplorerWindow (NSCoder coder) : base (coder)
-		{
-		}
-	}
+        [Export ("initWithCoder:")]
+        public RoslynWorkspaceExplorerWindow (NSCoder coder) : base (coder)
+        {
+        }
+    }
 }

@@ -15,32 +15,32 @@ using Newtonsoft.Json;
 
 namespace Xamarin.MSBuild
 {
-	public sealed class TypeScriptConfig : Task
-	{
-		[Required]
-		public ITaskItem TSConfigFile { get; set; }
+    public sealed class TypeScriptConfig : Task
+    {
+        [Required]
+        public ITaskItem TSConfigFile { get; set; }
 
-		[Output]
-		public string [] Files { get; set; }
+        [Output]
+        public string [] Files { get; set; }
 
-		public override bool Execute ()
-		{
-			var tsconfig = TypeScriptConfigData.ReadFromFile (TSConfigFile.ItemSpec);
-			Files = tsconfig.Files;
-			return true;
-		}
+        public override bool Execute ()
+        {
+            var tsconfig = TypeScriptConfigData.ReadFromFile (TSConfigFile.ItemSpec);
+            Files = tsconfig.Files;
+            return true;
+        }
 
-		public sealed class TypeScriptConfigData
-		{
-			[JsonProperty ("files")]
-			public string [] Files { get; set; }
+        public sealed class TypeScriptConfigData
+        {
+            [JsonProperty ("files")]
+            public string [] Files { get; set; }
 
-			public static TypeScriptConfig ReadFromFile (string path)
-			{
-				using (var reader = new StreamReader (path))
-					return new JsonSerializer ().Deserialize<TypeScriptConfig> (
-						new JsonTextReader (reader));
-			}
-		}
-	}
+            public static TypeScriptConfig ReadFromFile (string path)
+            {
+                using (var reader = new StreamReader (path))
+                    return new JsonSerializer ().Deserialize<TypeScriptConfig> (
+                        new JsonTextReader (reader));
+            }
+        }
+    }
 }

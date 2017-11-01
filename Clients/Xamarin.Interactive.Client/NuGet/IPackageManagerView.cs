@@ -7,9 +7,9 @@
 
 namespace Xamarin.Interactive.NuGet
 {
-	interface IPackageManagerView
-	{
-		void ClearPackages ();
-		void AddPackageResult (PackageViewModel package);
-	}
+    interface IPackageManagerView
+    {
+        void ClearPackages ();
+        void AddPackageResult (PackageViewModel package);
+    }
 }

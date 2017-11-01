@@ -10,10 +10,10 @@ using System;
 
 namespace Xamarin.Interactive.CodeAnalysis
 {
-	public interface IAssemblyIdentity : IEquatable<IAssemblyIdentity>
-	{
-		string Name { get; }
-		string FullName { get; }
-		Version Version { get; }
-	}
+    public interface IAssemblyIdentity : IEquatable<IAssemblyIdentity>
+    {
+        string Name { get; }
+        string FullName { get; }
+        Version Version { get; }
+    }
 }

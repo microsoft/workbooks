@@ -10,8 +10,8 @@ using System;
 
 namespace Xamarin.Interactive
 {
-	interface ISimplyObservable<T> : IObservable<T>
-	{
-		IDisposable Subscribe (Action<T> nextHandler);
-	}
+    interface ISimplyObservable<T> : IObservable<T>
+    {
+        IDisposable Subscribe (Action<T> nextHandler);
+    }
 }

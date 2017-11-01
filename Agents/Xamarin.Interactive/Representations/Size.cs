@@ -13,21 +13,21 @@ using Xamarin.Interactive.Serialization;
 
 namespace Xamarin.Interactive.Representations
 {
-	[Serializable]
-	public sealed class Size : IRepresentationObject
-	{
-		public Size (double width, double height)
-		{
-			Width = width;
-			Height = height;
-		}
+    [Serializable]
+    public sealed class Size : IRepresentationObject
+    {
+        public Size (double width, double height)
+        {
+            Width = width;
+            Height = height;
+        }
 
-		public double Width { get; }
-		public double Height { get; }
+        public double Width { get; }
+        public double Height { get; }
 
-		void ISerializableObject.Serialize (ObjectSerializer serializer)
-		{
-			throw new NotImplementedException ();
-		}
-	}
+        void ISerializableObject.Serialize (ObjectSerializer serializer)
+        {
+            throw new NotImplementedException ();
+        }
+    }
 }

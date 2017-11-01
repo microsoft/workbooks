@@ -25,172 +25,172 @@ using Xamarin.Interactive.Serialization;
 
 namespace Xamarin.Interactive.Core
 {
-	abstract class Agent : IAgent, IDisposable
-	{
-		string TAG => GetType ().Name;
+    abstract class Agent : IAgent, IDisposable
+    {
+        string TAG => GetType ().Name;
 
-		public static Assembly [] AppDomainStartupAssemblies { get; }
-			= AppDomain.CurrentDomain.GetAssemblies ();
+        public static Assembly [] AppDomainStartupAssemblies { get; }
+            = AppDomain.CurrentDomain.GetAssemblies ();
 
-		static Agent ()
-		{
-			if (!Log.IsInitialized)
-				Log.Initialize (new LogProvider (LogLevel.Info));
+        static Agent ()
+        {
+            if (!Log.IsInitialized)
+                Log.Initialize (new LogProvider (LogLevel.Info));
 
-			AppDomain.CurrentDomain.AssemblyLoad += AppDomain_AssemblyLoad;
+            AppDomain.CurrentDomain.AssemblyLoad += AppDomain_AssemblyLoad;
 
-			InteractiveCulture.Initialize ();
-		}
+            InteractiveCulture.Initialize ();
+        }
 
-		static void AppDomain_AssemblyLoad (object sender, AssemblyLoadEventArgs args)
-		{
-			if (args.LoadedAssembly.GetName ().Name == "System.Net.Http")
-				InitializeHttpClientHandler (args.LoadedAssembly);
-		}
+        static void AppDomain_AssemblyLoad (object sender, AssemblyLoadEventArgs args)
+        {
+            if (args.LoadedAssembly.GetName ().Name == "System.Net.Http")
+                InitializeHttpClientHandler (args.LoadedAssembly);
+        }
 
-		public event EventHandler IdentificationFailure;
+        public event EventHandler IdentificationFailure;
 
-		public IAgentSynchronizationContext SynchronizationContexts { get; }
-			= new AgentSynchronizationContext ();
+        public IAgentSynchronizationContext SynchronizationContexts { get; }
+            = new AgentSynchronizationContext ();
 
-		public RepresentationManager RepresentationManager { get; } = new RepresentationManager ();
-		IRepresentationManager IAgent.RepresentationManager => RepresentationManager;
+        public RepresentationManager RepresentationManager { get; } = new RepresentationManager ();
+        IRepresentationManager IAgent.RepresentationManager => RepresentationManager;
 
-		public ViewHierarchyHandlerManager ViewHierarchyHandlerManager { get; }
-			= new ViewHierarchyHandlerManager ();
+        public ViewHierarchyHandlerManager ViewHierarchyHandlerManager { get; }
+            = new ViewHierarchyHandlerManager ();
 
-		public AgentIdentity Identity { get; protected set; }
-		public ClientSessionUri ClientSessionUri { get; private set; }
+        public AgentIdentity Identity { get; protected set; }
+        public ClientSessionUri ClientSessionUri { get; private set; }
 
-		public MessageChannel MessageChannel { get; } = new MessageChannel ();
+        public MessageChannel MessageChannel { get; } = new MessageChannel ();
 
-		readonly AgentServer agentServer;
+        readonly AgentServer agentServer;
 
-		readonly IList<Action> resetStateHandlers = new List<Action> ();
+        readonly IList<Action> resetStateHandlers = new List<Action> ();
 
-		readonly Dictionary<int, EvaluationContext> evaluationContexts =
-			new Dictionary<int, EvaluationContext> ();
+        readonly Dictionary<int, EvaluationContext> evaluationContexts =
+            new Dictionary<int, EvaluationContext> ();
 
-		public EvaluationContext CreateEvaluationContext ()
-		{
-			var globalObject = CreateEvaluationContextGlobalObject ();
-			var context = new EvaluationContext (this, globalObject);
-			globalObject.EvaluationContext = context;
-			evaluationContexts [context.Id] = context;
-			return context;
-		}
+        public EvaluationContext CreateEvaluationContext ()
+        {
+            var globalObject = CreateEvaluationContextGlobalObject ();
+            var context = new EvaluationContext (this, globalObject);
+            globalObject.EvaluationContext = context;
+            evaluationContexts [context.Id] = context;
+            return context;
+        }
 
-		public EvaluationContext GetEvaluationContext (int contextId)
-		{
-			if (evaluationContexts.TryGetValue (contextId, out var context))
-				return context;
+        public EvaluationContext GetEvaluationContext (int contextId)
+        {
+            if (evaluationContexts.TryGetValue (contextId, out var context))
+                return context;
 
-			throw new ArgumentException ($"No execution context found with session ID {contextId}");
-		}
+            throw new ArgumentException ($"No execution context found with session ID {contextId}");
+        }
 
-		protected Agent () : this (false)
-		{
-		}
+        protected Agent () : this (false)
+        {
+        }
 
-		protected Agent (bool unitTestContext)
-		{
-			agentServer = new AgentServer (this);
+        protected Agent (bool unitTestContext)
+        {
+            agentServer = new AgentServer (this);
 
-			if (!unitTestContext)
-				RepresentationManager.AddProvider (new ReflectionRepresentationProvider ());
-		}
+            if (!unitTestContext)
+                RepresentationManager.AddProvider (new ReflectionRepresentationProvider ());
+        }
 
-		public void Dispose ()
-		{
-			Dispose (true);
-		}
+        public void Dispose ()
+        {
+            Dispose (true);
+        }
 
-		protected virtual void Dispose (bool disposing)
-		{
-			Stop ();
+        protected virtual void Dispose (bool disposing)
+        {
+            Stop ();
 
-			foreach (var context in evaluationContexts.Values)
-				context?.Dispose ();
-			evaluationContexts.Clear ();
-		}
+            foreach (var context in evaluationContexts.Values)
+                context?.Dispose ();
+            evaluationContexts.Clear ();
+        }
 
-		protected virtual EvaluationContextGlobalObject CreateEvaluationContextGlobalObject ()
-		{
-			return new EvaluationContextGlobalObject (this);
-		}
+        protected virtual EvaluationContextGlobalObject CreateEvaluationContextGlobalObject ()
+        {
+            return new EvaluationContextGlobalObject (this);
+        }
 
-		/// <summary>
+        /// <summary>
 		/// Called by execution context for any native libraries sent along with a RemoteAssembly.
 		/// </summary>
-		public virtual void LoadExternalDependencies (
-			Assembly loadedAssembly,
-			AssemblyDependency [] externalDependencies)
-		{
-		}
+        public virtual void LoadExternalDependencies (
+            Assembly loadedAssembly,
+            AssemblyDependency [] externalDependencies)
+        {
+        }
 
-		/// <summary>
+        /// <summary>
 		/// Reset UI state, for workbooks that are doing a fresh execution.
 		/// </summary>
-		public void ResetState ()
-		{
-			// Let the platform-specific agents do their work first.
-			HandleResetState ();
+        public void ResetState ()
+        {
+            // Let the platform-specific agents do their work first.
+            HandleResetState ();
 
-			// Then allow the integrations to participate.
-			foreach (var resettingStateHandler in resetStateHandlers) {
-				try {
-					resettingStateHandler.Invoke ();
-				} catch (Exception e) {
-					Log.Warning (TAG, "Registered reset state handler threw exception.", e);
-				}
-			}
-		}
+            // Then allow the integrations to participate.
+            foreach (var resettingStateHandler in resetStateHandlers) {
+                try {
+                    resettingStateHandler.Invoke ();
+                } catch (Exception e) {
+                    Log.Warning (TAG, "Registered reset state handler threw exception.", e);
+                }
+            }
+        }
 
-		protected virtual void HandleResetState ()
-		{
-		}
+        protected virtual void HandleResetState ()
+        {
+        }
 
-		public void RegisterResetStateHandler (Action handler)
-		{
-			if (handler == null)
-				throw new ArgumentNullException (nameof (handler));
+        public void RegisterResetStateHandler (Action handler)
+        {
+            if (handler == null)
+                throw new ArgumentNullException (nameof (handler));
 
-			resetStateHandlers.Add (handler);
-		}
+            resetStateHandlers.Add (handler);
+        }
 
-		public void PublishEvaluation (
-			CodeCellId codeCellid,
-			object result,
-			EvaluationResultHandling resultHandling = EvaluationResultHandling.Replace)
-			=> MainThread.Post (() => PublishEvaluation (new Evaluation {
-				CodeCellId = codeCellid,
-				ResultHandling = resultHandling,
-				Result = RepresentationManager.Prepare (result)
-			}));
+        public void PublishEvaluation (
+            CodeCellId codeCellid,
+            object result,
+            EvaluationResultHandling resultHandling = EvaluationResultHandling.Replace)
+            => MainThread.Post (() => PublishEvaluation (new Evaluation {
+                CodeCellId = codeCellid,
+                ResultHandling = resultHandling,
+                Result = RepresentationManager.Prepare (result)
+            }));
 
-		internal void PublishEvaluation (Evaluation result)
-			=> MessageChannel.Push (result);
+        internal void PublishEvaluation (Evaluation result)
+            => MessageChannel.Push (result);
 
-		internal virtual IEnumerable<string> GetReplDefaultUsingNamespaces ()
-		{
-			return new [] {
-				"System",
-				"System.Linq",
-				"System.Collections.Generic",
-				"System.Threading",
-				"System.Threading.Tasks",
-				"Xamarin.Interactive.CodeAnalysis.Workbooks"
-			};
-		}
+        internal virtual IEnumerable<string> GetReplDefaultUsingNamespaces ()
+        {
+            return new [] {
+                "System",
+                "System.Linq",
+                "System.Collections.Generic",
+                "System.Threading",
+                "System.Threading.Tasks",
+                "Xamarin.Interactive.CodeAnalysis.Workbooks"
+            };
+        }
 
-		public abstract InspectView GetVisualTree (string hierarchyKind);
+        public abstract InspectView GetVisualTree (string hierarchyKind);
 
-		public virtual InspectView HighlightView (double x, double y, bool clear, string hierarchyKind)
-		{
-			return null;
-		}
+        public virtual InspectView HighlightView (double x, double y, bool clear, string hierarchyKind)
+        {
+            return null;
+        }
 
-		/// <summary>
+        /// <summary>
 		/// Sets the value of the member represented by <paramref name="memberInfo"/> on the object pointed to
 		/// by <paramref name="handle"/>.
 		/// </summary>
@@ -202,156 +202,156 @@ namespace Xamarin.Interactive.Core
 		/// If set to <c>true</c>, set <paramref name="updatedValue"/> to the updated value of the object.
 		/// </param>
 		/// <param name="updatedValue">The updated value of the object.</param>
-		public bool TrySetObjectMember (
-			long handle,
-			RepresentedMemberInfo memberInfo,
-			object value,
-			bool returnUpdatedValue,
-			out InteractiveObject updatedValue)
-		{
-			updatedValue = null;
+        public bool TrySetObjectMember (
+            long handle,
+            RepresentedMemberInfo memberInfo,
+            object value,
+            bool returnUpdatedValue,
+            out InteractiveObject updatedValue)
+        {
+            updatedValue = null;
 
-			var translatedValue = value;
-			var propertyType = memberInfo.MemberType.ResolvedType;
-			if (value != null) {
-				object convertedValue;
-				if (RepresentationManager.TryConvertFromRepresentation (
-					memberInfo.MemberType,
-					new [] { value },
-					out convertedValue))
-					translatedValue = convertedValue;
-			}
+            var translatedValue = value;
+            var propertyType = memberInfo.MemberType.ResolvedType;
+            if (value != null) {
+                object convertedValue;
+                if (RepresentationManager.TryConvertFromRepresentation (
+                    memberInfo.MemberType,
+                    new [] { value },
+                    out convertedValue))
+                    translatedValue = convertedValue;
+            }
 
-			// TODO: Special handling if null value comes in for non-nullable property?
-			try {
-				if (translatedValue != null) {
-					if (propertyType.IsEnum)
-						translatedValue = Enum.ToObject (propertyType, translatedValue);
-					else if (translatedValue.GetType () != propertyType)
-						translatedValue = Convert.ChangeType (translatedValue, propertyType);
-				}
-			} catch (InvalidCastException ice) {
-				Log.Error (TAG, $"Cannot convert from {translatedValue.GetType ().Name} to {propertyType.Name}");
-				throw ice;
-			}
+            // TODO: Special handling if null value comes in for non-nullable property?
+            try {
+                if (translatedValue != null) {
+                    if (propertyType.IsEnum)
+                        translatedValue = Enum.ToObject (propertyType, translatedValue);
+                    else if (translatedValue.GetType () != propertyType)
+                        translatedValue = Convert.ChangeType (translatedValue, propertyType);
+                }
+            } catch (InvalidCastException ice) {
+                Log.Error (TAG, $"Cannot convert from {translatedValue.GetType ().Name} to {propertyType.Name}");
+                throw ice;
+            }
 
-			var target = ObjectCache.Shared.GetObject (handle);
-			memberInfo.SetValue (target, translatedValue);
+            var target = ObjectCache.Shared.GetObject (handle);
+            memberInfo.SetValue (target, translatedValue);
 
-			if (returnUpdatedValue)
-				updatedValue = RepresentationManager.PrepareInteractiveObject (target);
+            if (returnUpdatedValue)
+                updatedValue = RepresentationManager.PrepareInteractiveObject (target);
 
-			return true;
-		}
+            return true;
+        }
 
-		public Agent Start (AgentStartOptions startOptions = null)
-		{
-			agentServer.Start ();
-			Identity = Identity
-				.WithHost (agentServer.BaseUri.Host)
-				.WithPort ((ushort)agentServer.BaseUri.Port);
+        public Agent Start (AgentStartOptions startOptions = null)
+        {
+            agentServer.Start ();
+            Identity = Identity
+                .WithHost (agentServer.BaseUri.Host)
+                .WithPort ((ushort)agentServer.BaseUri.Port);
 
-			// Default to LiveInspection, and correct later if wrong.
-			// Only inspection extensions respond to InspectorSupport.AgentStarted.
-			ClientSessionUri = new ClientSessionUri (
-				Identity.AgentType,
-				startOptions?.ClientSessionKind ?? ClientSessionKind.LiveInspection,
-				Identity.Host,
-				Identity.Port);
+            // Default to LiveInspection, and correct later if wrong.
+            // Only inspection extensions respond to InspectorSupport.AgentStarted.
+            ClientSessionUri = new ClientSessionUri (
+                Identity.AgentType,
+                startOptions?.ClientSessionKind ?? ClientSessionKind.LiveInspection,
+                Identity.Host,
+                Identity.Port);
 
-			InspectorSupport.AgentStarted (ClientSessionUri);
-			InspectorSupport.AgentStartedHandler?.Invoke (this);
+            InspectorSupport.AgentStarted (ClientSessionUri);
+            InspectorSupport.AgentStartedHandler?.Invoke (this);
 
-			try {
-				var identifyAgentRequest = GetIdentifyAgentRequest ();
+            try {
+                var identifyAgentRequest = GetIdentifyAgentRequest ();
 
-				if (identifyAgentRequest != null) {
-					ClientSessionUri = ClientSessionUri.WithSessionKind (ClientSessionKind.Workbook);
-					WriteAgentIdentityAsync (identifyAgentRequest).ContinueWithOnMainThread (task => {
-						if (task.IsFaulted) {
-							Log.Error (
-								TAG,
-								$"{nameof (WriteAgentIdentityAsync)}",
-								task.Exception);
-							IdentificationFailure?.Invoke (this, EventArgs.Empty);
-						}
-					});
-				}
-			} catch (Exception e) {
-				Log.Error (TAG, e);
-				IdentificationFailure?.Invoke (this, EventArgs.Empty);
-			}
+                if (identifyAgentRequest != null) {
+                    ClientSessionUri = ClientSessionUri.WithSessionKind (ClientSessionKind.Workbook);
+                    WriteAgentIdentityAsync (identifyAgentRequest).ContinueWithOnMainThread (task => {
+                        if (task.IsFaulted) {
+                            Log.Error (
+                                TAG,
+                                $"{nameof (WriteAgentIdentityAsync)}",
+                                task.Exception);
+                            IdentificationFailure?.Invoke (this, EventArgs.Empty);
+                        }
+                    });
+                }
+            } catch (Exception e) {
+                Log.Error (TAG, e);
+                IdentificationFailure?.Invoke (this, EventArgs.Empty);
+            }
 
-			Log.Info (TAG, $"{Identity.AgentType} '{Identity.ApplicationName}' "
-				+ $"is available for interaction: {ClientSessionUri}");
+            Log.Info (TAG, $"{Identity.AgentType} '{Identity.ApplicationName}' "
+                + $"is available for interaction: {ClientSessionUri}");
 
-			return this;
-		}
+            return this;
+        }
 
-		protected virtual IdentifyAgentRequest GetIdentifyAgentRequest ()
-		{
-			return null;
-		}
+        protected virtual IdentifyAgentRequest GetIdentifyAgentRequest ()
+        {
+            return null;
+        }
 
-		async Task WriteAgentIdentityAsync (IdentifyAgentRequest identifyAgentRequest)
-		{
-			if (identifyAgentRequest == null)
-				throw new ArgumentNullException (nameof (identifyAgentRequest));
+        async Task WriteAgentIdentityAsync (IdentifyAgentRequest identifyAgentRequest)
+        {
+            if (identifyAgentRequest == null)
+                throw new ArgumentNullException (nameof (identifyAgentRequest));
 
-			var request = WebRequest.CreateHttp (identifyAgentRequest.Uri);
-			request.Method = "POST";
+            var request = WebRequest.CreateHttp (identifyAgentRequest.Uri);
+            request.Method = "POST";
 
-			new XipSerializer (
-				await request.GetRequestStreamAsync (),
-				InteractiveSerializerSettings.SharedInstance).Serialize (Identity);
+            new XipSerializer (
+                await request.GetRequestStreamAsync (),
+                InteractiveSerializerSettings.SharedInstance).Serialize (Identity);
 
-			var response = (HttpWebResponse)await request.GetResponseAsync ();
+            var response = (HttpWebResponse)await request.GetResponseAsync ();
 
-			if (response.StatusCode != HttpStatusCode.OK)
-				throw new Exception ($"Client returned HTTP status code {response.StatusCode}");
-		}
+            if (response.StatusCode != HttpStatusCode.OK)
+                throw new Exception ($"Client returned HTTP status code {response.StatusCode}");
+        }
 
-		public void Stop ()
-			=> agentServer.Stop ();
+        public void Stop ()
+            => agentServer.Stop ();
 
-		/// <summary>
+        /// <summary>
 		/// Set the logging level for the agent.
 		/// </summary>
 		/// <param name="newLogLevel">The new log level.</param>
-		public virtual void SetLogLevel (LogLevel newLogLevel)
-			=> Log.SetLogLevel (newLogLevel);
+        public virtual void SetLogLevel (LogLevel newLogLevel)
+            => Log.SetLogLevel (newLogLevel);
 
-		/// <summary>
+        /// <summary>
 		/// Change the current working directory. Pass FilePath.Empty for a temp path.
 		/// </summary>
-		public virtual void ChangeDirectory (FilePath path)
-		{
-			if (path == Environment.CurrentDirectory)
-				return;
-			if (!path.DirectoryExists)
-				path = FilePath.GetTempPath ();
-			Log.Info (TAG, $"{Environment.CurrentDirectory} → {path}");
-			Environment.CurrentDirectory = path;
-		}
+        public virtual void ChangeDirectory (FilePath path)
+        {
+            if (path == Environment.CurrentDirectory)
+                return;
+            if (!path.DirectoryExists)
+                path = FilePath.GetTempPath ();
+            Log.Info (TAG, $"{Environment.CurrentDirectory} → {path}");
+            Environment.CurrentDirectory = path;
+        }
 
-		#region HttpClient
+        #region HttpClient
 
-		static Type snhHttpClientHandlerType;
+        static Type snhHttpClientHandlerType;
 
-		static void InitializeHttpClientHandler (Assembly assembly)
-			=> snhHttpClientHandlerType = assembly.GetType ("System.Net.Http.HttpClientHandler");
+        static void InitializeHttpClientHandler (Assembly assembly)
+            => snhHttpClientHandlerType = assembly.GetType ("System.Net.Http.HttpClientHandler");
 
-		static object CreateHttpClientHandler ()
-			=> snhHttpClientHandlerType == null
-				? null
-				: Activator.CreateInstance (snhHttpClientHandlerType);
+        static object CreateHttpClientHandler ()
+            => snhHttpClientHandlerType == null
+                ? null
+                : Activator.CreateInstance (snhHttpClientHandlerType);
 
-		Func<object> createDefaultHttpMessageHandler;
-		public Func<object> CreateDefaultHttpMessageHandler {
-			get { return createDefaultHttpMessageHandler ?? CreateHttpClientHandler; }
-			set { createDefaultHttpMessageHandler = value; }
-		}
+        Func<object> createDefaultHttpMessageHandler;
+        public Func<object> CreateDefaultHttpMessageHandler {
+            get { return createDefaultHttpMessageHandler ?? CreateHttpClientHandler; }
+            set { createDefaultHttpMessageHandler = value; }
+        }
 
-		#endregion
-	}
+        #endregion
+    }
 }

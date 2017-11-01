@@ -11,10 +11,10 @@ using Xamarin.Interactive.Reflection;
 
 namespace Xamarin.Interactive.Compilation
 {
-	sealed class WebDependency : ExternalDependency
-	{
-		public WebDependency (FilePath location) : base (location)
-		{
-		}
-	}
+    sealed class WebDependency : ExternalDependency
+    {
+        public WebDependency (FilePath location) : base (location)
+        {
+        }
+    }
 }

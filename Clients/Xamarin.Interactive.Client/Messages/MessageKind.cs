@@ -8,9 +8,9 @@
 
 namespace Xamarin.Interactive.Messages
 {
-	enum MessageKind
-	{
-		Status,
-		Alert
-	}
+    enum MessageKind
+    {
+        Status,
+        Alert
+    }
 }

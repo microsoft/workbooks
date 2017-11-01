@@ -12,10 +12,10 @@ using AppKit;
 
 namespace Xamarin.Interactive.Client.Mac
 {
-	sealed partial class SessionWindow : NSWindow
-	{
-		SessionWindow (IntPtr handle) : base (handle)
-		{
-		}
-	}
+    sealed partial class SessionWindow : NSWindow
+    {
+        SessionWindow (IntPtr handle) : base (handle)
+        {
+        }
+    }
 }

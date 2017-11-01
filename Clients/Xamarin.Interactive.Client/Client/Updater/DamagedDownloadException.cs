@@ -10,10 +10,10 @@ using System;
 
 namespace Xamarin.Interactive.Client.Updater
 {
-	sealed class DamagedDownloadException : Exception
-	{
-		public DamagedDownloadException (string message) : base (message)
-		{
-		}
-	}
+    sealed class DamagedDownloadException : Exception
+    {
+        public DamagedDownloadException (string message) : base (message)
+        {
+        }
+    }
 }

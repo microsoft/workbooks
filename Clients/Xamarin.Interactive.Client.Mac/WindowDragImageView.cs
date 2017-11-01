@@ -13,13 +13,13 @@ using Foundation;
 
 namespace Xamarin.Interactive.Client.Mac
 {
-	[Register (nameof (WindowDragImageView))]
-	sealed class WindowDragImageView : NSImageView
-	{
-		WindowDragImageView (IntPtr handle) : base (handle)
-		{
-		}
+    [Register (nameof (WindowDragImageView))]
+    sealed class WindowDragImageView : NSImageView
+    {
+        WindowDragImageView (IntPtr handle) : base (handle)
+        {
+        }
 
-		public override bool MouseDownCanMoveWindow => true;
-	}
+        public override bool MouseDownCanMoveWindow => true;
+    }
 }

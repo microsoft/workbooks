@@ -13,56 +13,56 @@ using mshtml;
 
 namespace Xamarin.CrossBrowser
 {
-	public partial class CssStyleDeclaration : WrappedObject
-	{
-		internal CssStyleDeclaration (ScriptContext context, IHTMLCSSStyleDeclaration comObject) : base (context, (Object)comObject)
-		{
-		}
+    public partial class CssStyleDeclaration : WrappedObject
+    {
+        internal CssStyleDeclaration (ScriptContext context, IHTMLCSSStyleDeclaration comObject) : base (context, (Object)comObject)
+        {
+        }
 
-		public string CssText {
-			get {
-				return ((IHTMLCSSStyleDeclaration)ComObject).cssText;
-			}
-			set {
-				((IHTMLCSSStyleDeclaration)ComObject).cssText = value;
-			}
-		}
+        public string CssText {
+            get {
+                return ((IHTMLCSSStyleDeclaration)ComObject).cssText;
+            }
+            set {
+                ((IHTMLCSSStyleDeclaration)ComObject).cssText = value;
+            }
+        }
 
-		public int Length {
-			get {
-				return ((IHTMLCSSStyleDeclaration)ComObject).length;
-			}
-		}
+        public int Length {
+            get {
+                return ((IHTMLCSSStyleDeclaration)ComObject).length;
+            }
+        }
 
-		public CssRule ParentRule {
-			get {
-				return Wrap<CssRule> (((IHTMLCSSStyleDeclaration)ComObject).parentRule);
-			}
-		}
+        public CssRule ParentRule {
+            get {
+                return Wrap<CssRule> (((IHTMLCSSStyleDeclaration)ComObject).parentRule);
+            }
+        }
 
-		public string Item (int index)
-		{
-			return ((IHTMLCSSStyleDeclaration)ComObject).item (index);
-		}
+        public string Item (int index)
+        {
+            return ((IHTMLCSSStyleDeclaration)ComObject).item (index);
+        }
 
-		public void SetProperty (string name, string value, string priority = "")
-		{
-			((IHTMLCSSStyleDeclaration)ComObject).setProperty (name, value, priority);
-		}
+        public void SetProperty (string name, string value, string priority = "")
+        {
+            ((IHTMLCSSStyleDeclaration)ComObject).setProperty (name, value, priority);
+        }
 
-		public void RemoveProperty (string name)
-		{
-			((IHTMLCSSStyleDeclaration)ComObject).removeProperty (name);
-		}
+        public void RemoveProperty (string name)
+        {
+            ((IHTMLCSSStyleDeclaration)ComObject).removeProperty (name);
+        }
 
-		public string GetPropertyValue (string name)
-		{
-			return ((IHTMLCSSStyleDeclaration)ComObject).getPropertyValue (name);
-		}
+        public string GetPropertyValue (string name)
+        {
+            return ((IHTMLCSSStyleDeclaration)ComObject).getPropertyValue (name);
+        }
 
-		public string GetPropertyPriority (string name)
-		{
-			return ((IHTMLCSSStyleDeclaration)ComObject).getPropertyPriority (name);
-		}
-	}
+        public string GetPropertyPriority (string name)
+        {
+            return ((IHTMLCSSStyleDeclaration)ComObject).getPropertyPriority (name);
+        }
+    }
 }

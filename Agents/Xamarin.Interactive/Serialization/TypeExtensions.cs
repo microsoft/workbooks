@@ -10,9 +10,9 @@ using System;
 
 namespace Xamarin.Interactive.Serialization
 {
-	static class TypeExtensions
-	{
-		/// <summary>
+    static class TypeExtensions
+    {
+        /// <summary>
 		/// Gets the name of the type without any assembly qualification, including
 		/// on generic type arguments. No assembly qualification allows for redirecting
 		/// types from one assembly to another when serializing.
@@ -26,7 +26,7 @@ namespace Xamarin.Interactive.Serialization
 		/// Type.FullName: fully qualifies generic type arguments (X`1[[Y,asm2]]) (bad)
 		/// Type.ToString: does not qualify type or generic type arguments (X`1[Y]) (good)
 		/// </remarks>
-		public static string ToSerializableName (this Type type)
-			=> type?.ToString ();
-	}
+        public static string ToSerializableName (this Type type)
+            => type?.ToString ();
+    }
 }

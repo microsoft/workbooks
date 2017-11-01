@@ -8,11 +8,11 @@
 
 namespace Xamarin.Interactive.Editor
 {
-	enum EditorCommandStatus
-	{
-		Unsupported,
-		Hidden,
-		Enabled,
-		Disabled
-	}
+    enum EditorCommandStatus
+    {
+        Unsupported,
+        Hidden,
+        Enabled,
+        Disabled
+    }
 }

@@ -16,114 +16,114 @@ using Xamarin.Interactive.Logging;
 
 namespace Xamarin.Interactive.Messages
 {
-	sealed class MessageViewController : IMessageService
-	{
-		ImmutableArray<IMessageService> routes = ImmutableArray<IMessageService>.Empty;
+    sealed class MessageViewController : IMessageService
+    {
+        ImmutableArray<IMessageService> routes = ImmutableArray<IMessageService>.Empty;
 
-		public MessageViewController (
-			IStatusMessageViewDelegate statusMessageViewDelegate,
-			IAlertMessageViewDelegate alertMessageViewDelegate)
-		{
-			if (statusMessageViewDelegate != null)
-				AddRoute (new StatusMessageViewController (statusMessageViewDelegate));
+        public MessageViewController (
+            IStatusMessageViewDelegate statusMessageViewDelegate,
+            IAlertMessageViewDelegate alertMessageViewDelegate)
+        {
+            if (statusMessageViewDelegate != null)
+                AddRoute (new StatusMessageViewController (statusMessageViewDelegate));
 
-			if (alertMessageViewDelegate != null)
-				AddRoute (new AlertMessageViewController (alertMessageViewDelegate));
-		}
+            if (alertMessageViewDelegate != null)
+                AddRoute (new AlertMessageViewController (alertMessageViewDelegate));
+        }
 
-		void AddRoute (IMessageService messageService)
-		{
-			if (messageService == null)
-				throw new ArgumentNullException (nameof (messageService));
+        void AddRoute (IMessageService messageService)
+        {
+            if (messageService == null)
+                throw new ArgumentNullException (nameof (messageService));
 
-			routes = routes.Add (messageService);
-		}
+            routes = routes.Add (messageService);
+        }
 
-		public void ClearStatusMessages ()
-			=> routes.OfType<StatusMessageViewController> ().FirstOrDefault ()?.DismissAll ();
+        public void ClearStatusMessages ()
+            => routes.OfType<StatusMessageViewController> ().FirstOrDefault ()?.DismissAll ();
 
-		public Message PushMessage (Message message)
-		{
-			if (message == null)
-				throw new ArgumentNullException (nameof (message));
+        public Message PushMessage (Message message)
+        {
+            if (message == null)
+                throw new ArgumentNullException (nameof (message));
 
-			if (message.Kind == MessageKind.Alert) {
-				if (!message.HasActions)
-					message = message.WithAction (
-						new MessageAction (
-							MessageActionKind.Affirmative,
-							MessageAction.DismissActionId,
-							Catalog.GetString ("OK")));
+            if (message.Kind == MessageKind.Alert) {
+                if (!message.HasActions)
+                    message = message.WithAction (
+                        new MessageAction (
+                            MessageActionKind.Affirmative,
+                            MessageAction.DismissActionId,
+                            Catalog.GetString ("OK")));
 
-				if (message.ActionResponseHandler == null)
-					message = message.WithActionResponseHandler ((msg, _) => msg.Dispose ());
-			}
+                if (message.ActionResponseHandler == null)
+                    message = message.WithActionResponseHandler ((msg, _) => msg.Dispose ());
+            }
 
-			LogMessage (message);
+            LogMessage (message);
 
-			foreach (var route in routes) {
-				if (route.CanHandleMessage (message))
-					return route.PushMessage (message);
-			}
+            foreach (var route in routes) {
+                if (route.CanHandleMessage (message))
+                    return route.PushMessage (message);
+            }
 
-			throw new NotImplementedException (
-				$"support for {nameof (MessageKind)}.{message.Kind} not implemented");
-		}
+            throw new NotImplementedException (
+                $"support for {nameof (MessageKind)}.{message.Kind} not implemented");
+        }
 
-		public Task<MessageAction> PushAlertMessageAsync (
-			Message message,
-			bool disposeMessageOnResponse = true)
-		{
-			if (message == null)
-				throw new ArgumentNullException (nameof (message));
+        public Task<MessageAction> PushAlertMessageAsync (
+            Message message,
+            bool disposeMessageOnResponse = true)
+        {
+            if (message == null)
+                throw new ArgumentNullException (nameof (message));
 
-			if (message.Kind != MessageKind.Alert)
-				throw new ArgumentException (
-					"message.Kind must be MessageKind.Alert", nameof (message));
+            if (message.Kind != MessageKind.Alert)
+                throw new ArgumentException (
+                    "message.Kind must be MessageKind.Alert", nameof (message));
 
-			if (message.ActionResponseHandler != null)
-				throw new ArgumentException (
-					"message.ActionResponseHandler must be null", nameof (message));
+            if (message.ActionResponseHandler != null)
+                throw new ArgumentException (
+                    "message.ActionResponseHandler must be null", nameof (message));
 
-			var taskCompletionSource = new TaskCompletionSource<MessageAction> ();
+            var taskCompletionSource = new TaskCompletionSource<MessageAction> ();
 
-			PushMessage (message.WithActionResponseHandler ((m, a) => {
-				if (disposeMessageOnResponse)
-					m.Dispose ();
+            PushMessage (message.WithActionResponseHandler ((m, a) => {
+                if (disposeMessageOnResponse)
+                    m.Dispose ();
 
-				taskCompletionSource.SetResult (a.WithMessage (m));
-			}));
+                taskCompletionSource.SetResult (a.WithMessage (m));
+            }));
 
-			return taskCompletionSource.Task;
-		}
+            return taskCompletionSource.Task;
+        }
 
-		bool IMessageService.CanHandleMessage (Message message)
-		{
-			throw new NotSupportedException ();
-		}
+        bool IMessageService.CanHandleMessage (Message message)
+        {
+            throw new NotSupportedException ();
+        }
 
-		void IMessageService.DismissMessage (int messageId)
-		{
-			throw new NotSupportedException ();
-		}
+        void IMessageService.DismissMessage (int messageId)
+        {
+            throw new NotSupportedException ();
+        }
 
-		void LogMessage (Message message)
-		{
-			LogLevel logLevel;
-			switch (message.Severity) {
-			case MessageSeverity.Error:
-				logLevel = LogLevel.Error;
-				break;
-			default:
-				logLevel = LogLevel.Info;
-				break;
-			}
+        void LogMessage (Message message)
+        {
+            LogLevel logLevel;
+            switch (message.Severity) {
+            case MessageSeverity.Error:
+                logLevel = LogLevel.Error;
+                break;
+            default:
+                logLevel = LogLevel.Info;
+                break;
+            }
 
-			var logText = $"{nameof (PushMessage)} => {message.Kind}: {message.Text}";
-			if (!String.IsNullOrEmpty (message.DetailedText))
-				logText += $" ({message.DetailedText})";
+            var logText = $"{nameof (PushMessage)} => {message.Kind}: {message.Text}";
+            if (!String.IsNullOrEmpty (message.DetailedText))
+                logText += $" ({message.DetailedText})";
 
-			Log.Commit (logLevel, nameof (MessageViewController), logText);
-		}
-	}
+            Log.Commit (logLevel, nameof (MessageViewController), logText);
+        }
+    }
 }

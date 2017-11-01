@@ -13,20 +13,20 @@ using JavaScriptCore;
 
 namespace Xamarin.CrossBrowser
 {
-	public partial class WrappedObject
-	{
-		internal readonly JSValue UnderlyingJSValue;
+    public partial class WrappedObject
+    {
+        internal readonly JSValue UnderlyingJSValue;
 
-		internal WrappedObject (JSValue underlyingJSValue)
-		{
-			if (underlyingJSValue == null)
-				throw new ArgumentNullException ("underlyingJSValue");
-			UnderlyingJSValue = underlyingJSValue;
-		}
+        internal WrappedObject (JSValue underlyingJSValue)
+        {
+            if (underlyingJSValue == null)
+                throw new ArgumentNullException ("underlyingJSValue");
+            UnderlyingJSValue = underlyingJSValue;
+        }
 
-		public override string ToString ()
-		{
-			return UnderlyingJSValue.Invoke ("toString").ToNullableString ();
-		}
-	}
+        public override string ToString ()
+        {
+            return UnderlyingJSValue.Invoke ("toString").ToNullableString ();
+        }
+    }
 }

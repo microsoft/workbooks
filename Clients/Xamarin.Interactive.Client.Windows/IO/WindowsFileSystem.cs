@@ -10,18 +10,18 @@ using Xamarin.Interactive.Core;
 
 namespace Xamarin.Interactive.IO.Windows
 {
-	sealed class WindowsFileSystem : DotNetFileSystem
-	{
-		public override QuarantineInfo GetQuarantineInfo (FilePath path)
-		{
-			var zoneInfo = new ZoneInfo (path);
-			if (!zoneInfo.IsQuarantined)
-				return null;
+    sealed class WindowsFileSystem : DotNetFileSystem
+    {
+        public override QuarantineInfo GetQuarantineInfo (FilePath path)
+        {
+            var zoneInfo = new ZoneInfo (path);
+            if (!zoneInfo.IsQuarantined)
+                return null;
 
-			return new QuarantineInfo (path);
-		}
+            return new QuarantineInfo (path);
+        }
 
-		public override void StripQuarantineInfo (FilePath path)
-			=> new ZoneInfo (path).Unquarantine ();
-	}
+        public override void StripQuarantineInfo (FilePath path)
+            => new ZoneInfo (path).Unquarantine ();
+    }
 }

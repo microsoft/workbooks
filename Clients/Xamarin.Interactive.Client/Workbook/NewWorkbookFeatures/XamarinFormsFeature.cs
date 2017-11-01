@@ -15,27 +15,27 @@ using Xamarin.Interactive.NuGet;
 
 namespace Xamarin.Interactive.Workbook.NewWorkbookFeatures
 {
-	sealed class XamarinFormsFeature : NewWorkbookFeature
-	{
-		public static readonly XamarinFormsFeature SharedInstance = new XamarinFormsFeature ();
+    sealed class XamarinFormsFeature : NewWorkbookFeature
+    {
+        public static readonly XamarinFormsFeature SharedInstance = new XamarinFormsFeature ();
 
-		XamarinFormsFeature ()
-		{
-		}
+        XamarinFormsFeature ()
+        {
+        }
 
-		public override string Id { get; } = "xamarin.forms";
+        public override string Id { get; } = "xamarin.forms";
 
-		public override string Label { get; }
-			= Catalog.GetString ("Xamarin.Forms");
+        public override string Label { get; }
+            = Catalog.GetString ("Xamarin.Forms");
 
-		public override string Description { get; }
-			= Catalog.GetString ("Configure this workbook with support for Xamarin.Forms.");
+        public override string Description { get; }
+            = Catalog.GetString ("Configure this workbook with support for Xamarin.Forms.");
 
-		public override Task ConfigureClientSession (
-			ClientSession clientSession,
-			CancellationToken cancellationToken = default (CancellationToken))
-			=> clientSession.InstallPackageAsync (
-				new PackageViewModel (
-					InteractivePackageManager.FixedXamarinFormsPackageIdentity));
-	}
+        public override Task ConfigureClientSession (
+            ClientSession clientSession,
+            CancellationToken cancellationToken = default (CancellationToken))
+            => clientSession.InstallPackageAsync (
+                new PackageViewModel (
+                    InteractivePackageManager.FixedXamarinFormsPackageIdentity));
+    }
 }

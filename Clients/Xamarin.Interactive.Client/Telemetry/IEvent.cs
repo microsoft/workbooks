@@ -10,9 +10,9 @@ using System;
 
 namespace Xamarin.Interactive.Telemetry
 {
-	interface IEvent
-	{
-		string Key { get; }
-		DateTime Timestamp { get; }
-	}
+    interface IEvent
+    {
+        string Key { get; }
+        DateTime Timestamp { get; }
+    }
 }

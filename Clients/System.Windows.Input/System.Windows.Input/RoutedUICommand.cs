@@ -8,18 +8,18 @@
 
 namespace System.Windows.Input
 {
-	public class RoutedUICommand : RoutedCommand
-	{
-		public string Text { get; }
+    public class RoutedUICommand : RoutedCommand
+    {
+        public string Text { get; }
 
-		public RoutedUICommand (
-			string text,
-			string name,
-			Type ownerType,
-			InputGestureCollection inputGestures = null)
-			: base (name, ownerType, inputGestures)
-		{
-			Text = text;
-		}
-	}
+        public RoutedUICommand (
+            string text,
+            string name,
+            Type ownerType,
+            InputGestureCollection inputGestures = null)
+            : base (name, ownerType, inputGestures)
+        {
+            Text = text;
+        }
+    }
 }

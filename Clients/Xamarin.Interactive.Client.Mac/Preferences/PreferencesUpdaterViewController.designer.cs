@@ -9,42 +9,42 @@ using System.CodeDom.Compiler;
 
 namespace Xamarin.Interactive.Preferences
 {
-	[Register ("PreferencesUpdaterViewController")]
-	partial class PreferencesUpdaterViewController
-	{
-		[Outlet]
-		AppKit.NSTextField channelTextField { get; set; }
+    [Register ("PreferencesUpdaterViewController")]
+    partial class PreferencesUpdaterViewController
+    {
+        [Outlet]
+        AppKit.NSTextField channelTextField { get; set; }
 
-		[Outlet]
-		AppKit.NSPopUpButton frequencyPopUpButton { get; set; }
+        [Outlet]
+        AppKit.NSPopUpButton frequencyPopUpButton { get; set; }
 
-		[Outlet]
-		AppKit.NSTextField lastCheckedTextField { get; set; }
+        [Outlet]
+        AppKit.NSTextField lastCheckedTextField { get; set; }
 
-		[Outlet]
-		AppKit.NSButton switchChannelsButton { get; set; }
-		
-		void ReleaseDesignerOutlets ()
-		{
-			if (frequencyPopUpButton != null) {
-				frequencyPopUpButton.Dispose ();
-				frequencyPopUpButton = null;
-			}
+        [Outlet]
+        AppKit.NSButton switchChannelsButton { get; set; }
+        
+        void ReleaseDesignerOutlets ()
+        {
+            if (frequencyPopUpButton != null) {
+                frequencyPopUpButton.Dispose ();
+                frequencyPopUpButton = null;
+            }
 
-			if (channelTextField != null) {
-				channelTextField.Dispose ();
-				channelTextField = null;
-			}
+            if (channelTextField != null) {
+                channelTextField.Dispose ();
+                channelTextField = null;
+            }
 
-			if (lastCheckedTextField != null) {
-				lastCheckedTextField.Dispose ();
-				lastCheckedTextField = null;
-			}
+            if (lastCheckedTextField != null) {
+                lastCheckedTextField.Dispose ();
+                lastCheckedTextField = null;
+            }
 
-			if (switchChannelsButton != null) {
-				switchChannelsButton.Dispose ();
-				switchChannelsButton = null;
-			}
-		}
-	}
+            if (switchChannelsButton != null) {
+                switchChannelsButton.Dispose ();
+                switchChannelsButton = null;
+            }
+        }
+    }
 }

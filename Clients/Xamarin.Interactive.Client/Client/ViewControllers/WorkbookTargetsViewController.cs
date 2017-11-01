@@ -12,74 +12,74 @@ using System.ComponentModel;
 
 namespace Xamarin.Interactive.Client.ViewControllers
 {
-	sealed class WorkbookTargetsViewController : ObservableCollection<WorkbookAppViewController>, INotifyPropertyChanged
-	{
-		public new event PropertyChangedEventHandler PropertyChanged;
+    sealed class WorkbookTargetsViewController : ObservableCollection<WorkbookAppViewController>, INotifyPropertyChanged
+    {
+        public new event PropertyChangedEventHandler PropertyChanged;
 
-		WorkbookAppViewController selectedTarget;
-		public WorkbookAppViewController SelectedTarget {
-			get { return selectedTarget; }
-			set {
-				if (selectedTarget != value) {
-					selectedTarget = value;
-					PropertyChanged?.Invoke (
-						this,
-						new PropertyChangedEventArgs (nameof (SelectedTarget)));
-				}
-			}
-		}
+        WorkbookAppViewController selectedTarget;
+        public WorkbookAppViewController SelectedTarget {
+            get { return selectedTarget; }
+            set {
+                if (selectedTarget != value) {
+                    selectedTarget = value;
+                    PropertyChanged?.Invoke (
+                        this,
+                        new PropertyChangedEventArgs (nameof (SelectedTarget)));
+                }
+            }
+        }
 
-		bool isWorkbookSession;
+        bool isWorkbookSession;
 
-		public bool IsVisible => isWorkbookSession && SelectedTarget != null;
+        public bool IsVisible => isWorkbookSession && SelectedTarget != null;
 
-		public void UpdateTargets (ClientSession clientSession)
-		{
-			isWorkbookSession = clientSession != null && clientSession.SessionKind == ClientSessionKind.Workbook;
+        public void UpdateTargets (ClientSession clientSession)
+        {
+            isWorkbookSession = clientSession != null && clientSession.SessionKind == ClientSessionKind.Workbook;
 
-			SelectedTarget = null;
-			Clear ();
+            SelectedTarget = null;
+            Clear ();
 
-			var preferredWorkbookApps = clientSession
-				.Workbook
-				.PlatformTargets
-				.Select (WorkbookAppInstallation.Locate)
-				.Where (app => app != null)
-				.ToList ();
+            var preferredWorkbookApps = clientSession
+                .Workbook
+                .PlatformTargets
+                .Select (WorkbookAppInstallation.Locate)
+                .Where (app => app != null)
+                .ToList ();
 
-			var havePreferredWorkbookApp = false;
+            var havePreferredWorkbookApp = false;
 
-			foreach (var workbookApp in preferredWorkbookApps) {
-				havePreferredWorkbookApp = true;
-				var item = new WorkbookAppViewController (
-					workbookApp,
-					WorkbookAppViewController.Context.ComboBox,
-					true);
+            foreach (var workbookApp in preferredWorkbookApps) {
+                havePreferredWorkbookApp = true;
+                var item = new WorkbookAppViewController (
+                    workbookApp,
+                    WorkbookAppViewController.Context.ComboBox,
+                    true);
 
-				Add (item);
+                Add (item);
 
-				if (item.Enabled && SelectedTarget == null)
-					SelectedTarget = item;
-			}
+                if (item.Enabled && SelectedTarget == null)
+                    SelectedTarget = item;
+            }
 
-			var addedSeparator = false;
+            var addedSeparator = false;
 
-			foreach (var workbookApp in WorkbookAppInstallation.All) {
-				if (!preferredWorkbookApps.Contains (workbookApp)) {
-					if (havePreferredWorkbookApp && !addedSeparator) {
-						addedSeparator = true;
-						Add (WorkbookAppViewController.SeparatorItem);
-					}
+            foreach (var workbookApp in WorkbookAppInstallation.All) {
+                if (!preferredWorkbookApps.Contains (workbookApp)) {
+                    if (havePreferredWorkbookApp && !addedSeparator) {
+                        addedSeparator = true;
+                        Add (WorkbookAppViewController.SeparatorItem);
+                    }
 
-					Add (new WorkbookAppViewController (
-						workbookApp,
-						WorkbookAppViewController.Context.ComboBox,
-						true));
-				}
-			}
+                    Add (new WorkbookAppViewController (
+                        workbookApp,
+                        WorkbookAppViewController.Context.ComboBox,
+                        true));
+                }
+            }
 
-			if (SelectedTarget == null && Count > 0)
-				SelectedTarget = this [0];
-		}
-	}
+            if (SelectedTarget == null && Count > 0)
+                SelectedTarget = this [0];
+        }
+    }
 }

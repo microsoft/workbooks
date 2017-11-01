@@ -14,36 +14,36 @@ using Xamarin.Interactive.Logging;
 
 namespace Xamarin.Interactive.Client.Windows
 {
-	static class UserPresentableExceptionHandler
-	{
-		const string TAG = nameof (UserPresentableExceptionHandler);
+    static class UserPresentableExceptionHandler
+    {
+        const string TAG = nameof (UserPresentableExceptionHandler);
 
-		public static void Present (this UserPresentableException e, object uiContext = null)
-		{
-			Log.Error (TAG, $"{e.Message} ({e.Details})", e.InnerException ?? e);
+        public static void Present (this UserPresentableException e, object uiContext = null)
+        {
+            Log.Error (TAG, $"{e.Message} ({e.Details})", e.InnerException ?? e);
 
-			new Telemetry.Events.Error (e).Post ();
+            new Telemetry.Events.Error (e).Post ();
 
-			MainThread.Ensure ();
+            MainThread.Ensure ();
 
-			var window = new MetroDialogWindow {
-				Title = e.Message,
-				Message = e.Details,
-				AffirmativeButtonText = Catalog.GetString ("OK")
-			};
+            var window = new MetroDialogWindow {
+                Title = e.Message,
+                Message = e.Details,
+                AffirmativeButtonText = Catalog.GetString ("OK")
+            };
 
-			var ownerWindow = uiContext as Window;
+            var ownerWindow = uiContext as Window;
 
-			if (ownerWindow == null) {
-				window.Owner = ownerWindow;
-				window.Width = 400;
-				window.WindowStartupLocation = WindowStartupLocation.CenterScreen;
-			} else {
-				window.Width = ownerWindow.Width;
-				window.WindowStartupLocation = WindowStartupLocation.CenterOwner;
-			}
+            if (ownerWindow == null) {
+                window.Owner = ownerWindow;
+                window.Width = 400;
+                window.WindowStartupLocation = WindowStartupLocation.CenterScreen;
+            } else {
+                window.Width = ownerWindow.Width;
+                window.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+            }
 
-			window.ShowDialog ();
-		}
-	}
+            window.ShowDialog ();
+        }
+    }
 }

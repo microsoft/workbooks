@@ -15,26 +15,26 @@ using Xamarin.Interactive.Remote;
 
 namespace Xamarin.Interactive.Client.Mac
 {
-	[Register ("InspectorPropertyView")]
-	partial class InspectorPropertyView : NSTableView
-	{
-		public InspectorPropertyView (IntPtr handle) : base (handle)
-		{
-			Initialize ();
-		}
+    [Register ("InspectorPropertyView")]
+    partial class InspectorPropertyView : NSTableView
+    {
+        public InspectorPropertyView (IntPtr handle) : base (handle)
+        {
+            Initialize ();
+        }
 
-		[Export ("initWithCoder:")]
-		public InspectorPropertyView (NSCoder coder) : base (coder)
-		{
-			Initialize ();
-		}
+        [Export ("initWithCoder:")]
+        public InspectorPropertyView (NSCoder coder) : base (coder)
+        {
+            Initialize ();
+        }
 
-		void Initialize ()
-		{
-		}
+        void Initialize ()
+        {
+        }
 
-		public void SelectView (InspectView target)
-		{
-		}
-	}
+        public void SelectView (InspectView target)
+        {
+        }
+    }
 }

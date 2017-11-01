@@ -17,31 +17,31 @@ using Xamarin.Interactive.TreeModel;
 
 namespace Xamarin.Interactive.Workbook.Structure
 {
-	sealed class NuGetPackagesNode : TreeNode
-	{
-		public static readonly RoutedUICommand AddPackage = new RoutedUICommand (
-			Catalog.GetString ("Add Package…"),
-			"addPackage:",
-			typeof (NuGetPackagesNode));
+    sealed class NuGetPackagesNode : TreeNode
+    {
+        public static readonly RoutedUICommand AddPackage = new RoutedUICommand (
+            Catalog.GetString ("Add Package…"),
+            "addPackage:",
+            typeof (NuGetPackagesNode));
 
-		public new ObservableCollection<NuGetPackageNode> Children
-			=> (ObservableCollection<NuGetPackageNode>)base.Children;
+        public new ObservableCollection<NuGetPackageNode> Children
+            => (ObservableCollection<NuGetPackageNode>)base.Children;
 
-		public NuGetPackagesNode ()
-		{
-			IconName = "folder-component";
-			Name = Catalog.GetString ("NuGet Packages");
-			base.Children = new ObservableCollection<NuGetPackageNode> ();
+        public NuGetPackagesNode ()
+        {
+            IconName = "folder-component";
+            Name = Catalog.GetString ("NuGet Packages");
+            base.Children = new ObservableCollection<NuGetPackageNode> ();
 
-			Commands = new [] {
-				AddPackage
-			};
+            Commands = new [] {
+                AddPackage
+            };
 
-			DefaultCommand = AddPackage;
-		}
+            DefaultCommand = AddPackage;
+        }
 
-		public void UpdateChildren (IEnumerable<InteractivePackage> packages)
-			=> Children.UpdateTo (packages.Select (package => Children.FirstOrDefault (
-				n => n.RepresentedObject == package) ?? new NuGetPackageNode (package)).ToList ());
-	}
+        public void UpdateChildren (IEnumerable<InteractivePackage> packages)
+            => Children.UpdateTo (packages.Select (package => Children.FirstOrDefault (
+                n => n.RepresentedObject == package) ?? new NuGetPackageNode (package)).ToList ());
+    }
 }

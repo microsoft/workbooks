@@ -8,11 +8,11 @@
 
 namespace Xamarin.Interactive.Messages
 {
-	enum MessageActionKind
-	{
-		None,
-		Affirmative,
-		Negative,
-		Auxiliary
-	}
+    enum MessageActionKind
+    {
+        None,
+        Affirmative,
+        Negative,
+        Auxiliary
+    }
 }

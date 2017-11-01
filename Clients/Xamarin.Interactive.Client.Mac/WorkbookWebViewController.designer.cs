@@ -9,18 +9,18 @@ using System.CodeDom.Compiler;
 
 namespace Xamarin.Interactive.Client.Mac
 {
-	[Register ("WorkbookWebViewController")]
-	partial class WorkbookWebViewController
-	{
-		[Outlet]
-		Xamarin.Interactive.Client.Mac.ReplWebView webView { get; set; }
-		
-		void ReleaseDesignerOutlets ()
-		{
-			if (webView != null) {
-				webView.Dispose ();
-				webView = null;
-			}
-		}
-	}
+    [Register ("WorkbookWebViewController")]
+    partial class WorkbookWebViewController
+    {
+        [Outlet]
+        Xamarin.Interactive.Client.Mac.ReplWebView webView { get; set; }
+        
+        void ReleaseDesignerOutlets ()
+        {
+            if (webView != null) {
+                webView.Dispose ();
+                webView = null;
+            }
+        }
+    }
 }

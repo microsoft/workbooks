@@ -10,11 +10,11 @@ using Xamarin.Forms;
 
 namespace Xamarin.Workbooks.Android
 {
-	public class WorkbookFormsApplication : Application
-	{
-		public WorkbookFormsApplication ()
-		{
-			MainPage = new ContentPage ();
-		}
-	}
+    public class WorkbookFormsApplication : Application
+    {
+        public WorkbookFormsApplication ()
+        {
+            MainPage = new ContentPage ();
+        }
+    }
 }

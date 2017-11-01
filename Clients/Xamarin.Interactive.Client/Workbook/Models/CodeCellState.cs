@@ -16,33 +16,33 @@ using Xamarin.Interactive.Workbook.Views;
 
 namespace Xamarin.Interactive.Workbook.Models
 {
-	sealed class CodeCellState
-	{
-		public CodeCell Cell { get; }
+    sealed class CodeCellState
+    {
+        public CodeCell Cell { get; }
 
-		public IEditor Editor { get; set; }
-		public CodeCellView View { get; set; }
-		public RoslynCompilationWorkspace CompilationWorkspace { get; set; }
-		public DocumentId DocumentId { get; set; }
-		public Guid LastEvaluationRequestId { get; set; }
-		public bool IsResultAnExpression { get; set; }
+        public IEditor Editor { get; set; }
+        public CodeCellView View { get; set; }
+        public RoslynCompilationWorkspace CompilationWorkspace { get; set; }
+        public DocumentId DocumentId { get; set; }
+        public Guid LastEvaluationRequestId { get; set; }
+        public bool IsResultAnExpression { get; set; }
 
-		public int EvaluationCount { get; private set; }
-		public bool AgentTerminatedWhileEvaluating { get; private set; }
+        public int EvaluationCount { get; private set; }
+        public bool AgentTerminatedWhileEvaluating { get; private set; }
 
-		public CodeCellState (CodeCell cell)
-			=> Cell = cell ?? throw new ArgumentNullException (nameof (cell));
+        public CodeCellState (CodeCell cell)
+            => Cell = cell ?? throw new ArgumentNullException (nameof (cell));
 
-		public bool IsFrozen => View.IsFrozen;
-		public void Freeze () => View.Freeze ();
+        public bool IsFrozen => View.IsFrozen;
+        public void Freeze () => View.Freeze ();
 
-		public void NotifyEvaluated (bool agentTerminatedWhileEvaluating)
-		{
-			EvaluationCount++;
-			AgentTerminatedWhileEvaluating = agentTerminatedWhileEvaluating;
-			View.IsDirty = false;
-			View.IsOutdated = false;
-			View.IsEvaluating = false;
-		}
-	}
+        public void NotifyEvaluated (bool agentTerminatedWhileEvaluating)
+        {
+            EvaluationCount++;
+            AgentTerminatedWhileEvaluating = agentTerminatedWhileEvaluating;
+            View.IsDirty = false;
+            View.IsOutdated = false;
+            View.IsEvaluating = false;
+        }
+    }
 }

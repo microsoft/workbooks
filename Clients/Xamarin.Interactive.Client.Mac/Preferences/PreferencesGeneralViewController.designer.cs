@@ -9,53 +9,53 @@ using System.CodeDom.Compiler;
 
 namespace Xamarin.Interactive.Preferences
 {
-	[Register ("PreferencesGeneralViewController")]
-	partial class PreferencesGeneralViewController
-	{
-		[Outlet]
-		AppKit.NSStepper fontSizeStepper { get; set; }
+    [Register ("PreferencesGeneralViewController")]
+    partial class PreferencesGeneralViewController
+    {
+        [Outlet]
+        AppKit.NSStepper fontSizeStepper { get; set; }
 
-		[Outlet]
-		AppKit.NSTextField fontSizeTextField { get; set; }
+        [Outlet]
+        AppKit.NSTextField fontSizeTextField { get; set; }
 
-		[Outlet]
-		AppKit.NSButton saveHistoryCheckButton { get; set; }
+        [Outlet]
+        AppKit.NSButton saveHistoryCheckButton { get; set; }
 
-		[Outlet]
-		AppKit.NSButton showExecutionTimingsCheckButton { get; set; }
+        [Outlet]
+        AppKit.NSButton showExecutionTimingsCheckButton { get; set; }
 
-		[Outlet]
-		AppKit.NSButton showLineNumbersCheckButton { get; set; }
+        [Outlet]
+        AppKit.NSButton showLineNumbersCheckButton { get; set; }
 
-		[Action ("ResetAllPreferences:")]
-		partial void ResetAllPreferences (Foundation.NSObject sender);
-		
-		void ReleaseDesignerOutlets ()
-		{
-			if (fontSizeStepper != null) {
-				fontSizeStepper.Dispose ();
-				fontSizeStepper = null;
-			}
+        [Action ("ResetAllPreferences:")]
+        partial void ResetAllPreferences (Foundation.NSObject sender);
+        
+        void ReleaseDesignerOutlets ()
+        {
+            if (fontSizeStepper != null) {
+                fontSizeStepper.Dispose ();
+                fontSizeStepper = null;
+            }
 
-			if (fontSizeTextField != null) {
-				fontSizeTextField.Dispose ();
-				fontSizeTextField = null;
-			}
+            if (fontSizeTextField != null) {
+                fontSizeTextField.Dispose ();
+                fontSizeTextField = null;
+            }
 
-			if (saveHistoryCheckButton != null) {
-				saveHistoryCheckButton.Dispose ();
-				saveHistoryCheckButton = null;
-			}
+            if (saveHistoryCheckButton != null) {
+                saveHistoryCheckButton.Dispose ();
+                saveHistoryCheckButton = null;
+            }
 
-			if (showExecutionTimingsCheckButton != null) {
-				showExecutionTimingsCheckButton.Dispose ();
-				showExecutionTimingsCheckButton = null;
-			}
+            if (showExecutionTimingsCheckButton != null) {
+                showExecutionTimingsCheckButton.Dispose ();
+                showExecutionTimingsCheckButton = null;
+            }
 
-			if (showLineNumbersCheckButton != null) {
-				showLineNumbersCheckButton.Dispose ();
-				showLineNumbersCheckButton = null;
-			}
-		}
-	}
+            if (showLineNumbersCheckButton != null) {
+                showLineNumbersCheckButton.Dispose ();
+                showLineNumbersCheckButton = null;
+            }
+        }
+    }
 }

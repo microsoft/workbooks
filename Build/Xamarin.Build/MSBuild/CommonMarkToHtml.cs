@@ -15,28 +15,28 @@ using CommonMark;
 
 namespace Xamarin.MSBuild
 {
-	public sealed class CommonMarkToHtml : Task
-	{
-		[Required]
-		public string CommonMarkFile { get; set; }
+    public sealed class CommonMarkToHtml : Task
+    {
+        [Required]
+        public string CommonMarkFile { get; set; }
 
-		public string HtmlTemplateFile { get; set; }
+        public string HtmlTemplateFile { get; set; }
 
-		[Required]
-		public string HtmlOutputFile { get; set; }
+        [Required]
+        public string HtmlOutputFile { get; set; }
 
-		public override bool Execute ()
-		{
-			var html = CommonMarkConverter.Convert (File.ReadAllText (CommonMarkFile));
+        public override bool Execute ()
+        {
+            var html = CommonMarkConverter.Convert (File.ReadAllText (CommonMarkFile));
 
-			if (!string.IsNullOrEmpty (HtmlTemplateFile))
-				html = File.ReadAllText (HtmlTemplateFile).Replace ("@COMMONMARK@", html);
+            if (!string.IsNullOrEmpty (HtmlTemplateFile))
+                html = File.ReadAllText (HtmlTemplateFile).Replace ("@COMMONMARK@", html);
 
-			Directory.CreateDirectory (Path.GetDirectoryName (HtmlOutputFile));
+            Directory.CreateDirectory (Path.GetDirectoryName (HtmlOutputFile));
 
-			File.WriteAllText (HtmlOutputFile, html);
+            File.WriteAllText (HtmlOutputFile, html);
 
-			return true;
-		}
-	}
+            return true;
+        }
+    }
 }

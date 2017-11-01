@@ -8,7 +8,7 @@
 
 namespace System.Windows.Input
 {
-	public class KeyGesture : InputGesture
-	{
-	}
+    public class KeyGesture : InputGesture
+    {
+    }
 }

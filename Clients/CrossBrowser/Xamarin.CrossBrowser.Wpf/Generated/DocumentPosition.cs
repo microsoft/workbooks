@@ -13,14 +13,14 @@ using mshtml;
 
 namespace Xamarin.CrossBrowser
 {
-	public enum DocumentPosition : ushort
-	{
-		None = 0,
-		Disconnected = 1,
-		Preceding = 2,
-		Following = 4,
-		Contains = 8,
-		ContainedBy = 16,
-		ImplementationSpecific = 32
-	}
+    public enum DocumentPosition : ushort
+    {
+        None = 0,
+        Disconnected = 1,
+        Preceding = 2,
+        Following = 4,
+        Contains = 8,
+        ContainedBy = 16,
+        ImplementationSpecific = 32
+    }
 }

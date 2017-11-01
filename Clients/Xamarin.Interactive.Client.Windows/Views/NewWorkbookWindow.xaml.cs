@@ -18,63 +18,63 @@ using Xamarin.Interactive.Client.ViewControllers;
 
 namespace Xamarin.Interactive.Client.Windows.Views
 {
-	partial class NewWorkbookWindow
-	{
-		const string TAG = nameof (NewWorkbookWindow);
+    partial class NewWorkbookWindow
+    {
+        const string TAG = nameof (NewWorkbookWindow);
 
-		readonly MenuManager menuManager;
-		readonly NewWorkbookViewController viewController;
+        readonly MenuManager menuManager;
+        readonly NewWorkbookViewController viewController;
 
-		public AgentType SelectedAgentType {
-			get => viewController.SelectedAgentType;
-			set => viewController.SelectedAgentType = value;
-		}
+        public AgentType SelectedAgentType {
+            get => viewController.SelectedAgentType;
+            set => viewController.SelectedAgentType = value;
+        }
 
-		public NewWorkbookWindow ()
-		{
-			InitializeComponent ();
+        public NewWorkbookWindow ()
+        {
+            InitializeComponent ();
 
-			menuManager = new MenuManager (mainMenu, this);
-			viewController = new NewWorkbookViewController ();
+            menuManager = new MenuManager (mainMenu, this);
+            viewController = new NewWorkbookViewController ();
 
-			DataContext = viewController;
+            DataContext = viewController;
 
-			Loaded += (o, e) =>
-				sideImage.Sources = new [] {
-					new BitmapImage (new Uri ("pack://application:,,,/new-workbook-background.png")),
-					new BitmapImage (new Uri ("pack://application:,,,/new-workbook-background@2x.png")),
-				};
-		}
+            Loaded += (o, e) =>
+                sideImage.Sources = new [] {
+                    new BitmapImage (new Uri ("pack://application:,,,/new-workbook-background.png")),
+                    new BitmapImage (new Uri ("pack://application:,,,/new-workbook-background@2x.png")),
+                };
+        }
 
-		void OnCreateWorkbook (object sender, RoutedEventArgs e)
-		{
-			var agentType = viewController.SelectedAgentType;
+        void OnCreateWorkbook (object sender, RoutedEventArgs e)
+        {
+            var agentType = viewController.SelectedAgentType;
 
-			AgentSessionWindow window = null;
-			try {
-				window = AgentSessionWindow.Open (viewController.SelectedItem.CreateClientSessionUri ());
-			} catch (Exception ex) {
-				Log.Error (TAG, ex);
-			}
+            AgentSessionWindow window = null;
+            try {
+                window = AgentSessionWindow.Open (viewController.SelectedItem.CreateClientSessionUri ());
+            } catch (Exception ex) {
+                Log.Error (TAG, ex);
+            }
 
-			if (window != null) {
-				// Without this, the WPF agent app window remains in the background.
-				window.Activate ();
-				Hide ();
-			}
-		}
+            if (window != null) {
+                // Without this, the WPF agent app window remains in the background.
+                window.Activate ();
+                Hide ();
+            }
+        }
 
-		protected override void OnClosing (CancelEventArgs e)
-		{
-			e.Cancel = true;
-			Hide ();
-			App.CheckNeedsExit ();
-		}
+        protected override void OnClosing (CancelEventArgs e)
+        {
+            e.Cancel = true;
+            Hide ();
+            App.CheckNeedsExit ();
+        }
 
-		void OnCloseCommandExecuted (object sender, ExecutedRoutedEventArgs e)
-			=> Close ();
+        void OnCloseCommandExecuted (object sender, ExecutedRoutedEventArgs e)
+            => Close ();
 
-		void OnOpenCommandExecuted (object sender, ExecutedRoutedEventArgs e)
-			=> App.OpenWorkbook ();
-	}
+        void OnOpenCommandExecuted (object sender, ExecutedRoutedEventArgs e)
+            => App.OpenWorkbook ();
+    }
 }

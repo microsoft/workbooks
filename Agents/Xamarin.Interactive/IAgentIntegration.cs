@@ -8,8 +8,8 @@
 
 namespace Xamarin.Interactive
 {
-	public interface IAgentIntegration
-	{
-		void IntegrateWith (IAgent agent);
-	}
+    public interface IAgentIntegration
+    {
+        void IntegrateWith (IAgent agent);
+    }
 }

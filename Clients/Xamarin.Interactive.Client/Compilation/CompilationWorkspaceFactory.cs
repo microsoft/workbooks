@@ -23,182 +23,182 @@ using static Xamarin.Interactive.Compilation.InteractiveDependencyResolver;
 
 namespace Xamarin.Interactive.Compilation
 {
-	static class CompilationWorkspaceFactory
-	{
-		const string TAG = nameof (CompilationWorkspaceFactory);
+    static class CompilationWorkspaceFactory
+    {
+        const string TAG = nameof (CompilationWorkspaceFactory);
 
-		public static async Task<RoslynCompilationWorkspace> CreateWorkspaceAsync (ClientSession clientSession)
-		{
-			if (clientSession == null)
-				throw new ArgumentNullException (nameof (clientSession));
+        public static async Task<RoslynCompilationWorkspace> CreateWorkspaceAsync (ClientSession clientSession)
+        {
+            if (clientSession == null)
+                throw new ArgumentNullException (nameof (clientSession));
 
-			if (!clientSession.Agent.IsConnected)
-				throw new InvalidOperationException ("ClientSession must be connected to agent");
+            if (!clientSession.Agent.IsConnected)
+                throw new InvalidOperationException ("ClientSession must be connected to agent");
 
-			var agentType = clientSession.Agent.Type;
+            var agentType = clientSession.Agent.Type;
 
-			// HACK: This is a temporary fix to get iOS agent/app assemblies sent to the
-			//       Windows client when using the remote sim.
-			var includePeImage = clientSession.Agent.IncludePeImage;
+            // HACK: This is a temporary fix to get iOS agent/app assemblies sent to the
+            //       Windows client when using the remote sim.
+            var includePeImage = clientSession.Agent.IncludePeImage;
 
-			var configuration = await clientSession.Agent.Api.InitializeEvaluationContextAsync (includePeImage)
-				.ConfigureAwait (false);
-			if (configuration == null)
-				return null;
+            var configuration = await clientSession.Agent.Api.InitializeEvaluationContextAsync (includePeImage)
+                .ConfigureAwait (false);
+            if (configuration == null)
+                return null;
 
-			var dependencyResolver = CreateDependencyResolver (
-				agentType,
-				clientSession.Agent.AssemblySearchPaths);
+            var dependencyResolver = CreateDependencyResolver (
+                agentType,
+                clientSession.Agent.AssemblySearchPaths);
 
-			var defaultRefs = await clientSession.Agent.Api.GetAppDomainAssembliesAsync (includePeImage)
-				.ConfigureAwait (false);
+            var defaultRefs = await clientSession.Agent.Api.GetAppDomainAssembliesAsync (includePeImage)
+                .ConfigureAwait (false);
 
-			// Only do this for Inspector sessions. Workbooks will do their own Forms init later.
-			if (clientSession.SessionKind == ClientSessionKind.LiveInspection) {
-				var formsReference = defaultRefs.FirstOrDefault (ra => ra.Name.Name == "Xamarin.Forms.Core");
-				if (formsReference != null)
-					await LoadFormsAgentExtensions (
-						formsReference.Name.Version,
-						clientSession,
-						dependencyResolver,
-						includePeImage).ConfigureAwait (false);
-			}
+            // Only do this for Inspector sessions. Workbooks will do their own Forms init later.
+            if (clientSession.SessionKind == ClientSessionKind.LiveInspection) {
+                var formsReference = defaultRefs.FirstOrDefault (ra => ra.Name.Name == "Xamarin.Forms.Core");
+                if (formsReference != null)
+                    await LoadFormsAgentExtensions (
+                        formsReference.Name.Version,
+                        clientSession,
+                        dependencyResolver,
+                        includePeImage).ConfigureAwait (false);
+            }
 
-			dependencyResolver.AddDefaultReferences (defaultRefs);
+            dependencyResolver.AddDefaultReferences (defaultRefs);
 
-			return await Task.Run (() => new RoslynCompilationWorkspace (
-				dependencyResolver,
-				configuration,
-				agentType,
-				ResolveHostObjectType (
-					dependencyResolver,
-					configuration,
-					agentType),
-				includePeImage), clientSession.CancellationToken);
-		}
+            return await Task.Run (() => new RoslynCompilationWorkspace (
+                dependencyResolver,
+                configuration,
+                agentType,
+                ResolveHostObjectType (
+                    dependencyResolver,
+                    configuration,
+                    agentType),
+                includePeImage), clientSession.CancellationToken);
+        }
 
-		public static async Task LoadFormsAgentExtensions (
-			Version formsVersion,
-			ClientSession clientSession,
-			DependencyResolver dependencyResolver,
-			bool includePeImage)
-		{
-			var formsAssembly = InteractiveInstallation.Default.LocateFormsAssembly (
-				clientSession.Agent.Type);
-			if (string.IsNullOrWhiteSpace (formsAssembly))
-				return;
+        public static async Task LoadFormsAgentExtensions (
+            Version formsVersion,
+            ClientSession clientSession,
+            DependencyResolver dependencyResolver,
+            bool includePeImage)
+        {
+            var formsAssembly = InteractiveInstallation.Default.LocateFormsAssembly (
+                clientSession.Agent.Type);
+            if (string.IsNullOrWhiteSpace (formsAssembly))
+                return;
 
-			var deps = dependencyResolver.Resolve (new [] { new FilePath (formsAssembly) });
+            var deps = dependencyResolver.Resolve (new [] { new FilePath (formsAssembly) });
 
-			// Now dig out the resolved assembly that is Xamarin.Forms.Core, and compare it to the
-			// default ref.
-			var resolvedFormsAssembly = deps.FirstOrDefault (d => d.AssemblyName.Name == "Xamarin.Forms.Core");
-			if (resolvedFormsAssembly == null) {
-				Log.Warning (TAG,
-					"Cannot enable Forms integration because Forms cannot be " +
-					"resolved. Check log for assembly search path issues.");
-				return;
-			}
-			var ourVersion = resolvedFormsAssembly.AssemblyName.Version;
-			var theirVersion = formsVersion;
+            // Now dig out the resolved assembly that is Xamarin.Forms.Core, and compare it to the
+            // default ref.
+            var resolvedFormsAssembly = deps.FirstOrDefault (d => d.AssemblyName.Name == "Xamarin.Forms.Core");
+            if (resolvedFormsAssembly == null) {
+                Log.Warning (TAG,
+                    "Cannot enable Forms integration because Forms cannot be " +
+                    "resolved. Check log for assembly search path issues.");
+                return;
+            }
+            var ourVersion = resolvedFormsAssembly.AssemblyName.Version;
+            var theirVersion = formsVersion;
 
-			if (ourVersion.Major != theirVersion.Major) {
-				Log.Warning (
-					TAG,
-					"Assembly version mismatch between app's Xamarin.Forms.Core and" +
-					$"our referenced Xamarin.Forms.Core. Our version: {ourVersion}, " +
-					$"their version: {theirVersion}. Won't load Xamarin.Forms agent " +
-					"integration, as it probably won't work."
-				);
-				return;
-			}
+            if (ourVersion.Major != theirVersion.Major) {
+                Log.Warning (
+                    TAG,
+                    "Assembly version mismatch between app's Xamarin.Forms.Core and" +
+                    $"our referenced Xamarin.Forms.Core. Our version: {ourVersion}, " +
+                    $"their version: {theirVersion}. Won't load Xamarin.Forms agent " +
+                    "integration, as it probably won't work."
+                );
+                return;
+            }
 
-			var assembliesToLoad = deps.Select (dep => {
-				var peImage = includePeImage ? GetFileBytes (dep.Path) : null;
-				var syms = includePeImage ? GetDebugSymbolsFromAssemblyPath (dep.Path) : null;
-				return new AssemblyDefinition (
-					dep.AssemblyName,
-					dep.Path,
-					peImage: peImage,
-					debugSymbols: syms
-				);
-			}).ToArray ();
+            var assembliesToLoad = deps.Select (dep => {
+                var peImage = includePeImage ? GetFileBytes (dep.Path) : null;
+                var syms = includePeImage ? GetDebugSymbolsFromAssemblyPath (dep.Path) : null;
+                return new AssemblyDefinition (
+                    dep.AssemblyName,
+                    dep.Path,
+                    peImage: peImage,
+                    debugSymbols: syms
+                );
+            }).ToArray ();
 
-			var res = await clientSession.Agent.Api.LoadAssembliesAsync (
-				clientSession.CompilationWorkspace.EvaluationContextId,
-				assembliesToLoad);
+            var res = await clientSession.Agent.Api.LoadAssembliesAsync (
+                clientSession.CompilationWorkspace.EvaluationContextId,
+                assembliesToLoad);
 
-			var failed = res.LoadResults.Where (p => !p.Success);
-			if (failed.Any ()) {
-				var failedLoads = string.Join (", ", failed.Select (p => p.AssemblyName.Name));
-				Log.Warning (
-					TAG,
-					$"Xamarin.Forms reference detected, but integration may not have" +
-					$" loaded properly. Assemblies that did not load: {failedLoads}");
-			}
-		}
+            var failed = res.LoadResults.Where (p => !p.Success);
+            if (failed.Any ()) {
+                var failedLoads = string.Join (", ", failed.Select (p => p.AssemblyName.Name));
+                Log.Warning (
+                    TAG,
+                    $"Xamarin.Forms reference detected, but integration may not have" +
+                    $" loaded properly. Assemblies that did not load: {failedLoads}");
+            }
+        }
 
-		static InteractiveDependencyResolver CreateDependencyResolver (
-			AgentType agentType,
-			ImmutableArray<string> assemblySearchPaths)
-		{
-			var dependencyResolver = new InteractiveDependencyResolver (agentType: agentType);
-			var consoleOrWpf = agentType == AgentType.WPF || agentType == AgentType.Console;;
+        static InteractiveDependencyResolver CreateDependencyResolver (
+            AgentType agentType,
+            ImmutableArray<string> assemblySearchPaths)
+        {
+            var dependencyResolver = new InteractiveDependencyResolver (agentType: agentType);
+            var consoleOrWpf = agentType == AgentType.WPF || agentType == AgentType.Console;;
 
-			foreach (var strPath in assemblySearchPaths) {
-				var path = new FilePath (strPath);
-				if (path.DirectoryExists) {
-					Log.Info (TAG, $"Searching assembly path {path}");
-					dependencyResolver.AddAssemblySearchPath (
-						path,
-						scanRecursively: consoleOrWpf);
+            foreach (var strPath in assemblySearchPaths) {
+                var path = new FilePath (strPath);
+                if (path.DirectoryExists) {
+                    Log.Info (TAG, $"Searching assembly path {path}");
+                    dependencyResolver.AddAssemblySearchPath (
+                        path,
+                        scanRecursively: consoleOrWpf);
 
-					if (!consoleOrWpf) {
-						path = path.Combine ("Facades");
-						if (path.DirectoryExists)
-							dependencyResolver.AddAssemblySearchPath (path);
-					}
-				} else
-					Log.Warning (TAG, $"Assembly search path {strPath} does not exist");
-			}
+                    if (!consoleOrWpf) {
+                        path = path.Combine ("Facades");
+                        if (path.DirectoryExists)
+                            dependencyResolver.AddAssemblySearchPath (path);
+                    }
+                } else
+                    Log.Warning (TAG, $"Assembly search path {strPath} does not exist");
+            }
 
-			return dependencyResolver;
-		}
+            return dependencyResolver;
+        }
 
-		static Type ResolveHostObjectType (
-			InteractiveDependencyResolver dependencyResolver,
-			TargetCompilationConfiguration configuration,
-			AgentType agentType)
-		{
-			if (agentType == AgentType.DotNetCore) {
-				return Assembly
-					.ReflectionOnlyLoadFrom (InteractiveInstallation.Default.LocateNetStandardRefAssembly ())
-					.GetType (configuration.GlobalStateTypeName);
-			}
+        static Type ResolveHostObjectType (
+            InteractiveDependencyResolver dependencyResolver,
+            TargetCompilationConfiguration configuration,
+            AgentType agentType)
+        {
+            if (agentType == AgentType.DotNetCore) {
+                return Assembly
+                    .ReflectionOnlyLoadFrom (InteractiveInstallation.Default.LocateNetStandardRefAssembly ())
+                    .GetType (configuration.GlobalStateTypeName);
+            }
 
-			using (var assemblyContext = new EvaluationAssemblyContext ()) {
-				string globalStateAssemblyCachePath = null;
-				if (configuration.GlobalStateAssembly.Content.PEImage != null)
-					globalStateAssemblyCachePath =
-						dependencyResolver.CacheRemoteAssembly (
-							configuration.GlobalStateAssembly);
+            using (var assemblyContext = new EvaluationAssemblyContext ()) {
+                string globalStateAssemblyCachePath = null;
+                if (configuration.GlobalStateAssembly.Content.PEImage != null)
+                    globalStateAssemblyCachePath =
+                        dependencyResolver.CacheRemoteAssembly (
+                            configuration.GlobalStateAssembly);
 
-				var resolvedAssemblies = dependencyResolver
-					.Resolve (new [] { configuration.GlobalStateAssembly })
-					.Select (r => new AssemblyDefinition (r.AssemblyName, r.Path));
+                var resolvedAssemblies = dependencyResolver
+                    .Resolve (new [] { configuration.GlobalStateAssembly })
+                    .Select (r => new AssemblyDefinition (r.AssemblyName, r.Path));
 
-				assemblyContext.AddRange (resolvedAssemblies);
+                assemblyContext.AddRange (resolvedAssemblies);
 
-				var globalStateAssembly = resolvedAssemblies.First (
-					assembly => ResolvedAssembly.NameEqualityComparer.Default.Equals (
-						assembly.Name,
-						configuration.GlobalStateAssembly.Name));
+                var globalStateAssembly = resolvedAssemblies.First (
+                    assembly => ResolvedAssembly.NameEqualityComparer.Default.Equals (
+                        assembly.Name,
+                        configuration.GlobalStateAssembly.Name));
 
-				return Assembly
-					.ReflectionOnlyLoadFrom (
-						globalStateAssemblyCachePath ?? globalStateAssembly.Content.Location)
-					.GetType (configuration.GlobalStateTypeName);
-			}
-		}
-	}
+                return Assembly
+                    .ReflectionOnlyLoadFrom (
+                        globalStateAssemblyCachePath ?? globalStateAssembly.Content.Location)
+                    .GetType (configuration.GlobalStateTypeName);
+            }
+        }
+    }
 }

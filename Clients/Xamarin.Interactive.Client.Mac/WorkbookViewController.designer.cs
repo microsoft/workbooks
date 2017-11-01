@@ -9,12 +9,12 @@ using System.CodeDom.Compiler;
 
 namespace Xamarin.Interactive.Client.Mac
 {
-	[Register ("WorkbookViewController")]
-	partial class WorkbookViewController
-	{
-		
-		void ReleaseDesignerOutlets ()
-		{
-		}
-	}
+    [Register ("WorkbookViewController")]
+    partial class WorkbookViewController
+    {
+        
+        void ReleaseDesignerOutlets ()
+        {
+        }
+    }
 }

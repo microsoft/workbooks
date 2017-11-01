@@ -9,12 +9,12 @@ using System.CodeDom.Compiler;
 
 namespace Xamarin.Interactive.Client.Mac
 {
-	[Register ("NewWorkbookCollectionView")]
-	partial class NewWorkbookCollectionView
-	{
-		
-		void ReleaseDesignerOutlets ()
-		{
-		}
-	}
+    [Register ("NewWorkbookCollectionView")]
+    partial class NewWorkbookCollectionView
+    {
+        
+        void ReleaseDesignerOutlets ()
+        {
+        }
+    }
 }

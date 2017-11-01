@@ -12,10 +12,10 @@ using Xamarin.Interactive.Core;
 
 namespace Xamarin.Interactive.Unified
 {
-	public abstract class UnifiedEvaluationContextGlobalObject : EvaluationContextGlobalObject
-	{
-		internal UnifiedEvaluationContextGlobalObject (Agent agent) : base (agent)
-		{
-		}
-	}
+    public abstract class UnifiedEvaluationContextGlobalObject : EvaluationContextGlobalObject
+    {
+        internal UnifiedEvaluationContextGlobalObject (Agent agent) : base (agent)
+        {
+        }
+    }
 }

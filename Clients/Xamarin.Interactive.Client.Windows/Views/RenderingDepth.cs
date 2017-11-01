@@ -8,9 +8,9 @@ using System;
 
 namespace Xamarin.Interactive.Client.Windows.Views
 {
-	enum RenderingDepth
-	{
-		TwoDimensional,
-		ThreeDimensional
-	}
+    enum RenderingDepth
+    {
+        TwoDimensional,
+        ThreeDimensional
+    }
 }

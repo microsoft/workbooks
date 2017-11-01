@@ -14,9 +14,9 @@ using Xamarin.Interactive.Representations;
 
 namespace Xamarin.Interactive.Client.Mac.WebDocument.MapView
 {
-	sealed class PolylinePointAnnotation : MKPointAnnotation
-	{
-		public int Index { get; set; }
-		public ChangeableWrapper<GeoPolyline> Polyline { get; set; }
-	}
+    sealed class PolylinePointAnnotation : MKPointAnnotation
+    {
+        public int Index { get; set; }
+        public ChangeableWrapper<GeoPolyline> Polyline { get; set; }
+    }
 }

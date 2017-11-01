@@ -16,37 +16,37 @@ using Xamarin.Interactive.Rendering;
 
 namespace Xamarin.Interactive.Workbook.Views
 {
-	abstract class CellView : ICellView
-	{
-		public HtmlDocument Document { get; }
-		public HtmlElement RootElement { get; }
-		public HtmlElement ContentElement { get; }
-		public HtmlElement FooterElement { get; }
+    abstract class CellView : ICellView
+    {
+        public HtmlDocument Document { get; }
+        public HtmlElement RootElement { get; }
+        public HtmlElement ContentElement { get; }
+        public HtmlElement FooterElement { get; }
 
-		public abstract IEditor Editor { get; }
+        public abstract IEditor Editor { get; }
 
-		protected CellView (HtmlDocument document, string cssClass)
-		{
-			if (document == null)
-				throw new ArgumentNullException (nameof(document));
+        protected CellView (HtmlDocument document, string cssClass)
+        {
+            if (document == null)
+                throw new ArgumentNullException (nameof(document));
 
-			Document = document;
+            Document = document;
 
-			RootElement = Document.CreateElement ("article", cssClass);
-			ContentElement = Document.CreateElement ("section");
-			FooterElement = Document.CreateElement ("footer");
+            RootElement = Document.CreateElement ("article", cssClass);
+            ContentElement = Document.CreateElement ("section");
+            FooterElement = Document.CreateElement ("footer");
 
-			RootElement.AppendChild (ContentElement);
-			RootElement.AppendChild (FooterElement);
-		}
+            RootElement.AppendChild (ContentElement);
+            RootElement.AppendChild (FooterElement);
+        }
 
-		public abstract void Focus (bool scrollIntoView = true);
+        public abstract void Focus (bool scrollIntoView = true);
 
-		protected HtmlElement CreateContentContainer (string cssClass = null)
-		{
-			var container = Document.CreateElement ("div", cssClass);
-			SynchronizationContext.Current.Post (o => ((dynamic)container).style.opacity = 1, null);
-			return container;
-		}
-	}
+        protected HtmlElement CreateContentContainer (string cssClass = null)
+        {
+            var container = Document.CreateElement ("div", cssClass);
+            SynchronizationContext.Current.Post (o => ((dynamic)container).style.opacity = 1, null);
+            return container;
+        }
+    }
 }

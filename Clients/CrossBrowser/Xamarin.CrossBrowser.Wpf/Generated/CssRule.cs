@@ -13,34 +13,34 @@ using mshtml;
 
 namespace Xamarin.CrossBrowser
 {
-	public partial class CssRule : WrappedObject
-	{
-		internal CssRule (ScriptContext context, IHTMLCSSRule comObject) : base (context, (Object)comObject)
-		{
-		}
+    public partial class CssRule : WrappedObject
+    {
+        internal CssRule (ScriptContext context, IHTMLCSSRule comObject) : base (context, (Object)comObject)
+        {
+        }
 
-		public string CssText {
-			get {
-				return ((IHTMLCSSRule)ComObject).cssText;
-			}
-		}
+        public string CssText {
+            get {
+                return ((IHTMLCSSRule)ComObject).cssText;
+            }
+        }
 
-		public CssRule ParentRule {
-			get {
-				return Wrap<CssRule> (((IHTMLCSSRule)ComObject).parentRule);
-			}
-		}
+        public CssRule ParentRule {
+            get {
+                return Wrap<CssRule> (((IHTMLCSSRule)ComObject).parentRule);
+            }
+        }
 
-		public CssStyleSheet ParentStyleSheet {
-			get {
-				return Wrap<CssStyleSheet> (((IHTMLCSSRule)ComObject).parentStyleSheet);
-			}
-		}
+        public CssStyleSheet ParentStyleSheet {
+            get {
+                return Wrap<CssStyleSheet> (((IHTMLCSSRule)ComObject).parentStyleSheet);
+            }
+        }
 
-		public CssRuleType Type {
-			get {
-				return (CssRuleType)((IHTMLCSSRule)ComObject).type;
-			}
-		}
-	}
+        public CssRuleType Type {
+            get {
+                return (CssRuleType)((IHTMLCSSRule)ComObject).type;
+            }
+        }
+    }
 }

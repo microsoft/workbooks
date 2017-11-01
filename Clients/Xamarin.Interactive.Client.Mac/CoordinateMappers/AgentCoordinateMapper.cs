@@ -12,17 +12,17 @@ using CoreGraphics;
 
 namespace Xamarin.Interactive.Client.Mac.CoordinateMappers
 {
-	abstract class AgentCoordinateMapper : IDisposable
-	{
-		public abstract bool TryGetLocalCoordinate (CGPoint hostCoordinate, out CGPoint localCoordinate);
+    abstract class AgentCoordinateMapper : IDisposable
+    {
+        public abstract bool TryGetLocalCoordinate (CGPoint hostCoordinate, out CGPoint localCoordinate);
 
-		public void Dispose ()
-		{
-			Dispose (true);
-		}
+        public void Dispose ()
+        {
+            Dispose (true);
+        }
 
-		protected virtual void Dispose (bool disposing)
-		{
-		}
-	}
+        protected virtual void Dispose (bool disposing)
+        {
+        }
+    }
 }

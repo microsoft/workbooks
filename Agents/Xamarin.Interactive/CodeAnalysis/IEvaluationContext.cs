@@ -10,9 +10,9 @@ using System;
 
 namespace Xamarin.Interactive.CodeAnalysis
 {
-	public interface IEvaluationContext
-	{
-		EvaluationContextId Id { get; }
-		IObservable<IEvaluation> Evaluations { get; }
-	}
+    public interface IEvaluationContext
+    {
+        EvaluationContextId Id { get; }
+        IObservable<IEvaluation> Evaluations { get; }
+    }
 }

@@ -11,19 +11,19 @@ using Xamarin.Interactive.Workbook.Models;
 
 namespace Xamarin.Interactive.Workbook.Events
 {
-	abstract class InsertCellEvent : EditorEvent
-	{
-		public Cell SourceCell { get; }
+    abstract class InsertCellEvent : EditorEvent
+    {
+        public Cell SourceCell { get; }
 
-		protected InsertCellEvent (Cell sourceCell) : base (sourceCell.View.Editor)
-			=> SourceCell = sourceCell;
-	}
+        protected InsertCellEvent (Cell sourceCell) : base (sourceCell.View.Editor)
+            => SourceCell = sourceCell;
+    }
 
-	sealed class InsertCellEvent<TCell> : InsertCellEvent
-		where TCell : Cell
-	{
-		public InsertCellEvent (Cell sourceCell) : base (sourceCell)
-		{
-		}
-	}
+    sealed class InsertCellEvent<TCell> : InsertCellEvent
+        where TCell : Cell
+    {
+        public InsertCellEvent (Cell sourceCell) : base (sourceCell)
+        {
+        }
+    }
 }

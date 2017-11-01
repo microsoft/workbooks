@@ -13,11 +13,11 @@ using JavaScriptCore;
 
 namespace Xamarin.CrossBrowser
 {
-	public enum EventPhase : uint
-	{
-		None = 0,
-		Capturing = 1,
-		AtTarget = 2,
-		Bubbling = 3
-	}
+    public enum EventPhase : uint
+    {
+        None = 0,
+        Capturing = 1,
+        AtTarget = 2,
+        Bubbling = 3
+    }
 }

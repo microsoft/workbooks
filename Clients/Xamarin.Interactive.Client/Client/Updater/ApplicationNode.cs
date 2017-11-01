@@ -11,15 +11,15 @@ using System.Xml.Serialization;
 
 namespace Xamarin.Interactive.Client.Updater
 {
-	public sealed class ApplicationNode
-	{
-		[XmlAttribute ("name")]
-		public string Name { get; set; }
+    public sealed class ApplicationNode
+    {
+        [XmlAttribute ("name")]
+        public string Name { get; set; }
 
-		[XmlAttribute ("id")]
-		public string Id { get; set; }
+        [XmlAttribute ("id")]
+        public string Id { get; set; }
 
-		[XmlElement ("Update")]
-		public List<UpdateNode> Updates { get; set; } = new List<UpdateNode> ();
-	}
+        [XmlElement ("Update")]
+        public List<UpdateNode> Updates { get; set; } = new List<UpdateNode> ();
+    }
 }

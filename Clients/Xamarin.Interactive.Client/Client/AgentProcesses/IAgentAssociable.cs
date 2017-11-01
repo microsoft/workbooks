@@ -13,10 +13,10 @@ using Xamarin.Interactive.Core;
 
 namespace Xamarin.Interactive.Client.AgentProcesses
 {
-	interface IAgentAssociable
-	{
-		Task<AgentAssociation> GetAgentAssociationAsync (
-			AgentIdentity agentIdentity,
-			CancellationToken cancellationToken);
-	}
+    interface IAgentAssociable
+    {
+        Task<AgentAssociation> GetAgentAssociationAsync (
+            AgentIdentity agentIdentity,
+            CancellationToken cancellationToken);
+    }
 }

@@ -10,9 +10,9 @@ using System.Collections.Generic;
 
 namespace Xamarin.Interactive.Inspection
 {
-	interface IViewHierarchyHandlerManager
-	{
-		IReadOnlyList<string> AvailableHierarchyKinds { get; }
-		void AddViewHierarchyHandler (string hierarchyKind, IViewHierarchyHandler handler);
-	}
+    interface IViewHierarchyHandlerManager
+    {
+        IReadOnlyList<string> AvailableHierarchyKinds { get; }
+        void AddViewHierarchyHandler (string hierarchyKind, IViewHierarchyHandler handler);
+    }
 }

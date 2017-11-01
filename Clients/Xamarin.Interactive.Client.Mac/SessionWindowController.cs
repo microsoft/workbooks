@@ -16,91 +16,91 @@ using Xamarin.Interactive.Preferences;
 
 namespace Xamarin.Interactive.Client.Mac
 {
-	sealed partial class SessionWindowController : NSWindowController, INSMenuValidation
-	{
-		const string TAG = nameof (SessionWindowController);
+    sealed partial class SessionWindowController : NSWindowController, INSMenuValidation
+    {
+        const string TAG = nameof (SessionWindowController);
 
-		public SessionWindowTabViewController TabViewController
-			=> (SessionWindowTabViewController)ContentViewController;
+        public SessionWindowTabViewController TabViewController
+            => (SessionWindowTabViewController)ContentViewController;
 
-		public ClientSession Session { get; private set; }
+        public ClientSession Session { get; private set; }
 
-		SessionWindowController (IntPtr handle) : base (handle)
-		{
-		}
+        SessionWindowController (IntPtr handle) : base (handle)
+        {
+        }
 
-		public override void WindowDidLoad ()
-		{
-			MainThread.Ensure ();
+        public override void WindowDidLoad ()
+        {
+            MainThread.Ensure ();
 
-			Session = SessionDocument.InstanceForWindowControllers?.Session;
-			if (Session == null) {
-				Log.Error (TAG, "Unable to get ClientSession from SessionDocument");
-				throw new InvalidOperationException ();
-			}
+            Session = SessionDocument.InstanceForWindowControllers?.Session;
+            if (Session == null) {
+                Log.Error (TAG, "Unable to get ClientSession from SessionDocument");
+                throw new InvalidOperationException ();
+            }
 
-			var viewControllers = new MacClientSessionViewControllers (this);
-			Session.InitializeViewControllers (viewControllers);
+            var viewControllers = new MacClientSessionViewControllers (this);
+            Session.InitializeViewControllers (viewControllers);
 
-			ShouldCascadeWindows = false;
-			Window.FrameAutosaveName = "SessionWindow";
+            ShouldCascadeWindows = false;
+            Window.FrameAutosaveName = "SessionWindow";
 
-			Window.TitleVisibility = NSWindowTitleVisibility.Hidden;
+            Window.TitleVisibility = NSWindowTitleVisibility.Hidden;
 
-			var toolbar = new NSToolbar ("xi-toolbar-main-toolbar-" + Guid.NewGuid ()) {
-				SizeMode = NSToolbarSizeMode.Regular,
-				DisplayMode = NSToolbarDisplayMode.Icon,
-				AllowsUserCustomization = false
-			};
+            var toolbar = new NSToolbar ("xi-toolbar-main-toolbar-" + Guid.NewGuid ()) {
+                SizeMode = NSToolbarSizeMode.Regular,
+                DisplayMode = NSToolbarDisplayMode.Icon,
+                AllowsUserCustomization = false
+            };
 
-			new SessionToolbarDelegate (Session, viewControllers, toolbar);
+            new SessionToolbarDelegate (Session, viewControllers, toolbar);
 
-			Window.Toolbar = toolbar;
+            Window.Toolbar = toolbar;
 
-			base.WindowDidLoad ();
-		}
+            base.WindowDidLoad ();
+        }
 
-		public bool ValidateMenuItem (NSMenuItem item)
-		{
-			if (TabViewController != null && TabViewController.RespondsToSelector (item.Action))
-				return TabViewController.ValidateMenuItem (item);
+        public bool ValidateMenuItem (NSMenuItem item)
+        {
+            if (TabViewController != null && TabViewController.RespondsToSelector (item.Action))
+                return TabViewController.ValidateMenuItem (item);
 
-			return RespondsToSelector (item.Action);
-		}
+            return RespondsToSelector (item.Action);
+        }
 
-		public override bool RespondsToSelector (ObjCRuntime.Selector sel)
-		{
-			if (TabViewController != null && TabViewController.RespondsToSelector (sel))
-				return true;
+        public override bool RespondsToSelector (ObjCRuntime.Selector sel)
+        {
+            if (TabViewController != null && TabViewController.RespondsToSelector (sel))
+                return true;
 
-			return base.RespondsToSelector (sel);
-		}
+            return base.RespondsToSelector (sel);
+        }
 
-		#region Main Menu Actions
+        #region Main Menu Actions
 
-		[Export ("zoomIn:")]
-		void ZoomIn (NSObject sender)
-			=> Prefs.UI.Font.Update (UIFontPreference.UpdateAction.Increase);
+        [Export ("zoomIn:")]
+        void ZoomIn (NSObject sender)
+            => Prefs.UI.Font.Update (UIFontPreference.UpdateAction.Increase);
 
-		[Export ("zoomOut:")]
-		void ZoomOut (NSObject sender)
-			=> Prefs.UI.Font.Update (UIFontPreference.UpdateAction.Decrease);
+        [Export ("zoomOut:")]
+        void ZoomOut (NSObject sender)
+            => Prefs.UI.Font.Update (UIFontPreference.UpdateAction.Decrease);
 
-		[Export ("resetZoom:")]
-		void ResetZoom (NSObject sender)
-			=> Prefs.UI.Font.Update (UIFontPreference.UpdateAction.ResetDefault);
+        [Export ("resetZoom:")]
+        void ResetZoom (NSObject sender)
+            => Prefs.UI.Font.Update (UIFontPreference.UpdateAction.ResetDefault);
 
-		[Export ("terminateAgent:")]
-		void TerminateAgent (NSObject sender)
-		{
-			#if DEBUG
+        [Export ("terminateAgent:")]
+        void TerminateAgent (NSObject sender)
+        {
+            #if DEBUG
 			Session.TerminateAgentConnection ();
-			#endif
-		}
+            #endif
+        }
 
-		[Export ("clearHistory:")]
-		void ClearHistory (NSObject sender) => Session.ViewControllers.ReplHistory?.Clear ();
+        [Export ("clearHistory:")]
+        void ClearHistory (NSObject sender) => Session.ViewControllers.ReplHistory?.Clear ();
 
-		#endregion
-	}
+        #endregion
+    }
 }

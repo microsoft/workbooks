@@ -13,40 +13,40 @@ using mshtml;
 
 namespace Xamarin.CrossBrowser
 {
-	public partial class StyleSheet : WrappedObject
-	{
-		internal StyleSheet (ScriptContext context, IHTMLStyleSheet comObject) : base (context, (Object)comObject)
-		{
-		}
+    public partial class StyleSheet : WrappedObject
+    {
+        internal StyleSheet (ScriptContext context, IHTMLStyleSheet comObject) : base (context, (Object)comObject)
+        {
+        }
 
-		public string Href {
-			get {
-				return ((IHTMLStyleSheet)ComObject).href;
-			}
-		}
+        public string Href {
+            get {
+                return ((IHTMLStyleSheet)ComObject).href;
+            }
+        }
 
-		public string Id {
-			get {
-				return ((IHTMLStyleSheet)ComObject).id;
-			}
-		}
+        public string Id {
+            get {
+                return ((IHTMLStyleSheet)ComObject).id;
+            }
+        }
 
-		public string Title {
-			get {
-				return ((IHTMLStyleSheet4)ComObject).title;
-			}
-		}
+        public string Title {
+            get {
+                return ((IHTMLStyleSheet4)ComObject).title;
+            }
+        }
 
-		public string Type {
-			get {
-				return ((IHTMLStyleSheet4)ComObject).type;
-			}
-		}
+        public string Type {
+            get {
+                return ((IHTMLStyleSheet4)ComObject).type;
+            }
+        }
 
-		public Node OwnerNode {
-			get {
-				return Wrap<Node> (((IHTMLStyleSheet4)ComObject).ownerNode);
-			}
-		}
-	}
+        public Node OwnerNode {
+            get {
+                return Wrap<Node> (((IHTMLStyleSheet4)ComObject).ownerNode);
+            }
+        }
+    }
 }

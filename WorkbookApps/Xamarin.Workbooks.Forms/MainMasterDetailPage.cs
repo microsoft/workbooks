@@ -23,30 +23,30 @@ using Xamarin.Forms;
 
 namespace MasterDetailPageNavigation
 {
-	public class MainMasterDetailPage : MasterDetailPage
-	{
-		MasterPage masterPage;
+    public class MainMasterDetailPage : MasterDetailPage
+    {
+        MasterPage masterPage;
 
-		public MainMasterDetailPage ()
-		{
-			masterPage = new MasterPage ();
-			Master = masterPage;
-			Detail = new NavigationPage (new ContactsPage ());
+        public MainMasterDetailPage ()
+        {
+            masterPage = new MasterPage ();
+            Master = masterPage;
+            Detail = new NavigationPage (new ContactsPage ());
 
-			masterPage.ListView.ItemSelected += OnItemSelected;
+            masterPage.ListView.ItemSelected += OnItemSelected;
 
-			if (Device.RuntimePlatform == Device.Windows)
-				Master.Icon = "swap.png";
-		}
+            if (Device.RuntimePlatform == Device.Windows)
+                Master.Icon = "swap.png";
+        }
 
-		void OnItemSelected (object sender, SelectedItemChangedEventArgs e)
-		{
-			var item = e.SelectedItem as MasterPageItem;
-			if (item != null) {
-				Detail = new NavigationPage ((Page)Activator.CreateInstance (item.TargetType));
-				masterPage.ListView.SelectedItem = null;
-				IsPresented = false;
-			}
-		}
-	}
+        void OnItemSelected (object sender, SelectedItemChangedEventArgs e)
+        {
+            var item = e.SelectedItem as MasterPageItem;
+            if (item != null) {
+                Detail = new NavigationPage ((Page)Activator.CreateInstance (item.TargetType));
+                masterPage.ListView.SelectedItem = null;
+                IsPresented = false;
+            }
+        }
+    }
 }

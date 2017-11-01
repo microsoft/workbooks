@@ -9,29 +9,29 @@ using System.CodeDom.Compiler;
 
 namespace Xamarin.Interactive.Client.Mac
 {
-	[Register ("ViewHierarchyViewController")]
-	partial class ViewHierarchyViewController
-	{
-		[Outlet]
-		AppKit.NSSegmentedControl hierarchySelector { get; set; }
+    [Register ("ViewHierarchyViewController")]
+    partial class ViewHierarchyViewController
+    {
+        [Outlet]
+        AppKit.NSSegmentedControl hierarchySelector { get; set; }
 
-		[Outlet]
-		Xamarin.Interactive.Client.Mac.InspectorOutlineView outlineView { get; set; }
+        [Outlet]
+        Xamarin.Interactive.Client.Mac.InspectorOutlineView outlineView { get; set; }
 
-		[Action ("HierarchySelectionChanged:")]
-		partial void HierarchySelectionChanged (Foundation.NSObject sender);
+        [Action ("HierarchySelectionChanged:")]
+        partial void HierarchySelectionChanged (Foundation.NSObject sender);
 
-		void ReleaseDesignerOutlets ()
-		{
-			if (hierarchySelector != null) {
-				hierarchySelector.Dispose ();
-				hierarchySelector = null;
-			}
+        void ReleaseDesignerOutlets ()
+        {
+            if (hierarchySelector != null) {
+                hierarchySelector.Dispose ();
+                hierarchySelector = null;
+            }
 
-			if (outlineView != null) {
-				outlineView.Dispose ();
-				outlineView = null;
-			}
-		}
-	}
+            if (outlineView != null) {
+                outlineView.Dispose ();
+                outlineView = null;
+            }
+        }
+    }
 }

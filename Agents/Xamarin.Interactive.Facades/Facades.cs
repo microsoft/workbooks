@@ -8,10 +8,10 @@
 
 namespace System
 {
-	[AttributeUsage (
-		AttributeTargets.Class | AttributeTargets.Struct | AttributeTargets.Enum | AttributeTargets.Delegate,
-		Inherited = false)]
-	sealed class SerializableAttribute : Attribute
-	{
-	}
+    [AttributeUsage (
+        AttributeTargets.Class | AttributeTargets.Struct | AttributeTargets.Enum | AttributeTargets.Delegate,
+        Inherited = false)]
+    sealed class SerializableAttribute : Attribute
+    {
+    }
 }

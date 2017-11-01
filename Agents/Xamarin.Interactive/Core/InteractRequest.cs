@@ -14,18 +14,18 @@ using Xamarin.Interactive.Representations;
 
 namespace Xamarin.Interactive.Core
 {
-	[Serializable]
-	sealed class InteractRequest : MainThreadRequest<InteractResponse>
-	{
-		public long InteractiveObjectHandle { get; set; }
-		public object Message { get; set; }
+    [Serializable]
+    sealed class InteractRequest : MainThreadRequest<InteractResponse>
+    {
+        public long InteractiveObjectHandle { get; set; }
+        public object Message { get; set; }
 
-		protected override Task<InteractResponse> HandleAsync (Agent agent)
-		{
-			var result = ObjectCache.Shared.GetObject (InteractiveObjectHandle) as IInteractiveObject;
-			if (result != null)
-				result = result.Interact (Message);
-			return Task.FromResult (new InteractResponse { Result = result });
-		}
-	}
+        protected override Task<InteractResponse> HandleAsync (Agent agent)
+        {
+            var result = ObjectCache.Shared.GetObject (InteractiveObjectHandle) as IInteractiveObject;
+            if (result != null)
+                result = result.Interact (Message);
+            return Task.FromResult (new InteractResponse { Result = result });
+        }
+    }
 }

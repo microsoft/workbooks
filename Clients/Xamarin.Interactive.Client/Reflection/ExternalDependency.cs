@@ -10,13 +10,13 @@ using Xamarin.Interactive.Core;
 
 namespace Xamarin.Interactive.Reflection
 {
-	abstract class ExternalDependency
-	{
-		public FilePath Location { get; }
+    abstract class ExternalDependency
+    {
+        public FilePath Location { get; }
 
-		protected ExternalDependency (FilePath location)
-		{
-			Location = location;
-		}
-	}
+        protected ExternalDependency (FilePath location)
+        {
+            Location = location;
+        }
+    }
 }

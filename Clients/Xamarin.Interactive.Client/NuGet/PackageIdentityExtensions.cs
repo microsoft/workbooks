@@ -8,9 +8,9 @@
 
 namespace NuGet.Packaging.Core
 {
-	static class PackageIdentityExtensions
-	{
-		public static string GetFullName (this PackageIdentity package)
-			=> $"{package.Id} {package.Version?.ToNormalizedString ()}";
-	}
+    static class PackageIdentityExtensions
+    {
+        public static string GetFullName (this PackageIdentity package)
+            => $"{package.Id} {package.Version?.ToNormalizedString ()}";
+    }
 }

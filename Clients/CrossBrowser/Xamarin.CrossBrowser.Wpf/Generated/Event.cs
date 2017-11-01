@@ -13,73 +13,73 @@ using mshtml;
 
 namespace Xamarin.CrossBrowser
 {
-	public partial class Event : WrappedObject
-	{
-		internal Event (ScriptContext context, IDOMEvent comObject) : base (context, comObject)
-		{
-		}
+    public partial class Event : WrappedObject
+    {
+        internal Event (ScriptContext context, IDOMEvent comObject) : base (context, comObject)
+        {
+        }
 
-		public bool Bubbles {
-			get {
-				return ((IDOMEvent)ComObject).bubbles;
-			}
-		}
+        public bool Bubbles {
+            get {
+                return ((IDOMEvent)ComObject).bubbles;
+            }
+        }
 
-		public bool Cancelable {
-			get {
-				return ((IDOMEvent)ComObject).cancelable;
-			}
-		}
+        public bool Cancelable {
+            get {
+                return ((IDOMEvent)ComObject).cancelable;
+            }
+        }
 
-		public EventTarget CurrentTarget {
-			get {
-				return Wrap<EventTarget> (((IDOMEvent)ComObject).currentTarget);
-			}
-		}
+        public EventTarget CurrentTarget {
+            get {
+                return Wrap<EventTarget> (((IDOMEvent)ComObject).currentTarget);
+            }
+        }
 
-		public bool DefaultPrevented {
-			get {
-				return ((IDOMEvent)ComObject).defaultPrevented;
-			}
-		}
+        public bool DefaultPrevented {
+            get {
+                return ((IDOMEvent)ComObject).defaultPrevented;
+            }
+        }
 
-		public EventPhase EventPhase {
-			get {
-				return (EventPhase)((IDOMEvent)ComObject).eventPhase;
-			}
-		}
+        public EventPhase EventPhase {
+            get {
+                return (EventPhase)((IDOMEvent)ComObject).eventPhase;
+            }
+        }
 
-		public EventTarget Target {
-			get {
-				return Wrap<EventTarget> (((IDOMEvent)ComObject).target);
-			}
-		}
+        public EventTarget Target {
+            get {
+                return Wrap<EventTarget> (((IDOMEvent)ComObject).target);
+            }
+        }
 
-		public string Type {
-			get {
-				return ((IDOMEvent)ComObject).type;
-			}
-		}
+        public string Type {
+            get {
+                return ((IDOMEvent)ComObject).type;
+            }
+        }
 
-		public bool IsTrusted {
-			get {
-				return ((IDOMEvent)ComObject).isTrusted;
-			}
-		}
+        public bool IsTrusted {
+            get {
+                return ((IDOMEvent)ComObject).isTrusted;
+            }
+        }
 
-		public void PreventDefault ()
-		{
-			((IDOMEvent)ComObject).preventDefault ();
-		}
+        public void PreventDefault ()
+        {
+            ((IDOMEvent)ComObject).preventDefault ();
+        }
 
-		public void StopImmediatePropagation ()
-		{
-			((IDOMEvent)ComObject).stopImmediatePropagation ();
-		}
+        public void StopImmediatePropagation ()
+        {
+            ((IDOMEvent)ComObject).stopImmediatePropagation ();
+        }
 
-		public void StopPropagation ()
-		{
-			((IDOMEvent)ComObject).stopPropagation ();
-		}
-	}
+        public void StopPropagation ()
+        {
+            ((IDOMEvent)ComObject).stopPropagation ();
+        }
+    }
 }

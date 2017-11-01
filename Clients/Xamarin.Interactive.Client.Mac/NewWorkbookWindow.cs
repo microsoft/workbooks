@@ -15,30 +15,30 @@ using Xamarin.Interactive.I18N;
 
 namespace Xamarin.Interactive.Client.Mac
 {
-	sealed partial class NewWorkbookWindow : NSWindow
-	{
-		NewWorkbookWindow (IntPtr handle) : base (handle)
-		{
-		}
+    sealed partial class NewWorkbookWindow : NSWindow
+    {
+        NewWorkbookWindow (IntPtr handle) : base (handle)
+        {
+        }
 
-		public override void AwakeFromNib ()
-		{
-			BackgroundColor = NSColor.White;
+        public override void AwakeFromNib ()
+        {
+            BackgroundColor = NSColor.White;
 
-			MovableByWindowBackground = true;
+            MovableByWindowBackground = true;
 
-			Title = Catalog.GetString ("New Workbook");
+            Title = Catalog.GetString ("New Workbook");
 
-			Center ();
-		}
+            Center ();
+        }
 
-		[Export ("close:")]
-		public void Close (NSObject sender)
-		{
-			if (IsSheet && SheetParent != null)
-				SheetParent.EndSheet (this);
-			else
-				PerformClose (sender);
-		}
-	}
+        [Export ("close:")]
+        public void Close (NSObject sender)
+        {
+            if (IsSheet && SheetParent != null)
+                SheetParent.EndSheet (this);
+            else
+                PerformClose (sender);
+        }
+    }
 }

@@ -13,10 +13,10 @@ using JavaScriptCore;
 
 namespace Xamarin.CrossBrowser
 {
-	public partial class UIEvent : Event
-	{
-		internal UIEvent (JSValue underlyingJSValue) : base (underlyingJSValue)
-		{
-		}
-	}
+    public partial class UIEvent : Event
+    {
+        internal UIEvent (JSValue underlyingJSValue) : base (underlyingJSValue)
+        {
+        }
+    }
 }

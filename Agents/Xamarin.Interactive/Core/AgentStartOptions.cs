@@ -10,9 +10,9 @@ using Xamarin.Interactive.Client;
 
 namespace Xamarin.Interactive.Core
 {
-	public class AgentStartOptions
-	{
-		internal ClientSessionKind? ClientSessionKind { get; set; }
-		public ushort? Port { get; set; }
-	}
+    public class AgentStartOptions
+    {
+        internal ClientSessionKind? ClientSessionKind { get; set; }
+        public ushort? Port { get; set; }
+    }
 }

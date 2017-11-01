@@ -11,29 +11,29 @@ using Xamarin.Interactive.OutlineView;
 
 namespace Xamarin.Interactive.Client.Mac
 {
-	[Register ("WorkbookOutlineViewController")]
-	partial class WorkbookOutlineViewController
-	{
-		[Outlet]
-		AppKit.NSMenu addItemMenu { get; set; }
+    [Register ("WorkbookOutlineViewController")]
+    partial class WorkbookOutlineViewController
+    {
+        [Outlet]
+        AppKit.NSMenu addItemMenu { get; set; }
 
-		[Outlet]
-		CollectionOutlineView outlineView { get; set; }
+        [Outlet]
+        CollectionOutlineView outlineView { get; set; }
 
-		[Action ("addItem:")]
-		partial void addItem (Foundation.NSObject sender);
+        [Action ("addItem:")]
+        partial void addItem (Foundation.NSObject sender);
 
-		void ReleaseDesignerOutlets ()
-		{
-			if (outlineView != null) {
-				outlineView.Dispose ();
-				outlineView = null;
-			}
+        void ReleaseDesignerOutlets ()
+        {
+            if (outlineView != null) {
+                outlineView.Dispose ();
+                outlineView = null;
+            }
 
-			if (addItemMenu != null) {
-				addItemMenu.Dispose ();
-				addItemMenu = null;
-			}
-		}
-	}
+            if (addItemMenu != null) {
+                addItemMenu.Dispose ();
+                addItemMenu = null;
+            }
+        }
+    }
 }

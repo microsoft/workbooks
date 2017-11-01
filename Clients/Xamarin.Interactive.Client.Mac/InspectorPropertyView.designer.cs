@@ -9,11 +9,11 @@ using System.CodeDom.Compiler;
 
 namespace Xamarin.Interactive.Client.Mac
 {
-	partial class InspectorPropertyView
-	{
-		
-		void ReleaseDesignerOutlets ()
-		{
-		}
-	}
+    partial class InspectorPropertyView
+    {
+        
+        void ReleaseDesignerOutlets ()
+        {
+        }
+    }
 }

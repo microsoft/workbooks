@@ -13,27 +13,27 @@ using Xamarin.Interactive.Remote;
 
 namespace Xamarin.Interactive.Wpf
 {
-	/// <summary>
+    /// <summary>
 	/// An artificial "root" element containing InspectViews for all of the app's current Windows and their
 	/// children.
 	/// </summary>
-	[Serializable]
-	class WpfRootInspectView : InspectView
-	{
-		public WpfRootInspectView ()
-		{
-			SetHandle (IntPtr.Zero);
-			DisplayName = "Root";
+    [Serializable]
+    class WpfRootInspectView : InspectView
+    {
+        public WpfRootInspectView ()
+        {
+            SetHandle (IntPtr.Zero);
+            DisplayName = "Root";
 
-			foreach (Window window in Application.Current.Windows) {
-				if (window.IsVisible)
-					AddSubview (new WpfInspectView (window));
-			}
-		}
+            foreach (Window window in Application.Current.Windows) {
+                if (window.IsVisible)
+                    AddSubview (new WpfInspectView (window));
+            }
+        }
 
-		protected override void UpdateCapturedImage ()
-		{
-			// TODO
-		}
-	}
+        protected override void UpdateCapturedImage ()
+        {
+            // TODO
+        }
+    }
 }

@@ -10,23 +10,23 @@ using System;
 
 namespace Xamarin.Interactive.Editor
 {
-	struct EditorCommand
-	{
-		public string Id { get; }
-		public string Title { get; }
-		public string Tooltip { get; }
+    struct EditorCommand
+    {
+        public string Id { get; }
+        public string Title { get; }
+        public string Tooltip { get; }
 
-		public EditorCommand (string id, string title, string tooltip = null)
-		{
-			if (id == null)
-				throw new ArgumentNullException (nameof (id));
+        public EditorCommand (string id, string title, string tooltip = null)
+        {
+            if (id == null)
+                throw new ArgumentNullException (nameof (id));
 
-			if (title == null)
-				throw new ArgumentNullException (nameof (title));
+            if (title == null)
+                throw new ArgumentNullException (nameof (title));
 
-			Id = id;
-			Title = title;
-			Tooltip = tooltip;
-		}
-	}
+            Id = id;
+            Title = title;
+            Tooltip = tooltip;
+        }
+    }
 }

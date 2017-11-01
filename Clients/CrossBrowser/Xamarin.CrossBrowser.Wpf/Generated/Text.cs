@@ -13,10 +13,10 @@ using mshtml;
 
 namespace Xamarin.CrossBrowser
 {
-	public partial class Text : Node
-	{
-		internal Text (ScriptContext context, IHTMLDOMTextNode comObject) : base (context, (IHTMLDOMNode)comObject)
-		{
-		}
-	}
+    public partial class Text : Node
+    {
+        internal Text (ScriptContext context, IHTMLDOMTextNode comObject) : base (context, (IHTMLDOMNode)comObject)
+        {
+        }
+    }
 }

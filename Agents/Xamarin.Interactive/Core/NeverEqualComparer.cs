@@ -10,10 +10,10 @@ using System.Collections.Generic;
 
 namespace Xamarin.Interactive.Core
 {
-	class NeverEqualComparer<T> : IEqualityComparer<T>
-	{
-		public static readonly NeverEqualComparer<T> Default = new NeverEqualComparer<T> ();
-		public bool Equals (T x, T y) => false;
-		public int GetHashCode (T obj) => 0;
-	}
+    class NeverEqualComparer<T> : IEqualityComparer<T>
+    {
+        public static readonly NeverEqualComparer<T> Default = new NeverEqualComparer<T> ();
+        public bool Equals (T x, T y) => false;
+        public int GetHashCode (T obj) => 0;
+    }
 }

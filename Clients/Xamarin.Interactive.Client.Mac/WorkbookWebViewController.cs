@@ -10,27 +10,27 @@ using System;
 
 namespace Xamarin.Interactive.Client.Mac
 {
-	sealed partial class WorkbookWebViewController : SessionViewController
-	{
-		WorkbookWebViewController (IntPtr handle) : base (handle)
-		{
-		}
+    sealed partial class WorkbookWebViewController : SessionViewController
+    {
+        WorkbookWebViewController (IntPtr handle) : base (handle)
+        {
+        }
 
-		public override void ViewDidAppear ()
-		{
-			base.ViewDidAppear ();
+        public override void ViewDidAppear ()
+        {
+            base.ViewDidAppear ();
 
-			webView.SubscribeToPreferences ();
-		}
+            webView.SubscribeToPreferences ();
+        }
 
-		public override void ViewDidDisappear ()
-		{
-			base.ViewDidDisappear ();
+        public override void ViewDidDisappear ()
+        {
+            base.ViewDidDisappear ();
 
-			webView.UnsubscribeFromPreferences ();
-		}
+            webView.UnsubscribeFromPreferences ();
+        }
 
-		protected override void OnSessionAvailable ()
-			=> Session.InitializeAsync (webView.XcbWebView).Forget ();
-	}
+        protected override void OnSessionAvailable ()
+            => Session.InitializeAsync (webView.XcbWebView).Forget ();
+    }
 }

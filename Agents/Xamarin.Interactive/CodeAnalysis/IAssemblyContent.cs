@@ -10,8 +10,8 @@ using System.IO;
 
 namespace Xamarin.Interactive.CodeAnalysis
 {
-	public interface IAssemblyContent
-	{
-		Stream OpenPEImage ();
-	}
+    public interface IAssemblyContent
+    {
+        Stream OpenPEImage ();
+    }
 }

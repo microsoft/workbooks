@@ -10,8 +10,8 @@ using System;
 
 namespace Xamarin.Interactive.Protocol
 {
-	[Serializable]
-	class XipEndOfMessagesMessage
-	{
-	}
+    [Serializable]
+    class XipEndOfMessagesMessage
+    {
+    }
 }

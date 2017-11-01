@@ -10,14 +10,14 @@ using Microsoft.CodeAnalysis;
 
 namespace Xamarin.Interactive.CodeAnalysis
 {
-	static class CodeCellIdExtensions
-	{
-		public static CodeCellId ToCodeCellId (this DocumentId documentId)
-			=> new CodeCellId (documentId.ProjectId.Id, documentId.Id);
+    static class CodeCellIdExtensions
+    {
+        public static CodeCellId ToCodeCellId (this DocumentId documentId)
+            => new CodeCellId (documentId.ProjectId.Id, documentId.Id);
 
-		public static DocumentId ToDocumentId (this CodeCellId codeCellId)
-			=> DocumentId.CreateFromSerialized (
-				ProjectId.CreateFromSerialized (codeCellId.ProjectId),
-				codeCellId.Id);
-	}
+        public static DocumentId ToDocumentId (this CodeCellId codeCellId)
+            => DocumentId.CreateFromSerialized (
+                ProjectId.CreateFromSerialized (codeCellId.ProjectId),
+                codeCellId.Id);
+    }
 }

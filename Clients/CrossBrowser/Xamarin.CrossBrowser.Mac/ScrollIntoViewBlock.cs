@@ -8,9 +8,9 @@
 
 namespace Xamarin.CrossBrowser
 {
-	public enum ScrollIntoViewBlock
-	{
-		Start,
-		End
-	}
+    public enum ScrollIntoViewBlock
+    {
+        Start,
+        End
+    }
 }

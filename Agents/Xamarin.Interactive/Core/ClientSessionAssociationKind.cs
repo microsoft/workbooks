@@ -10,11 +10,11 @@ using System;
 
 namespace Xamarin.Interactive.Core
 {
-	[Serializable]
-	enum ClientSessionAssociationKind
-	{
-		Initial,
-		Reassociating,
-		Dissociating
-	}
+    [Serializable]
+    enum ClientSessionAssociationKind
+    {
+        Initial,
+        Reassociating,
+        Dissociating
+    }
 }

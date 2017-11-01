@@ -12,21 +12,21 @@ using Xamarin.Interactive.Core;
 
 namespace Xamarin.Interactive.Client.AgentProcesses
 {
-	sealed class AgentAssociation
-	{
-		public AgentIdentity Identity { get; }
-		public AgentClient Client { get; }
+    sealed class AgentAssociation
+    {
+        public AgentIdentity Identity { get; }
+        public AgentClient Client { get; }
 
-		public AgentAssociation (AgentIdentity identity, AgentClient client)
-		{
-			if (identity == null)
-				throw new ArgumentNullException (nameof (identity));
+        public AgentAssociation (AgentIdentity identity, AgentClient client)
+        {
+            if (identity == null)
+                throw new ArgumentNullException (nameof (identity));
 
-			if (client == null)
-				throw new ArgumentNullException (nameof (client));
+            if (client == null)
+                throw new ArgumentNullException (nameof (client));
 
-			Identity = identity;
-			Client = client;
-		}
-	}
+            Identity = identity;
+            Client = client;
+        }
+    }
 }

@@ -11,13 +11,13 @@ using Xamarin.Interactive.Serialization;
 
 namespace Xamarin.Interactive.Representations
 {
-	interface IRepresentationObject : ISerializableObject
-	{
-	}
+    interface IRepresentationObject : ISerializableObject
+    {
+    }
 
-	// FIXME: remove when we IRepresentationObject is removed,
-	// and everything is ported to ISerializableObject
-	interface IFallbackRepresentationObject
-	{
-	}
+    // FIXME: remove when we IRepresentationObject is removed,
+    // and everything is ported to ISerializableObject
+    interface IFallbackRepresentationObject
+    {
+    }
 }

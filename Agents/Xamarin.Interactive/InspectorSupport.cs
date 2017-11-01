@@ -14,45 +14,45 @@ using Xamarin.Interactive.Core;
 
 namespace Xamarin
 {
-	public static partial class InspectorSupport
-	{
-		static Agent agent;
+    public static partial class InspectorSupport
+    {
+        static Agent agent;
 
-		static partial void CreateAgent (AgentStartOptions startOptions);
+        static partial void CreateAgent (AgentStartOptions startOptions);
 
-		internal static Action<object> AgentStartedHandler;
+        internal static Action<object> AgentStartedHandler;
 
-		#if DEBUG
+        #if DEBUG
 		public static void Start (AgentStartOptions startOptions = null) => CreateAgent (startOptions);
-		#endif
+        #endif
 
-		static void Start ()
-		{
-			try {
-				CreateAgent (null);
-			} catch (Exception e) {
-				Console.Error.WriteLine (e);
-			}
-		}
+        static void Start ()
+        {
+            try {
+                CreateAgent (null);
+            } catch (Exception e) {
+                Console.Error.WriteLine (e);
+            }
+        }
 
-		internal static void Stop ()
-		{
-			agent?.Dispose ();
-			agent = null;
-		}
+        internal static void Stop ()
+        {
+            agent?.Dispose ();
+            agent = null;
+        }
 
-		[MethodImpl (MethodImplOptions.NoInlining | MethodImplOptions.NoOptimization)]
-		static void BreakdanceStep ()
-		{
-		}
+        [MethodImpl (MethodImplOptions.NoInlining | MethodImplOptions.NoOptimization)]
+        static void BreakdanceStep ()
+        {
+        }
 
-		#if !WPF
+        #if !WPF
 
-		[MethodImpl (MethodImplOptions.NoInlining | MethodImplOptions.NoOptimization)]
-		internal static void AgentStarted (string agentConnectUri)
-		{
-		}
+        [MethodImpl (MethodImplOptions.NoInlining | MethodImplOptions.NoOptimization)]
+        internal static void AgentStarted (string agentConnectUri)
+        {
+        }
 
-		#endif
-	}
+        #endif
+    }
 }

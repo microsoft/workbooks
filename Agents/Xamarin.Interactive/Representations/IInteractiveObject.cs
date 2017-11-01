@@ -9,12 +9,12 @@
 
 namespace Xamarin.Interactive.Representations
 {
-	interface IInteractiveObject : IRepresentationObject
-	{
-		long RepresentedObjectHandle { get; }
-		long Handle { get; set; }
-		void Initialize ();
-		void Reset ();
-		IInteractiveObject Interact (object message);
-	}
+    interface IInteractiveObject : IRepresentationObject
+    {
+        long RepresentedObjectHandle { get; }
+        long Handle { get; set; }
+        void Initialize ();
+        void Reset ();
+        IInteractiveObject Interact (object message);
+    }
 }

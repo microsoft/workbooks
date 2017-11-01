@@ -8,10 +8,10 @@
 
 namespace Xamarin.CrossBrowser
 {
-	public enum ScrollIntoViewBehavior
-	{
-		Auto,
-		Instant,
-		Smooth
-	}
+    public enum ScrollIntoViewBehavior
+    {
+        Auto,
+        Instant,
+        Smooth
+    }
 }

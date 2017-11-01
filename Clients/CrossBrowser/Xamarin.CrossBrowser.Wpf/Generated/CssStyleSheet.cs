@@ -13,20 +13,20 @@ using mshtml;
 
 namespace Xamarin.CrossBrowser
 {
-	public partial class CssStyleSheet : StyleSheet
-	{
-		internal CssStyleSheet (ScriptContext context, IHTMLStyleSheet comObject) : base (context, comObject)
-		{
-		}
+    public partial class CssStyleSheet : StyleSheet
+    {
+        internal CssStyleSheet (ScriptContext context, IHTMLStyleSheet comObject) : base (context, comObject)
+        {
+        }
 
-		public void InsertRule (string rule, int index)
-		{
-			((IHTMLStyleSheet4)ComObject).insertRule (rule, index);
-		}
+        public void InsertRule (string rule, int index)
+        {
+            ((IHTMLStyleSheet4)ComObject).insertRule (rule, index);
+        }
 
-		public void DeleteRule (int index)
-		{
-			((IHTMLStyleSheet4)ComObject).deleteRule (index);
-		}
-	}
+        public void DeleteRule (int index)
+        {
+            ((IHTMLStyleSheet4)ComObject).deleteRule (index);
+        }
+    }
 }

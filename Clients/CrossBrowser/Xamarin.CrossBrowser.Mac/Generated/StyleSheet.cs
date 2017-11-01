@@ -13,40 +13,40 @@ using JavaScriptCore;
 
 namespace Xamarin.CrossBrowser
 {
-	public partial class StyleSheet : WrappedObject
-	{
-		internal StyleSheet (JSValue underlyingJSValue) : base (underlyingJSValue)
-		{
-		}
+    public partial class StyleSheet : WrappedObject
+    {
+        internal StyleSheet (JSValue underlyingJSValue) : base (underlyingJSValue)
+        {
+        }
 
-		public string Href {
-			get {
-				return UnderlyingJSValue.GetProperty ("href").ToNullableString ();
-			}
-		}
+        public string Href {
+            get {
+                return UnderlyingJSValue.GetProperty ("href").ToNullableString ();
+            }
+        }
 
-		public string Id {
-			get {
-				return UnderlyingJSValue.GetProperty ("id").ToNullableString ();
-			}
-		}
+        public string Id {
+            get {
+                return UnderlyingJSValue.GetProperty ("id").ToNullableString ();
+            }
+        }
 
-		public string Title {
-			get {
-				return UnderlyingJSValue.GetProperty ("title").ToNullableString ();
-			}
-		}
+        public string Title {
+            get {
+                return UnderlyingJSValue.GetProperty ("title").ToNullableString ();
+            }
+        }
 
-		public string Type {
-			get {
-				return UnderlyingJSValue.GetProperty ("type").ToNullableString ();
-			}
-		}
+        public string Type {
+            get {
+                return UnderlyingJSValue.GetProperty ("type").ToNullableString ();
+            }
+        }
 
-		public Node OwnerNode {
-			get {
-				return Wrap<Node> (UnderlyingJSValue.GetProperty ("ownerNode"));
-			}
-		}
-	}
+        public Node OwnerNode {
+            get {
+                return Wrap<Node> (UnderlyingJSValue.GetProperty ("ownerNode"));
+            }
+        }
+    }
 }

@@ -12,61 +12,61 @@ using Xamarin.Interactive.Remote;
 
 namespace Xamarin.Interactive.Client.Mac
 {
-	abstract class ViewInspectorViewController : SessionViewController
-	{
-		protected ViewInspectorViewController (IntPtr handle) : base (handle)
-		{
-		}
+    abstract class ViewInspectorViewController : SessionViewController
+    {
+        protected ViewInspectorViewController (IntPtr handle) : base (handle)
+        {
+        }
 
-		public new ViewInspectorMainViewController ParentViewController
-			=> (ViewInspectorMainViewController)base.ParentViewController;
+        public new ViewInspectorMainViewController ParentViewController
+            => (ViewInspectorMainViewController)base.ParentViewController;
 
-		InspectView representedView;
-		public InspectView RepresentedView {
-			get { return representedView; }
-			set {
-				if (representedView == value)
-					return;
+        InspectView representedView;
+        public InspectView RepresentedView {
+            get { return representedView; }
+            set {
+                if (representedView == value)
+                    return;
 
-				representedView = value;
-				OnRepresentedViewChanged ();
-			}
-		}
+                representedView = value;
+                OnRepresentedViewChanged ();
+            }
+        }
 
-		InspectView selectedView;
-		public InspectView SelectedView {
-			get { return selectedView; }
-			set {
-				if (selectedView == value)
-					return;
+        InspectView selectedView;
+        public InspectView SelectedView {
+            get { return selectedView; }
+            set {
+                if (selectedView == value)
+                    return;
 
-				selectedView = value;
-				OnSelectedViewChanged ();
-			}
-		}
+                selectedView = value;
+                OnSelectedViewChanged ();
+            }
+        }
 
-		InspectView rootView;
-		public InspectView RootView {
-			get { return rootView; }
-			set {
-				if (rootView == value)
-					return;
+        InspectView rootView;
+        public InspectView RootView {
+            get { return rootView; }
+            set {
+                if (rootView == value)
+                    return;
 
-				rootView = value;
-				OnRootViewChanged ();
-			}
-		}
+                rootView = value;
+                OnRootViewChanged ();
+            }
+        }
 
-		protected virtual void OnRepresentedViewChanged ()
-		{
-		}
+        protected virtual void OnRepresentedViewChanged ()
+        {
+        }
 
-		protected virtual void OnSelectedViewChanged ()
-		{
-		}
+        protected virtual void OnSelectedViewChanged ()
+        {
+        }
 
-		protected virtual void OnRootViewChanged ()
-		{
-		}
-	}
+        protected virtual void OnRootViewChanged ()
+        {
+        }
+    }
 }

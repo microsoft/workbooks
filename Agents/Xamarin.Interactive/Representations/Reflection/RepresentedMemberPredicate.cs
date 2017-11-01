@@ -8,5 +8,5 @@
 
 namespace Xamarin.Interactive.Representations.Reflection
 {
-	delegate bool RepresentedMemberPredicate (RepresentedMemberInfo representedMemberInfo, object obj);
+    delegate bool RepresentedMemberPredicate (RepresentedMemberInfo representedMemberInfo, object obj);
 }

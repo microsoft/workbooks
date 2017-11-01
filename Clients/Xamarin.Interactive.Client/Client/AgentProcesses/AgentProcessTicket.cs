@@ -16,79 +16,79 @@ using Xamarin.Interactive.Messages;
 
 namespace Xamarin.Interactive.Client.AgentProcesses
 {
-	sealed class AgentProcessTicket : IAgentTicket
-	{
-		static int lastId;
+    sealed class AgentProcessTicket : IAgentTicket
+    {
+        static int lastId;
 
-		readonly Action disconnectedHandler;
+        readonly Action disconnectedHandler;
 
-		public IAgentProcessManager AgentProcessManager { get; }
-		public ClientSessionUri ClientSessionUri { get; }
-		public IMessageService MessageService { get; }
+        public IAgentProcessManager AgentProcessManager { get; }
+        public ClientSessionUri ClientSessionUri { get; }
+        public IMessageService MessageService { get; }
 
-		public int Id { get; }
+        public int Id { get; }
 
-		public IReadOnlyList<string> AssemblySearchPaths { get; private set; }
-		public bool IsDisposed { get; private set; }
+        public IReadOnlyList<string> AssemblySearchPaths { get; private set; }
+        public bool IsDisposed { get; private set; }
 
-		public event EventHandler Disposed;
+        public event EventHandler Disposed;
 
-		public AgentProcessTicket (
-			IAgentProcessManager agentProcessManager,
-			ClientSessionUri clientSessionUri,
-			IMessageService messageService,
-			Action disconnectedHandler)
-		{
-			if (agentProcessManager == null)
-				throw new ArgumentNullException (nameof (agentProcessManager));
+        public AgentProcessTicket (
+            IAgentProcessManager agentProcessManager,
+            ClientSessionUri clientSessionUri,
+            IMessageService messageService,
+            Action disconnectedHandler)
+        {
+            if (agentProcessManager == null)
+                throw new ArgumentNullException (nameof (agentProcessManager));
 
-			if (clientSessionUri == null)
-				throw new ArgumentNullException (nameof (clientSessionUri));
+            if (clientSessionUri == null)
+                throw new ArgumentNullException (nameof (clientSessionUri));
 
-			if (disconnectedHandler == null)
-				throw new ArgumentNullException (nameof (disconnectedHandler));
+            if (disconnectedHandler == null)
+                throw new ArgumentNullException (nameof (disconnectedHandler));
 
-			AgentProcessManager = agentProcessManager;
-			ClientSessionUri = clientSessionUri;
-			MessageService = messageService;
+            AgentProcessManager = agentProcessManager;
+            ClientSessionUri = clientSessionUri;
+            MessageService = messageService;
 
-			this.disconnectedHandler = disconnectedHandler;
+            this.disconnectedHandler = disconnectedHandler;
 
-			Id = Interlocked.Increment (ref lastId);
-		}
+            Id = Interlocked.Increment (ref lastId);
+        }
 
-		public void Dispose ()
-		{
-			if (!IsDisposed) {
-				IsDisposed = true;
-				Disposed?.Invoke (this, EventArgs.Empty);
-			}
-		}
+        public void Dispose ()
+        {
+            if (!IsDisposed) {
+                IsDisposed = true;
+                Disposed?.Invoke (this, EventArgs.Empty);
+            }
+        }
 
-		public async Task<IAgentProcessState> GetAgentProcessStateAsync (CancellationToken cancellationToken)
-		{
-			var agentProcessState = await AgentProcessManager.StartAsync (
-				ticket: this,
-				cancellationToken: cancellationToken);
+        public async Task<IAgentProcessState> GetAgentProcessStateAsync (CancellationToken cancellationToken)
+        {
+            var agentProcessState = await AgentProcessManager.StartAsync (
+                ticket: this,
+                cancellationToken: cancellationToken);
 
-			AssemblySearchPaths = agentProcessState
-				.AgentProcess
-				.WorkbookApp
-				.Sdk
-				.AssemblySearchPaths;
+            AssemblySearchPaths = agentProcessState
+                .AgentProcess
+                .WorkbookApp
+                .Sdk
+                .AssemblySearchPaths;
 
-			return agentProcessState;
-		}
+            return agentProcessState;
+        }
 
-		public async Task<AgentIdentity> GetAgentIdentityAsync (
-			CancellationToken cancellationToken = default (CancellationToken))
-			=> (await GetAgentProcessStateAsync (cancellationToken)).AgentIdentity;
+        public async Task<AgentIdentity> GetAgentIdentityAsync (
+            CancellationToken cancellationToken = default (CancellationToken))
+            => (await GetAgentProcessStateAsync (cancellationToken)).AgentIdentity;
 
-		public async Task<AgentClient> GetClientAsync (
-			CancellationToken cancellationToken = default(CancellationToken))
-			=> (await GetAgentProcessStateAsync (cancellationToken)).AgentClient;
+        public async Task<AgentClient> GetClientAsync (
+            CancellationToken cancellationToken = default(CancellationToken))
+            => (await GetAgentProcessStateAsync (cancellationToken)).AgentClient;
 
-		public void NotifyDisconnected ()
-			=> MainThread.Post (disconnectedHandler);
-	}
+        public void NotifyDisconnected ()
+            => MainThread.Post (disconnectedHandler);
+    }
 }

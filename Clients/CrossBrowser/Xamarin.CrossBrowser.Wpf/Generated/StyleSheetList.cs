@@ -15,33 +15,33 @@ using mshtml;
 
 namespace Xamarin.CrossBrowser
 {
-	public partial class StyleSheetList : WrappedObject, IReadOnlyList<CssStyleSheet>
-	{
-		internal StyleSheetList (ScriptContext context, IHTMLStyleSheetsCollection comObject) : base (context, (Object)comObject)
-		{
-		}
+    public partial class StyleSheetList : WrappedObject, IReadOnlyList<CssStyleSheet>
+    {
+        internal StyleSheetList (ScriptContext context, IHTMLStyleSheetsCollection comObject) : base (context, (Object)comObject)
+        {
+        }
 
-		public int Count {
-			get {
-				return ((IHTMLStyleSheetsCollection)ComObject).length;
-			}
-		}
+        public int Count {
+            get {
+                return ((IHTMLStyleSheetsCollection)ComObject).length;
+            }
+        }
 
-		public CssStyleSheet this [int index] {
-			get {
-				return Wrap<CssStyleSheet> (((IHTMLStyleSheetsCollection2)ComObject).item (index));
-			}
-		}
+        public CssStyleSheet this [int index] {
+            get {
+                return Wrap<CssStyleSheet> (((IHTMLStyleSheetsCollection2)ComObject).item (index));
+            }
+        }
 
-		public IEnumerator<CssStyleSheet> GetEnumerator ()
-		{
-			for (int i = 0, n = Count; i < n; i++)
-				yield return this [i];
-		}
+        public IEnumerator<CssStyleSheet> GetEnumerator ()
+        {
+            for (int i = 0, n = Count; i < n; i++)
+                yield return this [i];
+        }
 
-		IEnumerator IEnumerable.GetEnumerator ()
-		{
-			return GetEnumerator ();
-		}
-	}
+        IEnumerator IEnumerable.GetEnumerator ()
+        {
+            return GetEnumerator ();
+        }
+    }
 }

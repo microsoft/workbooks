@@ -9,11 +9,11 @@ using System.CodeDom.Compiler;
 
 namespace Xamarin.Interactive.Preferences
 {
-	[Register ("PreferencesTabViewController")]
-	partial class PreferencesTabViewController
-	{
-		void ReleaseDesignerOutlets ()
-		{
-		}
-	}
+    [Register ("PreferencesTabViewController")]
+    partial class PreferencesTabViewController
+    {
+        void ReleaseDesignerOutlets ()
+        {
+        }
+    }
 }

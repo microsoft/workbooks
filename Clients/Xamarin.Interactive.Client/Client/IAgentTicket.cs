@@ -17,17 +17,17 @@ using Xamarin.Interactive.Messages;
 
 namespace Xamarin.Interactive.Client
 {
-	interface IAgentTicket : INotifyDisposed
-	{
-		ClientSessionUri ClientSessionUri { get; }
-		IReadOnlyList<string> AssemblySearchPaths { get; }
+    interface IAgentTicket : INotifyDisposed
+    {
+        ClientSessionUri ClientSessionUri { get; }
+        IReadOnlyList<string> AssemblySearchPaths { get; }
 
-		IMessageService MessageService { get; }
+        IMessageService MessageService { get; }
 
-		Task<AgentIdentity> GetAgentIdentityAsync (
-			CancellationToken cancellationToken = default (CancellationToken));
+        Task<AgentIdentity> GetAgentIdentityAsync (
+            CancellationToken cancellationToken = default (CancellationToken));
 
-		Task<AgentClient> GetClientAsync (
-			CancellationToken cancellationToken = default (CancellationToken));
-	}
+        Task<AgentClient> GetClientAsync (
+            CancellationToken cancellationToken = default (CancellationToken));
+    }
 }

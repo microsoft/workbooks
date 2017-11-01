@@ -12,8 +12,8 @@ using Newtonsoft.Json;
 
 namespace Xamarin.Interactive.Telemetry
 {
-	interface IDataEvent : IEvent
-	{
-		Task SerializePropertiesAsync (JsonTextWriter writer);
-	}
+    interface IDataEvent : IEvent
+    {
+        Task SerializePropertiesAsync (JsonTextWriter writer);
+    }
 }

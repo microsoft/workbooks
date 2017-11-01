@@ -13,20 +13,20 @@ using JavaScriptCore;
 
 namespace Xamarin.CrossBrowser
 {
-	public partial class CssStyleSheet : StyleSheet
-	{
-		internal CssStyleSheet (JSValue underlyingJSValue) : base (underlyingJSValue)
-		{
-		}
+    public partial class CssStyleSheet : StyleSheet
+    {
+        internal CssStyleSheet (JSValue underlyingJSValue) : base (underlyingJSValue)
+        {
+        }
 
-		public void InsertRule (string rule, int index)
-		{
-			UnderlyingJSValue.Invoke ("insertRule", JSValue.From (rule, UnderlyingJSValue.Context), JSValue.From (index, UnderlyingJSValue.Context));
-		}
+        public void InsertRule (string rule, int index)
+        {
+            UnderlyingJSValue.Invoke ("insertRule", JSValue.From (rule, UnderlyingJSValue.Context), JSValue.From (index, UnderlyingJSValue.Context));
+        }
 
-		public void DeleteRule (int index)
-		{
-			UnderlyingJSValue.Invoke ("deleteRule", JSValue.From (index, UnderlyingJSValue.Context));
-		}
-	}
+        public void DeleteRule (int index)
+        {
+            UnderlyingJSValue.Invoke ("deleteRule", JSValue.From (index, UnderlyingJSValue.Context));
+        }
+    }
 }

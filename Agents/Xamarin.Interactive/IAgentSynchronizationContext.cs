@@ -11,11 +11,11 @@ using System.Threading;
 
 namespace Xamarin.Interactive
 {
-	public interface IAgentSynchronizationContext
-	{
-		SynchronizationContext PushContext (Action<Action> postHandler, Action<Action> sendHandler = null);
-		SynchronizationContext PushContext (SynchronizationContext context);
-		SynchronizationContext PeekContext ();
-		SynchronizationContext PopContext ();
-	}
+    public interface IAgentSynchronizationContext
+    {
+        SynchronizationContext PushContext (Action<Action> postHandler, Action<Action> sendHandler = null);
+        SynchronizationContext PushContext (SynchronizationContext context);
+        SynchronizationContext PeekContext ();
+        SynchronizationContext PopContext ();
+    }
 }

@@ -10,10 +10,10 @@ using System;
 
 namespace Xamarin.Interactive.Remote
 {
-	[Serializable]
-	enum ViewKind
-	{
-		Primary,
-		Secondary
-	}
+    [Serializable]
+    enum ViewKind
+    {
+        Primary,
+        Secondary
+    }
 }

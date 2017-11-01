@@ -26,268 +26,268 @@ using Xamarin.Interactive.I18N;
 
 namespace Xamarin.Interactive.Workbook.Models
 {
-	sealed class WorkbookDocumentManifest
-	{
-		const string DefaultManifestUti = "com.xamarin.workbook";
+    sealed class WorkbookDocumentManifest
+    {
+        const string DefaultManifestUti = "com.xamarin.workbook";
 
-		public OrderedDictionary Properties { get; private set; }
-		public Guid Guid { get; set; }
-		public string Title { get; set; }
-		public ImmutableArray<AgentType> PlatformTargets { get; set; }
-		public ImmutableArray<InteractivePackage> Packages { get; set; }
+        public OrderedDictionary Properties { get; private set; }
+        public Guid Guid { get; set; }
+        public string Title { get; set; }
+        public ImmutableArray<AgentType> PlatformTargets { get; set; }
+        public ImmutableArray<InteractivePackage> Packages { get; set; }
 
-		public WorkbookDocumentManifest ()
-		{
-			ReadProperties (null);
-		}
+        public WorkbookDocumentManifest ()
+        {
+            ReadProperties (null);
+        }
 
-		public void Write (TextWriter writer)
-		{
-			if (Packages.Length > 0)
-				Properties.InsertOrUpdate (0, "packages", new List<object> (
-					Packages
-						.Where (package => package.IsExplicit)
-						.Select (package => new OrderedDictionary {
-							["id"] = package.Identity.Id,
-							// Prefer OriginalString...often reads much better.
-							["version"] = package.SupportedVersionRange.OriginalString ?? package.SupportedVersionRange.ToNormalizedString (),
-						})));
-			else
-				Properties.Remove ("packages");
+        public void Write (TextWriter writer)
+        {
+            if (Packages.Length > 0)
+                Properties.InsertOrUpdate (0, "packages", new List<object> (
+                    Packages
+                        .Where (package => package.IsExplicit)
+                        .Select (package => new OrderedDictionary {
+                            ["id"] = package.Identity.Id,
+                            // Prefer OriginalString...often reads much better.
+                            ["version"] = package.SupportedVersionRange.OriginalString ?? package.SupportedVersionRange.ToNormalizedString (),
+                        })));
+            else
+                Properties.Remove ("packages");
 
-			Properties.Remove ("platform");
-			if (PlatformTargets.Length > 0)
-				Properties.InsertOrUpdate (0, "platforms", PlatformTargets);
-			else
-				Properties.Remove ("platforms");
+            Properties.Remove ("platform");
+            if (PlatformTargets.Length > 0)
+                Properties.InsertOrUpdate (0, "platforms", PlatformTargets);
+            else
+                Properties.Remove ("platforms");
 
-			if (!string.IsNullOrWhiteSpace (Title))
-				Properties.InsertOrUpdate (0, "title", Title.Trim ());
-			else
-				Properties.Remove ("title");
+            if (!string.IsNullOrWhiteSpace (Title))
+                Properties.InsertOrUpdate (0, "title", Title.Trim ());
+            else
+                Properties.Remove ("title");
 
-			Properties.InsertOrUpdate (0, "id", Guid.ToString ());
-			Properties.InsertOrUpdate (0, "uti", DefaultManifestUti);
+            Properties.InsertOrUpdate (0, "id", Guid.ToString ());
+            Properties.InsertOrUpdate (0, "uti", DefaultManifestUti);
 
-			new SerializerBuilder ().Build ().Serialize (writer, Properties);
-		}
+            new SerializerBuilder ().Build ().Serialize (writer, Properties);
+        }
 
-		public override string ToString ()
-		{
-			var writer = new StringWriter ();
-			Write (writer);
-			return writer.ToString ();
-		}
+        public override string ToString ()
+        {
+            var writer = new StringWriter ();
+            Write (writer);
+            return writer.ToString ();
+        }
 
-		public void Read (WorkbookDocument document)
-		{
-			if (document == null)
-				throw new ArgumentNullException (nameof (document));
+        public void Read (WorkbookDocument document)
+        {
+            if (document == null)
+                throw new ArgumentNullException (nameof (document));
 
-			try {
-				if (ReadYamlManifest (document) || ReadLegacyJsonManifest (document))
-					return;
-			} catch (Exception e) when (!(e is InvalidManifestException)) {
-				throw new InvalidManifestException (e);
-			}
+            try {
+                if (ReadYamlManifest (document) || ReadLegacyJsonManifest (document))
+                    return;
+            } catch (Exception e) when (!(e is InvalidManifestException)) {
+                throw new InvalidManifestException (e);
+            }
 
-			throw new InvalidManifestException ();
-		}
+            throw new InvalidManifestException ();
+        }
 
-		bool ReadYamlManifest (WorkbookDocument document)
-		{
-			var manifestCell = document.FirstCell as YamlMetadataCell;
-			if (manifestCell == null)
-				return false;
+        bool ReadYamlManifest (WorkbookDocument document)
+        {
+            var manifestCell = document.FirstCell as YamlMetadataCell;
+            if (manifestCell == null)
+                return false;
 
-			Read (new StringReader (manifestCell.Buffer.Value));
+            Read (new StringReader (manifestCell.Buffer.Value));
 
-			document.RemoveCell (manifestCell);
+            document.RemoveCell (manifestCell);
 
-			return true;
-		}
+            return true;
+        }
 
-		bool ReadLegacyJsonManifest (WorkbookDocument document)
-		{
-			var manifestCell = document.FirstCell as CodeCell;
-			if (manifestCell?.LanguageName != "json")
-				return false;
-			
-			ReadProperties (LegacyJsonWorkbookDocumentManifest.Read (manifestCell.Buffer.Value));
+        bool ReadLegacyJsonManifest (WorkbookDocument document)
+        {
+            var manifestCell = document.FirstCell as CodeCell;
+            if (manifestCell?.LanguageName != "json")
+                return false;
+            
+            ReadProperties (LegacyJsonWorkbookDocumentManifest.Read (manifestCell.Buffer.Value));
 
-			document.RemoveCell (manifestCell);
+            document.RemoveCell (manifestCell);
 
-			return true;
-		}
+            return true;
+        }
 
-		void Read (TextReader reader)
-			=> ReadProperties (new DeserializerBuilder ()
-				.WithObjectFactory (OrderedDictionaryFactory.Instance)
-				.Build ()
-				.Deserialize<OrderedDictionary> (reader));
+        void Read (TextReader reader)
+            => ReadProperties (new DeserializerBuilder ()
+                .WithObjectFactory (OrderedDictionaryFactory.Instance)
+                .Build ()
+                .Deserialize<OrderedDictionary> (reader));
 
-		string ReadStringProperty (string key)
-		{
-			object value;
-			if (Properties.TryGetValue (key, out value))
-				return value as string;
-			return null;
-		}
+        string ReadStringProperty (string key)
+        {
+            object value;
+            if (Properties.TryGetValue (key, out value))
+                return value as string;
+            return null;
+        }
 
-		void ReadProperties (OrderedDictionary properties)
-		{
-			var checkUti = true;
+        void ReadProperties (OrderedDictionary properties)
+        {
+            var checkUti = true;
 
-			if (properties == null) {
-				properties = new OrderedDictionary ();
-				checkUti = false;
-			}
+            if (properties == null) {
+                properties = new OrderedDictionary ();
+                checkUti = false;
+            }
 
-			Properties = properties;
+            Properties = properties;
 
-			if (checkUti && !string.Equals (
-				ReadStringProperty ("uti"),
-				DefaultManifestUti,
-				StringComparison.OrdinalIgnoreCase))
-				throw new InvalidManifestException ();
+            if (checkUti && !string.Equals (
+                ReadStringProperty ("uti"),
+                DefaultManifestUti,
+                StringComparison.OrdinalIgnoreCase))
+                throw new InvalidManifestException ();
 
-			Guid guid;
-			var id = ReadStringProperty ("id");
-			if (id != null && Guid.TryParse (id, out guid))
-				Guid = guid;
-			else
-				Guid = Guid.NewGuid ();
+            Guid guid;
+            var id = ReadStringProperty ("id");
+            if (id != null && Guid.TryParse (id, out guid))
+                Guid = guid;
+            else
+                Guid = Guid.NewGuid ();
 
-			Title = ReadStringProperty ("title");
-			PlatformTargets = ReadTargetPlatforms ().Distinct ().ToImmutableArray ();
-			Packages = ReadPackages ().ToImmutableArray ();
-		}
+            Title = ReadStringProperty ("title");
+            PlatformTargets = ReadTargetPlatforms ().Distinct ().ToImmutableArray ();
+            Packages = ReadPackages ().ToImmutableArray ();
+        }
 
-		static bool TryParseTargetPlatform (string targetPlatformName, out AgentType targetPlatform)
-		{
-			if (targetPlatformName == null ||
-				!Enum.TryParse (targetPlatformName, true, out targetPlatform)) {
-				targetPlatform = AgentType.Unknown;
-				return false;
-			}
+        static bool TryParseTargetPlatform (string targetPlatformName, out AgentType targetPlatform)
+        {
+            if (targetPlatformName == null ||
+                !Enum.TryParse (targetPlatformName, true, out targetPlatform)) {
+                targetPlatform = AgentType.Unknown;
+                return false;
+            }
 
-			return targetPlatform != AgentType.Unknown;
-		}
+            return targetPlatform != AgentType.Unknown;
+        }
 
-		IEnumerable<AgentType> ReadTargetPlatforms ()
-		{
-			foreach (var key in new [] { "platforms", "platform" }) {
-				object value;
-				if (!Properties.TryGetValue (key, out value))
-					continue;
+        IEnumerable<AgentType> ReadTargetPlatforms ()
+        {
+            foreach (var key in new [] { "platforms", "platform" }) {
+                object value;
+                if (!Properties.TryGetValue (key, out value))
+                    continue;
 
-				AgentType targetPlatform;
+                AgentType targetPlatform;
 
-				if (TryParseTargetPlatform (value as string, out targetPlatform)) {
-					yield return targetPlatform;
-					continue;
-				}
+                if (TryParseTargetPlatform (value as string, out targetPlatform)) {
+                    yield return targetPlatform;
+                    continue;
+                }
 
-				var list = value as List<object>;
-				for (int i = 0; list != null && i < list.Count; i++) {
-					if (TryParseTargetPlatform (list [i] as string, out targetPlatform))
-						yield return targetPlatform;
-				}
-			}
-		}
+                var list = value as List<object>;
+                for (int i = 0; list != null && i < list.Count; i++) {
+                    if (TryParseTargetPlatform (list [i] as string, out targetPlatform))
+                        yield return targetPlatform;
+                }
+            }
+        }
 
-		IEnumerable<InteractivePackage> ReadPackages ()
-		{
-			IList list;
-			if (!Properties.TryGetValueAs ("packages", out list) || list == null)
-				yield break;
+        IEnumerable<InteractivePackage> ReadPackages ()
+        {
+            IList list;
+            if (!Properties.TryGetValueAs ("packages", out list) || list == null)
+                yield break;
 
-			foreach (var packageValue in list) {
-				var package = packageValue as OrderedDictionary;
-				if (package == null)
-					continue;
+            foreach (var packageValue in list) {
+                var package = packageValue as OrderedDictionary;
+                if (package == null)
+                    continue;
 
-				string id;
-				if (!package.TryGetValueAs ("id", out id))
-					continue;
+                string id;
+                if (!package.TryGetValueAs ("id", out id))
+                    continue;
 
-				string version;
-				// A few VersionRange examples:
-				//   1.2.3.4
-				//   [1.2.3.4]
-				//   1.2.*
-				//   *
-				//   [1.2, 1.3)
-				// Read more at https://docs.microsoft.com/en-us/nuget/create-packages/dependency-versions#version-ranges
-				VersionRange nugetVersion = null;
-				if (package.TryGetValueAs ("version", out version))
-					VersionRange.TryParse (version, out nugetVersion);
+                string version;
+                // A few VersionRange examples:
+                //   1.2.3.4
+                //   [1.2.3.4]
+                //   1.2.*
+                //   *
+                //   [1.2, 1.3)
+                // Read more at https://docs.microsoft.com/en-us/nuget/create-packages/dependency-versions#version-ranges
+                VersionRange nugetVersion = null;
+                if (package.TryGetValueAs ("version", out version))
+                    VersionRange.TryParse (version, out nugetVersion);
 
-				yield return new InteractivePackage (id, nugetVersion);
-			}
-		}
+                yield return new InteractivePackage (id, nugetVersion);
+            }
+        }
 
-		sealed class OrderedDictionaryFactory : IObjectFactory
-		{
-			public static readonly OrderedDictionaryFactory Instance = new OrderedDictionaryFactory ();
+        sealed class OrderedDictionaryFactory : IObjectFactory
+        {
+            public static readonly OrderedDictionaryFactory Instance = new OrderedDictionaryFactory ();
 
-			public object Create (Type type)
-			{
-				if (type == typeof (Dictionary<object, object>))
-					return new OrderedDictionary ();
+            public object Create (Type type)
+            {
+                if (type == typeof (Dictionary<object, object>))
+                    return new OrderedDictionary ();
 
-				return Activator.CreateInstance (type);
-			}
-		}
+                return Activator.CreateInstance (type);
+            }
+        }
 
-		sealed class InvalidManifestException : Exception
-		{
-			public InvalidManifestException (Exception e = null)
-				: base (Catalog.GetString ("The workbook does not contain a valid manifest."), e)
-			{
-			}
-		}
-	}
+        sealed class InvalidManifestException : Exception
+        {
+            public InvalidManifestException (Exception e = null)
+                : base (Catalog.GetString ("The workbook does not contain a valid manifest."), e)
+            {
+            }
+        }
+    }
 
-	[DataContract]
-	/// <summary>
+    [DataContract]
+    /// <summary>
 	/// Deprecated in 0.8.2 in favor of YAML. Do not use.
 	/// </summary>
-	sealed class LegacyJsonWorkbookDocumentManifest
-	{
-		#pragma warning disable 0649
-		[DataContract]
-		struct Package
-		{
-			[DataMember] public string id;
-			[DataMember] public string version;
-		}
+    sealed class LegacyJsonWorkbookDocumentManifest
+    {
+        #pragma warning disable 0649
+        [DataContract]
+        struct Package
+        {
+            [DataMember] public string id;
+            [DataMember] public string version;
+        }
 
-		[DataMember] string uti;
-		[DataMember] List<Package> packages;
-		[DataMember] string platform;
-		#pragma warning restore 0649
+        [DataMember] string uti;
+        [DataMember] List<Package> packages;
+        [DataMember] string platform;
+        #pragma warning restore 0649
 
-		public static OrderedDictionary Read (string json)
-		{
-			var manifest = (LegacyJsonWorkbookDocumentManifest)new DataContractJsonSerializer (
-				typeof (LegacyJsonWorkbookDocumentManifest)).ReadObject (
-					new MemoryStream (Utf8.GetBytes (json)));
+        public static OrderedDictionary Read (string json)
+        {
+            var manifest = (LegacyJsonWorkbookDocumentManifest)new DataContractJsonSerializer (
+                typeof (LegacyJsonWorkbookDocumentManifest)).ReadObject (
+                    new MemoryStream (Utf8.GetBytes (json)));
 
-			var packageDictionaries = new List<object> ();
-			if (manifest.packages != null) {
-				foreach (var package in manifest.packages)
-					packageDictionaries.Add (new OrderedDictionary {
-						["id"] = package.id,
-						["version"] = package.version
-					});
-			}
+            var packageDictionaries = new List<object> ();
+            if (manifest.packages != null) {
+                foreach (var package in manifest.packages)
+                    packageDictionaries.Add (new OrderedDictionary {
+                        ["id"] = package.id,
+                        ["version"] = package.version
+                    });
+            }
 
-			return new OrderedDictionary {
-				["uti"] = manifest.uti,
-				["platform"] = manifest.platform,
-				["packages"] = packageDictionaries
-			};
-		}
-	}
+            return new OrderedDictionary {
+                ["uti"] = manifest.uti,
+                ["platform"] = manifest.platform,
+                ["packages"] = packageDictionaries
+            };
+        }
+    }
 }

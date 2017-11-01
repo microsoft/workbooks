@@ -8,16 +8,16 @@
 
 namespace Xamarin.Interactive
 {
-	enum AgentType
-	{
-		Unknown,
-		iOS,
-		MacNet45,
-		MacMobile,
-		Android,
-		WPF,
-		Console,
-		DotNetCore,
-		Test
-	}
+    enum AgentType
+    {
+        Unknown,
+        iOS,
+        MacNet45,
+        MacMobile,
+        Android,
+        WPF,
+        Console,
+        DotNetCore,
+        Test
+    }
 }

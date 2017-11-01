@@ -8,9 +8,9 @@
 
 namespace Xamarin.Interactive.CodeAnalysis
 {
-	public interface IAssemblyEntryPoint
-	{
-		string TypeName { get; }
-		string MethodName { get; }
-	}
+    public interface IAssemblyEntryPoint
+    {
+        string TypeName { get; }
+        string MethodName { get; }
+    }
 }

@@ -13,19 +13,19 @@ using Xamarin.Interactive.Representations;
 
 namespace Xamarin.Interactive
 {
-	public interface IAgent
-	{
-		IRepresentationManager RepresentationManager { get; }
+    public interface IAgent
+    {
+        IRepresentationManager RepresentationManager { get; }
 
-		IAgentSynchronizationContext SynchronizationContexts { get; }
+        IAgentSynchronizationContext SynchronizationContexts { get; }
 
-		Func<object> CreateDefaultHttpMessageHandler { get; set; }
+        Func<object> CreateDefaultHttpMessageHandler { get; set; }
 
-		void RegisterResetStateHandler (Action handler);
+        void RegisterResetStateHandler (Action handler);
 
-		void PublishEvaluation (
-			CodeCellId codeCellId,
-			object result,
-			EvaluationResultHandling resultHandling = EvaluationResultHandling.Replace);
-	}
+        void PublishEvaluation (
+            CodeCellId codeCellId,
+            object result,
+            EvaluationResultHandling resultHandling = EvaluationResultHandling.Replace);
+    }
 }

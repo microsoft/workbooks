@@ -10,15 +10,15 @@ using System.Windows.Input;
 
 namespace Xamarin.Interactive.Client.Windows.Commands
 {
-	sealed class OpenFileCommand : ICommand
-	{
-		#pragma warning disable 67
-		public event EventHandler CanExecuteChanged;
-		#pragma warning restore 67
+    sealed class OpenFileCommand : ICommand
+    {
+        #pragma warning disable 67
+        public event EventHandler CanExecuteChanged;
+        #pragma warning restore 67
 
-		public bool CanExecute (object parameter) => true;
+        public bool CanExecute (object parameter) => true;
 
-		public void Execute (object parameter)
-			=> App.OpenWorkbook (new Uri (parameter.ToString ()));
-	}
+        public void Execute (object parameter)
+            => App.OpenWorkbook (new Uri (parameter.ToString ()));
+    }
 }

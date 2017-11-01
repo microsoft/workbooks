@@ -12,32 +12,32 @@ using System;
 
 enum Backend
 {
-	JavaScriptCore,
-	Mshtml
+    JavaScriptCore,
+    Mshtml
 }
 
 class TypeAttribute : Attribute
 {
-	public Backend Backend { get; private set; }
-	public string TypeName { get; private set; }
-	public string BaseTypeName { get; private set; }
+    public Backend Backend { get; private set; }
+    public string TypeName { get; private set; }
+    public string BaseTypeName { get; private set; }
 
-	public TypeAttribute (Backend backend, string typeName, string baseTypeName = null)
-	{
-		Backend = backend;
-		TypeName = typeName;
-		BaseTypeName = baseTypeName;
-	}
+    public TypeAttribute (Backend backend, string typeName, string baseTypeName = null)
+    {
+        Backend = backend;
+        TypeName = typeName;
+        BaseTypeName = baseTypeName;
+    }
 }
 
 class IgnoreAttribute : Attribute
 {
-	public Backend Backend { get; private set; }
+    public Backend Backend { get; private set; }
 
-	public IgnoreAttribute (Backend backend)
-	{
-		Backend = backend;
-	}
+    public IgnoreAttribute (Backend backend)
+    {
+        Backend = backend;
+    }
 }
 
 class IReadOnlyListAttribute : Attribute

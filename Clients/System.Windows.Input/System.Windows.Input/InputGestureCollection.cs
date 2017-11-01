@@ -10,7 +10,7 @@ using System.Collections.Generic;
 
 namespace System.Windows.Input
 {
-	public sealed class InputGestureCollection : List<InputGesture>
-	{
-	}
+    public sealed class InputGestureCollection : List<InputGesture>
+    {
+    }
 }

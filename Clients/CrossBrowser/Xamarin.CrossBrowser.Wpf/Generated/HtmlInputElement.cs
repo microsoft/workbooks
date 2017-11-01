@@ -13,28 +13,28 @@ using mshtml;
 
 namespace Xamarin.CrossBrowser
 {
-	public partial class HtmlInputElement : HtmlElement
-	{
-		internal HtmlInputElement (ScriptContext context, IHTMLInputElement comObject) : base (context, (IHTMLElement)comObject)
-		{
-		}
+    public partial class HtmlInputElement : HtmlElement
+    {
+        internal HtmlInputElement (ScriptContext context, IHTMLInputElement comObject) : base (context, (IHTMLElement)comObject)
+        {
+        }
 
-		public string Type {
-			get {
-				return ((IHTMLInputElement)ComObject).type;
-			}
-			set {
-				((IHTMLInputElement)ComObject).type = value;
-			}
-		}
+        public string Type {
+            get {
+                return ((IHTMLInputElement)ComObject).type;
+            }
+            set {
+                ((IHTMLInputElement)ComObject).type = value;
+            }
+        }
 
-		public string Value {
-			get {
-				return ((IHTMLInputElement)ComObject).value;
-			}
-			set {
-				((IHTMLInputElement)ComObject).value = value;
-			}
-		}
-	}
+        public string Value {
+            get {
+                return ((IHTMLInputElement)ComObject).value;
+            }
+            set {
+                ((IHTMLInputElement)ComObject).value = value;
+            }
+        }
+    }
 }

@@ -8,9 +8,9 @@
 
 namespace Xamarin.Interactive
 {
-	enum ClientFlavor
-	{
-		Inspector,
-		Workbooks
-	}
+    enum ClientFlavor
+    {
+        Inspector,
+        Workbooks
+    }
 }

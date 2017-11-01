@@ -11,18 +11,18 @@ using System.Windows.Input;
 
 namespace Xamarin.Interactive.Client.Windows.Commands
 {
-	sealed class CheckForUpdatesCommand : ICommand
-	{
-		public bool CanExecute (object parameter)
-			=> true;
+    sealed class CheckForUpdatesCommand : ICommand
+    {
+        public bool CanExecute (object parameter)
+            => true;
 
-		public void Execute (object parameter)
-			=> App.CheckForUpdatesInBackground (
-				parameter as Window,
-				userInitiated: true);
+        public void Execute (object parameter)
+            => App.CheckForUpdatesInBackground (
+                parameter as Window,
+                userInitiated: true);
 
-		#pragma warning disable 67
-		public event EventHandler CanExecuteChanged;
-		#pragma warning restore 67
-	}
+        #pragma warning disable 67
+        public event EventHandler CanExecuteChanged;
+        #pragma warning restore 67
+    }
 }

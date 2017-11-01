@@ -24,97 +24,97 @@ using UnifiedAgent = Xamarin.Interactive.Mac.MacAgent;
 
 namespace Xamarin
 {
-	// WARNING: this type must not _directly_ reference any type in the PCL!
-	// Doing so will break live inspection since this type implements the
-	// PCL loading (so _directly_ referencing a type in the PCL will cause
-	// the debugger to fail to load the type because the loader cannot load)
-	public static partial class InspectorSupport
-	{
-		#if IOS
+    // WARNING: this type must not _directly_ reference any type in the PCL!
+    // Doing so will break live inspection since this type implements the
+    // PCL loading (so _directly_ referencing a type in the PCL will cause
+    // the debugger to fail to load the type because the loader cannot load)
+    public static partial class InspectorSupport
+    {
+        #if IOS
 		const string netProfilesPath = "/Library/Frameworks/Xamarin.iOS.framework/Versions/Current/lib/mono";
-		#elif MAC
+        #elif MAC
 		const string netProfilesPath = "/Library/Frameworks/Xamarin.Mac.framework/Versions/Current/lib/mono";
-		#endif
+        #endif
 
-		static bool environmentDetected;
-		static AssemblyName pclInteractiveAssemblyName;
-		static string fxPath;
+        static bool environmentDetected;
+        static AssemblyName pclInteractiveAssemblyName;
+        static string fxPath;
 
-		static IntPtr breakdanceTimerSource;
+        static IntPtr breakdanceTimerSource;
 
-		internal static void StartBreakdance ()
-		{
-			breakdanceTimerSource = Dispatch.ScheduleRepeatingTimer (TimeSpan.FromSeconds (1),
-				userdata => BreakdanceStep ());
-		}
+        internal static void StartBreakdance ()
+        {
+            breakdanceTimerSource = Dispatch.ScheduleRepeatingTimer (TimeSpan.FromSeconds (1),
+                userdata => BreakdanceStep ());
+        }
 
-		static void StopBreakdance ()
-		{
-			if (breakdanceTimerSource != IntPtr.Zero) {
-				Dispatch.Cancel (breakdanceTimerSource);
-				breakdanceTimerSource = IntPtr.Zero;
-			}
-		}
+        static void StopBreakdance ()
+        {
+            if (breakdanceTimerSource != IntPtr.Zero) {
+                Dispatch.Cancel (breakdanceTimerSource);
+                breakdanceTimerSource = IntPtr.Zero;
+            }
+        }
 
-		static partial void CreateAgent (AgentStartOptions startOptions)
-		{
-			StopBreakdance ();
+        static partial void CreateAgent (AgentStartOptions startOptions)
+        {
+            StopBreakdance ();
 
-			AppDomain.CurrentDomain.AssemblyResolve += HandleAssemblyResolve;
+            AppDomain.CurrentDomain.AssemblyResolve += HandleAssemblyResolve;
 
-			var source = IntPtr.Zero;
-			source = Dispatch.ScheduleRepeatingTimer (TimeSpan.FromSeconds (0), userdata => {
-				Dispatch.Cancel (source);
-				agent = new UnifiedAgent ().Start (startOptions);
-			});
-		}
+            var source = IntPtr.Zero;
+            source = Dispatch.ScheduleRepeatingTimer (TimeSpan.FromSeconds (0), userdata => {
+                Dispatch.Cancel (source);
+                agent = new UnifiedAgent ().Start (startOptions);
+            });
+        }
 
-		static void DetectEnvironment ()
-		{
-			if (environmentDetected)
-				return;
+        static void DetectEnvironment ()
+        {
+            if (environmentDetected)
+                return;
 
-			environmentDetected = true;
+            environmentDetected = true;
 
-			var runningCorlibVersion = typeof (object).Assembly.GetName ().Version;
+            var runningCorlibVersion = typeof (object).Assembly.GetName ().Version;
 
-			foreach (var profilePath in new DirectoryInfo (netProfilesPath).EnumerateDirectories ()) {
-				var corlibPath = Path.Combine (profilePath.FullName, "mscorlib.dll");
-				if (File.Exists (corlibPath) &&
-					AssemblyName.GetAssemblyName (corlibPath)?.Version == runningCorlibVersion) {
-					fxPath = profilePath.FullName;
-					break;
-				}
-			}
+            foreach (var profilePath in new DirectoryInfo (netProfilesPath).EnumerateDirectories ()) {
+                var corlibPath = Path.Combine (profilePath.FullName, "mscorlib.dll");
+                if (File.Exists (corlibPath) &&
+                    AssemblyName.GetAssemblyName (corlibPath)?.Version == runningCorlibVersion) {
+                    fxPath = profilePath.FullName;
+                    break;
+                }
+            }
 
-			pclInteractiveAssemblyName = Assembly
-				.GetExecutingAssembly ()
-				.GetReferencedAssemblies ()
-				.FirstOrDefault (a => a.Name == "Xamarin.Interactive");
-		}
+            pclInteractiveAssemblyName = Assembly
+                .GetExecutingAssembly ()
+                .GetReferencedAssemblies ()
+                .FirstOrDefault (a => a.Name == "Xamarin.Interactive");
+        }
 
-		static Assembly HandleAssemblyResolve (object sender, ResolveEventArgs e)
-		{
-			DetectEnvironment ();
+        static Assembly HandleAssemblyResolve (object sender, ResolveEventArgs e)
+        {
+            DetectEnvironment ();
 
-			if (pclInteractiveAssemblyName == null || !Directory.Exists (fxPath))
-				return null;
+            if (pclInteractiveAssemblyName == null || !Directory.Exists (fxPath))
+                return null;
 
-			var requestingAssemblyName = e.RequestingAssembly?.GetName ();
+            var requestingAssemblyName = e.RequestingAssembly?.GetName ();
 
-			if (requestingAssemblyName?.FullName != pclInteractiveAssemblyName.FullName)
-				return null;
+            if (requestingAssemblyName?.FullName != pclInteractiveAssemblyName.FullName)
+                return null;
 
-			var assemblyFileName = new AssemblyName (e.Name).Name + ".dll";
+            var assemblyFileName = new AssemblyName (e.Name).Name + ".dll";
 
-			var assemblyPath = Path.Combine (fxPath, assemblyFileName);
-			if (!File.Exists (assemblyPath)) {
-				assemblyPath = Path.Combine (fxPath, "Facades", assemblyFileName);
-				if (!File.Exists (assemblyPath))
-					return null;
-			}
+            var assemblyPath = Path.Combine (fxPath, assemblyFileName);
+            if (!File.Exists (assemblyPath)) {
+                assemblyPath = Path.Combine (fxPath, "Facades", assemblyFileName);
+                if (!File.Exists (assemblyPath))
+                    return null;
+            }
 
-			return Assembly.LoadFrom (assemblyPath);
-		}
-	}
+            return Assembly.LoadFrom (assemblyPath);
+        }
+    }
 }

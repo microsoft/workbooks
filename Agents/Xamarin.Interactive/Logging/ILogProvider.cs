@@ -10,11 +10,11 @@ using System;
 
 namespace Xamarin.Interactive.Logging
 {
-	interface ILogProvider
-	{
-		event EventHandler<LogEntry> EntryAdded;
-		LogLevel LogLevel { get; set; }
-		void Commit (LogEntry entry);
-		LogEntry [] GetEntries ();
-	}
+    interface ILogProvider
+    {
+        event EventHandler<LogEntry> EntryAdded;
+        LogLevel LogLevel { get; set; }
+        void Commit (LogEntry entry);
+        LogEntry [] GetEntries ();
+    }
 }

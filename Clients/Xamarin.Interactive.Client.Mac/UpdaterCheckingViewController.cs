@@ -13,21 +13,21 @@ using AppKit;
 
 namespace Xamarin.Interactive.Client.Mac
 {
-	partial class UpdaterCheckingViewController : NSViewController
-	{
-		UpdaterCheckingViewController (IntPtr handle) : base (handle)
-		{
-		}
+    partial class UpdaterCheckingViewController : NSViewController
+    {
+        UpdaterCheckingViewController (IntPtr handle) : base (handle)
+        {
+        }
 
-		public override void ViewDidLoad ()
-		{
-			progressIndicator.StartAnimation (this);
+        public override void ViewDidLoad ()
+        {
+            progressIndicator.StartAnimation (this);
 
-			base.ViewDidLoad ();
-		}
+            base.ViewDidLoad ();
+        }
 
-		[Action ("cancelCheck:")]
-		void CancelCheck (NSObject sender)
-			=> View.Window.PerformClose (sender);
-	}
+        [Action ("cancelCheck:")]
+        void CancelCheck (NSObject sender)
+            => View.Window.PerformClose (sender);
+    }
 }

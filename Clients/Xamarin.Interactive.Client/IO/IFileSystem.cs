@@ -10,11 +10,11 @@ using Xamarin.Interactive.Core;
 
 namespace Xamarin.Interactive.IO
 {
-	interface IFileSystem
-	{
-		QuarantineInfo GetQuarantineInfo (FilePath path);
-		void StripQuarantineInfo (FilePath path);
+    interface IFileSystem
+    {
+        QuarantineInfo GetQuarantineInfo (FilePath path);
+        void StripQuarantineInfo (FilePath path);
 
-		FilePath GetTempDirectory (params string [] subdirectories);
-	}
+        FilePath GetTempDirectory (params string [] subdirectories);
+    }
 }

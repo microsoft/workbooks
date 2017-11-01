@@ -12,12 +12,12 @@ using Xamarin.Interactive.Events;
 
 namespace Xamarin.Interactive.Workbook.Events
 {
-	sealed class AbortEvaluationEvent : IEvent
-	{
-		public object Source { get; }
-		public DateTime Timestamp { get; } = DateTime.UtcNow;
+    sealed class AbortEvaluationEvent : IEvent
+    {
+        public object Source { get; }
+        public DateTime Timestamp { get; } = DateTime.UtcNow;
 
-		public AbortEvaluationEvent (object source)
-			=> Source = source ?? throw new ArgumentNullException (nameof (source));
-	}
+        public AbortEvaluationEvent (object source)
+            => Source = source ?? throw new ArgumentNullException (nameof (source));
+    }
 }

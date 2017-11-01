@@ -10,8 +10,8 @@ using System.Runtime.Serialization;
 
 namespace Xamarin.Interactive.Serialization
 {
-	class XipSerializerSettings
-	{
-		public SerializationBinder Binder { get; set; }
-	}
+    class XipSerializerSettings
+    {
+        public SerializationBinder Binder { get; set; }
+    }
 }

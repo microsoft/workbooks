@@ -13,38 +13,38 @@ using mshtml;
 
 namespace Xamarin.CrossBrowser
 {
-	public partial class HtmlDocument : Document
-	{
-		internal HtmlDocument (ScriptContext context, IHTMLDocument2 comObject) : base (context, comObject)
-		{
-		}
+    public partial class HtmlDocument : Document
+    {
+        internal HtmlDocument (ScriptContext context, IHTMLDocument2 comObject) : base (context, comObject)
+        {
+        }
 
-		public HtmlElement Head {
-			get {
-				return Wrap<HtmlElement> (((IHTMLDocument7)ComObject).head);
-			}
-		}
+        public HtmlElement Head {
+            get {
+                return Wrap<HtmlElement> (((IHTMLDocument7)ComObject).head);
+            }
+        }
 
-		public HtmlElement Body {
-			get {
-				return Wrap<HtmlElement> (((IHTMLDocument2)ComObject).body);
-			}
-		}
+        public HtmlElement Body {
+            get {
+                return Wrap<HtmlElement> (((IHTMLDocument2)ComObject).body);
+            }
+        }
 
-		public new HtmlElement DocumentElement {
-			get {
-				return Wrap<HtmlElement> (((IHTMLDocument3)ComObject).documentElement);
-			}
-		}
+        public new HtmlElement DocumentElement {
+            get {
+                return Wrap<HtmlElement> (((IHTMLDocument3)ComObject).documentElement);
+            }
+        }
 
-		public new HtmlElement CreateElement (string name)
-		{
-			return Wrap<HtmlElement> (((IHTMLDocument2)ComObject).createElement (name));
-		}
+        public new HtmlElement CreateElement (string name)
+        {
+            return Wrap<HtmlElement> (((IHTMLDocument2)ComObject).createElement (name));
+        }
 
-		public new HtmlElement GetElementById (string id)
-		{
-			return Wrap<HtmlElement> (((IHTMLDocument3)ComObject).getElementById (id));
-		}
-	}
+        public new HtmlElement GetElementById (string id)
+        {
+            return Wrap<HtmlElement> (((IHTMLDocument3)ComObject).getElementById (id));
+        }
+    }
 }

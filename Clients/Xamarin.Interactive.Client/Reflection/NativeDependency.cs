@@ -10,13 +10,13 @@ using Xamarin.Interactive.Core;
 
 namespace Xamarin.Interactive.Reflection
 {
-	class NativeDependency : ExternalDependency
-	{
-		public string Name { get; }
+    class NativeDependency : ExternalDependency
+    {
+        public string Name { get; }
 
-		public NativeDependency (string name, FilePath location) : base (location)
-		{
-			Name = name;
-		}
-	}
+        public NativeDependency (string name, FilePath location) : base (location)
+        {
+            Name = name;
+        }
+    }
 }

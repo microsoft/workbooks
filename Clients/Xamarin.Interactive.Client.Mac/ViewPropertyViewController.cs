@@ -16,42 +16,42 @@ using Xamarin.Interactive.PropertyEditor;
 
 namespace Xamarin.Interactive.Client.Mac
 {
-	sealed partial class ViewPropertyViewController : ViewInspectorViewController
-	{
+    sealed partial class ViewPropertyViewController : ViewInspectorViewController
+    {
 
-		ViewPropertyViewController (IntPtr handle) : base (handle)
-		{
-		}
+        ViewPropertyViewController (IntPtr handle) : base (handle)
+        {
+        }
 
-		public override void ViewDidLoad ()
-		{
-			base.ViewDidLoad ();
-		}
+        public override void ViewDidLoad ()
+        {
+            base.ViewDidLoad ();
+        }
 
-		protected override void OnSelectedViewChanged ()
-			=> LoadPropertiesAsync ().Forget ();
+        protected override void OnSelectedViewChanged ()
+            => LoadPropertiesAsync ().Forget ();
 
-		async Task LoadPropertiesAsync ()
-		{
-			if (!Session.Agent.IsConnected)
-				return;
+        async Task LoadPropertiesAsync ()
+        {
+            if (!Session.Agent.IsConnected)
+                return;
 
-			if (propertyEditor.EditorProvider == null)
-				propertyEditor.EditorProvider = new InteractiveEditorProvider (Session, new MacPropertyHelper ());
+            if (propertyEditor.EditorProvider == null)
+                propertyEditor.EditorProvider = new InteractiveEditorProvider (Session, new MacPropertyHelper ());
 
-			InteractiveObject properties = null;
-			try {
-				propertyEditor.SelectedItems.Clear ();
-				if (SelectedView != null) {
-					properties = await Session.Agent.Api.GetObjectMembersAsync (
-						SelectedView.Handle);
-					if (properties != null)
-						propertyEditor.SelectedItems.Add (properties);
-				}
-			} catch (Exception e) {
-				e.ToUserPresentable (Catalog.GetString ("Unable to read view properties"))
-					.Present (this);
-			}
-		}
-	}
+            InteractiveObject properties = null;
+            try {
+                propertyEditor.SelectedItems.Clear ();
+                if (SelectedView != null) {
+                    properties = await Session.Agent.Api.GetObjectMembersAsync (
+                        SelectedView.Handle);
+                    if (properties != null)
+                        propertyEditor.SelectedItems.Add (properties);
+                }
+            } catch (Exception e) {
+                e.ToUserPresentable (Catalog.GetString ("Unable to read view properties"))
+                    .Present (this);
+            }
+        }
+    }
 }

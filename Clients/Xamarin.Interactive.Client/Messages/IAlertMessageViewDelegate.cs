@@ -8,9 +8,9 @@
 
 namespace Xamarin.Interactive.Messages
 {
-	interface IAlertMessageViewDelegate
-	{
-		void DisplayMessage (Message message);
-		void DismissMessage (int messageId);
-	}
+    interface IAlertMessageViewDelegate
+    {
+        void DisplayMessage (Message message);
+        void DismissMessage (int messageId);
+    }
 }

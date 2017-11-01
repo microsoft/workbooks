@@ -8,9 +8,9 @@
 
 namespace Xamarin.Interactive.Messages
 {
-	enum MessageSeverity
-	{
-		Info,
-		Error
-	}
+    enum MessageSeverity
+    {
+        Info,
+        Error
+    }
 }

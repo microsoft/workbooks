@@ -13,32 +13,32 @@ using JavaScriptCore;
 
 namespace Xamarin.CrossBrowser
 {
-	public partial class HtmlDocument : Document
-	{
-		internal HtmlDocument (JSValue underlyingJSValue) : base (underlyingJSValue)
-		{
-		}
+    public partial class HtmlDocument : Document
+    {
+        internal HtmlDocument (JSValue underlyingJSValue) : base (underlyingJSValue)
+        {
+        }
 
-		public HtmlElement Head {
-			get {
-				return Wrap<HtmlElement> (UnderlyingJSValue.GetProperty ("head"));
-			}
-		}
+        public HtmlElement Head {
+            get {
+                return Wrap<HtmlElement> (UnderlyingJSValue.GetProperty ("head"));
+            }
+        }
 
-		public HtmlElement Body {
-			get {
-				return Wrap<HtmlElement> (UnderlyingJSValue.GetProperty ("body"));
-			}
-		}
+        public HtmlElement Body {
+            get {
+                return Wrap<HtmlElement> (UnderlyingJSValue.GetProperty ("body"));
+            }
+        }
 
-		public new HtmlElement CreateElement (string name)
-		{
-			return Wrap<HtmlElement> (UnderlyingJSValue.Invoke ("createElement", JSValue.From (name, UnderlyingJSValue.Context)));
-		}
+        public new HtmlElement CreateElement (string name)
+        {
+            return Wrap<HtmlElement> (UnderlyingJSValue.Invoke ("createElement", JSValue.From (name, UnderlyingJSValue.Context)));
+        }
 
-		public new HtmlElement GetElementById (string id)
-		{
-			return Wrap<HtmlElement> (UnderlyingJSValue.Invoke ("getElementById", JSValue.From (id, UnderlyingJSValue.Context)));
-		}
-	}
+        public new HtmlElement GetElementById (string id)
+        {
+            return Wrap<HtmlElement> (UnderlyingJSValue.Invoke ("getElementById", JSValue.From (id, UnderlyingJSValue.Context)));
+        }
+    }
 }

@@ -1,7 +1,7 @@
 namespace Xamarin.Interactive.Client.Mac
 {
-	[global::Foundation.Register ("PackageManagerWindow")]
-	partial class PackageManagerWindow
-	{
-	}
+    [global::Foundation.Register ("PackageManagerWindow")]
+    partial class PackageManagerWindow
+    {
+    }
 }

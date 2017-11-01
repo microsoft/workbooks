@@ -9,12 +9,12 @@ using System.CodeDom.Compiler;
 
 namespace Xamarin.Interactive.Client.Mac
 {
-	[Register ("StatusToolbarView")]
-	partial class StatusToolbarView
-	{
-		
-		void ReleaseDesignerOutlets ()
-		{
-		}
-	}
+    [Register ("StatusToolbarView")]
+    partial class StatusToolbarView
+    {
+        
+        void ReleaseDesignerOutlets ()
+        {
+        }
+    }
 }

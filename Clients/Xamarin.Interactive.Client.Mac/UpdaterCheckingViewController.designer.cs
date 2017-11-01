@@ -9,18 +9,18 @@ using System.CodeDom.Compiler;
 
 namespace Xamarin.Interactive.Client.Mac
 {
-	[Register ("UpdaterCheckingViewController")]
-	partial class UpdaterCheckingViewController
-	{
-		[Outlet]
-		AppKit.NSProgressIndicator progressIndicator { get; set; }
+    [Register ("UpdaterCheckingViewController")]
+    partial class UpdaterCheckingViewController
+    {
+        [Outlet]
+        AppKit.NSProgressIndicator progressIndicator { get; set; }
 
-		void ReleaseDesignerOutlets ()
-		{
-			if (progressIndicator != null) {
-				progressIndicator.Dispose ();
-				progressIndicator = null;
-			}
-		}
-	}
+        void ReleaseDesignerOutlets ()
+        {
+            if (progressIndicator != null) {
+                progressIndicator.Dispose ();
+                progressIndicator = null;
+            }
+        }
+    }
 }

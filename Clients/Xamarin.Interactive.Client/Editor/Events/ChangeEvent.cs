@@ -11,23 +11,23 @@ using Microsoft.CodeAnalysis.Text;
 
 namespace Xamarin.Interactive.Editor.Events
 {
-	sealed class ChangeEvent : EditorEvent
-	{
-		public string Text { get; }
+    sealed class ChangeEvent : EditorEvent
+    {
+        public string Text { get; }
 
-		public ChangeEvent (IEditor source) : base (source, default (LinePosition))
-		{
-		}
+        public ChangeEvent (IEditor source) : base (source, default (LinePosition))
+        {
+        }
 
-		public ChangeEvent (IEditor source, LinePosition cursor, string text)
-			: base (source, cursor)
-		{
-			Text = text;
-		}
+        public ChangeEvent (IEditor source, LinePosition cursor, string text)
+            : base (source, cursor)
+        {
+            Text = text;
+        }
 
-		public override string ToString ()
-		{
-			return $"@ {Cursor}: |{Text}|";
-		}
-	}
+        public override string ToString ()
+        {
+            return $"@ {Cursor}: |{Text}|";
+        }
+    }
 }

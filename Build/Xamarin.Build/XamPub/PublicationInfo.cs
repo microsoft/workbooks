@@ -10,9 +10,9 @@ using Newtonsoft.Json;
 
 namespace Xamarin.XamPub
 {
-	public sealed class PublicationInfo
-	{
-		[JsonProperty ("name")]
-		public string Name { get; set; }
-	}
+    public sealed class PublicationInfo
+    {
+        [JsonProperty ("name")]
+        public string Name { get; set; }
+    }
 }

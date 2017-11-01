@@ -14,34 +14,34 @@ using Xamarin.Interactive.Representations.Reflection;
 
 namespace Xamarin.Interactive.CodeAnalysis
 {
-	[Serializable]
-	sealed class AssemblyDefinition : IAssemblyDefinition
-	{
-		IAssemblyIdentity IAssemblyDefinition.Identity => Name;
-		IAssemblyContent IAssemblyDefinition.Content => Content;
-		IAssemblyEntryPoint IAssemblyDefinition.EntryPoint => EntryPoint;
+    [Serializable]
+    sealed class AssemblyDefinition : IAssemblyDefinition
+    {
+        IAssemblyIdentity IAssemblyDefinition.Identity => Name;
+        IAssemblyContent IAssemblyDefinition.Content => Content;
+        IAssemblyEntryPoint IAssemblyDefinition.EntryPoint => EntryPoint;
 
-		public RepresentedAssemblyName Name { get; }
-		public AssemblyEntryPoint EntryPoint { get; }
-		public AssemblyContent Content { get; }
-		public AssemblyDependency [] ExternalDependencies { get; }
-		public bool HasIntegration { get; }
+        public RepresentedAssemblyName Name { get; }
+        public AssemblyEntryPoint EntryPoint { get; }
+        public AssemblyContent Content { get; }
+        public AssemblyDependency [] ExternalDependencies { get; }
+        public bool HasIntegration { get; }
 
-		public AssemblyDefinition (
-			AssemblyName name,
-			FilePath location,
-			string entryPointType = null,
-			string entryPointMethod = null,
-			byte [] peImage = null,
-			byte [] debugSymbols = null,
-			AssemblyDependency [] externalDependencies = null,
-			bool hasIntegration = false)
-		{
-			Name = new RepresentedAssemblyName (name);
-			EntryPoint = new AssemblyEntryPoint (entryPointType, entryPointMethod);
-			Content = new AssemblyContent (location, peImage, debugSymbols);
-			ExternalDependencies = externalDependencies;
-			HasIntegration = hasIntegration;
-		}
-	}
+        public AssemblyDefinition (
+            AssemblyName name,
+            FilePath location,
+            string entryPointType = null,
+            string entryPointMethod = null,
+            byte [] peImage = null,
+            byte [] debugSymbols = null,
+            AssemblyDependency [] externalDependencies = null,
+            bool hasIntegration = false)
+        {
+            Name = new RepresentedAssemblyName (name);
+            EntryPoint = new AssemblyEntryPoint (entryPointType, entryPointMethod);
+            Content = new AssemblyContent (location, peImage, debugSymbols);
+            ExternalDependencies = externalDependencies;
+            HasIntegration = hasIntegration;
+        }
+    }
 }

@@ -18,28 +18,28 @@ using Xamarin.Interactive.Wpf;
 
 namespace Xamarin.Workbooks.Wpf
 {
-	public partial class App : Application
-	{
-		void App_OnStartup (object sender, StartupEventArgs e)
-		{
-			var agent = new WpfAgent (() => new MainWindow ());
+    public partial class App : Application
+    {
+        void App_OnStartup (object sender, StartupEventArgs e)
+        {
+            var agent = new WpfAgent (() => new MainWindow ());
 
-			try {
-				var request = IdentifyAgentRequest.FromCommandLineArguments (Environment.GetCommandLineArgs ());
-				if (request.ProcessId >= 0) {
-					var parentProcess = Process.GetProcessById (request.ProcessId);
-					parentProcess.EnableRaisingEvents = true;
-					parentProcess.Exited += (o, _) => Environment.Exit (0);
-				}
-			} catch (Exception ex) {
-				Log.Error ("App", ex);
-			}
+            try {
+                var request = IdentifyAgentRequest.FromCommandLineArguments (Environment.GetCommandLineArgs ());
+                if (request.ProcessId >= 0) {
+                    var parentProcess = Process.GetProcessById (request.ProcessId);
+                    parentProcess.EnableRaisingEvents = true;
+                    parentProcess.Exited += (o, _) => Environment.Exit (0);
+                }
+            } catch (Exception ex) {
+                Log.Error ("App", ex);
+            }
 
-			agent.Start (new AgentStartOptions {
-				ClientSessionKind = ClientSessionKind.Workbook
-			});
+            agent.Start (new AgentStartOptions {
+                ClientSessionKind = ClientSessionKind.Workbook
+            });
 
-			DebuggingSupport.LaunchClientAppForDebugging (agent);
-		}
-	}
+            DebuggingSupport.LaunchClientAppForDebugging (agent);
+        }
+    }
 }

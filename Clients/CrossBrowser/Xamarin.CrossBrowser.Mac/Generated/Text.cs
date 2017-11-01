@@ -13,10 +13,10 @@ using JavaScriptCore;
 
 namespace Xamarin.CrossBrowser
 {
-	public partial class Text : Node
-	{
-		internal Text (JSValue underlyingJSValue) : base (underlyingJSValue)
-		{
-		}
-	}
+    public partial class Text : Node
+    {
+        internal Text (JSValue underlyingJSValue) : base (underlyingJSValue)
+        {
+        }
+    }
 }

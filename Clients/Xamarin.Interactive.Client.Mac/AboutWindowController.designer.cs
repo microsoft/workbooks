@@ -9,43 +9,43 @@ using System.CodeDom.Compiler;
 
 namespace Xamarin.Interactive.Client.Mac
 {
-	[Register ("AboutWindowController")]
-	partial class AboutWindowController
-	{
-		[Outlet]
-		AppKit.NSTextField appNameLabel { get; set; }
+    [Register ("AboutWindowController")]
+    partial class AboutWindowController
+    {
+        [Outlet]
+        AppKit.NSTextField appNameLabel { get; set; }
 
-		[Outlet]
-		AppKit.NSTextField copyrightLabel { get; set; }
+        [Outlet]
+        AppKit.NSTextField copyrightLabel { get; set; }
 
-		[Outlet]
-		AppKit.NSTextField versionLabel { get; set; }
+        [Outlet]
+        AppKit.NSTextField versionLabel { get; set; }
 
-		[Action ("ShowForums:")]
-		partial void ShowForums (Foundation.NSObject sender);
+        [Action ("ShowForums:")]
+        partial void ShowForums (Foundation.NSObject sender);
 
-		[Action ("ShowHelp:")]
-		partial void ShowHelp (Foundation.NSObject sender);
+        [Action ("ShowHelp:")]
+        partial void ShowHelp (Foundation.NSObject sender);
 
-		[Action ("ShowLicenses:")]
-		partial void ShowLicenses (Foundation.NSObject sender);
-		
-		void ReleaseDesignerOutlets ()
-		{
-			if (versionLabel != null) {
-				versionLabel.Dispose ();
-				versionLabel = null;
-			}
+        [Action ("ShowLicenses:")]
+        partial void ShowLicenses (Foundation.NSObject sender);
+        
+        void ReleaseDesignerOutlets ()
+        {
+            if (versionLabel != null) {
+                versionLabel.Dispose ();
+                versionLabel = null;
+            }
 
-			if (appNameLabel != null) {
-				appNameLabel.Dispose ();
-				appNameLabel = null;
-			}
+            if (appNameLabel != null) {
+                appNameLabel.Dispose ();
+                appNameLabel = null;
+            }
 
-			if (copyrightLabel != null) {
-				copyrightLabel.Dispose ();
-				copyrightLabel = null;
-			}
-		}
-	}
+            if (copyrightLabel != null) {
+                copyrightLabel.Dispose ();
+                copyrightLabel = null;
+            }
+        }
+    }
 }

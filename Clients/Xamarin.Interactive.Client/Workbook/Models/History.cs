@@ -25,284 +25,284 @@ using Xamarin.Interactive.Logging;
 
 namespace Xamarin.Interactive.Workbook.Models
 {
-	class History
-	{
-		const string TAG = nameof (History);
+    class History
+    {
+        const string TAG = nameof (History);
 
-		string [] history;
-		int head, tail;
-		int cursor, count;
-		int maxEntries;
-		bool persist;
+        string [] history;
+        int head, tail;
+        int cursor, count;
+        int maxEntries;
+        bool persist;
 
-		public IEnumerable<string> Entries => history;
+        public IEnumerable<string> Entries => history;
 
-		public static readonly FilePath HistoryFile = ClientApp
-			.SharedInstance
-			.Paths
-			.PreferencesDirectory
-			.Combine ("history.xml");
+        public static readonly FilePath HistoryFile = ClientApp
+            .SharedInstance
+            .Paths
+            .PreferencesDirectory
+            .Combine ("history.xml");
 
-		public History (IEnumerable<string> history, bool persist, int maxEntries = 300)
-		{
-			Init (history, persist, maxEntries);
-		}
+        public History (IEnumerable<string> history, bool persist, int maxEntries = 300)
+        {
+            Init (history, persist, maxEntries);
+        }
 
-		public void Clear ()
-		{
-			history = new string [maxEntries];
-			Save ();
-		}
+        public void Clear ()
+        {
+            history = new string [maxEntries];
+            Save ();
+        }
 
-		void Init (IEnumerable<string> entries, bool persist, int maxEntries)
-		{
-			if (maxEntries < 1)
-				throw new ArgumentException ("must be at least 1", nameof (maxEntries));
+        void Init (IEnumerable<string> entries, bool persist, int maxEntries)
+        {
+            if (maxEntries < 1)
+                throw new ArgumentException ("must be at least 1", nameof (maxEntries));
 
-			this.maxEntries = maxEntries;
-			this.persist = persist;
+            this.maxEntries = maxEntries;
+            this.persist = persist;
 
-			history = new string [maxEntries];
-			head = tail = cursor = 0;
+            history = new string [maxEntries];
+            head = tail = cursor = 0;
 
-			// If we were passed history to create ourselves with, append it. Otherwise, load history from
-			// disk if persistent history is enabled.
-			if (entries == null && persist)
-				entries = Load ();
+            // If we were passed history to create ourselves with, append it. Otherwise, load history from
+            // disk if persistent history is enabled.
+            if (entries == null && persist)
+                entries = Load ();
 
-			if (entries != null) {
-				AppendEntries (entries);
-				cursor = head;
-			}
+            if (entries != null) {
+                AppendEntries (entries);
+                cursor = head;
+            }
 
-			if (!persist)
-				try {
-					File.Delete (HistoryFile);
-				} catch (Exception e) {
-					Log.Warning (
-						TAG,
-						"Could not delete existing history when switching to non-persistent history.",
-					e);
-				}
-		}
+            if (!persist)
+                try {
+                    File.Delete (HistoryFile);
+                } catch (Exception e) {
+                    Log.Warning (
+                        TAG,
+                        "Could not delete existing history when switching to non-persistent history.",
+                    e);
+                }
+        }
 
-		void AppendEntries (IEnumerable<string> entries)
-		{
-			foreach (var entry in entries)
-				if (!String.IsNullOrEmpty (entry))
-					Append (entry);
-		}
+        void AppendEntries (IEnumerable<string> entries)
+        {
+            foreach (var entry in entries)
+                if (!String.IsNullOrEmpty (entry))
+                    Append (entry);
+        }
 
-		IEnumerable<string> Serialize ()
-		{
-			int start = (count == history.Length) ? head : tail;
-			for (int i = start; i < start + count; i++)
-				yield return history [i % history.Length];
-		}
+        IEnumerable<string> Serialize ()
+        {
+            int start = (count == history.Length) ? head : tail;
+            for (int i = start; i < start + count; i++)
+                yield return history [i % history.Length];
+        }
 
-		public void Save ()
-		{
-			if (persist) {
-				try {
-					HistoryFile.ParentDirectory.CreateDirectory ();
-					using (var historyStream = File.Open (HistoryFile, FileMode.Create))
-					using (var writer = new XmlTextWriter (historyStream, Utf8.Encoding)) {
-						writer.Formatting = Formatting.Indented;
-						writer.WriteStartDocument ();
-						writer.WriteStartElement ("ArrayOfString");
+        public void Save ()
+        {
+            if (persist) {
+                try {
+                    HistoryFile.ParentDirectory.CreateDirectory ();
+                    using (var historyStream = File.Open (HistoryFile, FileMode.Create))
+                    using (var writer = new XmlTextWriter (historyStream, Utf8.Encoding)) {
+                        writer.Formatting = Formatting.Indented;
+                        writer.WriteStartDocument ();
+                        writer.WriteStartElement ("ArrayOfString");
 
-						foreach (var historyItem in history.Where (hi => !String.IsNullOrWhiteSpace (hi)))
-							writer.WriteElementString ("string", historyItem);
+                        foreach (var historyItem in history.Where (hi => !String.IsNullOrWhiteSpace (hi)))
+                            writer.WriteElementString ("string", historyItem);
 
-						writer.WriteEndElement ();
-						writer.WriteEndDocument ();
-					}
-				} catch (Exception e) {
-					Log.Error (TAG, "Could not save history.", e);
-				}
-			}
-		}
+                        writer.WriteEndElement ();
+                        writer.WriteEndDocument ();
+                    }
+                } catch (Exception e) {
+                    Log.Error (TAG, "Could not save history.", e);
+                }
+            }
+        }
 
-		public IEnumerable<string> Load ()
-		{
-			if (!HistoryFile.FileExists)
-				return EmptyArray<string>.Instance;
+        public IEnumerable<string> Load ()
+        {
+            if (!HistoryFile.FileExists)
+                return EmptyArray<string>.Instance;
 
-			try {
-				var entries = new List<string> ();
-				using (var historyStream = HistoryFile.OpenRead ())
-				using (var reader = new XmlTextReader (historyStream)) {
-					while (reader.Read ()) {
-						if (reader.Name == "string")
-							entries.Add (reader.ReadString ());
-					}
-				}
-				return entries;
-			} catch (Exception e) {
-				Log.Error (TAG, "Could not load history.", e);
-				return EmptyArray<string>.Instance;
-			}
-		}
+            try {
+                var entries = new List<string> ();
+                using (var historyStream = HistoryFile.OpenRead ())
+                using (var reader = new XmlTextReader (historyStream)) {
+                    while (reader.Read ()) {
+                        if (reader.Name == "string")
+                            entries.Add (reader.ReadString ());
+                    }
+                }
+                return entries;
+            } catch (Exception e) {
+                Log.Error (TAG, "Could not load history.", e);
+                return EmptyArray<string>.Instance;
+            }
+        }
 
-		public void Close ()
-		{
-			Save ();
-		}
+        public void Close ()
+        {
+            Save ();
+        }
 
-		/// <summary>
+        /// <summary>
 		/// Appends a value to the history
 		/// </summary>
-		public void Append (string s)
-		{
-			history [head] = s;
-			head = (head + 1) % history.Length;
+        public void Append (string s)
+        {
+            history [head] = s;
+            head = (head + 1) % history.Length;
 
-			if (head == tail)
-				tail = (tail + 1 % history.Length);
+            if (head == tail)
+                tail = (tail + 1 % history.Length);
 
-			if (count != history.Length)
-				count++;
-		}
+            if (count != history.Length)
+                count++;
+        }
 
-		/// <summary>
+        /// <summary>
 		/// Pushes the value to the history, on the slot that was created by PrepareLine
 		/// </summary>
 		/// <returns>The history.</returns>
 		/// <param name="text">The text to update at the last slot</param>
-		public void UpdateLastAppended (string text)
-		{
-			int location = head - 1;
-			if (location < 0)
-				location = history.Length - 1;
-			history [location] = text;
-		}
+        public void UpdateLastAppended (string text)
+        {
+            int location = head - 1;
+            if (location < 0)
+                location = history.Length - 1;
+            history [location] = text;
+        }
 
-		/// <summary>
+        /// <summary>
 		/// Updates the current cursor location with the string,
 		/// to support editing of history items.   For the current
 		/// line to participate, an Append must be done before.
 		/// </summary>
-		public void Update (string s)
-		{
-			history [cursor] = s;
-		}
+        public void Update (string s)
+        {
+            history [cursor] = s;
+        }
 
-		public void RemoveLast ()
-		{
-			head = head - 1;
-			if (head < 0)
-				head = history.Length - 1;
-		}
+        public void RemoveLast ()
+        {
+            head = head - 1;
+            if (head < 0)
+                head = history.Length - 1;
+        }
 
-		public void Accept (string s)
-		{
-			int t = head - 1;
-			if (t < 0)
-				t = history.Length - 1;
+        public void Accept (string s)
+        {
+            int t = head - 1;
+            if (t < 0)
+                t = history.Length - 1;
 
-			history [t] = s;
-		}
+            history [t] = s;
+        }
 
-		public bool IsPreviousAvailable {
-			get {
-				if (count == 0)
-					return false;
+        public bool IsPreviousAvailable {
+            get {
+                if (count == 0)
+                    return false;
 
-				int next = cursor - 1;
-				if (next < 0)
-					next = count - 1;
+                int next = cursor - 1;
+                if (next < 0)
+                    next = count - 1;
 
-				return next < count && next != head;
-			}
-		}
+                return next < count && next != head;
+            }
+        }
 
-		public bool IsNextAvailable {
-			get {
-				if (count == 0)
-					return false;
+        public bool IsNextAvailable {
+            get {
+                if (count == 0)
+                    return false;
 
-				int next = (cursor + 1) % history.Length;
-				return next < count && next != head;
-			}
-		}
+                int next = (cursor + 1) % history.Length;
+                return next < count && next != head;
+            }
+        }
 
-		/// <summary>
+        /// <summary>
 		/// Returns a string with the previous line contents, or
 		/// null if there is no data in the history to move to.
 		/// </summary>
-		public string Previous ()
-		{
-			if (!IsPreviousAvailable)
-				return null;
+        public string Previous ()
+        {
+            if (!IsPreviousAvailable)
+                return null;
 
-			cursor--;
-			if (cursor < 0)
-				cursor = history.Length - 1;
+            cursor--;
+            if (cursor < 0)
+                cursor = history.Length - 1;
 
-			return history [cursor];
-		}
+            return history [cursor];
+        }
 
-		public string Next ()
-		{
-			if (!IsNextAvailable)
-				return null;
+        public string Next ()
+        {
+            if (!IsNextAvailable)
+                return null;
 
-			cursor = (cursor + 1) % history.Length;
-			return history [cursor];
-		}
+            cursor = (cursor + 1) % history.Length;
+            return history [cursor];
+        }
 
-		public void CursorToEnd ()
-		{
-			if (head == tail)
-				return;
+        public void CursorToEnd ()
+        {
+            if (head == tail)
+                return;
 
-			cursor = head;
-		}
+            cursor = head;
+        }
 
-		public void Dump (TextWriter writer = null)
-		{
-			if (writer == null)
-				writer = Console.Out;
+        public void Dump (TextWriter writer = null)
+        {
+            if (writer == null)
+                writer = Console.Out;
 
-			writer.WriteLine ("Head={0} Tail={1} Cursor={2} count={3}", head, tail, cursor, count);
-			for (int i = 0; i < history.Length; i++) {
-				writer.WriteLine (" {0} {1}: {2}", i == cursor ? "==>" : "   ", i, history [i]);
-			}
-		}
+            writer.WriteLine ("Head={0} Tail={1} Cursor={2} count={3}", head, tail, cursor, count);
+            for (int i = 0; i < history.Length; i++) {
+                writer.WriteLine (" {0} {1}: {2}", i == cursor ? "==>" : "   ", i, history [i]);
+            }
+        }
 
-		public string SearchBackward (string term)
-		{
-			for (int i = 0; i < count; i++) {
-				int slot = cursor - i - 1;
+        public string SearchBackward (string term)
+        {
+            for (int i = 0; i < count; i++) {
+                int slot = cursor - i - 1;
 
-				if (slot < 0)
-					slot = history.Length + slot;
+                if (slot < 0)
+                    slot = history.Length + slot;
 
-				if (slot >= history.Length)
-					slot = 0;
+                if (slot >= history.Length)
+                    slot = 0;
 
-				if (history [slot] != null && history [slot].IndexOf (term, StringComparison.Ordinal) != -1) {
-					cursor = slot;
-					return history [slot];
-				}
-			}
+                if (history [slot] != null && history [slot].IndexOf (term, StringComparison.Ordinal) != -1) {
+                    cursor = slot;
+                    return history [slot];
+                }
+            }
 
-			return null;
-		}
+            return null;
+        }
 
-		public string ToHtml (string text)
-		{
-			var sb = new StringBuilder ("<html><style>body { font-family: Courier; }</style><body>");
-			sb.AppendFormat ("<p>From: {0}", text);
-			sb.AppendFormat ("<p>Head={0}, Tail={1}, Cursor={2}, Count={3}", head, tail, cursor, count);
-			for (int i = 0; i < history.Length; i++) {
-				var e = history [i];
-				if (e == null)
-					e = "[null]";
+        public string ToHtml (string text)
+        {
+            var sb = new StringBuilder ("<html><style>body { font-family: Courier; }</style><body>");
+            sb.AppendFormat ("<p>From: {0}", text);
+            sb.AppendFormat ("<p>Head={0}, Tail={1}, Cursor={2}, Count={3}", head, tail, cursor, count);
+            for (int i = 0; i < history.Length; i++) {
+                var e = history [i];
+                if (e == null)
+                    e = "[null]";
 
-				sb.AppendFormat ("<p>{0} {1}: {2}", i == cursor? ">" : "&nbsp", i, e);
-			}
-			return sb.ToString ();
-		}
-	}
+                sb.AppendFormat ("<p>{0} {1}: {2}", i == cursor? ">" : "&nbsp", i, e);
+            }
+            return sb.ToString ();
+        }
+    }
 }

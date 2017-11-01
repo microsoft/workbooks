@@ -8,8 +8,8 @@
 
 namespace Xamarin.Interactive
 {
-	static class EmptyArray<T>
-	{
-		public static readonly T [] Instance = new T [0];
-	}
+    static class EmptyArray<T>
+    {
+        public static readonly T [] Instance = new T [0];
+    }
 }

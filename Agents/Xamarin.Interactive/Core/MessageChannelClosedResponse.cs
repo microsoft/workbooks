@@ -12,11 +12,11 @@ using Xamarin.Interactive.Protocol;
 
 namespace Xamarin.Interactive.Core
 {
-	sealed class MessageChannelClosedResponse : Exception, IXipResponseMessage
-	{
-		public Guid RequestId { get; }
+    sealed class MessageChannelClosedResponse : Exception, IXipResponseMessage
+    {
+        public Guid RequestId { get; }
 
-		public MessageChannelClosedResponse (Guid requestId)
-			=> RequestId = requestId;
-	}
+        public MessageChannelClosedResponse (Guid requestId)
+            => RequestId = requestId;
+    }
 }

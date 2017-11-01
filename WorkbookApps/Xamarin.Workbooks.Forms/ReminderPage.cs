@@ -21,20 +21,20 @@ using Xamarin.Forms;
 
 namespace MasterDetailPageNavigation
 {
-	public class ReminderPage : ContentPage
-	{
-		public ReminderPage ()
-		{
-			Title = "Reminder Page";
-			Content = new StackLayout {
-				Children = {
-					new Label {
-						Text = "Reminder data goes here",
-						HorizontalOptions = LayoutOptions.Center,
-						VerticalOptions = LayoutOptions.CenterAndExpand
-					}
-				}
-			};
-		}
-	}
+    public class ReminderPage : ContentPage
+    {
+        public ReminderPage ()
+        {
+            Title = "Reminder Page";
+            Content = new StackLayout {
+                Children = {
+                    new Label {
+                        Text = "Reminder data goes here",
+                        HorizontalOptions = LayoutOptions.Center,
+                        VerticalOptions = LayoutOptions.CenterAndExpand
+                    }
+                }
+            };
+        }
+    }
 }

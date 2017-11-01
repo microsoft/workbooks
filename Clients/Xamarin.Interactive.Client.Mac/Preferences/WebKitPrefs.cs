@@ -14,22 +14,22 @@ using Xamarin.Interactive.Logging;
 
 namespace Xamarin.Interactive.Preferences
 {
-	static class WebKitPrefs
-	{
-		const string TAG = nameof (WebKitPrefs);
+    static class WebKitPrefs
+    {
+        const string TAG = nameof (WebKitPrefs);
 
-		public static bool DeveloperExtrasEnabled {
-			get {
-				using (NativeExceptionHandler.Trap ()) {
-					try {
-						return WebPreferencesPrivate.GetDeveloperExtrasEnabled (
-							WebPreferences.StandardPreferences);
-					} catch (Exception e) {
-						Log.Error (TAG, "private WebKit API may have been removed", e);
-						return false;
-					}
-				}
-			}
-		}
-	}
+        public static bool DeveloperExtrasEnabled {
+            get {
+                using (NativeExceptionHandler.Trap ()) {
+                    try {
+                        return WebPreferencesPrivate.GetDeveloperExtrasEnabled (
+                            WebPreferences.StandardPreferences);
+                    } catch (Exception e) {
+                        Log.Error (TAG, "private WebKit API may have been removed", e);
+                        return false;
+                    }
+                }
+            }
+        }
+    }
 }

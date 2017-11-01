@@ -9,12 +9,12 @@
 
 namespace Xamarin.Interactive.Editor
 {
-	enum AbstractCursorPosition
-	{
-		DocumentStart,
-		DocumentEnd,
-		FirstLineEnd,
-		Up,
-		Down
-	}
+    enum AbstractCursorPosition
+    {
+        DocumentStart,
+        DocumentEnd,
+        FirstLineEnd,
+        Up,
+        Down
+    }
 }

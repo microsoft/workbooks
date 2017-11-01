@@ -10,25 +10,25 @@ using Newtonsoft.Json;
 
 namespace Xamarin.Interactive.Telemetry.Objects
 {
-	sealed class Build
-	{
-		public static Build Instance { get; } = new Build ();
+    sealed class Build
+    {
+        public static Build Instance { get; } = new Build ();
 
-		Build ()
-		{
-		}
+        Build ()
+        {
+        }
 
-		public void Serialize (JsonTextWriter writer)
-		{
-			writer.WriteStartObject ();
+        public void Serialize (JsonTextWriter writer)
+        {
+            writer.WriteStartObject ();
 
-			writer.WritePropertyName ("version");
-			writer.WriteValue (BuildInfo.VersionString);
+            writer.WritePropertyName ("version");
+            writer.WriteValue (BuildInfo.VersionString);
 
-			writer.WritePropertyName ("hash");
-			writer.WriteValue (BuildInfo.Hash);
+            writer.WritePropertyName ("hash");
+            writer.WriteValue (BuildInfo.Hash);
 
-			writer.WriteEndObject ();
-		}
-	}
+            writer.WriteEndObject ();
+        }
+    }
 }

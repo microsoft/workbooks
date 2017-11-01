@@ -15,33 +15,33 @@ using JavaScriptCore;
 
 namespace Xamarin.CrossBrowser
 {
-	public partial class StyleSheetList : WrappedObject, IReadOnlyList<CssStyleSheet>
-	{
-		internal StyleSheetList (JSValue underlyingJSValue) : base (underlyingJSValue)
-		{
-		}
+    public partial class StyleSheetList : WrappedObject, IReadOnlyList<CssStyleSheet>
+    {
+        internal StyleSheetList (JSValue underlyingJSValue) : base (underlyingJSValue)
+        {
+        }
 
-		public int Count {
-			get {
-				return UnderlyingJSValue.GetProperty ("length").ToInt32 ();
-			}
-		}
+        public int Count {
+            get {
+                return UnderlyingJSValue.GetProperty ("length").ToInt32 ();
+            }
+        }
 
-		public CssStyleSheet this [int index] {
-			get {
-				return Wrap<CssStyleSheet> (UnderlyingJSValue.Invoke ("item", JSValue.From (index, UnderlyingJSValue.Context)));
-			}
-		}
+        public CssStyleSheet this [int index] {
+            get {
+                return Wrap<CssStyleSheet> (UnderlyingJSValue.Invoke ("item", JSValue.From (index, UnderlyingJSValue.Context)));
+            }
+        }
 
-		public IEnumerator<CssStyleSheet> GetEnumerator ()
-		{
-			for (int i = 0, n = Count; i < n; i++)
-				yield return this [i];
-		}
+        public IEnumerator<CssStyleSheet> GetEnumerator ()
+        {
+            for (int i = 0, n = Count; i < n; i++)
+                yield return this [i];
+        }
 
-		IEnumerator IEnumerable.GetEnumerator ()
-		{
-			return GetEnumerator ();
-		}
-	}
+        IEnumerator IEnumerable.GetEnumerator ()
+        {
+            return GetEnumerator ();
+        }
+    }
 }

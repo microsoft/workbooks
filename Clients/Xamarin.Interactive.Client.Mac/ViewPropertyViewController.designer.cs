@@ -9,18 +9,18 @@ using System.CodeDom.Compiler;
 
 namespace Xamarin.Interactive.Client.Mac
 {
-	[Register ("ViewPropertyViewController")]
-	partial class ViewPropertyViewController
-	{
-		[Outlet]
-		Xamarin.PropertyEditing.Mac.PropertyEditorPanel propertyEditor { get; set; }
-		
-		void ReleaseDesignerOutlets ()
-		{
-			if (propertyEditor != null) {
-				propertyEditor.Dispose ();
-				propertyEditor = null;
-			}
-		}
-	}
+    [Register ("ViewPropertyViewController")]
+    partial class ViewPropertyViewController
+    {
+        [Outlet]
+        Xamarin.PropertyEditing.Mac.PropertyEditorPanel propertyEditor { get; set; }
+        
+        void ReleaseDesignerOutlets ()
+        {
+            if (propertyEditor != null) {
+                propertyEditor.Dispose ();
+                propertyEditor = null;
+            }
+        }
+    }
 }

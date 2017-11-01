@@ -16,68 +16,68 @@ using Xamarin.Interactive.Messages;
 
 namespace Xamarin.Interactive.Client.Mac
 {
-	sealed class NSAlertMessageViewDelegate : IAlertMessageViewDelegate
-	{
-		readonly NSWindow window;
-		readonly Dictionary<int, NSAlert> alerts = new Dictionary<int, NSAlert> ();
+    sealed class NSAlertMessageViewDelegate : IAlertMessageViewDelegate
+    {
+        readonly NSWindow window;
+        readonly Dictionary<int, NSAlert> alerts = new Dictionary<int, NSAlert> ();
 
-		public NSAlertMessageViewDelegate (NSWindow window)
-		{
-			if (window == null)
-				throw new ArgumentNullException (nameof (window));
+        public NSAlertMessageViewDelegate (NSWindow window)
+        {
+            if (window == null)
+                throw new ArgumentNullException (nameof (window));
 
-			this.window = window;
-		}
+            this.window = window;
+        }
 
-		public void DismissMessage (int messageId)
-		{
-			NSAlert alert;
-			if (alerts.TryGetValue (messageId, out alert)) {
-				alerts.Remove (messageId);
+        public void DismissMessage (int messageId)
+        {
+            NSAlert alert;
+            if (alerts.TryGetValue (messageId, out alert)) {
+                alerts.Remove (messageId);
 
-				window.EndSheet (alert.Window);
-				alert.Window.OrderOut (null);
-				alert.Dispose ();
-			}
-		}
+                window.EndSheet (alert.Window);
+                alert.Window.OrderOut (null);
+                alert.Dispose ();
+            }
+        }
 
-		public void DisplayMessage (Message message)
-		{
-			var alert = new NSAlert ();
+        public void DisplayMessage (Message message)
+        {
+            var alert = new NSAlert ();
 
-			alerts.Add (message.Id, alert);
+            alerts.Add (message.Id, alert);
 
-			switch (message.Severity) {
-			case MessageSeverity.Error:
-				alert.AlertStyle = NSAlertStyle.Critical;
-				break;
-			default:
-				alert.AlertStyle = NSAlertStyle.Informational;
-				break;
-			}
+            switch (message.Severity) {
+            case MessageSeverity.Error:
+                alert.AlertStyle = NSAlertStyle.Critical;
+                break;
+            default:
+                alert.AlertStyle = NSAlertStyle.Informational;
+                break;
+            }
 
-			if (!String.IsNullOrEmpty (message.Text))
-				alert.MessageText = message.Text;
+            if (!String.IsNullOrEmpty (message.Text))
+                alert.MessageText = message.Text;
 
-			if (!String.IsNullOrEmpty (message.DetailedText))
-				alert.InformativeText = message.DetailedText;
+            if (!String.IsNullOrEmpty (message.DetailedText))
+                alert.InformativeText = message.DetailedText;
 
-			Action<MessageAction> addButton = action => {
-				if (action == null)
-					return;
+            Action<MessageAction> addButton = action => {
+                if (action == null)
+                    return;
 
-				var button = alert.AddButton (action.Label);
-				if (action.Tooltip != null)
-					button.ToolTip = action.Tooltip;
+                var button = alert.AddButton (action.Label);
+                if (action.Tooltip != null)
+                    button.ToolTip = action.Tooltip;
 
-				button.Activated += (sender, e) => message.ActionResponseHandler (message, action);
-			};
+                button.Activated += (sender, e) => message.ActionResponseHandler (message, action);
+            };
 
-			addButton (message.AffirmativeAction);
-			addButton (message.NegativeAction);
-			addButton (message.AuxiliaryAction);
+            addButton (message.AffirmativeAction);
+            addButton (message.NegativeAction);
+            addButton (message.AuxiliaryAction);
 
-			alert.BeginSheet (window);
-		}
-	}
+            alert.BeginSheet (window);
+        }
+    }
 }

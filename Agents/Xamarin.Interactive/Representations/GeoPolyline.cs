@@ -14,25 +14,25 @@ using Xamarin.Interactive.Serialization;
 
 namespace Xamarin.Interactive.Representations
 {
-	[Serializable]
-	public sealed class GeoPolyline : IRepresentationObject
-	{
-		public GeoPolyline (GeoLocation [] points)
-		{
-			if (points == null)
-				throw new ArgumentNullException (nameof (points));
+    [Serializable]
+    public sealed class GeoPolyline : IRepresentationObject
+    {
+        public GeoPolyline (GeoLocation [] points)
+        {
+            if (points == null)
+                throw new ArgumentNullException (nameof (points));
 
-			if (points.Length < 1)
-				throw new ArgumentOutOfRangeException (nameof (points), "must have at least one");
+            if (points.Length < 1)
+                throw new ArgumentOutOfRangeException (nameof (points), "must have at least one");
 
-			Points = points;
-		}
+            Points = points;
+        }
 
-		public GeoLocation [] Points { get; }
+        public GeoLocation [] Points { get; }
 
-		void ISerializableObject.Serialize (ObjectSerializer serializer)
-		{
-			throw new NotImplementedException ();
-		}
-	}
+        void ISerializableObject.Serialize (ObjectSerializer serializer)
+        {
+            throw new NotImplementedException ();
+        }
+    }
 }

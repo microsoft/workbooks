@@ -8,8 +8,8 @@
 
 namespace Xamarin.Interactive.Preferences
 {
-	static class PreferenceStore
-	{
-		public static IPreferenceStore Default { get; set; }
-	}
+    static class PreferenceStore
+    {
+        public static IPreferenceStore Default { get; set; }
+    }
 }

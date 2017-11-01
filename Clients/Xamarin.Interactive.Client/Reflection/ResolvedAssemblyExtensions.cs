@@ -12,43 +12,43 @@ using System.Threading;
 
 namespace Xamarin.Interactive.Reflection
 {
-	static class ResolvedAssemblyExtensions
-	{
-		public static ImmutableArray<ResolvedAssembly> TopologicallySorted (
-			this IEnumerable<ResolvedAssembly> resolvedAssemblies,
-			CancellationToken cancellationToken = default (CancellationToken))
-		{
-			var seenResolvedAssemblies = new HashSet<ResolvedAssembly> ();
-			var resultList = new List<ResolvedAssembly> ();
-			TopologicalSort (
-				resolvedAssemblies,
-				seenResolvedAssemblies,
-				resultList,
-				cancellationToken);
-			return resultList.ToImmutableArray ();
-		}
+    static class ResolvedAssemblyExtensions
+    {
+        public static ImmutableArray<ResolvedAssembly> TopologicallySorted (
+            this IEnumerable<ResolvedAssembly> resolvedAssemblies,
+            CancellationToken cancellationToken = default (CancellationToken))
+        {
+            var seenResolvedAssemblies = new HashSet<ResolvedAssembly> ();
+            var resultList = new List<ResolvedAssembly> ();
+            TopologicalSort (
+                resolvedAssemblies,
+                seenResolvedAssemblies,
+                resultList,
+                cancellationToken);
+            return resultList.ToImmutableArray ();
+        }
 
-		static void TopologicalSort (
-			IEnumerable<ResolvedAssembly> resolvedAssemblies,
-			HashSet<ResolvedAssembly> seenResolvedAssemblies,
-			List<ResolvedAssembly> resultList,
-			CancellationToken cancellationToken)
-		{
-			foreach (var resolvedAssembly in resolvedAssemblies) {
-				cancellationToken.ThrowIfCancellationRequested ();
+        static void TopologicalSort (
+            IEnumerable<ResolvedAssembly> resolvedAssemblies,
+            HashSet<ResolvedAssembly> seenResolvedAssemblies,
+            List<ResolvedAssembly> resultList,
+            CancellationToken cancellationToken)
+        {
+            foreach (var resolvedAssembly in resolvedAssemblies) {
+                cancellationToken.ThrowIfCancellationRequested ();
 
-				if (!seenResolvedAssemblies.Add (resolvedAssembly))
-					continue;
+                if (!seenResolvedAssemblies.Add (resolvedAssembly))
+                    continue;
 
-				if (resolvedAssembly.ResolvedReferences.Count > 0)
-					TopologicalSort (
-						resolvedAssembly.ResolvedReferences,
-						seenResolvedAssemblies,
-						resultList,
-						cancellationToken);
+                if (resolvedAssembly.ResolvedReferences.Count > 0)
+                    TopologicalSort (
+                        resolvedAssembly.ResolvedReferences,
+                        seenResolvedAssemblies,
+                        resultList,
+                        cancellationToken);
 
-				resultList.Add (resolvedAssembly);
-			}
-		}
-	}
+                resultList.Add (resolvedAssembly);
+            }
+        }
+    }
 }
