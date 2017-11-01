@@ -59,14 +59,6 @@
   },
   {
     "Kind": "NuGet",
-    "Name": "SSH.NET",
-    "Version": "2016.0.0",
-    "DependentProjects": [
-      "Xamarin.Interactive.Client.iOS"
-    ]
-  },
-  {
-    "Kind": "NuGet",
     "Name": "System.Security.Permissions",
     "Version": "4.4.0",
     "DependentProjects": [
@@ -134,6 +126,6 @@
   {
     "Kind": "GitSubmodule",
     "Name": "External/Xamarin.PropertyEditing",
-    "Version": "876040e6b5e95d4cb658158d3305a6871bb58f3f"
+    "Version": "953d37877f78fdf1fa99a33e189aa99a6b5f4655"
   }
 ]
