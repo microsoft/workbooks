@@ -1,4 +1,4 @@
-﻿//
+//
 // HtmlRendererBase.cs
 //
 // Author:

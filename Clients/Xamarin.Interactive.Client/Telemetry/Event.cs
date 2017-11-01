@@ -1,4 +1,4 @@
-﻿//
+//
 // Event.cs
 //
 // Author:

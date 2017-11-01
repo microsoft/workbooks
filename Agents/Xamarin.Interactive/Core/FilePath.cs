@@ -1,4 +1,4 @@
-﻿//
+//
 // FilePath.cs
 //
 // Author:

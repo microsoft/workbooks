@@ -1,4 +1,4 @@
-﻿using System.Reflection;
+using System.Reflection;
 using System.Windows;
 
 #if CLIENT_FLAVOR_INSPECTOR

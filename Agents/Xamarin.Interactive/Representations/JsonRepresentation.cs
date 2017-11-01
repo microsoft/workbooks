@@ -1,4 +1,4 @@
-﻿//
+//
 // JsonRepresentation.cs
 //
 // Author:

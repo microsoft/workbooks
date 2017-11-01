@@ -1,4 +1,4 @@
-﻿//
+//
 // DisplayMode.cs
 //
 // Author:

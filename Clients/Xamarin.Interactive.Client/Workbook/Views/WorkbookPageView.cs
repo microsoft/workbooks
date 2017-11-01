@@ -1,4 +1,4 @@
-﻿//
+//
 // WorkbookPageView.cs
 //
 // Author:

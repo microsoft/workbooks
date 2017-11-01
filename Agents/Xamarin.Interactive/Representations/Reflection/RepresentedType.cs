@@ -1,4 +1,4 @@
-﻿//
+//
 // RepresentedType.cs
 //
 // Author:

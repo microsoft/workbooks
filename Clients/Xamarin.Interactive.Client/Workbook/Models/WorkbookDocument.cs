@@ -1,4 +1,4 @@
-﻿//
+//
 // WorkbookDocument.cs
 //
 // Author:

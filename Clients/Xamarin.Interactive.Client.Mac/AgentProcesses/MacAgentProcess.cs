@@ -1,4 +1,4 @@
-﻿//
+//
 // MacAgentProcess.cs
 //
 // Author:

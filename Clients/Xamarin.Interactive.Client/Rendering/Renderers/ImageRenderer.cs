@@ -1,4 +1,4 @@
-﻿//
+//
 // ImageRenderer.cs
 //
 // Author:

@@ -1,4 +1,4 @@
-﻿//
+//
 // HttpServer.cs
 //
 // Author:

@@ -1,4 +1,4 @@
-﻿//
+//
 // MTouchListSimXml.cs
 //
 // Author:

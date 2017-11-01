@@ -1,4 +1,4 @@
-﻿//
+//
 // TaskExtensions.cs
 //
 // Author:

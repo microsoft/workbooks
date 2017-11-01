@@ -1,4 +1,4 @@
-﻿//
+//
 // MacUpdaterViewModel.cs
 //
 // Author:

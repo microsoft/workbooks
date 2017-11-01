@@ -1,4 +1,4 @@
-﻿//
+//
 // PreferencesTests.cs
 //
 // Author:

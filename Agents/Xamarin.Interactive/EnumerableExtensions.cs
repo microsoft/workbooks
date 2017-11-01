@@ -1,4 +1,4 @@
-﻿//
+//
 // EnumerableExtensions.cs
 //
 // Author:

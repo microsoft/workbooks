@@ -1,4 +1,4 @@
-﻿//
+//
 // IAgentIntegration.cs
 //
 // Author:

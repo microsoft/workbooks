@@ -1,4 +1,4 @@
-﻿//
+//
 // InspectViewMaterial.cs
 //
 // Author:

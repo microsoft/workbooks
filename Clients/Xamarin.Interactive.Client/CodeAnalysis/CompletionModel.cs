@@ -1,4 +1,4 @@
-﻿//
+//
 // CompletionModel.cs
 //
 // Author:

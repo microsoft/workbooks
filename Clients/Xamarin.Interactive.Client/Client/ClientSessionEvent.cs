@@ -1,4 +1,4 @@
-﻿//
+//
 // ClientSessionEvent.cs
 //
 // Author:

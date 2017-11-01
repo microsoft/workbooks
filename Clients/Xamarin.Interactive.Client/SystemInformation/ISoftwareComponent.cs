@@ -1,4 +1,4 @@
-﻿//
+//
 // SoftwareComponent.cs
 //
 // Author:

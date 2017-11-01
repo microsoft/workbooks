@@ -1,4 +1,4 @@
-﻿// PackageManagerViewModel.cs
+// PackageManagerViewModel.cs
 //
 // Author:
 //   Sandy Armstrong <sandy@xamarin.com>

@@ -1,4 +1,4 @@
-﻿//
+//
 // ScriptFunction.cs
 //
 // Author:

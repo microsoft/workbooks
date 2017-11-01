@@ -1,4 +1,4 @@
-﻿//
+//
 // PathChangedEventArgs.cs
 //
 // Author:

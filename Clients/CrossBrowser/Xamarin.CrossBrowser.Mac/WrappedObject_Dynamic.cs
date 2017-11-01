@@ -1,4 +1,4 @@
-﻿//
+//
 // WrappedObject_Dynamic.cs
 //
 // Author:

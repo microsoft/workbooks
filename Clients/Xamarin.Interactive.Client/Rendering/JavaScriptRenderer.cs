@@ -1,4 +1,4 @@
-﻿//
+//
 // JavaScriptRenderer.cs
 //
 // Author:

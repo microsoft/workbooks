@@ -1,4 +1,4 @@
-﻿//
+//
 // SessionSplitViewController.cs
 //
 // Author:

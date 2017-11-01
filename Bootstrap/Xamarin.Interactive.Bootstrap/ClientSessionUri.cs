@@ -1,4 +1,4 @@
-﻿//
+//
 // ClientSessionUri.cs
 //
 // Author:

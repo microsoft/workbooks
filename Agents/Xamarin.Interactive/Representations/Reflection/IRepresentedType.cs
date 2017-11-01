@@ -1,4 +1,4 @@
-﻿//
+//
 // IRepresentedType.cs
 //
 // Author:

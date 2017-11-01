@@ -1,4 +1,4 @@
-﻿﻿//
+﻿//
 // DeletePlistEntries.cs
 //
 // Author:

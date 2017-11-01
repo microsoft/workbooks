@@ -1,4 +1,4 @@
-﻿//
+//
 // AgentIntegrationAttribute.cs
 //
 // Author:

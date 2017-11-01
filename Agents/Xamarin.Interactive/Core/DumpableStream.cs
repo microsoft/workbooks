@@ -1,4 +1,4 @@
-﻿//
+//
 // DumpableStream.cs
 //
 // Author:

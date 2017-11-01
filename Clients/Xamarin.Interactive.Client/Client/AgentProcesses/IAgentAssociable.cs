@@ -1,4 +1,4 @@
-﻿//
+//
 // IAgentClientFactory.cs
 //
 // Author:

@@ -1,4 +1,4 @@
-﻿//
+//
 // TaskCompletionSource.cs
 //
 // Author:

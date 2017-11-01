@@ -1,4 +1,4 @@
-﻿//
+//
 // AndroidAgent.cs
 //
 // Author:

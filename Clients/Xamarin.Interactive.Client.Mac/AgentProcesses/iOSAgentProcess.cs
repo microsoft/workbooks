@@ -1,4 +1,4 @@
-﻿//
+//
 // iOSAgentProcess.cs
 //
 // Author:

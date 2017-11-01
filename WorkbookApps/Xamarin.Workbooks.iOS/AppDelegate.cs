@@ -1,4 +1,4 @@
-﻿//
+//
 // AppDelegate.cs
 //
 // Author:

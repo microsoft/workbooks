@@ -1,4 +1,4 @@
-﻿//
+//
 // MostRecentlyUsedCollectionTests.cs
 //
 // Author:

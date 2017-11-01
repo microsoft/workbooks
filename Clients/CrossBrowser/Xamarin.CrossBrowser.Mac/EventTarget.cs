@@ -1,4 +1,4 @@
-﻿//
+//
 // EventTarget.cs
 //
 // Author:

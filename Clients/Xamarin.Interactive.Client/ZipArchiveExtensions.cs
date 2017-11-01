@@ -1,4 +1,4 @@
-﻿//
+//
 // ZipArchiveExtensions.cs
 //
 // Author:

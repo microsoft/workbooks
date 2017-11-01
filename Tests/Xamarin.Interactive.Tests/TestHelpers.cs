@@ -1,4 +1,4 @@
-﻿//
+//
 // TestHelpers.cs
 //
 // Author:

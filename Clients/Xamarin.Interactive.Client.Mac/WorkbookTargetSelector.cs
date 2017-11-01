@@ -1,4 +1,4 @@
-﻿//
+//
 // WorkbookTargetSelector.cs
 //
 // Author:

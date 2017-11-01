@@ -1,4 +1,4 @@
-﻿﻿//
+﻿//
 // RecentDocumentsController.cs
 //
 // Author:

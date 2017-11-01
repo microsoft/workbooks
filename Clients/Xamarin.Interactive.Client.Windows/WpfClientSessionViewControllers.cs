@@ -1,4 +1,4 @@
-﻿//
+//
 // WpfClientSessionViewControllers.cs
 //
 // Author:

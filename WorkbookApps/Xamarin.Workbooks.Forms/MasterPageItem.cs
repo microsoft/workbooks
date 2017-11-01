@@ -1,4 +1,4 @@
-﻿//
+//
 // MasterPageItem.cs
 //
 // Author:

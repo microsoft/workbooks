@@ -1,4 +1,4 @@
-﻿//
+//
 // AssemblyEntryPoint.cs
 //
 // Author:

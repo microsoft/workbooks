@@ -1,4 +1,4 @@
-﻿//
+//
 // App.xaml.cs
 //
 // Author:

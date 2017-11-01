@@ -1,4 +1,4 @@
-﻿//
+//
 // MainWindow.cs
 //
 // Author:

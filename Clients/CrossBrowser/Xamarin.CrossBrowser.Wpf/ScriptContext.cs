@@ -1,4 +1,4 @@
-﻿//
+//
 // ScriptContext.cs
 //
 // Author:

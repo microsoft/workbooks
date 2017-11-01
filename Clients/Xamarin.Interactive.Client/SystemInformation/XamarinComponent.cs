@@ -1,4 +1,4 @@
-﻿//
+//
 // XamarinComponent.cs
 //
 // Author:

@@ -1,4 +1,4 @@
-﻿//
+//
 // JSException.cs
 //
 // Author:

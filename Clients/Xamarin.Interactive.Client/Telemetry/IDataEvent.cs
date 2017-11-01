@@ -1,4 +1,4 @@
-﻿//
+//
 // IDataEvent.cs
 //
 // Author:

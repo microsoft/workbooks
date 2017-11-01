@@ -1,4 +1,4 @@
-﻿// AboutWindow.xaml.cs
+// AboutWindow.xaml.cs
 //
 // Author:
 //   Sandy Armstrong <sandy@xamarin.com>

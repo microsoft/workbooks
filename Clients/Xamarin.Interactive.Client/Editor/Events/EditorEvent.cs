@@ -1,4 +1,4 @@
-﻿//
+//
 // IEditorEvent.cs
 //
 // Author:

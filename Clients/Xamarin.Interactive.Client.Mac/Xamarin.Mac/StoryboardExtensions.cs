@@ -1,4 +1,4 @@
-﻿//
+//
 // StoryboardExtensions.cs
 //
 // Author:

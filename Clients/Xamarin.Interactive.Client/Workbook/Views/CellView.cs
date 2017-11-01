@@ -1,4 +1,4 @@
-﻿//
+//
 // CellView.cs
 //
 // Author:

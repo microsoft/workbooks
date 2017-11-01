@@ -1,4 +1,4 @@
-﻿//
+//
 // AgentIdentityRequest.cs
 //
 // Author:

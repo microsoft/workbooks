@@ -1,4 +1,4 @@
-﻿//
+//
 // WebKitExtensions.cs
 //
 // Author:

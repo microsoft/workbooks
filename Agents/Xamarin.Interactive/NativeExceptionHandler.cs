@@ -1,4 +1,4 @@
-﻿//
+//
 // NativeExceptionHandler.cs
 //
 // Author:

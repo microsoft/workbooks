@@ -1,4 +1,4 @@
-﻿//
+//
 // EvaluationContext.cs
 //
 // Author:

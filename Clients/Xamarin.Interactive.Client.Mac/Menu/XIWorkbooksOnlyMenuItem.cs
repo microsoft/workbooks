@@ -1,4 +1,4 @@
-﻿//
+//
 // XIWorkbooksOnlyMenuItem.cs
 //
 // Author:

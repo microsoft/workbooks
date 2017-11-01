@@ -1,4 +1,4 @@
-﻿//
+//
 // EventExtensions.cs
 //
 // Author:

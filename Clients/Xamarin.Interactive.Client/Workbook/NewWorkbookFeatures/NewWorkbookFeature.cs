@@ -1,4 +1,4 @@
-﻿//
+//
 // NewWorkbookFeature.cs
 //
 // Author:

@@ -1,4 +1,4 @@
-﻿//
+//
 // UnifiedExtensions.cs
 //
 // Author:

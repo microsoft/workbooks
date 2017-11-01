@@ -1,4 +1,4 @@
-﻿//
+//
 // MarkdownCell.cs
 //
 // Author:

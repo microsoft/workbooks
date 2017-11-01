@@ -1,4 +1,4 @@
-﻿//
+//
 // IXipRequestMessage.cs
 //
 // Author:

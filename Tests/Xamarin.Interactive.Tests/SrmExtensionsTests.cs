@@ -1,4 +1,4 @@
-﻿//
+//
 // SrmExtensionsTests.cs
 //
 // Author:

@@ -1,4 +1,4 @@
-﻿//
+//
 // PackageViewModel.cs
 //
 // Author:

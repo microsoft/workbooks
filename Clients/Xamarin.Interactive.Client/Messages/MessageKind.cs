@@ -1,4 +1,4 @@
-﻿//
+//
 // MessageKind.cs
 //
 // Author:

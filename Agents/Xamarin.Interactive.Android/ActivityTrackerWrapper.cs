@@ -1,4 +1,4 @@
-﻿//
+//
 // ActivityTrackerWrapper.cs
 //
 // Author:

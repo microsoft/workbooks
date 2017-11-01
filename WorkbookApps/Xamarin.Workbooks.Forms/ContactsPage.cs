@@ -1,4 +1,4 @@
-﻿//
+//
 // ContactsPage.cs
 //
 // Author:

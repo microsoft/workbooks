@@ -1,4 +1,4 @@
-﻿//
+//
 // QuarantineInfo.cs
 //
 // Author:

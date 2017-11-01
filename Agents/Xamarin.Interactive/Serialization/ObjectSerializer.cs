@@ -1,4 +1,4 @@
-﻿//
+//
 // ObjectSerializer.cs
 //
 // Author:

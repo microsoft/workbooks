@@ -1,4 +1,4 @@
-﻿//
+//
 // MessageViewController.cs
 //
 // Author:

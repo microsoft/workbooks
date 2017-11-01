@@ -1,4 +1,4 @@
-﻿//
+//
 // ScriptObject_Dynamic.cs
 //
 // Author:

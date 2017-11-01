@@ -1,4 +1,4 @@
-﻿//
+//
 // ReflectionInteractiveObject.cs
 //
 // Author:

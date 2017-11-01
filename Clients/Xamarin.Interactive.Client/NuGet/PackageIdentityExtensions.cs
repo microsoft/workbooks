@@ -1,4 +1,4 @@
-﻿//
+//
 // PackageIdentityExtensions.cs
 //
 // Author:

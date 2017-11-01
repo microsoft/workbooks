@@ -1,4 +1,4 @@
-﻿//
+//
 // ViewRenderer.cs
 //
 // This class is based on iOS Agent ViewRenderer which was adapted from the Xamarin iOS Designer:

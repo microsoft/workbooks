@@ -1,4 +1,4 @@
-﻿//
+//
 // CollectionExtensions.cs
 //
 // Author:

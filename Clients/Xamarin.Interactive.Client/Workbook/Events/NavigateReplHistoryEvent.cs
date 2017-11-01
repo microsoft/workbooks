@@ -1,4 +1,4 @@
-﻿//
+//
 // NavigateReplHistoryEvent.cs
 //
 // Author:

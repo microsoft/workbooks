@@ -1,4 +1,4 @@
-﻿//
+//
 // SessionViewControllerAdapter.cs
 //
 // Author:

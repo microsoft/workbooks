@@ -1,4 +1,4 @@
-﻿//
+//
 // GacCache.cs
 //
 // Author:

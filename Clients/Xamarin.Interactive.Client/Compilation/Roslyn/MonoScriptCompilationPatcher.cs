@@ -1,4 +1,4 @@
-﻿//
+//
 // MonoScriptCompilationPatcher.cs
 //
 // Author:

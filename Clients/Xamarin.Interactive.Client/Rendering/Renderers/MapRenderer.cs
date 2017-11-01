@@ -1,4 +1,4 @@
-﻿//
+//
 // MapRenderer.cs
 //
 // Author:

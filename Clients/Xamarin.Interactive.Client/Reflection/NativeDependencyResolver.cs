@@ -1,4 +1,4 @@
-﻿//
+//
 // NativeDependencyResolver.cs
 //
 // Author:

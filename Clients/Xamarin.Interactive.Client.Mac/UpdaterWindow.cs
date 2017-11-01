@@ -1,4 +1,4 @@
-﻿//
+//
 // UpdaterWindow.cs
 //
 // Author:

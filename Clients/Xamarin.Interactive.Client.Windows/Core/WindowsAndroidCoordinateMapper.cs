@@ -1,4 +1,4 @@
-﻿// WindowsXapCoordinateMapper.cs
+// WindowsXapCoordinateMapper.cs
 //
 // Author:
 //   Sandy Armstrong <sandy@xamarin.com>

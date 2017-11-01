@@ -1,4 +1,4 @@
-﻿// InspectViewAsContainerConverter.cs
+// InspectViewAsContainerConverter.cs
 //
 // Author:
 //   Larry Ewing <lewing@xamarin.com>

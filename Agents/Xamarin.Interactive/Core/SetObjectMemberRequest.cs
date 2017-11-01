@@ -1,4 +1,4 @@
-﻿//
+//
 // SetObjectMemberRequest.cs
 //
 // Author:

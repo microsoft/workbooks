@@ -1,4 +1,4 @@
-﻿//
+//
 // ReflectionRemotingRenderer.cs
 //
 // Author:

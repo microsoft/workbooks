@@ -1,4 +1,4 @@
-﻿//
+//
 // MainActivity.cs
 //
 // Author:

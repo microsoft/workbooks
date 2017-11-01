@@ -1,4 +1,4 @@
-﻿//
+//
 // ViewTransform.cs
 //
 // Author:

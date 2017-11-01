@@ -1,4 +1,4 @@
-﻿//
+//
 // IFileSystem.cs
 //
 // Author:

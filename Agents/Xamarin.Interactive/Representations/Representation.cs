@@ -1,4 +1,4 @@
-﻿//
+//
 // Representation.cs
 //
 // Author:

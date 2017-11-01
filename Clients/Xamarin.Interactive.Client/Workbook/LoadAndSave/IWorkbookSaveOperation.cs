@@ -1,4 +1,4 @@
-﻿//
+//
 // IWorkbookSaveInfo.cs
 //
 // Author:

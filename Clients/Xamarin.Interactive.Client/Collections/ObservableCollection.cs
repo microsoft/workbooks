@@ -1,4 +1,4 @@
-﻿//
+//
 // ObservableCollection.cs
 //
 // Author:

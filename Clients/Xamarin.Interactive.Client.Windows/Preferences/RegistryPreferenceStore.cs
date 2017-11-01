@@ -1,4 +1,4 @@
-﻿// RegistryPreferenceStore.cs
+// RegistryPreferenceStore.cs
 //
 // Author:
 //   Sandy Armstrong <sandy@xamarin.com>

@@ -1,4 +1,4 @@
-﻿//
+//
 // ISimplyObservable.cs
 //
 // Author:

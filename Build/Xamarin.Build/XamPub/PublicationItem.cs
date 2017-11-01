@@ -1,4 +1,4 @@
-﻿//
+//
 // PublicationItem.cs
 //
 // Author:

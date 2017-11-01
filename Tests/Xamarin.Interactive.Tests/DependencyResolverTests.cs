@@ -1,4 +1,4 @@
-﻿//
+//
 // DependencyResolverTests.cs
 //
 // Author:

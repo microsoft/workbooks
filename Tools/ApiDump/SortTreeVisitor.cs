@@ -1,4 +1,4 @@
-﻿//
+//
 // SortTreeVisitor.cs
 //
 // Author:

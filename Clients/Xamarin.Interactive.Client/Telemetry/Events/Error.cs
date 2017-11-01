@@ -1,4 +1,4 @@
-﻿//
+//
 // Error.cs
 //
 // Author:

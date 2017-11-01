@@ -1,4 +1,4 @@
-﻿//
+//
 // UpdaterViewModel.cs
 //
 // Author:

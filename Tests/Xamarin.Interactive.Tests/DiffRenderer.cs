@@ -1,4 +1,4 @@
-﻿//
+//
 // DiffRenderer.cs
 //
 // Author:

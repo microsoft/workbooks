@@ -1,4 +1,4 @@
-﻿//
+//
 // Highlighter.cs
 //
 // Author:

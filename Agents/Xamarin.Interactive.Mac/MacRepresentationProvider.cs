@@ -1,4 +1,4 @@
-﻿//
+//
 // MacRepresentationProvider.cs
 //
 // Author:

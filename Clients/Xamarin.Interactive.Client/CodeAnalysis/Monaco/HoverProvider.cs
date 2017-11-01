@@ -1,4 +1,4 @@
-﻿//
+//
 // HoverProvider.cs
 //
 // Author:

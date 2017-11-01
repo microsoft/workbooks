@@ -1,4 +1,4 @@
-﻿//
+//
 // HexDumpRenderer.cs
 //
 // Author:

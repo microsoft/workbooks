@@ -1,4 +1,4 @@
-﻿//
+//
 // ViewVisibility.cs
 //
 // Author:

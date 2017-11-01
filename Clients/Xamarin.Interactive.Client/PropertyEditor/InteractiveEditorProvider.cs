@@ -1,4 +1,4 @@
-﻿// InteractiveEditorProvider.cs
+// InteractiveEditorProvider.cs
 //
 // Author:
 //   Larry Ewing <lewing@xamarin.com>

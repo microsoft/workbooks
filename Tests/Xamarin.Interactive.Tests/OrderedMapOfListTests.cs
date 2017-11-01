@@ -1,4 +1,4 @@
-﻿//
+//
 // OrderedMapOfListTests.cs
 //
 // Author:

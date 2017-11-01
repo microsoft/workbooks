@@ -1,4 +1,4 @@
-﻿// VisualRepView.xaml.cs
+// VisualRepView.xaml.cs
 //
 // Author:
 //   Larry Ewing <lewing@xamarin.com>

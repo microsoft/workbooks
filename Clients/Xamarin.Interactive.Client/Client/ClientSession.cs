@@ -1,4 +1,4 @@
-﻿//
+//
 // ClientSession.cs
 //
 // Author:

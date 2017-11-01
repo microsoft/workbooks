@@ -1,4 +1,4 @@
-﻿//
+//
 // SessionToolbarDelegate.cs
 //
 // Author:

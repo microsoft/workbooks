@@ -1,4 +1,4 @@
-﻿//
+//
 // RendererContext.cs
 //
 // Author:

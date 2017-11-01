@@ -1,4 +1,4 @@
-﻿//
+//
 // ImmutableList.cs
 //
 // Author:

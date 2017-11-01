@@ -1,4 +1,4 @@
-﻿//
+//
 // AgentProcessManagerTests.cs
 //
 // Author:

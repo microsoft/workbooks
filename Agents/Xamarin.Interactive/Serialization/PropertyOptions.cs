@@ -1,4 +1,4 @@
-﻿//
+//
 // PropertyOptions.cs
 //
 // Author:

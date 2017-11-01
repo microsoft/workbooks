@@ -1,4 +1,4 @@
-﻿//
+//
 // XIInspectorOnlyMenuItem.cs
 //
 // Author:

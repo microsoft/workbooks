@@ -1,4 +1,4 @@
-﻿using System.Reflection;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 
 [assembly: AssemblyCopyright ("Copyright 2014-2016 Xamarin Inc. Copyright 2016 Microsoft. All rights reserved.")]

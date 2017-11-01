@@ -1,4 +1,4 @@
-﻿//
+//
 // CompilationWorkspaceFactory.cs
 //
 // Author:

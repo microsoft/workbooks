@@ -1,4 +1,4 @@
-﻿//
+//
 // IInspectViewNode.cs
 //
 // Author:

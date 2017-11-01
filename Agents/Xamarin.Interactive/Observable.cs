@@ -1,4 +1,4 @@
-﻿//
+//
 // Observable.cs
 //
 // Author:

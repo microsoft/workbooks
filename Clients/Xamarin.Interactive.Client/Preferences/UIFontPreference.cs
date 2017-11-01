@@ -1,4 +1,4 @@
-﻿//
+//
 // UIFontPreference.cs
 //
 // Author:

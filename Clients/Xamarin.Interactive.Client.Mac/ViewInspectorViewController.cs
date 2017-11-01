@@ -1,4 +1,4 @@
-﻿//
+//
 // ViewInspectorViewController.cs
 //
 // Author:

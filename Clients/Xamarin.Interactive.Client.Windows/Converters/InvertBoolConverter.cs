@@ -1,4 +1,4 @@
-﻿// InvertBoolConverter.cs
+// InvertBoolConverter.cs
 //
 // Author:
 //   Sandy Armstrong <sandy@xamarin.com>

@@ -1,4 +1,4 @@
-﻿//
+//
 // WorkbookDocumentTests.cs
 //
 // Author:

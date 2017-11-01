@@ -1,4 +1,4 @@
-﻿//
+//
 // AlertMessageViewController.cs
 //
 // Author:

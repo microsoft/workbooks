@@ -1,4 +1,4 @@
-﻿//
+//
 // MacPropertyHelper.cs
 //
 // Author:

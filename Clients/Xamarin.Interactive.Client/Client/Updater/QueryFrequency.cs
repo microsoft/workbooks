@@ -1,4 +1,4 @@
-﻿//
+//
 // QueryFrequency.cs
 //
 // Author:

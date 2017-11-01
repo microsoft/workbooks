@@ -1,4 +1,4 @@
-﻿//
+//
 // UpdateNode.cs
 //
 // Author:

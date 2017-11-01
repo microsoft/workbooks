@@ -1,4 +1,4 @@
-﻿//
+//
 // XamarinFormsFeature.cs
 //
 // Author:

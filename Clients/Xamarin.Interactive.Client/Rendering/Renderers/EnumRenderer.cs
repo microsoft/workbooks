@@ -1,4 +1,4 @@
-﻿//
+//
 // EnumRenderer.cs
 //
 // Author:

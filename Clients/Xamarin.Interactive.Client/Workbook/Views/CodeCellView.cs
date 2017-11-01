@@ -1,4 +1,4 @@
-﻿//
+//
 // CodeCellView.cs
 //
 // Author:

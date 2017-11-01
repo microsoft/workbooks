@@ -1,4 +1,4 @@
-﻿// CheckForUpdatesCommand.cs
+// CheckForUpdatesCommand.cs
 //
 // Author:
 //   Sandy Armstrong <sandy@xamarin.com>

@@ -1,4 +1,4 @@
-﻿//
+//
 // InspectableWindow.cs
 //
 // Author:

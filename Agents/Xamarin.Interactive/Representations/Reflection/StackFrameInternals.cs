@@ -1,4 +1,4 @@
-﻿//
+//
 // StackTraceInternals.cs
 //
 // Author:

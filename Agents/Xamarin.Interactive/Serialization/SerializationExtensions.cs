@@ -1,4 +1,4 @@
-﻿//
+//
 // SerializationExtensions.cs
 //
 // Author:

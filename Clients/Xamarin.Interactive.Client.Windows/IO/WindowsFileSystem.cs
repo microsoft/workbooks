@@ -1,4 +1,4 @@
-﻿//
+//
 // WindowsFileSystem.cs
 //
 // Author:

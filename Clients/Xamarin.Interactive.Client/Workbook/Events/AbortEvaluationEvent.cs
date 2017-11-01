@@ -1,4 +1,4 @@
-﻿//
+//
 // AbortEvaluationEvent.cs
 //
 // Author:

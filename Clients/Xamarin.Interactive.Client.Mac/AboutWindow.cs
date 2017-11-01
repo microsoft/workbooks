@@ -1,4 +1,4 @@
-﻿//
+//
 // AboutWindow.cs
 //
 // Author:

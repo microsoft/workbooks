@@ -1,4 +1,4 @@
-﻿//
+//
 // iOSRepresentationProvider.cs
 //
 // Author:

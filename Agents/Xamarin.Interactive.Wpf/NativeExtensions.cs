@@ -1,4 +1,4 @@
-﻿//
+//
 // NativeExtenstions.cs
 //
 // Author:

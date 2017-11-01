@@ -1,4 +1,4 @@
-﻿// 
+// 
 // Authorization.cs: 
 //
 // Authors: Miguel de Icaza

@@ -1,4 +1,4 @@
-﻿//
+//
 // UncachedAgentTicket.cs
 //
 // Author:

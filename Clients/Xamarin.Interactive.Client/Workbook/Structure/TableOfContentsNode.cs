@@ -1,4 +1,4 @@
-﻿//
+//
 // TableOfContentsNode.cs
 //
 // Author:

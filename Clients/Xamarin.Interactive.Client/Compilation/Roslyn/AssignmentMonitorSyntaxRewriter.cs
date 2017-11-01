@@ -1,4 +1,4 @@
-﻿//
+//
 // AssignmentMonitorSyntaxRewriter.cs
 //
 // Author:

@@ -1,4 +1,4 @@
-﻿//
+//
 // CSharpTextRenderer.cs
 //
 // Author:

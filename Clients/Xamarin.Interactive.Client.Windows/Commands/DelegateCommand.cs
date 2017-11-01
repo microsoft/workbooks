@@ -1,4 +1,4 @@
-﻿// DelegateCommand.cs
+// DelegateCommand.cs
 //
 // Author:
 //   Larry Ewing <lewing@xamarin.com>

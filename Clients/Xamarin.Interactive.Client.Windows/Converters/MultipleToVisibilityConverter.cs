@@ -1,4 +1,4 @@
-﻿// MultipleToVisibilityConverter.cs
+// MultipleToVisibilityConverter.cs
 //
 // Author:
 //   Larry Ewing <lewing@xamarin.com>

@@ -1,4 +1,4 @@
-﻿//
+//
 // RoutedCommand.cs
 //
 // Author:

@@ -1,4 +1,4 @@
-﻿// AboutCommand.cs
+// AboutCommand.cs
 //
 // Author:
 //   Sandy Armstrong <sandy@xamarin.com>

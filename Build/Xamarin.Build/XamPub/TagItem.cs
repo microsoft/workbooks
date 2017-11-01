@@ -1,4 +1,4 @@
-﻿//
+//
 // TagItem.cs
 //
 // Author:

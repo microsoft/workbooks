@@ -1,4 +1,4 @@
-﻿//
+//
 // DateTimeRenderer.cs
 //
 // Author:

@@ -1,4 +1,4 @@
-﻿// ProgressSubscriptions.cs
+// ProgressSubscriptions.cs
 //
 // Author:
 //   Sandy Armstrong <sandy@xamarin.com>

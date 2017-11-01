@@ -1,4 +1,4 @@
-﻿//
+//
 // ClientWebServer.cs
 //
 // Author:

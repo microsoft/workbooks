@@ -1,4 +1,4 @@
-﻿//
+//
 // AgentConnection.cs
 //
 // Author:

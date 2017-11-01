@@ -1,4 +1,4 @@
-﻿//
+//
 // ObjectCache.cs
 //
 // Author:

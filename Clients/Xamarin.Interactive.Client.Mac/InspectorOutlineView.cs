@@ -1,4 +1,4 @@
-﻿//
+//
 // InspectorOutlineView.cs
 //
 // Author:

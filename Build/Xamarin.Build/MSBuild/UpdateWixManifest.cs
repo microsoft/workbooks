@@ -1,4 +1,4 @@
-﻿//
+//
 // UpdateWixManifest.cs
 //
 // Author:

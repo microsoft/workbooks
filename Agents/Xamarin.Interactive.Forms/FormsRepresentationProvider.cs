@@ -1,4 +1,4 @@
-﻿//
+//
 // FormsRepresentationProvider.cs
 //
 // Author:

@@ -1,4 +1,4 @@
-﻿//
+//
 // HtmlHelpers.cs
 //
 // Author:

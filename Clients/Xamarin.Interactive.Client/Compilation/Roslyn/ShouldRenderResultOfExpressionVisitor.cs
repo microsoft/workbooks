@@ -1,4 +1,4 @@
-﻿//
+//
 // ShouldRenderResultOfExpressionVisitor.cs
 //
 // Author:

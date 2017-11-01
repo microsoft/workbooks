@@ -1,4 +1,4 @@
-﻿//
+//
 // KeyModifier.cs
 //
 // Author:

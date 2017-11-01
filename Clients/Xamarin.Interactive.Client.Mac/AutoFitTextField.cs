@@ -1,4 +1,4 @@
-﻿//
+//
 // AutoFitTextField.cs
 //
 // Author:

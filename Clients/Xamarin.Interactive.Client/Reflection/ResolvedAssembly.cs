@@ -1,4 +1,4 @@
-﻿//
+//
 // ResolvedAssembly.cs
 //
 // Author:

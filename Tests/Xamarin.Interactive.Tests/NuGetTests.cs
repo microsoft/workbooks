@@ -1,4 +1,4 @@
-﻿//
+//
 // NuGetTests.cs
 //
 // Author:

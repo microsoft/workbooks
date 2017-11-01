@@ -1,4 +1,4 @@
-﻿//
+//
 // IconThemeImage.cs
 //
 // Author:

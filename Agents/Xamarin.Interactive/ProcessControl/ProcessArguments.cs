@@ -1,4 +1,4 @@
-﻿//
+//
 // ProcessArguments.cs
 //
 // Author:

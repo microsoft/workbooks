@@ -1,4 +1,4 @@
-﻿// ViewInspectorViewModel.cs
+// ViewInspectorViewModel.cs
 //
 // Author:
 //   Larry Ewing <lewing@xamarin.com>

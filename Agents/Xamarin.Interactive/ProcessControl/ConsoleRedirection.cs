@@ -1,4 +1,4 @@
-﻿//
+//
 // ConsoleRedirection.cs
 //
 // Author:

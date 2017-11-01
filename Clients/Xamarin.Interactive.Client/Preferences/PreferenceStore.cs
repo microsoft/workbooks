@@ -1,4 +1,4 @@
-﻿//
+//
 // PreferenceStore.cs
 //
 // Author:

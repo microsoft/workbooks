@@ -1,4 +1,4 @@
-﻿//
+//
 // ViewKind.cs
 //
 // Author:

@@ -1,4 +1,4 @@
-﻿//
+//
 // XcbWebView.cs
 //
 // Author:

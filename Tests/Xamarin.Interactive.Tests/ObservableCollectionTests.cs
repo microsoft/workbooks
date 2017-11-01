@@ -1,4 +1,4 @@
-﻿//
+//
 // ObservableCollectionTests.cs
 //
 // Author:

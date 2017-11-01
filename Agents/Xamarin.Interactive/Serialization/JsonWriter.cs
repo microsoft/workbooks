@@ -1,4 +1,4 @@
-﻿//
+//
 // JsonWriter.cs
 //
 // Author:

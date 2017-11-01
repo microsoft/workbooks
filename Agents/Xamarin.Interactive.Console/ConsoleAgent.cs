@@ -1,4 +1,4 @@
-﻿//
+//
 // ConsoleAgent.cs
 //
 // Author:

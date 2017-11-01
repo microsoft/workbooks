@@ -1,4 +1,4 @@
-﻿// IPackageManagerView.cs
+// IPackageManagerView.cs
 //
 // Author:
 //   Sandy Armstrong <sandy@xamarin.com>

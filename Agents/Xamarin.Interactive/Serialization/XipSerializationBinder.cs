@@ -1,4 +1,4 @@
-﻿//
+//
 // XipSerializationBinder.cs
 //
 // Author:

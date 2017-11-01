@@ -1,4 +1,4 @@
-﻿//
+//
 // MessageSeverity.cs
 //
 // Author:

@@ -1,4 +1,4 @@
-﻿// HelpCommand.cs
+// HelpCommand.cs
 //
 // Author:
 //   Sandy Armstrong <sandy@xamarin.com>

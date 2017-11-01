@@ -1,4 +1,4 @@
-﻿//
+//
 // TargetCompilationConfiguration.cs
 //
 // Author:

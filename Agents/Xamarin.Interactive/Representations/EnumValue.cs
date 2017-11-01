@@ -1,4 +1,4 @@
-﻿//
+//
 // EnumValue.cs
 //
 // Author:

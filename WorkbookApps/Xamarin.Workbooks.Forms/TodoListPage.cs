@@ -1,4 +1,4 @@
-﻿//
+//
 // TodoListPage.cs
 //
 // Author:

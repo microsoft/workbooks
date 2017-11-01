@@ -1,4 +1,4 @@
-﻿//
+//
 // PackageAddWindowController.cs
 //
 // Author:

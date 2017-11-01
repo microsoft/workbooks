@@ -1,4 +1,4 @@
-﻿//
+//
 // IdentifyAgentRequest.cs
 //
 // Author:

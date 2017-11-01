@@ -1,4 +1,4 @@
-﻿//
+//
 // ISerializableObject.cs
 //
 // Author:

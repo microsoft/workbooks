@@ -1,4 +1,4 @@
-﻿//
+//
 // InteractiveSerializerSettings.cs
 //
 // Author:

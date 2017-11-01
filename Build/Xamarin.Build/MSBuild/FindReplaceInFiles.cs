@@ -1,4 +1,4 @@
-﻿//
+//
 // FindReplaceInFiles.cs
 //
 // Author:

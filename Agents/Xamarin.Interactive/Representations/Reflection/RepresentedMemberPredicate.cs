@@ -1,4 +1,4 @@
-﻿//
+//
 // RepresentedMemberPredicate.cs
 //
 // Author:

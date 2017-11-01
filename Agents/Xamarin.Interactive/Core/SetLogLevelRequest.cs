@@ -1,4 +1,4 @@
-﻿//
+//
 // SetLogLevelRequest.cs
 //
 // Author:

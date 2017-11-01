@@ -1,4 +1,4 @@
-﻿//
+//
 // SignatureHelpProvider.cs
 //
 // Author:

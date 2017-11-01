@@ -1,4 +1,4 @@
-﻿//
+//
 // UpdateManifest.cs
 //
 // Author:

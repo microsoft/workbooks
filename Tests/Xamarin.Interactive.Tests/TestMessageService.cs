@@ -1,4 +1,4 @@
-﻿//
+//
 // TestMessageService.cs
 //
 // Author:

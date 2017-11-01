@@ -1,4 +1,4 @@
-﻿//
+//
 // ShouldExtensions.cs
 //
 // Author:

@@ -1,4 +1,4 @@
-﻿//
+//
 // WorkbookOutlineViewDelegate.cs
 //
 // Author:

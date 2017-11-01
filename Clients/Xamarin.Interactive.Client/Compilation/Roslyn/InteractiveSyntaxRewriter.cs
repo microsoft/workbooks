@@ -1,4 +1,4 @@
-﻿//
+//
 // InteractiveSyntaxRewriter.cs
 //
 // Author:

@@ -1,4 +1,4 @@
-﻿//
+//
 // CommonMarkToHtml.cs
 //
 // Author:

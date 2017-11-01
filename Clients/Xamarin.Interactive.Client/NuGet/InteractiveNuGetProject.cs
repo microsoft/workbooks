@@ -1,4 +1,4 @@
-﻿//
+//
 // InteractiveNuGetProject.cs
 //
 // Author:

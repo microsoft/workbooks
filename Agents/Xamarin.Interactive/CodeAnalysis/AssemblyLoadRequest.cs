@@ -1,4 +1,4 @@
-﻿//
+//
 // AssemblyLoadRequest.cs
 //
 // Author:

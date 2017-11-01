@@ -1,4 +1,4 @@
-﻿//
+//
 // AgentStartOptions.cs
 //
 // Author:

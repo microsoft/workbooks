@@ -1,4 +1,4 @@
-﻿//
+//
 // RendererAttribute.cs
 //
 // Author:

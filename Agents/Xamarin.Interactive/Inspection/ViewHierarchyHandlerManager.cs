@@ -1,4 +1,4 @@
-﻿//
+//
 // ViewHierarchyHandlerManager.cs
 //
 // Author:

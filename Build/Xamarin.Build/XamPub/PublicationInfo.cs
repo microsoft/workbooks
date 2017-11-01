@@ -1,4 +1,4 @@
-﻿//
+//
 // PublicationInfo.cs
 //
 // Author:

@@ -1,4 +1,4 @@
-﻿//
+//
 // CryptoHelpers.cs
 //
 // Author:

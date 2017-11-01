@@ -1,4 +1,4 @@
-﻿// iOSCoordinateMapper.cs
+// iOSCoordinateMapper.cs
 //
 // Author:
 //   Sandy Armstrong <sandy@xamarin.com>

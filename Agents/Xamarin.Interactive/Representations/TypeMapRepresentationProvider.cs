@@ -1,4 +1,4 @@
-﻿//
+//
 // TypeMapRepresentationProvider.cs
 //
 // Author:

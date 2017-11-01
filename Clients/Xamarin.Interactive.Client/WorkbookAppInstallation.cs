@@ -1,4 +1,4 @@
-﻿//
+//
 // WorkbookAppInstallation.cs
 //
 // Author:

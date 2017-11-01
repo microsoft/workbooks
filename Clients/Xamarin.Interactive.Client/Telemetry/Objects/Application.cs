@@ -1,4 +1,4 @@
-﻿//
+//
 // Application.cs
 //
 // Author:

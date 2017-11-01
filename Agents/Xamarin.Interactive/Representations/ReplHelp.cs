@@ -1,4 +1,4 @@
-﻿//
+//
 // ReplHelp.cs
 //
 // Author:

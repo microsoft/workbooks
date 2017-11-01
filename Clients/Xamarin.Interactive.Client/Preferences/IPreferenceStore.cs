@@ -1,4 +1,4 @@
-﻿//
+//
 // IPreferenceStore.cs
 //
 // Author:

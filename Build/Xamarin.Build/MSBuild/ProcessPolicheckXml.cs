@@ -1,4 +1,4 @@
-﻿//
+//
 // ProcessPolicheckXml.cs
 //
 // Author:

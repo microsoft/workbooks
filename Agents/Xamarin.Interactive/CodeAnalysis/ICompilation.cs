@@ -1,4 +1,4 @@
-﻿//
+//
 // ICompilation.cs
 //
 // Author:

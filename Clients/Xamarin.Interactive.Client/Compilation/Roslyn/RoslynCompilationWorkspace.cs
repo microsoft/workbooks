@@ -1,4 +1,4 @@
-﻿//
+//
 // RoslynCompilationWorkspace.cs
 //
 // Author:

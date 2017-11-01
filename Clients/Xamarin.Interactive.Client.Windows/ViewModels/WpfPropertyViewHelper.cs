@@ -1,4 +1,4 @@
-﻿// WpfPropertyViewHelper.cs
+// WpfPropertyViewHelper.cs
 //
 // Author:
 //   Sandy Armstrong <sandy@xamarin.com>

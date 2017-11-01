@@ -1,4 +1,4 @@
-﻿//
+//
 // JavaScriptCoreDomBinder.cs
 //
 // Author:

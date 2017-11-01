@@ -1,4 +1,4 @@
-﻿//
+//
 // IAgentSynchronizationContext.cs
 //
 // Author:

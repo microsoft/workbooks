@@ -1,4 +1,4 @@
-﻿//
+//
 // ILogProvider.cs
 //
 // Author:

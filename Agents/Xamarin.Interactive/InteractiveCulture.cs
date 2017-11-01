@@ -1,4 +1,4 @@
-﻿//
+//
 // InteractiveCulture.cs
 //
 // Author:

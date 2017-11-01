@@ -1,4 +1,4 @@
-﻿//
+//
 // ApplicationNode.cs
 //
 // Author:

@@ -1,4 +1,4 @@
-﻿// DisplayMode.cs
+// DisplayMode.cs
 //
 // Author:
 //   Larry Ewing <lewing@xamarin.com>

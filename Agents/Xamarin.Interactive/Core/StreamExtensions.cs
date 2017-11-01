@@ -1,4 +1,4 @@
-﻿//
+//
 // StreamExtensions.cs
 //
 // Author:

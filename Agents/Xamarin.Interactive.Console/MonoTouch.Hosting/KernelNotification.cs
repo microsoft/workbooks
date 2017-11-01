@@ -1,4 +1,4 @@
-﻿//
+//
 // SystemLog.cs: Bindings to the kqueue(3) API from Apple
 //
 // Authors:

@@ -1,4 +1,4 @@
-﻿//
+//
 // Image.cs
 //
 // Author:

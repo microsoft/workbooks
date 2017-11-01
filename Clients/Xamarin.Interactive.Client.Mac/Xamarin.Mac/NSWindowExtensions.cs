@@ -1,4 +1,4 @@
-﻿//
+//
 // NSWindowExtensions.cs
 //
 // Author:

@@ -1,4 +1,4 @@
-﻿//
+//
 // TypeSpec.cs
 //
 // Author:

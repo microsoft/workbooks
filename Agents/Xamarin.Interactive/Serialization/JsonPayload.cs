@@ -1,4 +1,4 @@
-﻿//
+//
 // JsonPayload.cs
 //
 // Author:

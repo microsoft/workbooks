@@ -1,4 +1,4 @@
-﻿//
+//
 // AgentProcessTicket.cs
 //
 // Author:

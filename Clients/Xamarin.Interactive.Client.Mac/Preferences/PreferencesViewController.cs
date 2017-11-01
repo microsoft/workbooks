@@ -1,4 +1,4 @@
-﻿//
+//
 // PreferencesViewController.cs
 //
 // Author:

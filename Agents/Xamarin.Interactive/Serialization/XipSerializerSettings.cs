@@ -1,4 +1,4 @@
-﻿//
+//
 // XipSerializerSettings.cs
 //
 // Author:

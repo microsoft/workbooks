@@ -1,4 +1,4 @@
-﻿//
+//
 // NSAlertMessageViewDelegate.cs
 //
 // Author:

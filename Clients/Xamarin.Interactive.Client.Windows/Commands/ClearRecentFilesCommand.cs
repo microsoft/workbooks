@@ -1,4 +1,4 @@
-﻿// ClearRecentFilesCommand.cs
+// ClearRecentFilesCommand.cs
 //
 // Author:
 //   Aaron Bockover <abock@xamarin.com>

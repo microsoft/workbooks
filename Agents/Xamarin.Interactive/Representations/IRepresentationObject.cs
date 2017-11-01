@@ -1,4 +1,4 @@
-﻿//
+//
 // IRepresentationObject.cs
 //
 // Author:

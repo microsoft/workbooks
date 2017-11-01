@@ -1,4 +1,4 @@
-﻿//
+//
 // XILabel.cs
 //
 // Author:

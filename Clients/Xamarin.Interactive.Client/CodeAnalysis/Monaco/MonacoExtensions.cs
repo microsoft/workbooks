@@ -1,4 +1,4 @@
-﻿//
+//
 // MonacoExtensions.cs
 //
 // Author:

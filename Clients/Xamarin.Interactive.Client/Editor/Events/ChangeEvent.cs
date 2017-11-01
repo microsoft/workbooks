@@ -1,4 +1,4 @@
-﻿//
+//
 // ChangeEvent.cs
 //
 // Author:

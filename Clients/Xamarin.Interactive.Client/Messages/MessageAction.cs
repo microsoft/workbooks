@@ -1,4 +1,4 @@
-﻿//
+//
 // MessageAction.cs
 //
 // Author:

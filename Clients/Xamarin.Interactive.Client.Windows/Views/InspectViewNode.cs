@@ -1,4 +1,4 @@
-﻿// InspectViewNode.cs
+// InspectViewNode.cs
 //
 // Author:
 //   Larry Ewing <lewing@xamarin.com>

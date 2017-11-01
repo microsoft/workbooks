@@ -1,4 +1,4 @@
-﻿//
+//
 // JSValueExtensions.cs
 //
 // Author:

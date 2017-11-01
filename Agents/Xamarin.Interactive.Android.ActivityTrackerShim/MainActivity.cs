@@ -1,4 +1,4 @@
-﻿using Android.App;
+using Android.App;
 
 namespace Xamarin.Interactive.Android.ActivityTrackerShim
 {

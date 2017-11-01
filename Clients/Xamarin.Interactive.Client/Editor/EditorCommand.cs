@@ -1,4 +1,4 @@
-﻿//
+//
 // IEditorCommand.cs
 //
 // Author:

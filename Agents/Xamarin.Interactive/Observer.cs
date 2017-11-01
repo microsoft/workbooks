@@ -1,4 +1,4 @@
-﻿//
+//
 // Observer.cs
 //
 // Author:

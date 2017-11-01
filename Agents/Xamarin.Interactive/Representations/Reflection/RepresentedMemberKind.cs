@@ -1,4 +1,4 @@
-﻿//
+//
 // RepresentedMemberKind.cs
 //
 // Author:

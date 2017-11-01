@@ -1,4 +1,4 @@
-﻿// InteractivePropertyInfo.cs
+// InteractivePropertyInfo.cs
 //
 // Author:
 //   Larry Ewing <lewing@xamarin.com>

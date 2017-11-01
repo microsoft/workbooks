@@ -1,4 +1,4 @@
-﻿// OutlineItem.xaml.cs
+// OutlineItem.xaml.cs
 //
 // Author:
 //   Larry Ewing <lewing@xamarin.com>

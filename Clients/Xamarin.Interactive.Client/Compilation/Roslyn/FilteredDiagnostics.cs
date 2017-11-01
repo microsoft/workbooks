@@ -1,4 +1,4 @@
-﻿//
+//
 // FilteredDiagnostics.cs
 //
 // Author:

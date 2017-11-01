@@ -1,4 +1,4 @@
-﻿//
+//
 // RendererRepresentationOptions.cs
 //
 // Author:

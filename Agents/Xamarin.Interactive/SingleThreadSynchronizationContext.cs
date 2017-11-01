@@ -1,4 +1,4 @@
-﻿//
+//
 // SingleThreadSynchronizationContext.cs
 //
 // Author:

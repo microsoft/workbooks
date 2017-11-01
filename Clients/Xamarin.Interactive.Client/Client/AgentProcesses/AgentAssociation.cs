@@ -1,4 +1,4 @@
-﻿//
+//
 // AgentAssociation.cs
 //
 // Author:

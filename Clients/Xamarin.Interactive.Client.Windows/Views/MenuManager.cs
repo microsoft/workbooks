@@ -1,4 +1,4 @@
-﻿// MenuManager.cs
+// MenuManager.cs
 //
 // Author:
 //   Sandy Armstrong <sandy@xamarin.com>

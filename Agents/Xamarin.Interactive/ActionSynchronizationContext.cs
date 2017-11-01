@@ -1,4 +1,4 @@
-﻿//
+//
 // ActionSynchronizationContext.cs
 //
 // Author:

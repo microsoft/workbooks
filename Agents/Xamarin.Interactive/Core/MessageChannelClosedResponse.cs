@@ -1,4 +1,4 @@
-﻿//
+//
 // MessageChannelClosedResponse.cs
 //
 // Author:

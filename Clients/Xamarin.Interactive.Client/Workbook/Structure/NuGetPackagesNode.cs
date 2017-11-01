@@ -1,4 +1,4 @@
-﻿//
+//
 // NuGetPackagesNode.cs
 //
 // Author:

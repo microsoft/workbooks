@@ -1,4 +1,4 @@
-﻿//
+//
 // VisualStudioEnvironment.cs
 //
 // Author:

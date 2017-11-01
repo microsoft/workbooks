@@ -1,4 +1,4 @@
-﻿//
+//
 // IAssemblyDefinition.cs
 //
 // Author:

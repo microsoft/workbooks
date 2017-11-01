@@ -1,4 +1,4 @@
-﻿//
+//
 // RootRenderer.cs
 //
 // Author:

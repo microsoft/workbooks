@@ -1,4 +1,4 @@
-﻿//
+//
 // ScrollIntoViewOptions.cs
 //
 // Author:

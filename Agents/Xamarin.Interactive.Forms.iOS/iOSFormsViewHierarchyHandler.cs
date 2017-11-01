@@ -1,4 +1,4 @@
-﻿//
+//
 // FormsViewHierarchyHandler.cs
 //
 // Author:

@@ -1,4 +1,4 @@
-﻿//
+//
 // ReflectionExtensions.cs
 //
 // Author:

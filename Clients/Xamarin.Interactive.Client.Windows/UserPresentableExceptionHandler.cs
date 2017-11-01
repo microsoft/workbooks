@@ -1,4 +1,4 @@
-﻿//
+//
 // UserPresentableExceptionHandler.cs
 //
 // Author:

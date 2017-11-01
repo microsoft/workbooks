@@ -1,4 +1,4 @@
-﻿// AgentCoordinateMapper.cs
+// AgentCoordinateMapper.cs
 //
 // Author:
 //   Sandy Armstrong <sandy@xamarin.com>

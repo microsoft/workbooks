@@ -1,4 +1,4 @@
-﻿//
+//
 // CapturedOutputWriter.cs
 //
 // Author:

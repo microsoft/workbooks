@@ -1,4 +1,4 @@
-﻿//
+//
 // UpdaterWindow.xaml.cs
 //
 // Author:

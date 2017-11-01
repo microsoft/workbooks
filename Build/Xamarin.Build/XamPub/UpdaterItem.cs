@@ -1,4 +1,4 @@
-﻿//
+//
 // UpdaterProduct.cs
 //
 // Author:

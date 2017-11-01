@@ -1,4 +1,4 @@
-﻿//
+//
 // IInteractiveObject.cs
 //
 // Author:

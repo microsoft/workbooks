@@ -1,4 +1,4 @@
-﻿//
+//
 // OrderedMapOfList.cs
 //
 // Author:

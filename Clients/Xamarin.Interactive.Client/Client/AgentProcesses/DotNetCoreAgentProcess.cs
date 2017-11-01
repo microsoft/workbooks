@@ -1,4 +1,4 @@
-﻿//
+//
 // DotNetCoreAgentProcess.cs
 //
 // Author:

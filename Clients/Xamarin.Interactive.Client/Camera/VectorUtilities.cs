@@ -1,4 +1,4 @@
-﻿//
+//
 // VectorUtilities.cs
 //
 // Author:

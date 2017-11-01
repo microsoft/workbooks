@@ -1,4 +1,4 @@
-﻿// ShowOptionsCommand.cs
+// ShowOptionsCommand.cs
 //
 // Author:
 //   Sandy Armstrong <sandy@xamarin.com>

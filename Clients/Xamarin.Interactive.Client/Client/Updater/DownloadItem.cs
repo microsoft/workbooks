@@ -1,4 +1,4 @@
-﻿//
+//
 // DownloadItem.cs
 //
 // Author:

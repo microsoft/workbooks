@@ -1,4 +1,4 @@
-﻿//
+//
 // RepresentationProvider.cs
 //
 // Author:

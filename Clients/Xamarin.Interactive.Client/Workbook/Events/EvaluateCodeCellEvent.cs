@@ -1,4 +1,4 @@
-﻿//
+//
 // EvaluateCodeCellEvent.cs
 //
 // Author:

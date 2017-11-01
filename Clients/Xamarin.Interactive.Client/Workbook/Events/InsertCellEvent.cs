@@ -1,4 +1,4 @@
-﻿//
+//
 // InsertCellEvent.cs
 //
 // Author:

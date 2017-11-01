@@ -1,4 +1,4 @@
-﻿// MetroDialogWindow.cs
+// MetroDialogWindow.cs
 //
 // Author:
 //   Sandy Armstrong <sandy@xamarin.com>

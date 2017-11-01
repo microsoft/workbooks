@@ -1,4 +1,4 @@
-﻿//
+//
 // InteractivePackage.cs
 //
 // Author:

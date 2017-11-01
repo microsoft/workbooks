@@ -1,4 +1,4 @@
-﻿//
+//
 // AndroidRepresentationProvider.cs
 //
 // Author:

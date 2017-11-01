@@ -1,4 +1,4 @@
-﻿//
+//
 // ColorSpace.cs
 //
 // Author:

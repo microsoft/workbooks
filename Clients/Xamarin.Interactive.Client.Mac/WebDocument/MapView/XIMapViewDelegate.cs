@@ -1,4 +1,4 @@
-﻿//
+//
 // XIMapViewDelegate.cs
 //
 // Author:

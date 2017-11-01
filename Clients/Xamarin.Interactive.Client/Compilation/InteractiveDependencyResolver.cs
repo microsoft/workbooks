@@ -1,4 +1,4 @@
-﻿//
+//
 // InteractiveDependencyResolver.cs
 //
 // Author:

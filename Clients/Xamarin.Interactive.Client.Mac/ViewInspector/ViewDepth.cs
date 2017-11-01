@@ -1,4 +1,4 @@
-﻿//
+//
 // ViewDepth.cs
 //
 // Author:

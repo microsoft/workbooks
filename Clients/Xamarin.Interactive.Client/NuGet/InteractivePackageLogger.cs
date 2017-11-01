@@ -1,4 +1,4 @@
-﻿//
+//
 // InteractivePackageLogger.cs
 //
 // Author:

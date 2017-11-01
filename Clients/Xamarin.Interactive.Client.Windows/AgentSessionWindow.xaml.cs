@@ -1,4 +1,4 @@
-﻿// AgentSessionWindow.cs
+// AgentSessionWindow.cs
 //
 // Author:
 //   Sandy Armstrong <sandy@xamarin.com>

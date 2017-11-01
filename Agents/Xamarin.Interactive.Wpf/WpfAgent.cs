@@ -1,4 +1,4 @@
-﻿//
+//
 // WpfAgent.cs
 //
 // Author:

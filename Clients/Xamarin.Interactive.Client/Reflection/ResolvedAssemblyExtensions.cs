@@ -1,4 +1,4 @@
-﻿//
+//
 // ResolvedAssemblyExtensions.cs
 //
 // Author:

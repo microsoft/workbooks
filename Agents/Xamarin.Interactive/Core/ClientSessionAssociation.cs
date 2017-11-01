@@ -1,4 +1,4 @@
-﻿//
+//
 // ClientSessionAssociation.cs
 //
 // Author:

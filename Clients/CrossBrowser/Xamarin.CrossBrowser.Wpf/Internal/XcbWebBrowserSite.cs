@@ -1,4 +1,4 @@
-﻿//
+//
 // XcbWebBrowserSite.cs
 //
 // Author:

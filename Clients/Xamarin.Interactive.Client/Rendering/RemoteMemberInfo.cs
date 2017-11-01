@@ -1,4 +1,4 @@
-﻿//
+//
 // RemoteMemberInfo.cs
 //
 // Author:

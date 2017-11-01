@@ -1,4 +1,4 @@
-﻿//
+//
 // KeyGesture.cs
 //
 // Author:

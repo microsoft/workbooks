@@ -1,4 +1,4 @@
-﻿//
+//
 // AgentServer.cs
 //
 // Author:

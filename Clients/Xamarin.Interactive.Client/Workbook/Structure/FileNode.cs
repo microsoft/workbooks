@@ -1,4 +1,4 @@
-﻿//
+//
 // FileNode.cs
 //
 // Author:

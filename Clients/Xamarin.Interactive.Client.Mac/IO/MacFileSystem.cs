@@ -1,4 +1,4 @@
-﻿//
+//
 // MacFileSystem.cs
 //
 // Author:

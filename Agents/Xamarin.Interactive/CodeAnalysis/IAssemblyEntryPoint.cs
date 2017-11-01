@@ -1,4 +1,4 @@
-﻿//
+//
 // IAssemblyEntryPoint.cs
 //
 // Author:

@@ -1,4 +1,4 @@
-﻿//
+//
 // UnitOfMeasureRenderer.cs
 //
 // Author:

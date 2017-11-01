@@ -1,4 +1,4 @@
-﻿//
+//
 // XIEditorMenuItem.cs
 //
 // Author:

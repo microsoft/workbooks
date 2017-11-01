@@ -1,4 +1,4 @@
-﻿//
+//
 // CompletionHelper.cs
 //
 // Author:

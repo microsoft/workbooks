@@ -1,4 +1,4 @@
-﻿//
+//
 // StatusMessageViewController.cs
 //
 // Author:

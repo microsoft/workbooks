@@ -1,4 +1,4 @@
-﻿//
+//
 // MacIntegration.cs
 //
 // Author:

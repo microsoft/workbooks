@@ -1,4 +1,4 @@
-﻿//
+//
 // WordSizedNumber.cs
 //
 // Author:

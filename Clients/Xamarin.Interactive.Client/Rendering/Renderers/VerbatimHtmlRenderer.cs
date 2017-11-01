@@ -1,4 +1,4 @@
-﻿//
+//
 // VerbatimHtmlRenderer.cs
 //
 // Author:

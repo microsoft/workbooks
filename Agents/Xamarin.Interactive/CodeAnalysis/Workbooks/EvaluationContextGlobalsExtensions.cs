@@ -1,4 +1,4 @@
-﻿//
+//
 // EvaluationContextGlobalsExtensions.cs
 //
 // Author:

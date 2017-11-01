@@ -1,4 +1,4 @@
-﻿//
+//
 // CodeCellId.cs
 //
 // Author:

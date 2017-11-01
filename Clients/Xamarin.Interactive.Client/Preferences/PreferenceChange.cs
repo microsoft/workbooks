@@ -1,4 +1,4 @@
-﻿//
+//
 // PreferenceChange.cs
 //
 // Author:

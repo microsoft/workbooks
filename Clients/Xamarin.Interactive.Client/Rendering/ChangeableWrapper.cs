@@ -1,4 +1,4 @@
-﻿//
+//
 // ChangeableWrapper.cs
 //
 // Author:

@@ -1,4 +1,4 @@
-﻿//
+//
 // ImageFormat.cs
 //
 // Author:

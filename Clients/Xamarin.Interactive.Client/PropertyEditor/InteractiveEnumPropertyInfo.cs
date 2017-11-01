@@ -1,4 +1,4 @@
-﻿
+
 //
 // InteractiveEnumPropertyInfo.cs
 //

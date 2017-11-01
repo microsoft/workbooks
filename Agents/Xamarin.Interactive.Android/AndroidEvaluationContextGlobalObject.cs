@@ -1,4 +1,4 @@
-﻿//
+//
 // AndroidEvaluationContextGlobalObject.cs
 //
 // Author:

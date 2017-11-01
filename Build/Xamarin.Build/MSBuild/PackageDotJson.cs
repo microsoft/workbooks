@@ -1,4 +1,4 @@
-﻿//
+//
 // PackageDotJson.cs
 //
 // Author:

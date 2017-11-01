@@ -1,4 +1,4 @@
-﻿//
+//
 // InteractResponse.cs
 //
 // Author:

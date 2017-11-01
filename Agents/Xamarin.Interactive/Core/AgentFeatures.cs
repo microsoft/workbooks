@@ -1,4 +1,4 @@
-﻿//
+//
 // AgentFeatures.cs
 //
 // Author:

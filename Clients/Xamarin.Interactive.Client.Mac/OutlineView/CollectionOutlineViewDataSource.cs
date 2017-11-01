@@ -1,4 +1,4 @@
-﻿//
+//
 // CollectionOutlineViewDataSource.cs
 //
 // Author:

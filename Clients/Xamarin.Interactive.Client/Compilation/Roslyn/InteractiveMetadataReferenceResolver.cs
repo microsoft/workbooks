@@ -1,4 +1,4 @@
-﻿//
+//
 // InteractiveMetadataReferenceResolver.cs
 //
 // Author:

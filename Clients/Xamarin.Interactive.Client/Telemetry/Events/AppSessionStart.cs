@@ -1,4 +1,4 @@
-﻿//
+//
 // AppSessionStart.cs
 //
 // Author:

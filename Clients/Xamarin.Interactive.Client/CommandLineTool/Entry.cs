@@ -1,4 +1,4 @@
-﻿//
+//
 // Entry.cs
 //
 // Author:

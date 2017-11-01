@@ -1,4 +1,4 @@
-﻿//
+//
 // WorkbookDependencyCollector.cs
 //
 // Author:

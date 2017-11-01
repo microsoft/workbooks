@@ -1,4 +1,4 @@
-﻿//
+//
 // GetAppDomainAssembliesRequest.cs
 //
 // Author:

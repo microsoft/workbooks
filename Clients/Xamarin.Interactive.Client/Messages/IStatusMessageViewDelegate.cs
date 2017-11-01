@@ -1,4 +1,4 @@
-﻿//
+//
 // IStatusMessageViewDelegate.cs
 //
 // Author:

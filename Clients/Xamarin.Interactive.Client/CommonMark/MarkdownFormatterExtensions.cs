@@ -1,4 +1,4 @@
-﻿//
+//
 // MarkdownFormatterExtensions.cs
 //
 // Author:

@@ -1,4 +1,4 @@
-﻿//
+//
 // NSUserDefaultsPreferenceStore.cs
 //
 // Author:

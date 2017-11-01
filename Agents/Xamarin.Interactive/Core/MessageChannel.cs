@@ -1,4 +1,4 @@
-﻿//
+//
 // MessageChannel.cs
 //
 // Author:

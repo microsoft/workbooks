@@ -1,4 +1,4 @@
-﻿//
+//
 // FrameworkNames.cs
 //
 // Author:

@@ -1,4 +1,4 @@
-﻿//
+//
 // RoslynWorkspaceOutlineViewDataSource.cs
 //
 // Author:

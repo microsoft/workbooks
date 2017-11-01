@@ -1,4 +1,4 @@
-﻿//
+//
 // ReleaseVersion.cs
 //
 // Author:

@@ -1,4 +1,4 @@
-﻿//
+//
 // AppKitExtensions.cs
 //
 // Author:

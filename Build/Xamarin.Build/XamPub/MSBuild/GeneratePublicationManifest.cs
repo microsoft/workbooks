@@ -1,4 +1,4 @@
-﻿//
+//
 // GeneratePublicationManifest.cs
 //
 // Author:

@@ -1,4 +1,4 @@
-﻿//
+//
 // SyntaxExtensions.cs
 //
 // Author:

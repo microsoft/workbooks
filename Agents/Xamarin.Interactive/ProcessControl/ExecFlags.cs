@@ -1,4 +1,4 @@
-﻿//
+//
 // ExecFlags.cs
 //
 // Author:

@@ -1,4 +1,4 @@
-﻿// CloseWindowCommand.cs
+// CloseWindowCommand.cs
 //
 // Author:
 //   Bojan Rajkovic <brajkovic@xamarin.com>

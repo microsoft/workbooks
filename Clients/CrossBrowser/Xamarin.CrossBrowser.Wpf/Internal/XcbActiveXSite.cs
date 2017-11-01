@@ -1,4 +1,4 @@
-﻿//
+//
 // XcbActiveXSite.cs
 //
 // Author:

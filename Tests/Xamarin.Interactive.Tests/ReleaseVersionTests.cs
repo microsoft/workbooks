@@ -1,4 +1,4 @@
-﻿//
+//
 // ReleaseVersionTests.cs
 //
 // Author:

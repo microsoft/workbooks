@@ -1,4 +1,4 @@
-﻿//
+//
 // BuildInfo.cs
 //
 // Author:

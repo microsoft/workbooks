@@ -1,4 +1,4 @@
-﻿//
+//
 // MainMasterDetailPage.cs
 //
 // Author:

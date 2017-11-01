@@ -1,4 +1,4 @@
-﻿//
+//
 // TestAgentProcess.cs
 //
 // Author:

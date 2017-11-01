@@ -1,4 +1,4 @@
-﻿// RenderingDepth.cs
+// RenderingDepth.cs
 //
 // Author:
 //   Bojan Rajkovic <brajkovic@xamarin.com>

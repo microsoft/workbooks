@@ -1,4 +1,4 @@
-﻿//
+//
 // XIPinAnnotationView.cs
 //
 // Author:

@@ -1,4 +1,4 @@
-﻿//
+//
 // RoutedUICommandMenuItem.cs
 //
 // Author:

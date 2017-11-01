@@ -1,4 +1,4 @@
-﻿//
+//
 // MacClientSessionViewControllers.cs
 //
 // Author:

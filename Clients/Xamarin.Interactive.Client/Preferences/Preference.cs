@@ -1,4 +1,4 @@
-﻿//
+//
 // Preference.cs
 //
 // Author:

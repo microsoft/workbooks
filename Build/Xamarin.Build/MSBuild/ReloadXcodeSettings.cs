@@ -1,4 +1,4 @@
-﻿//
+//
 // ReloadXcodeSettings.cs
 //
 // Author:

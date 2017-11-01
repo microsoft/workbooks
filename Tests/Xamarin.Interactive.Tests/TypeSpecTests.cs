@@ -1,4 +1,4 @@
-﻿//
+//
 // TypeSpecTests.cs
 //
 // Author:

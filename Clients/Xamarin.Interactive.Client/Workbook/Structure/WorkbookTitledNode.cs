@@ -1,4 +1,4 @@
-﻿//
+//
 // WorkbookTitledNode.cs
 //
 // Author:

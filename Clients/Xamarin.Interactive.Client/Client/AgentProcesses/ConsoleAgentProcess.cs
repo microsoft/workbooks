@@ -1,4 +1,4 @@
-﻿//
+//
 // ConsoleAgentProcess.cs
 //
 // Author:

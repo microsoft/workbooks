@@ -1,4 +1,4 @@
-﻿//
+//
 // AgentProcessManager.cs
 //
 // Author:

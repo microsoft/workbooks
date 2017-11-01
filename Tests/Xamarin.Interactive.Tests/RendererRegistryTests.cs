@@ -1,4 +1,4 @@
-﻿//
+//
 // RendererRegistryTests.cs
 //
 // Author:

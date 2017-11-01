@@ -1,4 +1,4 @@
-﻿//
+//
 // TestRunner.cs
 //
 // Author:

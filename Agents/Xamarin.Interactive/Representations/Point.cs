@@ -1,4 +1,4 @@
-﻿//
+//
 // Point.cs
 //
 // Author:

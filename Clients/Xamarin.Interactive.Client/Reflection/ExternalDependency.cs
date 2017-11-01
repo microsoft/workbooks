@@ -1,4 +1,4 @@
-﻿//
+//
 // ExternalDependency.cs
 //
 // Author:

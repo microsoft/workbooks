@@ -1,4 +1,4 @@
-﻿//
+//
 // DotNetFileSystem.cs
 //
 // Author:

@@ -1,4 +1,4 @@
-﻿//
+//
 // RoslynWorkspaceExplorerWindow.cs
 //
 // Author:

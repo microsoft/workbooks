@@ -1,4 +1,4 @@
-﻿//
+//
 // EmptyArray.cs
 //
 // Author:

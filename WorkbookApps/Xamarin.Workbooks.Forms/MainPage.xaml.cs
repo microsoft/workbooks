@@ -1,4 +1,4 @@
-﻿// Copyright 2016 Microsoft. All rights reserved.
+// Copyright 2016 Microsoft. All rights reserved.
 
 using Xamarin.Forms;
 

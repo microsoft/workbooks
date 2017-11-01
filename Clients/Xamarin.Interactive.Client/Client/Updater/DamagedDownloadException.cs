@@ -1,4 +1,4 @@
-﻿//
+//
 // DamagedDownloadException.cs
 //
 // Author:

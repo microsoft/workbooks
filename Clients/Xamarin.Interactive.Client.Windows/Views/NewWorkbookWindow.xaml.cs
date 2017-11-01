@@ -1,4 +1,4 @@
-﻿// NewWorkbookWindow.cs
+// NewWorkbookWindow.cs
 //
 // Author:
 //   Aaron Bockover <abock@xamarin.com>

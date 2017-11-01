@@ -1,4 +1,4 @@
-﻿//
+//
 // MacClientApp.cs
 //
 // Author:

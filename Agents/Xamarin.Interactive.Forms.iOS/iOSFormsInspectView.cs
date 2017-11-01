@@ -1,4 +1,4 @@
-﻿//
+//
 // FormsInspectView.cs
 //
 // Author:

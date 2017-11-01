@@ -1,4 +1,4 @@
-﻿//
+//
 // LogEntry.cs
 //
 // Author:

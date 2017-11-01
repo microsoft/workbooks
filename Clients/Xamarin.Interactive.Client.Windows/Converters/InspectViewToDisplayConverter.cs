@@ -1,4 +1,4 @@
-﻿// InspectViewToDisplayConverter.cs
+// InspectViewToDisplayConverter.cs
 //
 // Author:
 //   Sandy Armstrong <sandy@xamarin.com>

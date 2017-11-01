@@ -1,4 +1,4 @@
-﻿//
+//
 // ApiDiffTests.cs
 //
 // Author:

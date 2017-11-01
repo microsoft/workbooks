@@ -1,4 +1,4 @@
-﻿//
+//
 // ClientSessionKind.cs
 //
 // Author:

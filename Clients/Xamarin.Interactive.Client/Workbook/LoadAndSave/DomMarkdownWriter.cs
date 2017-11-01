@@ -1,4 +1,4 @@
-﻿//
+//
 // DomMarkdownWriter.cs
 //
 // Author:

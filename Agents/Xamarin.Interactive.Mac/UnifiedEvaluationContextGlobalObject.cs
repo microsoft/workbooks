@@ -1,4 +1,4 @@
-﻿//
+//
 // UnifiedEvaluationContextGlobalObject.cs
 //
 // Author:

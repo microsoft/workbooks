@@ -1,4 +1,4 @@
-﻿//
+//
 // ExceptionRenderer.cs
 //
 // Author:

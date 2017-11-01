@@ -1,4 +1,4 @@
-﻿//
+//
 // RepresentedAssemblyName.cs
 //
 // Author:

@@ -1,4 +1,4 @@
-﻿//
+//
 // MshtmlDomBinder.cs
 //
 // Author:

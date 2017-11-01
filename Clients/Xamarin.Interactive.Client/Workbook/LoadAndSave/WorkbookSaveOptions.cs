@@ -1,4 +1,4 @@
-﻿//
+//
 // WorkbookSaveOptions.cs
 //
 // Author:

@@ -1,4 +1,4 @@
-﻿// ViewHighlightOverlayWindow.cs
+// ViewHighlightOverlayWindow.cs
 //
 // Author:
 //   Sandy Armstrong <sandy@xamarin.com>

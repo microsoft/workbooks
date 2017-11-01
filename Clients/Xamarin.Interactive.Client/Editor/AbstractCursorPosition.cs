@@ -1,4 +1,4 @@
-﻿//
+//
 // AbstractCursorPosition.cs
 //
 // Author:

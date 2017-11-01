@@ -1,4 +1,4 @@
-﻿//
+//
 // UpdateItem.cs
 //
 // Author:

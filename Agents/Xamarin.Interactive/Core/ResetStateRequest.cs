@@ -1,4 +1,4 @@
-﻿//
+//
 // ResetStateRequest.cs
 //
 // Author:

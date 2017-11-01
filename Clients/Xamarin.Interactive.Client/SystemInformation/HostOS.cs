@@ -1,4 +1,4 @@
-﻿//
+//
 // HostOS.cs
 //
 // Author:

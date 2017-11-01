@@ -1,4 +1,4 @@
-﻿//
+//
 // Color.cs
 //
 // Author:

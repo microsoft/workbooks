@@ -1,4 +1,4 @@
-﻿//
+//
 // Native.cs
 //
 // Author:

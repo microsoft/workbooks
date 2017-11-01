@@ -1,4 +1,4 @@
-﻿//
+//
 // EditorCommandStatus.cs
 //
 // Author:

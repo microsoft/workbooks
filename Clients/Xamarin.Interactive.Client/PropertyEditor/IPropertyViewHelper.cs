@@ -1,4 +1,4 @@
-﻿// IPropertyViewHelper.cs
+// IPropertyViewHelper.cs
 //
 // Author:
 //   Sandy Armstrong <sandy@xamarin.com>

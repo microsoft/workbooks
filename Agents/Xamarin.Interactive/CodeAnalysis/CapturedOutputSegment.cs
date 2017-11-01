@@ -1,4 +1,4 @@
-﻿//
+//
 // CapturedOutputSegment.cs
 //
 // Author:

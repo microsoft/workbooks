@@ -1,4 +1,4 @@
-﻿//
+//
 // XipEndOfMessagesMessage.cs
 //
 // Author:

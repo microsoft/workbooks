@@ -1,4 +1,4 @@
-﻿//
+//
 // RoslynWorkspaceOutlineViewDelegate.cs
 //
 // Author:

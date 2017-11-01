@@ -1,4 +1,4 @@
-﻿//
+//
 // RoslynSyntaxOutlineViewDelegate.cs
 //
 // Author:

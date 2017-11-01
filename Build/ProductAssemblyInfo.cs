@@ -1,4 +1,4 @@
-﻿//
+//
 // ProductAssemblyInfo.cs
 //
 // Author:

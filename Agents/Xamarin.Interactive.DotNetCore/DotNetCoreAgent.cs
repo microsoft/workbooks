@@ -1,4 +1,4 @@
-﻿//
+//
 // DotNetCoreAgent.cs
 //
 // Author:

@@ -1,4 +1,4 @@
-﻿//
+//
 // RepresentationTests.cs
 //
 // Author:

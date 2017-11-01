@@ -1,4 +1,4 @@
-﻿//
+//
 // ScriptDelegate.cs
 //
 // Author:

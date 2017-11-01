@@ -1,4 +1,4 @@
-﻿//
+//
 // WrappedObject.cs
 //
 // Author:

@@ -1,4 +1,4 @@
-﻿//
+//
 // ICellBuffer.cs
 //
 // Author:

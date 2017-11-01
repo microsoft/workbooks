@@ -1,4 +1,4 @@
-﻿//
+//
 // LintVisitor.cs
 //
 // Author:

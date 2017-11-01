@@ -1,4 +1,4 @@
-﻿//
+//
 // DevEnvironment.cs
 //
 // Author:

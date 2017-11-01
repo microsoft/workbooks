@@ -1,4 +1,4 @@
-﻿//
+//
 // InteractiveInstallationContext.cs
 //
 // Author:

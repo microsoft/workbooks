@@ -1,4 +1,4 @@
-﻿//
+//
 // RoutedUICommand.cs
 //
 // Author:

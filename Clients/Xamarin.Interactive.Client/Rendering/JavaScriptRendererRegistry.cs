@@ -1,4 +1,4 @@
-﻿//
+//
 // JavaScriptRendererRegistry.cs
 //
 // Author:

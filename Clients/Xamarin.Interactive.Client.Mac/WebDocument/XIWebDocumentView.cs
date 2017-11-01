@@ -1,4 +1,4 @@
-﻿//
+//
 // XIWebDocumentView.cs
 //
 // Author:

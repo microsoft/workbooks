@@ -1,4 +1,4 @@
-﻿//
+//
 // WpfInspectView.cs
 //
 // Author:

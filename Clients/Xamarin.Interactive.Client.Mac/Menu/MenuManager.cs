@@ -1,4 +1,4 @@
-﻿//
+//
 // MenuManager.cs
 //
 // Author:

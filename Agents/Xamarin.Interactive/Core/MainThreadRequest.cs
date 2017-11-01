@@ -1,4 +1,4 @@
-﻿//
+//
 // MainThreadRequest.cs
 //
 // Authors:

@@ -1,4 +1,4 @@
-﻿//
+//
 // LogWindow.cs
 //
 // Author:

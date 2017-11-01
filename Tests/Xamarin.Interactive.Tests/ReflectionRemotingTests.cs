@@ -1,4 +1,4 @@
-﻿//
+//
 // ReflectionRemotingTests.cs
 //
 // Author:
