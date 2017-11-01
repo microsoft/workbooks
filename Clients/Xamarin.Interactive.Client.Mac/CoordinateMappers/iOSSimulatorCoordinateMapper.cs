@@ -1,10 +1,6 @@
 //
-// iOSSimulatorCoordinateMapper.cs
-//
-// Author:
-//   Miguel de Icaza
-//
-// Copyright 2013-2014 Xamarin Inc.
+// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License.
 
 using System;
 using System.Collections.Immutable;

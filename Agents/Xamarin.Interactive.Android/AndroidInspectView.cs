@@ -1,12 +1,10 @@
 //
-// AndroidInspectView.cs
-//
-// Author:
+// Authors:
 //   Kenneth Pouncey <kenneth.pouncey@xamarin.com>
 //   Aaron Bockover <abock@xamarin.com>
 //
-// Copyright 2014-2016 Xamarin Inc. All rights reserved.
-// Copyright 2016 Microsoft. All rights reserved.
+// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License.
 
 using System;
 

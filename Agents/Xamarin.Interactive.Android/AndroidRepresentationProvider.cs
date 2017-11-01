@@ -1,13 +1,11 @@
 //
-// AndroidRepresentationProvider.cs
-//
-// Author:
+// Authors:
 //   Aaron Bockover <abock@xamarin.com>
 //   Sandy Armstrong <sandy@xamarin.com>
 //   Kenneth Pouncey <kenneth.pouncey@xamarin.com>
 //
-// Copyright 2014-2016 Xamarin Inc. All rights reserved.
-// Copyright 2016 Microsoft. All rights reserved.
+// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License.
 
 using Xamarin.Interactive.Representations;
 using Xamarin.Interactive.Representations.Reflection;

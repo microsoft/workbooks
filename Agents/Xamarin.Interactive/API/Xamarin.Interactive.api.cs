@@ -1,3 +1,7 @@
+//
+// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License.
+
 [assembly: AssemblyCopyright ("Copyright 2016-2017 Microsoft. All rights reserved.\nCopyright 2014-2016 Xamarin Inc. All rights reserved.")]
 [assembly: InternalsVisibleTo ("Xamarin.Interactive.DotNetCore")]
 [assembly: InternalsVisibleTo ("Xamarin.Interactive.Android")]

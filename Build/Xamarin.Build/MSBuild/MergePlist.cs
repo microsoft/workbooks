@@ -1,10 +1,9 @@
 ﻿//
-// MergePlist.cs
-//
 // Author:
 //   Bojan Rajkovic <brajkovic@xamarin.com>
 //
-// Copyright 2017 Microsoft. All rights reserved.
+// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License.
 
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;

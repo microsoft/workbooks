@@ -1,15 +1,9 @@
 //
-// NativeExtensions.cs
-//
-// This class was adapted from the Xamarin iOS Designer:
-//   Xamarin.Designer.iOS/MonoTouch.Design.Server/Util/NativeExtensions.cs
-//
-// Authors:
-//   Xamarin iOS Designer Team
+// Author:
 //   Aaron Bockover <abock@xamarin.com>
 //
-// Copyright 2014-2015 Xamarin Inc. All rights reserved.
-// Copyright 2016 Microsoft. All rights reserved.
+// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License.
 
 using System;
 using System.Collections.Generic;

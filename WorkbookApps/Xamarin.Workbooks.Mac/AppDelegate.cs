@@ -1,11 +1,10 @@
 //
-// AppDelegate.cs
-//
-// Author:
+// Authors:
 //   Sandy Armstrong <sandy@xamarin.com>
 //   Aaron Bockover <abock@xamarin.com>
 //
-// Copyright 2015-2016 Xamarin Inc. All rights reserved.
+// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License.
 
 using System.Runtime.InteropServices;
 

@@ -1,7 +1,6 @@
-// This is modified from MahApps.Metro's MultiFrameImage, which is written by
-// Thomas Freudenberg (@thoemmi) and distributed under the Ms-PL.
 //
-// It has been modified to account for HiDPI screens.
+// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License.
 
 using System;
 using System.Collections.Generic;

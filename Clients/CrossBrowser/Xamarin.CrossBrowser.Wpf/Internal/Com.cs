@@ -1,12 +1,9 @@
 //
-// Com.cs
-//
 // Author:
 //   Aaron Bockover <abock@xamarin.com>
 //
-// Copyright 2016 Xamarin Inc. All rights reserved.
-//
-// API definitions adapted from WindowsBase reference source.
+// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License.
 
 using System;
 using System.Runtime.InteropServices;

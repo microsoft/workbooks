@@ -1,12 +1,9 @@
 //
-// FlowDocumentFormatter.cs
-//
 // Author:
 //   Aaron Bockover <abock@xamarin.com>
 //
-// Copyright 2017 Microsoft. All rights reserved.
-
-#if WIN
+// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License.
 
 using System;
 using System.Windows;
@@ -123,5 +120,3 @@ namespace CommonMark.Formatters
 		}
 	}
 }
-
-#endif

@@ -1,12 +1,9 @@
 //
-// AppKitExtensions.cs
-//
 // Author:
 //   Aaron Bockover <abock@xamarin.com>
 //
-// Copyright 2014 Xamarin Inc. All rights reserved.
-
-// FIXME: integrate these into Xamarin.Mac
+// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License.
 
 using Foundation;
 using CoreGraphics;

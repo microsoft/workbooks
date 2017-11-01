@@ -1,13 +1,9 @@
 //
-// ProductAssemblyInfo.cs
-//
 // Author:
 //   Aaron Bockover <abock@xamarin.com>
 //
-// Copyright 2016-2017 Microsoft. All rights reserved.
-//
-// NOTE: this is linked into *every* assembly in the build.
-// DO NOT add assembly-specific attributes/code in this file!
+// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License.
 
 using System.Reflection;
 using System.Runtime.CompilerServices;

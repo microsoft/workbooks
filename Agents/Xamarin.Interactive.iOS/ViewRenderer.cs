@@ -1,18 +1,10 @@
 //
-// ViewRenderer.cs
-//
-// This class was adapted from the Xamarin iOS Designer:
-//   Xamarin.Designer.iOS/MonoTouch.Design.Server/TypeSystem/Renderer.cs
-//
 // Authors:
-//   Xamarin iOS Designer Team
 //   Aaron Bockover <abock@xamarin.com>
 //   Larry Ewing <lewing@xamarin.com>
 //
-// FIXME: account for iOS < v7.0 (c.f. TryRender)
-//
-// Copyright 2014 Xamarin Inc.
-// Copyright 2017 Microsoft. All rights reserved.
+// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License.
 
 using System;
 using System.Collections.Generic;

@@ -1,10 +1,9 @@
 //
-// InspectViewDataSource.cs
-//
 // Author:
 //   Aaron Bockover <abock@xamarin.com>
 //
-// Copyright 2014 Xamarin Inc.
+// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License.
 
 using System;
 

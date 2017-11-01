@@ -1,10 +1,9 @@
 //
-// MacCoordinateMapper.cs
-//
 // Author:
 //   Kenneth Pouncey <kenneth.pouncey@xamarin.com>
 //
-// Copyright 2014-2015 Xamarin, Inc.
+// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License.
 
 using CoreGraphics;
 using AppKit;

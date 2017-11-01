@@ -1,9 +1,9 @@
-// ViewHighlightOverlayWindow.cs
 //
 // Author:
 //   Sandy Armstrong <sandy@xamarin.com>
 //
-// Copyright 2015 Xamarin Inc.
+// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License.
 
 using System.Windows;
 using System.Windows.Controls;

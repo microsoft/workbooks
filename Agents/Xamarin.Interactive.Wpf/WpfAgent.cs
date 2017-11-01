@@ -1,12 +1,10 @@
 //
-// WpfAgent.cs
-//
-// Author:
+// Authors:
 //   Sandy Armstrong <sandy@xamarin.com>
 //   Bojan Rajkovic <brajkovic@xamarin.com>
 //
-// Copyright 2014-2016 Xamarin Inc. All rights reserved.
-// Copyright 2016-2017 Microsoft. All rights reserved.
+// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License.
 
 using System;
 using System.Collections.Generic;

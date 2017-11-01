@@ -1,15 +1,10 @@
 //
-// ViewRenderer.cs
-//
-// This class is based on iOS Agent ViewRenderer which was adapted from the Xamarin iOS Designer:
-//   Xamarin.Designer.iOS/MonoTouch.Design.Server/TypeSystem/Renderer.cs
-//
 // Authors:
 //   Kenneth Pouncey <kenneth.pouncey@xamarin.com>
 //   Larry Ewing <lewing@xamarin.com>
 //
-// Copyright 2014 Xamarin Inc
-// Copyright 2017 Microsoft.  All rights reserved.
+// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License.
 
 using System;
 using System.IO;
