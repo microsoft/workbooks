@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <Fragment>
+
+    <ComponentGroup Id="AndroidAgentComponents" Directory="AndroidAgentInstallFolder">
+      <Component Id="Xamarin.Interactive.Android.dll" Guid="2635679D-1D44-4BC5-99CE-6A9DCA33279B">
+        <File Id="Xamarin.Interactive.Android.dll" Source="$(var.Xamarin.Interactive.Android.ActivityTrackerShim.TargetDir)\Xamarin.Interactive.Android.dll"/>
+      </Component>
+      <Component Id="Xamarin.Interactive.Android.pdb" Guid="829AE7D4-4D0E-40F5-A0CC-680626AAC079">
+        <File Id="Xamarin.Interactive.Android.pdb" Source="$(var.Xamarin.Interactive.Android.ActivityTrackerShim.TargetDir)\Xamarin.Interactive.Android.pdb"/>
+      </Component>
+
+      <Component Id="AndroidAgent.Xamarin.Interactive.dll" Guid="D98193F5-B269-4EBA-AEDB-A0C32704A4D8">
+        <File Id="AndroidAgent.Xamarin.Interactive.dll" Source="$(var.Xamarin.Interactive.Android.ActivityTrackerShim.TargetDir)\Xamarin.Interactive.dll"/>
+      </Component>
+      <Component Id="AndroidAgent.Xamarin.Interactive.pdb" Guid="B29A3A4A-9D89-4788-B107-4B6A1228A7EB">
+        <File Id="AndroidAgent.Xamarin.Interactive.pdb" Source="$(var.Xamarin.Interactive.Android.ActivityTrackerShim.TargetDir)\Xamarin.Interactive.pdb"/>
+      </Component>
+    </ComponentGroup>
+
+    <ComponentGroup Id="iOSAgentComponents" Directory="iOSAgentInstallFolder">
+      <Component Id="Xamarin.Interactive.iOS.dll" Guid="4F6599DE-2C65-406C-B890-3115390FD696">
+        <File Id="Xamarin.Interactive.iOS.dll" Source="$(var.Xamarin.Interactive.iOS.TargetDir)\Xamarin.Interactive.iOS.dll"/>
+      </Component>
+      <Component Id="Xamarin.Interactive.iOS.pdb" Guid="5219B3AF-7153-4FB9-8BEB-EE80B170EEFA">
+        <File Id="Xamarin.Interactive.iOS.pdb" Source="$(var.Xamarin.Interactive.iOS.TargetDir)\Xamarin.Interactive.iOS.pdb"/>
+      </Component>
+
+      <Component Id="iOSAgent.Xamarin.Interactive.dll" Guid="9CD5316E-0F0E-496D-8BD7-7989DD425627">
+        <File Id="iOS.Xamarin.Interactive.dll" Source="$(var.Xamarin.Interactive.iOS.TargetDir)\Xamarin.Interactive.dll"/>
+      </Component>
+      <Component Id="iOSAgent.Xamarin.Interactive.pdb" Guid="A12A6151-71A2-4AAF-B252-78EF0F9F6CDC">
+        <File Id="iOS.Xamarin.Interactive.pdb" Source="$(var.Xamarin.Interactive.iOS.TargetDir)\Xamarin.Interactive.pdb"/>
+      </Component>
+    </ComponentGroup>
+
+    <?define ConsoleAgentAppDirectory="..\..\_build\$(var.Configuration)\WorkbookApps\Console" ?>
+    <ComponentGroup Id="ConsoleAgentComponents" Directory="ConsoleAgentInstallFolder">
+      <Component Id="Xamarin.Interactive.Console.exe" Guid="4DCACE41-D193-493C-A590-79113FA78049">
+        <File Id="Xamarin.Interactive.Console.exe" Source="$(var.ConsoleAgentAppDirectory)\Xamarin.Interactive.Console.exe"/>
+      </Component>
+      <Component Id="ConsoleAgent.Xamarin.Interactive.dll" Guid="A57FAE96-4739-417B-96F5-11EEB16D815F">
+        <File Id="ConsoleAgent.Xamarin.Interactive.dll" Source="$(var.ConsoleAgentAppDirectory)\Xamarin.Interactive.dll"/>
+      </Component>
+      <Component Id="ConsoleAgent.System.ValueTuple.dll" Guid="AE1B0E25-3674-4D37-8D50-DF694423851C">
+        <File Id="ConsoleAgent.System.ValueTuple.dll" Source="$(var.ConsoleAgentAppDirectory)\System.ValueTuple.dll"/>
+      </Component>
+      <!-- Not yet any need for .mdb or .pdb files for Console agent on Windows. But they'd go here. -->
+    </ComponentGroup>
+
+    <!-- Build our own target directory paths here because WiX is wrong about .NET Core projects. It wants to do `bin\x86\<Configuration>`. -->
+    <?define DotNetCoreAssembliesDir="$(var.Xamarin.Interactive.DotNetCore.ProjectDir)bin\$(var.Configuration)\netstandard2.0\"?>
+    <?define NetStandardAssembliesDir="$(var.Xamarin.Interactive.NetStandard.ProjectDir)bin\$(var.Configuration)\netstandard2.0\"?>
+    <ComponentGroup Id="DotNetCoreAgentComponents" Directory="DotNetCoreAgentInstallFolder">
+      <Component Id="DotNetCoreAgent.Xamarin.Interactive.dll" Guid="A75AA531-C517-4242-9777-277AA562AD59">
+        <File Id="DotNetCoreAgent.Xamarin.Interactive.dll" Source="$(var.DotNetCoreAssembliesDir)Xamarin.Interactive.dll" />
+      </Component>
+      <Component Id="DotNetCoreAgent.Xamarin.Interactive.pdb" Guid="33E16767-F73B-4944-A907-1594D27B428E">
+        <File Id="DotNetCoreAgent.Xamarin.Interactive.pdb" Source="$(var.DotNetCoreAssembliesDir)Xamarin.Interactive.pdb" />
+      </Component>
+      <Component Id="DotNetCoreAgent.Xamarin.Interactive.DotNetCore.dll" Guid="868E4A62-EE52-4E0F-9312-3A9A474486CE">
+        <File Id="DotNetCoreAgent.Xamarin.Interactive.DotNetcore.dll" Source="$(var.DotNetCoreAssembliesDir)Xamarin.Interactive.DotNetCore.dll" />
+      </Component>
+      <Component Id="DotNetCoreAgent.Xamarin.Interactive.DotNetCore.pdb" Guid="5107A471-FE12-44FF-9B96-4FE0C009302A">
+        <File Id="DotNetCoreAgent.Xamarin.Interactive.DotNetcore.pdb" Source="$(var.DotNetCoreAssembliesDir)Xamarin.Interactive.DotNetCore.pdb" />
+      </Component>
+      <!-- copy in the special ref assembly for .NET Core -->
+      <Component Id="DotNetCoreAgent.ref_Xamarin.Interactive.dll" Guid="E279D71F-DAE8-4B6D-9092-E8DD3247E1D2">
+        <File Id="DotNetCoreAgent.ref_Xamarin.Interactive.dll" Source="$(var.NetStandardAssembliesDir)ref-Xamarin.Interactive.dll" />
+      </Component>
+    </ComponentGroup>
+
+    <ComponentGroup Id="AndroidFormsAgentComponents" Directory="AndroidFormsAgentInstallFolder">
+      <Component Id="AndroidFormsAgent.Xamarin.Interactive.Android.dll" Guid="FAA4B1FF-0136-44DA-AF0C-170BD4225FFC">
+        <File Id="AndroidFormsAgent.Xamarin.Interactive.Android.dll" Source="$(var.Xamarin.Interactive.Android.ActivityTrackerShim.TargetDir)\Xamarin.Interactive.Android.dll"/>
+      </Component>
+      <Component Id="AndroidFormsAgent.Xamarin.Interactive.Android.pdb" Guid="74BB4CA9-D8C0-476D-8C1A-47E7E69F4C41">
+        <File Id="AndroidFormsAgent.Xamarin.Interactive.Android.pdb" Source="$(var.Xamarin.Interactive.Android.ActivityTrackerShim.TargetDir)\Xamarin.Interactive.Android.pdb"/>
+      </Component>
+
+      <Component Id="AndroidFormsAgent.Xamarin.Interactive.dll" Guid="08FDB438-A14F-4AE8-B64E-070D9ECD35B0">
+        <File Id="AndroidFormsAgent.Xamarin.Interactive.dll" Source="$(var.Xamarin.Interactive.Android.ActivityTrackerShim.TargetDir)\Xamarin.Interactive.dll"/>
+      </Component>
+      <Component Id="AndroidFormsAgent.Xamarin.Interactive.pdb" Guid="F26DB7AD-E777-4263-BD70-53CB44F1507C">
+        <File Id="AndroidFormsAgent.Xamarin.Interactive.pdb" Source="$(var.Xamarin.Interactive.Android.ActivityTrackerShim.TargetDir)\Xamarin.Interactive.pdb"/>
+      </Component>
+
+      <Component Id="Xamarin.Interactive.Forms.dll" Guid="2E2CC15D-94E3-4DAD-8BBE-759D05561973">
+        <File Id="Xamarin.Interactive.Forms.dll" Source="$(var.Xamarin.Interactive.Forms.Android.TargetDir)\Xamarin.Interactive.Forms.dll"/>
+      </Component>
+      <Component Id="Xamarin.Interactive.Forms.pdb" Guid="1F666BEF-49AD-4A78-8371-FD30EA2ED52D">
+        <File Id="Xamarin.Interactive.Forms.pdb" Source="$(var.Xamarin.Interactive.Forms.Android.TargetDir)\Xamarin.Interactive.Forms.pdb"/>
+      </Component>
+
+      <Component Id="Xamarin.Interactive.Forms.Android.dll" Guid="BE4F1B27-FF6E-43E4-8806-5D9E737C783B">
+        <File Id="Xamarin.Interactive.Forms.Android.dll" Source="$(var.Xamarin.Interactive.Forms.Android.TargetDir)\Xamarin.Interactive.Forms.Android.dll"/>
+      </Component>
+      <Component Id="Xamarin.Interactive.Forms.Android.pdb" Guid="CBEA1285-1569-483D-996D-8C39E340CC40">
+        <File Id="Xamarin.Interactive.Forms.Android.pdb" Source="$(var.Xamarin.Interactive.Forms.Android.TargetDir)\Xamarin.Interactive.Forms.Android.pdb"/>
+      </Component>
+    </ComponentGroup>
+
+    <ComponentGroup Id="iOSFormsAgentComponents" Directory="iOSFormsAgentInstallFolder">
+      <Component Id="iOSFormsAgent.Xamarin.Interactive.iOS.dll" Guid="79967E51-5970-4A48-9341-C0E4FDE98D8B">
+        <File Id="iOSFormsAgent.Xamarin.Interactive.iOS.dll" Source="$(var.Xamarin.Interactive.Forms.iOS.TargetDir)\Xamarin.Interactive.iOS.dll"/>
+      </Component>
+      <Component Id="iOSFormsAgent.Xamarin.Interactive.iOS.pdb" Guid="83213CC5-4149-4CE1-AD9E-8C6F87BB6D46">
+        <File Id="iOSFormsAgent.Xamarin.Interactive.iOS.pdb" Source="$(var.Xamarin.Interactive.Forms.iOS.TargetDir)\Xamarin.Interactive.iOS.pdb"/>
+      </Component>
+
+      <Component Id="iOSFormsAgent.Xamarin.Interactive.dll" Guid="9D1949F0-842F-4602-8197-4B3F31E8394F">
+        <File Id="iOSFormsAgent.Xamarin.Interactive.dll" Source="$(var.Xamarin.Interactive.Forms.iOS.TargetDir)\Xamarin.Interactive.dll"/>
+      </Component>
+      <Component Id="iOSFormsAgent.Xamarin.Interactive.pdb" Guid="C809DBA7-800C-4116-A4C6-60EFF2222465">
+        <File Id="iOSFormsAgent.Xamarin.Interactive.pdb" Source="$(var.Xamarin.Interactive.Forms.iOS.TargetDir)\Xamarin.Interactive.pdb"/>
+      </Component>
+
+      <Component Id="iOSFormsAgent.Xamarin.Interactive.Forms.dll" Guid="CF2F0724-B18F-4ADD-9F53-26A999F2900E">
+        <File Id="iOSFormsAgent.Xamarin.Interactive.Forms.dll" Source="$(var.Xamarin.Interactive.Forms.iOS.TargetDir)\Xamarin.Interactive.Forms.dll"/>
+      </Component>
+      <Component Id="iOSFormsAgent.Xamarin.Interactive.Forms.pdb" Guid="A10C0AD1-1685-4D8F-A22C-1C70658129E0">
+        <File Id="iOSFormsAgent.Xamarin.Interactive.Forms.pdb" Source="$(var.Xamarin.Interactive.Forms.iOS.TargetDir)\Xamarin.Interactive.Forms.pdb"/>
+      </Component>
+
+      <Component Id="Xamarin.Interactive.Forms.iOS.dll" Guid="DFAB784C-1E9B-4C07-9C9D-1975A4FA731A">
+        <File Id="Xamarin.Interactive.Forms.iOS.dll" Source="$(var.Xamarin.Interactive.Forms.iOS.TargetDir)\Xamarin.Interactive.Forms.iOS.dll"/>
+      </Component>
+      <Component Id="Xamarin.Interactive.Forms.iOS.pdb" Guid="80178279-C057-4F7C-820D-7E00C21192AE">
+        <File Id="Xamarin.Interactive.Forms.iOS.pdb" Source="$(var.Xamarin.Interactive.Forms.iOS.TargetDir)\Xamarin.Interactive.Forms.iOS.pdb"/>
+      </Component>
+    </ComponentGroup>
+  </Fragment>
+</Wix>

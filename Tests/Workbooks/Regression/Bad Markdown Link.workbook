@@ -1,0 +1,9 @@
+---
+uti: com.xamarin.workbook
+platform: iOS
+packages: []
+---
+
+
+
+This is a [`bad `](T:boom)link.

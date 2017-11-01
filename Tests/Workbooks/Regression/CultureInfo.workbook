@@ -1,0 +1,123 @@
+---
+uti: com.xamarin.workbook
+platforms:
+- Console
+---
+
+# Regression tests for setting CurrentCulture
+
+```csharp
+using System.Threading;
+using System.Globalization;
+
+void AssertSame (object expected, object actual)
+{
+    if (!Object.ReferenceEquals (expected, actual))
+        throw new Exception ($"AssertSame: actual: '{actual}', expected: '{expected}'");
+}
+
+string AssertCulture (CultureInfo expected)
+{
+    AssertSame (expected, Xamarin.Interactive.InteractiveCulture.CurrentCulture);
+    AssertSame (expected, CurrentCulture);
+    AssertSame (expected, CultureInfo.CurrentCulture);
+    AssertSame (expected, Thread.CurrentThread.CurrentCulture);
+    return expected.Name;
+}
+
+string AssertUICulture (CultureInfo expected)
+{
+    AssertSame (expected, Xamarin.Interactive.InteractiveCulture.CurrentUICulture);
+    AssertSame (expected, CultureInfo.CurrentUICulture);
+    AssertSame (expected, Thread.CurrentThread.CurrentUICulture);
+    return expected.Name;
+}
+```
+
+```csharp
+var en = new CultureInfo ("en-US");
+var fr = new CultureInfo ("fr-FR");
+var de = new CultureInfo ("de-DE");
+```
+
+## Syntax Rewriting: `System.Threading.Thread.CurrentThread.CurrentCulture`
+
+```csharp
+Thread.CurrentThread.CurrentCulture = en
+```
+
+```csharp
+AssertCulture (en)
+```
+
+```csharp
+System.Threading.Thread.CurrentThread.CurrentCulture = fr
+```
+
+```csharp
+AssertCulture (fr)
+```
+
+## Syntax Rewriting: `System.Globalization.CultureInfo.CurrentCulture`
+
+```csharp
+CultureInfo.CurrentCulture = de
+```
+
+```csharp
+AssertCulture (de)
+```
+
+```csharp
+System.Globalization.CultureInfo.CurrentCulture = en
+```
+
+```csharp
+AssertCulture (en)
+```
+
+## Syntax Rewriting: `System.Threading.Thread.CurrentThread.CurrentUICulture`
+
+```csharp
+Thread.CurrentThread.CurrentUICulture = de
+```
+
+```csharp
+AssertUICulture (de)
+```
+
+```csharp
+System.Threading.Thread.CurrentThread.CurrentUICulture = fr
+```
+
+```csharp
+AssertUICulture (fr)
+```
+
+## Syntax Rewriting: `System.Globalization.CultureInfo.CurrentUICulture`
+
+```csharp
+CultureInfo.CurrentUICulture = de
+```
+
+```csharp
+AssertUICulture (de)
+```
+
+```csharp
+System.Globalization.CultureInfo.CurrentUICulture = en
+```
+
+```csharp
+AssertUICulture (en)
+```
+
+## Workbook Convenience Properties
+
+```csharp
+CurrentCulture = fr
+```
+
+```csharp
+AssertCulture (fr)
+```

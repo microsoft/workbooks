@@ -1,0 +1,5 @@
+<?xml version="1.0"?>
+<monodoc>
+  <node label="Xamarin Workbooks" name="interactive-api" parent="libraries"/>
+  <source provider="ecma" basefile="interactive-api" path="interactive-api"/>
+</monodoc>

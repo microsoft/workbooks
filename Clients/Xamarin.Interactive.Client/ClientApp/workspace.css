@@ -1,0 +1,389 @@
+﻿/*
+workspace.css
+
+Author:
+  Aaron Bockover <abock@xamarin.com>
+  Vaclav Vancura <vacvan@microsoft.com>
+
+Copyright 2016 Xamarin Inc. All rights reserved.
+Copyright 2016-2017 Microsoft. All rights reserved.
+*/
+
+.interactive-workspace {
+  display: block;
+  margin: 0 1em 3em;
+}
+
+.interactive-workspace > article {
+  padding: 0.5em 1em;
+}
+
+.execution-duration-hidden {
+  display: none !important;
+}
+
+.interactive-workspace > article.submission > section > .execution-duration {
+  opacity: 0.5;
+  position: absolute;
+  padding: 2px;
+  top: calc(0.5em + 1px);
+  right: calc(1em + 1px);
+  user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+}
+
+.interactive-workspace > article.submission > section > .execution-duration > span {
+  display: block;
+  font-size: 65%;
+}
+
+.interactive-workspace.session-kind-workbook > article.focused {
+  background-image:
+    linear-gradient(0deg, #0173C7, #0173C7),
+    linear-gradient(0deg, #ddd, #ddd),
+    linear-gradient(0deg, #ddd, #ddd),
+    linear-gradient(0deg, #ddd, #ddd) !important;
+  background-size: 3px 1px, 1px 1px, 1px 1px, 1px 1px !important;
+  background-repeat: repeat-y, repeat-x, repeat-x, repeat-y !important;
+  background-position: left, top, bottom, right !important;
+}
+
+.interactive-workspace.session-kind-workbook > article:hover {
+  background-image: linear-gradient(0deg, #ddd, #ddd);
+  background-size: 3px 1px;
+  background-repeat: repeat-y;
+  background-position: left;
+}
+
+.interactive-workspace.session-kind-workbook > article.confirm-delete-hover,
+.interactive-workspace.session-kind-workbook > article.confirm-delete {
+  background-image:
+    linear-gradient(0deg, #c00, #c00),
+    linear-gradient(0deg, #c00, #c00),
+    linear-gradient(0deg, #c00, #c00),
+    linear-gradient(0deg, #c00, #c00) !important;
+  background-size: 3px 1px, 1px 1px, 1px 1px, 1px 1px !important;
+  background-repeat: repeat-y, repeat-x, repeat-x, repeat-y !important;
+  background-position: left, top, bottom, right !important;
+}
+
+.interactive-workspace.session-kind-workbook > article.insert-preview {
+  background-image: linear-gradient(0deg, #69BB6E, #69BB6E) !important;
+  background-size: 1px 1px !important;
+  background-repeat: repeat-x !important;
+  background-position: bottom !important;
+}
+
+.interactive-workspace.session-kind-workbook > article.focused.insert-preview {
+  background-image:
+    linear-gradient(0deg, #0173C7, #0173C7),
+    linear-gradient(0deg, #ddd, #ddd),
+    linear-gradient(0deg, #69BB6E, #69BB6E),
+    linear-gradient(0deg, #ddd, #ddd) !important;
+  background-size: 3px 1px, 1px 1px, 1px 1px, 1px 1px !important;
+  background-repeat: repeat-y, repeat-x, repeat-x, repeat-y !important;
+  background-position: left, top, bottom, right !important;
+}
+
+/* Entry Actions */
+
+.interactive-workspace > article > footer > .entry-actions {
+  display: flex;
+  align-items: center;
+  visibility: hidden;
+  padding-top: 3px;
+}
+
+.interactive-workspace > article.text > footer > .entry-actions {
+  padding: 0;
+  margin-top: -0.5em;
+}
+
+.interactive-workspace > article > footer > .entry-actions * {
+  flex: none;
+}
+
+.interactive-workspace > article > footer > .entry-actions .break {
+  flex: 0 100% !important;
+}
+
+.interactive-workspace > article:hover > footer > .entry-actions,
+.interactive-workspace > article.focused > footer > .entry-actions {
+  visibility: visible;
+}
+
+.interactive-workspace .entry-actions .hint-text {
+  text-transform: lowercase;
+  margin-left: 0.25em;
+  font-size: 0.75em;
+  color: #999;
+  cursor: default;
+}
+
+.interactive-workspace .entry-actions .hint-text .kbd {
+  display: inline-block;
+  padding: 0.1em 0.33em;
+  margin-top: 1px;
+  border: 1px #ddd solid;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
+  border-radius: 0.25em;
+  color: rgba(0, 0, 0, 0.4);
+}
+
+.interactive-workspace.is-mac .entry-actions .hint-text .kbd {
+  vertical-align: -0.1em;
+}
+
+.interactive-workspace .entry-actions .hint-text .plus {
+  font-style: normal;
+  font-size: 80%;
+  padding: 0 2px;
+}
+
+.interactive-workspace .entry-actions button {
+  height: 16px;
+  width: 16px;
+  margin: 0 0 0 0.25em;
+  padding: 0;
+  border: none;
+  background-size: 16px 16px !important; /* Make sure it's correct size after reload on HiDPI */
+  background: transparent no-repeat left center;
+  z-index: 10;
+  opacity: 0.5;
+  transition: opacity 250ms;
+}
+
+.interactive-workspace .entry-actions button:first-child {
+  margin: 0 !important;
+}
+
+.interactive-workspace .entry-actions button:hover {
+  opacity: 1;
+}
+
+.interactive-workspace .entry-actions button > span {
+  display: none;
+}
+
+.interactive-workspace .entry-actions .run-code {
+  background-image: url(run-code-entry-16.png);
+}
+
+.interactive-workspace .entry-actions .insert-code {
+  background-image: url(new-code-entry-16.png);
+}
+
+.interactive-workspace .entry-actions .insert-documentation {
+  background-image: url(new-documentation-entry-16.png);
+}
+
+.interactive-workspace .entry-actions .delete {
+  background-image: url(delete-entry-16.png);
+}
+
+.interactive-workspace .entry-actions .requires-editor-focus {
+  visibility: hidden;
+}
+
+.interactive-workspace .entry-actions .editor-focused {
+  visibility: visible;
+}
+
+@media only screen and (-webkit-min-device-pixel-ratio: 2), only screen and (-webkit-min-resolution: 192dpi), only screen and (min-device-pixel-ratio: 2), only screen and (min-resolution: 192dpi) {
+  .interactive-workspace .entry-actions .run-code {
+    background-image: url(run-code-entry-16@2x.png);
+  }
+
+  .interactive-workspace .entry-actions .insert-code {
+    background-image: url(new-code-entry-16@2x.png);
+  }
+
+  .interactive-workspace .entry-actions .insert-documentation {
+    background-image: url(new-documentation-entry-16@2x.png);
+  }
+
+  .interactive-workspace .entry-actions .delete {
+    background-image: url(delete-entry-16@2x.png);
+  }
+}
+
+
+/* Sections */
+
+.interactive-workspace > article > section > div {
+  display: block;
+  opacity: 0;
+  transition: opacity 100ms, filter 100ms;
+}
+
+.interactive-workspace > article > section > div:not(:first-child) {
+  margin-top: 0 !important;
+  border-top: none !important;
+}
+
+
+/* Submission */
+
+.interactive-workspace > article.submission {
+  position: relative;
+}
+
+.interactive-workspace > article.submission::before {
+  content: "";
+  width: 7px;
+  height: 7px;
+  border-radius: 7px;
+  position: absolute;
+  display: none;
+  z-index: 9999;
+  margin: calc(1em - 3px) 0 0 calc(-1em - 2px);
+  background: #0173C7;
+}
+
+.interactive-workspace > article.submission.dirty::before {
+  display: block;
+}
+
+
+/* Exec Control */
+
+.interactive-workspace > article.submission > section > .exec-control {
+  border-top: 1px #fff solid;
+  padding: 5px;
+  margin: 2px 0 !important;
+  cursor: pointer;
+  display: inline-block;
+}
+
+.interactive-workspace > article.submission > section > .exec-control::after {
+  vertical-align: 0.2em;
+  content: "RUNNING…";
+  font-size: 0.5em;
+  font-weight: bold;
+  color: #888;
+}
+
+.interactive-workspace > article.submission > section > .exec-control:hover {
+  color: #fff;
+  background-color: #c00;
+}
+
+.interactive-workspace > article.submission > section > .exec-control:hover::after {
+  color: #fff;
+  content: "ABORT";
+}
+
+.interactive-workspace > article.submission > section > .exec-control > .loader {
+  display: inline-block;
+  vertical-align: middle;
+  margin-top: -0.1em;
+  margin-right: 0.33em;
+}
+
+.interactive-workspace > article.submission > section > .exec-control:hover > .loader {
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-left: 1px solid #fff;
+}
+
+
+/* Diagnostics */
+
+.interactive-workspace > article.submission > section > .diagnostics {
+  cursor: default;
+
+  border: 2px solid #f38f00 !important;
+  background-color: transparent;
+  margin-top: -1px !important;
+
+  /* Move to front to allow potential shadows
+     and disable overflow borders of following elements */
+  z-index: 100;
+  position: relative;
+}
+
+.interactive-workspace > article.submission > section > .diagnostics.error {
+  border: 2px solid #f56d4f !important;
+}
+
+.interactive-workspace > article.submission > section > .diagnostics .error {
+  color: #f56d4f;
+}
+
+.interactive-workspace > article.submission > section > .diagnostics .warning {
+  color: #f38f00;
+}
+
+.interactive-workspace > article.submission > section > .diagnostics ul {
+  font-family: monospace;
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+
+.interactive-workspace > article.submission > section > .captured-output {
+  font-family: monospace;
+  background-color: rgb(248, 248, 248);
+}
+
+.interactive-workspace > article.submission > section > .captured-output > .stdout {
+}
+
+.interactive-workspace > article.submission > section > .captured-output > .stderr {
+  color: rgb(185, 21, 31);
+}
+
+
+/* Result */
+
+.interactive-workspace > article.submission > section > .result,
+.interactive-workspace > article.submission > section > .captured-output {
+  background-color: #fff;
+  border: 1px solid #ddd;
+  padding: 0.5em 0.5em 0.6em;
+}
+
+.interactive-workspace > article.submission > section.outdated > .result,
+.interactive-workspace > article.submission > section.outdated > .captured-output,
+.interactive-workspace > article.submission > section.outdated > .execution-duration {
+  opacity: 0.4 !important;
+  filter: grayscale(100%);
+}
+
+.interactive-workspace > article.text > section > div {
+  border-color: transparent;
+}
+
+
+/* Spinners */
+
+.loader {
+  width: 1em;
+  height: 1em;
+  border: 1px solid #eee;
+  border-left: 1px solid #333;
+  border-radius: 50%;
+  box-sizing: border-box;
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
+  animation: loader-frames 1s infinite linear;
+  -webkit-animation: loader-frames 1s infinite linear;
+}
+
+@-webkit-keyframes loader-frames {
+  0% {
+    -webkit-transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+  }
+}
+
+@keyframes loader-frames {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}

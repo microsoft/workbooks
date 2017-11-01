@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <Fragment>
+    <?define WpfAgentAppDirectory="..\..\_build\$(var.Configuration)\WorkbookApps\WPF" ?>
+    <ComponentGroup Id="WpfAgentAppComponents" Directory="WpfAgentAppInstallFolder">
+      <Component Id="WpfAgentApp.Xamarin.Interactive.Wpf.dll" Guid="65D7BE3D-E22D-4BFC-BC6B-B6E6D21EC52D">
+        <File Id="WpfAgentApp.Xamarin.Interactive.Wpf.dll" Source="$(var.WpfAgentAppDirectory)\Xamarin.Interactive.Wpf.dll" />
+      </Component>
+      <Component Id="WpfAgentApp.Xamarin.Interactive.dll" Guid="2887263B-D932-4F5D-A497-49973802A523">
+        <File Id="WpfAgentApp.Xamarin.Interactive.dll" Source="$(var.WpfAgentAppDirectory)\Xamarin.Interactive.dll" />
+      </Component>
+      <Component Id="WpfAgentApp.System.ValueTuple.dll" Guid="719B3DB2-B43D-4DDC-9501-1F77CA6D7395">
+        <File Id="WpfAgentApp.System.ValueTuple.dll" Source="$(var.WpfAgentAppDirectory)\System.ValueTuple.dll" />
+      </Component>
+      <Component Id="WpfAgentApp.Xamarin_Workbooks_Agent__WPF_.exe" Guid="B2E56635-B703-4088-B5BF-A4D34E9A3055">
+        <File Id="WpfAgentApp.Xamarin_Workbooks_Agent__WPF_.exe" Source="$(var.WpfAgentAppDirectory)\Xamarin Workbooks Agent (WPF).exe" />
+      </Component>
+    </ComponentGroup>
+    <?define AndroidAgentAppDirectory="..\..\_build\$(var.Configuration)\WorkbookApps\Android" ?>
+    <ComponentGroup Id="AndroidAgentAppComponents" Directory="AndroidAgentAppInstallFolder">
+      <Component Id="AndroidAgentApp.apk" Guid="6CD2D3A9-40D7-4583-BDD1-5B4711431381">
+        <File Id="AndroidAgentApp.apk" Source="$(var.AndroidAgentAppDirectory)\com.xamarin.workbook_app_android-Signed.apk" />
+      </Component>
+    </ComponentGroup>
+    <ComponentGroup Id="WorkbookManifestComponents" Directory="AgentAppInstallFolder">
+      <Component Id="workbookapps.json" Guid="47A8314B-0E4A-48BD-AA24-84A18AE06291">
+        <File Id="workbookapps.json" Source="..\..\_build\$(var.Configuration)\WorkbookApps\workbookapps.json" />
+      </Component>
+    </ComponentGroup>
+  </Fragment>
+</Wix>

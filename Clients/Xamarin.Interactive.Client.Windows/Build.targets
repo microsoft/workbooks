@@ -1,0 +1,12 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildThisFileDirectory)..\WebApp.targets" />
+  <Import Project="$(MSBuildThisFileDirectory)..\SharedClientResources.targets" />
+
+  <PropertyGroup>
+    <ClientAppResourcesOutputPath>$(OutputPath)</ClientAppResourcesOutputPath>
+    <BuildDependsOn>
+      $(BuildDependsOn);
+      CopySharedClientResources;
+    </BuildDependsOn>
+  </PropertyGroup>
+</Project>

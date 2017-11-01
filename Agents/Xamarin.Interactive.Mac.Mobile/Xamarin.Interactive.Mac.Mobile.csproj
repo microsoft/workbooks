@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <ProjectGuid>{AF7B7ABD-84D4-46B2-80E4-9CA457C513BC}</ProjectGuid>
+    <ProjectTypeGuids>{A3F8F2AB-B479-4A4A-A458-A89E7DC349F1};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <RootNamespace>Xamarin.Interactive.Mac</RootNamespace>
+    <AssemblyName>Xamarin.Interactive.Mac.Mobile</AssemblyName>
+    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
+    <TargetFrameworkIdentifier>Xamarin.Mac</TargetFrameworkIdentifier>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\Net45</OutputPath>
+    <DefineConstants>__UNIFIED__;DEBUG;MAC;MAC_MOBILE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+    <EnableCodeSigning>false</EnableCodeSigning>
+    <CreatePackage>false</CreatePackage>
+    <EnablePackageSigning>false</EnablePackageSigning>
+    <IncludeMonoRuntime>false</IncludeMonoRuntime>
+    <UseSGen>false</UseSGen>
+    <UseRefCounting>false</UseRefCounting>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <Profiling>false</Profiling>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Release\Net45</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+    <EnableCodeSigning>false</EnableCodeSigning>
+    <CreatePackage>false</CreatePackage>
+    <EnablePackageSigning>false</EnablePackageSigning>
+    <IncludeMonoRuntime>false</IncludeMonoRuntime>
+    <UseSGen>false</UseSGen>
+    <UseRefCounting>false</UseRefCounting>
+    <DefineConstants>__UNIFIED__;MAC;MAC_MOBILE</DefineConstants>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DebugSymbols>true</DebugSymbols>
+    <Profiling>false</Profiling>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="Xamarin.Mac" />
+  </ItemGroup>
+  <Import Project="..\Xamarin.Interactive\Xamarin.Interactive.Shared.projitems" Label="Shared" Condition="Exists('..\Xamarin.Interactive\Xamarin.Interactive.Shared.projitems')" />
+  <Import Project="..\..\Bootstrap\Xamarin.Interactive.Bootstrap\Xamarin.Interactive.Bootstrap.projitems" Label="Shared" Condition="Exists('..\..\Bootstrap\Xamarin.Interactive.Bootstrap\Xamarin.Interactive.Bootstrap.projitems')" />
+  <Import Project="..\Xamarin.Interactive.Mac\Xamarin.Interactive.Mac.projitems" Label="Shared" Condition="Exists('..\Xamarin.Interactive.Mac\Xamarin.Interactive.Mac.projitems')" />
+  <Import Project="$(MSBuildExtensionsPath)\Xamarin\Mac\Xamarin.Mac.CSharp.targets" />
+  <ItemGroup>
+    <ProjectReference Include="..\Xamarin.Interactive\Xamarin.Interactive.csproj">
+      <Project>{955F473A-04EC-4716-B75E-509BA892499B}</Project>
+      <Name>Xamarin.Interactive</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="..\..\Build\Common.targets" />
+</Project>

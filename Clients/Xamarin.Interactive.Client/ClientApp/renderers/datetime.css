@@ -1,0 +1,63 @@
+﻿/*
+datetime.css
+
+Author:
+  Aaron Bockover <abock@xamarin.com>
+
+Copyright 2016 Xamarin Inc. All rights reserved.
+*/
+
+.renderer-datetime table,
+.renderer-datetime tr,
+.renderer-datetime th,
+.renderer-datetime td {
+  border: 1px solid #ccc;
+  text-align: center;
+}
+
+.renderer-datetime table > tr > th {
+  background-color: #ddd;
+  font-size: 75%;
+}
+
+.renderer-datetime thead tr {
+  background-color: #f8f8f8;
+}
+
+.renderer-datetime thead th {
+  width: 100% !important;
+}
+
+.renderer-datetime th,
+.renderer-datetime td {
+  width: 2em;
+}
+
+.renderer-datetime table {
+  border-collapse: collapse;
+  width: 14em;
+}
+
+.renderer-datetime td.selected-date span {
+  background-color: rgb(251, 32, 37) !important;
+  color: #fff !important;
+  font-weight: bold;
+  border-radius: 50%;
+  width: 100%;
+  height: 100%;
+  display: inline-block;
+}
+
+.renderer-datetime td.current-month-day {
+  background-color: #f8f8f8;
+  color: #222;
+}
+
+.renderer-datetime td.previous-month-day,
+.renderer-datetime td.next-month-day {
+  color: #ccc;
+}
+
+.renderer-datetime td.weekend {
+  background-color: #eee;
+}

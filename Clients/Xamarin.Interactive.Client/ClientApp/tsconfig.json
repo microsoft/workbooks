@@ -1,0 +1,36 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "target": "es5",
+    "noEmitOnError": true,
+    "removeComments": true,
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitReturns": true,
+    "noImplicitThis": true,
+    "noUnusedLocals": false,
+    "noUnusedParameters": false
+  },
+  "exclude": [
+    "node_modules"
+  ],
+  "files": [
+    "typings/markdown-it.d.ts",
+    "typings/prosemirror.d.ts",
+    "typings/xamarin-interactive.d.ts",
+    "../../../node_modules/monaco-editor/monaco.d.ts",
+    "app.ts",
+    "node-app.ts",
+    "css-monitor.ts",
+    "loader.ts",
+    "rendering.ts",
+    "renderers/color.ts",
+    "renderers/string-renderer.ts",
+    "renderers/number-renderer.ts",
+    "workbook/code-editor.ts",
+    "workbook/editor.ts",
+    "workbook/mutation-observer.ts",
+    "workbook/parser.ts"
+  ]
+}

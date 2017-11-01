@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi"
+     xmlns:netfx="http://schemas.microsoft.com/wix/NetFxExtension">
+
+  <Product Id="*" Name="Xamarin Workbooks and Inspector" Language="1033"
+           Version="!(bind.FileVersion.XamarinInspector.exe.ForRealThisTime)" Manufacturer="Xamarin"
+           UpgradeCode="BC6AFE79-8DE6-425C-A3DC-124F065C9BAB">
+    <Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
+    <Media Id="1" Cabinet ="xamarininspector.cab" EmbedCab="yes" />
+    <MajorUpgrade AllowDowngrades="yes" MigrateFeatures="no"/>
+
+    <Icon Id="xamarininspector.ico" SourceFile="$(var.Xamarin.Interactive.Client.Windows.ProjectDir)/xamarin-workbooks-client.ico"/>
+    <!--
+      See http://stackoverflow.com/questions/1544990/wix-major-upgrade-doesnt-completely-install-app-on-downgrade
+      and https://msdn.microsoft.com/en-us/library/windows/desktop/aa371182(v=vs.85).aspx. The symptoms described in
+      the StackOverflow post exactly match ours. "amus" here roughly means that everything should be reinstalled
+      every time, including all files, registry keys, and shortcuts. It's a bit of an indiscriminate shotgun, but our
+      install is not *that* heavy that this is of serious concern (165 MB on-disk at time of writing.)
+    -->
+    <Property Id="REINSTALLMODE" Value="amus" />
+    <Property Id="ARPPRODUCTICON" Value="xamarininspector.ico" />
+    <Property Id="ARPHELPLINK" Value="http://www.xamarin.com/"/>
+    <Property Id="ARPURLINFOABOUT" Value="https://forums.xamarin.com/categories/inspector"/>
+    <WixVariable Id="WixUIBannerBmp" Value="$(var.ProjectDir)\Bitmaps\TopBanner.bmp" />
+    <WixVariable Id="WixUIDialogBmp" Value="$(var.ProjectDir)\Bitmaps\Dialog.bmp" />
+
+    <Feature Id="ProductFeature" Title="Xamarin Workbooks" Level="1"
+         ConfigurableDirectory="INSTALLFOLDER" TypicalDefault="install" >
+      <ComponentGroupRef Id="RootComponents" />
+      <ComponentGroupRef Id="ConsoleAgentComponents" />
+      <ComponentGroupRef Id="AndroidAgentComponents" />
+      <ComponentGroupRef Id="iOSAgentComponents" />
+      <ComponentGroupRef Id="AndroidFormsAgentComponents" />
+      <ComponentGroupRef Id="iOSFormsAgentComponents" />
+      <ComponentGroupRef Id="AndroidAgentAppComponents" />
+      <ComponentGroupRef Id="AndroidAgentAppAssembliesComponents" />
+      <ComponentGroupRef Id="AndroidAgentAppAssembliesFacadesComponents" />
+      <ComponentGroupRef Id="AndroidAgentAppClientIntegrationComponents" />
+      <ComponentGroupRef Id="WpfAgentAppComponents" />
+      <ComponentGroupRef Id="ClientComponents" />
+      <ComponentGroupRef Id="ClientIconResources" />
+      <ComponentGroupRef Id="ClientReplEditorGlyphsResources" />
+      <ComponentGroupRef Id="ClientReplEditorResources" />
+      <ComponentGroupRef Id="ClientReplRendererResources" />
+      <ComponentGroupRef Id="ClientReplResources" />
+      <ComponentGroupRef Id="ClientReplPmtoolbarResources" />
+      <ComponentGroupRef Id="ClientReplMinMapsVs" />
+      <ComponentGroupRef Id="ClientReplMinMapsVsBaseWorker" />
+      <ComponentGroupRef Id="ClientReplMinMapsVsEditor" />
+      <ComponentGroupRef Id="ToolsComponents" />
+      <ComponentGroupRef Id="ClientReplMonacoEditorVsResources" />
+      <ComponentGroupRef Id="ClientReplMonacoEditorWorkerResources" />
+      <ComponentGroupRef Id="ClientReplMonacoEditorBasicLanguagesSrcResources" />
+      <ComponentGroupRef Id="ClientReplMonacoEditorVsEditorResources" />
+      <ComponentGroupRef Id="DotNetCoreAgentAppComponents"/>
+      <ComponentGroupRef Id="DotNetCoreAgentComponents"/>
+      <ComponentGroupRef Id="iOSWorkbookAppComponents"/>
+      <ComponentGroupRef Id="iOSWorkbookAppStoryboardComponents"/>
+      <ComponentGroupRef Id="iOSWorkbookAppFacadesComponents"/>
+      <ComponentGroupRef Id="iOSWorkbookAppClientIntegrationComponents"/>
+      <ComponentGroupRef Id="WorkbookManifestComponents"/>
+
+      <ComponentGroupRef Id="ClientSampleWorkbooks" />
+
+      <ComponentRef Id="RegistryEntries" />
+      <ComponentRef Id="CurrentUserRegistryEntries" />
+      <ComponentRef Id="XamarinInteractiveProvider" />
+
+      <ComponentGroupRef Id="SdkComponents" />
+    </Feature>
+
+    <WixVariable Id="WixUISupportPerUser" Value="0" />
+    <WixVariable Id="WixUILicenseRtf" Value="$(var.ProjectDir)\license.rtf" />
+    <UIRef Id="WixUI_InstallDir"  />
+    <Property Id="WIXUI_INSTALLDIR" Value="INSTALLFOLDER"/>
+
+    <UI>
+      <TextStyle Id="White8" FaceName="Tahoma" Size="8" Red="255" Green="255" Blue="255"  />
+      <TextStyle Id="White9Bold" FaceName="Tahoma" Size="9" Red="255" Green="255" Blue="255" Bold="yes"  />
+    </UI>
+
+  </Product>
+</Wix>

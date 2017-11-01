@@ -1,0 +1,15 @@
+---
+uti: com.xamarin.workbook
+id: e09ea3f1-531e-4b12-87ea-2cebe98cf5a2
+title: CompilationIntegration
+platforms:
+- Console
+---
+
+```csharp
+#r "net461/CompilationIntegration.dll"
+```
+
+```csharp
+var a = 0xdead; var b = 0xbeef; a * a + b * b
+```

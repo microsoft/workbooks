@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <link rel="icon" type="image/png" href="data:image/png;base64,iVBORw0KGgo=">
+  <link rel="stylesheet" href="/app.css">
+  <title>Editor Surface</title>
+</head>
+<body>
+  <script type="text/javascript">
+    window.addEventListener("load", function () {
+      var loadScript = function (path, loadedCallback) {
+        var elem = document.createElement("script")
+        elem.src = path
+        elem.async = true
+        elem.onload = loadedCallback
+        document.body.appendChild(elem)
+      }
+
+      var xiexportsInitialize = function () {
+        if (!window.xiexportsLoaded)
+          return false
+
+        window.xiexportsLoaded()
+
+        loadScript("/monaco-editor/vs/loader.js", function () {
+          require.config({
+            paths: { 'vs': '/monaco-editor/vs' },
+            onError: function (e) {
+              console.warn("Ignored Monaco loader error: %O", e)
+            }
+          });
+
+          var requiredFiles = [
+            'vs/editor/editor.main',
+            'vs/platform/keybinding/common/keybindingsRegistry',
+            'vs/platform/contextkey/common/contextkey'
+          ]
+
+          require(requiredFiles, function (em, keybindingsRegistry, contextKeyExpr) {
+            // keybinding registry is not public, see https://github.com/Microsoft/monaco-editor/issues/102/
+            keybindingsRegistry.KeybindingsRegistry.registerKeybindingRule({
+              id: '^acceptSelectedSuggestion',
+              primary: monaco.KeyCode.US_DOT,
+              when: contextKeyExpr.ContextKeyExpr.deserialize('editorTextFocus && suggestWidgetVisible && editorLangId == \'csharp\' && suggestionSupportsAcceptOnKey'),
+              weight: 90 // This number is not that important for us
+            });
+
+            xiexports.monaco.init(em);
+          });
+        })
+
+        return true
+      }
+
+      loadScript("/app.js", function () {
+        if (xiexportsInitialize())
+         return
+
+        var wait = setInterval(function () {
+          if (xiexportsInitialize())
+            clearInterval(wait)
+        }, 25)
+      })
+    })
+  </script>
+</body>
+</html>

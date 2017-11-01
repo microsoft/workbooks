@@ -1,0 +1,100 @@
+#!/bin/bash
+
+set -euo pipefail
+IFS=$'\n\t'
+
+function realpath {
+	[[ $1 = /* ]] && echo "$1" || echo "$PWD/${1#./}"
+}
+
+function usage {
+	{ cat <<EOF
+usage: $(realpath "$0") [OPTIONS]
+
+OPTIONS:
+
+  --help, -h     show this help
+  --force, -f    uninstall without asking for confirmation
+
+NOTES:
+
+  The DSTROOT environment variable may be set to use an
+  alternative root device/target (e.g. see the '-target'
+  documentation in the 'installer' man page).
+EOF
+} 1>&2
+	exit 255
+}
+
+CONFIRM=1
+DSTROOT="${DSTROOT:-}"
+DSTROOT="${DSTROOT%/}/"
+
+for arg in "$@"; do
+	case "$arg" in
+	-h|--help)
+		usage
+		;;
+	-f|--force)
+		CONFIRM=0
+		;;
+	*)
+		echo "error: invalid argument '${arg}'" 1>&2
+		echo 1>&2
+		usage
+		;;
+	esac
+done
+
+LEGACY_XS_ADDIN_INSTALL="${DSTROOT}${HOME#/*}/Library/Application Support/XamarinStudio-6.0/LocalInstall/Addins"
+
+PATHS_TO_CHECK=(
+	"${DSTROOT}Applications/Xamarin Workbooks.app"
+	"${DSTROOT}Applications/Xamarin Inspector.app"
+	"${DSTROOT}usr/local/bin/workbook"
+	"${DSTROOT}Library/Frameworks/Xamarin.Interactive.framework"
+	"${DSTROOT}Library/Frameworks/Xamarin.Inspector.framework"
+	"${LEGACY_XS_ADDIN_INSTALL}/Xamarin.Inspector"
+	"${LEGACY_XS_ADDIN_INSTALL}/Xamarin.Interactive"
+)
+
+PATHS_TO_REMOVE=()
+
+for path in ${PATHS_TO_CHECK[@]}; do
+	if [ -e "$path" -o -L "$path" ]; then
+		PATHS_TO_REMOVE+=("$path")
+	fi
+done
+
+if [ ${#PATHS_TO_REMOVE[@]} == 0 ]; then
+	echo "Xamarin Interactive is not installed in '${DSTROOT}'."
+	exit 0
+elif [ "$CONFIRM" == 1 ]; then
+	echo "The following files and directories will be permanently removed:"
+	for path in ${PATHS_TO_REMOVE[@]}; do
+		echo "  $path"
+	done
+	echo
+	echo -n "Remove all files and directories listed above? [Y|N]: "
+	read CONFIRM
+	case "$CONFIRM" in
+	[Yy]|[Yy][Ee][Ss])
+		;;
+	*)
+		echo "Not removing anything."
+		exit 1
+		;;
+	esac
+fi
+
+for path in ${PATHS_TO_REMOVE[@]}; do
+	if ! rm -rf "$path"; then
+		echo "Unable to remove '$path'" 1>&2
+		echo "Aborting." 1>&2
+		exit 1
+	else
+		echo "Removed '$path'"
+	fi
+done
+
+echo "Uninstall successful."

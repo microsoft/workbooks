@@ -1,0 +1,61 @@
+{
+  "name": "xamarin-interactive",
+  "version": "1.4.0-dev",
+  "dependencies": {
+    "argparse": {
+      "version": "1.0.9",
+      "from": "argparse@>=1.0.7 <2.0.0",
+      "resolved": "https://registry.npmjs.org/argparse/-/argparse-1.0.9.tgz"
+    },
+    "browserkeymap": {
+      "version": "1.0.1",
+      "from": "browserkeymap@>=1.0.0 <2.0.0",
+      "resolved": "https://registry.npmjs.org/browserkeymap/-/browserkeymap-1.0.1.tgz"
+    },
+    "entities": {
+      "version": "1.1.1",
+      "from": "entities@>=1.1.1 <1.2.0",
+      "resolved": "https://registry.npmjs.org/entities/-/entities-1.1.1.tgz"
+    },
+    "linkify-it": {
+      "version": "1.2.4",
+      "from": "linkify-it@>=1.2.2 <1.3.0",
+      "resolved": "https://registry.npmjs.org/linkify-it/-/linkify-it-1.2.4.tgz"
+    },
+    "markdown-it": {
+      "version": "6.1.1",
+      "from": "markdown-it@>=6.0.4 <7.0.0",
+      "resolved": "https://registry.npmjs.org/markdown-it/-/markdown-it-6.1.1.tgz"
+    },
+    "mdurl": {
+      "version": "1.0.1",
+      "from": "mdurl@>=1.0.1 <1.1.0",
+      "resolved": "https://registry.npmjs.org/mdurl/-/mdurl-1.0.1.tgz"
+    },
+    "monaco-editor": {
+      "version": "0.10.1",
+      "from": "monaco-editor@0.10.1",
+      "resolved": "https://registry.npmjs.org/monaco-editor/-/monaco-editor-0.10.1.tgz"
+    },
+    "prosemirror": {
+      "version": "0.8.1",
+      "from": "prosemirror@0.8.1",
+      "resolved": "https://registry.npmjs.org/prosemirror/-/prosemirror-0.8.1.tgz"
+    },
+    "sprintf-js": {
+      "version": "1.0.3",
+      "from": "sprintf-js@>=1.0.2 <1.1.0",
+      "resolved": "https://registry.npmjs.org/sprintf-js/-/sprintf-js-1.0.3.tgz"
+    },
+    "subscription": {
+      "version": "3.0.0",
+      "from": "subscription@>=3.0.0 <4.0.0",
+      "resolved": "https://registry.npmjs.org/subscription/-/subscription-3.0.0.tgz"
+    },
+    "uc.micro": {
+      "version": "1.0.3",
+      "from": "uc.micro@>=1.0.1 <2.0.0",
+      "resolved": "https://registry.npmjs.org/uc.micro/-/uc.micro-1.0.3.tgz"
+    }
+  }
+}

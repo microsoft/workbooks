@@ -1,0 +1,250 @@
+---
+uti: com.xamarin.workbook
+platform: Console
+packages: []
+---
+
+# Welcome to Workbooks
+
+Workbooks are live documents that mix text, code and results in the same document.
+
+This document will teach you how to effectively use Workbooks to explore, experiment and live code workbooks that you can share or reuse.
+
+For example, the following cell declares a variable name, assigns the value “Miguel” and then prints the result.  To watch it in action, position your cursor at the end of the line below and press the return key.
+
+```csharp
+var name = "Miguel";
+```
+
+The above should display the result in quotes in the next line as “Miguel” which is the result for the operation, along with a small selector that lets you change the format in which the result will be displayed.
+
+The return key is special, it will try to do the right thing depending on the context. For example, if you positioned your cursor in the middle of the line, Workbooks would insert a new-line instead of executing the statement and split your text in two.
+
+To execute the code regardless of where your cursor is, you can either press the small play button icon that shows up, or you can press Command-Return on Mac, or Alt-Return on Windows.   You will be using this from now on.
+
+You might want to force the insertion of a newline without Workbooks executing the code right away, perhaps you are in the middle of a more complicated statement.   To force the insertion of a new-line, use Shift-Return.   Try it on the cell below, insert a new-line between the `=` and the expression following it, and then force an evaluation.
+
+```csharp
+var area 
+= 10 * 20
+```
+
+Finally, if you feel so inclined, you could run the entire contents of the workbook in one go, by pressing the play icon at the top of this window.
+
+In C# you can concatenate strings by using the “\+” operator on strings, the following snippet assigns to the variable “greeting” the result of concatenating “Hello ” and the name defined above.   Position yourself on the cell below and execute it:
+
+```csharp
+var greeting = "Hello " + name
+```
+
+The result should be “Hello Miguel”.  Now, chances are, your name is not Miguel, so the greeting above is far from appropriate.   Go back to the cell containing that assigned the value “Miguel” to name, change the value to your name, and execute the cell and come back.
+
+Welcome back.   You will notice that not only did the result in the original cell change to your name, but the greeting above was also updated.
+
+Workbooks will always re-execute all the code between the changes that you make to a cell and the last cell you used and update all the displayed results.   This will come in very handy as you prototype code with Workbooks.
+
+Next to the greeting there is a small bubble showing “C#”, this means that the result of the expression is being displayed as a C# expression.   Results can be displayed in various formats and Workbooks will try to pick the best one for you.   Sometimes you may want to display the information in another format, to do that, click on the bubble and select one of the available formats.    For strings, I happen to know that the possible values are C#, Plain Text and the very cool Object Members.
+
+Try them out above.
+
+Object Members will display the properties for the result, in the case of a string, one interesting property is the Length.  And you can further customize the format in one of the many available forms.
+
+Let us do a couple more exercises:
+
+Run the following cell which will split the provided string at each space:
+
+```csharp
+var quote = "Once upon a time, there was a compiler that optimized dreams (or something like that)";
+quote.Split (' ')
+```
+
+In this case, Workbooks will display the result of the array as individual elements.   Workbooks will limit the display to the first ten entries, if you want to see more, just click “Continue enumerating” on the result above, that should display the last word shown.
+
+The above split is acceptable, but clearly we do not want the word “time” to have a comma at the end (see the result at index 3).   Let us put together a list of all the values that we want to remove:
+
+```csharp
+var removeLetters = new char [] { ' ', '(', ')', ','};
+quote.Split (removeLetters)
+```
+
+While this works, the library is indicating that it found two of these removed characters next to each other by returning an empty element at index 4.
+
+Workbooks is powered by a powerful C# text editor that can provide code completion and parameter completion.   Go back to the `Split` method, and after the word “removeLetter”, insert a comma, this will trigger a popup to show up with the possible method overloads that you can use with the `Split` method.   Use the up/down arrow keys in your keyboard to scroll through the available overloads, you will notice one that takes a `StringSplitOptions.`  Start typing “StringSplitOptions” and you will notice that the completion shrinks to the possible options, once the options are narrowed down, you can press return to complete the word, then press “.” and this will trigger the completion window again.   Use the cursor key to select the word “RemoveEmptyEntries” and press return.
+
+One convenient feature is that you do not have to type the word “StringSplitOptions”, you can type “SplitOptions” and the completion window will select the matching version.   Or even better, you can just type some of the upper case letters in the match, for instance “sso” (StringSplitOptions) works, and even “ssp” (StringSPlit).
+
+# Writing Code
+
+So far we have shown trivial C# statements being executed.   Workbooks also allows the definitions of functions, properties and other class members directly into the code, for example:
+
+```csharp
+int Sum (params int [] numbers)
+{
+    int total = 0;
+    foreach (var value in numbers)
+        total = total + value;
+    return total;
+}
+```
+
+And you can invoke it either directly there, or you can invoke it from a new cell:
+
+```csharp
+Sum (1, 2, 3)
+```
+
+**Excercise**: what is the result of calling `Sum` on `Int32.MaxValue` plus one?
+
+**Excercise**: modify the Sum function above to use the double data type to add numbers instead of integers to avoid overflow values.
+
+**Excercise:** Add a `using` directive to use the `System.ComponentModel` namespace.
+
+**Exercise:** modify the Sum function above to take an array of objects and use the `System.ComponentModel.TypeConverter.ConvertTo` method to convert the object into a specific type.
+
+You are not limited to creating members, you can also create full classes, for example, the following code represents a product listing:
+
+```csharp
+class Flight {
+    public string Origin, Destination;
+    public TimeSpan FlightDuration;
+}
+var flights = new Flight [] {
+    new Flight () { 
+        Origin="Boston",
+        Destination="Seattle",
+        FlightDuration = TimeSpan.FromMinutes (354)
+        },
+    new Flight () {
+        Origin="Seattle",
+        Destination="Tokyo",
+        FlightDuration = TimeSpan.FromMinutes (800)
+    },
+    new Flight () {
+        Origin="Boston",
+        Destination="New York",
+        FlightDuration = TimeSpan.FromMinutes (38)
+    }
+};
+```
+
+In the cell above, we both defined a class `Flight`, but we also created a local variable `flights`that contains a few flights.
+
+We can find the flight with the shortes travel time using a C# LINQ expression:
+
+```csharp
+(from f in flights orderby f.FlightDuration select f).FirstOrDefault ()
+```
+
+In addition to all the C# code that you love, we have provided a convenient “help” property that you can run, when you run it, it will show you specific workbook properties and methods that you can access.   Try evaluating the next cell:
+
+```csharp
+help
+```
+
+One convenient method is the Time method which can be used for simple benchmarks:
+
+```csharp
+using System.Net;
+
+Time (()=> new WebClient ().DownloadString ("http://www.google.com"));
+```
+
+The help will be different based on the Workbook style that you use, but more on that in the “Workbook Styles” section.
+
+# Consumig Libraries
+
+When you start workbooks, a number of namespaces and libraries have already been included for your convenience.   Previously you referenced the `WebClient` from the `System.Net` namespace by using the “using” directive.
+
+That works as long as the library that you need is already referenced, but if you need to use functionality from a library that is not referenced, you will need to do that using the “#r” instruction.
+
+Previously in this workbook, we changed our Sum method from integers to floats, that was an acceptable workaround.   With .NET you can use BigInteger, from the System.Numerics library, to use it, just reference that Library like this:
+
+```csharp
+#r "System.Numerics"
+using System.Numerics;
+```
+
+This is one way of writing the Sum method with the arbitrary precision `BigInteger`:
+
+```csharp
+BigInteger BigSum (params object [] numbers)
+{
+    BigInteger total = new BigInteger ();
+    foreach (var value in numbers){
+        if (value is BigInteger)
+            total = total + (BigInteger)value;
+        else if (value is int)
+            total = total + (int)value;
+    }
+    return total;
+}
+
+// Show the differences in adding 1 to the maximum value that can be represented by a 32-bit integer:
+Console.WriteLine ($"Adding with Sum={Sum (Int32.MaxValue, 1)}");
+Console.WriteLine ($"Adding with Big={BigSum (Int32.MaxValue, 1)}");
+```
+
+In addition to system libraries like `System.Numerics`, there is a universe of third party libraries available for .NET called NuGets (pronounced “new-ge”).   For example, a very popular library is the Newtonsoft.Json library.   To use this library in your project, you will want to use “File/Add Package” which will contact the NuGet server and obtain a list of packages that are available for you to use.
+
+Go ahead and bring the Newtonsoft.Json library, and once you do that, remove the comments around the code in the next cell and run it.   The result will be our list of flights serialized into Json.
+
+```csharp
+/*
+#r "Newtonsoft.Json"
+using Newtonsoft.Json;
+
+JsonConvert.SerializeObject(flights);
+*/
+```
+
+# Workbook Styles
+
+You are currently reading a Console workbook. This is a universal workbook that will execute code that is suitable to run on all platforms, from mobile applications to server applications.
+
+Additionally, you can explore, prototype and play not only with this universally portable Workbooks, but also with Workbooks that run on a specific environment. There are Workbooks available for exploring and developing Android applications, iOS applications, Mac applications and Windows applications.
+
+Each Workbook style has special knowledge about the target platform.   For example, the iOS workbooks know how to launch the iOS Simulator on demand, and can be used to inspect  the hierarchy of the visual elements in Apple’s UIKit and CoreAnimation layers.   
+
+# Creating your own Workbooks
+
+You can try to do that now, select “File/New” from Worksbooks now, and you will be presented with a dialogs box that allows you to choose the kind of Workbook you want to create.
+
+You can do that now, create a new workbook, and keep this one around.
+
+So far you have been reading a live workbook that contains both an explanation and code mixed together.   In your new workbook, you will see that there is only an execution cell.   You can use workbooks purely as a playground to try out C# code without having to create a project and compile it.
+
+Try typing an expression after another.  For example type, “1\+1” followed by return.   The result will be displayed immediately and a new cell will be created.   You can type a new expression right away “2\+3” press return and get the result.   
+
+Over time, your workbook will contain a full log of all your experimentation and its results.
+
+You can annotate your workbook by moving your mouse just above any code cell.   You will see three icons show up on the right side, these are:
+
+* Plus sign: this is used to insert a code cell just before the current cell, where you can inject some new code to run before your current cell.
+
+* Quote icon: this will create a text block, this is what you will use to edit text just like the one that you are reading now.
+
+* Cross sign: use this icon to delete the code cell below. 
+
+When you create a text block, you will get a basic text editor.   You might not have had a chance to try this, but the text that you are reading can also be edited.
+
+**Exercise:** Position your cursor after this sentence and type a new sentence. 
+
+Exercise: oops, I forgot to make the bold the Exercise word at the beginning of this line.   Select the word “Exercise” and make the text bold (pro-tip: in addition to the UI, you can use a hotkey, see “Format/Strong”).
+
+Explore the “Format” menu to see the kind of formatting changes that you can apply to the text in this sentence.
+
+# Behind Workbooks
+
+We wanted to make it easy to work with Workbooks.   Workbooks are just [Markdown](https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet#code "GitHub flavored Markdown") files that contain a small header that describe the needs of the Workbook.   The header contains the default agent to use at startup (Console, Android, iOS, Windows, etc) as well as a list of NuGet packages that might be needed to run the workbook.
+
+If you were to save this Workbook, you would see that any packages that you added with “File/Add Package” would be listed in this header.
+
+It is thus very easy to edit Workbook contents even when you do not have the Workbook environment around.
+
+# Next Steps
+
+If you want to get this tutorial again, you can find it in the "Help" menu.
+
+# Community
+
+You might want to join our community of Workbook users and Workbook creators, check the Help/Community Forums link from the menu.

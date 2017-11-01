@@ -1,0 +1,46 @@
+<Project>
+  <Import Project="..\WorkbookApp.targets"/>
+
+  <PropertyGroup>
+    <BuildDependsOn>
+      _GenerateInfoPlist;
+      $(BuildDependsOn)
+    </BuildDependsOn>
+  </PropertyGroup>
+
+  <Target Name="_GenerateInfoPlist">
+    <Error
+      Condition="'$(WorkbookAppTarget)' != 'Modern' And '$(WorkbookAppTarget)' != 'Full'"
+      Text="WorkbookAppTarget must be 'Modern' or 'Full'"/>
+    <Error
+      Condition="'$(LSMinimumSystemVersion)' == ''"
+      Text="LSMinimumSystemVersion must be specified (e.g. 10.10)"/>
+    <Exec Command="plutil -replace CFBundleName -string &quot;$(AssemblyName)&quot; Info.plist" />
+    <Exec Command="plutil -replace LSMinimumSystemVersion -string $(LSMinimumSystemVersion) Info.plist" />
+  </Target>
+
+  <Target Name="Install" AfterTargets="Build">
+    <PropertyGroup>
+      <MacInstallDir>$(InstallDir)Mac\$(LSMinimumSystemVersion)\</MacInstallDir>
+      <ManifestAppPath>Mac/{macosVersion}/$(AssemblyName).app</ManifestAppPath>
+      <ManifestOrder Condition=" '$(WorkbookAppTarget)' == 'Modern' ">500</ManifestOrder>
+      <ManifestOrder Condition=" '$(WorkbookAppTarget)' == 'Full' ">600</ManifestOrder>
+    </PropertyGroup>
+
+    <GenerateWorkbookAppManifest
+      ManifestOutputPath="$(InstallDir)workbookapps.json"
+      Flavor="Mac"
+      Order="$(ManifestOrder)"
+      Icon="project-macos"
+      AppPath="$(ManifestAppPath)"
+      AssemblySearchPaths="$(ManifestAppPath)/Contents/MonoBundle;$(ManifestAppPath)/Contents/MonoBundle/Facades"
+      SdkName="Xamarin.Mac"
+      SdkProfile="$(WorkbookAppTarget)"
+      SdkVersion="@AssemblyInformationalVersion,$(AppBundleDir)\Contents\MonoBundle\Xamarin.Mac.dll"
+      TargetFrameworkIdentifier="$(TargetFrameworkIdentifier)"
+      TargetFrameworkVersion="$(TargetFrameworkVersion)"/>
+
+    <MakeDir Directories="$(MacInstallDir)"/>
+    <Exec Command="cp -a &quot;$(AppBundleDir)&quot; &quot;$(MacInstallDir)&quot;"/>
+  </Target>
+</Project>

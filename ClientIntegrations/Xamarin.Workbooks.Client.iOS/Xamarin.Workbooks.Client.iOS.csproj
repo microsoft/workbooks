@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net461</TargetFramework>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="SSH.NET" Version="2016.0.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Clients\Xamarin.Interactive.Client\Xamarin.Interactive.Client.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="System.Security" />
+  </ItemGroup>
+  <Import Project="..\..\Clients\Xamarin.Interactive.MTouch\Xamarin.Interactive.MTouch.projitems" Label="Shared" Condition="Exists('..\..\Clients\Xamarin.Interactive.MTouch\Xamarin.Interactive.MTouch.projitems')" />
+  <Import Project="Build.targets" />
+</Project>

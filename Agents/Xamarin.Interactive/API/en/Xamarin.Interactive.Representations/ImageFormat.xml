@@ -1,0 +1,157 @@
+<Type Name="ImageFormat" FullName="Xamarin.Interactive.Representations.ImageFormat">
+  <TypeSignature Language="C#" Value="public enum ImageFormat" />
+  <TypeSignature Language="ILAsm" Value=".class public auto ansi serializable sealed ImageFormat extends System.Enum" />
+  <AssemblyInfo>
+    <AssemblyName>Xamarin.Interactive</AssemblyName>
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
+  </AssemblyInfo>
+  <Base>
+    <BaseTypeName>System.Enum</BaseTypeName>
+  </Base>
+  <Docs>
+    <summary>To be added.</summary>
+    <remarks>To be added.</remarks>
+  </Docs>
+  <Members>
+    <Member MemberName="Bgr24">
+      <MemberSignature Language="C#" Value="Bgr24" />
+      <MemberSignature Language="ILAsm" Value=".field public static literal valuetype Xamarin.Interactive.Representations.ImageFormat Bgr24 = int32(7)" />
+      <MemberType>Field</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Xamarin.Interactive.Representations.ImageFormat</ReturnType>
+      </ReturnValue>
+      <Docs>
+        <summary>To be added.</summary>
+      </Docs>
+    </Member>
+    <Member MemberName="Bgra32">
+      <MemberSignature Language="C#" Value="Bgra32" />
+      <MemberSignature Language="ILAsm" Value=".field public static literal valuetype Xamarin.Interactive.Representations.ImageFormat Bgra32 = int32(6)" />
+      <MemberType>Field</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Xamarin.Interactive.Representations.ImageFormat</ReturnType>
+      </ReturnValue>
+      <Docs>
+        <summary>To be added.</summary>
+      </Docs>
+    </Member>
+    <Member MemberName="Gif">
+      <MemberSignature Language="C#" Value="Gif" />
+      <MemberSignature Language="ILAsm" Value=".field public static literal valuetype Xamarin.Interactive.Representations.ImageFormat Gif = int32(3)" />
+      <MemberType>Field</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Xamarin.Interactive.Representations.ImageFormat</ReturnType>
+      </ReturnValue>
+      <Docs>
+        <summary>To be added.</summary>
+      </Docs>
+    </Member>
+    <Member MemberName="Jpeg">
+      <MemberSignature Language="C#" Value="Jpeg" />
+      <MemberSignature Language="ILAsm" Value=".field public static literal valuetype Xamarin.Interactive.Representations.ImageFormat Jpeg = int32(2)" />
+      <MemberType>Field</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Xamarin.Interactive.Representations.ImageFormat</ReturnType>
+      </ReturnValue>
+      <Docs>
+        <summary>To be added.</summary>
+      </Docs>
+    </Member>
+    <Member MemberName="Png">
+      <MemberSignature Language="C#" Value="Png" />
+      <MemberSignature Language="ILAsm" Value=".field public static literal valuetype Xamarin.Interactive.Representations.ImageFormat Png = int32(1)" />
+      <MemberType>Field</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Xamarin.Interactive.Representations.ImageFormat</ReturnType>
+      </ReturnValue>
+      <Docs>
+        <summary>To be added.</summary>
+      </Docs>
+    </Member>
+    <Member MemberName="Rgb24">
+      <MemberSignature Language="C#" Value="Rgb24" />
+      <MemberSignature Language="ILAsm" Value=".field public static literal valuetype Xamarin.Interactive.Representations.ImageFormat Rgb24 = int32(5)" />
+      <MemberType>Field</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Xamarin.Interactive.Representations.ImageFormat</ReturnType>
+      </ReturnValue>
+      <Docs>
+        <summary>To be added.</summary>
+      </Docs>
+    </Member>
+    <Member MemberName="Rgba32">
+      <MemberSignature Language="C#" Value="Rgba32" />
+      <MemberSignature Language="ILAsm" Value=".field public static literal valuetype Xamarin.Interactive.Representations.ImageFormat Rgba32 = int32(4)" />
+      <MemberType>Field</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Xamarin.Interactive.Representations.ImageFormat</ReturnType>
+      </ReturnValue>
+      <Docs>
+        <summary>To be added.</summary>
+      </Docs>
+    </Member>
+    <Member MemberName="Svg">
+      <MemberSignature Language="C#" Value="Svg" />
+      <MemberSignature Language="ILAsm" Value=".field public static literal valuetype Xamarin.Interactive.Representations.ImageFormat Svg = int32(9)" />
+      <MemberType>Field</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Xamarin.Interactive.Representations.ImageFormat</ReturnType>
+      </ReturnValue>
+      <Docs>
+        <summary>To be added.</summary>
+      </Docs>
+    </Member>
+    <Member MemberName="Unknown">
+      <MemberSignature Language="C#" Value="Unknown" />
+      <MemberSignature Language="ILAsm" Value=".field public static literal valuetype Xamarin.Interactive.Representations.ImageFormat Unknown = int32(0)" />
+      <MemberType>Field</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Xamarin.Interactive.Representations.ImageFormat</ReturnType>
+      </ReturnValue>
+      <Docs>
+        <summary>To be added.</summary>
+      </Docs>
+    </Member>
+    <Member MemberName="Uri">
+      <MemberSignature Language="C#" Value="Uri" />
+      <MemberSignature Language="ILAsm" Value=".field public static literal valuetype Xamarin.Interactive.Representations.ImageFormat Uri = int32(8)" />
+      <MemberType>Field</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Xamarin.Interactive.Representations.ImageFormat</ReturnType>
+      </ReturnValue>
+      <Docs>
+        <summary>To be added.</summary>
+      </Docs>
+    </Member>
+  </Members>
+</Type>

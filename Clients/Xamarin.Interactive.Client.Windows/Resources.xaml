@@ -1,0 +1,425 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                    xmlns:system="clr-namespace:System;assembly=mscorlib"
+                    xmlns:views="clr-namespace:Xamarin.Interactive.Client.Windows.Views"
+                    xmlns:client="clr-namespace:Xamarin.Interactive.Client.Windows"
+                    xmlns:xclient="clr-namespace:Xamarin.Interactive.Client;assembly=Xamarin.Interactive.Client"
+                    xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
+                    xmlns:treeModel="clr-namespace:Xamarin.Interactive.TreeModel;assembly=Xamarin.Interactive.Client"
+                    mc:Ignorable="d">
+    <system:Double x:Key="WindowTitleFontSize">18</system:Double>
+    <DataTemplate x:Key="InspectorTitlebarIconDataTemplate">
+        <Grid
+            Width="{TemplateBinding Width}"
+            Height="{TemplateBinding Height}"
+            Background="Transparent"
+            RenderOptions.EdgeMode="Aliased"
+            RenderOptions.BitmapScalingMode="HighQuality">
+            <views:MultiFrameImage
+                AutomationProperties.Name="{x:Static xclient:ClientInfo.FullProductName}"
+                Width="24"
+                Source="{x:Static client:App.AppIconSource}"/>
+        </Grid>
+    </DataTemplate>
+
+    <Style
+        x:Key="PrimaryContentTabPanel"
+        TargetType="{x:Type TabPanel}">
+        <Style.Triggers>
+            <DataTrigger
+                Binding="{Binding
+                    RelativeSource={RelativeSource
+                        FindAncestor,
+                        AncestorType={x:Type Window}},
+                    Path=IsActive}"
+                Value="False">
+                <Setter
+                    Property="Background"
+                    Value="{DynamicResource NonActiveWindowTitleColorBrush}"/>
+            </DataTrigger>
+        </Style.Triggers>
+        <Setter
+            Property="Background"
+            Value="{DynamicResource WindowTitleColorBrush}"/>
+    </Style>
+
+    <Style
+        x:Key="PrimaryContentTabItem"
+        TargetType="{x:Type TabItem}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="TabItem">
+                    <Border
+                        Name="Border"
+                        Margin="0,2,0,0">
+                        <ContentPresenter
+                            x:Name="ContentSite"
+                            VerticalAlignment="Center"
+                            HorizontalAlignment="Center"
+                            ContentSource="Header"
+                            Margin="16,6"/>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger
+                            Property="IsSelected"
+                            Value="True">
+                            <Setter
+                                TargetName="Border"
+                                Property="Background"
+                                Value="{DynamicResource PrimaryContentSelectedTabBorderBrush}"/>
+                            <Setter
+                                TargetName="ContentSite"
+                                Property="TextElement.Foreground"
+                                Value="{DynamicResource PrimaryContentSelectedTabForegroundBrush}"/>
+                        </Trigger>
+                        <Trigger
+                            Property="IsSelected"
+                            Value="False">
+                            <Setter
+                                TargetName="Border"
+                                Property="Background"
+                                Value="{DynamicResource PrimaryContentUnselectedTabBorderBrush}"/>
+                            <Setter
+                                TargetName="ContentSite"
+                                Property="TextElement.Foreground"
+                                Value="{DynamicResource PrimaryContentUnselectedTabForegroundBrush}"/>
+                        </Trigger>
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition
+                                    Binding="{Binding
+                                        RelativeSource={RelativeSource Self},
+                                        Path=IsSelected}"
+                                    Value="True"/>
+                                <Condition
+                                    Binding="{Binding
+                                        RelativeSource={RelativeSource
+                                            FindAncestor,
+                                            AncestorType={x:Type Window}},
+                                        Path=IsActive}"
+                                    Value="False"/>
+                            </MultiDataTrigger.Conditions>
+                            <Setter TargetName="ContentSite"
+                                    Property="TextElement.Foreground"
+                                    Value="{DynamicResource PrimaryContentInactiveSelectedTabForegroundBrush}"/>
+                        </MultiDataTrigger>
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition
+                                    Binding="{Binding
+                                        RelativeSource={RelativeSource Self},
+                                        Path=IsSelected}"
+                                    Value="False"/>
+                                <Condition
+                                    Binding="{Binding
+                                        RelativeSource={RelativeSource
+                                            FindAncestor,
+                                            AncestorType={x:Type Window}},
+                                        Path=IsActive}"
+                                    Value="False"/>
+                            </MultiDataTrigger.Conditions>
+                            <Setter TargetName="ContentSite"
+                                    Property="TextElement.Foreground"
+                                    Value="{DynamicResource PrimaryContentInactiveUnselectedTabForegroundBrush}"/>
+                        </MultiDataTrigger>
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition
+                                    Binding="{Binding
+                                        ElementName=Border,
+                                        Path=IsMouseOver}"
+                                    Value="True"/>
+                                <Condition
+                                    Binding="{Binding
+                                        RelativeSource={RelativeSource Self},
+                                        Path=IsSelected}"
+                                    Value="False"/>
+                                <Condition
+                                    Binding="{Binding
+                                        RelativeSource={RelativeSource
+                                            FindAncestor,
+                                            AncestorType={x:Type Window}},
+                                        Path=IsActive}"
+                                    Value="True"/>
+                            </MultiDataTrigger.Conditions>
+                            <Setter
+                                TargetName="ContentSite"
+                                Property="TextElement.Foreground"
+                                Value="{DynamicResource PrimaryContentSelectedTabForegroundBrush}"/>
+                            <Setter
+                                TargetName="Border"
+                                Property="Background"
+                                Value="{DynamicResource MenuHighlightBrush}"/>
+                        </MultiDataTrigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style TargetType="{x:Type MenuItem}" BasedOn="{StaticResource MetroMenuItem}">
+        <Setter Property="HorizontalContentAlignment" Value="Left" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+    </Style>
+
+    <Style x:Key="VisualTreeItemStyle" TargetType="{x:Type TreeViewItem}" BasedOn="{StaticResource {x:Type TreeViewItem}}">
+        <Setter Property="IsExpanded" Value="True" />
+        <Setter Property="Foreground" Value="{DynamicResource TextBrush}" />
+    </Style>
+
+    <Style x:Key="OutlineViewItemStyle" TargetType="{x:Type TreeViewItem}" BasedOn="{StaticResource {x:Type TreeViewItem}}">
+        <Style.Triggers>
+            <Trigger Property="IsSelected" Value="True">
+                <Setter Property="Foreground" Value="{DynamicResource ListViewSelectedForegroundBrush}" />
+            </Trigger>
+        </Style.Triggers>
+        <Setter
+            Property="IsExpanded"
+            Value="{Binding Path=(treeModel:TreeNode.IsExpanded), Mode=TwoWay}" />
+        <Setter
+            Property="IsSelected"
+            Value="{Binding Path=(treeModel:TreeNode.IsSelected), Mode=TwoWay}" />
+        <Setter
+            Property="Focusable"
+            Value="{Binding Path=(treeModel:TreeNode.IsSelectable), Mode=TwoWay}" />
+    </Style>
+
+    <Style TargetType="{x:Type ListView}" BasedOn="{StaticResource MetroListView}">
+        <Setter Property="OverridesDefaultStyle" Value="True" />
+        <Setter Property="Background" Value="{DynamicResource ControlBackgroundBrush}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource ControlBorderBrush}" />
+        <Setter Property="BorderThickness" Value="1" />
+    </Style>
+
+    <Style TargetType="{x:Type ListViewItem}" x:Key="WorkbooksListViewItem"
+           BasedOn="{StaticResource MetroListViewItem}">
+        <Setter Property="Background" Value="{DynamicResource ControlBackgroundBrush}" />
+        <Setter Property="Foreground" Value="{DynamicResource TextBrush}" />
+        <Style.Triggers>
+            <Trigger Property="IsSelected" Value="True">
+                <Setter Property="Background" Value="{DynamicResource ListViewSelectedBrush}" />
+                <Setter Property="Foreground" Value="{DynamicResource ListViewSelectedForegroundBrush}" />
+            </Trigger>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Foreground" Value="{DynamicResource ListViewHoverForegroundBrush}" />
+            </Trigger>
+            <MultiTrigger>
+                <MultiTrigger.Conditions>
+                    <Condition Property="IsMouseOver" Value="True" />
+                    <Condition Property="IsSelected" Value="True" />
+                </MultiTrigger.Conditions>
+                <MultiTrigger.Setters>
+                    <Setter Property="Foreground" Value="{DynamicResource ListViewSelectedForegroundBrush}" />
+                </MultiTrigger.Setters>
+            </MultiTrigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="GroupBoxStyle" BasedOn="{StaticResource MetroGroupBox}" TargetType="{x:Type GroupBox}">
+    </Style>
+
+    <Style x:Key="TabItemStyle" BasedOn="{StaticResource MetroTabItem}" TargetType="{x:Type TabItem}">
+        <Setter Property="controls:ControlsHelper.HeaderFontSize" Value="18"></Setter>
+    </Style>
+
+    <Style x:Key="WorkbooksButton" TargetType="{x:Type ButtonBase}" BasedOn="{StaticResource MetroButton}">
+        <Setter Property="Background" Value="{DynamicResource ButtonBackgroundBrush}" />
+    </Style>
+
+    <Style x:Key="{x:Static MenuItem.SeparatorStyleKey}" TargetType="{x:Type Separator}">
+        <Setter Property="OverridesDefaultStyle" Value="True" />
+        <Setter Property="Background" Value="{DynamicResource SeparatorBrush}"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Separator}">
+                    <Border
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        Background="{TemplateBinding Background}"
+                        Height="1"
+                        SnapsToDevicePixels="true" />
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="MetroPopupDialogDefaultButtonStyle" TargetType="Button" BasedOn="{StaticResource AccentedSquareButtonStyle}">
+        <Setter Property="Margin" Value="5,0,0,0"/>
+        <Setter Property="MinWidth" Value="80"/>
+    </Style>
+    <Style x:Key="MetroPopupDialogOtherButtonStyle" TargetType="Button" BasedOn="{StaticResource SquareButtonStyle}">
+        <Setter Property="Margin" Value="5,0,0,0"/>
+        <Setter Property="MinWidth" Value="80"/>
+        <Setter Property="Visibility" Value="Collapsed"/>
+    </Style>
+
+    <Style x:Key="WindowButtonStyle" TargetType="{x:Type Button}" BasedOn="{StaticResource MetroWindowButtonStyle}">
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Opacity" Value="1.0"/>
+            </Trigger>
+            <Trigger Property="IsMouseOver" Value="False">
+                <Setter Property="Opacity" Value="1.0"/>
+            </Trigger>
+        </Style.Triggers>
+        <Setter Property="Foreground" Value="White" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Grid Background="{TemplateBinding Background}">
+                        <controls:ContentControlEx x:Name="PART_ContentPresenter"
+                                                   HorizontalContentAlignment="Center"
+                                                   VerticalContentAlignment="Center"
+                                                   Content="{TemplateBinding Content}"
+                                                   RecognizesAccessKey="True" />
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="ChromelessButtonStyle" BasedOn="{StaticResource ChromelessButtonStyle}" TargetType="{x:Type ButtonBase}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ButtonBase}">
+                    <Grid Background="{TemplateBinding Background}">
+                        <ContentPresenter x:Name="PART_ContentPresenter"
+                                  Margin="{TemplateBinding Padding}"
+                                  HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                  VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                  Opacity="1.0"
+                                  RecognizesAccessKey="True"
+                                  SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="Foreground" Value="#ADADAD" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="ComboBoxStyle" BasedOn="{StaticResource MetroComboBox}" TargetType="{x:Type ComboBox}">
+        <Setter Property="BorderBrush" Value="Transparent" />
+        <Setter Property="controls:ControlsHelper.MouseOverBorderBrush" Value="Transparent" />
+        <Setter Property="controls:ControlsHelper.FocusBorderBrush" Value="Transparent" />
+    </Style>
+
+    <Style x:Key="ComboBoxItem" BasedOn="{StaticResource MetroComboBoxItem}" TargetType="{x:Type ComboBoxItem}">
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding IsSeparator}" Value="True">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type ComboBoxItem}">
+                            <Separator/>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="MetroWindowStyle" TargetType="{x:Type controls:MetroWindow}">
+        <Setter Property="Background" Value="{DynamicResource WindowBackgroundBrush}" />
+        <Setter Property="Foreground" Value="{DynamicResource TextBrush}" />
+        <Setter Property="GlowBrush" Value="{DynamicResource WindowGlowBrush}" />
+        <Setter Property="WindowCloseButtonStyle" Value="{DynamicResource WindowButtonStyle}" />
+        <Setter Property="WindowMinButtonStyle" Value="{DynamicResource WindowButtonStyle}" />
+        <Setter Property="WindowMaxButtonStyle" Value="{DynamicResource WindowButtonStyle}" />
+        <Style.Triggers>
+            <Trigger Property="IsActive" Value="False">
+                <Setter Property="TitleForeground" Value="{DynamicResource NonActiveWindowTitleCaptionBrush}" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="MenuItemWindowCommand" BasedOn="{StaticResource MetroMenuItem}" TargetType="{x:Type MenuItem}">
+        <Setter Property="OverridesDefaultStyle" Value="True"/>
+        <Setter Property="FontSize" Value="12"/>
+        <Setter Property="FontFamily" Value="{StaticResource DefaultFont}"/>
+
+        <Style.Triggers>
+            <Trigger Property="Role" Value="TopLevelHeader">
+                <Setter Property="Background" Value="{DynamicResource TopLevelHeaderBackgroundBrush}"/>
+                <Setter Property="Foreground" Value="{DynamicResource TopLevelHeaderForegroundBrush}"/>
+            </Trigger>
+
+            <Trigger Property="Role" Value="SubmenuItem">
+                <Setter Property="Background" Value="{DynamicResource SubmenuItemBackgroundBrush}"/>
+                <Setter Property="Foreground" Value="{DynamicResource SubmenuItemForegroundBrush}"/>
+            </Trigger>
+
+            <Trigger Property="Role" Value="SubmenuHeader">
+                <Setter Property="Background" Value="{DynamicResource SubmenuHeaderBackgroundBrush}"/>
+                <Setter Property="Foreground" Value="{DynamicResource SubmenuHeaderForegroundBrush}"/>
+            </Trigger>
+
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="{DynamicResource MenuHighlightBrush}" />
+            </Trigger>
+
+            <MultiTrigger>
+                <MultiTrigger.Conditions>
+                    <Condition Property="IsMouseOver" Value="True"/>
+                    <Condition Property="Role" Value="TopLevelHeader"/>
+                    <Condition Property="IsSubmenuOpen" Value="False"/>
+                </MultiTrigger.Conditions>
+                <Setter Property="Background" Value="{DynamicResource TopLevelHeaderBackgroundHoverBrush}" />
+                <Setter Property="Foreground" Value="{DynamicResource TopLevelHeaderForegroundHoverBrush}" />
+            </MultiTrigger>
+
+            <MultiTrigger>
+                <MultiTrigger.Conditions>
+                    <Condition Property="IsMouseOver" Value="True"/>
+                    <Condition Property="Role" Value="SubmenuItem"/>
+                </MultiTrigger.Conditions>
+                <Setter Property="Background" Value="{DynamicResource SubmenuItemBackgroundHoverBrush}" />
+                <Setter Property="Foreground" Value="{DynamicResource SubmenuItemForegroundHoverBrush}" />
+            </MultiTrigger>
+
+            <MultiTrigger>
+                <MultiTrigger.Conditions>
+                    <Condition Property="IsMouseOver" Value="True"/>
+                    <Condition Property="Role" Value="SubmenuHeader"/>
+                </MultiTrigger.Conditions>
+                <Setter Property="Background" Value="{DynamicResource SubmenuItemBackgroundHoverBrush}" />
+                <Setter Property="Foreground" Value="{DynamicResource SubmenuItemForegroundHoverBrush}" />
+            </MultiTrigger>
+
+            <MultiTrigger>
+                <MultiTrigger.Conditions>
+                    <Condition Property="IsSubmenuOpen" Value="True"/>
+                    <Condition Property="Role" Value="SubmenuHeader"/>
+                </MultiTrigger.Conditions>
+                <Setter Property="Background" Value="{DynamicResource SubmenuHeaderOpenBackgroundBrush}" />
+                <Setter Property="Foreground" Value="{DynamicResource SubmenuHeaderOpenForegroundBrush}" />
+            </MultiTrigger>
+
+            <MultiTrigger>
+                <MultiTrigger.Conditions>
+                    <Condition Property="IsSubmenuOpen" Value="True"/>
+                    <Condition Property="Role" Value="TopLevelHeader"/>
+                </MultiTrigger.Conditions>
+                <Setter Property="Background" Value="{DynamicResource TopLevelHeaderOpenBackgroundBrush}"/>
+                <Setter Property="Foreground" Value="{DynamicResource TopLevelHeaderOpenForegroundBrush}"/>
+            </MultiTrigger>
+
+            <MultiTrigger>
+                <MultiTrigger.Conditions>
+                    <Condition Property="IsEnabled" Value="False"/>
+                    <Condition Property="Role" Value="SubmenuItem"/>
+                </MultiTrigger.Conditions>
+                <Setter Property="Foreground" Value="{DynamicResource SubmenuItemDisabledForegroundBrush}" />
+            </MultiTrigger>
+        </Style.Triggers>
+        <Style.Resources>
+            <SolidColorBrush x:Key="TopMenuItemSelectionStroke" Color="Transparent" />
+            <SolidColorBrush x:Key="TopMenuItemPressedStroke" Color="Transparent" />
+        </Style.Resources>
+    </Style>
+
+</ResourceDictionary>

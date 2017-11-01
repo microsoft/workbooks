@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <Fragment>
+    <DirectoryRef Id="TARGETDIR">
+
+      <Component Id="CurrentUserRegistryEntries" Guid="d002a5e3-3dba-44c2-b122-5bcde27381af">
+        <!-- For old extensions...HKLM entry is preferred now -->
+        <RegistryKey Root="HKCU"
+                     Key="Software\Xamarin\Inspector">
+          <RegistryValue Type="string" Name="location" Value="[INSTALLFOLDER]Client\Xamarin Inspector.exe"/>
+        </RegistryKey>
+      </Component>
+
+      <Component Id="RegistryEntries" Guid="FCADB68D-AA37-46A2-B2F8-3E338D88E47B">
+        <RegistryKey Root="HKLM"
+                     Key="Software\Xamarin\Inspector">
+          <RegistryValue Type="string" Name="location" Value="[INSTALLFOLDER]Client\Xamarin Inspector.exe" KeyPath="yes"/>
+        </RegistryKey>
+        <RegistryKey Root="HKLM" Key="Software\Xamarin\Updater" ForceCreateOnInstall="yes">
+          <RegistryValue Type="string" Name="Interactive" Value="[INSTALLFOLDER]updateinfo"/>
+        </RegistryKey>
+      </Component>
+
+    </DirectoryRef>
+  </Fragment>
+</Wix>

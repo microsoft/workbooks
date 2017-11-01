@@ -1,0 +1,89 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <UsingTask
+    TaskName="Xamarin.MSBuild.MergePlists"
+    AssemblyFile="$(MSBuildThisFileDirectory)..\..\Build\Xamarin.Build\Xamarin.Build.dll" />
+  <UsingTask
+    TaskName="Xamarin.MSBuild.SetPlistValue"
+    AssemblyFile="$(MSBuildThisFileDirectory)..\..\Build\Xamarin.Build\Xamarin.Build.dll" />
+  <UsingTask
+    TaskName="Xamarin.MSBuild.DeletePlistEntries"
+    AssemblyFile="$(MSBuildThisFileDirectory)..\..\Build\Xamarin.Build\Xamarin.Build.dll" />
+
+  <Import Project="$(MSBuildThisFileDirectory)..\WebApp.targets" />
+  <Import Project="$(MSBuildThisFileDirectory)..\SharedClientResources.targets" />
+
+  <PropertyGroup>
+    <BuildDependsOn>
+      $(BuildDependsOn);
+      CopySharedClientResources;
+      _CreateInspectorBundle
+    </BuildDependsOn>
+
+    <WorkbookAppBundle>$(OutDir)\Xamarin Workbooks.app\</WorkbookAppBundle>
+    <InspectorAppBundle>$(OutDir)\Xamarin Inspector.app\</InspectorAppBundle>
+    <WorkbookAppInfoPlist>$(WorkbookAppBundle)Contents\Info.plist</WorkbookAppInfoPlist>
+    <InspectorAppInfoPlist>$(InspectorAppBundle)Contents\Info.plist</InspectorAppInfoPlist>
+    <ClientAppResourcesOutputPath>$(WorkbookAppBundle)Contents\Resources\</ClientAppResourcesOutputPath>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PlistEntriesToDelete Include="UTExportedTypeDeclarations" />
+    <PlistEntriesToDelete Include="CFBundleDocumentTypes" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <WorkbookClientAppBundle Include="$(WorkbookAppBundle)" />
+  </ItemGroup>
+
+  <!--
+      This target has only one reason to exist: on any non-clean rebuild, the
+      Workbooks.app bundle is *not recreated from scratch*. This means that any
+      plist modifications made to the Workbooks.app plist will persist until a
+      clean rebuild is done. To avoid bugs related to this, make the main
+      Info.plist contain things necessary for both, and cleanly merge in
+      separate files that contain client-specific entries via our merging tasks.
+  -->
+  <Target Name="_CreateInspectorBundle">
+    <Exec Command="rm -rf &quot;$(InspectorAppBundle)&quot;" />
+    <Exec Command="cp -a @(WorkbookClientAppBundle-&gt;'&quot;%(Identity)&quot;', ' ') &quot;$(InspectorAppBundle)&quot;" />
+    <Exec Command="cp -a &quot;Resources\AppIconInspector.icns&quot; &quot;$(InspectorAppBundle)Contents\Resources\AppIcon.icns&quot;" />
+    <!--
+      Create the final Workbooks Info.plist by merging in Workbooks-specific
+      pieces from Workbooks.plist. We delete a bunch of entries first in order
+      to ensure that when we merge Workbooks.plist, there is no cruft from any
+      previous builds. This prevents having to clean every time you make changes
+      to Workbooks.plist.
+    -->
+    <DeletePlistEntries
+       Plist="$(WorkbookAppInfoPlist)"
+       EntriesToDelete="@(PlistEntriesToDelete)"
+       IgnoreResult="true" />
+    <MergePlists
+      SourcePlist="$(MSBuildThisFileDirectory)Workbooks.plist"
+      TargetPlist="$(WorkbookAppInfoPlist)" />
+    <!--
+      Create the final Inspector Info.plist by merging in Inspector-specific
+      pieces from Inspector.plist and setting the bundle names to the correct
+      thing. See comment above on Workbooks plist for explanation of entry
+      deletion.
+    -->
+    <DeletePlistEntries
+       Plist="$(InspectorAppInfoPlist)"
+       EntriesToDelete="@(PlistEntriesToDelete)"
+       IgnoreResult="true" />
+    <MergePlists
+      SourcePlist="$(MSBuildThisFileDirectory)Inspector.plist"
+      TargetPlist="$(InspectorAppInfoPlist)" />
+    <SetPlistValue
+      Plist="$(InspectorAppInfoPlist)"
+      Selector="CFBundleDisplayName"
+      NewValue="Xamarin Inspector" />
+    <SetPlistValue
+      Plist="$(InspectorAppInfoPlist)"
+      Selector="CFBundleName"
+      NewValue="Xamarin Inspector" />
+    <!-- Finally, re-convert these to binary. -->
+    <Exec Command="plutil -convert binary1 &quot;$(WorkbookAppInfoPlist)&quot;" />
+    <Exec Command="plutil -convert binary1 &quot;$(InspectorAppInfoPlist)&quot;" />
+  </Target>
+</Project>

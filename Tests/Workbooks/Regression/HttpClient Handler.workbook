@@ -1,0 +1,63 @@
+---
+uti: com.xamarin.workbook
+id: 0c6ae18e-d9c8-4791-b48d-65b7e3856fdd
+platforms:
+- Console
+packages:
+- id: Newtonsoft.Json
+  version: 9.0.1
+---
+
+# Regression test for NSUrlSessionHandler support in Console workbooks on Mac
+
+```csharp
+#r "System.Net.Http"
+#r "Newtonsoft.Json"
+```
+
+```csharp
+using System.Net.Http;
+using System.Reflection;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+```
+
+```csharp
+async Task AssertHttpClientHandler (HttpClientHandler handler = null)
+{
+    var client = handler == null
+        ? new HttpClient ()
+        : new HttpClient (handler);
+    
+    var handlerType = typeof (HttpClient)
+        .BaseType
+        .GetField ("handler", BindingFlags.NonPublic | BindingFlags.Instance)
+        .GetValue (client)
+        .GetType ();
+
+    if (Environment.OSVersion.Platform == PlatformID.Unix &&
+        handler == null &&
+        handlerType.FullName != "Foundation.NSUrlSessionHandler")
+        throw new Exception ("HttpClient should be backed by NSUrlSessionHandler");
+
+    Console.WriteLine ("Handler: {0}", handlerType);
+
+    var tlsInfo = (JObject)JsonConvert.DeserializeObject (
+        await client.GetStringAsync ("https://www.howsmyssl.com/a/check"));
+
+    Console.WriteLine ("TLS Version: {0}", tlsInfo ["tls_version"]);
+    Console.WriteLine ("Rating: {0}", tlsInfo ["rating"]);
+}
+```
+
+On Mac, `new HttpClient ()` will be rewritten under the hood via Roslyn to use `NSUrlSessionHandler`. Ensure this is the case.
+
+```csharp
+await AssertHttpClientHandler ()
+```
+
+Instantiations that pass a handler explicitly will not be rewritten. By passing the built-in `HttpClientHandler`, we can see how the TLS support provided by Mono on Mac is much worse than `NSUrlSession`.
+
+```csharp
+await AssertHttpClientHandler (new HttpClientHandler ())
+```

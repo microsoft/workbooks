@@ -1,0 +1,143 @@
+﻿<Controls:MetroWindow
+    x:Class="Xamarin.Interactive.Client.Windows.Views.PackageManagerWindow"
+    x:ClassModifier="internal"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:Controls="http://metro.mahapps.com/winfx/xaml/controls"
+    xmlns:client="clr-namespace:Xamarin.Interactive.Client.Windows"
+    xmlns:commands="clr-namespace:Xamarin.Interactive.Client.Windows.Commands"
+    xmlns:converters="clr-namespace:Xamarin.Interactive.Client.Windows.Converters"
+    mc:Ignorable="d"
+    Title="Package Manager"
+    FocusManager.FocusedElement="{Binding ElementName=searchBox}"
+    ShowMinButton="False"
+    ShowMaxRestoreButton="False"
+    WindowStartupLocation="CenterOwner"
+    Icon="{x:Static client:App.AppIconSource}"
+    IconTemplate="{StaticResource InspectorTitlebarIconDataTemplate}"
+    Style="{DynamicResource MetroWindowStyle}"
+    Height="400"
+    Width="500">
+
+    <Window.InputBindings>
+        <KeyBinding Key="Esc" Command="{x:Static commands:Commands.CloseWindow}"
+                    CommandParameter="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}"/>
+    </Window.InputBindings>
+
+    <Window.Resources>
+        <converters:InvertBoolConverter x:Key="invertBoolConverter"/>
+    </Window.Resources>
+
+    <DockPanel
+        LastChildFill="True"
+        IsEnabled="{Binding InstallingPackage, Converter={StaticResource invertBoolConverter}}"
+        Margin="20">
+
+        <Grid
+            DockPanel.Dock="Top">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="10" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <TextBlock
+                VerticalAlignment="Center"
+                Grid.Row="0"
+                Grid.Column="0"
+                Margin="0,0,10,0">
+                Search NuGet:
+            </TextBlock>
+
+            <TextBox
+                x:Name="searchBox"
+                Grid.Row="0"
+                Grid.Column="1"
+                KeyboardNavigation.TabIndex="0"
+                TextChanged="OnSearchTextChanged"
+                Text="{Binding PackageQuery, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+            <TextBlock
+                Grid.Row="2"
+                Grid.Column="0"
+                VerticalAlignment="Center"
+                HorizontalAlignment="Right"
+                Margin="0,0,10,0">Package Source:</TextBlock>
+
+            <DockPanel
+                LastChildFill="true"
+                Grid.Row="2"
+                Grid.Column="1">
+
+                <CheckBox
+                    HorizontalAlignment="Right"
+                    DockPanel.Dock="Right"
+                    Margin="30,0,0,0"
+                    IsChecked="{Binding AllowPrereleaseVersions, Mode=TwoWay}">
+                    Show Pre-Release Packages
+                </CheckBox>
+
+                <ComboBox
+                    DockPanel.Dock="Left"
+                    ItemsSource="{Binding PackageSources}"
+                    ItemContainerStyle="{DynamicResource ComboBoxItem}"
+                    SelectedItem="{Binding SelectedPackageSource, Mode=TwoWay}">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding DisplayName}"/>
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+
+            </DockPanel>
+        </Grid>
+
+        <Grid
+            DockPanel.Dock="Bottom">
+            <Button
+                KeyboardNavigation.TabIndex="2"
+                HorizontalAlignment="Right"
+                IsEnabled="{Binding CanAddPackage}"
+                Style="{DynamicResource WorkbooksButton}"
+                Click="OnAddSelectedPackage">
+                Add Package
+            </Button>
+            <Controls:ProgressRing
+                HorizontalAlignment="Center"
+                MinWidth="30"
+                MinHeight="30"
+                Width="30"
+                Height="30"
+                IsActive="{Binding ShowProgress}" />
+        </Grid>
+
+        <ListView
+            KeyboardNavigation.TabIndex="1"
+            ItemsSource="{Binding SearchResults}"
+            SelectedItem="{Binding SelectedResult, Mode=OneWayToSource}"
+            DockPanel.Dock="Top"
+            Padding="0,-2,0,0"
+            BorderThickness="1"
+            BorderBrush="{DynamicResource AccentColorBrush}"
+            SelectionMode="Single"
+            Margin="0,10,0,10">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <TextBlock Text="{Binding DisplayName}"/>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+            <ListView.ItemContainerStyle>
+                <Style TargetType="ListViewItem" BasedOn="{StaticResource WorkbooksListViewItem}">
+                    <EventSetter Event="MouseDoubleClick" Handler="OnAddSelectedPackage" />
+                </Style>
+            </ListView.ItemContainerStyle>
+        </ListView>
+
+    </DockPanel>
+</Controls:MetroWindow>

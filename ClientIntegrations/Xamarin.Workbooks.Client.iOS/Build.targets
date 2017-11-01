@@ -1,0 +1,27 @@
+<Project>
+  <Import Project="..\..\Build\Common.targets"/>
+
+  <Target Name="CopyToWorkbookApp" BeforeTargets="Build">
+    <PropertyGroup>
+      <ClientIntegrationOutputPath>..\..\_build\$(Configuration)\WorkbookApps\iOS\ClientIntegration</ClientIntegrationOutputPath>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ClientIntegrationAssemblies Include="$(OutputPath)Xamarin.Workbooks.Client.iOS.dll"/>
+      <ClientIntegrationAssemblies Include="$(OutputPath)Renci.SshNet.dll"/>
+    </ItemGroup>
+
+    <MakeDir Directories="$(ClientIntegrationOutputPath)"/>
+
+    <Copy
+      SourceFiles="@(ClientIntegrationAssemblies)"
+      DestinationFolder="$(ClientIntegrationOutputPath)"/>
+
+    <UpdateWixManifest
+      SourceDirectory="$(ClientIntegrationOutputPath)"
+      InputManifestPath="..\..\Package\Windows\iOSWorkbookAppFiles.wxs"
+      DirectoryVariable="iOSWorkbookAppClientIntegrationDir"
+      ComponentGroupId="iOSWorkbookAppClientIntegrationComponents"
+      UseHashForId="True"/>
+  </Target>
+</Project>

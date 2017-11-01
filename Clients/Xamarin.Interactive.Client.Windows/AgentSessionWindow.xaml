@@ -1,0 +1,333 @@
+﻿<Controls:MetroWindow x:Class="Xamarin.Interactive.Client.Windows.AgentSessionWindow"
+        x:ClassModifier="internal"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+        xmlns:localViews="clr-namespace:Xamarin.Interactive.Client.Windows.Views"
+        xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+        xmlns:commands="clr-namespace:Xamarin.Interactive.Client.Windows.Commands"
+        xmlns:client="clr-namespace:Xamarin.Interactive.Client.Windows"
+        xmlns:treeModel="clr-namespace:Xamarin.Interactive.TreeModel;assembly=Xamarin.Interactive.Client"
+        xmlns:converters="clr-namespace:Xamarin.Interactive.Client.Windows.Converters"
+        xmlns:structure="clr-namespace:Xamarin.Interactive.Workbook.Structure;assembly=Xamarin.Interactive.Client"
+        xmlns:xamarinprops="clr-namespace:Xamarin.PropertyEditing.Windows;assembly=Xamarin.PropertyEditing.Windows"
+        mc:Ignorable="d"
+        Height="700"
+        Width="1050"
+        Icon="{x:Static client:App.AppIconSource}"
+        IconTemplate="{StaticResource InspectorTitlebarIconDataTemplate}"
+        GlowBrush="{DynamicResource AccentColorBrush}"
+        Title="{Binding ViewModel.Title}"
+        Style="{DynamicResource MetroWindowStyle}"
+        x:Name="sessionWindow">
+
+    <Controls:MetroWindow.Resources>
+        <converters:InvertBoolConverter x:Key="inverterConverter"/>
+        <Style BasedOn="{StaticResource MenuItemWindowCommand}" TargetType="MenuItem"/>
+        <DataTemplate x:Key="EmptyContextMenuTemplate"/>
+        <MenuItem Header="_View" x:Key="viewMenu">
+            <MenuItem
+                Header="_Frames"
+                Tag="Frames"
+                IsCheckable="True"
+                IsChecked="{Binding ViewModel.DisplayFrames}"
+               />
+            <MenuItem
+                Header="_Content"
+                Tag="Content"
+                IsCheckable="True"
+                IsChecked="{Binding ViewModel.DisplayContent}"
+                />
+            <MenuItem
+                Header="_2D"
+                IsCheckable="True"
+                IsChecked="{Binding ViewModel.IsOrthographic}"/>
+            <MenuItem
+                Header="_3D"
+                IsCheckable="True"
+                IsChecked="{Binding ViewModel.IsOrthographic, Converter={StaticResource inverterConverter}}"/>
+            <Separator/>
+            <MenuItem
+                Header="Show _Hidden Views"
+                IsCheckable="True"
+                IsChecked="{Binding ViewModel.ShowHidden}"/>
+            <Separator/>
+            <!-- TODO: Command-bind this. -->
+            <MenuItem
+                Header="_Reset Camera"
+                Command="{Binding ViewModel.Trackball.ResetCommand}"/>
+        </MenuItem>
+    </Controls:MetroWindow.Resources>
+
+    <Controls:MetroWindow.LeftWindowCommands>
+        <Controls:WindowCommands>
+            <Controls:WindowCommands.Resources>
+                <converters:BoolToVisibilityConverter
+                    x:Key="visibilityConverter"
+                    TrueValue="Visible"
+                    FalseValue="Collapsed"/>
+            </Controls:WindowCommands.Resources>
+            <Menu x:Name="mainMenu" Background="Transparent"/>
+            <ComboBox
+                Visibility="{Binding
+                    Session.ViewControllers.WorkbookTargets.IsVisible,
+                    Converter={StaticResource visibilityConverter}}"
+                ItemsSource="{Binding Session.ViewControllers.WorkbookTargets}"
+                DisplayMemberPath="Label"
+                Style="{DynamicResource ComboBoxStyle}"
+                SelectedItem="{Binding Path=Session.ViewControllers.WorkbookTargets.SelectedTarget, Mode=TwoWay}"
+                IsSynchronizedWithCurrentItem="True"
+                ItemContainerStyle="{DynamicResource ComboBoxItem}"
+                ToolTip="Change the active workbook target platform">
+            </ComboBox>
+        </Controls:WindowCommands>
+    </Controls:MetroWindow.LeftWindowCommands>
+
+    <Window.CommandBindings>
+        <CommandBinding Command="{x:Static commands:Commands.IncreaseFont}" Executed="OnIncreaseFont"/>
+        <CommandBinding Command="{x:Static commands:Commands.DecreaseFont}" Executed="OnDecreaseFont"/>
+        <CommandBinding Command="{x:Static commands:Commands.ResetFontSize}" Executed="OnResetFontSize"/>
+        <CommandBinding Command="{x:Static commands:Commands.ExecuteAll}" Executed="OnExecuteAllCommandExecuted" CanExecute="CanExecuteAllCommandExecute" />
+        <CommandBinding Command="{x:Static commands:Commands.ClearHistory}" Executed="OnClearHistory" />
+        <CommandBinding Command="{x:Static commands:Commands.RemovePackage}" Executed="OnRemovePackageCommandExecuted"/>
+        <CommandBinding Command="{x:Static structure:NuGetPackageNode.RemovePackage}" Executed="OnRemovePackageCommandExecuted" CanExecute="CanExecuteAddPackageCommand"/>
+        <CommandBinding Command="{x:Static structure:NuGetPackagesNode.AddPackage}" Executed="OnAddPackageCommandExecuted" CanExecute="CanExecuteAddPackageCommand"/>
+        <CommandBinding Command="New" Executed="OnNewCommandExecuted" CanExecute="CanNewCommandExecute"/>
+        <CommandBinding Command="Open" Executed="OnOpenCommandExecuted" CanExecute="CanOpenCommandExecute"/>
+        <CommandBinding Command="Save" Executed="OnSaveCommandExecuted" CanExecute="CanSaveCommandExecute"/>
+        <CommandBinding Command="SaveAs" Executed="OnSaveAsCommandExecuted" CanExecute="CanSaveCommandExecute"/>
+        <CommandBinding Command="Close" Executed="OnCloseCommandExecuted"/>
+    </Window.CommandBindings>
+
+    <Window.InputBindings>
+        <KeyBinding Key="OemPlus" Modifiers="Control" Command="{x:Static commands:Commands.IncreaseFont}"/>
+        <KeyBinding Key="OemMinus" Modifiers="Control" Command="{x:Static commands:Commands.DecreaseFont}"/>
+        <KeyBinding Key="D0" Modifiers="Control" Command="{x:Static commands:Commands.ResetFontSize}"/>
+        <KeyBinding Key="D1" Modifiers="Control" Command="{Binding ViewModel.ShowPaneCommand}" CommandParameter="0"/>
+        <KeyBinding Key="D2" Modifiers="Control" Command="{Binding ViewModel.ShowPaneCommand}" CommandParameter="1"/>
+        <KeyBinding Key="G" Modifiers="Control" Command="{x:Static structure:NuGetPackagesNode.AddPackage}"/>
+    </Window.InputBindings>
+
+    <Controls:MetroWindow.TitleTemplate>
+        <DataTemplate>
+            <TextBlock
+                TextTrimming="CharacterEllipsis"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Center"
+                Focusable="False"
+                Foreground="{DynamicResource WindowTitleCaptionBrush}"
+                Margin="0 0 10 0"
+                FontSize="{DynamicResource WindowTitleFontSize}">
+                <Run
+                    FontWeight="DemiBold"
+                    Text="{Binding ElementName=sessionWindow, Path=ViewModel.SessionTitle}"/>
+                <Run
+                    FontFamily="{DynamicResource HeaderFontFamily}"
+                    Text="{Binding ElementName=sessionWindow, Path=ViewModel.AgentTitle}"/>
+            </TextBlock>
+        </DataTemplate>
+    </Controls:MetroWindow.TitleTemplate>
+
+    <DockPanel>
+        <DockPanel.Resources>
+            <converters:BoolToVisibilityConverter
+                x:Key="visibilityConverter"
+                TrueValue="Visible"
+                FalseValue="Collapsed"/>
+            <converters:MultipleToVisibilityConverter
+                x:Key="multipleVisibilityConverter"
+                TrueValue="Visible"
+                FalseValue="Collapsed"/>
+            <converters:MultipleToVisibilityConverter
+                x:Key="anyVisibilityConverter"
+                Minimum="0"
+                TrueValue="Visible"
+                FalseValue="Collapsed"/>
+            <converters:BoolToObjectConverter
+                x:Key="replHeaderConverter"
+                TrueValue="REPL"
+                FalseValue="Workbook"/>
+            <converters:TreeNodeAsContainerConverter
+                x:Key="outlineRootConverter"/>
+        </DockPanel.Resources>
+
+        <StatusBar
+            Visibility="{Binding MessageViewDelegate.IsStatusBarVisible, Converter={StaticResource visibilityConverter}}"
+            Background="{DynamicResource AccentColorBrush}"
+            ToolTip="{Binding MessageViewDelegate.StatusBarDetailedText}"
+            DockPanel.Dock="Bottom">
+            <Controls:ProgressRing
+                IsActive="True"
+                Foreground="{DynamicResource IdealForegroundColorBrush}"
+                Width="16"
+                Height="16"
+                Visibility="{Binding MessageViewDelegate.IsSpinning, Converter={StaticResource visibilityConverter}}"/>
+            <TextBlock
+                Text="{Binding MessageViewDelegate.StatusBarText}"
+                FontSize="16"
+                VerticalAlignment="Center"/>
+            <StatusBarItem HorizontalAlignment="Right">
+                <Button
+                    Command="{Binding MessageViewDelegate.ActionCommand}"
+                    Content="{Binding MessageViewDelegate.ActionCommand.Text}"
+                    Visibility="{Binding MessageViewDelegate.IsActionButtonVisible, Converter={StaticResource visibilityConverter}}"/>
+            </StatusBarItem>
+        </StatusBar>
+
+        <TabControl
+            TabStripPlacement="Top"
+            SelectedIndex="{Binding ViewModel.SelectedPane, Mode=TwoWay}"
+            SelectionChanged="HandleSelectedPaneChanged"
+            MouseDown="HandleTabControlMouseDown">
+            <TabControl.Resources>
+                <Style BasedOn="{StaticResource PrimaryContentTabPanel}" TargetType="{x:Type TabPanel}"/>
+                <Style BasedOn="{StaticResource PrimaryContentTabItem}" TargetType="{x:Type TabItem}"/>
+            </TabControl.Resources>
+            <TabItem Header="{Binding ViewModel.IsInspector, Converter={StaticResource replHeaderConverter}}">
+                <Grid
+                    Margin="0,0,0,5">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition>
+                            <ColumnDefinition.Style>
+                                <Style TargetType="ColumnDefinition">
+                                    <Setter Property="Width" Value="150"/>
+                                    <Style.Triggers>
+                                        <DataTrigger
+                                            Binding="{Binding ViewModel.IsInspector}"
+                                            Value="True">
+                                            <Setter Property="Width" Value="0"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </ColumnDefinition.Style>
+                        </ColumnDefinition>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <GridSplitter
+                        Visibility="{Binding ViewModel.IsInspector,
+                            Converter={StaticResource visibilityConverter},
+                            ConverterParameter=Inverse}"
+                        Grid.Column="1"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Stretch"
+                        ShowsPreview="True"
+                        Width="5"/>
+                    <DockPanel
+                        Visibility="{Binding ViewModel.IsInspector,
+                            Converter={StaticResource visibilityConverter},
+                            ConverterParameter=Inverse}"
+                        LastChildFill="True">
+                        <UniformGrid
+                            Rows="1"
+                            HorizontalAlignment="Left"
+                            DockPanel.Dock="Bottom" >
+                            <Button 
+                                Width="32"
+                                Height="32"
+                                ToolTip="Add Package..."
+                                Style="{DynamicResource MetroCircleButtonStyle}" 
+                                Command="{x:Static structure:NuGetPackagesNode.AddPackage}">
+                                <iconPacks:PackIconMaterial Kind="Plus"/>
+                            </Button>
+                        </UniformGrid>
+                        <TreeView
+                            DataContext="{Binding ViewModel}"
+                            SelectedItemChanged="OnOutlineSelected"
+                            ItemsSource="{Binding Session.Workbook.TreeNode,
+                                Converter={StaticResource outlineRootConverter}}"
+                            ItemTemplate="{DynamicResource outlineTemplate}"
+                            ItemContainerStyle="{DynamicResource OutlineViewItemStyle}">
+                            <TreeView.Resources>
+                                <HierarchicalDataTemplate
+                                    x:Key="outlineTemplate"
+                                    ItemsSource="{Binding Path=(treeModel:TreeNode.Children)}">
+                                    <localViews:OutlineItem Item="{Binding}"/>
+                                </HierarchicalDataTemplate>
+                            </TreeView.Resources>
+                        </TreeView>
+                    </DockPanel>
+
+                    <!-- AutomationProperties.Name is set to "Workbook editor" or "REPL editor" -->
+                    <WebBrowser
+                        Grid.Column="2"
+                        Grid.ColumnSpan="2"
+                        x:Name="replWebView"
+                        AutomationProperties.Name="{Binding ViewModel.IsInspector, Converter={StaticResource replHeaderConverter}, StringFormat={}{0} editor}"
+                        PreviewKeyDown="ReplWebView_OnPreviewKeyDown"/>
+                </Grid>
+            </TabItem>
+            <TabItem
+                Header="View Inspector"
+                Visibility="{
+                    Binding NoSupportedHierarchies,
+                    ConverterParameter=Inverse,
+                    Converter={StaticResource visibilityConverter}}"
+                DataContext="{Binding ViewModel}">
+                <Grid
+                    Margin="0,0,0,5">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <DockPanel Grid.Column="0"
+                        LastChildFill="True"
+                        IsEnabled="{Binding IsWindowEnabled}">
+                        <ComboBox
+                            ItemsSource="{Binding SupportedHierarchies}"
+                            DockPanel.Dock="Top"
+                            x:Name="hierarchyList"
+                            Margin="5,2,5,2"
+                            ItemContainerStyle="{DynamicResource ComboBoxItem}"
+                            Visibility="{Binding SupportedHierarchies, Converter={StaticResource multipleVisibilityConverter}}"
+                            SelectedValue="{Binding SelectedHierarchy}" />
+                        <localViews:VisualTree
+                            Focusable="True"
+                            AutomationProperties.Name="Visual tree"
+                            DockPanel.Dock="Top"
+                            x:Name="treeView"
+                            RootElement="{Binding RootView}"
+                            SelectedElement="{Binding SelectedView, Mode=TwoWay}"/>
+                    </DockPanel>
+
+                    <GridSplitter
+                        Grid.Column="1"
+                        AutomationProperties.Name="Visual tree resize handle"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Stretch"
+                        ShowsPreview="True"
+                        Width="5"/>
+
+                    <localViews:VisualRepView
+                        Grid.Column="2"
+                        AutomationProperties.Name="3D view"
+                        x:Name="visualRep"
+                        Trackball="{Binding Trackball}"
+                        IsEnabled="{Binding IsWindowEnabled}"
+                        CurrentView="{Binding RepresentedView}"
+                        DisplayMode="{Binding DisplayMode}"
+                        ShowHidden="{Binding ShowHidden}"
+                        SelectedView="{Binding SelectedView, Mode=TwoWay}"/>
+
+                    <GridSplitter
+                        Grid.Column="3"
+                        AutomationProperties.Name="Property grid resize handle"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Stretch"
+                        Width="5"/>
+
+                    <xamarinprops:PropertyEditorPanel
+                        x:Name="propertyEditor"
+                        AutomationProperties.Name="Selected view property editor"
+                        Grid.Column="4"/>
+                </Grid>
+            </TabItem>
+        </TabControl>
+    </DockPanel>
+</Controls:MetroWindow>

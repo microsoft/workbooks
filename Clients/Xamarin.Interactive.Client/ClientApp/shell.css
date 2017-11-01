@@ -1,0 +1,65 @@
+﻿/*
+shell.css
+
+Author:
+  Aaron Bockover <abock@xamarin.com>
+
+Copyright 2016 Xamarin Inc. All rights reserved.
+*/
+
+body, html {
+  margin: 0;
+  padding: 0;
+  font-family: sans-serif;
+  background-color: white;
+}
+
+pre {
+  padding: 0;
+  margin: 0;
+}
+
+button {
+  user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+}
+
+.css-monitor-notify-reload {
+  list-style: none;
+  z-index: 1000000;
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  margin: 0;
+  padding: 0.5em 1em;
+
+  color: white;
+  background: rgb(0, 128, 209);
+  box-shadow: 0 0 6px rgba(0, 0, 0, 0.2);
+  border-top-left-radius: 6px;
+
+  transition: opacity 0.5s ease-in-out;
+  opacity: 0;
+}
+
+.css-monitor-notify-reload.visible {
+  opacity: 1;
+}
+
+/* A "disabled" overlay. Currently only used on Windows because the native
+   overlay cannot be displayed over a WebBrowser (IE). */
+.dc-overlay {
+  background: rgba(256, 256, 256, 0.5); /*White*/
+  position: fixed;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 100%;
+  z-index: 10;
+
+  /* Ignore selection */
+  user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+}

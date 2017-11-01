@@ -1,0 +1,126 @@
+﻿/*
+enumerable.css
+
+Author:
+  Aaron Bockover <abock@xamarin.com>
+
+Copyright 2015 Xamarin Inc. All rights reserved.
+*/
+
+/* Header */
+
+.renderer-enumerable > header pre {
+  cursor: pointer;
+}
+
+.renderer-enumerable > header::before {
+  content: "▶ ";
+  font-family: monospace;
+}
+
+.renderer-enumerable > header.expanded::before {
+  content: "▼ " !important;
+  font-family: monospace;
+}
+
+/* List */
+
+.renderer-enumerable > ol {
+  /* the margin moves everything to the left to center the expander
+     line roughly in the middle of the parent [] index, and the padding
+     moves content back to the right so its [] index numbers are roughly
+     centered under the expander arrow */
+  margin: 0 0 0 -1.6em;
+  padding: 0 0 0 0.9em;
+
+  /* collapsed by default */
+  display: none;
+
+  /* show [] indexes starting at 0 */
+  counter-reset: section -1;
+}
+
+.renderer-object > table > tbody > tr > td > .renderer-enumerable > ol,
+div > .renderer-enumerable > ol {
+  /* the outer-most list should not be indented nor have a tree line */
+  border: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.renderer-enumerable > ol.expanded {
+  /* show it explicitly when expanded */
+  display: block !important;
+}
+
+.renderer-enumerable > ol.intermediate {
+  /* only lists with terminating leaf nodes should show the tree line */
+  border-left: 1px dotted #ccc;
+}
+
+.renderer-enumerable > ol > li {
+  /* start the counter over */
+  counter-increment: section;
+
+  /* display as a table so we can indent the content to the right of the
+     [] index numbers properly aligned as if it were a table column */
+  display: table;
+  width: 90%;
+}
+
+.renderer-enumerable > ol > li::before {
+  /* render the [] index */
+  content: "[" counter(section) "]:";
+  color: #aaa;
+  font-family: monospace;
+
+  /* this is critical (along with display:table for the <li> itself) for
+     properly lining up node content to the right of the [] index:
+
+       [0]: content row
+            content row
+            content row
+       [1]: content row
+            content row
+            content row
+
+     otherwise we'd end up with:
+
+       [0]: content row
+       content row
+       content row
+       [1]: content row
+       content row
+       content row
+  */
+  display: table-cell;
+  vertical-align: top;
+
+  width: 1%;
+  max-width: 10%;
+
+  /* don't allow the [] indexes to be selected */
+  user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+}
+
+/* Footer */
+
+.renderer-enumerable > footer {
+  margin-top: 0.5em;
+  display: none;
+}
+
+.renderer-enumerable > footer.expanded {
+  display: block !important;
+}
+
+.renderer-enumerable > footer a {
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.renderer-enumerable > footer a:hover {
+  color: #bbb;
+}

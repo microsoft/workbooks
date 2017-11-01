@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <ProjectGuid>{955F473A-04EC-4716-B75E-509BA892499B}</ProjectGuid>
+    <ProjectTypeGuids>{786C830F-07A1-408B-BD7F-6EE04809D6DB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <UseMSBuildEngine>true</UseMSBuildEngine>
+    <OutputType>Library</OutputType>
+    <RootNamespace>Xamarin.Interactive</RootNamespace>
+    <AssemblyName>Xamarin.Interactive</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkProfile>Profile111</TargetFrameworkProfile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>portable</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug</OutputPath>
+    <DefineConstants>DEBUG;PCL</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release</OutputPath>
+    <DefineConstants>PCL</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <DebugSymbols>true</DebugSymbols>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DebugType>portable</DebugType>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="Representations\Color.cs" />
+    <Compile Include="Representations\ColorSpace.cs" />
+    <Compile Include="Representations\IRepresentationObject.cs" />
+    <Compile Include="AgentIntegrationAttribute.cs" />
+    <Compile Include="IAgent.cs" />
+    <Compile Include="IAgentIntegration.cs" />
+    <Compile Include="Representations\GeoLocation.cs" />
+    <Compile Include="Representations\GeoPolyline.cs" />
+    <Compile Include="Representations\IInteractiveObject.cs" />
+    <Compile Include="Representations\Image.cs" />
+    <Compile Include="Representations\Point.cs" />
+    <Compile Include="Representations\Rectangle.cs" />
+    <Compile Include="Representations\Size.cs" />
+    <Compile Include="Representations\VerbatimHtml.cs" />
+    <Compile Include="Representations\ImageFormat.cs" />
+    <Compile Include="Representations\RepresentationProvider.cs" />
+    <Compile Include="Representations\IRepresentationManager.cs" />
+    <Compile Include="Logging\Log.cs" />
+    <Compile Include="Logging\LogEntry.cs" />
+    <Compile Include="Logging\ILogProvider.cs" />
+    <Compile Include="Logging\LogLevel.cs" />
+    <Compile Include="Logging\LogFlags.cs" />
+    <Compile Include="Serialization\ISerializableObject.cs" />
+    <Compile Include="Serialization\ObjectSerializer.cs" />
+    <Compile Include="Serialization\JsonWriter.cs" />
+    <Compile Include="Serialization\TypeExtensions.cs" />
+    <Compile Include="Inspection\IViewHierarchyHandlerManager.cs" />
+    <Compile Include="Hash.cs" />
+    <Compile Include="Core\TypeMap.cs" />
+    <Compile Include="Representations\TypeMapRepresentationProvider.cs" />
+    <Compile Include="Core\ValidPortRange.cs" />
+    <Compile Include="AgentType.cs" />
+    <Compile Include="EmptyArray.cs" />
+    <Compile Include="INotifyDisposed.cs" />
+    <Compile Include="TaskCompletionSource.cs" />
+    <Compile Include="Inspection\IInspectView.cs" />
+    <Compile Include="Inspection\IViewHierarchyHandler.cs" />
+    <Compile Include="IAgentSynchronizationContext.cs" />
+    <Compile Include="OrderedMapOfList.cs" />
+    <Compile Include="BuildInfo.cs" />
+    <Compile Include="BuildInfoAttribute.cs" />
+    <Compile Include="Representations\Reflection\IRepresentedType.cs" />
+    <Compile Include="Representations\Representation.cs" />
+    <Compile Include="Representations\ReflectionRepresentationProvider.cs" />
+    <Compile Include="Representations\WordSizedNumber.cs" />
+    <Compile Include="Representations\WordSizedNumberFlags.cs" />
+    <Compile Include="Representations\Reflection\IRepresentedMemberInfo.cs" />
+    <Compile Include="Representations\Reflection\RepresentedMemberKind.cs" />
+    <Compile Include="Inspection\ViewVisibility.cs" />
+    <Compile Include="TimeSpanExtensions.cs" />
+    <Compile Include="Versioning\ReleaseVersion.cs" />
+    <Compile Include="Serialization\PropertyOptions.cs" />
+    <Compile Include="Utf8.cs" />
+    <Compile Include="Collections\ImmutableList.cs" />
+    <Compile Include="CodeAnalysis\EvaluationPhase.cs" />
+    <Compile Include="CodeAnalysis\EvaluationResultHandling.cs" />
+    <Compile Include="CodeAnalysis\IEvaluation.cs" />
+    <Compile Include="CodeAnalysis\IEvaluationContext.cs" />
+    <Compile Include="CodeAnalysis\CapturedOutputSegment.cs" />
+    <Compile Include="CodeAnalysis\CapturedOutputWriter.cs" />
+    <Compile Include="CodeAnalysis\Workbooks\EvaluationContextGlobalsExtensions.cs" />
+    <Compile Include="CodeAnalysis\CodeCellId.cs" />
+    <Compile Include="CodeAnalysis\ICompilation.cs" />
+    <Compile Include="CodeAnalysis\IAssemblyDefinition.cs" />
+    <Compile Include="CodeAnalysis\IAssemblyIdentity.cs" />
+    <Compile Include="CodeAnalysis\IAssemblyEntryPoint.cs" />
+    <Compile Include="CodeAnalysis\IAssemblyContent.cs" />
+    <Compile Include="CodeAnalysis\IEvaluationContextIntegration.cs" />
+    <Compile Include="CodeAnalysis\EvaluationContextId.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Logging\" />
+    <Folder Include="Serialization\" />
+    <Folder Include="Inspection\" />
+    <Folder Include="Representations\Reflection\" />
+    <Folder Include="Versioning\" />
+    <Folder Include="Collections\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Xamarin.Interactive.Facades\Xamarin.Interactive.Facades.csproj">
+      <Project>{0CB32DEF-71E4-489A-AECE-AFBFCC06854C}</Project>
+      <Name>Xamarin.Interactive.Facades</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
+  <Import Project="..\..\Build\Common.targets" />
+</Project>

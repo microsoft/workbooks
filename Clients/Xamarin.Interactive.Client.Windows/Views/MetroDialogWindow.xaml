@@ -1,0 +1,61 @@
+﻿<Controls:MetroWindow
+    x:Class="Xamarin.Interactive.Client.Windows.Views.MetroDialogWindow"
+    x:ClassModifier="internal"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:Controls="http://metro.mahapps.com/winfx/xaml/controls"
+    xmlns:client="clr-namespace:Xamarin.Interactive.Client.Windows"
+    mc:Ignorable="d"
+    ResizeMode="NoResize"
+    Icon="{x:Static client:App.AppIconSource}"
+    ShowTitleBar="False"
+    WindowStartupLocation="CenterOwner"
+    ShowCloseButton="False"
+    SizeToContent="Height"
+    IsWindowDraggable="False"
+    IconTemplate="{StaticResource InspectorTitlebarIconDataTemplate}"
+    BorderBrush="{DynamicResource AccentColorBrush}"
+    Foreground="{DynamicResource TextBrush}"
+    BorderThickness="1">
+    <StackPanel
+        FocusManager.FocusedElement="{Binding ElementName=AffirmativeButton}"
+        Orientation="Vertical"
+        HorizontalAlignment="Center"
+        Margin="10">
+        <TextBlock
+            MaxWidth="{Binding MaxContentWidth}"
+            FontSize="18"
+            FontWeight="Bold"
+            TextWrapping="Wrap"
+            Text="{Binding Title}"/>
+        <TextBlock
+            MaxWidth="{Binding MaxContentWidth}"
+            Margin="0,10,0,10"
+            TextWrapping="Wrap"
+            Text="{Binding Message}"/>
+        <StackPanel
+            MaxWidth="{Binding MaxContentWidth}"
+            Orientation="Horizontal"
+            HorizontalAlignment="Right"
+            Button.Click="OnButtonClick">
+            <Button
+                x:Name="AffirmativeButton"
+                Style="{DynamicResource MetroPopupDialogDefaultButtonStyle}"
+                Content="{Binding AffirmativeButtonText}"/>
+            <Button
+                x:Name="NegativeButton"
+                Style="{DynamicResource MetroPopupDialogOtherButtonStyle}"
+                Content="{Binding NegativeButtonText}"/>
+            <Button
+                x:Name="FirstAuxiliaryButton"
+                Style="{DynamicResource MetroPopupDialogOtherButtonStyle}"
+                Content="{Binding FirstAuxiliaryButtonText}"/>
+            <Button
+                x:Name="SecondAuxiliaryButton"
+                Style="{StaticResource MetroPopupDialogOtherButtonStyle}"
+                Content="{Binding SecondAuxiliaryButtonText}"/>
+        </StackPanel>
+    </StackPanel>
+</Controls:MetroWindow>

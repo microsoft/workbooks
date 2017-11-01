@@ -1,0 +1,32 @@
+<Project>
+  <Import Project="..\WorkbookApp.targets" />
+
+  <Target Name="Install" AfterTargets="Build">
+    <ItemGroup>
+      <InstallFiles Include="$(OutputPath)*"/>
+    </ItemGroup>
+
+    <GenerateWorkbookAppManifest
+      ManifestOutputPath="$(InstallDir)workbookapps.json"
+      Flavor="WPF"
+      Order="500"
+      Icon="project-gui"
+      AppPath="WPF/$(AssemblyName).exe"
+      AssemblySearchPaths="WPF;{systemGac}"
+      TargetFrameworkIdentifier="$(TargetFrameworkIdentifier)"
+      TargetFrameworkVersion="$(TargetFrameworkVersion)"/>
+
+    <Copy
+      SkipUnchangedFiles="true"
+      SourceFiles="@(InstallFiles)"
+      DestinationFolder="$(InstallDir)WPF\%(RecursiveDir)"/>
+
+    <UpdateWixManifest
+      SourceDirectory="$(InstallDir)WPF"
+      InputManifestPath="..\..\Package\Windows\AgentAppFiles.wxs"
+      DirectoryVariable="WpfAgentAppDirectory"
+      ComponentGroupId="WpfAgentAppComponents"
+      IdPrefix="WpfAgentApp"
+      IncludedExtensions="dll;json;exe"/>
+  </Target>
+</Project>

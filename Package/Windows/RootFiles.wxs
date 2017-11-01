@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <Fragment>
+
+    <ComponentGroup Id="RootComponents" Directory="INSTALLFOLDER">
+      <Component Id="BuildInfo" Guid="017D5713-0AB7-43A5-91D7-768FCD6F8555">
+        <File Id="BuildInfo" Source="$(var.ProjectDir)/../buildinfo"/>
+      </Component>
+      <Component Id="UpdateInfo" Guid="58E3D7CB-0D14-4DA0-A631-4D25750C494D">
+        <File Id="UpdateInfo" Source="$(var.ProjectDir)/updateinfo"/>
+      </Component>
+
+      <!-- These files install directly to the GAC, and do not actually deploy to the install folder -->
+      <Component Id="GAC.Microsoft.mshtml.dll" Guid="60aa50f9-0d75-43b2-8016-8658c1eea24f">
+        <File Id="GAC.Microsoft.mshtml.dll" Assembly=".net" KeyPath="yes" Source="$(env.PROGRAMFILES(X86))\Microsoft.Net\Primary Interop Assemblies\Microsoft.mshtml.dll"/>
+      </Component>
+    </ComponentGroup>
+
+  </Fragment>
+</Wix>

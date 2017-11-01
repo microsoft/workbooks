@@ -1,0 +1,83 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net461</TargetFramework>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Xamarin.GuiUnitNg" Version="3.8.1.1" />
+    <PackageReference Include="Should" Version="1.1.20" />
+    <PackageReference Include="DiffPlex" Version="1.4.1" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Clients\Xamarin.Interactive.Client\Xamarin.Interactive.Client.csproj" />
+    <ProjectReference Include="..\..\Tools\ApiDump\ApiDump.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Remove="ImageFormatTests.cs" />
+    <Compile Remove="ReflectionRepresentationProviderTests.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ImageFormatTests.cs" Condition=" '$(EnableDefaultCompileItems)' == 'true' " />
+    <None Include="ReflectionRepresentationProviderTests.cs" Condition=" '$(EnableDefaultCompileItems)' == 'true' " />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="Resources\Workbooks\ArbitraryYAMLManifest.workbook" />
+    <None Remove="Resources\Workbooks\BareMinimumYAMLManifest.workbook" />
+    <None Remove="Resources\Workbooks\LegacyJsonManifest-no-exec-mode.workbook" />
+    <None Remove="Resources\Workbooks\LegacyJsonManifest.workbook" />
+    <None Remove="Resources\Workbooks\LotsOfPlatformYAML.workbook" />
+    <None Remove="Resources\Workbooks\LotsOfPlatformsYAML.workbook" />
+    <None Remove="Resources\Formatting.md" />
+    <None Remove="Resources\Empty.txt" />
+    <None Remove="Resources\Lorem Ipsum.txt" />
+    <None Remove="Resources\Random4K.bin" />
+    <None Remove="Resources\Xamburger.gif" />
+    <None Remove="Resources\Xamburger.jpg" />
+    <None Remove="Resources\Xamburger.png" />
+    <None Remove="Resources\Xamburger.tif" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\Workbooks\ArbitraryYAMLManifest.workbook">
+      <LogicalName>ArbitraryYAMLManifest.workbook</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Workbooks\BareMinimumYAMLManifest.workbook">
+      <LogicalName>BareMinimumYAMLManifest.workbook</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Workbooks\LegacyJsonManifest-no-exec-mode.workbook">
+      <LogicalName>LegacyJsonManifest-no-exec-mode.workbook</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Workbooks\LegacyJsonManifest.workbook">
+      <LogicalName>LegacyJsonManifest.workbook</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Workbooks\LotsOfPlatformYAML.workbook">
+      <LogicalName>LotsOfPlatformYAML.workbook</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Workbooks\LotsOfPlatformsYAML.workbook">
+      <LogicalName>LotsOfPlatformsYAML.workbook</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Formatting.md">
+      <LogicalName>Formatting.md</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Empty.txt">
+      <LogicalName>Empty.txt</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Lorem Ipsum.txt">
+      <LogicalName>Lorem Ipsum.txt</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Random4K.bin">
+      <LogicalName>Random4K.bin</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Xamburger.gif">
+      <LogicalName>Xamburger.gif</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Xamburger.jpg">
+      <LogicalName>Xamburger.jpg</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Xamburger.png">
+      <LogicalName>Xamburger.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Xamburger.tif">
+      <LogicalName>Xamburger.tif</LogicalName>
+    </EmbeddedResource>
+  </ItemGroup>
+  <Import Project="..\..\Build\Common.targets" />
+</Project>

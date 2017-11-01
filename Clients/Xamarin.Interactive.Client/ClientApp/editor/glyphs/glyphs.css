@@ -1,0 +1,154 @@
+﻿/*
+
+glyphs.css
+
+Author:
+  Sandy Armstrong <sandy@xamarin.com>
+  Vaclav Vancura <vacvan@microsoft.com>
+
+Copyright 2016 Xamarin Inc. All rights reserved.
+Copyright 2016 Microsoft. All rights reserved.
+*/
+
+.monaco-editor .suggest-widget .monaco-list .monaco-list-row .icon.class {
+  background-image:
+    url(element-class-16.png) !important;
+  background-position: 0 0 !important;
+}
+
+.monaco-editor .suggest-widget .monaco-list .monaco-list-row .icon.value,
+.monaco-editor .suggest-widget .monaco-list .monaco-list-row .icon.enum {
+  background-image:
+    url(element-enum-16.png) !important;
+  background-position: 0 0 !important;
+}
+
+.monaco-editor .suggest-widget .monaco-list .monaco-list-row .icon.function {
+  background-image:
+    url(element-extensionmethod-16.png) !important;
+  background-position: 0 0 !important;
+}
+
+.monaco-editor .suggest-widget .monaco-list .monaco-list-row .icon.field {
+  background-image:
+    url(element-field-16.png) !important;
+  background-position: 0 0 !important;
+}
+
+.monaco-editor .suggest-widget .monaco-list .monaco-list-row .icon.interface {
+  background-image:
+    url(element-interface-16.png) !important;
+  background-position: 0 0 !important;
+}
+
+.monaco-editor .suggest-widget .monaco-list .monaco-list-row .icon.keyword {
+  background-image:
+    url(element-keyword-16.png) !important;
+  background-position: 0 0 !important;
+}
+
+.monaco-editor .suggest-widget .monaco-list .monaco-list-row .icon.unit,
+.monaco-editor .suggest-widget .monaco-list .monaco-list-row .icon.snippet,
+.monaco-editor .suggest-widget .monaco-list .monaco-list-row .icon.text,
+.monaco-editor .suggest-widget .monaco-list .monaco-list-row .icon.color,
+.monaco-editor .suggest-widget .monaco-list .monaco-list-row .icon.file,
+.monaco-editor .suggest-widget .monaco-list .monaco-list-row .icon.reference,
+.monaco-editor .suggest-widget .monaco-list .monaco-list-row .icon.variable {
+  background-image:
+    url(element-variable-16.png) !important;
+  background-position: 0 0 !important;
+}
+
+.monaco-editor .suggest-widget .monaco-list .monaco-list-row .icon.method,
+.monaco-editor .suggest-widget .monaco-list .monaco-list-row .icon.constructor {
+  background-image:
+    url(element-method-16.png) !important;
+  background-position: 0 0 !important;
+}
+
+.monaco-editor .suggest-widget .monaco-list .monaco-list-row .icon.module {
+  background-image:
+    url(element-namespace-16.png) !important;
+  background-position: 0 0 !important;
+}
+
+.monaco-editor .suggest-widget .monaco-list .monaco-list-row .icon.property {
+  background-image:
+    url(element-property-16.png) !important;
+  background-position: 0 0 !important;
+}
+
+@media only screen and (-webkit-min-device-pixel-ratio: 2),
+       only screen and (-webkit-min-resolution: 192dpi),
+       only screen and (min-device-pixel-ratio: 2),
+       only screen and (min-resolution: 192dpi) {
+
+.monaco-editor .suggest-widget .monaco-list .monaco-list-row .icon.class {
+  background-image:
+    url(element-class-16@2x.png) !important;
+  background-position: 0 0 !important;
+}
+
+.monaco-editor .suggest-widget .monaco-list .monaco-list-row .icon.value,
+.monaco-editor .suggest-widget .monaco-list .monaco-list-row .icon.enum {
+  background-image:
+    url(element-enum-16@2x.png) !important;
+  background-position: 0 0 !important;
+}
+
+.monaco-editor .suggest-widget .monaco-list .monaco-list-row .icon.function {
+  background-image:
+    url(element-extensionmethod-16@2x.png) !important;
+  background-position: 0 0 !important;
+}
+
+.monaco-editor .suggest-widget .monaco-list .monaco-list-row .icon.field {
+  background-image:
+    url(element-field-16@2x.png) !important;
+  background-position: 0 0 !important;
+}
+
+.monaco-editor .suggest-widget .monaco-list .monaco-list-row .icon.interface {
+  background-image:
+    url(element-interface-16@2x.png) !important;
+  background-position: 0 0 !important;
+}
+
+.monaco-editor .suggest-widget .monaco-list .monaco-list-row .icon.keyword {
+  background-image:
+    url(element-keyword-16@2x.png) !important;
+  background-position: 0 0 !important;
+}
+
+.monaco-editor .suggest-widget .monaco-list .monaco-list-row .icon.unit,
+.monaco-editor .suggest-widget .monaco-list .monaco-list-row .icon.snippet,
+.monaco-editor .suggest-widget .monaco-list .monaco-list-row .icon.text,
+.monaco-editor .suggest-widget .monaco-list .monaco-list-row .icon.color,
+.monaco-editor .suggest-widget .monaco-list .monaco-list-row .icon.file,
+.monaco-editor .suggest-widget .monaco-list .monaco-list-row .icon.reference,
+.monaco-editor .suggest-widget .monaco-list .monaco-list-row .icon.variable {
+  background-image:
+    url(element-variable-16@2x.png) !important;
+  background-position: 0 0 !important;
+}
+
+.monaco-editor .suggest-widget .monaco-list .monaco-list-row .icon.method,
+.monaco-editor .suggest-widget .monaco-list .monaco-list-row .icon.constructor {
+  background-image:
+    url(element-method-16@2x.png) !important;
+  background-position: 0 0 !important;
+}
+
+.monaco-editor .suggest-widget .monaco-list .monaco-list-row .icon.module {
+  background-image:
+    url(element-namespace-16@2x.png) !important;
+  background-position: 0 0 !important;
+}
+
+.monaco-editor .suggest-widget .monaco-list .monaco-list-row .icon.property {
+  background-image:
+    url(element-property-16@2x.png) !important;
+  background-position: 0 0 !important;
+}
+
+}

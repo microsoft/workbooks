@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<installer-gui-script minSpecVersion="1">
+  <options customize="never" hostArchitectures="x86_64" rootVolumeOnly="true"/>
+  <title>Xamarin Interactive @FRIENDLY_VERSION@</title>
+  <installation-check script="check_requirements ();"/>
+  <script><![CDATA[
+	function check_requirements () {
+		if (system.compareVersions (system.version.ProductVersion, '10.11.0') < 0) {
+			my.result.title = 'Mac OS X El Capitan required';
+			my.result.message = 'This version of the Xamarin Workbooks & Inspector requires Mac OS X El Capitan (10.11) or newer.';
+			my.result.type = 'Fatal';
+			return false;
+		}
+
+		return true;
+	}
+    ]]></script>
+  <background file="Background@2x.png" mime-type="image/png" alignment="bottomleft" scaling="proportional"/>
+  <welcome file="Welcome.rtf" mime-type="text/rtf"/>
+  <license file="License.rtf" mime-type="text/rtf"/>
+  <pkg-ref id="com.xamarin.Inspector"/>
+  <options customize="never" require-scripts="false"/>
+  <choices-outline>
+    <line choice="default">
+      <line choice="com.xamarin.Inspector"/>
+    </line>
+    </choices-outline>
+    <choice id="default"/>
+    <choice id="com.xamarin.Inspector" visible="false">
+      <pkg-ref id="com.xamarin.Inspector">
+        <must-close>
+          <app id="com.xamarin.Inspector"/>
+        </must-close>
+      </pkg-ref>
+    </choice>
+  <pkg-ref id="com.xamarin.Inspector" version="@VERSION@" onConclusion="none">Framework.pkg</pkg-ref>
+</installer-gui-script>

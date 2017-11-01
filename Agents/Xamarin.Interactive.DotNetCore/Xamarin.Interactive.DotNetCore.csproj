@@ -1,0 +1,12 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="..\Xamarin.Interactive.Console\MacIntegration.cs" Link="MacIntegration.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Xamarin.Interactive.NetStandard\Xamarin.Interactive.NetStandard.csproj" />
+  </ItemGroup>
+  <Import Project="..\..\Build\Common.targets" />
+</Project>

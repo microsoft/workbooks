@@ -1,0 +1,20 @@
+#!/bin/bash
+
+set -ex
+
+# Unfortunately, the installer does not actually remove previous installations,
+# which can result in "mixed" installations which can actuall break the
+# the current install's functionality. So, remove all toplevel directories
+# that we "own". This also handles the "migration" of from our Inspector
+# layout to our Workbooks and Interactive layout (Xamarin Inspector.app was
+# renamed to Xamarin Workbooks.app in 0.8.1, and Xamarin.Inspector.framework
+# to Xamarin.Interactive.framework in 0.9.0).
+# -abock, 2016-08-16
+
+function prepare_for_upgrade {
+	rm -rf "${DSTROOT}${1}" || true
+}
+
+prepare_for_upgrade "Applications/Xamarin Inspector.app"
+prepare_for_upgrade "Library/Frameworks/Xamarin.Inspector.framework"
+prepare_for_upgrade "Library/Frameworks/Xamarin.Interactive.framework/Versions/Current"

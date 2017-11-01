@@ -1,0 +1,60 @@
+---
+uti: com.xamarin.workbook
+id: 3521ac76-b32c-4a47-be00-51b2b85238bc
+title: Quick Smoke
+platforms:
+- Console
+packages:
+- id: Newtonsoft.Json
+  version: 10.0.3
+---
+
+# Smoky
+
+This workbook provides a quick regression test of a number of features.
+
+## Tuples
+
+```csharp
+var tuple = (name: "Aaron", age: 12)
+```
+
+## Dynamic
+
+This cell should be skipped on iOS.
+
+```csharp
+dynamic dynamicTuple = tuple;
+dynamicTuple.Item1 + " is " + dynamicTuple.Item2
+```
+
+## Basic NuGet
+
+```csharp
+#r "Newtonsoft.Json"
+```
+
+```csharp
+using Newtonsoft.Json
+```
+
+```csharp
+JsonConvert.SerializeObject (tuple)
+```
+
+## Async
+
+```csharp
+for (int i = 0; i < 10; i++) {
+    Console.WriteLine (i);
+    await Task.Delay (250);
+}
+```
+
+## Agent Crash Recovery
+
+> ℹ️ This cell will intentionally terminate the agent process. It should result in the client becoming disconnected and should show an error message in the result area of the cell indicating so. Re-running the workbook after the disconnect should result in re-connection and execution up to but not including the cell which resulted in the initial termination.
+
+```csharp
+Environment.Exit (0)
+```

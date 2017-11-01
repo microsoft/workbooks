@@ -1,0 +1,69 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <link rel="stylesheet" href="prosemirror.css">
+  <script type="text/javascript" src="../../obj/app.js"></script>
+  <script type="text/javascript">
+    window.onload = function () {
+
+      pmA = new xiexports.WorkbookEditor ({
+        placeElem: document.getElementById ("editorA"),
+        onFocus: function () { console.log ("Focus A") }
+      })
+      pmA.setMenuStyle ("bar")
+
+      pmB = new xiexports.WorkbookEditor ({
+        placeElem: document.getElementById ("editorB"),
+        onChange: function () { console.log ("Change") },
+        onFocus: function () { console.log ("Focus B") },
+        onModEnter: function () { console.log ("Mod-Enter") },
+        onCursorUpDown: function (isUp, isMod) {
+          if (isUp)
+            console.log (pmB.shouldFocusPreviousEditor ())
+          else
+            console.log (pmB.shouldFocusNextEditor ())
+          return false;
+        }
+      })
+      pmB.setMenuStyle ("tooltip")
+
+      var markdown = document.getElementById ("yaml-test").innerText.trim ()
+      var visitor = new xiexports.WorkbookDependencyCollector ()
+      visitor.visitMarkdown (markdown)
+      console.log(visitor.dependencies)
+    }
+  </script>
+  <style type="text/css">
+  .editor-shell {
+    border: 1px solid blue;
+  }
+  </style>
+</head>
+<body>
+<div id="editorA" class="editor-shell"></div>
+<hr />
+<div id="editorB" class="editor-shell"></div>
+<button onclick="console.log (window.pmB.collectExternalDependencies ())">Gather Resources</button>
+<pre id="yaml-test">
+---
+yaml-block 1 line 0
+---
+
+# H1 Header
+
+---
+yaml-block 2 line 1
+yaml-block 2 line 2
+---
+
+---
+
+## H2 Header
+
+Paragraph
+</pre>
+</body>
+</html>

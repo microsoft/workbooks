@@ -1,0 +1,30 @@
+﻿---
+ms.author: abock
+uti: com.xamarin.workbook
+author: Aaron Bockover
+id: 9222b263-b1eb-40f8-9942-bbbbbbbbbbbb
+platforms:
+- iOS
+packages:
+- id: Fake.Package1
+  version: 9.0.1
+- id: Fake.Package2
+  version: '[9.0.1]'
+- id: Fake.Package3
+  version: 9.0.*
+- id: Fake.Package4
+  version: '[9,10)'
+random.dict:
+  a: one
+  b: two
+  list-in-dict:
+  - 1
+  - 2
+  - 3
+  F31CE21A-3254-4ECB-8038-201C6079E2ED: D0D37836-EE7D-4D0D-9CCD-80FDB6F06E1B
+  B50165C0-97AC-47F8-BCC7-CEF07FE218CB: 427D172D-BBA4-4D0F-9076-9776217DEE18
+  7B9C891C-C74F-404E-BA39-CCD8DCCCEB9F: EFF4BC76-0DA2-410B-AC4C-F5F91A0AD6F3
+  6DF5F3CF-4C68-428B-BD54-60FF89626FAF: A624D9CD-4963-44DE-89C1-3313CA34242F
+  C75D2CCF-1385-456B-9CF0-C947DE253E4D: A4DA8841-046E-482A-A758-DFD76669B8C2
+  CA2EB8D9-7B9A-4992-A4FF-ED38FF2FD739: 8D572CCA-5976-4CD4-869C-AA3D524E6379
+---

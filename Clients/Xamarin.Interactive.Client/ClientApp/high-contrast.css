@@ -1,0 +1,44 @@
+@media screen and (-ms-high-contrast: active) {
+  .interactive-workspace .entry-actions button {
+    opacity: 1.0 !important;
+  }
+
+  .interactive-workspace .entry-actions .run-code {
+    background-image: url(run-code-entry-inverted-16.png);
+  }
+
+  .interactive-workspace .entry-actions .insert-code {
+    background-image: url(new-code-entry-inverted-16.png);
+  }
+
+  .interactive-workspace .entry-actions .insert-documentation {
+    background-image: url(new-documentation-entry-inverted-16.png);
+  }
+
+  .interactive-workspace .entry-actions .delete {
+    background-image: url(delete-entry-inverted-16.png);
+  }
+
+  .interactive-workspace.session-kind-workbook > article.confirm-delete-hover,
+  .interactive-workspace.session-kind-workbook > article.confirm-delete {
+    -ms-high-contrast-adjust: none;
+  }
+}
+
+@media screen and (min-resolution: 192dpi) and (-ms-high-contrast: active) {
+  .interactive-workspace .entry-actions .run-code {
+    background-image: url(run-code-entry-inverted-16@2x.png);
+  }
+
+  .interactive-workspace .entry-actions .insert-code {
+    background-image: url(new-code-entry-inverted-16@2x.png);
+  }
+
+  .interactive-workspace .entry-actions .insert-documentation {
+    background-image: url(new-documentation-entry-inverted-16@2x.png);
+  }
+
+  .interactive-workspace .entry-actions .delete {
+    background-image: url(delete-entry-inverted-16@2x.png);
+  }
+}

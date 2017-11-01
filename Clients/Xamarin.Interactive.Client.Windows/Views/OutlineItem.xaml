@@ -1,0 +1,95 @@
+﻿<UserControl x:Class="Xamarin.Interactive.Client.Windows.Views.OutlineItem"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+             xmlns:commands="clr-namespace:Xamarin.Interactive.Client.Windows.Commands"
+             xmlns:local="clr-namespace:Xamarin.Interactive.Client.Windows.Views"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300"
+             MouseDoubleClick="OnRename"
+             x:Name="outlineControl">
+    <UserControl.Resources>
+        <Style TargetType="{x:Type iconPacks:PackIconMaterial}">
+            <Setter Property="Kind" Value="FileOutline"/>
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IconName}" Value="folder-component">
+                    <Setter Property="Kind" Value="Folder"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding IconName}" Value="nuget">
+                    <Setter Property="Kind" Value="Package"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding IconName}" Value="solution">
+                    <Setter Property="Kind" Value="FolderMultiple"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding IconName}" Value="highlight">
+                    <Setter Property="Kind" Value="Tag"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+        <Style TargetType="MenuItem" BasedOn="{StaticResource {x:Type MenuItem}}">
+            <Setter
+                Property="CommandParameter"
+                Value="{Binding Item,
+                    RelativeSource={RelativeSource FindAncestor,
+                        AncestorType={x:Type local:OutlineItem}}}"/>
+        </Style>
+        <DataTemplate x:Key="NormalTemplate">
+            <TextBlock
+                Loaded="OnDisplayLoaded"
+                Margin="2,0"
+                Text="{Binding Path=Name}"
+                ToolTip="{Binding Path=ToolTip}"/>
+        </DataTemplate>
+        <DataTemplate x:Key="EditTemplate">
+            <TextBox
+                Text="{Binding Name, UpdateSourceTrigger=LostFocus}"
+                KeyDown="OnKeyDown"
+                LostFocus="OnLostFocus"
+                Loaded="OnEditorLoaded"
+                x:Name="editorBox">
+            </TextBox>
+        </DataTemplate>
+    </UserControl.Resources>
+    <Grid
+        DataContext="{Binding Item,
+            RelativeSource={RelativeSource FindAncestor,
+                AncestorType={x:Type local:OutlineItem}}}"
+        ToolTip="{Binding Tooltip}">
+        <Grid.InputBindings>
+            <MouseBinding Gesture="LeftDoubleClick" Command="{Binding DefaultCommand}"/>
+        </Grid.InputBindings>
+        <Grid.ContextMenu>
+            <ContextMenu ItemsSource="{Binding Commands}">
+            </ContextMenu>
+        </Grid.ContextMenu>
+        <DockPanel Margin="2">
+            <iconPacks:PackIconMaterial
+                Width="16"
+                Height="16"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"/>
+            <ContentPresenter Content="{Binding}">
+                <ContentPresenter.Style>
+                    <Style TargetType="{x:Type ContentPresenter}">
+                        <Setter
+                            Property="ContentTemplate"
+                            Value="{StaticResource NormalTemplate}"/>
+                        <Style.Triggers>
+                            <MultiDataTrigger>
+                                <MultiDataTrigger.Conditions>
+                                    <Condition Binding="{Binding IsRenamable}" Value="True"/>
+                                    <Condition Binding="{Binding IsEditing}" Value="True"/>
+                                </MultiDataTrigger.Conditions>
+                                <Setter
+                                    Property="ContentTemplate"
+                                    Value="{StaticResource EditTemplate}" />
+                            </MultiDataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </ContentPresenter.Style>
+            </ContentPresenter>
+        </DockPanel>
+    </Grid>
+</UserControl>

@@ -1,0 +1,65 @@
+﻿/*
+base.css
+
+Author:
+  Aaron Bockover <abock@xamarin.com>
+
+Copyright 2015 Xamarin Inc. All rights reserved.
+*/
+
+.renderer-base,
+.renderer-base * {
+  margin: 0;
+  padding: 0;
+  font-size: 1em;
+  line-height: normal;
+}
+
+.renderer-base {
+  font-family: sans-serif;
+}
+
+.renderer-base > header > .details {
+  padding-left: 0.25em;
+  color: #aaa;
+  font-size: 0.75em;
+  font-style: italic;
+
+  /* Ignore selection */
+  user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+}
+
+.renderer-base > header > .details::before {
+  content: "(";
+}
+
+.renderer-base > header > .details::after {
+  content: ")";
+}
+
+.renderer-base th {
+  text-align: left;
+  font-weight: normal;
+}
+
+.renderer-base td,
+.renderer-base th {
+  vertical-align: top;
+}
+
+.renderer-base .to-string-representation {
+  font-family: monospace;
+  word-wrap: break-word;
+  white-space: pre-wrap;
+}
+
+.renderer-base .to-string-representation .representation-name {
+  color: #666;
+  font-size: 80%;
+}
+
+.renderer-base .to-string-representation .representation-name::after {
+  content: ": ";
+}

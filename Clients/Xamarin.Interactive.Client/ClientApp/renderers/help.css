@@ -1,0 +1,29 @@
+﻿/*
+
+help.css
+
+Author:
+  Aaron Bockover <abock@xamarin.com>
+
+Copyright 2015-2016 Xamarin Inc. All rights reserved.
+*/
+
+.renderer-help table {
+  border-collapse: separate;
+  border-spacing: 0 0.5em;
+  max-width: 60em;
+}
+
+.renderer-help td {
+  padding: 0.15em;
+}
+
+.renderer-help td:first-child {
+  font-family: monospace;
+  white-space: nowrap;
+  padding-right: 1em;
+}
+
+.renderer-help tr:nth-child(odd) {
+  background: rgba(255, 255, 255, 1);
+}

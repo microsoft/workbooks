@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <script type="text/javascript" src="../../obj/app.js"></script>
+  <script type="text/javascript" src="../../../node_modules/monaco-editor/dev/vs/loader.js"></script>
+  <script type="text/javascript">
+    require.config({ paths: { 'vs': '../../../node_modules/monaco-editor/dev/vs' }});
+    require(['vs/editor/editor.main'], function() {
+
+      xiexports.monaco.RegisterWorkbookCompletionItemProvider (
+        "csharp",
+        function(model, position, token) {
+          promise = xiexports.monaco.Promise (function(complete) {
+            complete ([
+              {
+                label: "hi",
+                kind: 1
+              }
+            ])
+          })
+          return promise
+        })
+
+      var createEditor = function(elementId) {
+        return xiexports.monaco.WorkbookCodeEditor ({
+          placeElem: document.getElementById (elementId),
+          readonly: false,
+          fontSize: 15,
+          onChange: function (e) { console.log (
+            "Changed newpos: " + e.newCursorPosition.lineNumber + "," + e.newCursorPosition.column +
+            " triggerChar: " + e.triggerChar) },
+          onFocus: function () { console.log ("Focus") },
+          onEnter: function (isShift, isMod) { console.log ("Enter: isShift="+isShift+",isMod="+isMod) },
+          onCursorUpDown: function (isUp) { console.log ("up/down") }
+        })
+      };
+
+      mA = createEditor("editorA");
+      mB = createEditor("editorB");
+
+      console.log("test")
+      mA.setText("#load \"Geometry.csx\"\n#load \"Image.csx\"\n#load \"Model.csx\"\n#load \"ImageResultHandler.csx\"\n#load \"lesson1.csx\"\nusing static Geometry;")
+
+    mB.setText("void Line (Image image, Vec2i p1, Vec2i p2, Color color)\n{\n    Line(image, p1.x, p1.y, p2.x, p2.y, color);\n}\n\nvoid Line (Image image, Vec3f p1, Vec3f p2, Color color)\n{\n    Line(image, (int)p1.x, (int)p1.y, (int)p2.x, (int)p2.y, color);\n}\n\nvoid Triangle (Image image, Vec2i[] t, Color color)\n{\n    Line(image, t[0], t[1], color);\n    Line(image, t[1], t[2], color);\n    Line(image, t[2], t[0], color);\n}\n\nVec2i[] t0 = {\n    new Vec2i { x = 10, y = 70 },\n    new Vec2i { x = 50, y = 160 },\n    new Vec2i { x = 70, y = 80 }\n};\nVec2i[] t1 = {\n    new Vec2i { x = 180, y = 50 },\n    new Vec2i { x = 150, y = 1 },\n    new Vec2i { x = 70, y = 180 }\n};\nVec2i[] t2 = {\n    new Vec2i { x = 180, y = 150 },\n    new Vec2i { x = 120, y = 160 },\n    new Vec2i { x = 130, y = 180 }\n};\n\nvar image = new Image (200, 200, Format.BGR);\nTriangle (image, t0, Color.Red);\nTriangle (image, t1, Color.White);\nTriangle (image, t2, Color.Green);\n\nimage.VerticalFlip ();\nimage");
+    });
+  </script>
+  <style type="text/css">
+
+  </style>
+</head>
+<body>
+  <main>
+    <article>
+      <footer><section class="entry-actions"><button class="insert-code" title="Insert a new executable C# cell"><span>Insert C#</span></button><button class="insert-documentation" title="Insert a new documentation cell"><span>Insert Documentation</span></button></section></footer>
+    </article>
+
+    <article>
+      <section class="editor-shell">
+        <div id="editorA" />
+      </section>
+      <footer><section class="entry-actions"><button class="run-code" title="Run all cells up to and including this cell"><span>Run Cell</span></button><div class="hint-text requires-editor-focus">Press <span class="kbd">⌘↩</span> to run</div><div class="break"></div><button class="insert-code" title="Insert a new executable C# cell"><span>Insert C#</span></button><button class="insert-documentation" title="Insert a new documentation cell"><span>Insert Documentation</span></button><button class="delete" title="Delete cell"><span>Delete</span></button></section></footer>
+    </article>
+
+    <article>
+      <section class="editor-shell">
+        <div id="editorB" />
+      </section>
+      <footer><section class="entry-actions"><button class="run-code" title="Run all cells up to and including this cell"><span>Run Cell</span></button><div class="hint-text requires-editor-focus">Press <span class="kbd">⌘↩</span> to run</div><div class="break"></div><button class="insert-code" title="Insert a new executable C# cell"><span>Insert C#</span></button><button class="insert-documentation" title="Insert a new documentation cell"><span>Insert Documentation</span></button><button class="delete" title="Delete cell"><span>Delete</span></button></section></footer>
+    </article>
+  </main>
+</body>
+</html>

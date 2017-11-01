@@ -1,0 +1,42 @@
+﻿/*
+hex-dump.css
+
+Author:
+  Aaron Bockover <abock@xamarin.com>
+
+Copyright 2016 Xamarin Inc. All rights reserved.
+*/
+
+.renderer-hex-dump {
+  font-family: monospace;
+  max-height: 15.5em;
+  overflow: scroll;
+}
+
+.renderer-hex-dump td:first-child {
+  color: #aaa;
+}
+
+.renderer-hex-dump td:nth-child(2) {
+  padding: 0 1em;
+}
+
+.renderer-hex-dump td:nth-child(3) {
+  color: rgb(240, 114, 25);
+}
+
+.renderer-hex-dump span.non-char {
+  color: rgba(240, 114, 25, 0.2);
+}
+
+.renderer-hex-dump td:nth-child(2) span:nth-child(8) {
+  padding-right: 1em;
+}
+
+.renderer-hex-dump td:nth-child(2) span {
+  margin-right: 0.5em;
+}
+
+.renderer-hex-dump td:nth-child(2) span:last-child {
+  margin-right: 0;
+}

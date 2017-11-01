@@ -1,0 +1,110 @@
+﻿/*
+
+object.css
+
+Author:
+  Aaron Bockover <abock@xamarin.com>
+
+Copyright 2015 Xamarin Inc. All rights reserved.
+*/
+
+.renderer-object > .inspect-expand {
+  cursor: pointer;
+  display: block;
+  margin-top: 0.25em;
+  padding-left: 20px;
+  background-size: 16px 16px;
+  background: url(../preview-normal-16.png) no-repeat left center;
+}
+
+.renderer-object > .inspect-expand:active {
+  background-image: url(../preview-active-16.png);
+}
+
+@media only screen and (-webkit-min-device-pixel-ratio: 2), only screen and (-webkit-min-resolution: 192dpi), only screen and (min-device-pixel-ratio: 2), only screen and (min-resolution: 192dpi) {
+  .renderer-object > .inspect-expand {
+    background-image: url(../preview-normal-16@2x.png) !important;
+  }
+
+  .renderer-object > .inspect-expand:active {
+    background-image: url(../preview-active-16@2x.png) !important;
+  }
+}
+
+th > div > .inspect-ref-name {
+  cursor: pointer;
+  display: inline-block;
+
+  margin-left: 10px;
+  width: 16px;
+  height: 16px;
+
+  background-size: 16px 16px;
+  background-position: left center;
+  background-repeat: no-repeat;
+  background-image: url(../repl-add-16.png);
+}
+
+th > div > .inspect-ref-name:active {
+  background-image: url(../repl-add-active-16.png);
+}
+
+@media only screen and (-webkit-min-device-pixel-ratio: 2), only screen and (-webkit-min-resolution: 192dpi), only screen and (min-device-pixel-ratio: 2), only screen and (min-resolution: 192dpi) {
+  th > div > .inspect-ref-name {
+    background-image: url(../repl-add-16@2x.png) !important;
+  }
+
+  th > div > .inspect-ref-name:active {
+    background-image: url(../repl-add-active-16@2x.png) !important;
+  }
+}
+
+.renderer-object > table {
+  margin-top: 0.25em;
+  border-collapse: collapse;
+  display: block;
+  overflow: auto;
+}
+
+.renderer-object > table.collapsed {
+  display: none;
+}
+
+.renderer-object > table > tbody > tr > th,
+.renderer-object > table > tbody > tr > td {
+  font-family: monospace;
+  border: 1px solid #eee;
+  padding: 1px 5px;
+}
+
+.renderer-object > table > tbody > tr > th {
+  background: #f8f8f8;
+}
+
+.spaced-out-row {
+  display: flex;
+  flex-flow: row;
+  justify-content: space-between;
+
+  display: -webkit-flex;
+  -webkit-flex-flow: row;
+  -webkit-justify-content: space-between;
+}
+
+.renderer-object > table > tbody > tr > td {
+  word-wrap: break-word;
+}
+
+.renderer-object > table > tbody.has-expandable-children > tr > th > div > span {
+  white-space: nowrap;
+}
+
+.renderer-object > table > tbody.has-expandable-children > tr.collapsed > th > div > span,
+.renderer-object > table > tbody.has-expandable-children > tr.expanded > th > div > span {
+  cursor: pointer;
+}
+
+.renderer-object-get-member-value-error {
+  color: #767676;
+  font-style: italic;
+}

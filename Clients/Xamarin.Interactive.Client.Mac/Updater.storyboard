@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="11542" systemVersion="15G1208" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
+    <dependencies>
+        <deployment identifier="macosx"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="11542"/>
+        <plugIn identifier="com.apple.WebKitIBPlugin" version="11542"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--Window Controller-->
+        <scene sceneID="6us-Jn-RX8">
+            <objects>
+                <windowController storyboardIdentifier="UpdateAvailableWindowController" showSeguePresentationStyle="single" id="Ohn-yR-z1k" sceneMemberID="viewController">
+                    <window key="window" title="Software Update" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" releasedWhenClosed="NO" showsToolbarButton="NO" visibleAtLaunch="NO" frameAutosaveName="" animationBehavior="default" id="qif-pD-3tL" customClass="UpdaterWindow">
+                        <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
+                        <windowCollectionBehavior key="collectionBehavior" fullScreenNone="YES"/>
+                        <rect key="contentRect" x="425" y="461" width="620" height="450"/>
+                        <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1417"/>
+                        <value key="minSize" type="size" width="620" height="450"/>
+                        <value key="maxSize" type="size" width="620" height="1000"/>
+                    </window>
+                    <connections>
+                        <segue destination="8Rw-Fg-79s" kind="relationship" relationship="window.shadowedContentViewController" id="zBu-c7-f7I"/>
+                    </connections>
+                </windowController>
+                <customObject id="Epn-Z4-Q8T" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-26" y="-230"/>
+        </scene>
+        <!--Window Controller-->
+        <scene sceneID="Qvu-zB-hvi">
+            <objects>
+                <windowController storyboardIdentifier="CheckingForUpdatesWindowController" showSeguePresentationStyle="single" id="Xmj-SL-KYO" sceneMemberID="viewController">
+                    <window key="window" title="Software Update" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" releasedWhenClosed="NO" showsToolbarButton="NO" visibleAtLaunch="NO" frameAutosaveName="" animationBehavior="default" id="kfV-jK-lSe">
+                        <windowStyleMask key="styleMask" titled="YES" closable="YES"/>
+                        <windowCollectionBehavior key="collectionBehavior" fullScreenNone="YES"/>
+                        <rect key="contentRect" x="425" y="461" width="342" height="104"/>
+                        <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1417"/>
+                        <value key="minSize" type="size" width="342" height="104"/>
+                        <value key="maxSize" type="size" width="342" height="104"/>
+                    </window>
+                    <connections>
+                        <segue destination="XNR-cT-qxg" kind="relationship" relationship="window.shadowedContentViewController" id="L5u-Y7-KV7"/>
+                    </connections>
+                </windowController>
+                <customObject id="ZhU-oT-o10" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-51" y="-710"/>
+        </scene>
+        <!--Updater Checking View Controller-->
+        <scene sceneID="vHE-QN-HUe">
+            <objects>
+                <viewController id="XNR-cT-qxg" customClass="UpdaterCheckingViewController" sceneMemberID="viewController">
+                    <view key="view" misplaced="YES" id="pqA-bJ-6i0">
+                        <rect key="frame" x="0.0" y="0.0" width="342" height="104"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <subviews>
+                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" misplaced="YES" id="3Xx-Ga-OF1">
+                                <rect key="frame" x="18" y="67" width="306" height="17"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Checking for updates…" id="M81-hj-2sK">
+                                    <font key="font" metaFont="systemBold"/>
+                                    <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                    <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                </textFieldCell>
+                            </textField>
+                            <progressIndicator wantsLayer="YES" misplaced="YES" maxValue="100" indeterminate="YES" style="bar" id="Yce-td-Ox4">
+                                <rect key="frame" x="20" y="45" width="302" height="20"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                            </progressIndicator>
+                            <button verticalHuggingPriority="750" misplaced="YES" id="rYB-Ej-7so">
+                                <rect key="frame" x="246" y="13" width="82" height="32"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                <buttonCell key="cell" type="push" title="Cancel" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="ur4-Gb-tgR">
+                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                    <string key="keyEquivalent" base64-UTF8="YES">
+DQ
+</string>
+                                </buttonCell>
+                                <connections>
+                                    <action selector="cancelCheck:" target="XNR-cT-qxg" id="dzV-5M-cvd"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                    </view>
+                    <connections>
+                        <outlet property="progressIndicator" destination="Yce-td-Ox4" id="zYj-ax-aR2"/>
+                    </connections>
+                </viewController>
+                <customObject id="qFx-dA-ilS" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="442" y="-717"/>
+        </scene>
+        <!--Updater View Controller-->
+        <scene sceneID="SsX-YZ-tGY">
+            <objects>
+                <viewController id="8Rw-Fg-79s" customClass="UpdaterViewController" sceneMemberID="viewController">
+                    <view key="view" misplaced="YES" id="V2G-4r-bNh">
+                        <rect key="frame" x="0.0" y="0.0" width="620" height="450"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <subviews>
+                            <webView misplaced="YES" id="Vl4-wH-Uyk">
+                                <rect key="frame" x="0.0" y="0.0" width="620" height="307"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                <webPreferences key="preferences" defaultFontSize="12" defaultFixedFontSize="12">
+                                    <nil key="identifier"/>
+                                </webPreferences>
+                            </webView>
+                            <box verticalHuggingPriority="750" misplaced="YES" boxType="separator" id="WKN-s9-zH2">
+                                <rect key="frame" x="0.0" y="305" width="620" height="5"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
+                            </box>
+                            <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" id="fzW-xh-2Ve">
+                                <rect key="frame" x="20" y="368" width="64" height="64"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="AppIcon" id="J5G-IV-1ed"/>
+                            </imageView>
+                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" misplaced="YES" id="f2X-t0-Zic">
+                                <rect key="frame" x="101" y="413" width="501" height="17"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="A new version of Xamarin Workbooks is available!" id="yhO-i6-k9o">
+                                    <font key="font" metaFont="systemBold" size="15"/>
+                                    <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
+                                    <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                </textFieldCell>
+                            </textField>
+                            <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" misplaced="YES" id="lAH-bw-01t">
+                                <rect key="frame" x="101" y="354" width="499" height="51"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                <textFieldCell key="cell" sendsActionOnEndEditing="YES" id="RQ7-oj-Glf">
+                                    <font key="font" metaFont="system"/>
+                                    <string key="title">Xamarin Workbooks 1.2.3 is now available from the Xamarin stable channel. You are currently using version 1.2.1. Would you like to download and install the new version now?</string>
+                                    <color key="textColor" name="secondaryLabelColor" catalog="System" colorSpace="catalog"/>
+                                    <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                </textFieldCell>
+                            </textField>
+                            <button verticalHuggingPriority="750" misplaced="YES" id="mDO-Ey-ZAX">
+                                <rect key="frame" x="315" y="321" width="143" height="32"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                <buttonCell key="cell" type="push" title="Remind Me Later" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="mCn-7Z-ewI">
+                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                            </button>
+                            <button verticalHuggingPriority="750" misplaced="YES" id="2PX-fk-ea8">
+                                <rect key="frame" x="458" y="321" width="148" height="32"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                <buttonCell key="cell" type="push" title="Download Update" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="K2G-2p-6k6">
+                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                    <string key="keyEquivalent" base64-UTF8="YES">
+DQ
+</string>
+                                </buttonCell>
+                            </button>
+                            <button verticalHuggingPriority="750" misplaced="YES" id="Nhu-Rw-5IL">
+                                <rect key="frame" x="524" y="321" width="82" height="32"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                <buttonCell key="cell" type="push" title="Cancel" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="Do8-ke-IcW">
+                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                    <string key="keyEquivalent" base64-UTF8="YES">
+DQ
+</string>
+                                </buttonCell>
+                            </button>
+                            <progressIndicator wantsLayer="YES" misplaced="YES" maxValue="100" style="bar" id="TBT-ak-q5F">
+                                <rect key="frame" x="103" y="327" width="419" height="23"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                            </progressIndicator>
+                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" misplaced="YES" id="qYL-Sr-lUp">
+                                <rect key="frame" x="101" y="315" width="501" height="17"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="0 of 1" id="3BE-UN-Hl1">
+                                    <font key="font" metaFont="smallSystem"/>
+                                    <color key="textColor" name="secondaryLabelColor" catalog="System" colorSpace="catalog"/>
+                                    <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                </textFieldCell>
+                            </textField>
+                        </subviews>
+                    </view>
+                    <connections>
+                        <outlet property="cancelButton" destination="Nhu-Rw-5IL" id="akS-LY-6j8"/>
+                        <outlet property="downloadButton" destination="2PX-fk-ea8" id="8Gh-ed-hlf"/>
+                        <outlet property="messageLabel" destination="lAH-bw-01t" id="nTx-DM-AZM"/>
+                        <outlet property="progressBar" destination="TBT-ak-q5F" id="irY-z5-HRO"/>
+                        <outlet property="progressLabel" destination="qYL-Sr-lUp" id="8vP-ge-5fE"/>
+                        <outlet property="remindMeLaterButton" destination="mDO-Ey-ZAX" id="O2U-Hb-9hU"/>
+                        <outlet property="titleLabel" destination="f2X-t0-Zic" id="8vy-AN-hbG"/>
+                        <outlet property="webView" destination="Vl4-wH-Uyk" id="UhO-mS-rpz"/>
+                    </connections>
+                </viewController>
+                <customObject id="bsz-OC-kLn" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="691" y="-236"/>
+        </scene>
+    </scenes>
+    <resources>
+        <image name="AppIcon" width="512" height="512"/>
+    </resources>
+</document>

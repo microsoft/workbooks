@@ -1,0 +1,67 @@
+﻿/*
+color.css
+
+Author:
+  Aaron Bockover <abock@xamarin.com>
+
+Copyright 2015 Xamarin Inc. All rights reserved.
+*/
+
+.renderer-color > figure > * {
+  vertical-align: middle;
+  display: inline-block;
+}
+
+.renderer-color > figure > div {
+  width: 1.25em;
+  height: 1.25em;
+  border-radius: 1.25em;
+  background-image: url(alpha-checker.png);
+  border: 1.5px solid rgba(0, 0, 0, 1);
+}
+
+.renderer-color > figure > div > div {
+  width: 100%;
+  height: 100%;
+  border-radius: 100%;
+  overflow: hidden;
+}
+
+.renderer-color figcaption {
+  padding: 0.25em 0 0 0.5em;
+}
+
+.renderer-color figcaption .comma,
+.renderer-color figcaption ::before,
+.renderer-color figcaption ::after {
+  color: #999;
+  font-size: 0.75em;
+  vertical-align: middle;
+  display: inline-block;
+}
+
+.renderer-color figcaption .comma,
+.renderer-color figcaption .rgb-hex::before,
+.renderer-color figcaption .argb-hex::before {
+  padding-right: 0.25em;
+}
+
+.renderer-color figcaption .rgb-hex::before {
+  content: "rgb:";
+}
+
+.renderer-color figcaption .argb-hex::before {
+  content: "argb:";
+}
+
+.renderer-color figcaption .rgba-css::before {
+  content: "rgba(";
+}
+
+.renderer-color figcaption .rgb-css::before {
+  content: "rgb(";
+}
+
+.renderer-color figcaption .css-function::after {
+  content: ")";
+}

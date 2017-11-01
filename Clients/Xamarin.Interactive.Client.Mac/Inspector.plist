@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+  If you add any new keys to this document, make sure that you also
+  add them to the PlistEntriesToDelete list in InspectorClient.targets.
+  Having the tasks delete the keys ensures that when this plist is merged
+  into the built app's plist, you get a clean merge without any cruft from
+  the Workbooks.app.
+-->
+<plist version="1.0">
+<dict>
+  <key>CFBundleDocumentTypes</key>
+  <array>
+    <dict>
+      <key>CFBundleTypeExtensions</key>
+      <array>
+        <string>xis</string>
+      </array>
+      <key>CFBundleTypeRole</key>
+      <string>Editor</string>
+      <key>CFBundleTypeIconFile</key>
+      <string>workbook-macos.icns</string>
+      <key>CFBundleTypeName</key>
+      <string>Xamarin Inspector Session</string>
+      <key>NSDocumentClass</key>
+      <string>SessionDocument</string>
+      <key>CFBundleTypeMIMETypes</key>
+      <array>
+        <string>application/x-xamarin-inspector-session</string>
+      </array>
+    </dict>
+  </array>
+</dict>
+</plist>

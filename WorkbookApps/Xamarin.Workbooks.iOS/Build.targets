@@ -1,0 +1,95 @@
+<Project>
+  <Import Project="..\WorkbookApp.targets" />
+  <Import Project="..\..\Build\Common.targets"/>
+
+  <PropertyGroup>
+    <AfterTargetForInstall Condition=" '$(OS)' == 'Unix' ">AfterCodesign</AfterTargetForInstall>
+    <AfterTargetForInstall Condition=" '$(OS)' != 'Unix' ">CopyAppFromMac</AfterTargetForInstall>
+    <TargetFrameworkRootPath Condition=" '$(TargetFrameworkRootPath)' == ''">$(MSBuildProgramFiles32)\Reference Assemblies\Microsoft\Framework\</TargetFrameworkRootPath>
+    <MonoFrameworkPath Condition=" '$(OS)' == 'Unix' ">/Library/Frameworks/Xamarin.iOS.framework/Versions/Current/lib/mono/Xamarin.iOS</MonoFrameworkPath>
+    <MonoFrameworkPath Condition=" '$(OS)' != 'Unix' ">$(TargetFrameworkRootPath)Xamarin.iOS\v1.0</MonoFrameworkPath>
+    <SevenZip>C:\Program Files\7-zip\7z.exe</SevenZip>
+  </PropertyGroup>
+
+  <!-- On Windows, copy a zipped app bundle from Mac for the workbook app. -->
+  <Target
+    Name="CopyAppFromMac"
+    AfterTargets="Codesign"
+    Condition=" '$(OS)' == 'Windows_NT' ">
+    <Message Text="Copying app bundle from Mac." />
+
+    <Zip
+      SessionId="$(BuildSessionId)"
+      ToolExe="$(ZipExe)"
+      ToolPath="$(ZipPath)"
+      Recursive="True"
+      Sources="$(AppBundleDir)"
+      OutputFile="$(AppBundleDir).zip"
+      WorkingDirectory="$(AppBundleDir)\.." />
+
+    <CopyFileFromMac
+      SessionId="$(BuildSessionId)"
+      File="$(AppBundleDir).zip" />
+
+    <Exec
+      Condition=" Exists('$(OutputPath)\$(AssemblyName).app.zip') "
+      Command="&quot;$(SevenZip)&quot; x -aoa $(AssemblyName).app.zip"
+      WorkingDirectory="$(OutputPath)" />
+  </Target>
+
+  <Target Name="Install" AfterTargets="$(AfterTargetForInstall)">
+    <PropertyGroup>
+      <ManifestAppPath>$(AssemblyName).app</ManifestAppPath>
+      <WixInputManifest>..\..\Package\Windows\iOSWorkbookAppFiles.wxs</WixInputManifest>
+      <AppManagerAssembly Condition="$(TargetPlatformIsWindows)">iOS\ClientIntegration\Xamarin.Workbooks.Client.iOS.dll</AppManagerAssembly>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <InstallFiles Include="$(OutputPath)$(ManifestAppPath)\**"/>
+    </ItemGroup>
+
+    <GenerateWorkbookAppManifest
+      ManifestOutputPath="$(InstallDir)workbookapps.json"
+      Flavor="iOS"
+      Order="300"
+      Icon="project-ios"
+      AppPath="iOS/$(ManifestAppPath)"
+      AppManagerAssembly="$(AppManagerAssembly)"
+      AssemblySearchPaths="iOS/$(ManifestAppPath);iOS/$(ManifestAppPath)/Facades"
+      OptionalFeatures="xamarin.forms"
+      SdkName="Xamarin.iOS"
+      SdkVersion="@AssemblyInformationalVersion,$(AppBundleDir)\Xamarin.iOS.dll"
+      TargetFrameworkIdentifier="$(TargetFrameworkIdentifier)"
+      TargetFrameworkVersion="$(TargetFrameworkVersion)"/>
+
+    <Copy
+      SkipUnchangedFiles="true"
+      SourceFiles="@(InstallFiles)"
+      DestinationFolder="$(InstallDir)iOS\$(ManifestAppPath)\%(RecursiveDir)"/>
+
+    <!-- iOS workbook app files 🙄 -->
+    <UpdateWixManifest
+      SourceDirectory="$(InstallDir)iOS\$(ManifestAppPath)"
+      InputManifestPath="$(WixInputManifest)"
+      DirectoryVariable="iOSWorkbookAppDir"
+      IdPrefix="iOSWorkbookApp"
+      IncludedExtensions="*"
+      ExcludedExtensions="pdb;mdb;txt"
+      ComponentGroupId="iOSWorkbookAppComponents"/>
+    <UpdateWixManifest
+      SourceDirectory="$(InstallDir)iOS\$(ManifestAppPath)\Main.storyboardc"
+      InputManifestPath="$(WixInputManifest)"
+      DirectoryVariable="iOSWorkbookAppStoryboardDir"
+      IdPrefix="iOSWorkbookAppStoryboard"
+      IncludedExtensions="*"
+      ComponentGroupId="iOSWorkbookAppStoryboardComponents"/>
+    <UpdateWixManifest
+      SourceDirectory="$(InstallDir)iOS\$(ManifestAppPath)\Facades"
+      InputManifestPath="$(WixInputManifest)"
+      DirectoryVariable="iOSWorkbookAppFacadesDir"
+      IdPrefix="iOSWorkbookAppFacades"
+      IncludedExtensions="dll"
+      ComponentGroupId="iOSWorkbookAppFacadesComponents"
+      UseHashForId="True"/>
+  </Target>
+</Project>

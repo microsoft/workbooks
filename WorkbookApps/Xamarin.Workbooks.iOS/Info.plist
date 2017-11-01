@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CFBundleIdentifier</key>
+	<string>com.xamarin.workbooks.ios</string>
+	<key>CFBundleShortVersionString</key>
+	<string>1.0</string>
+	<key>CFBundleVersion</key>
+	<string>1.0</string>
+	<key>LSRequiresIPhoneOS</key>
+	<true/>
+	<key>MinimumOSVersion</key>
+	<string>9.2</string>
+	<key>UIDeviceFamily</key>
+	<array>
+		<integer>1</integer>
+		<integer>2</integer>
+	</array>
+	<key>UILaunchStoryboardName</key>
+	<string>LaunchScreen</string>
+	<key>UIMainStoryboardFile</key>
+	<string>Main</string>
+	<key>UIMainStoryboardFile~ipad</key>
+	<string>Main</string>
+	<key>UIRequiredDeviceCapabilities</key>
+	<array>
+		<string>armv7</string>
+	</array>
+	<key>UISupportedInterfaceOrientations</key>
+	<array>
+		<string>UIInterfaceOrientationPortrait</string>
+		<string>UIInterfaceOrientationLandscapeLeft</string>
+		<string>UIInterfaceOrientationLandscapeRight</string>
+	</array>
+	<key>UISupportedInterfaceOrientations~ipad</key>
+	<array>
+		<string>UIInterfaceOrientationPortrait</string>
+		<string>UIInterfaceOrientationLandscapeLeft</string>
+		<string>UIInterfaceOrientationLandscapeRight</string>
+	</array>
+	<key>XSAppIconAssets</key>
+	<string>Resources/Images.xcassets/AppIcons.appiconset</string>
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsArbitraryLoads</key>
+		<true/>
+	</dict>
+	<key>UIStatusBarHidden</key>
+	<true/>
+	<key>CFBundleName</key>
+	<string>Xamarin Workbook App</string>
+	<key>CFBundleIconFiles</key>
+	<array>
+		<string>WorkbooksIcon</string>
+	</array>
+	<key>NSAppleMusicUsageDescription</key>
+	<string>So your workbook code may access the simulator&apos;s Apple Music functions</string>
+	<key>NSBluetoothPeripheralUsageDescription</key>
+	<string>So your workbook code may access Bluetooth Peripherals</string>
+	<key>NSCalendarsUsageDescription</key>
+	<string>So your workbook code may access the simulator&apos;s Calendar data</string>
+	<key>NSCameraUsageDescription</key>
+	<string>So your workbook code may access the simulator&apos;s Camera functions</string>
+	<key>NSContactsUsageDescription</key>
+	<string>So your workbook code may access the simulator&apos;s Contacts database</string>
+	<key>NSHealthShareUsageDescription</key>
+	<string>So your workbook code may share simulator Health data</string>
+	<key>NSHealthUpdateUsageDescription</key>
+	<string>So your workbook code may update simulator Health data</string>
+	<key>NSHomeKitUsageDescription</key>
+	<string>So your workbook code may access HomeKit functions</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>So your workbook code may access simulator location data in the background</string>
+	<key>NSLocationUsageDescription</key>
+	<string>So your workbook code may use the simulator&apos;s location data</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>So your workbook code may access the simulator&apos;s </string>
+	<key>kTCCServiceMediaLibrary</key>
+	<string>So your workbook code may access the simulator&apos;s media library</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>So your workbook code may access the simulator&apos;s microphone</string>
+	<key>NSMotionUsageDescription</key>
+	<string>So your workbook code may access the simulator&apos;s motion data</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>So your workbook code may access the simulator&apos;s photo library</string>
+	<key>NSRemindersUsageDescription</key>
+	<string>So your workbook code may access the simulator&apos;s reminders functionality</string>
+	<key>NSSiriUsageDescription</key>
+	<string>So your workbook code may access the simulator&apos;s Siri functions</string>
+	<key>NSSpeechRecognitionUsageDescription</key>
+	<string>So your workbook code may access the simulator&apos;s speech recognition functions</string>
+	<key>NSVideoSubscriberAccountUsageDescription</key>
+	<string>So your workbook code may access the simulator&apos;s TV Provider functions</string>
+</dict>
+</plist>

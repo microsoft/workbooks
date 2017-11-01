@@ -1,0 +1,166 @@
+﻿<Controls:MetroWindow
+    x:Class="Xamarin.Interactive.Client.Windows.Views.NewWorkbookWindow"
+    x:ClassModifier="internal"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+    xmlns:MahAppsConverters="clr-namespace:MahApps.Metro.Converters;assembly=MahApps.Metro"
+    xmlns:LocalControls="clr-namespace:Xamarin.Interactive.Client.Windows.Controls"
+    xmlns:Converters="clr-namespace:Xamarin.Interactive.Client.Windows.Converters"
+    xmlns:client="clr-namespace:Xamarin.Interactive.Client.Windows"
+    xmlns:SharedClient="clr-namespace:Xamarin.Interactive.Client;assembly=Xamarin.Interactive.Client"
+    mc:Ignorable="d"
+    FocusManager.FocusedElement="{Binding ElementName=itemsListView}"
+    ShowMinButton="False"
+    ShowMaxRestoreButton="False"
+    WindowStartupLocation="CenterScreen"
+    SizeToContent="WidthAndHeight"
+    ResizeMode="NoResize"
+    Title="{x:Static SharedClient:ClientInfo.FullProductName}"
+    Icon="{x:Static client:App.AppIconSource}"
+    IconTemplate="{StaticResource InspectorTitlebarIconDataTemplate}"
+    Style="{DynamicResource MetroWindowStyle}">
+
+    <Controls:MetroWindow.Resources>
+        <Style BasedOn="{StaticResource MenuItemWindowCommand}" TargetType="MenuItem"/>
+
+        <Converters:IsGreaterThanOrEqualToVisibilityConverter
+            x:Key="agentDifferentiatorVisibilityConverter"
+            TrueValue="Visible"
+            FalseValue="Collapsed"/>
+    </Controls:MetroWindow.Resources>
+
+    <Controls:MetroWindow.TitleTemplate>
+        <DataTemplate/>
+    </Controls:MetroWindow.TitleTemplate>
+
+    <Controls:MetroWindow.LeftWindowCommands>
+        <Controls:WindowCommands>
+            <Menu x:Name="mainMenu" Background="Transparent"/>
+        </Controls:WindowCommands>
+    </Controls:MetroWindow.LeftWindowCommands>
+
+    <Window.CommandBindings>
+        <CommandBinding Command="Open" Executed="OnOpenCommandExecuted"/>
+        <CommandBinding Command="Close" Executed="OnCloseCommandExecuted"/>
+    </Window.CommandBindings>
+
+    <StackPanel
+        Orientation="Horizontal">
+        <LocalControls:MultiSourceImage
+            VerticalAlignment="Top"
+            x:Name="sideImage"
+            Margin="0,20,0,0"
+            Width="90"
+            Height="230"/>
+        <StackPanel
+            HorizontalAlignment="Left"
+            Width="{Binding ElementName=itemListBorder, Path=ActualWidth}"
+            Margin="20,20,40,20">
+            <TextBlock
+                FontSize="20"
+                TextWrapping="Wrap">
+                Create a new Workbook
+            </TextBlock>
+            <TextBlock
+                Margin="0,8,0,20"
+                TextWrapping="Wrap">
+                Workbooks provide a blend of documentation and code – perfect for
+                experimentation, learning, and creating guides and teaching aids.
+            </TextBlock>
+            <Border
+                x:Name="itemListBorder"
+                Width="258"
+                Margin="0,0,0,8"
+                BorderThickness="1"
+                BorderBrush="{DynamicResource ListViewSelectedBrush}">
+                <ListView
+                    x:Name="itemsListView"
+                    Height="64"
+                    Margin="0"
+                    BorderThickness="0"
+                    Padding="0"
+                    SelectionMode="Single"
+                    ItemsSource="{Binding Items}"
+                    SelectedItem="{Binding SelectedItem, Mode=TwoWay}"
+                    ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                    ScrollViewer.VerticalScrollBarVisibility="Disabled">
+                    <ListView.Resources>
+                        <Style TargetType="GridViewColumnHeader">
+                            <Setter Property="Visibility" Value="Collapsed" />
+                        </Style>
+                    </ListView.Resources>
+                    <ListView.ItemContainerStyle>
+                        <Style TargetType="ListViewItem" BasedOn="{StaticResource WorkbooksListViewItem}">
+                            <EventSetter Event="MouseDoubleClick" Handler="OnCreateWorkbook"></EventSetter>
+                        </Style>
+                    </ListView.ItemContainerStyle>
+                    <ListBox.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <UniformGrid
+                                IsItemsHost="True"
+                                Rows="1"
+                                Columns="4"/>
+                        </ItemsPanelTemplate>
+                    </ListBox.ItemsPanel>
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel>
+                                <LocalControls:IconThemeImage
+                                    IconSize="32"
+                                    IconName="{Binding IconName}"
+                                    IsSelected="{Binding
+                                        Path=IsSelected,
+                                        RelativeSource={RelativeSource
+                                            Mode=FindAncestor,
+                                            AncestorType={x:Type ListBoxItem}}}"/>
+                                <TextBlock
+                                    Text="{Binding Label}"
+                                    TextAlignment="Center"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListView>
+            </Border>
+            <StackPanel
+                Orientation="Horizontal"
+                Visibility="{Binding Path=SelectedItem.WorkbookApps.Count,
+                    Converter={StaticResource agentDifferentiatorVisibilityConverter},
+                    ConverterParameter=2}">
+                <ComboBox
+                    ItemContainerStyle="{DynamicResource ComboBoxItem}"
+                    ItemsSource="{Binding Path=SelectedItem.WorkbookApps}"
+                    SelectedItem="{Binding Path=SelectedItem.SelectedWorkbookApp, Mode=TwoWay}">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Label}"/>
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+            </StackPanel>
+            <ItemsControl ItemsSource="{Binding Path=SelectedItem.SelectedWorkbookApp.OptionalFeatures}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <CheckBox
+                            Content="{Binding Label}"
+                            ToolTip="{Binding Description}"
+                            IsChecked="{Binding Enabled}"/>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+            <Grid
+                Margin="0,20,0,0"
+                Width="{Binding ElementName=itemListBorder, Path=ActualWidth}">
+                <Button
+                    Content="Create Workbook"
+                    IsDefault="True"
+                    HorizontalAlignment="Right"
+                    Padding="10,0,10,0"
+                    Style="{DynamicResource WorkbooksButton}"
+                    Click="OnCreateWorkbook"/>
+            </Grid>
+        </StackPanel>
+    </StackPanel>
+</Controls:MetroWindow>

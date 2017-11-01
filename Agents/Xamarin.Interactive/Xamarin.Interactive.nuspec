@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<package>
+  <metadata>
+    <id>Xamarin.Workbooks.Integration</id>
+    <version>0.0.0</version>
+    <title>Xamarin Workbooks Integration</title>
+    <authors>Microsoft</authors>
+    <owners>Microsoft</owners>
+    <projectUrl>https://developer.xamarin.com/guides/cross-platform/workbooks/sdk/</projectUrl>
+    <iconUrl>https://dl.xamarin.com/interactive/workbooks-nuget-icon.png</iconUrl>
+    <requireLicenseAcceptance>true</requireLicenseAcceptance>
+    <licenseUrl>https://aka.ms/xamint-eula</licenseUrl>
+    <developmentDependency>true</developmentDependency>
+    <description>
+      Build library integrations for Xamarin Workbooks. See the project page for
+      more information and documentation.
+    </description>
+    <copyright>Copyright 2016-2017 Microsoft. All rights reserved.</copyright>
+    <tags>xamarin workbooks interactive</tags>
+  </metadata>
+  <files>
+    <file src="bin\$configuration$\Xamarin.Interactive.Stripped.dll" target="lib\portable-net45+win8+wpa81\Xamarin.Interactive.dll" />
+  </files>
+</package>

@@ -1,0 +1,110 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls">
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/BaseLight.xaml" />
+    </ResourceDictionary.MergedDictionaries>
+    <!-- Outlook Blue -->
+    <Color x:Key="AccentBaseColor">#FF0173C7</Color>
+    <Color x:Key="AccentColor">#FF0173C7</Color>
+    <Color x:Key="AccentColor2">#FF0173C7</Color>
+    <Color x:Key="AccentColor4">#FF0173C7</Color>
+    <!-- Outlook message list hover background -->
+    <Color x:Key="AccentColor3">#FFE6F2FA</Color>
+    <!-- Outlook tab hover background -->
+    <Color x:Key="HighlightColor">#FF2A8AD4</Color>
+
+    <!-- Reset/Override MahApps Brushes -->
+    <SolidColorBrush x:Key="AccentBaseColorBrush" Color="{StaticResource AccentBaseColor}" />
+    <SolidColorBrush x:Key="AccentColorBrush" Color="{StaticResource AccentColor}" />
+    <SolidColorBrush x:Key="AccentColorBrush2" Color="{StaticResource AccentColor2}" />
+    <SolidColorBrush x:Key="AccentColorBrush3" Color="{StaticResource AccentColor3}" />
+    <SolidColorBrush x:Key="AccentColorBrush4" Color="{StaticResource AccentColor4}" />
+
+    <SolidColorBrush x:Key="WindowTitleColorBrush" Color="{StaticResource AccentColor}" />
+
+    <LinearGradientBrush x:Key="ProgressBrush" EndPoint="0.001,0.5" StartPoint="1.002,0.5">
+        <GradientStop Color="{StaticResource HighlightColor}" Offset="0" />
+        <GradientStop Color="{StaticResource AccentColor3}" Offset="1" />
+    </LinearGradientBrush>
+
+    <SolidColorBrush x:Key="CheckmarkFill" Color="{StaticResource AccentColor}" />
+    <SolidColorBrush x:Key="RightArrowFill" Color="{StaticResource AccentColor}" />
+
+    <Color x:Key="IdealForegroundColor">White</Color>
+    <SolidColorBrush x:Key="IdealForegroundColorBrush" Color="{StaticResource IdealForegroundColor}" />
+
+    <!--
+        Override this so unselected tabs have a decent contrast ratio. GrayNormalBrush defaults to
+        #BEBEBE, which has a horrific 1.9:1 contrast ratio. #888888 is 3.5:1 and the text where it's
+        used is size 18, so at least 3:1 is needed. If we need to go to 4.5:1, #767676 should work.
+    -->
+    <SolidColorBrush x:Key="GrayNormalBrush" Color="#FF888888" />
+
+    <!-- Override GrayBrush8 in this context to prevent Mah from drawing ugly gray backgrounds on repeat buttons -->
+    <Style x:Key="ChromelessButtonStyle" BasedOn="{StaticResource ChromelessButtonStyle}" TargetType="{x:Type ButtonBase}">
+        <Style.Resources>
+            <SolidColorBrush x:Key="GrayBrush8" Color="White" />
+        </Style.Resources>
+    </Style>
+
+    <!-- Our Brushes -->
+    <SolidColorBrush x:Key="TopLevelHeaderBackgroundBrush" Color="Transparent" />
+    <SolidColorBrush x:Key="TopLevelHeaderForegroundBrush" Color="White" />
+    <SolidColorBrush x:Key="TopLevelHeaderOpenBackgroundBrush" Color="{StaticResource HighlightColor}" />
+    <SolidColorBrush x:Key="TopLevelHeaderOpenForegroundBrush" Color="Black" />
+    <SolidColorBrush x:Key="TopLevelHeaderForegroundHoverBrush" Color="White" />
+    <SolidColorBrush x:Key="TopLevelHeaderBackgroundHoverBrush" Color="{StaticResource HighlightColor}" />
+
+    <SolidColorBrush x:Key="NonActiveWindowTitleCaptionBrush" Color="Black" />
+    <SolidColorBrush x:Key="SubmenuHeaderBackgroundBrush" Color="White" />
+    <SolidColorBrush x:Key="SubmenuItemBackgroundBrush" Color="White" />
+
+    <SolidColorBrush x:Key="MenuHighlightBrush" Color="{StaticResource HighlightColor}" />
+    <!-- This seems odd, but this is for checkmarks and text highlights, where we want to use base color. -->
+    <SolidColorBrush x:Key="HighlightBrush" Color="{StaticResource AccentColor}" />
+
+    <SolidColorBrush x:Key="SubmenuItemForegroundBrush" Color="Black" />
+    <SolidColorBrush x:Key="SubmenuHeaderForegroundBrush" Color="Black" />
+
+    <SolidColorBrush x:Key="WindowGlowBrush" Color="{DynamicResource AccentColor}" />
+    <SolidColorBrush x:Key="ControlBorderBrush" Color="{DynamicResource AccentColor}" />
+
+    <SolidColorBrush x:Key="PrimaryContentSelectedTabBorderBrush" Color="White" />
+    <SolidColorBrush x:Key="PrimaryContentSelectedTabForegroundBrush" Color="Black" />
+    <SolidColorBrush x:Key="PrimaryContentUnselectedTabBorderBrush" Color="Transparent" />
+    <SolidColorBrush x:Key="PrimaryContentUnselectedTabForegroundBrush" Color="White" />
+    <SolidColorBrush x:Key="PrimaryContentInactiveSelectedTabForegroundBrush" Color="Black" />
+    <SolidColorBrush x:Key="PrimaryContentInactiveUnselectedTabForegroundBrush" Color="White" />
+
+    <SolidColorBrush x:Key="ListViewHoverForegroundBrush" Color="Black" />
+    <SolidColorBrush x:Key="ListViewSelectedBrush" Color="{StaticResource AccentBaseColor}" />
+    <SolidColorBrush x:Key="ListViewHoverBrush" Color="{StaticResource AccentColor3}" />
+    <SolidColorBrush x:Key="ListViewSelectedForegroundBrush" Color="White" />
+
+    <Style x:Key="ComboBoxStyle" BasedOn="{StaticResource ComboBoxStyle}" TargetType="{x:Type ComboBox}">
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Trigger.Setters>
+                    <!-- Empirically determined to be the best. -->
+                    <Setter Property="Background" Value="#EBEBEB" />
+                </Trigger.Setters>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="ComboBoxItem" BasedOn="{StaticResource ComboBoxItem}" TargetType="{x:Type ComboBoxItem}">
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Trigger.Setters>
+                    <Setter Property="Foreground" Value="White" />
+                </Trigger.Setters>
+            </Trigger>
+            <Trigger Property="IsSelected" Value="True">
+                <Trigger.Setters>
+                    <Setter Property="Foreground" Value="White" />
+                </Trigger.Setters>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+</ResourceDictionary>

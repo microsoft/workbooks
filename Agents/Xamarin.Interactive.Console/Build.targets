@@ -1,0 +1,32 @@
+<Project>
+  <Import Project="..\..\WorkbookApps\WorkbookApp.targets" />
+
+  <Target Name="Install" AfterTargets="Build">
+    <ItemGroup>
+      <InstallFiles Include="$(OutputPath)*"/>
+    </ItemGroup>
+
+    <GenerateWorkbookAppManifest
+      ManifestOutputPath="$(InstallDir)workbookapps.json"
+      Flavor="Console"
+      Order="100"
+      Icon="project-console"
+      AppPath="Console/$(AssemblyName).exe"
+      AssemblySearchPaths="Console;{systemGac}"
+      TargetFrameworkIdentifier="$(TargetFrameworkIdentifier)"
+      TargetFrameworkVersion="$(TargetFrameworkVersion)"/>
+
+    <Copy
+      SkipUnchangedFiles="true"
+      SourceFiles="@(InstallFiles)"
+      DestinationFolder="$(InstallDir)Console\%(RecursiveDir)"/>
+
+    <UpdateWixManifest
+      SourceDirectory="$(InstallDir)Console"
+      InputManifestPath="..\..\Package\Windows\AgentFiles.wxs"
+      DirectoryVariable="ConsoleAgentAppDirectory"
+      ComponentGroupId="ConsoleAgentComponents"
+      IdPrefix="ConsoleAgent"
+      IncludedExtensions="dll;json;exe"/>
+  </Target>
+</Project>

@@ -1,0 +1,118 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{6D864AB3-AAB0-4D18-9AE2-68FE6383802F}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Xamarin.CrossBrowser</RootNamespace>
+    <AssemblyName>Xamarin.CrossBrowser.Wpf</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+    <ProductVersion>8.0.30703</ProductVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Xaml" />
+    <Reference Include="WindowsBase" />
+    <Reference Include="Microsoft.mshtml">
+      <HintPath>Microsoft.mshtml.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\Xamarin.CrossBrowser.Mac\ScriptDelegate.cs">
+      <Link>ScriptDelegate.cs</Link>
+    </Compile>
+    <Compile Include="Generated\ClientRect.cs" />
+    <Compile Include="Generated\Document.cs" />
+    <Compile Include="Generated\DocumentPosition.cs" />
+    <Compile Include="Generated\Element.cs" />
+    <Compile Include="Generated\Event.cs" />
+    <Compile Include="Generated\EventPhase.cs" />
+    <Compile Include="Generated\HtmlDocument.cs" />
+    <Compile Include="Generated\HtmlElement.cs" />
+    <Compile Include="Generated\HtmlInputElement.cs" />
+    <Compile Include="Generated\KeyboardEvent.cs" />
+    <Compile Include="Generated\Node.cs" />
+    <Compile Include="Generated\NodeType.cs" />
+    <Compile Include="Generated\Range.cs" />
+    <Compile Include="Generated\Selection.cs" />
+    <Compile Include="Generated\Text.cs" />
+    <Compile Include="Generated\UIEvent.cs" />
+    <Compile Include="Internal\Native.cs" />
+    <Compile Include="Internal\Com.cs" />
+    <Compile Include="Internal\XcbActiveXSite.cs" />
+    <Compile Include="Internal\XcbWebBrowserSite.cs" />
+    <Compile Include="ScriptFunction.cs" />
+    <Compile Include="ScriptBridge.cs" />
+    <Compile Include="ScriptContext.cs" />
+    <Compile Include="ScriptObject_Dynamic.cs" />
+    <Compile Include="WrappedObject.cs" />
+    <Compile Include="EventListener.cs" />
+    <Compile Include="Generated\EventTarget.cs" />
+    <Compile Include="Generated\StyleSheetList.cs" />
+    <Compile Include="Generated\CssStyleSheet.cs" />
+    <Compile Include="Generated\StyleSheet.cs" />
+    <Compile Include="..\Xamarin.CrossBrowser.Mac\EventTarget.cs">
+      <Link>EventTarget.cs</Link>
+    </Compile>
+    <Compile Include="Generated\CssStyleDeclaration.cs" />
+    <Compile Include="Generated\HtmlStyleElement.cs" />
+    <Compile Include="Generated\CssRule.cs" />
+    <Compile Include="Generated\CssRuleType.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Properties\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+  <ItemGroup>
+    <Compile Include="XcbWebView.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="ScriptBridge.js" />
+  </ItemGroup>
+  <ItemGroup>
+    <COMReference Include="SHDocVw">
+      <Guid>{EAB22AC0-30C1-11CF-A7EB-0000C05BAE0B}</Guid>
+      <VersionMajor>1</VersionMajor>
+      <VersionMinor>1</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>tlbimp</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
+  </ItemGroup>
+</Project>

@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <Fragment>
+    <Directory Id="TARGETDIR" Name="SourceDir">
+
+      <Directory Id="ProgramFilesFolder"  >
+        <Directory Id="XamarinFolder" Name ="Xamarin">
+          <Directory Id="INSTALLFOLDER" Name="Workbooks">
+            <Directory Id="SdkInstallFolder" Name="SDK" />
+            <Directory Id="ClientInstallFolder" Name="Client">
+              <Directory Id="ClientIconResourcesFolder" Name="Icons" />
+              <Directory Id="InspectorResourcesReplFolder" Name="ClientApp">
+                <Directory Id="InspectorResourcesReplPmtoolbar" Name="pm-toolbar"/>
+                <Directory Id="InspectorResourcesReplMinMaps" Name="min-maps">
+                  <Directory Id="InspectorResourcesReplMinMapsVs" Name="vs">
+                    <Directory Id="InspectorResourcesReplMinMapsVsBase" Name="base">
+                      <Directory Id="InspectorResourcesReplMinMapsVsBaseWorker" Name="worker"/>
+                    </Directory>
+                    <Directory Id="InspectorResourcesReplMinMapsVsEditor" Name="editor"/>
+                  </Directory>
+                </Directory>
+                <Directory Id="InspectorResourcesReplEditorFolder" Name="editor">
+                  <Directory Id="InspectorResourcesReplEditorGlyphsFolder" Name="glyphs"/>
+                </Directory>
+                <Directory Id="InspectorResourcesReplMonacoEditorFolder" Name="monaco-editor">
+                  <Directory Id="InspectorResourcesReplMonacoEditorVsFolder" Name="vs">
+                    <Directory Id="InspectorResourcesReplMonacoEditorVsBaseFolder" Name="base">
+                      <Directory Id="InspectorResourcesReplMonacoEditorVsBaseWorkerFolder" Name="worker"/>
+                    </Directory>
+                    <Directory Id="InspectorResourcesReplMonacoEditorVsBasicLanguagesFolder" Name="basic-languages">
+                      <Directory Id="InspectorResourcesReplMonacoEditorVsBasicLanguagesSrcFolder" Name="src"/>
+                    </Directory>
+                    <Directory Id="InspectorResourcesReplMonacoEditorVsEditorFolder" Name="editor">
+                    </Directory>
+                  </Directory>
+                </Directory>
+                <Directory Id="InspectorResourcesReplRenderersFolder" Name="renderers"/>
+              </Directory>
+              <Directory Id="SampleWorkbooksFolder" Name="Workbooks" />
+            </Directory>
+            <Directory Id="AgentInstallFolder" Name="Agents">
+              <Directory Id="iOSAgentInstallFolder" Name="Xamarin.Interactive.iOS"/>
+              <Directory Id="AndroidAgentInstallFolder" Name="Xamarin.Interactive.Android"/>
+              <Directory Id="DotNetCoreAgentInstallFolder" Name="DotNetCore"/>
+              <Directory Id="FormsAgentInstallFolder" Name="Forms">
+                <Directory Id="AndroidFormsAgentInstallFolder" Name="Android"/>
+                <Directory Id="iOSFormsAgentInstallFolder" Name="iOS"/>
+              </Directory>
+            </Directory>
+            <Directory Id="AgentAppInstallFolder" Name="WorkbookApps">
+              <Directory Id="ConsoleAgentInstallFolder" Name="Console"/>
+              <Directory Id="WpfAgentAppInstallFolder" Name="WPF"/>
+              <Directory Id="DotNetCoreAgentAppInstallFolder" Name="DotNetCore"/>
+              <Directory Id="iOSAgentAppInstallFolder" Name="iOS">
+                <Directory Id="iOSAgentAppClientIntegrationInstallFolder" Name="ClientIntegration"/>
+                <Directory Id="iOSAgentAppRootInstallFolder" Name="Xamarin.Workbooks.iOS.app">
+                  <Directory Id="iOSAgentAppStoryboardInstallFolder" Name="Main.storyboardc"/>
+                  <Directory Id="iOSAgentAppFacadesInstallFolder" Name="Facades"/>
+                </Directory>
+              </Directory>
+              <Directory Id="AndroidAgentAppInstallFolder" Name="Android">
+                <Directory Id="AndroidAgentAppAssembliesInstallFolder" Name="Framework">
+                  <Directory Id="AndroidAgentAppAssembliesFacadesInstallFolder" Name="Facades" />
+                </Directory>
+                <Directory Id="AndroidAgentAppClientIntegrationInstallFolder" Name="ClientIntegration" />
+              </Directory>
+            </Directory>
+            <Directory Id="ToolsInstallFolder" Name="Tools"/>
+            <Directory Id="VSExtensionBackupFolder" Name="VisualStudioExtension"/>
+          </Directory>
+        </Directory>
+      </Directory>
+
+      <Directory Id="ProgramMenuFolder">
+        <Directory Id="ApplicationProgramsFolder" Name="Xamarin Workbooks"/>
+      </Directory>
+
+    </Directory>
+  </Fragment>
+</Wix>

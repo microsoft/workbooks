@@ -1,0 +1,35 @@
+﻿/*
+csharp.css
+
+Author:
+  Aaron Bockover <abock@xamarin.com>
+
+Copyright 2015 Xamarin Inc. All rights reserved.
+*/
+
+body {
+  color: rgb(80, 80, 80) !important;
+}
+
+.keyword,
+.csharp-keyword {
+  color: rgb(0, 0, 255);
+}
+
+.typespec,
+.csharp-typespec {
+  color: rgb(43, 145, 175);
+}
+
+.csharp-string,
+.csharp-char {
+  color: rgb(163, 21, 21);
+}
+
+.csharp-number {
+  color: rgb(9, 136, 90);
+}
+
+.csharp-enum-name {
+  color: rgb(140, 74, 183);
+}

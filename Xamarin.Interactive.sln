@@ -1,0 +1,609 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.26730.16
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Xamarin.Interactive.Shared", "Agents\Xamarin.Interactive\Xamarin.Interactive.Shared.shproj", "{0B64FF4D-4589-438B-A18C-9DA1DE8A2653}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Xamarin.Interactive.Bootstrap", "Bootstrap\Xamarin.Interactive.Bootstrap\Xamarin.Interactive.Bootstrap.shproj", "{2ECF1997-1B8A-4C03-8CA9-9710A820C4FC}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Clients", "Clients", "{1918A3C3-EAE4-4F9F-BF6B-83CB94AAF7E9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xamarin.Interactive.Client.Mac", "Clients\Xamarin.Interactive.Client.Mac\Xamarin.Interactive.Client.Mac.csproj", "{B813E9C0-FAEF-4661-ABCE-8F3322D451D2}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Agents", "Agents", "{AE0C9371-285B-4540-AB1D-F5141FA66D19}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xamarin.Interactive.iOS", "Agents\Xamarin.Interactive.iOS\Xamarin.Interactive.iOS.csproj", "{32A8EBC6-BAB4-403B-9A8B-89F836CFE95A}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Xamarin.Interactive.Mac", "Agents\Xamarin.Interactive.Mac\Xamarin.Interactive.Mac.shproj", "{0BE4E82E-2409-4425-811D-BC7C8B134320}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xamarin.Interactive.Mac.Mobile", "Agents\Xamarin.Interactive.Mac.Mobile\Xamarin.Interactive.Mac.Mobile.csproj", "{AF7B7ABD-84D4-46B2-80E4-9CA457C513BC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xamarin.Interactive.Mac.Desktop", "Agents\Xamarin.Interactive.Mac.Desktop\Xamarin.Interactive.Mac.Desktop.csproj", "{50E9C7DC-4FF9-44B2-BCCE-85A00E3D967E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Android", "Android", "{6E0C8142-898B-4F53-A480-4F35D19893D7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xamarin.Interactive.Android", "Agents\Xamarin.Interactive.Android\Xamarin.Interactive.Android.csproj", "{22FD0FAE-D093-446C-9ADB-4B59A97F413E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xamarin.Interactive.Android.ActivityTrackerShim", "Agents\Xamarin.Interactive.Android.ActivityTrackerShim\Xamarin.Interactive.Android.ActivityTrackerShim.csproj", "{FFCB3FDE-7622-4195-A502-5CA95432172F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xamarin.CrossBrowser.Mac", "Clients\CrossBrowser\Xamarin.CrossBrowser.Mac\Xamarin.CrossBrowser.Mac.csproj", "{68B5F01B-6F1C-49D5-9491-96F826AFE211}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xamarin.CrossBrowser.Generator", "Clients\CrossBrowser\Xamarin.CrossBrowser.Generator\Xamarin.CrossBrowser.Generator.csproj", "{41EA66B9-7231-4F56-A6CA-7600735BFAC8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xamarin.CrossBrowser.Wpf", "Clients\CrossBrowser\Xamarin.CrossBrowser.Wpf\Xamarin.CrossBrowser.Wpf.csproj", "{6D864AB3-AAB0-4D18-9AE2-68FE6383802F}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{CA7D68B0-F4A3-4679-96C0-7F967056F1FC}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "WorkbookApps", "WorkbookApps", "{5EF281AE-893E-49E8-BBA9-DBE86493BB39}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xamarin.Workbooks.iOS", "WorkbookApps\Xamarin.Workbooks.iOS\Xamarin.Workbooks.iOS.csproj", "{C91F06EE-C8FC-475C-8A3C-CA171BCEB46D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xamarin.Workbooks.Android", "WorkbookApps\Xamarin.Workbooks.Android\Xamarin.Workbooks.Android.csproj", "{08F4622B-08E3-45AB-B0A1-D360406F6A15}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Xamarin.Interactive.MTouch", "Clients\Xamarin.Interactive.MTouch\Xamarin.Interactive.MTouch.shproj", "{A31DDDED-F400-41BE-92BA-6931763C27E7}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "iOS", "iOS", "{ED62D731-5B6C-45F6-9A62-B9992E874E27}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Mac", "Mac", "{1281F1A8-EB27-4D6C-8E0A-03FBFAA63746}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tools", "Tools", "{E3972EA9-3073-4251-AD90-87B4C90147FC}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CrossBrowser", "CrossBrowser", "{A979F4BC-E86B-4B05-8DF1-1950FCDC276F}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Bootstrap", "Bootstrap", "{0D5D807C-DEBE-498D-B2D8-D75E6C60D15B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xamarin.Build", "Build\Xamarin.Build\Xamarin.Build.csproj", "{056196F4-3E6B-43E5-886E-D9C8E9BEACBB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xamarin.Workbooks.Mac", "WorkbookApps\Xamarin.Workbooks.Mac\Xamarin.Workbooks.Mac.csproj", "{88DA1F82-8CA2-46A7-B339-8D96C9138515}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xamarin.Interactive", "Agents\Xamarin.Interactive\Xamarin.Interactive.csproj", "{955F473A-04EC-4716-B75E-509BA892499B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xamarin.Interactive.Facades", "Agents\Xamarin.Interactive.Facades\Xamarin.Interactive.Facades.csproj", "{0CB32DEF-71E4-489A-AECE-AFBFCC06854C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Forms", "Forms", "{88765549-56E0-4B66-BA2D-F49E1446EF94}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xamarin.Interactive.Forms.iOS", "Agents\Xamarin.Interactive.Forms.iOS\Xamarin.Interactive.Forms.iOS.csproj", "{A534BEA1-1A39-4355-B6EF-F6A3EF7E65FC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xamarin.Interactive.Forms.Android", "Agents\Xamarin.Interactive.Forms.Android\Xamarin.Interactive.Forms.Android.csproj", "{159A14A0-F8C7-460F-ADF7-967D60E63689}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xamarin.Interactive.Forms", "Agents\Xamarin.Interactive.Forms\Xamarin.Interactive.Forms.csproj", "{932D2C61-5DBE-4D82-A4D6-1EA7401F10D3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xamarin.Interactive.Console", "Agents\Xamarin.Interactive.Console\Xamarin.Interactive.Console.csproj", "{7A522415-E2F7-4E4B-8E11-3D7CF9A854A8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xamarin.Interactive.Tests.Android", "Tests\Xamarin.Interactive.Tests.Android\Xamarin.Interactive.Tests.Android.csproj", "{C675C808-1FA9-4925-B4DF-87240ED2E3B8}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "External", "External", "{6BA2A815-CF49-40C0-8174-F985894BD8BF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommonMark.Base", "External\CommonMark.NET\CommonMark\CommonMark.Base.csproj", "{0FD4B1DD-45A8-4F02-BEB0-5881CD512573}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xamarin.Interactive.Tests.InspectorSupport.Mac", "Tests\Xamarin.Interactive.Tests.InspectorSupport.Mac\Xamarin.Interactive.Tests.InspectorSupport.Mac.csproj", "{6FC4E5FC-B7BD-480E-9BD4-8078AB040DF0}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ILFixer", "Tools\ILFixer\ILFixer.csproj", "{1601EA3E-485F-4710-9937-DCD4C46728CE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ApiDump", "Tools\ApiDump\ApiDump.csproj", "{B44E528A-584A-4BAF-A398-6E2245AA8ED2}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xamarin.Interactive.DotNetCore", "Agents\Xamarin.Interactive.DotNetCore\Xamarin.Interactive.DotNetCore.csproj", "{CDF223B4-DD43-42BE-96BB-C1EEC464796C}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xamarin.Interactive.NetStandard", "Agents\Xamarin.Interactive.NetStandard\Xamarin.Interactive.NetStandard.csproj", "{7835BCA4-2F06-4AB8-B5E5-AD7934FFBA2D}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xamarin.Workbooks.DotNetCore", "WorkbookApps\Xamarin.Workbooks.DotNetCore\Xamarin.Workbooks.DotNetCore.csproj", "{5CBBD924-8B0D-4C35-A39B-751DCF9D234D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xamarin.Interactive.Wpf", "Agents\Xamarin.Interactive.Wpf\Xamarin.Interactive.Wpf.csproj", "{8DFCE7A8-BA80-475D-97C1-DFBCCE17C8E3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xamarin.Workbooks.Wpf", "WorkbookApps\Xamarin.Workbooks.Wpf\Xamarin.Workbooks.Wpf.csproj", "{F98CCE56-C44F-4096-A2FA-7298F339F846}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xamarin.Interactive.Client.Windows", "Clients\Xamarin.Interactive.Client.Windows\Xamarin.Interactive.Client.Windows.csproj", "{8A84E7D0-5B66-4BDE-ADE2-20E814D361B2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xamarin.Interactive.Client.Mac.SimChecker", "Clients\Xamarin.Interactive.Client.Mac.SimChecker\Xamarin.Interactive.Client.Mac.SimChecker.csproj", "{D495E2AE-BF3E-444B-B3D6-91EF14293831}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xamarin.PropertyEditing", "External\Xamarin.PropertyEditing\Xamarin.PropertyEditing\Xamarin.PropertyEditing.csproj", "{A0B6FE73-D046-4E1C-BA9D-F20683889C5A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xamarin.PropertyEditing.Windows", "External\Xamarin.PropertyEditing\Xamarin.PropertyEditing.Windows\Xamarin.PropertyEditing.Windows.csproj", "{60AF04BE-1B6B-411B-BCBA-C95EAFBD7AC0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xamarin.PropertyEditing.Mac", "External\Xamarin.PropertyEditing\Xamarin.PropertyEditing.Mac\Xamarin.PropertyEditing.Mac.csproj", "{E8F4F0EB-C2B1-4116-8459-E076E0E0E485}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{9B8D49C2-F1E2-4EBA-B912-F294AE704355}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CompilationIntegration", "Samples\CompilationIntegration\CompilationIntegration.csproj", "{6BCE5E68-86E6-47F6-AC65-40595230E0F8}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xamarin.Interactive.Client", "Clients\Xamarin.Interactive.Client\Xamarin.Interactive.Client.csproj", "{EE61A762-761D-46B0-9DFA-1D0FD47F3E85}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "System.Windows.Input", "Clients\System.Windows.Input\System.Windows.Input.csproj", "{D3C11AAD-595F-47B8-9EC5-BC2485A344DA}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xamarin.Interactive.Tests", "Tests\Xamarin.Interactive.Tests\Xamarin.Interactive.Tests.csproj", "{D5DE60DD-C8EE-41B9-A364-3ED89D668E2F}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ClientIntegrations", "ClientIntegrations", "{CED232BB-D8C8-43A9-BAF2-17321AE454D3}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xamarin.Workbooks.Client.iOS", "ClientIntegrations\Xamarin.Workbooks.Client.iOS\Xamarin.Workbooks.Client.iOS.csproj", "{B5F889E8-E396-4C7E-836E-DC5A9A260DB3}"
+EndProject
+Global
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		Agents\Xamarin.Interactive\Xamarin.Interactive.Shared.projitems*{0b64ff4d-4589-438b-a18c-9da1de8a2653}*SharedItemsImports = 13
+		Agents\Xamarin.Interactive.Mac\Xamarin.Interactive.Mac.projitems*{0be4e82e-2409-4425-811d-bc7c8b134320}*SharedItemsImports = 13
+		Agents\Xamarin.Interactive\Xamarin.Interactive.Shared.projitems*{22fd0fae-d093-446c-9adb-4b59a97f413e}*SharedItemsImports = 4
+		Bootstrap\Xamarin.Interactive.Bootstrap\Xamarin.Interactive.Bootstrap.projitems*{22fd0fae-d093-446c-9adb-4b59a97f413e}*SharedItemsImports = 4
+		Bootstrap\Xamarin.Interactive.Bootstrap\Xamarin.Interactive.Bootstrap.projitems*{2ecf1997-1b8a-4c03-8ca9-9710a820c4fc}*SharedItemsImports = 13
+		Agents\Xamarin.Interactive\Xamarin.Interactive.Shared.projitems*{32a8ebc6-bab4-403b-9a8b-89f836cfe95a}*SharedItemsImports = 4
+		Bootstrap\Xamarin.Interactive.Bootstrap\Xamarin.Interactive.Bootstrap.projitems*{32a8ebc6-bab4-403b-9a8b-89f836cfe95a}*SharedItemsImports = 4
+		Agents\Xamarin.Interactive.Mac\Xamarin.Interactive.Mac.projitems*{50e9c7dc-4ff9-44b2-bcce-85a00e3d967e}*SharedItemsImports = 4
+		Agents\Xamarin.Interactive\Xamarin.Interactive.Shared.projitems*{50e9c7dc-4ff9-44b2-bcce-85a00e3d967e}*SharedItemsImports = 4
+		Bootstrap\Xamarin.Interactive.Bootstrap\Xamarin.Interactive.Bootstrap.projitems*{50e9c7dc-4ff9-44b2-bcce-85a00e3d967e}*SharedItemsImports = 4
+		Agents\Xamarin.Interactive\Xamarin.Interactive.Shared.projitems*{7a522415-e2f7-4e4b-8e11-3d7cf9a854a8}*SharedItemsImports = 4
+		Bootstrap\Xamarin.Interactive.Bootstrap\Xamarin.Interactive.Bootstrap.projitems*{7a522415-e2f7-4e4b-8e11-3d7cf9a854a8}*SharedItemsImports = 4
+		Agents\Xamarin.Interactive\Xamarin.Interactive.Shared.projitems*{8dfce7a8-ba80-475d-97c1-dfbcce17c8e3}*SharedItemsImports = 4
+		Bootstrap\Xamarin.Interactive.Bootstrap\Xamarin.Interactive.Bootstrap.projitems*{8dfce7a8-ba80-475d-97c1-dfbcce17c8e3}*SharedItemsImports = 4
+		Clients\Xamarin.Interactive.MTouch\Xamarin.Interactive.MTouch.projitems*{a31ddded-f400-41be-92ba-6931763c27e7}*SharedItemsImports = 13
+		Agents\Xamarin.Interactive.Mac\Xamarin.Interactive.Mac.projitems*{af7b7abd-84d4-46b2-80e4-9ca457c513bc}*SharedItemsImports = 4
+		Agents\Xamarin.Interactive\Xamarin.Interactive.Shared.projitems*{af7b7abd-84d4-46b2-80e4-9ca457c513bc}*SharedItemsImports = 4
+		Bootstrap\Xamarin.Interactive.Bootstrap\Xamarin.Interactive.Bootstrap.projitems*{af7b7abd-84d4-46b2-80e4-9ca457c513bc}*SharedItemsImports = 4
+		Clients\Xamarin.Interactive.MTouch\Xamarin.Interactive.MTouch.projitems*{b813e9c0-faef-4661-abce-8f3322d451d2}*SharedItemsImports = 4
+		Clients\Xamarin.Interactive.MTouch\Xamarin.Interactive.MTouch.projitems*{d495e2ae-bf3e-444b-b3d6-91ef14293831}*SharedItemsImports = 4
+	EndGlobalSection
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|macOS = Debug|macOS
+		Debug|Windows = Debug|Windows
+		Release|Any CPU = Release|Any CPU
+		Release|macOS = Release|macOS
+		Release|Windows = Release|Windows
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B813E9C0-FAEF-4661-ABCE-8F3322D451D2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B813E9C0-FAEF-4661-ABCE-8F3322D451D2}.Debug|macOS.ActiveCfg = Debug|Any CPU
+		{B813E9C0-FAEF-4661-ABCE-8F3322D451D2}.Debug|macOS.Build.0 = Debug|Any CPU
+		{B813E9C0-FAEF-4661-ABCE-8F3322D451D2}.Debug|Windows.ActiveCfg = Debug|Any CPU
+		{B813E9C0-FAEF-4661-ABCE-8F3322D451D2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B813E9C0-FAEF-4661-ABCE-8F3322D451D2}.Release|macOS.ActiveCfg = Release|Any CPU
+		{B813E9C0-FAEF-4661-ABCE-8F3322D451D2}.Release|macOS.Build.0 = Release|Any CPU
+		{B813E9C0-FAEF-4661-ABCE-8F3322D451D2}.Release|Windows.ActiveCfg = Release|Any CPU
+		{32A8EBC6-BAB4-403B-9A8B-89F836CFE95A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{32A8EBC6-BAB4-403B-9A8B-89F836CFE95A}.Debug|macOS.ActiveCfg = Debug|Any CPU
+		{32A8EBC6-BAB4-403B-9A8B-89F836CFE95A}.Debug|macOS.Build.0 = Debug|Any CPU
+		{32A8EBC6-BAB4-403B-9A8B-89F836CFE95A}.Debug|Windows.ActiveCfg = Debug|Any CPU
+		{32A8EBC6-BAB4-403B-9A8B-89F836CFE95A}.Debug|Windows.Build.0 = Debug|Any CPU
+		{32A8EBC6-BAB4-403B-9A8B-89F836CFE95A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{32A8EBC6-BAB4-403B-9A8B-89F836CFE95A}.Release|macOS.ActiveCfg = Release|Any CPU
+		{32A8EBC6-BAB4-403B-9A8B-89F836CFE95A}.Release|macOS.Build.0 = Release|Any CPU
+		{32A8EBC6-BAB4-403B-9A8B-89F836CFE95A}.Release|Windows.ActiveCfg = Release|Any CPU
+		{32A8EBC6-BAB4-403B-9A8B-89F836CFE95A}.Release|Windows.Build.0 = Release|Any CPU
+		{AF7B7ABD-84D4-46B2-80E4-9CA457C513BC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AF7B7ABD-84D4-46B2-80E4-9CA457C513BC}.Debug|macOS.ActiveCfg = Debug|Any CPU
+		{AF7B7ABD-84D4-46B2-80E4-9CA457C513BC}.Debug|macOS.Build.0 = Debug|Any CPU
+		{AF7B7ABD-84D4-46B2-80E4-9CA457C513BC}.Debug|Windows.ActiveCfg = Debug|Any CPU
+		{AF7B7ABD-84D4-46B2-80E4-9CA457C513BC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AF7B7ABD-84D4-46B2-80E4-9CA457C513BC}.Release|macOS.ActiveCfg = Release|Any CPU
+		{AF7B7ABD-84D4-46B2-80E4-9CA457C513BC}.Release|macOS.Build.0 = Release|Any CPU
+		{AF7B7ABD-84D4-46B2-80E4-9CA457C513BC}.Release|Windows.ActiveCfg = Release|Any CPU
+		{50E9C7DC-4FF9-44B2-BCCE-85A00E3D967E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{50E9C7DC-4FF9-44B2-BCCE-85A00E3D967E}.Debug|macOS.ActiveCfg = Debug|Any CPU
+		{50E9C7DC-4FF9-44B2-BCCE-85A00E3D967E}.Debug|macOS.Build.0 = Debug|Any CPU
+		{50E9C7DC-4FF9-44B2-BCCE-85A00E3D967E}.Debug|Windows.ActiveCfg = Debug|Any CPU
+		{50E9C7DC-4FF9-44B2-BCCE-85A00E3D967E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{50E9C7DC-4FF9-44B2-BCCE-85A00E3D967E}.Release|macOS.ActiveCfg = Release|Any CPU
+		{50E9C7DC-4FF9-44B2-BCCE-85A00E3D967E}.Release|macOS.Build.0 = Release|Any CPU
+		{50E9C7DC-4FF9-44B2-BCCE-85A00E3D967E}.Release|Windows.ActiveCfg = Release|Any CPU
+		{22FD0FAE-D093-446C-9ADB-4B59A97F413E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{22FD0FAE-D093-446C-9ADB-4B59A97F413E}.Debug|macOS.ActiveCfg = Debug|Any CPU
+		{22FD0FAE-D093-446C-9ADB-4B59A97F413E}.Debug|macOS.Build.0 = Debug|Any CPU
+		{22FD0FAE-D093-446C-9ADB-4B59A97F413E}.Debug|Windows.ActiveCfg = Debug|Any CPU
+		{22FD0FAE-D093-446C-9ADB-4B59A97F413E}.Debug|Windows.Build.0 = Debug|Any CPU
+		{22FD0FAE-D093-446C-9ADB-4B59A97F413E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{22FD0FAE-D093-446C-9ADB-4B59A97F413E}.Release|macOS.ActiveCfg = Release|Any CPU
+		{22FD0FAE-D093-446C-9ADB-4B59A97F413E}.Release|macOS.Build.0 = Release|Any CPU
+		{22FD0FAE-D093-446C-9ADB-4B59A97F413E}.Release|Windows.ActiveCfg = Release|Any CPU
+		{22FD0FAE-D093-446C-9ADB-4B59A97F413E}.Release|Windows.Build.0 = Release|Any CPU
+		{FFCB3FDE-7622-4195-A502-5CA95432172F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FFCB3FDE-7622-4195-A502-5CA95432172F}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{FFCB3FDE-7622-4195-A502-5CA95432172F}.Debug|macOS.ActiveCfg = Debug|Any CPU
+		{FFCB3FDE-7622-4195-A502-5CA95432172F}.Debug|macOS.Build.0 = Debug|Any CPU
+		{FFCB3FDE-7622-4195-A502-5CA95432172F}.Debug|Windows.ActiveCfg = Debug|Any CPU
+		{FFCB3FDE-7622-4195-A502-5CA95432172F}.Debug|Windows.Build.0 = Debug|Any CPU
+		{FFCB3FDE-7622-4195-A502-5CA95432172F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FFCB3FDE-7622-4195-A502-5CA95432172F}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{FFCB3FDE-7622-4195-A502-5CA95432172F}.Release|macOS.ActiveCfg = Release|Any CPU
+		{FFCB3FDE-7622-4195-A502-5CA95432172F}.Release|macOS.Build.0 = Release|Any CPU
+		{FFCB3FDE-7622-4195-A502-5CA95432172F}.Release|Windows.ActiveCfg = Release|Any CPU
+		{FFCB3FDE-7622-4195-A502-5CA95432172F}.Release|Windows.Build.0 = Release|Any CPU
+		{68B5F01B-6F1C-49D5-9491-96F826AFE211}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{68B5F01B-6F1C-49D5-9491-96F826AFE211}.Debug|macOS.ActiveCfg = Debug|Any CPU
+		{68B5F01B-6F1C-49D5-9491-96F826AFE211}.Debug|macOS.Build.0 = Debug|Any CPU
+		{68B5F01B-6F1C-49D5-9491-96F826AFE211}.Debug|Windows.ActiveCfg = Debug|Any CPU
+		{68B5F01B-6F1C-49D5-9491-96F826AFE211}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{68B5F01B-6F1C-49D5-9491-96F826AFE211}.Release|macOS.ActiveCfg = Release|Any CPU
+		{68B5F01B-6F1C-49D5-9491-96F826AFE211}.Release|macOS.Build.0 = Release|Any CPU
+		{68B5F01B-6F1C-49D5-9491-96F826AFE211}.Release|Windows.ActiveCfg = Release|Any CPU
+		{41EA66B9-7231-4F56-A6CA-7600735BFAC8}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{41EA66B9-7231-4F56-A6CA-7600735BFAC8}.Debug|macOS.ActiveCfg = Debug|x86
+		{41EA66B9-7231-4F56-A6CA-7600735BFAC8}.Debug|macOS.Build.0 = Debug|x86
+		{41EA66B9-7231-4F56-A6CA-7600735BFAC8}.Debug|Windows.ActiveCfg = Debug|x86
+		{41EA66B9-7231-4F56-A6CA-7600735BFAC8}.Debug|Windows.Build.0 = Debug|x86
+		{41EA66B9-7231-4F56-A6CA-7600735BFAC8}.Release|Any CPU.ActiveCfg = Debug|x86
+		{41EA66B9-7231-4F56-A6CA-7600735BFAC8}.Release|macOS.ActiveCfg = Debug|x86
+		{41EA66B9-7231-4F56-A6CA-7600735BFAC8}.Release|macOS.Build.0 = Debug|x86
+		{41EA66B9-7231-4F56-A6CA-7600735BFAC8}.Release|Windows.ActiveCfg = Debug|x86
+		{41EA66B9-7231-4F56-A6CA-7600735BFAC8}.Release|Windows.Build.0 = Debug|x86
+		{6D864AB3-AAB0-4D18-9AE2-68FE6383802F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6D864AB3-AAB0-4D18-9AE2-68FE6383802F}.Debug|macOS.ActiveCfg = Debug|Any CPU
+		{6D864AB3-AAB0-4D18-9AE2-68FE6383802F}.Debug|Windows.ActiveCfg = Debug|Any CPU
+		{6D864AB3-AAB0-4D18-9AE2-68FE6383802F}.Debug|Windows.Build.0 = Debug|Any CPU
+		{6D864AB3-AAB0-4D18-9AE2-68FE6383802F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6D864AB3-AAB0-4D18-9AE2-68FE6383802F}.Release|macOS.ActiveCfg = Release|Any CPU
+		{6D864AB3-AAB0-4D18-9AE2-68FE6383802F}.Release|Windows.ActiveCfg = Release|Any CPU
+		{6D864AB3-AAB0-4D18-9AE2-68FE6383802F}.Release|Windows.Build.0 = Release|Any CPU
+		{C91F06EE-C8FC-475C-8A3C-CA171BCEB46D}.Debug|Any CPU.ActiveCfg = Debug|iPhone
+		{C91F06EE-C8FC-475C-8A3C-CA171BCEB46D}.Debug|macOS.ActiveCfg = Debug|iPhoneSimulator
+		{C91F06EE-C8FC-475C-8A3C-CA171BCEB46D}.Debug|macOS.Build.0 = Debug|iPhoneSimulator
+		{C91F06EE-C8FC-475C-8A3C-CA171BCEB46D}.Debug|Windows.ActiveCfg = Debug|iPhoneSimulator
+		{C91F06EE-C8FC-475C-8A3C-CA171BCEB46D}.Debug|Windows.Build.0 = Debug|iPhoneSimulator
+		{C91F06EE-C8FC-475C-8A3C-CA171BCEB46D}.Release|Any CPU.ActiveCfg = Release|iPhone
+		{C91F06EE-C8FC-475C-8A3C-CA171BCEB46D}.Release|macOS.ActiveCfg = Release|iPhoneSimulator
+		{C91F06EE-C8FC-475C-8A3C-CA171BCEB46D}.Release|macOS.Build.0 = Release|iPhoneSimulator
+		{C91F06EE-C8FC-475C-8A3C-CA171BCEB46D}.Release|Windows.ActiveCfg = Release|iPhoneSimulator
+		{C91F06EE-C8FC-475C-8A3C-CA171BCEB46D}.Release|Windows.Build.0 = Release|iPhoneSimulator
+		{08F4622B-08E3-45AB-B0A1-D360406F6A15}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{08F4622B-08E3-45AB-B0A1-D360406F6A15}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{08F4622B-08E3-45AB-B0A1-D360406F6A15}.Debug|macOS.ActiveCfg = Debug|Any CPU
+		{08F4622B-08E3-45AB-B0A1-D360406F6A15}.Debug|macOS.Build.0 = Debug|Any CPU
+		{08F4622B-08E3-45AB-B0A1-D360406F6A15}.Debug|Windows.ActiveCfg = Debug|Any CPU
+		{08F4622B-08E3-45AB-B0A1-D360406F6A15}.Debug|Windows.Build.0 = Debug|Any CPU
+		{08F4622B-08E3-45AB-B0A1-D360406F6A15}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{08F4622B-08E3-45AB-B0A1-D360406F6A15}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{08F4622B-08E3-45AB-B0A1-D360406F6A15}.Release|macOS.ActiveCfg = Release|Any CPU
+		{08F4622B-08E3-45AB-B0A1-D360406F6A15}.Release|macOS.Build.0 = Release|Any CPU
+		{08F4622B-08E3-45AB-B0A1-D360406F6A15}.Release|Windows.ActiveCfg = Release|Any CPU
+		{08F4622B-08E3-45AB-B0A1-D360406F6A15}.Release|Windows.Build.0 = Release|Any CPU
+		{056196F4-3E6B-43E5-886E-D9C8E9BEACBB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{056196F4-3E6B-43E5-886E-D9C8E9BEACBB}.Debug|macOS.ActiveCfg = Debug|Any CPU
+		{056196F4-3E6B-43E5-886E-D9C8E9BEACBB}.Debug|macOS.Build.0 = Debug|Any CPU
+		{056196F4-3E6B-43E5-886E-D9C8E9BEACBB}.Debug|Windows.ActiveCfg = Debug|Any CPU
+		{056196F4-3E6B-43E5-886E-D9C8E9BEACBB}.Debug|Windows.Build.0 = Debug|Any CPU
+		{056196F4-3E6B-43E5-886E-D9C8E9BEACBB}.Release|Any CPU.ActiveCfg = Debug|Any CPU
+		{056196F4-3E6B-43E5-886E-D9C8E9BEACBB}.Release|macOS.ActiveCfg = Debug|Any CPU
+		{056196F4-3E6B-43E5-886E-D9C8E9BEACBB}.Release|macOS.Build.0 = Debug|Any CPU
+		{056196F4-3E6B-43E5-886E-D9C8E9BEACBB}.Release|Windows.ActiveCfg = Debug|Any CPU
+		{056196F4-3E6B-43E5-886E-D9C8E9BEACBB}.Release|Windows.Build.0 = Debug|Any CPU
+		{88DA1F82-8CA2-46A7-B339-8D96C9138515}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{88DA1F82-8CA2-46A7-B339-8D96C9138515}.Debug|macOS.ActiveCfg = Debug|Any CPU
+		{88DA1F82-8CA2-46A7-B339-8D96C9138515}.Debug|macOS.Build.0 = Debug|Any CPU
+		{88DA1F82-8CA2-46A7-B339-8D96C9138515}.Debug|Windows.ActiveCfg = Debug|Any CPU
+		{88DA1F82-8CA2-46A7-B339-8D96C9138515}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{88DA1F82-8CA2-46A7-B339-8D96C9138515}.Release|macOS.ActiveCfg = Release|Any CPU
+		{88DA1F82-8CA2-46A7-B339-8D96C9138515}.Release|macOS.Build.0 = Release|Any CPU
+		{88DA1F82-8CA2-46A7-B339-8D96C9138515}.Release|Windows.ActiveCfg = Release|Any CPU
+		{955F473A-04EC-4716-B75E-509BA892499B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{955F473A-04EC-4716-B75E-509BA892499B}.Debug|macOS.ActiveCfg = Debug|Any CPU
+		{955F473A-04EC-4716-B75E-509BA892499B}.Debug|macOS.Build.0 = Debug|Any CPU
+		{955F473A-04EC-4716-B75E-509BA892499B}.Debug|Windows.ActiveCfg = Debug|Any CPU
+		{955F473A-04EC-4716-B75E-509BA892499B}.Debug|Windows.Build.0 = Debug|Any CPU
+		{955F473A-04EC-4716-B75E-509BA892499B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{955F473A-04EC-4716-B75E-509BA892499B}.Release|macOS.ActiveCfg = Release|Any CPU
+		{955F473A-04EC-4716-B75E-509BA892499B}.Release|macOS.Build.0 = Release|Any CPU
+		{955F473A-04EC-4716-B75E-509BA892499B}.Release|Windows.ActiveCfg = Release|Any CPU
+		{955F473A-04EC-4716-B75E-509BA892499B}.Release|Windows.Build.0 = Release|Any CPU
+		{0CB32DEF-71E4-489A-AECE-AFBFCC06854C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0CB32DEF-71E4-489A-AECE-AFBFCC06854C}.Debug|macOS.ActiveCfg = Debug|Any CPU
+		{0CB32DEF-71E4-489A-AECE-AFBFCC06854C}.Debug|macOS.Build.0 = Debug|Any CPU
+		{0CB32DEF-71E4-489A-AECE-AFBFCC06854C}.Debug|Windows.ActiveCfg = Debug|Any CPU
+		{0CB32DEF-71E4-489A-AECE-AFBFCC06854C}.Debug|Windows.Build.0 = Debug|Any CPU
+		{0CB32DEF-71E4-489A-AECE-AFBFCC06854C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0CB32DEF-71E4-489A-AECE-AFBFCC06854C}.Release|macOS.ActiveCfg = Release|Any CPU
+		{0CB32DEF-71E4-489A-AECE-AFBFCC06854C}.Release|macOS.Build.0 = Release|Any CPU
+		{0CB32DEF-71E4-489A-AECE-AFBFCC06854C}.Release|Windows.ActiveCfg = Release|Any CPU
+		{0CB32DEF-71E4-489A-AECE-AFBFCC06854C}.Release|Windows.Build.0 = Release|Any CPU
+		{A534BEA1-1A39-4355-B6EF-F6A3EF7E65FC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A534BEA1-1A39-4355-B6EF-F6A3EF7E65FC}.Debug|macOS.ActiveCfg = Debug|Any CPU
+		{A534BEA1-1A39-4355-B6EF-F6A3EF7E65FC}.Debug|macOS.Build.0 = Debug|Any CPU
+		{A534BEA1-1A39-4355-B6EF-F6A3EF7E65FC}.Debug|Windows.ActiveCfg = Debug|Any CPU
+		{A534BEA1-1A39-4355-B6EF-F6A3EF7E65FC}.Debug|Windows.Build.0 = Debug|Any CPU
+		{A534BEA1-1A39-4355-B6EF-F6A3EF7E65FC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A534BEA1-1A39-4355-B6EF-F6A3EF7E65FC}.Release|macOS.ActiveCfg = Release|Any CPU
+		{A534BEA1-1A39-4355-B6EF-F6A3EF7E65FC}.Release|macOS.Build.0 = Release|Any CPU
+		{A534BEA1-1A39-4355-B6EF-F6A3EF7E65FC}.Release|Windows.ActiveCfg = Release|Any CPU
+		{A534BEA1-1A39-4355-B6EF-F6A3EF7E65FC}.Release|Windows.Build.0 = Release|Any CPU
+		{159A14A0-F8C7-460F-ADF7-967D60E63689}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{159A14A0-F8C7-460F-ADF7-967D60E63689}.Debug|macOS.ActiveCfg = Debug|Any CPU
+		{159A14A0-F8C7-460F-ADF7-967D60E63689}.Debug|macOS.Build.0 = Debug|Any CPU
+		{159A14A0-F8C7-460F-ADF7-967D60E63689}.Debug|Windows.ActiveCfg = Debug|Any CPU
+		{159A14A0-F8C7-460F-ADF7-967D60E63689}.Debug|Windows.Build.0 = Debug|Any CPU
+		{159A14A0-F8C7-460F-ADF7-967D60E63689}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{159A14A0-F8C7-460F-ADF7-967D60E63689}.Release|macOS.ActiveCfg = Release|Any CPU
+		{159A14A0-F8C7-460F-ADF7-967D60E63689}.Release|macOS.Build.0 = Release|Any CPU
+		{159A14A0-F8C7-460F-ADF7-967D60E63689}.Release|Windows.ActiveCfg = Release|Any CPU
+		{159A14A0-F8C7-460F-ADF7-967D60E63689}.Release|Windows.Build.0 = Release|Any CPU
+		{932D2C61-5DBE-4D82-A4D6-1EA7401F10D3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{932D2C61-5DBE-4D82-A4D6-1EA7401F10D3}.Debug|macOS.ActiveCfg = Debug|Any CPU
+		{932D2C61-5DBE-4D82-A4D6-1EA7401F10D3}.Debug|macOS.Build.0 = Debug|Any CPU
+		{932D2C61-5DBE-4D82-A4D6-1EA7401F10D3}.Debug|Windows.ActiveCfg = Debug|Any CPU
+		{932D2C61-5DBE-4D82-A4D6-1EA7401F10D3}.Debug|Windows.Build.0 = Debug|Any CPU
+		{932D2C61-5DBE-4D82-A4D6-1EA7401F10D3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{932D2C61-5DBE-4D82-A4D6-1EA7401F10D3}.Release|macOS.ActiveCfg = Release|Any CPU
+		{932D2C61-5DBE-4D82-A4D6-1EA7401F10D3}.Release|macOS.Build.0 = Release|Any CPU
+		{932D2C61-5DBE-4D82-A4D6-1EA7401F10D3}.Release|Windows.ActiveCfg = Release|Any CPU
+		{932D2C61-5DBE-4D82-A4D6-1EA7401F10D3}.Release|Windows.Build.0 = Release|Any CPU
+		{7A522415-E2F7-4E4B-8E11-3D7CF9A854A8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7A522415-E2F7-4E4B-8E11-3D7CF9A854A8}.Debug|macOS.ActiveCfg = Debug|Any CPU
+		{7A522415-E2F7-4E4B-8E11-3D7CF9A854A8}.Debug|macOS.Build.0 = Debug|Any CPU
+		{7A522415-E2F7-4E4B-8E11-3D7CF9A854A8}.Debug|Windows.ActiveCfg = Debug|Any CPU
+		{7A522415-E2F7-4E4B-8E11-3D7CF9A854A8}.Debug|Windows.Build.0 = Debug|Any CPU
+		{7A522415-E2F7-4E4B-8E11-3D7CF9A854A8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7A522415-E2F7-4E4B-8E11-3D7CF9A854A8}.Release|macOS.ActiveCfg = Release|Any CPU
+		{7A522415-E2F7-4E4B-8E11-3D7CF9A854A8}.Release|macOS.Build.0 = Release|Any CPU
+		{7A522415-E2F7-4E4B-8E11-3D7CF9A854A8}.Release|Windows.ActiveCfg = Release|Any CPU
+		{7A522415-E2F7-4E4B-8E11-3D7CF9A854A8}.Release|Windows.Build.0 = Release|Any CPU
+		{C675C808-1FA9-4925-B4DF-87240ED2E3B8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C675C808-1FA9-4925-B4DF-87240ED2E3B8}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{C675C808-1FA9-4925-B4DF-87240ED2E3B8}.Debug|macOS.ActiveCfg = Debug|Any CPU
+		{C675C808-1FA9-4925-B4DF-87240ED2E3B8}.Debug|macOS.Build.0 = Debug|Any CPU
+		{C675C808-1FA9-4925-B4DF-87240ED2E3B8}.Debug|Windows.ActiveCfg = Debug|Any CPU
+		{C675C808-1FA9-4925-B4DF-87240ED2E3B8}.Debug|Windows.Build.0 = Debug|Any CPU
+		{C675C808-1FA9-4925-B4DF-87240ED2E3B8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C675C808-1FA9-4925-B4DF-87240ED2E3B8}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{C675C808-1FA9-4925-B4DF-87240ED2E3B8}.Release|macOS.ActiveCfg = Release|Any CPU
+		{C675C808-1FA9-4925-B4DF-87240ED2E3B8}.Release|macOS.Build.0 = Release|Any CPU
+		{C675C808-1FA9-4925-B4DF-87240ED2E3B8}.Release|Windows.ActiveCfg = Release|Any CPU
+		{C675C808-1FA9-4925-B4DF-87240ED2E3B8}.Release|Windows.Build.0 = Release|Any CPU
+		{0FD4B1DD-45A8-4F02-BEB0-5881CD512573}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0FD4B1DD-45A8-4F02-BEB0-5881CD512573}.Debug|macOS.ActiveCfg = Debug|Any CPU
+		{0FD4B1DD-45A8-4F02-BEB0-5881CD512573}.Debug|macOS.Build.0 = Debug|Any CPU
+		{0FD4B1DD-45A8-4F02-BEB0-5881CD512573}.Debug|Windows.ActiveCfg = Debug|Any CPU
+		{0FD4B1DD-45A8-4F02-BEB0-5881CD512573}.Debug|Windows.Build.0 = Debug|Any CPU
+		{0FD4B1DD-45A8-4F02-BEB0-5881CD512573}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0FD4B1DD-45A8-4F02-BEB0-5881CD512573}.Release|macOS.ActiveCfg = Release|Any CPU
+		{0FD4B1DD-45A8-4F02-BEB0-5881CD512573}.Release|macOS.Build.0 = Release|Any CPU
+		{0FD4B1DD-45A8-4F02-BEB0-5881CD512573}.Release|Windows.ActiveCfg = Release|Any CPU
+		{0FD4B1DD-45A8-4F02-BEB0-5881CD512573}.Release|Windows.Build.0 = Release|Any CPU
+		{6FC4E5FC-B7BD-480E-9BD4-8078AB040DF0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6FC4E5FC-B7BD-480E-9BD4-8078AB040DF0}.Debug|macOS.ActiveCfg = Debug|Any CPU
+		{6FC4E5FC-B7BD-480E-9BD4-8078AB040DF0}.Debug|macOS.Build.0 = Debug|Any CPU
+		{6FC4E5FC-B7BD-480E-9BD4-8078AB040DF0}.Debug|Windows.ActiveCfg = Debug|Any CPU
+		{6FC4E5FC-B7BD-480E-9BD4-8078AB040DF0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6FC4E5FC-B7BD-480E-9BD4-8078AB040DF0}.Release|macOS.ActiveCfg = Release|Any CPU
+		{6FC4E5FC-B7BD-480E-9BD4-8078AB040DF0}.Release|macOS.Build.0 = Release|Any CPU
+		{6FC4E5FC-B7BD-480E-9BD4-8078AB040DF0}.Release|Windows.ActiveCfg = Release|Any CPU
+		{1601EA3E-485F-4710-9937-DCD4C46728CE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1601EA3E-485F-4710-9937-DCD4C46728CE}.Debug|macOS.ActiveCfg = Debug|Any CPU
+		{1601EA3E-485F-4710-9937-DCD4C46728CE}.Debug|macOS.Build.0 = Debug|Any CPU
+		{1601EA3E-485F-4710-9937-DCD4C46728CE}.Debug|Windows.ActiveCfg = Debug|Any CPU
+		{1601EA3E-485F-4710-9937-DCD4C46728CE}.Debug|Windows.Build.0 = Debug|Any CPU
+		{1601EA3E-485F-4710-9937-DCD4C46728CE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1601EA3E-485F-4710-9937-DCD4C46728CE}.Release|macOS.ActiveCfg = Release|Any CPU
+		{1601EA3E-485F-4710-9937-DCD4C46728CE}.Release|macOS.Build.0 = Release|Any CPU
+		{1601EA3E-485F-4710-9937-DCD4C46728CE}.Release|Windows.ActiveCfg = Release|Any CPU
+		{1601EA3E-485F-4710-9937-DCD4C46728CE}.Release|Windows.Build.0 = Release|Any CPU
+		{B44E528A-584A-4BAF-A398-6E2245AA8ED2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B44E528A-584A-4BAF-A398-6E2245AA8ED2}.Debug|macOS.ActiveCfg = Debug|Any CPU
+		{B44E528A-584A-4BAF-A398-6E2245AA8ED2}.Debug|macOS.Build.0 = Debug|Any CPU
+		{B44E528A-584A-4BAF-A398-6E2245AA8ED2}.Debug|Windows.ActiveCfg = Debug|Any CPU
+		{B44E528A-584A-4BAF-A398-6E2245AA8ED2}.Debug|Windows.Build.0 = Debug|Any CPU
+		{B44E528A-584A-4BAF-A398-6E2245AA8ED2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B44E528A-584A-4BAF-A398-6E2245AA8ED2}.Release|macOS.ActiveCfg = Release|Any CPU
+		{B44E528A-584A-4BAF-A398-6E2245AA8ED2}.Release|macOS.Build.0 = Release|Any CPU
+		{B44E528A-584A-4BAF-A398-6E2245AA8ED2}.Release|Windows.ActiveCfg = Release|Any CPU
+		{B44E528A-584A-4BAF-A398-6E2245AA8ED2}.Release|Windows.Build.0 = Release|Any CPU
+		{CDF223B4-DD43-42BE-96BB-C1EEC464796C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CDF223B4-DD43-42BE-96BB-C1EEC464796C}.Debug|macOS.ActiveCfg = Debug|Any CPU
+		{CDF223B4-DD43-42BE-96BB-C1EEC464796C}.Debug|macOS.Build.0 = Debug|Any CPU
+		{CDF223B4-DD43-42BE-96BB-C1EEC464796C}.Debug|Windows.ActiveCfg = Debug|Any CPU
+		{CDF223B4-DD43-42BE-96BB-C1EEC464796C}.Debug|Windows.Build.0 = Debug|Any CPU
+		{CDF223B4-DD43-42BE-96BB-C1EEC464796C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CDF223B4-DD43-42BE-96BB-C1EEC464796C}.Release|macOS.ActiveCfg = Release|Any CPU
+		{CDF223B4-DD43-42BE-96BB-C1EEC464796C}.Release|macOS.Build.0 = Release|Any CPU
+		{CDF223B4-DD43-42BE-96BB-C1EEC464796C}.Release|Windows.ActiveCfg = Release|Any CPU
+		{CDF223B4-DD43-42BE-96BB-C1EEC464796C}.Release|Windows.Build.0 = Release|Any CPU
+		{7835BCA4-2F06-4AB8-B5E5-AD7934FFBA2D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7835BCA4-2F06-4AB8-B5E5-AD7934FFBA2D}.Debug|macOS.ActiveCfg = Debug|Any CPU
+		{7835BCA4-2F06-4AB8-B5E5-AD7934FFBA2D}.Debug|macOS.Build.0 = Debug|Any CPU
+		{7835BCA4-2F06-4AB8-B5E5-AD7934FFBA2D}.Debug|Windows.ActiveCfg = Debug|Any CPU
+		{7835BCA4-2F06-4AB8-B5E5-AD7934FFBA2D}.Debug|Windows.Build.0 = Debug|Any CPU
+		{7835BCA4-2F06-4AB8-B5E5-AD7934FFBA2D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7835BCA4-2F06-4AB8-B5E5-AD7934FFBA2D}.Release|macOS.ActiveCfg = Release|Any CPU
+		{7835BCA4-2F06-4AB8-B5E5-AD7934FFBA2D}.Release|macOS.Build.0 = Release|Any CPU
+		{7835BCA4-2F06-4AB8-B5E5-AD7934FFBA2D}.Release|Windows.ActiveCfg = Release|Any CPU
+		{7835BCA4-2F06-4AB8-B5E5-AD7934FFBA2D}.Release|Windows.Build.0 = Release|Any CPU
+		{5CBBD924-8B0D-4C35-A39B-751DCF9D234D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5CBBD924-8B0D-4C35-A39B-751DCF9D234D}.Debug|macOS.ActiveCfg = Debug|Any CPU
+		{5CBBD924-8B0D-4C35-A39B-751DCF9D234D}.Debug|macOS.Build.0 = Debug|Any CPU
+		{5CBBD924-8B0D-4C35-A39B-751DCF9D234D}.Debug|Windows.ActiveCfg = Debug|Any CPU
+		{5CBBD924-8B0D-4C35-A39B-751DCF9D234D}.Debug|Windows.Build.0 = Debug|Any CPU
+		{5CBBD924-8B0D-4C35-A39B-751DCF9D234D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5CBBD924-8B0D-4C35-A39B-751DCF9D234D}.Release|macOS.ActiveCfg = Release|Any CPU
+		{5CBBD924-8B0D-4C35-A39B-751DCF9D234D}.Release|macOS.Build.0 = Release|Any CPU
+		{5CBBD924-8B0D-4C35-A39B-751DCF9D234D}.Release|Windows.ActiveCfg = Release|Any CPU
+		{5CBBD924-8B0D-4C35-A39B-751DCF9D234D}.Release|Windows.Build.0 = Release|Any CPU
+		{8DFCE7A8-BA80-475D-97C1-DFBCCE17C8E3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8DFCE7A8-BA80-475D-97C1-DFBCCE17C8E3}.Debug|macOS.ActiveCfg = Debug|Any CPU
+		{8DFCE7A8-BA80-475D-97C1-DFBCCE17C8E3}.Debug|Windows.ActiveCfg = Debug|Any CPU
+		{8DFCE7A8-BA80-475D-97C1-DFBCCE17C8E3}.Debug|Windows.Build.0 = Debug|Any CPU
+		{8DFCE7A8-BA80-475D-97C1-DFBCCE17C8E3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8DFCE7A8-BA80-475D-97C1-DFBCCE17C8E3}.Release|macOS.ActiveCfg = Release|Any CPU
+		{8DFCE7A8-BA80-475D-97C1-DFBCCE17C8E3}.Release|Windows.ActiveCfg = Release|Any CPU
+		{8DFCE7A8-BA80-475D-97C1-DFBCCE17C8E3}.Release|Windows.Build.0 = Release|Any CPU
+		{F98CCE56-C44F-4096-A2FA-7298F339F846}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F98CCE56-C44F-4096-A2FA-7298F339F846}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F98CCE56-C44F-4096-A2FA-7298F339F846}.Debug|macOS.ActiveCfg = Debug|Any CPU
+		{F98CCE56-C44F-4096-A2FA-7298F339F846}.Debug|Windows.ActiveCfg = Debug|Any CPU
+		{F98CCE56-C44F-4096-A2FA-7298F339F846}.Debug|Windows.Build.0 = Debug|Any CPU
+		{F98CCE56-C44F-4096-A2FA-7298F339F846}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F98CCE56-C44F-4096-A2FA-7298F339F846}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F98CCE56-C44F-4096-A2FA-7298F339F846}.Release|macOS.ActiveCfg = Release|Any CPU
+		{F98CCE56-C44F-4096-A2FA-7298F339F846}.Release|Windows.ActiveCfg = Release|Any CPU
+		{F98CCE56-C44F-4096-A2FA-7298F339F846}.Release|Windows.Build.0 = Release|Any CPU
+		{8A84E7D0-5B66-4BDE-ADE2-20E814D361B2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8A84E7D0-5B66-4BDE-ADE2-20E814D361B2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8A84E7D0-5B66-4BDE-ADE2-20E814D361B2}.Debug|macOS.ActiveCfg = Debug|Any CPU
+		{8A84E7D0-5B66-4BDE-ADE2-20E814D361B2}.Debug|Windows.ActiveCfg = Debug|Any CPU
+		{8A84E7D0-5B66-4BDE-ADE2-20E814D361B2}.Debug|Windows.Build.0 = Debug|Any CPU
+		{8A84E7D0-5B66-4BDE-ADE2-20E814D361B2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8A84E7D0-5B66-4BDE-ADE2-20E814D361B2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8A84E7D0-5B66-4BDE-ADE2-20E814D361B2}.Release|macOS.ActiveCfg = Release|Any CPU
+		{8A84E7D0-5B66-4BDE-ADE2-20E814D361B2}.Release|Windows.ActiveCfg = Release|Any CPU
+		{8A84E7D0-5B66-4BDE-ADE2-20E814D361B2}.Release|Windows.Build.0 = Release|Any CPU
+		{D495E2AE-BF3E-444B-B3D6-91EF14293831}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D495E2AE-BF3E-444B-B3D6-91EF14293831}.Debug|macOS.ActiveCfg = Debug|Any CPU
+		{D495E2AE-BF3E-444B-B3D6-91EF14293831}.Debug|Windows.ActiveCfg = Debug|Any CPU
+		{D495E2AE-BF3E-444B-B3D6-91EF14293831}.Debug|Windows.Build.0 = Debug|Any CPU
+		{D495E2AE-BF3E-444B-B3D6-91EF14293831}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D495E2AE-BF3E-444B-B3D6-91EF14293831}.Release|macOS.ActiveCfg = Release|Any CPU
+		{D495E2AE-BF3E-444B-B3D6-91EF14293831}.Release|Windows.ActiveCfg = Release|Any CPU
+		{D495E2AE-BF3E-444B-B3D6-91EF14293831}.Release|Windows.Build.0 = Release|Any CPU
+		{A0B6FE73-D046-4E1C-BA9D-F20683889C5A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A0B6FE73-D046-4E1C-BA9D-F20683889C5A}.Debug|macOS.ActiveCfg = Debug|Any CPU
+		{A0B6FE73-D046-4E1C-BA9D-F20683889C5A}.Debug|macOS.Build.0 = Debug|Any CPU
+		{A0B6FE73-D046-4E1C-BA9D-F20683889C5A}.Debug|Windows.ActiveCfg = Debug|Any CPU
+		{A0B6FE73-D046-4E1C-BA9D-F20683889C5A}.Debug|Windows.Build.0 = Debug|Any CPU
+		{A0B6FE73-D046-4E1C-BA9D-F20683889C5A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A0B6FE73-D046-4E1C-BA9D-F20683889C5A}.Release|macOS.ActiveCfg = Release|Any CPU
+		{A0B6FE73-D046-4E1C-BA9D-F20683889C5A}.Release|macOS.Build.0 = Release|Any CPU
+		{A0B6FE73-D046-4E1C-BA9D-F20683889C5A}.Release|Windows.ActiveCfg = Release|Any CPU
+		{A0B6FE73-D046-4E1C-BA9D-F20683889C5A}.Release|Windows.Build.0 = Release|Any CPU
+		{60AF04BE-1B6B-411B-BCBA-C95EAFBD7AC0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{60AF04BE-1B6B-411B-BCBA-C95EAFBD7AC0}.Debug|macOS.ActiveCfg = Debug|Any CPU
+		{60AF04BE-1B6B-411B-BCBA-C95EAFBD7AC0}.Debug|Windows.ActiveCfg = Debug|Any CPU
+		{60AF04BE-1B6B-411B-BCBA-C95EAFBD7AC0}.Debug|Windows.Build.0 = Debug|Any CPU
+		{60AF04BE-1B6B-411B-BCBA-C95EAFBD7AC0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{60AF04BE-1B6B-411B-BCBA-C95EAFBD7AC0}.Release|macOS.ActiveCfg = Release|Any CPU
+		{60AF04BE-1B6B-411B-BCBA-C95EAFBD7AC0}.Release|Windows.ActiveCfg = Release|Any CPU
+		{60AF04BE-1B6B-411B-BCBA-C95EAFBD7AC0}.Release|Windows.Build.0 = Release|Any CPU
+		{E8F4F0EB-C2B1-4116-8459-E076E0E0E485}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E8F4F0EB-C2B1-4116-8459-E076E0E0E485}.Debug|macOS.ActiveCfg = Debug|Any CPU
+		{E8F4F0EB-C2B1-4116-8459-E076E0E0E485}.Debug|macOS.Build.0 = Debug|Any CPU
+		{E8F4F0EB-C2B1-4116-8459-E076E0E0E485}.Debug|Windows.ActiveCfg = Debug|Any CPU
+		{E8F4F0EB-C2B1-4116-8459-E076E0E0E485}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E8F4F0EB-C2B1-4116-8459-E076E0E0E485}.Release|macOS.ActiveCfg = Release|Any CPU
+		{E8F4F0EB-C2B1-4116-8459-E076E0E0E485}.Release|macOS.Build.0 = Release|Any CPU
+		{E8F4F0EB-C2B1-4116-8459-E076E0E0E485}.Release|Windows.ActiveCfg = Release|Any CPU
+		{6BCE5E68-86E6-47F6-AC65-40595230E0F8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6BCE5E68-86E6-47F6-AC65-40595230E0F8}.Debug|macOS.ActiveCfg = Debug|Any CPU
+		{6BCE5E68-86E6-47F6-AC65-40595230E0F8}.Debug|macOS.Build.0 = Debug|Any CPU
+		{6BCE5E68-86E6-47F6-AC65-40595230E0F8}.Debug|Windows.ActiveCfg = Debug|Any CPU
+		{6BCE5E68-86E6-47F6-AC65-40595230E0F8}.Debug|Windows.Build.0 = Debug|Any CPU
+		{6BCE5E68-86E6-47F6-AC65-40595230E0F8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6BCE5E68-86E6-47F6-AC65-40595230E0F8}.Release|macOS.ActiveCfg = Release|Any CPU
+		{6BCE5E68-86E6-47F6-AC65-40595230E0F8}.Release|macOS.Build.0 = Release|Any CPU
+		{6BCE5E68-86E6-47F6-AC65-40595230E0F8}.Release|Windows.ActiveCfg = Release|Any CPU
+		{6BCE5E68-86E6-47F6-AC65-40595230E0F8}.Release|Windows.Build.0 = Release|Any CPU
+		{EE61A762-761D-46B0-9DFA-1D0FD47F3E85}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EE61A762-761D-46B0-9DFA-1D0FD47F3E85}.Debug|macOS.ActiveCfg = Debug|Any CPU
+		{EE61A762-761D-46B0-9DFA-1D0FD47F3E85}.Debug|macOS.Build.0 = Debug|Any CPU
+		{EE61A762-761D-46B0-9DFA-1D0FD47F3E85}.Debug|Windows.ActiveCfg = Debug|Any CPU
+		{EE61A762-761D-46B0-9DFA-1D0FD47F3E85}.Debug|Windows.Build.0 = Debug|Any CPU
+		{EE61A762-761D-46B0-9DFA-1D0FD47F3E85}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EE61A762-761D-46B0-9DFA-1D0FD47F3E85}.Release|macOS.ActiveCfg = Release|Any CPU
+		{EE61A762-761D-46B0-9DFA-1D0FD47F3E85}.Release|macOS.Build.0 = Release|Any CPU
+		{EE61A762-761D-46B0-9DFA-1D0FD47F3E85}.Release|Windows.ActiveCfg = Release|Any CPU
+		{EE61A762-761D-46B0-9DFA-1D0FD47F3E85}.Release|Windows.Build.0 = Release|Any CPU
+		{D3C11AAD-595F-47B8-9EC5-BC2485A344DA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D3C11AAD-595F-47B8-9EC5-BC2485A344DA}.Debug|macOS.ActiveCfg = Debug|Any CPU
+		{D3C11AAD-595F-47B8-9EC5-BC2485A344DA}.Debug|macOS.Build.0 = Debug|Any CPU
+		{D3C11AAD-595F-47B8-9EC5-BC2485A344DA}.Debug|Windows.ActiveCfg = Debug|Any CPU
+		{D3C11AAD-595F-47B8-9EC5-BC2485A344DA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D3C11AAD-595F-47B8-9EC5-BC2485A344DA}.Release|macOS.ActiveCfg = Release|Any CPU
+		{D3C11AAD-595F-47B8-9EC5-BC2485A344DA}.Release|macOS.Build.0 = Release|Any CPU
+		{D3C11AAD-595F-47B8-9EC5-BC2485A344DA}.Release|Windows.ActiveCfg = Release|Any CPU
+		{D5DE60DD-C8EE-41B9-A364-3ED89D668E2F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D5DE60DD-C8EE-41B9-A364-3ED89D668E2F}.Debug|macOS.ActiveCfg = Debug|Any CPU
+		{D5DE60DD-C8EE-41B9-A364-3ED89D668E2F}.Debug|macOS.Build.0 = Debug|Any CPU
+		{D5DE60DD-C8EE-41B9-A364-3ED89D668E2F}.Debug|Windows.ActiveCfg = Debug|Any CPU
+		{D5DE60DD-C8EE-41B9-A364-3ED89D668E2F}.Debug|Windows.Build.0 = Debug|Any CPU
+		{D5DE60DD-C8EE-41B9-A364-3ED89D668E2F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D5DE60DD-C8EE-41B9-A364-3ED89D668E2F}.Release|macOS.ActiveCfg = Release|Any CPU
+		{D5DE60DD-C8EE-41B9-A364-3ED89D668E2F}.Release|macOS.Build.0 = Release|Any CPU
+		{D5DE60DD-C8EE-41B9-A364-3ED89D668E2F}.Release|Windows.ActiveCfg = Release|Any CPU
+		{D5DE60DD-C8EE-41B9-A364-3ED89D668E2F}.Release|Windows.Build.0 = Release|Any CPU
+		{B5F889E8-E396-4C7E-836E-DC5A9A260DB3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B5F889E8-E396-4C7E-836E-DC5A9A260DB3}.Debug|macOS.ActiveCfg = Debug|Any CPU
+		{B5F889E8-E396-4C7E-836E-DC5A9A260DB3}.Debug|Windows.ActiveCfg = Debug|Any CPU
+		{B5F889E8-E396-4C7E-836E-DC5A9A260DB3}.Debug|Windows.Build.0 = Debug|Any CPU
+		{B5F889E8-E396-4C7E-836E-DC5A9A260DB3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B5F889E8-E396-4C7E-836E-DC5A9A260DB3}.Release|macOS.ActiveCfg = Release|Any CPU
+		{B5F889E8-E396-4C7E-836E-DC5A9A260DB3}.Release|Windows.ActiveCfg = Release|Any CPU
+		{B5F889E8-E396-4C7E-836E-DC5A9A260DB3}.Release|Windows.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{0B64FF4D-4589-438B-A18C-9DA1DE8A2653} = {AE0C9371-285B-4540-AB1D-F5141FA66D19}
+		{2ECF1997-1B8A-4C03-8CA9-9710A820C4FC} = {0D5D807C-DEBE-498D-B2D8-D75E6C60D15B}
+		{B813E9C0-FAEF-4661-ABCE-8F3322D451D2} = {1918A3C3-EAE4-4F9F-BF6B-83CB94AAF7E9}
+		{32A8EBC6-BAB4-403B-9A8B-89F836CFE95A} = {ED62D731-5B6C-45F6-9A62-B9992E874E27}
+		{0BE4E82E-2409-4425-811D-BC7C8B134320} = {1281F1A8-EB27-4D6C-8E0A-03FBFAA63746}
+		{AF7B7ABD-84D4-46B2-80E4-9CA457C513BC} = {1281F1A8-EB27-4D6C-8E0A-03FBFAA63746}
+		{50E9C7DC-4FF9-44B2-BCCE-85A00E3D967E} = {1281F1A8-EB27-4D6C-8E0A-03FBFAA63746}
+		{6E0C8142-898B-4F53-A480-4F35D19893D7} = {AE0C9371-285B-4540-AB1D-F5141FA66D19}
+		{22FD0FAE-D093-446C-9ADB-4B59A97F413E} = {6E0C8142-898B-4F53-A480-4F35D19893D7}
+		{FFCB3FDE-7622-4195-A502-5CA95432172F} = {6E0C8142-898B-4F53-A480-4F35D19893D7}
+		{68B5F01B-6F1C-49D5-9491-96F826AFE211} = {A979F4BC-E86B-4B05-8DF1-1950FCDC276F}
+		{41EA66B9-7231-4F56-A6CA-7600735BFAC8} = {A979F4BC-E86B-4B05-8DF1-1950FCDC276F}
+		{6D864AB3-AAB0-4D18-9AE2-68FE6383802F} = {A979F4BC-E86B-4B05-8DF1-1950FCDC276F}
+		{C91F06EE-C8FC-475C-8A3C-CA171BCEB46D} = {5EF281AE-893E-49E8-BBA9-DBE86493BB39}
+		{08F4622B-08E3-45AB-B0A1-D360406F6A15} = {5EF281AE-893E-49E8-BBA9-DBE86493BB39}
+		{A31DDDED-F400-41BE-92BA-6931763C27E7} = {1918A3C3-EAE4-4F9F-BF6B-83CB94AAF7E9}
+		{ED62D731-5B6C-45F6-9A62-B9992E874E27} = {AE0C9371-285B-4540-AB1D-F5141FA66D19}
+		{1281F1A8-EB27-4D6C-8E0A-03FBFAA63746} = {AE0C9371-285B-4540-AB1D-F5141FA66D19}
+		{A979F4BC-E86B-4B05-8DF1-1950FCDC276F} = {1918A3C3-EAE4-4F9F-BF6B-83CB94AAF7E9}
+		{056196F4-3E6B-43E5-886E-D9C8E9BEACBB} = {0D5D807C-DEBE-498D-B2D8-D75E6C60D15B}
+		{88DA1F82-8CA2-46A7-B339-8D96C9138515} = {5EF281AE-893E-49E8-BBA9-DBE86493BB39}
+		{955F473A-04EC-4716-B75E-509BA892499B} = {AE0C9371-285B-4540-AB1D-F5141FA66D19}
+		{0CB32DEF-71E4-489A-AECE-AFBFCC06854C} = {AE0C9371-285B-4540-AB1D-F5141FA66D19}
+		{88765549-56E0-4B66-BA2D-F49E1446EF94} = {AE0C9371-285B-4540-AB1D-F5141FA66D19}
+		{A534BEA1-1A39-4355-B6EF-F6A3EF7E65FC} = {88765549-56E0-4B66-BA2D-F49E1446EF94}
+		{159A14A0-F8C7-460F-ADF7-967D60E63689} = {88765549-56E0-4B66-BA2D-F49E1446EF94}
+		{932D2C61-5DBE-4D82-A4D6-1EA7401F10D3} = {88765549-56E0-4B66-BA2D-F49E1446EF94}
+		{7A522415-E2F7-4E4B-8E11-3D7CF9A854A8} = {AE0C9371-285B-4540-AB1D-F5141FA66D19}
+		{C675C808-1FA9-4925-B4DF-87240ED2E3B8} = {CA7D68B0-F4A3-4679-96C0-7F967056F1FC}
+		{0FD4B1DD-45A8-4F02-BEB0-5881CD512573} = {6BA2A815-CF49-40C0-8174-F985894BD8BF}
+		{6FC4E5FC-B7BD-480E-9BD4-8078AB040DF0} = {CA7D68B0-F4A3-4679-96C0-7F967056F1FC}
+		{1601EA3E-485F-4710-9937-DCD4C46728CE} = {E3972EA9-3073-4251-AD90-87B4C90147FC}
+		{B44E528A-584A-4BAF-A398-6E2245AA8ED2} = {E3972EA9-3073-4251-AD90-87B4C90147FC}
+		{CDF223B4-DD43-42BE-96BB-C1EEC464796C} = {AE0C9371-285B-4540-AB1D-F5141FA66D19}
+		{7835BCA4-2F06-4AB8-B5E5-AD7934FFBA2D} = {AE0C9371-285B-4540-AB1D-F5141FA66D19}
+		{5CBBD924-8B0D-4C35-A39B-751DCF9D234D} = {5EF281AE-893E-49E8-BBA9-DBE86493BB39}
+		{8DFCE7A8-BA80-475D-97C1-DFBCCE17C8E3} = {AE0C9371-285B-4540-AB1D-F5141FA66D19}
+		{F98CCE56-C44F-4096-A2FA-7298F339F846} = {5EF281AE-893E-49E8-BBA9-DBE86493BB39}
+		{8A84E7D0-5B66-4BDE-ADE2-20E814D361B2} = {1918A3C3-EAE4-4F9F-BF6B-83CB94AAF7E9}
+		{D495E2AE-BF3E-444B-B3D6-91EF14293831} = {1918A3C3-EAE4-4F9F-BF6B-83CB94AAF7E9}
+		{A0B6FE73-D046-4E1C-BA9D-F20683889C5A} = {6BA2A815-CF49-40C0-8174-F985894BD8BF}
+		{60AF04BE-1B6B-411B-BCBA-C95EAFBD7AC0} = {6BA2A815-CF49-40C0-8174-F985894BD8BF}
+		{E8F4F0EB-C2B1-4116-8459-E076E0E0E485} = {6BA2A815-CF49-40C0-8174-F985894BD8BF}
+		{6BCE5E68-86E6-47F6-AC65-40595230E0F8} = {9B8D49C2-F1E2-4EBA-B912-F294AE704355}
+		{EE61A762-761D-46B0-9DFA-1D0FD47F3E85} = {1918A3C3-EAE4-4F9F-BF6B-83CB94AAF7E9}
+		{D3C11AAD-595F-47B8-9EC5-BC2485A344DA} = {1918A3C3-EAE4-4F9F-BF6B-83CB94AAF7E9}
+		{D5DE60DD-C8EE-41B9-A364-3ED89D668E2F} = {CA7D68B0-F4A3-4679-96C0-7F967056F1FC}
+		{B5F889E8-E396-4C7E-836E-DC5A9A260DB3} = {CED232BB-D8C8-43A9-BAF2-17321AE454D3}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {D588CD6A-A8A7-4CCE-A894-95F307675CBF}
+	EndGlobalSection
+	GlobalSection(MonoDevelopProperties) = preSolution
+		Policies = $0
+		$0.DotNetNamingPolicy = $1
+		$1.DirectoryNamespaceAssociation = PrefixedHierarchical
+		$0.TextStylePolicy = $2
+		$2.scope = text/x-csharp
+		$2.TabsToSpaces = True
+		$2.FileWidth = 120
+		$0.CSharpFormattingPolicy = $3
+		$3.scope = text/x-csharp
+		$3.IndentSwitchSection = False
+		$3.NewLinesForBracesInProperties = False
+		$3.NewLinesForBracesInAccessors = False
+		$3.NewLinesForBracesInAnonymousMethods = False
+		$3.NewLinesForBracesInControlBlocks = False
+		$3.NewLinesForBracesInAnonymousTypes = False
+		$3.NewLinesForBracesInObjectCollectionArrayInitializers = False
+		$3.NewLinesForBracesInLambdaExpressionBody = False
+		$3.NewLineForElse = False
+		$3.NewLineForCatch = False
+		$3.NewLineForFinally = False
+		$3.NewLineForMembersInObjectInit = False
+		$3.NewLineForMembersInAnonymousTypes = False
+		$3.NewLineForClausesInQuery = False
+		$3.SpacingAfterMethodDeclarationName = True
+		$3.SpaceAfterMethodCallName = True
+		$3.SpaceBeforeOpenSquareBracket = True
+		$0.StandardHeader = $4
+		$4.Text = @\nAuthor:\n  ${AuthorName} <${AuthorEmail}>\n\nCopyright (c) Microsoft Corporation. All rights reserved.\nLicensed under the MIT License.
+	EndGlobalSection
+EndGlobal

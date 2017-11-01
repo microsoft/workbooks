@@ -1,0 +1,70 @@
+﻿<Controls:MetroWindow x:Class="Xamarin.Interactive.Client.Windows.Views.AboutWindow"
+        x:ClassModifier="internal"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:Controls="http://metro.mahapps.com/winfx/xaml/controls"
+        xmlns:client="clr-namespace:Xamarin.Interactive.Client.Windows"
+        xmlns:commands="clr-namespace:Xamarin.Interactive.Client.Windows.Commands"
+        mc:Ignorable="d"
+        Title="About Xamarin Workbooks"
+        SizeToContent="WidthAndHeight"
+        ResizeMode="NoResize"
+        Icon="{x:Static client:App.AppIconSource}"
+        ShowTitleBar="False"
+        WindowStartupLocation="CenterOwner"
+        Foreground="{DynamicResource TextBrush}"
+        IconTemplate="{StaticResource InspectorTitlebarIconDataTemplate}"
+        Style="{DynamicResource MetroWindowStyle}">
+
+    <Window.Resources>
+        <Style x:Key="WindowButtonStyle" TargetType="{x:Type Button}" BasedOn="{StaticResource WindowButtonStyle}">
+            <Setter Property="Foreground" Value="Black" />
+        </Style>
+    </Window.Resources>
+
+    <Window.InputBindings>
+        <KeyBinding Key="Esc" Command="{x:Static commands:Commands.CloseWindow}"
+                    CommandParameter="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}"/>
+    </Window.InputBindings>
+
+    <StackPanel Orientation="Vertical" HorizontalAlignment="Center" Margin="20,0">
+        <StackPanel Orientation="Horizontal">
+            <Image
+                VerticalAlignment="Top"
+                Margin="0,26,0,0"
+                Width="96"
+                Source="{x:Static client:App.AppIconSource}" />
+            <StackPanel Orientation="Vertical" Margin="20" VerticalAlignment="Center">
+                <TextBlock FontSize="36" HorizontalAlignment="Left">
+                    <Run FontWeight="Light">Xamarin</Run>
+                    <Run FontWeight="Light" Text="{Binding ProductName, Mode=OneWay}"/>
+                </TextBlock>
+                <TextBlock HorizontalAlignment="Left" Text="{Binding Version, Mode=OneWay}" ToolTip="{Binding VersionTooltip, Mode=OneWay}"/>
+                <TextBlock HorizontalAlignment="Left" Text="{Binding Copyright, Mode=OneWay}" Padding="0,10,0,0" Opacity="0.5"/>
+                <TextBlock Padding="0,10,0,0">
+                    <Hyperlink
+                        NavigateUri="ThirdPartyNotices.txt"
+                        Click="OnHyperlinkClick">
+                        Third Party Notices
+                    </Hyperlink>
+                </TextBlock>
+                <TextBlock>
+                    <Hyperlink
+                        NavigateUri="License.rtf"
+                        Click="OnHyperlinkClick">
+                        License
+                    </Hyperlink>
+                </TextBlock>
+                <TextBlock>
+                    <Hyperlink
+                        NavigateUri="{Binding MicrosoftPrivacyStatementUri, Mode=OneWay}"
+                        Click="OnHyperlinkClick">
+                        Privacy Statement
+                    </Hyperlink>
+                </TextBlock>
+            </StackPanel>
+        </StackPanel>
+    </StackPanel>
+</Controls:MetroWindow>
