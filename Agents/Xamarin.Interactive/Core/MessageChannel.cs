@@ -14,7 +14,7 @@ namespace Xamarin.Interactive.Protocol
 {
 	sealed class MessageChannel
 	{
-		static readonly TimeSpan maximumSilenceInterval = TimeSpan.FromSeconds (5); 
+		static readonly TimeSpan maximumSilenceInterval = TimeSpan.FromSeconds (5);
 
 		[Serializable]
 		public sealed class Ping : IXipResponseMessage

@@ -163,7 +163,7 @@ namespace Xamarin.Interactive.Workbook.Views
 				EventsObserver.OnNext (
 					new InsertCellEvent<MarkdownCell> (Cell));
 				return true;
-			} 
+			}
 
 			// Mod+Enter: evaluate
 			if (isMod) {

@@ -18,7 +18,7 @@ namespace Xamarin.Interactive.Client.Windows.Commands
 		public DelegateCommand (Action<object> action, Predicate<object> predicate) : this (action)
 			=> canExecute = predicate ?? throw new ArgumentNullException (nameof (predicate));
 
-		public DelegateCommand (Action<object> action) 
+		public DelegateCommand (Action<object> action)
 			=> execute = action ?? throw new ArgumentNullException (nameof (action));
 
 		public event EventHandler CanExecuteChanged;

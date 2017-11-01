@@ -229,7 +229,7 @@ namespace Xamarin.Interactive.Mac
 		}
 
 		public override void LoadExternalDependencies (
-			Assembly loadedAssembly, 
+			Assembly loadedAssembly,
 			AssemblyDependency [] externalDependencies)
 		{
 			if (externalDependencies == null)

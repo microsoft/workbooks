@@ -46,7 +46,7 @@ namespace Xamarin.Interactive.Client.Mac
 					properties = await Session.Agent.Api.GetObjectMembersAsync (
 						SelectedView.Handle);
 					if (properties != null)
-						propertyEditor.SelectedItems.Add (properties); 
+						propertyEditor.SelectedItems.Add (properties);
 				}
 			} catch (Exception e) {
 				e.ToUserPresentable (Catalog.GetString ("Unable to read view properties"))

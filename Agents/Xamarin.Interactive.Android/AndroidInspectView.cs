@@ -72,7 +72,7 @@ namespace Xamarin.Interactive.Android
 			{
 				DisplayName += " :" + view.Resources.GetResourceName(view.Id).TrimId();
 			}
-			catch 
+			catch
 			{	}
 
 			if (view is Button)

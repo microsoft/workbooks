@@ -126,7 +126,7 @@ namespace Xamarin.Interactive.Android
 					pixels [pixelPos] = (int) mask
 						| (data [dataPos + a] << 24)
 						| (data [dataPos + r] << 16)
-						| (data [dataPos + g] << 8) 
+						| (data [dataPos + g] << 8)
 						| data [dataPos + b];
 				}
 			}

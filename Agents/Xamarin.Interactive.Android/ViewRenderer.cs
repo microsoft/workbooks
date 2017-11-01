@@ -86,7 +86,7 @@ namespace Xamarin.Interactive.Android
 		public static byte [] AsPNGBytes (this Bitmap bitmap)
 		{
 			byte[] byteArray = null;
-			using (var mem = new MemoryStream ()) 
+			using (var mem = new MemoryStream ())
 			{
 				bitmap.Compress (Bitmap.CompressFormat.Png, 100, mem);
 				byteArray = mem.ToArray ();

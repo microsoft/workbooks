@@ -368,7 +368,7 @@ WriteLiteral("</td>\n                                            <td>");
 
 
 #line 100 "PolicheckHtmlTemplate.cshtml"
-                                                   WriteLiteral(action.Recommendation); 
+                                                   WriteLiteral(action.Recommendation);
 
 #line default
 #line hidden

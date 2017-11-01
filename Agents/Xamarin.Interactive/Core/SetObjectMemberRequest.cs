@@ -28,10 +28,10 @@ namespace Xamarin.Interactive.Core
 		{
 			InteractiveObject updatedValue;
 			var success = agent.TrySetObjectMember (
-				ObjectHandle, 
-				MemberInfo, 
-				Value, 
-				ReturnUpdatedValue, 
+				ObjectHandle,
+				MemberInfo,
+				Value,
+				ReturnUpdatedValue,
 				out updatedValue);
 			updatedValue?.Interact (new InteractiveObject.ReadAllMembersInteractMessage ());
 			return Task.FromResult (new SetObjectMemberResponse {

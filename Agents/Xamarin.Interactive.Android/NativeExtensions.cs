@@ -83,7 +83,7 @@ namespace Xamarin.Interactive.Android
 
 		public static AG.Bitmap Scale(this AG.Bitmap bitemap, SD.Size dstSize, bool keepAspect = true)
 		{
-			if (keepAspect) 
+			if (keepAspect)
 			{
 				var ratio = 1f;
 				if (bitemap.Width > bitemap.Height) {

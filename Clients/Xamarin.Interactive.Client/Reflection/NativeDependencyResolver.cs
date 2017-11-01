@@ -42,9 +42,9 @@ namespace Xamarin.Interactive.Reflection
 			if (AgentType == AgentType.iOS)
 				nativeDependencies.AddRange (
 					GetEmbeddedFrameworks (
-						resolveOperation, 
-						path, 
-						peReader, 
+						resolveOperation,
+						path,
+						peReader,
 						metadataReader));
 
 			// HACK: Hard-code hacks for SkiaSharp.

@@ -24,7 +24,7 @@ namespace Xamarin.CrossBrowser
 
 		public static JSValue GetJSValue (this WebScriptObject wso)
 		{
-			return Runtime.GetNSObject<JSValue> (IntPtr_objc_msgSend (wso.Handle, jsValueSelector));	
+			return Runtime.GetNSObject<JSValue> (IntPtr_objc_msgSend (wso.Handle, jsValueSelector));
 		}
 	}
 }

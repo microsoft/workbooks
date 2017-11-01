@@ -94,7 +94,7 @@ namespace Xamarin.Interactive
 				LogLevel.Info,
 				LogFlags.NoFlair,
 				null,
-				$"{nl}{nl}{ClientInfo.FullProductName}{nl}" + 
+				$"{nl}{nl}{ClientInfo.FullProductName}{nl}" +
 				$"{BuildInfo.Copyright.Replace ("\n", nl)}{nl}" +
 				$"├─ Version: {BuildInfo.Version}{nl}" +
 				$"├─ Date: {BuildInfo.Date}{nl}" +

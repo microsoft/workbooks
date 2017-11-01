@@ -115,7 +115,7 @@ namespace Xamarin.CrossBrowser
 
 		public override int GetHashCode ()
 		{
-			return ComObject.GetHashCode (); 
+			return ComObject.GetHashCode ();
 		}
 
 		internal T Wrap<T> (object value) where T : WrappedObject => Wrap<T> (Context, value);

@@ -123,7 +123,7 @@ namespace Xamarin.Interactive.Core
 		/// Called by execution context for any native libraries sent along with a RemoteAssembly.
 		/// </summary>
 		public virtual void LoadExternalDependencies (
-			Assembly loadedAssembly, 
+			Assembly loadedAssembly,
 			AssemblyDependency [] externalDependencies)
 		{
 		}
@@ -233,7 +233,7 @@ namespace Xamarin.Interactive.Core
 			} catch (InvalidCastException ice) {
 				Log.Error (TAG, $"Cannot convert from {translatedValue.GetType ().Name} to {propertyType.Name}");
 				throw ice;
-			}			
+			}
 
 			var target = ObjectCache.Shared.GetObject (handle);
 			memberInfo.SetValue (target, translatedValue);

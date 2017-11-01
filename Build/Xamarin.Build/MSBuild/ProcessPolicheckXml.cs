@@ -120,7 +120,7 @@ namespace Xamarin.MSBuild
 				return groupedTerms.Count <= 0 || !FailOnNonZeroTerms;
 			} catch (Exception e) {
 				Log.LogError ($"Could not generate Policheck HTML.");
-				Log.LogError (e.ToString()); 
+				Log.LogError (e.ToString());
 				return false;
 			}
 		}

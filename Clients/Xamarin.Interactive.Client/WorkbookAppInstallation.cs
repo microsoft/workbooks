@@ -44,7 +44,7 @@ namespace Xamarin.Interactive
 
 		public static void RegisterProcessManagers (Assembly assembly)
 		{
-			if (processManagers == null) 
+			if (processManagers == null)
 				processManagers = new HashSet<AgentProcessManager.RegistrationAttribute> ();
 
 			foreach (var attribute in assembly

@@ -41,7 +41,7 @@ namespace Xamarin.Interactive.Mac
 
 		public static CGImage Scale(this CGImage image, CGSize dstSize, bool keepAspect = true)
 		{
-			if (keepAspect) 
+			if (keepAspect)
 			{
 				var ratio = 1f;
 				if (image.Width > image.Height) {
@@ -62,7 +62,7 @@ namespace Xamarin.Interactive.Mac
 			using (var context = new CGBitmapContext (
 				IntPtr.Zero, width, height,
 				8, bytesPerRow, CGColorSpace.CreateDeviceRGB (),
-				CGImageAlphaInfo.PremultipliedFirst)) 
+				CGImageAlphaInfo.PremultipliedFirst))
 			{
 				var rect = CGRect.Empty;
 				rect.Size = dstSize;
@@ -276,7 +276,7 @@ namespace Xamarin.Interactive.Mac
 			using (var context = new CGBitmapContext (
 				IntPtr.Zero, width, height,
 				8, bytesPerRow, CGColorSpace.CreateDeviceRGB (),
-				CGImageAlphaInfo.PremultipliedFirst)) 
+				CGImageAlphaInfo.PremultipliedFirst))
 			{
 				context.ConcatCTM (context.GetCTM().Invert());
 				var matrix = new CGAffineTransform (
@@ -496,7 +496,7 @@ namespace Xamarin.Interactive.Mac
 			using (var context = new CGBitmapContext (
 				IntPtr.Zero, width, height,
 				8, bytesPerRow, CGColorSpace.CreateDeviceRGB (),
-				CGImageAlphaInfo.PremultipliedFirst)) 
+				CGImageAlphaInfo.PremultipliedFirst))
 			{
 				// Make sure we offset our drawing to keep it form clipping
 				context.ConcatCTM (transform);

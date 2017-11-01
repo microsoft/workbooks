@@ -235,7 +235,7 @@ namespace Xamarin.Interactive.Mac
 		static CATransform3D GetLocalTransform (NSView view)
 		{
 			var flipped = view.Superview.IsFlipped;
-			if (view.FrameRotation == 0) 
+			if (view.FrameRotation == 0)
 				return CATransform3D.MakeTranslation (
 					view.Frame.X,
 					flipped ? view.Frame.Y : view.Superview.Bounds.Height - (view.Frame.Y + view.Frame.Height),

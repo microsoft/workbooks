@@ -367,7 +367,7 @@ namespace Xamarin.Interactive.NuGet
 			//
 			// All resolved packages, including the explicit inputs and their dependencies, are
 			// available as LockFileLibrary instances.
-			foreach (var library in result.LockFile.Libraries) 
+			foreach (var library in result.LockFile.Libraries)
 				project.InstallationContext.AddInstalledPackage (
 					GetInteractivePackageFromLibrary (library, project, packages));
 

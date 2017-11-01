@@ -93,7 +93,7 @@ namespace Xamarin.Interactive.Tests
 				cancellationToken: CancellationToken.None);
 
 			var resolvedAssemblies = Resolve (
-				AgentType.iOS, 
+				AgentType.iOS,
 				project,
 				TargetFrameworks.Xamarin_iOS_1_0_FrameworkPath);
 

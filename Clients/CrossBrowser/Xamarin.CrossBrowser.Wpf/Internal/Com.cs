@@ -62,7 +62,7 @@ namespace Xamarin.CrossBrowser.Wpf.Internal
 		[Guid ("00000112-0000-0000-C000-000000000046")]
 		[InterfaceType (ComInterfaceType.InterfaceIsIUnknown)]
 		public interface IOleObject
-		{ 
+		{
 			[PreserveSig]
 			int SetClientSite (
 				[In, MarshalAs (UnmanagedType.Interface)] IOleClientSite pClientSite);

@@ -179,7 +179,7 @@ namespace Xamarin.Interactive.Client.Mac
 			{
 				var view = tableView.MakeView (tableColumn.Identifier, this) as LogTableCellView;
 				if (view == null)
-					return null; 
+					return null;
 
 				view.TextColor = NSColor.Text;
 

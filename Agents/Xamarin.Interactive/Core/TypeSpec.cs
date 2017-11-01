@@ -135,7 +135,7 @@ namespace Xamarin.Interactive.Core
 
 		public interface IModifier
 		{
-			StringBuilder Append (StringBuilder builder);	
+			StringBuilder Append (StringBuilder builder);
 		}
 
 		[Serializable]

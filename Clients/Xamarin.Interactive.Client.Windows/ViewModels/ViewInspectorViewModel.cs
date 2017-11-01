@@ -373,7 +373,7 @@ namespace Xamarin.Interactive.Client.Windows.ViewModels
 
 		public void OnSessionAvailable () { }
 
-		public void OnAgentConnected () { 
+		public void OnAgentConnected () {
 			NoSupportedHierarchies = Session.Agent.Features.SupportedViewInspectionHierarchies.Length == 0;
 			if (SelectedPane == 1)
 				RefreshVisualTree ();

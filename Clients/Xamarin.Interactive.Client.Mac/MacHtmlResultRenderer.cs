@@ -130,7 +130,7 @@ namespace Xamarin.Interactive.Client.Mac
 			using (var context = new CGBitmapContext (
 				IntPtr.Zero, width, height,
 				8, bytesPerRow, CGColorSpace.CreateDeviceRGB (),
-				CGImageAlphaInfo.PremultipliedFirst)) 
+				CGImageAlphaInfo.PremultipliedFirst))
 			{
 
 				context.SetFillColor (BackgroundColor.CGColor);
@@ -237,7 +237,7 @@ namespace Xamarin.Interactive.Client.Mac
 			// Calculate our scale based on our destination size
 			var ratio = 1f;
 
-			if (!workSize.IsEmpty) 
+			if (!workSize.IsEmpty)
 			{
 				if (workSize.Width > workSize.Height) {
 					ratio = (float)workSize.Height / (float)workSize.Width;
@@ -251,7 +251,7 @@ namespace Xamarin.Interactive.Client.Mac
 				dstSize.Width = NMath.Max (dstSize.Width, 4f);
 				dstSize.Height = NMath.Max (dstSize.Height, 4f);
 			}
-			else 
+			else
 			{
 				dstSize = CGSize.Empty;
 			}
@@ -275,7 +275,7 @@ namespace Xamarin.Interactive.Client.Mac
 			using (var context = new CGBitmapContext (
 				IntPtr.Zero, width, height,
 				8, bytesPerRow, CGColorSpace.CreateDeviceRGB (),
-				CGImageAlphaInfo.PremultipliedFirst)) 
+				CGImageAlphaInfo.PremultipliedFirst))
 			{
 
 				// Clear the context with our background color
@@ -444,7 +444,7 @@ namespace Xamarin.Interactive.Client.Mac
 			using (var context = new CGBitmapContext (
 				IntPtr.Zero, width, height,
 				8, bytesPerRow, CGColorSpace.CreateDeviceRGB (),
-				CGImageAlphaInfo.PremultipliedFirst)) 
+				CGImageAlphaInfo.PremultipliedFirst))
 			{
 
 				// Clear the context with our background color

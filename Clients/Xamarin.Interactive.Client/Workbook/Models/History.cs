@@ -80,7 +80,7 @@ namespace Xamarin.Interactive.Workbook.Models
 					File.Delete (HistoryFile);
 				} catch (Exception e) {
 					Log.Warning (
-						TAG, 
+						TAG,
 						"Could not delete existing history when switching to non-persistent history.",
 					e);
 				}

@@ -259,7 +259,7 @@ namespace Xamarin.CrossBrowser.Generator
 
 			typeDeclaration.Members.InsertBefore (typeDeclaration.Members.FirstOrNullObject (), ctor);
 
-			if (typeDeclaration.Name != "WrappedObject") 
+			if (typeDeclaration.Name != "WrappedObject")
 				return;
 			
 			typeDeclaration.Members.InsertBefore (ctor, new FieldDeclaration {

@@ -89,7 +89,7 @@ namespace Security
 			if (writeHandler == null)
 				throw new ArgumentNullException (nameof (writeHandler));
 
-			return Task.Run (() => Write (writeHandler)); 
+			return Task.Run (() => Write (writeHandler));
 		}
 
 		public void Write (Action<NSFileHandle> writeHandler)

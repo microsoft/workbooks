@@ -68,7 +68,7 @@ namespace Xamarin.Interactive.Client.Mac
 				break;
 			default:
 				throw new NotSupportedException ($"{e.Action}");
-			}	         
+			}
 		}
 
 		void ViewController_PropertyChanged (object sender, PropertyChangedEventArgs e)

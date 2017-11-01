@@ -139,7 +139,7 @@ namespace Xamarin.MSBuild
 
 			public string Name { get; set; }
 			public string Version { get; set; }
-			public string [] DependentProjects { get; set; } 
+			public string [] DependentProjects { get; set; }
 		}
 	}
 }

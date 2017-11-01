@@ -109,7 +109,7 @@ namespace Xamarin.ProcessControl
 					return new RecursiveDirectoryEnumerator (childParts);
 				else if (root.Contains ("**"))
 					throw new ArgumentException ("invalid pattern: '**' can only be an " +
-						$"entire path component ({root}", nameof (patternParts)); 
+						$"entire path component ({root}", nameof (patternParts));
 				else if (GlobEnumerator.CanHandleWildcards (root))
 					return new GlobEnumerator (root, childParts);
 				else
@@ -247,7 +247,7 @@ namespace Xamarin.ProcessControl
 					} else if (c == '}') {
 						braceDepth--;
 						builder.Append (')');
-					} else if (c == ',' && braceDepth > 0) 
+					} else if (c == ',' && braceDepth > 0)
 						builder.Append ('|');
 					else
 						builder.Append (Regex.Escape (c.ToString ()));

@@ -270,8 +270,8 @@ namespace Xamarin.Interactive.Client.Windows.Views
 			} else if (e.LeftButton == MouseButtonState.Pressed && Keyboard.Modifiers.HasFlag (ModifierKeys.Control)
 				|| e.RightButton == MouseButtonState.Pressed && (Keyboard.Modifiers == ModifierKeys.None)) {
 				DragPan (currentPosition, (float)EventSource.ActualWidth, (float)EventSource.ActualHeight);
-			} else if (e.MiddleButton == MouseButtonState.Pressed 
-				|| (e.LeftButton == MouseButtonState.Pressed && Keyboard.Modifiers.HasFlag (ModifierKeys.Shift))) { 
+			} else if (e.MiddleButton == MouseButtonState.Pressed
+				|| (e.LeftButton == MouseButtonState.Pressed && Keyboard.Modifiers.HasFlag (ModifierKeys.Shift))) {
 				DragZoom (currentPosition, (float)EventSource.ActualWidth, (float)EventSource.ActualHeight);
 			}
 		}
