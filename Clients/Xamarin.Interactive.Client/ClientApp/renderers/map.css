@@ -1,0 +1,40 @@
+/*
+renderers.css
+
+Author:
+  Sandy Armstrong <sandy@xamarin.com>
+
+Copyright 2016 Xamarin Inc. All rights reserved.
+*/
+
+.renderer-map .renderer-map-container {
+  max-width: 600px;
+}
+
+.renderer-map .renderer-map-container table {
+  width: 100%;
+  border: 1px solid #ccc;
+  border-collapse: collapse;
+}
+
+.renderer-map .renderer-map-container table > tr > th,
+.renderer-map .renderer-map-container table > tr > td {
+  font-family: monospace;
+  border: 1px solid #eee;
+  padding: 1px 5px;
+}
+
+.renderer-map .renderer-map-container table > tr > th {
+  background: #f8f8f8;
+  white-space: nowrap;
+}
+
+.renderer-map .renderer-map-container table > tr > td {
+  width: 100%;
+}
+
+.renderer-map .renderer-map-container iframe {
+  width: 100%;
+  height: 338px;
+  border: none;
+}

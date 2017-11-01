@@ -1,0 +1,25 @@
+/*
+app.css
+
+Author:
+  Aaron Bockover <abock@xamarin.com>
+
+Copyright 2016 Xamarin Inc. All rights reserved.
+Copyright 2016 Microsoft. All rights reserved.
+*/
+
+@import url('editor/editor.css');
+@import url('editor/glyphs/glyphs.css');
+
+/* Core REPL styling */
+@import url('shell.css');
+@import url('ui.css');
+@import url('workspace.css');
+@import url('theme.css');
+@import url('prosemirror.css');
+
+/* Renderers last, as they may further provide overrides */
+@import url('renderers/renderers.css');
+
+/* High-contrast */
+@import url('high-contrast.css');

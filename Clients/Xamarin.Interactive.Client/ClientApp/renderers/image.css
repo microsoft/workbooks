@@ -1,0 +1,58 @@
+﻿/*
+image.css
+
+Author:
+  Aaron Bockover <abock@xamarin.com>
+
+Copyright 2015 Xamarin Inc. All rights reserved.
+*/
+
+.renderer-image-error {
+  color: #f56d4f;
+  font-weight: bold;
+  font-style: italic;
+  padding: 0.5em 0 0 0;
+}
+
+.renderer-image-container {
+  position: relative;
+}
+
+.renderer-image-container > img,
+.renderer-image-container > svg {
+  display: block;
+  position: relative;
+  border: none !important;
+  max-width: 100%;
+  height: auto;
+  z-index: 2;
+  margin-top: 1em;
+}
+
+.renderer-image-container > div {
+  max-width: 100%;
+  height: 100%;
+  position: absolute;
+  left: 0;
+  top: 0;
+  opacity: 0;
+
+  /* Ignore selection */
+  user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+}
+
+.renderer-image-container > div.renderer-image-background-image {
+  background-image: url(alpha-checker.png);
+  z-index: 0;
+}
+
+.renderer-image-container > div.renderer-image-background-color {
+  background-color: black;
+  z-index: 1;
+}
+
+.renderer-image > div > input {
+  display: block;
+}

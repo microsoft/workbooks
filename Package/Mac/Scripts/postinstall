@@ -1,0 +1,33 @@
+#!/bin/bash
+
+set -ex
+
+LEGACY_XS_ADDIN_INSTALL="${DSTROOT}${HOME#/*}/Library/Application Support/XamarinStudio-6.0/LocalInstall/Addins"
+rm -rf "$LEGACY_XS_ADDIN_INSTALL/Xamarin.Inspector"
+rm -rf "$LEGACY_XS_ADDIN_INSTALL/Xamarin.Interactive"
+
+CLI_SCRIPT_PATH="${DSTROOT}usr/local/bin/workbook"
+rm -f "$CLI_SCRIPT_PATH"
+mkdir -p "${DSTROOT}usr/local/bin"
+{ cat <<EOF
+#!/bin/bash
+"${DSTROOT}Applications/Xamarin Workbooks.app/Contents/MacOS/Xamarin Workbooks" cli "\$@"
+EOF
+} > "$CLI_SCRIPT_PATH"
+chmod 0755 "$CLI_SCRIPT_PATH"
+
+# before CodeMirror or Monaco we set these to disable all the magic
+# stuff implied by the keys. CodeMirror, etc, handle preventing
+# undesirable magic edits directly. Therefore, delete these keys
+# to return to system defaults. -abock, 2016-07-20
+for key in \
+	WebAutomaticSpellingCorrectionEnabled \
+	WebContinuousSpellCheckingEnabled \
+	WebGrammarCheckingEnabled \
+	WebSmartInsertDeleteEnabled \
+	WebAutomaticQuoteSubstitutionEnabled \
+	WebAutomaticDashSubstitutionEnabled \
+	WebAutomaticLinkDetectionEnabled \
+	WebAutomaticTextReplacementEnabled; do
+	defaults delete com.xamarin.Inspector $key || true
+done

@@ -1,0 +1,60 @@
+<Project>
+  <PropertyGroup>
+    <Xamarin_Build_AssemblyFile>$(MSBuildThisFileDirectory)..\Build\Xamarin.Build\Xamarin.Build.dll</Xamarin_Build_AssemblyFile>
+    <InstallDir>$(MSBuildThisFileDirectory)..\_build\$(Configuration)\WorkbookApps\</InstallDir>
+  </PropertyGroup>
+
+  <UsingTask
+    TaskName="Xamarin.MSBuild.GenerateWorkbookAppManifest"
+    AssemblyFile="$(Xamarin_Build_AssemblyFile)"/>
+
+  <UsingTask
+    TaskName="Xamarin.MSBuild.UpdateWixManifest"
+    AssemblyFile="$(Xamarin_Build_AssemblyFile)"/>
+  
+  <ItemGroup>
+    <BundleFxAssemblies Include="$(MonoFrameworkPath)/*.dll" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <BundleFxFacades Include="$(MonoFrameworkPath)/Facades/*.dll" />
+  </ItemGroup>
+  
+  <PropertyGroup>
+    <IsAndroidBuild>False</IsAndroidBuild>
+    <IsAndroidBuild Condition=" '$(AndroidManifest)' != '' ">True</IsAndroidBuild>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <CreateAppBundleDependsOn>
+      $(CreateAppBundleDependsOn);
+      _BundleWorkbookFrameworkAssemblies;
+    </CreateAppBundleDependsOn>
+    <!-- Android doesn't have CreateAppBundleDependsOn, so append to somewhere else. -->
+    <BuildDependsOn Condition="$(IsAndroidBuild)">
+      $(BuildDependsOn);
+      _BundleWorkbookFrameworkAssemblies;
+    </BuildDependsOn>
+  </PropertyGroup>
+  
+  <Target Name="_BundleWorkbookFrameworkAssemblies">
+    <!--
+      This ItemGroup is inside the target because to actually compute the correct set of DLLs to copy,
+      we need the project to have already been built. If the ItemGroup is _outside_ the target, the
+      BundleReferences property ends up empty. OutputPath has the trailing \ included, so it doesn't
+      need it here.
+    -->
+    <ItemGroup>
+      <!--
+        If AndroidManifest is set, we're in the Android build, so use a different BundleReferences set
+      -->
+      <BundleReferences Include="$(OutputPath)*.dll" Condition="!$(IsAndroidBuild)" />
+      <BundleReferences Include="$(IntermediateOutputPath)\linksrc\*.dll" Condition="$(IsAndroidBuild)" />
+    </ItemGroup>
+    <Copy SourceFiles="@(BundleFxAssemblies)" DestinationFolder="$(AppBundleDir)$(MonoBundleAppPath)" Condition="!Exists('$(AppBundleDir)$(MonoBundlePath)/%(Filename)%(Extension)')" />
+    <Copy SourceFiles="@(BundleReferences)" DestinationFolder="$(AppBundleDir)$(MonoBundleAppPath)" Condition="!Exists('$(AppBundleDir)$(MonoBundlePath)/%(Filename)%(Extension)')" />
+    <MakeDir Directories="$(AppBundleDir)$(MonoBundleAppPath)/Facades" />
+    <Copy SourceFiles="@(BundleFxFacades)" DestinationFolder="$(AppBundleDir)$(MonoBundleAppPath)/Facades" Condition="!Exists('$(AppBundleDir)$(MonoBundlePath)/Facades/%(Filename)%(Extension)')" />
+  </Target>
+
+</Project>

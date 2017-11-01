@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\WorkbookApp.targets" />
+
+  <Target Name="XIInstall" AfterTargets="_Sign">
+    <ItemGroup>
+      <AppFiles Include="$(OutputPath)\*Signed.apk"/>
+      <FrameworkFiles Include="$(IntermediateOutputPath)\Framework\**\*.dll"/>
+    </ItemGroup>
+    <PropertyGroup>
+      <WixInputManifest>..\..\Package\Windows\AndroidAgentAppAssemblies.wxs</WixInputManifest>
+    </PropertyGroup>
+
+    <GenerateWorkbookAppManifest
+      ManifestOutputPath="$(InstallDir)workbookapps.json"
+      Flavor="Android"
+      Order="400"
+      Icon="project-android"
+      AppPath="Android\$([System.IO.Path]::GetFileName(`%(AppFiles.Identity)`))"
+      AppManagerAssembly="Android\ClientIntegration\Xamarin.Workbooks.Client.Android.dll"
+      AssemblySearchPaths="Android\Framework;Android\Framework\Facades"
+      OptionalFeatures="xamarin.forms"
+      SdkName="Xamarin.Android"
+      SdkVersion="@AssemblyInformationalVersion,$(AppBundleDir)\Mono.Android.dll"
+      TargetFrameworkIdentifier="$(TargetFrameworkIdentifier)"
+      TargetFrameworkVersion="$(TargetFrameworkVersion)"/>
+
+    <Copy
+      SkipUnchangedFiles="true"
+      SourceFiles="@(AppFiles)"
+      DestinationFolder="$(InstallDir)Android\%(RecursiveDir)"/>
+
+    <Copy
+      SkipUnchangedFiles="true"
+      SourceFiles="@(FrameworkFiles)"
+      DestinationFolder="$(InstallDir)Android\Framework\%(RecursiveDir)"/>
+
+    <!-- Android workbook app files -->
+    <UpdateWixManifest
+      SourceDirectory="$(InstallDir)Android\Framework"
+      InputManifestPath="$(WixInputManifest)"
+      DirectoryVariable="AndroidAppAssembliesDir"
+      ComponentGroupId="AndroidAgentAppAssembliesComponents"/>
+    <!-- Sometimes IDs are too long for this, so use hashes instead for Android facades. -->
+    <UpdateWixManifest
+      SourceDirectory="$(InstallDir)Android\Framework\Facades"
+      InputManifestPath="$(WixInputManifest)"
+      DirectoryVariable="AndroidAppAssembliesFacadesDir"
+      ComponentGroupId="AndroidAgentAppAssembliesFacadesComponents"
+      UseHashForId="True"/>
+  </Target>
+</Project>

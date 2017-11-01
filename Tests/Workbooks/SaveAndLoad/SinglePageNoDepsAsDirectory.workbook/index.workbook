@@ -1,0 +1,9 @@
+---
+uti: com.xamarin.workbook
+platforms:
+- Console
+---
+
+```csharp
+2 * 2 * 2  * 2
+```

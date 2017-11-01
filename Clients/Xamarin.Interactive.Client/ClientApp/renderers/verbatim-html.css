@@ -1,0 +1,18 @@
+﻿/*
+verbatim-html.css
+
+Author:
+  Aaron Bockover <abock@xamarin.com>
+
+Copyright 2016 Xamarin Inc. All rights reserved.
+*/
+
+.renderer-verbatim-html iframe {
+  border: none;
+  width: 100%;
+
+  /* height will be set dynamically to fit the document content,
+     but it must initially bet set to 0, otherwise the document
+     content scroll height will be set to the frame height */
+  height: 0px;
+}

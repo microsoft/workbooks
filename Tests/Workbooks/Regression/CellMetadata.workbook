@@ -1,0 +1,15 @@
+---
+id: bbd73642-6150-4283-b13a-0b81cc3b28d0
+title: CellMetadata
+uti: com.xamarin.workbook
+platforms:
+- Console
+---
+
+```csharp
+"no metadata"
+```
+
+```csharp     runonce   readonly
+2 + 2
+```

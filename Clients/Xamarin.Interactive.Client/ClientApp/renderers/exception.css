@@ -1,0 +1,60 @@
+﻿/*
+
+exception.css
+
+Author:
+  Aaron Bockover <abock@xamarin.com>
+
+Copyright 2015 Xamarin Inc. All rights reserved.
+*/
+
+.exception.inner {
+  margin-left: 1em;
+  margin-top: 1em;
+}
+
+.exception > h1 {
+  font-size: 1em;
+  font-weight: normal;
+}
+
+.exception.inner > h1::before {
+  font-size: 60%;
+  content: "▶ ";
+}
+
+.exception.inner.expanded > h1::before {
+  content: "▼ " !important;
+}
+
+.exception.inner > .contents {
+  display: none;
+}
+
+.exception.inner.expanded > .contents {
+  display: block !important;
+}
+
+.exception > h1 > .typespec {
+  font-weight: bold;
+  color: rgb(208, 83, 76) !important;
+}
+
+.exception .stack-frame {
+  font-family: monospace;
+  text-indent: -1em;
+  margin-left: 1em;
+}
+
+.exception .stack-frame > .at,
+.exception .stack-frame > .wrapper,
+.exception .stack-frame > .sloc,
+.exception .stack-frame > .sloc a {
+  color: rgb(150, 150, 150);
+  text-decoration: none;
+}
+
+.exception .stack-frame > .sloc a:hover {
+  text-decoration: underline;
+  color: rgb(63, 63, 63);
+}

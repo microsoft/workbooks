@@ -1,0 +1,51 @@
+<Project>
+  <Import Project="..\WorkbookApp.targets" />
+
+  <PropertyGroup>
+    <RuntimeIdentifier Condition=" '$(OS)' != 'Unix' ">win-x86</RuntimeIdentifier>
+    <RuntimeIdentifier Condition=" '$(OS)' == 'Unix' ">osx.10.11-x64</RuntimeIdentifier>
+  </PropertyGroup>
+
+  <Target
+    Name="Install"
+    AfterTargets="Build"
+    DependsOnTargets="Publish">
+    <ItemGroup>
+      <InstallFiles Include="$(OutputPath)\publish\**\*"/>
+    </ItemGroup>
+
+    <PropertyGroup>
+      <AppFileExtension Condition=" '$(OS)' == 'Windows_NT' ">.exe</AppFileExtension>
+    </PropertyGroup>
+
+    <GenerateWorkbookAppManifest
+      ManifestOutputPath="$(InstallDir)workbookapps.json"
+      Flavor="Console"
+      Order="200"
+      Icon="project-netcore-console"
+      AppPath="DotNetCore\$(AssemblyName)$(AppFileExtension)"
+      AssemblySearchPaths="DotNetCore"
+      SdkName=".NET Core"
+      SdkVersion="@GlobalJsonSdkVersion,..\..\global.json"
+      TargetFrameworkIdentifier="$(TargetFrameworkIdentifier)"
+      TargetFrameworkVersion="$(TargetFrameworkVersion)"/>
+
+    <Copy
+      SkipUnchangedFiles="true"
+      SourceFiles="@(InstallFiles)"
+      DestinationFolder="$(InstallDir)DotNetCore\%(RecursiveDir)"/>
+
+    <Exec
+      Condition=" '$(OS)' == 'Unix' And $(RuntimeIdentifier.StartsWith('osx'))"
+      Command="chmod +x &quot;$(InstallDir)DotNetCore\$(AssemblyName)&quot;"
+      />
+
+    <UpdateWixManifest
+      SourceDirectory="$(InstallDir)DotNetCore"
+      InputManifestPath="..\..\Package\Windows\DotNetCoreAgentAppFiles.wxs"
+      DirectoryVariable="DotNetCoreAssembliesDir"
+      ComponentGroupId="DotNetCoreAgentAppComponents"
+      IdPrefix="DotNetCoreAgentApp"
+      IncludedExtensions="dll;json;exe"/>
+  </Target>
+</Project>

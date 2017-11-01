@@ -1,0 +1,82 @@
+<Type Name="IAgent" FullName="Xamarin.Interactive.IAgent">
+  <TypeSignature Language="C#" Value="public interface IAgent" />
+  <TypeSignature Language="ILAsm" Value=".class public interface auto ansi abstract IAgent" />
+  <AssemblyInfo>
+    <AssemblyName>Xamarin.Interactive</AssemblyName>
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
+  </AssemblyInfo>
+  <Interfaces />
+  <Docs>
+    <summary>To be added.</summary>
+    <remarks>To be added.</remarks>
+  </Docs>
+  <Members>
+    <Member MemberName="CreateDefaultHttpMessageHandler">
+      <MemberSignature Language="C#" Value="public Func&lt;object&gt; CreateDefaultHttpMessageHandler { get; set; }" />
+      <MemberSignature Language="ILAsm" Value=".property instance class System.Func`1&lt;object&gt; CreateDefaultHttpMessageHandler" />
+      <MemberType>Property</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Func&lt;System.Object&gt;</ReturnType>
+      </ReturnValue>
+      <Docs>
+        <summary>Agent integrations may set this to provide a custom <typeparamref name="System.Net.Http.HttpMessageHandler" /> the default <typeparamref name="System.Net.Http.HttpClient" /> constructor. Objects returned by the provided factory delegate must derive from <typeparamref name="System.Net.Http.HttpMessageHandler" />.</summary>
+        <value>A delegate that must return instances derived from <typeparamref name="System.Net.Http.HttpMessageHandler" />.</value>
+        <remarks>As an example, the Console workbook agent when running on macOS uses this integration to bind <typeparamref name="System.Net.Http.HttpClient" /> instances created with the default constructor to instances of <typeparamref name="Foundation.NSUrlSessionHandler" />, which provides faster and more feature-complete HTTP/TLS support.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="RegisterResetStateHandler">
+      <MemberSignature Language="C#" Value="public void RegisterResetStateHandler (Action handler);" />
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig newslot virtual instance void RegisterResetStateHandler(class System.Action handler) cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Void</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="handler" Type="System.Action" />
+      </Parameters>
+      <Docs>
+        <param name="handler">The addition handler to register.</param>
+        <summary>Registers an additional handler to call when resetting UI state for workbooks.</summary>
+        <remarks>As an example, Xamarin.Forms integration can use this method to detect that the UI state has been reset and also reset the Xamarin.Forms UI state and make sure that it is displayed properly.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="RepresentationManager">
+      <MemberSignature Language="C#" Value="public Xamarin.Interactive.Representations.IRepresentationManager RepresentationManager { get; }" />
+      <MemberSignature Language="ILAsm" Value=".property instance class Xamarin.Interactive.Representations.IRepresentationManager RepresentationManager" />
+      <MemberType>Property</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Xamarin.Interactive.Representations.IRepresentationManager</ReturnType>
+      </ReturnValue>
+      <Docs>
+        <summary>To be added.</summary>
+        <value>To be added.</value>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="SynchronizationContexts">
+      <MemberSignature Language="C#" Value="public Xamarin.Interactive.IAgentSynchronizationContext SynchronizationContexts { get; }" />
+      <MemberSignature Language="ILAsm" Value=".property instance class Xamarin.Interactive.IAgentSynchronizationContext SynchronizationContexts" />
+      <MemberType>Property</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Xamarin.Interactive.IAgentSynchronizationContext</ReturnType>
+      </ReturnValue>
+      <Docs>
+        <summary>To be added.</summary>
+        <value>To be added.</value>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+  </Members>
+</Type>

@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <ProjectGuid>{88DA1F82-8CA2-46A7-B339-8D96C9138515}</ProjectGuid>
+    <ProjectTypeGuids>{A3F8F2AB-B479-4A4A-A458-A89E7DC349F1};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>Xamarin.Workbooks.Mac</RootNamespace>
+    <AssemblyName>Workbook Mac App (Mobile Profile)</AssemblyName>
+    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
+    <TargetFrameworkIdentifier>Xamarin.Mac</TargetFrameworkIdentifier>
+    <MonoMacResourcePrefix>Resources</MonoMacResourcePrefix>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug</OutputPath>
+    <DefineConstants>DEBUG;</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <EnableCodeSigning>false</EnableCodeSigning>
+    <CodeSigningKey>Mac Developer</CodeSigningKey>
+    <CreatePackage>false</CreatePackage>
+    <EnablePackageSigning>false</EnablePackageSigning>
+    <IncludeMonoRuntime>false</IncludeMonoRuntime>
+    <UseSGen>true</UseSGen>
+    <UseRefCounting>true</UseRefCounting>
+    <Profiling>true</Profiling>
+    <HttpClientHandler>HttpClientHandler</HttpClientHandler>
+    <TlsProvider>Default</TlsProvider>
+    <LinkMode>None</LinkMode>
+    <XamMacArch></XamMacArch>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release</OutputPath>
+    <DefineConstants></DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <EnableCodeSigning>true</EnableCodeSigning>
+    <CodeSigningKey>Developer ID Application</CodeSigningKey>
+    <CreatePackage>true</CreatePackage>
+    <EnablePackageSigning>false</EnablePackageSigning>
+    <IncludeMonoRuntime>true</IncludeMonoRuntime>
+    <UseSGen>true</UseSGen>
+    <UseRefCounting>true</UseRefCounting>
+    <LinkMode>SdkOnly</LinkMode>
+    <HttpClientHandler>HttpClientHandler</HttpClientHandler>
+    <TlsProvider>Default</TlsProvider>
+    <XamMacArch></XamMacArch>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml" />
+    <Reference Include="Xamarin.Mac" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Resources.xcassets\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ImageAsset Include="Resources.xcassets\Contents.json" />
+    <ImageAsset Include="Resources.xcassets\AppIcon.appiconset\Contents.json" />
+    <ImageAsset Include="Resources.xcassets\AppIcon.appiconset\xamarin-workbooks-agent-16.png" />
+    <ImageAsset Include="Resources.xcassets\AppIcon.appiconset\xamarin-workbooks-agent-32.png" />
+    <ImageAsset Include="Resources.xcassets\AppIcon.appiconset\xamarin-workbooks-agent-64.png" />
+    <ImageAsset Include="Resources.xcassets\AppIcon.appiconset\xamarin-workbooks-agent-128.png" />
+    <ImageAsset Include="Resources.xcassets\AppIcon.appiconset\xamarin-workbooks-agent-256.png" />
+    <ImageAsset Include="Resources.xcassets\AppIcon.appiconset\xamarin-workbooks-agent-512.png" />
+    <ImageAsset Include="Resources.xcassets\AppIcon.appiconset\xamarin-workbooks-agent-1024.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Info.plist" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Main.cs" />
+    <Compile Include="AppDelegate.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Agents\Xamarin.Interactive.Mac.Mobile\Xamarin.Interactive.Mac.Mobile.csproj">
+      <Project>{AF7B7ABD-84D4-46B2-80E4-9CA457C513BC}</Project>
+      <Name>Xamarin.Interactive.Mac.Mobile</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Agents\Xamarin.Interactive\Xamarin.Interactive.csproj">
+      <Project>{955F473A-04EC-4716-B75E-509BA892499B}</Project>
+      <Name>Xamarin.Interactive</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildExtensionsPath)\Xamarin\Mac\Xamarin.Mac.CSharp.targets" />
+  <Import Project="Build.proj" />
+  <Target Name="ResolveNuGetPackageAssets" />
+</Project>

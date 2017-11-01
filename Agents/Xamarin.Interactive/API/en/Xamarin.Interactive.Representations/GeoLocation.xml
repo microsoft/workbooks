@@ -1,0 +1,243 @@
+<Type Name="GeoLocation" FullName="Xamarin.Interactive.Representations.GeoLocation">
+  <TypeSignature Language="C#" Value="public sealed class GeoLocation" />
+  <TypeSignature Language="ILAsm" Value=".class public auto ansi serializable sealed beforefieldinit GeoLocation extends System.Object implements class Xamarin.Interactive.Serialization.ISerializableObject" />
+  <AssemblyInfo>
+    <AssemblyName>Xamarin.Interactive</AssemblyName>
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
+  </AssemblyInfo>
+  <Base>
+    <BaseTypeName>System.Object</BaseTypeName>
+  </Base>
+  <Interfaces />
+  <Docs>
+    <summary>
+             Represents physical location data including a geographical coordinate using
+             the WGS 84 reference frame and context around that location such as altitude,
+             bearing and speed at a given point in time.
+             </summary>
+    <remarks>To be added.</remarks>
+  </Docs>
+  <Members>
+    <Member MemberName=".ctor">
+      <MemberSignature Language="C#" Value="public GeoLocation (double latitude, double longitude, Nullable&lt;double&gt; altitude = null, Nullable&lt;double&gt; horizontalAccuracy = null, Nullable&lt;double&gt; verticalAccuracy = null, Nullable&lt;double&gt; speed = null, Nullable&lt;double&gt; bearing = null, DateTime timestamp = null);" />
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig specialname rtspecialname instance void .ctor(float64 latitude, float64 longitude, valuetype System.Nullable`1&lt;float64&gt; altitude, valuetype System.Nullable`1&lt;float64&gt; horizontalAccuracy, valuetype System.Nullable`1&lt;float64&gt; verticalAccuracy, valuetype System.Nullable`1&lt;float64&gt; speed, valuetype System.Nullable`1&lt;float64&gt; bearing, valuetype System.DateTime timestamp) cil managed" />
+      <MemberType>Constructor</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <Parameters>
+        <Parameter Name="latitude" Type="System.Double" />
+        <Parameter Name="longitude" Type="System.Double" />
+        <Parameter Name="altitude" Type="System.Nullable&lt;System.Double&gt;" />
+        <Parameter Name="horizontalAccuracy" Type="System.Nullable&lt;System.Double&gt;" />
+        <Parameter Name="verticalAccuracy" Type="System.Nullable&lt;System.Double&gt;" />
+        <Parameter Name="speed" Type="System.Nullable&lt;System.Double&gt;" />
+        <Parameter Name="bearing" Type="System.Nullable&lt;System.Double&gt;" />
+        <Parameter Name="timestamp" Type="System.DateTime" />
+      </Parameters>
+      <Docs>
+        <param name="latitude">
+             Latitude in decimal degrees. Positive values are north of
+             the equator, while negative values are south of the equator.
+             </param>
+        <param name="longitude">
+             Longitude in decimal degress. Positive values are east of the zero
+             meridian, while negative values are to to the west of the zero meridian.
+             </param>
+        <param name="altitude">
+             Altitude in meters. Positive values are above sea level,
+             while negative values are below sea level.
+             </param>
+        <param name="horizontalAccuracy">
+             Distance accuracy in meters.
+             </param>
+        <param name="verticalAccuracy">
+             Altitude accuracy in meters.
+             </param>
+        <param name="speed">
+             Instantaneous speed in meters per second in the direction of
+             current <paramref name="bearing" />.
+             </param>
+        <param name="bearing">
+             Bearing in degrees, starting at due north and continuing clockwise
+             around the compass. North is 0 degrees, east is 90, south is 180,
+             west is 270, and so on.
+             </param>
+        <param name="timestamp">
+             UTC time at which this location was determined.
+             </param>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="Altitude">
+      <MemberSignature Language="C#" Value="public Nullable&lt;double&gt; Altitude { get; }" />
+      <MemberSignature Language="ILAsm" Value=".property instance valuetype System.Nullable`1&lt;float64&gt; Altitude" />
+      <MemberType>Property</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Nullable&lt;System.Double&gt;</ReturnType>
+      </ReturnValue>
+      <Docs>
+        <summary>
+             Altitude in meters. Positive values are above sea level,
+             while negative values are below sea level.
+             </summary>
+        <value>To be added.</value>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="Bearing">
+      <MemberSignature Language="C#" Value="public Nullable&lt;double&gt; Bearing { get; }" />
+      <MemberSignature Language="ILAsm" Value=".property instance valuetype System.Nullable`1&lt;float64&gt; Bearing" />
+      <MemberType>Property</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Nullable&lt;System.Double&gt;</ReturnType>
+      </ReturnValue>
+      <Docs>
+        <summary>
+             Bearing in degrees, starting at due north and continuing clockwise
+             around the compass. North is 0 degrees, east is 90, south is 180,
+             west is 270, and so on.
+             </summary>
+        <value>To be added.</value>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="HorizontalAccuracy">
+      <MemberSignature Language="C#" Value="public Nullable&lt;double&gt; HorizontalAccuracy { get; }" />
+      <MemberSignature Language="ILAsm" Value=".property instance valuetype System.Nullable`1&lt;float64&gt; HorizontalAccuracy" />
+      <MemberType>Property</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Nullable&lt;System.Double&gt;</ReturnType>
+      </ReturnValue>
+      <Docs>
+        <summary>
+             Distance accuracy in meters.
+             </summary>
+        <value>To be added.</value>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="Latitude">
+      <MemberSignature Language="C#" Value="public double Latitude { get; }" />
+      <MemberSignature Language="ILAsm" Value=".property instance float64 Latitude" />
+      <MemberType>Property</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Double</ReturnType>
+      </ReturnValue>
+      <Docs>
+        <summary>
+             Latitude in decimal degrees. Positive values are north of
+             the equator, while negative values are south of the equator.
+             </summary>
+        <value>To be added.</value>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="Longitude">
+      <MemberSignature Language="C#" Value="public double Longitude { get; }" />
+      <MemberSignature Language="ILAsm" Value=".property instance float64 Longitude" />
+      <MemberType>Property</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Double</ReturnType>
+      </ReturnValue>
+      <Docs>
+        <summary>
+             Longitude in decimal degress. Positive values are east of the zero
+             meridian, while negative values are to to the west of the zero meridian.
+             </summary>
+        <value>To be added.</value>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="Speed">
+      <MemberSignature Language="C#" Value="public Nullable&lt;double&gt; Speed { get; }" />
+      <MemberSignature Language="ILAsm" Value=".property instance valuetype System.Nullable`1&lt;float64&gt; Speed" />
+      <MemberType>Property</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Nullable&lt;System.Double&gt;</ReturnType>
+      </ReturnValue>
+      <Docs>
+        <summary>
+             Instantaneous speed in meters per second in the direction of
+             current <see cref="P:Xamarin.Interactive.Representations.GeoLocation.Bearing" />.
+             </summary>
+        <value>To be added.</value>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="Timestamp">
+      <MemberSignature Language="C#" Value="public DateTime Timestamp { get; }" />
+      <MemberSignature Language="ILAsm" Value=".property instance valuetype System.DateTime Timestamp" />
+      <MemberType>Property</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.DateTime</ReturnType>
+      </ReturnValue>
+      <Docs>
+        <summary>
+             UTC time at which this location was determined.
+             </summary>
+        <value>To be added.</value>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="VerticalAccuracy">
+      <MemberSignature Language="C#" Value="public Nullable&lt;double&gt; VerticalAccuracy { get; }" />
+      <MemberSignature Language="ILAsm" Value=".property instance valuetype System.Nullable`1&lt;float64&gt; VerticalAccuracy" />
+      <MemberType>Property</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Nullable&lt;System.Double&gt;</ReturnType>
+      </ReturnValue>
+      <Docs>
+        <summary>
+             Altitude accuracy in meters.
+             </summary>
+        <value>To be added.</value>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="Xamarin.Interactive.Serialization.ISerializableObject.Serialize">
+      <MemberSignature Language="C#" Value="void ISerializableObject.Serialize (Xamarin.Interactive.Serialization.ObjectSerializer serializer);" />
+      <MemberSignature Language="ILAsm" Value=".method hidebysig newslot virtual instance void Xamarin.Interactive.Serialization.ISerializableObject.Serialize(class Xamarin.Interactive.Serialization.ObjectSerializer serializer) cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Void</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="serializer" Type="Xamarin.Interactive.Serialization.ObjectSerializer" />
+      </Parameters>
+      <Docs>
+        <param name="serializer">To be added.</param>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+  </Members>
+</Type>

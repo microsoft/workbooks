@@ -1,0 +1,112 @@
+﻿@using System.IO
+@model IEnumerable<Xamarin.MSBuild.PolicheckTerm>
+@__class internal
+
+@helper GetSeverityHtml (int severity) {
+    switch (severity) {
+    case 1:
+        <abbr>Very High Risk</abbr>;
+        break;
+    case 2:
+        <abbr>High Risk</abbr>
+        break;
+    case 3:
+        <abbr>Moderate Risk</abbr>
+        break;
+    default:
+        <abbr>@severity</abbr>
+        break;
+    }
+}
+
+<html>
+    <head>
+        <link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css' 
+              integrity='sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u' crossorigin='anonymous'>
+        <style type='text/css'>
+            .table {
+                max-width: none;
+                table-layout: fixed;
+                word-wrap: break-word;
+            }
+        </style>
+    </head>
+    <body>
+        <div class='container-fluid'>
+            <h1>Policheck Results</h1>
+            <table class='table table-bordered table-condensed' style='width: auto !important'>
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>Term</th>
+                        <th>Severity</th>
+                        <th># of Occurrences</th>
+                        <th>Term Link</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var term in Model) {
+                        var termUrl = term.Comment.Split('-')[1].Trim ();
+
+                        <tr>
+                            <td style='width: auto !important;' rowspan='3'>
+                                <h3>&gt;</h3>
+                            </td>
+                            <td>@term.TermDefinition</td>
+                            <td>@GetSeverityHtml(term.Severity)</td>
+                            <td>@term.RowCount</td>
+                            <td><a href="@termUrl">@termUrl</a></td>
+                        </tr>
+
+                        <tr>
+                            <td colspan='4'>
+                                <table class='table table-condensed' style='width: 100% !important;'>
+                                    <thead>
+                                        <tr>
+                                            <th>Url</th>
+                                            <th>Context</th>
+                                            <th>Position</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    @foreach (var occurrence in term.Occurrences) {
+                                        var file = Path.DirectorySeparatorChar == '\\'
+                                            ? Path.GetFileName (occurrence.Url)
+                                            : occurrence.Url.Split('\\').Last ();
+                                        <tr>
+                                            <td>@file</td>
+                                            <td>@occurrence.Context</td>
+                                            <td>@(occurrence.Position.Replace(":", string.Empty)), column @occurrence.Column</td>
+                                        </tr>
+                                    }
+                                    </tbody>
+                                </table>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td colspan='4'>
+                                <table class='table table-condensed' style='width: 100% !important;'>
+                                    <thead>
+                                        <tr>
+                                            <th>Context</th>
+                                            <th>Recommendation</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    @foreach (var action in term.Actions) {
+                                        <tr>
+                                            <td>@action.Context</td>
+                                            <td>@{ WriteLiteral(action.Recommendation); }</td>
+                                        </tr>
+                                    }
+                                    </tbody>
+                                </table>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </body>
+</html>

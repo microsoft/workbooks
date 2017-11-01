@@ -1,0 +1,228 @@
+﻿/*
+prosemirror.css
+
+Author:
+  Aaron Bockover <abock@xamarin.com>
+  Vaclav Vancura <vacvan@microsoft.com>
+
+Copyright 2016 Xamarin Inc. All rights reserved.
+*/
+
+.ProseMirror {
+  border: none;
+}
+
+.ProseMirror-tooltip,
+.ProseMirror-menu-dropdown-menu,
+.ProseMirror-menu-submenu {
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.15);
+  border: 1px solid #ccc;
+}
+
+.ProseMirror-menu-dropdown,
+.ProseMirror-menu-dropdown-menu {
+  font-size: 12px;
+  color: #575757;
+}
+
+.ProseMirror-tooltip {
+  margin-left: 10px;
+  border: 1px solid #ccc;
+}
+
+.ProseMirror-icon {
+  padding: 0 !important;
+}
+
+.ProseMirror-icon > div {
+  width: 16px;
+  height: 16px;
+
+  /* Override sizing and position to fix the retina reload bug */
+  background-repeat: no-repeat !important;
+  background-size: 16px !important;
+}
+
+.ProseMirror-icon .strong_toggle      { background-image: url(pm-toolbar/bold.png); }
+.ProseMirror-icon .em_toggle          { background-image: url(pm-toolbar/italic.png); }
+.ProseMirror-icon .code_toggle        { background-image: url(pm-toolbar/code.png); }
+.ProseMirror-icon .link_set           { background-image: url(pm-toolbar/link.png); }
+.ProseMirror-icon .bullet_list_wrap   { background-image: url(pm-toolbar/unordered-list.png); }
+.ProseMirror-icon .ordered_list_wrap  { background-image: url(pm-toolbar/ordered-list.png); }
+.ProseMirror-icon .blockquote_wrap    { background-image: url(pm-toolbar/blockquote.png); }
+.ProseMirror-icon .lift               { background-image: url(pm-toolbar/lift-out.png); }
+.ProseMirror-icon .selectParentNode   { background-image: url(pm-toolbar/select-parent.png); }
+
+.ProseMirror-icon .strong_toggle.ProseMirror-menu-active  { background-image: url(pm-toolbar/bold-active.png); }
+.ProseMirror-icon .em_toggle.ProseMirror-menu-active      { background-image: url(pm-toolbar/italic-active.png); }
+
+/* Retina */
+@media only screen and (-webkit-min-device-pixel-ratio: 2), only screen and (-webkit-min-resolution: 192dpi), only screen and (min-device-pixel-ratio: 2), only screen and (min-resolution: 192dpi) {
+  .ProseMirror-icon .strong_toggle      { background-image: url(pm-toolbar/bold@2x.png); }
+  .ProseMirror-icon .em_toggle          { background-image: url(pm-toolbar/italic@2x.png); }
+  .ProseMirror-icon .code_toggle        { background-image: url(pm-toolbar/code@2x.png); }
+  .ProseMirror-icon .link_set           { background-image: url(pm-toolbar/link@2x.png); }
+  .ProseMirror-icon .bullet_list_wrap   { background-image: url(pm-toolbar/unordered-list@2x.png); }
+  .ProseMirror-icon .ordered_list_wrap  { background-image: url(pm-toolbar/ordered-list@2x.png); }
+  .ProseMirror-icon .blockquote_wrap    { background-image: url(pm-toolbar/blockquote@2x.png); }
+  .ProseMirror-icon .lift               { background-image: url(pm-toolbar/lift-out@2x.png); }
+  .ProseMirror-icon .selectParentNode   { background-image: url(pm-toolbar/select-parent@2x.png); }
+
+  .ProseMirror-icon .strong_toggle.ProseMirror-menu-active  { background-image: url(pm-toolbar/bold-active@2x.png); }
+  .ProseMirror-icon .em_toggle.ProseMirror-menu-active      { background-image: url(pm-toolbar/italic-active@2x.png); }
+}
+
+.ProseMirror-tooltip-pointer-above {
+  border-top: 6px solid #ccc;
+}
+
+.ProseMirror-tooltip-pointer-below {
+  border-bottom: 6px solid #ccc;
+}
+
+.ProseMirror-tooltip-pointer-right {
+  border-right: 6px solid #ccc;
+}
+
+.ProseMirror-tooltip-pointer-left {
+  border-left: 6px solid #ccc;
+}
+
+.ProseMirror-content {
+  margin: 0;
+  padding: 0;
+  outline: none;
+  font-family: Palatino, "Palatino Linotype", "Palatino LT STD", "Book Antiqua", Georgia, serif;
+}
+
+.theme-prose-typography-sans-serif .ProseMirror-content {
+  font-family: Segoe UI, -apple-system, Helvetica Neue, Helvetica, sans-serif !important;
+}
+
+.ProseMirror-content * {
+  margin: 0;
+  padding: 0;
+  font-size: 1em;
+}
+
+.ProseMirror-content code {
+  font-family: monospace;
+  font-size: 0.875rem;
+  background-color: #f9f9f9;
+  padding: 3px 5px;
+  display: inline-block;
+  direction: ltr;
+  line-height: 1;
+  border-radius: 2px;
+  border: 1px solid #d3d6db;
+  font-style: normal;
+}
+
+.ProseMirror-content li {
+  margin: 0 !important;
+}
+
+.ProseMirror-content h1,
+.ProseMirror-content h2,
+.ProseMirror-content h3,
+.ProseMirror-content h4,
+.ProseMirror-content h5,
+.ProseMirror-content h6 {
+  font-weight: 400;
+  line-height: 1;
+  margin-bottom: 1em;
+}
+
+.ProseMirror-content h1 {
+  margin-bottom: 1.5rem;
+  font-size: 3.2rem;
+  font-style: normal;
+  font-weight: 200;
+}
+
+.ProseMirror-content h2 {
+  font-size: 1.8rem;
+}
+
+.ProseMirror-content h3 {
+  font-size: 1.5rem;
+}
+
+.ProseMirror-content h4 {
+  font-size: 1.3rem;
+}
+
+.ProseMirror-content h5 {
+  font-size: 1.2rem;
+}
+
+.ProseMirror-content h6 {
+  font-size: 1rem;
+}
+
+.ProseMirror-content > p,
+.ProseMirror-content > blockquote,
+.ProseMirror-content > blockquote > p,
+.ProseMirror-content ol,
+.ProseMirror-content ul {
+  line-height: 2rem;
+  vertical-align: baseline;
+  font-size: 1.2rem;
+  margin-bottom: 1.4rem;
+}
+
+.ProseMirror-content ol,
+.ProseMirror-content ul {
+  margin-left: 0.5em;
+}
+
+.ProseMirror-content blockquote {
+  border-radius: 2px;
+  border: 1px solid #0070a7;
+  background: #f8f8f8;
+  padding: 0.7rem 1rem;
+}
+
+.ProseMirror-content blockquote.level-big-problem {
+  background: tan;
+  color: #422E0C;
+  border-color: saddlebrown;
+}
+
+.ProseMirror-content blockquote.level-problem {
+  background: #FFE3E8;
+  color: #450310;
+  border-color: #9C0825;
+}
+
+.ProseMirror-content blockquote.level-warning {
+  background: #fcf8e3;
+  color: #614D29;
+  border-color: #8a6d3b;
+}
+
+.ProseMirror-content blockquote.level-note {
+  background: #ebf5fb;
+  color: darkslategray;
+  border-color: #3498db;
+}
+
+.ProseMirror-content > blockquote > p:last-child {
+  margin-bottom: 0;
+}
+
+.ProseMirror-content a {
+  color: #0584f6;
+}
+
+.ProseMirror-content > :not(blockquote):last-child {
+  padding-bottom: 0 !important;
+}
+
+.ProseMirror-content > :last-child {
+  margin-bottom: 0 !important;
+}
+
+.ProseMirror-content > :not(blockquote):first-child {
+  padding-top: 0 !important;
+}

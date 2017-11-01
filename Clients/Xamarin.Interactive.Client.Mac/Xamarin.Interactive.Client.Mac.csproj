@@ -1,0 +1,470 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <ProjectGuid>{B813E9C0-FAEF-4661-ABCE-8F3322D451D2}</ProjectGuid>
+    <ProjectTypeGuids>{A3F8F2AB-B479-4A4A-A458-A89E7DC349F1};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>Xamarin.Interactive.Client.Mac</RootNamespace>
+    <MonoMacResourcePrefix>Resources</MonoMacResourcePrefix>
+    <AssemblyName>Xamarin Workbooks</AssemblyName>
+    <UseXamMacFullFramework>True</UseXamMacFullFramework>
+    <MacOSXSdkVersion>10.10</MacOSXSdkVersion>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug</OutputPath>
+    <DefineConstants>__UNIFIED__;__MACOS__;DEBUG;MAC;MONOMAC;XAMCORE_2_0</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <ConsolePause>false</ConsolePause>
+    <UseSGen>false</UseSGen>
+    <IncludeMonoRuntime>false</IncludeMonoRuntime>
+    <EnablePackageSigning>false</EnablePackageSigning>
+    <CodeSigningKey>Mac Developer</CodeSigningKey>
+    <EnableCodeSigning>false</EnableCodeSigning>
+    <CreatePackage>false</CreatePackage>
+    <PackageSigningKey>Developer ID Installer</PackageSigningKey>
+    <UseRefCounting>false</UseRefCounting>
+    <XamMacArch>x86_64</XamMacArch>
+    <MonoBundlingExtraArgs>--registrar:static --minos=10.10</MonoBundlingExtraArgs>
+    <Profiling>false</Profiling>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <I18n>west</I18n>
+    <HttpClientHandler>NSUrlSessionHandler</HttpClientHandler>
+    <NoWarn>1702</NoWarn>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <ConsolePause>false</ConsolePause>
+    <UseSGen>false</UseSGen>
+    <IncludeMonoRuntime>true</IncludeMonoRuntime>
+    <EnablePackageSigning>false</EnablePackageSigning>
+    <CodeSigningKey>Developer ID Application</CodeSigningKey>
+    <EnableCodeSigning>false</EnableCodeSigning>
+    <CreatePackage>true</CreatePackage>
+    <UseRefCounting>false</UseRefCounting>
+    <XamMacArch>x86_64</XamMacArch>
+    <PackageSigningKey>Developer ID Installer</PackageSigningKey>
+    <DefineConstants>__UNIFIED__;__MACOS__;MAC;MONOMAC;XAMCORE_2_0</DefineConstants>
+    <MonoBundlingExtraArgs>--registrar:static --minos=10.10</MonoBundlingExtraArgs>
+    <Profiling>false</Profiling>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <I18n>west</I18n>
+    <HttpClientHandler>NSUrlSessionHandler</HttpClientHandler>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'AppStore|AnyCPU' ">
+    <Optimize>true</Optimize>
+    <OutputPath>bin\AppStore</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+    <UseSGen>false</UseSGen>
+    <IncludeMonoRuntime>true</IncludeMonoRuntime>
+    <PackageSigningKey>3rd Party Mac Developer Installer</PackageSigningKey>
+    <CreatePackage>true</CreatePackage>
+    <CodeSigningKey>3rd Party Mac Developer Application</CodeSigningKey>
+    <EnableCodeSigning>true</EnableCodeSigning>
+    <EnablePackageSigning>true</EnablePackageSigning>
+    <UseRefCounting>false</UseRefCounting>
+    <XamMacArch>x86_64</XamMacArch>
+    <DefineConstants>__UNIFIED__;__MACOS__;MAC;MONOMAC;XAMCORE_2_0</DefineConstants>
+    <MonoBundlingExtraArgs>--registrar:static --minos=10.10</MonoBundlingExtraArgs>
+    <Profiling>false</Profiling>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <I18n>west</I18n>
+    <HttpClientHandler>NSUrlSessionHandler</HttpClientHandler>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Xamarin.Mac" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="Microsoft.CSharp" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Features">
+      <Version>2.3.0</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces">
+      <Version>2.3.0</Version>
+    </PackageReference>
+    <PackageReference Include="NuGet.PackageManagement">
+      <Version>4.3.0</Version>
+    </PackageReference>
+    <PackageReference Include="YamlDotNet">
+      <Version>4.0.0</Version>
+    </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Resources\" />
+    <Folder Include="ViewInspector\" />
+    <Folder Include="WebDocument\" />
+    <Folder Include="WebDocument\MapView\" />
+    <Folder Include="Preferences\" />
+    <Folder Include="Menu\" />
+    <Folder Include="CoordinateMappers\" />
+    <Folder Include="Updater\" />
+    <Folder Include="IO\" />
+    <Folder Include="Views\" />
+    <Folder Include="OutlineView\" />
+    <Folder Include="Resources.xcassets\" />
+    <Folder Include="SystemInformation\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AppDelegate.cs" />
+    <Compile Include="InspectViewDataSource.cs" />
+    <Compile Include="Entry.cs" />
+    <Compile Include="ReplWebView.cs" />
+    <Compile Include="MouseMonitor.cs" />
+    <Compile Include="InspectorPropertyView.cs" />
+    <Compile Include="Xamarin.Mac\CGWindowList.cs" />
+    <Compile Include="Xamarin.Mac\NSDocumentControllerExtensions.cs" />
+    <Compile Include="CenteringToolbarItem.cs" />
+    <Compile Include="InspectorPropertyView.designer.cs">
+      <DependentUpon>InspectorPropertyView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="InspectorOutlineView.cs" />
+    <Compile Include="LogWindow.cs" />
+    <Compile Include="LogWindow.designer.cs">
+      <DependentUpon>LogWindow.cs</DependentUpon>
+    </Compile>
+    <Compile Include="LogWindowController.cs" />
+    <Compile Include="LogWindowController.designer.cs">
+      <DependentUpon>LogWindowController.cs</DependentUpon>
+    </Compile>
+    <Compile Include="AboutWindow.cs" />
+    <Compile Include="AboutWindow.designer.cs">
+      <DependentUpon>AboutWindow.cs</DependentUpon>
+    </Compile>
+    <Compile Include="AboutWindowController.cs" />
+    <Compile Include="AboutWindowController.designer.cs">
+      <DependentUpon>AboutWindowController.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Highlighter.cs" />
+    <Compile Include="NewWorkbookWindow.cs" />
+    <Compile Include="NewWorkbookWindow.designer.cs">
+      <DependentUpon>NewWorkbookWindow.cs</DependentUpon>
+    </Compile>
+    <Compile Include="NewWorkbookCollectionView.cs" />
+    <Compile Include="NewWorkbookCollectionView.designer.cs">
+      <DependentUpon>NewWorkbookCollectionView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="AutoFitTextField.cs" />
+    <Compile Include="ViewInspector\InspectorSCNView.cs" />
+    <Compile Include="ViewInspector\InspectViewNode.cs" />
+    <Compile Include="ViewInspector\InspectViewMaterial.cs" />
+    <Compile Include="ViewInspector\IInspectViewNode.cs" />
+    <Compile Include="ViewInspector\SceneKitDolly.cs" />
+    <Compile Include="WebDocument\XIWebDocumentRepresentation.cs" />
+    <Compile Include="WebDocument\XIWebDocumentView.cs" />
+    <Compile Include="WebDocument\MapView\XIMapViewWebDocumentRepresentation.cs" />
+    <Compile Include="WebDocument\MapView\XIMapViewWebDocumentView.cs" />
+    <Compile Include="WebDocument\MapView\XIMapViewDelegate.cs" />
+    <Compile Include="WebDocument\MapView\PolylinePointAnnotation.cs" />
+    <Compile Include="WebDocument\MapView\XIPinAnnotationView.cs" />
+    <Compile Include="PackageManagerWindow.cs" />
+    <Compile Include="PackageManagerWindow.designer.cs">
+      <DependentUpon>PackageManagerWindow.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PackageManagerWindowController.cs" />
+    <Compile Include="PackageManagerWindowController.designer.cs">
+      <DependentUpon>PackageManagerWindowController.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PackageAddWindow.cs" />
+    <Compile Include="PackageAddWindow.designer.cs">
+      <DependentUpon>PackageAddWindow.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PackageAddWindowController.cs" />
+    <Compile Include="PackageAddWindowController.designer.cs">
+      <DependentUpon>PackageAddWindowController.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Roslyn\RoslynWorkspaceExplorerWindow.cs" />
+    <Compile Include="Roslyn\RoslynWorkspaceExplorerWindow.designer.cs">
+      <DependentUpon>Roslyn\RoslynWorkspaceExplorerWindow.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Roslyn\RoslynWorkspaceExplorerWindowController.cs" />
+    <Compile Include="Roslyn\RoslynWorkspaceExplorerWindowController.designer.cs">
+      <DependentUpon>Roslyn\RoslynWorkspaceExplorerWindowController.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Roslyn\RoslynWorkspaceOutlineViewDataSource.cs" />
+    <Compile Include="Roslyn\RoslynWorkspaceOutlineViewDelegate.cs" />
+    <Compile Include="Roslyn\RoslynSyntaxOutlineViewDataSource.cs" />
+    <Compile Include="Roslyn\RoslynSyntaxOutlineViewDelegate.cs" />
+    <Compile Include="SessionWindow.cs" />
+    <Compile Include="SessionWindow.designer.cs">
+      <DependentUpon>SessionWindow.cs</DependentUpon>
+    </Compile>
+    <Compile Include="SessionWindowController.cs" />
+    <Compile Include="SessionWindowController.designer.cs">
+      <DependentUpon>SessionWindowController.cs</DependentUpon>
+    </Compile>
+    <Compile Include="WorkbookViewController.cs" />
+    <Compile Include="WorkbookViewController.designer.cs">
+      <DependentUpon>WorkbookViewController.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ViewHierarchyViewController.cs" />
+    <Compile Include="ViewHierarchyViewController.designer.cs">
+      <DependentUpon>ViewHierarchyViewController.cs</DependentUpon>
+    </Compile>
+    <Compile Include="SessionDocument.cs" />
+    <Compile Include="SessionViewController.cs" />
+    <Compile Include="SessionDocumentController.cs" />
+    <Compile Include="SessionToolbarDelegate.cs" />
+    <Compile Include="VisualRepViewController.cs" />
+    <Compile Include="VisualRepViewController.designer.cs">
+      <DependentUpon>VisualRepViewController.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ViewPropertyViewController.cs" />
+    <Compile Include="ViewPropertyViewController.designer.cs">
+      <DependentUpon>ViewPropertyViewController.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ViewInspectorMainViewController.cs" />
+    <Compile Include="ViewInspectorMainViewController.designer.cs">
+      <DependentUpon>ViewInspectorMainViewController.cs</DependentUpon>
+    </Compile>
+    <Compile Include="SessionViewControllerAdapter.cs" />
+    <Compile Include="UserPresentableExceptionHandler.cs" />
+    <Compile Include="NewWorkbookViewController.cs" />
+    <Compile Include="NewWorkbookViewController.designer.cs">
+      <DependentUpon>NewWorkbookViewController.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ViewInspectorViewController.cs" />
+    <Compile Include="ConnectToAgentViewController.cs" />
+    <Compile Include="ConnectToAgentViewController.designer.cs">
+      <DependentUpon>ConnectToAgentViewController.cs</DependentUpon>
+    </Compile>
+    <Compile Include="StatusToolbarViewController.cs" />
+    <Compile Include="StatusToolbarViewController.designer.cs">
+      <DependentUpon>StatusToolbarViewController.cs</DependentUpon>
+    </Compile>
+    <Compile Include="StatusToolbarView.cs" />
+    <Compile Include="StatusToolbarView.designer.cs">
+      <DependentUpon>StatusToolbarView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="MacClientSessionViewControllers.cs" />
+    <Compile Include="AgentProcesses\iOSAgentProcess.cs" />
+    <Compile Include="AgentProcesses\MacAgentProcess.cs" />
+    <Compile Include="AgentProcesses\NSTaskExtensions.cs" />
+    <Compile Include="Theme.cs" />
+    <Compile Include="NSAlertMessageViewDelegate.cs" />
+    <Compile Include="SessionWindowTabViewController.cs" />
+    <Compile Include="SessionWindowTabViewController.designer.cs">
+      <DependentUpon>SessionWindowTabViewController.cs</DependentUpon>
+    </Compile>
+    <Compile Include="WorkbookTargetSelector.cs" />
+    <Compile Include="Menu\XIEditorMenuItem.cs" />
+    <Compile Include="Menu\MenuManager.cs" />
+    <Compile Include="Menu\XIDebugMenuItem.cs" />
+    <Compile Include="Menu\XIInspectorOnlyMenuItem.cs" />
+    <Compile Include="Menu\XIWorkbooksOnlyMenuItem.cs" />
+    <Compile Include="ViewInspector\ViewDepth.cs" />
+    <Compile Include="ViewInspector\DisplayMode.cs" />
+    <Compile Include="CoordinateMappers\iOSSimulatorCoordinateMapper.cs" />
+    <Compile Include="CoordinateMappers\MacCoordinateMapper.cs" />
+    <Compile Include="CoordinateMappers\MacAndroidCoordinateMapper.cs" />
+    <Compile Include="CoordinateMappers\AgentCoordinateMapper.cs" />
+    <Compile Include="CoordinateMappers\InspectableWindow.cs" />
+    <Compile Include="SessionTabView.cs" />
+    <Compile Include="MacUpdaterViewModel.cs" />
+    <Compile Include="UpdaterViewController.cs" />
+    <Compile Include="UpdaterViewController.designer.cs">
+      <DependentUpon>UpdaterViewController.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UpdaterWindow.cs" />
+    <Compile Include="UpdaterCheckingViewController.cs" />
+    <Compile Include="UpdaterCheckingViewController.designer.cs">
+      <DependentUpon>UpdaterCheckingViewController.cs</DependentUpon>
+    </Compile>
+    <Compile Include="IO\MacFileSystem.cs" />
+    <Compile Include="Views\XILabel.cs" />
+    <Compile Include="Xamarin.Mac\NSWindowExtensions.cs" />
+    <Compile Include="Preferences\NSUserDefaultsPreferenceStore.cs" />
+    <Compile Include="Preferences\PreferencesGeneralViewController.cs" />
+    <Compile Include="Preferences\PreferencesGeneralViewController.designer.cs">
+      <DependentUpon>Preferences\PreferencesGeneralViewController.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Preferences\PreferencesFeedbackViewController.cs" />
+    <Compile Include="Preferences\PreferencesFeedbackViewController.designer.cs">
+      <DependentUpon>PreferencesFeedbackViewController.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Preferences\PreferencesViewController.cs" />
+    <Compile Include="Preferences\PreferencesWindowController.cs" />
+    <Compile Include="Preferences\PreferencesWindowController.designer.cs">
+      <DependentUpon>Preferences\PreferencesWindowController.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Preferences\PreferencesView.cs" />
+    <Compile Include="Preferences\PreferencesView.designer.cs">
+      <DependentUpon>Preferences\PreferencesView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Preferences\PreferencesUpdaterViewController.cs" />
+    <Compile Include="Preferences\PreferencesUpdaterViewController.designer.cs">
+      <DependentUpon>Preferences\PreferencesUpdaterViewController.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Preferences\PreferencesDeveloperViewController.cs" />
+    <Compile Include="Preferences\PreferencesDeveloperViewController.designer.cs">
+      <DependentUpon>Preferences\PreferencesDeveloperViewController.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Preferences\PreferencesTabViewController.cs" />
+    <Compile Include="Preferences\PreferencesTabViewController.designer.cs">
+      <DependentUpon>Preferences\PreferencesTabViewController.cs</DependentUpon>
+    </Compile>
+    <Compile Include="WorkbookWebViewController.cs" />
+    <Compile Include="WorkbookWebViewController.designer.cs">
+      <DependentUpon>WorkbookWebViewController.cs</DependentUpon>
+    </Compile>
+    <Compile Include="SessionSplitViewController.cs" />
+    <Compile Include="WorkbookOutlineViewController.cs" />
+    <Compile Include="WorkbookOutlineViewController.designer.cs">
+      <DependentUpon>WorkbookOutlineViewController.cs</DependentUpon>
+    </Compile>
+    <Compile Include="OutlineView\CollectionOutlineViewDataSource.cs" />
+    <Compile Include="OutlineView\CollectionOutlineView.cs" />
+    <Compile Include="OutlineView\CollectionOutlineViewDelegate.cs" />
+    <Compile Include="WorkbookOutlineViewDelegate.cs" />
+    <Compile Include="Views\XIIconThemeCellView.cs" />
+    <Compile Include="WebKit\ObjCRuntime\Messaging.g.cs" />
+    <Compile Include="WebKit\WebKit\WebInspector.g.cs" />
+    <Compile Include="WebKit\WebKit\WebUIDelegatePrivate.g.cs" />
+    <Compile Include="WebKit\WebKit\WebViewPrivate.g.cs" />
+    <Compile Include="WebKit\WebKit\WebPreferencesPrivate.g.cs" />
+    <Compile Include="NewWorkbookPrimaryChoiceItem.cs" />
+    <Compile Include="NewWorkbookPrimaryChoiceItem.designer.cs">
+      <DependentUpon>NewWorkbookPrimaryChoiceItem.cs</DependentUpon>
+    </Compile>
+    <Compile Include="WindowDragImageView.cs" />
+    <Compile Include="Xamarin.Mac\AuthOpen.cs" />
+    <Compile Include="Xamarin.Mac\Authorization.cs" />
+    <Compile Include="MacPropertyHelper.cs" />
+    <Compile Include="..\..\Agents\Xamarin.Interactive.Mac\UnifiedExtensions.cs">
+      <Link>UnifiedExtensions.cs</Link>
+    </Compile>
+    <Compile Include="Xamarin.Mac\StoryboardExtensions.cs" />
+    <Compile Include="SystemInformation\VisualStudioForMacComponent.cs" />
+    <Compile Include="Preferences\WebKitPrefs.cs" />
+    <Compile Include="MacClientApp.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <InterfaceDefinition Include="LogWindow.xib" />
+    <InterfaceDefinition Include="AboutWindow.xib" />
+    <InterfaceDefinition Include="PackageManagerWindow.xib" />
+    <InterfaceDefinition Include="PackageAddWindow.xib" />
+    <InterfaceDefinition Include="Roslyn\RoslynWorkspaceExplorerWindow.xib" />
+    <InterfaceDefinition Include="Main.storyboard" />
+    <InterfaceDefinition Include="Updater.storyboard" />
+    <InterfaceDefinition Include="NewWorkbookPrimaryChoiceItem.xib" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Info.plist" />
+    <None Include="MacHtmlResultRenderer.cs" />
+    <None Include="WebKit\WebKitApi.cs" />
+    <None Include="Inspector.plist" />
+    <None Include="Workbooks.plist" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\ToolbarConsoleTemplate.pdf" />
+    <BundleResource Include="Resources\ToolbarHierarchyTemplate.pdf" />
+    <BundleResource Include="Resources\ToolbarInspectTemplate.pdf" />
+    <BundleResource Include="Resources\ToolbarRefreshTemplate.pdf" />
+    <BundleResource Include="Resources\ToolbarRunTemplate.pdf" />
+    <BundleResource Include="Resources\workbook-macos.icns" />
+    <BundleResource Include="Resources\done-16.png" />
+    <BundleResource Include="Resources\done-16%402x.png" />
+    <BundleResource Include="Resources\error-16.png" />
+    <BundleResource Include="Resources\error-16%402x.png" />
+    <BundleResource Include="Resources\exception-16.png" />
+    <BundleResource Include="Resources\exception-16%402x.png" />
+    <BundleResource Include="Resources\stop-16.png" />
+    <BundleResource Include="Resources\stop-16%402x.png" />
+    <BundleResource Include="Resources\updates-16.png" />
+    <BundleResource Include="Resources\updates-16%402x.png" />
+    <BundleResource Include="Resources\warning-16.png" />
+    <BundleResource Include="Resources\warning-16%402x.png" />
+    <BundleResource Include="Resources\refresh-16.png" />
+    <BundleResource Include="Resources\refresh-16%402x.png" />
+    <BundleResource Include="Resources\cancel-16.png" />
+    <BundleResource Include="Resources\cancel-16%402x.png" />
+    <BundleResource Include="..\..\Package\buildinfo">
+      <Link>Resources\buildinfo</Link>
+    </BundleResource>
+    <BundleResource Include="Resources\project-16.png" />
+    <BundleResource Include="Resources\project-16%402x.png" />
+    <BundleResource Include="Resources\project-android-16.png" />
+    <BundleResource Include="Resources\project-android-16%402x.png" />
+    <BundleResource Include="Resources\project-crossplatform-16.png" />
+    <BundleResource Include="Resources\project-crossplatform-16%402x.png" />
+    <BundleResource Include="Resources\project-ios-16.png" />
+    <BundleResource Include="Resources\project-ios-16%402x.png" />
+    <BundleResource Include="Resources\project-macos-16.png" />
+    <BundleResource Include="Resources\project-macos-16%402x.png" />
+    <BundleResource Include="..\..\Package\Mac\updateinfo">
+      <Link>Resources\updateinfo</Link>
+    </BundleResource>
+    <BundleResource Include="Resources\preferences-feedback-32.png" />
+    <BundleResource Include="Resources\preferences-feedback-32%402x.png" />
+    <BundleResource Include="Resources\preferences-updates-32.png" />
+    <BundleResource Include="Resources\preferences-updates-32%402x.png" />
+    <BundleResource Include="Resources\new-workbook-background.png" />
+    <BundleResource Include="Resources\new-workbook-background%402x.png" />
+  </ItemGroup>
+  <Import Project="..\Xamarin.Interactive.MTouch\Xamarin.Interactive.MTouch.projitems" Label="Shared" Condition="Exists('..\Xamarin.Interactive.MTouch\Xamarin.Interactive.MTouch.projitems')" />
+  <Import Project="$(MSBuildExtensionsPath)\Xamarin\Mac\Xamarin.Mac.CSharp.targets" />
+  <Import Project="Build.targets" />
+  <Import Project="..\..\Build\Common.targets" />
+  <ItemGroup>
+    <ProjectReference Include="..\CrossBrowser\Xamarin.CrossBrowser.Mac\Xamarin.CrossBrowser.Mac.csproj">
+      <Project>{68B5F01B-6F1C-49D5-9491-96F826AFE211}</Project>
+      <Name>Xamarin.CrossBrowser.Mac</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Agents\Xamarin.Interactive\Xamarin.Interactive.csproj">
+      <Project>{955F473A-04EC-4716-B75E-509BA892499B}</Project>
+      <Name>Xamarin.Interactive</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\External\CommonMark.NET\CommonMark\CommonMark.Base.csproj">
+      <Project>{0FD4B1DD-45A8-4F02-BEB0-5881CD512573}</Project>
+      <Name>CommonMark.Base</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\External\Xamarin.PropertyEditing\Xamarin.PropertyEditing\Xamarin.PropertyEditing.csproj">
+      <Project>{A0B6FE73-D046-4E1C-BA9D-F20683889C5A}</Project>
+      <Name>Xamarin.PropertyEditing</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\External\Xamarin.PropertyEditing\Xamarin.PropertyEditing.Mac\Xamarin.PropertyEditing.Mac.csproj">
+      <Project>{E8F4F0EB-C2B1-4116-8459-E076E0E0E485}</Project>
+      <Name>Xamarin.PropertyEditing.Mac</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Xamarin.Interactive.Client\Xamarin.Interactive.Client.csproj">
+      <Project>{EE61A762-761D-46B0-9DFA-1D0FD47F3E85}</Project>
+      <Name>Xamarin.Interactive.Client</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\System.Windows.Input\System.Windows.Input.csproj">
+      <Project>{D3C11AAD-595F-47B8-9EC5-BC2485A344DA}</Project>
+      <Name>System.Windows.Input</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <NativeReference Include="..\..\Bootstrap\libMonoPosixHelper.dylib">
+      <Kind>Dynamic</Kind>
+      <SmartLink>False</SmartLink>
+    </NativeReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ImageAsset Include="Resources.xcassets\Contents.json" />
+    <ImageAsset Include="Resources.xcassets\AppIcon.appiconset\Contents.json" />
+    <ImageAsset Include="Resources.xcassets\AppIcon.appiconset\xamarin-workbooks-client-16.png" />
+    <ImageAsset Include="Resources.xcassets\AppIcon.appiconset\xamarin-workbooks-client-32.png" />
+    <ImageAsset Include="Resources.xcassets\AppIcon.appiconset\xamarin-workbooks-client-64.png" />
+    <ImageAsset Include="Resources.xcassets\AppIcon.appiconset\xamarin-workbooks-client-128.png" />
+    <ImageAsset Include="Resources.xcassets\AppIcon.appiconset\xamarin-workbooks-client-256.png" />
+    <ImageAsset Include="Resources.xcassets\AppIcon.appiconset\xamarin-workbooks-client-512.png" />
+    <ImageAsset Include="Resources.xcassets\AppIcon.appiconset\xamarin-workbooks-client-1024.png" />
+  </ItemGroup>
+</Project>

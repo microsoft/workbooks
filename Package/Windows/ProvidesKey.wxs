@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi"
+     xmlns:dep="http://schemas.microsoft.com/wix/DependencyExtension">
+  <Fragment>
+    <DirectoryRef Id="INSTALLFOLDER">
+      <Component Id="XamarinInteractiveProvider" Guid="{45C6D95B-CAFA-43C1-B402-B4E28985B702}">
+        <dep:Provides Key="Xamarin.Interactive"/>
+      </Component>
+    </DirectoryRef>
+  </Fragment>
+</Wix>

@@ -1,0 +1,27 @@
+---
+uti: com.xamarin.workbook
+id: 4a71c844-7939-4833-adcb-4df82ff76477
+title: ImageAsync
+platforms:
+- DotNetCore
+---
+
+```csharp
+#r "System.Net.Http"
+```
+
+```csharp
+using System.Net.Http
+```
+
+```csharp
+var client = new HttpClient ()
+```
+
+```csharp
+var catUri = (await client.GetStringAsync ("http://catoverflow.com/api/query?order=random&limit=1")).Trim ()
+```
+
+```csharp
+await ImageAsync (await client.GetStreamAsync (catUri))
+```

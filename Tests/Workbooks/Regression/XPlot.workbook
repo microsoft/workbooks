@@ -1,0 +1,82 @@
+---
+uti: com.xamarin.workbook
+id: 036795c2-a071-4ad5-9375-d0c82482d37d
+title: XPlot
+platforms:
+- Console
+packages:
+- id: FSharp.Core
+  version: 4.2.1
+- id: XPlot.GoogleCharts
+  version: 1.4.2
+- id: XPlot.Plotly
+  version: 1.4.2
+---
+
+```csharp
+#r "XPlot.GoogleCharts"
+#r "FSharp.Core"
+#r "XPlot.Plotly"
+```
+
+# Plotly Example
+
+Random data, 3D scatter plot.
+
+```csharp
+using XPlot.Plotly;
+
+List<Graph.Scatter3d> traces = new List<Graph.Scatter3d>();
+
+Random rnd = new Random();
+List<double> x = new List<double>();
+List<double> y = new List<double>();
+List<double> z = new List<double>();
+for (int digit = 0; digit < 25; digit ++)
+{
+    x.Add(rnd.NextDouble()*50);
+    y.Add(rnd.NextDouble()*50);
+    z.Add(rnd.NextDouble()*50);
+}
+
+string randomcolor = $"rgb({rnd.Next(50, 200)},{rnd.Next(50, 200)},{rnd.Next(50, 200)})";
+var trace = new Graph.Scatter3d() { x = x, y = y, z = z,
+    mode = "markers", 
+    marker = new Graph.Marker() { color = randomcolor, size = 2.0, symbol = "circle", 
+        line = new Graph.Line() { color = "rgb(0,0,0)", width = 0.0 }
+    },
+    line = new Graph.Line() { color = "#1f77b4", width = 1.0}
+};
+traces.Add(trace);
+
+var layout = new Layout.Layout() { title = "Random Data", autosize = false, margin = new Graph.Margin() { l = 0, r = 0, b = 0, t = 65 }}; 
+var scatterplot = Chart.Plot(traces.ToArray(), layout);
+
+scatterplot.WithWidth(800); 
+scatterplot.WithHeight(500);
+scatterplot;
+```
+
+# Google Charts Example
+
+Geographic chart w/ some random intensities.
+
+```csharp
+var data = new List<Tuple<string, double>> {
+    Tuple.Create("Germany", rnd.NextDouble()*1000),
+    Tuple.Create("United States", rnd.NextDouble()*1000),
+    Tuple.Create("Brazil", rnd.NextDouble()*1000),
+    Tuple.Create("Canada", rnd.NextDouble()*1000),
+    Tuple.Create("France", rnd.NextDouble()*1000),
+    Tuple.Create("RU", rnd.NextDouble()*1000)
+};
+
+var chart = XPlot.GoogleCharts.Chart.Geo(
+    data: data,
+    Labels: new [] { "Score", "Name" }, 
+    Options: new XPlot.GoogleCharts.Configuration.Options () {
+        width = 640,
+        height = 480,
+        is3D = true,
+    });
+```

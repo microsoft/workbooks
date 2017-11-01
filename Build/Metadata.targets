@@ -1,0 +1,56 @@
+<!--
+Metadata.targets
+
+Author:
+  Aaron Bockover <abock@xamarin.com>
+
+Copyright 2017 Microsoft. All rights reserved.
+-->
+<Project
+  xmlns="http://schemas.microsoft.com/developer/msbuild/2003"
+  DefaultTargets="Build"
+  ToolsVersion="12.0">
+
+  <PropertyGroup>
+    <CommonGitInfo_SetMinRevisionFromMostRecentTagRegex>true</CommonGitInfo_SetMinRevisionFromMostRecentTagRegex>
+    <CommonGitInfo_MostRecentTagRegex>-\d+\.\d+\.\d+-([A-Za-z\.]+\d*)(-\d+)?-release$</CommonGitInfo_MostRecentTagRegex>
+  </PropertyGroup>
+
+  <Target
+    Name="Xamarin_Build_SetCommitMaxRevision"
+    DependsOnTargets="Xamarin_Build_ReadBuildEnvironment">
+    <CreateProperty Value="$(BuildEnvironment_Revision)">
+      <Output
+        TaskParameter="Value"
+        PropertyName="CommonGitInfo_MaxRevision"/>
+    </CreateProperty>
+  </Target>
+
+  <Target
+    Name="Xamarin_Build_GenerateReleaseVersions"
+    DependsOnTargets="
+    Xamarin_Build_SetCommitMaxRevision;
+    Xamarin_Build_ReadPackageDotJson;
+    Xamarin_Build_ReadCommonGitInfo">
+    <CreateProperty Value="$(PackageDotJson_Version)+$(CommonGitInfo_MinMaxCommitDistance)">
+      <Output
+        TaskParameter="Value"
+        PropertyName="ReleaseVersion_SemVer"/>
+    </CreateProperty>
+    <CreateProperty Value="$(CommonGitInfo_MaxRevisionTimestamp)">
+      <Output
+        TaskParameter="Value"
+        PropertyName="ReleaseVersion_UpdateInfo"/>
+    </CreateProperty>
+    <Message Text="ReleaseVersion_UpdateInfo: $(ReleaseVersion_UpdateInfo)" Importance="high"/>
+  </Target>
+
+  <Target
+    Name="Xamarin_Build_ReadAllProperties"
+    DependsOnTargets="
+      Xamarin_Build_GenerateReleaseVersions;
+      Xamarin_Build_ReadReleaseVersions;
+      Xamarin_Build_ReadBuildEnvironment">
+  </Target>
+
+</Project>

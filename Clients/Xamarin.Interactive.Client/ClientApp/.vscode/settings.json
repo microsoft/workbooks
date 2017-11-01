@@ -1,0 +1,7 @@
+{
+  "editor.tabSize": 2,
+  "editor.detectIndentation": false,
+  "editor.insertSpaces": true,
+  "editor.formatOnType": true,
+  "files.trimTrailingWhitespace": true
+}

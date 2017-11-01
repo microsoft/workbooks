@@ -1,0 +1,40 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <RootNamespace>Xamarin.Interactive</RootNamespace>
+    <AssemblyName>Xamarin.Interactive</AssemblyName>
+    <ProduceReferenceAssembly Condition=" '$(OS)' == 'Windows_NT' ">True</ProduceReferenceAssembly>
+    <Deterministic Condition=" '$(OS)' == 'Windows_NT' ">True</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <Target Name="FixUpReferenceAssemblyExternals" AfterTargets="Build">
+    <PropertyGroup>
+      <CILStrip>/Library/Frameworks/Mono.framework/Versions/Current/Commands/mono-cil-strip</CILStrip>
+      <ILFixerPath>..\..\Tools\ILFixer\ILFixer.csproj</ILFixerPath>
+      <BaseAssembly>$(OutputPath)$(AssemblyName).dll</BaseAssembly>
+      <RefOutAssembly>$(OutputPath)ref\$(AssemblyName).dll</RefOutAssembly>
+      <TargetAssembly>$(OutputPath)ref-$(AssemblyName).dll</TargetAssembly>
+    </PropertyGroup>
+    <!-- If we're on Mac, generate the TargetAssembly by CIL-stripping the actual assembly. -->
+    <Exec Condition=" '$(OS)' != 'Windows_NT' " Command="$(CILStrip) &quot;$(BaseAssembly)&quot; &quot;$(TargetAssembly)&quot;" />
+    <!-- If we're on windows, copy the RefOutAssembly to the target location. -->
+    <Copy Condition=" '$(OS)' == 'Windows_NT' " SourceFiles="$(RefOutAssembly)" DestinationFiles="$(TargetAssembly)" />
+    <Exec Command="dotnet run --project &quot;$(ILFixerPath)&quot; netstandard &quot;$(TargetAssembly)&quot;" />
+  </Target>
+  <ItemGroup>
+    <Compile Include="..\Xamarin.Interactive\**\*.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Remove="..\Xamarin.Interactive\API\Xamarin.Interactive.api.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\Xamarin.Interactive\API\Xamarin.Interactive.api.cs" />
+  </ItemGroup>
+  <Import Project="..\..\Bootstrap\Xamarin.Interactive.Bootstrap\Xamarin.Interactive.Bootstrap.projitems" Label="Shared" Condition="Exists('..\..\Bootstrap\Xamarin.Interactive.Bootstrap\Xamarin.Interactive.Bootstrap.projitems')" />
+  <Import Project="..\..\Build\Common.targets" />
+</Project>

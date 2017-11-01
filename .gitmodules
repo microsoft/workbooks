@@ -1,0 +1,10 @@
+[submodule "External/CommonMark.NET"]
+	path = External/CommonMark.NET
+	url = https://github.com/abock/CommonMark.NET
+	branch = xamarin-interactive
+[submodule "External/WindowsAPICodePack"]
+	path = External/WindowsAPICodePack
+	url = https://github.com/mono/WindowsAPICodePack
+[submodule "External/Xamarin.PropertyEditing"]
+	path = External/Xamarin.PropertyEditing
+	url = https://github.com/xamarin/Xamarin.PropertyEditing

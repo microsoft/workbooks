@@ -1,0 +1,5 @@
+﻿```json
+{"platform":"iOS","uti":"com.xamarin.workbook","packages":[{"id":"Newtonsoft.Json","version":"8.0.3"},{"id":"Microsoft.Net.Http","version":"2.2.29"},{"id":"Microsoft.Azure.Mobile.Client","version":"2.0.1"},{"id":"Microsoft.Bcl","version":"1.1.10"}]}
+```
+
+This is just a test to ensure the legacy JSON manifest converts as expected to the YAML manifest, without exec-mode in the JSON.

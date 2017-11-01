@@ -1,0 +1,42 @@
+#!/usr/bin/env bash
+
+set -ex
+
+new_package="$1"
+updateinfo_version="$2"
+cfbundle_version="$3"
+
+fxroot="/Library/Frameworks/Xamarin.Interactive.framework"
+fxcurrent="$fxroot/Versions/Current"
+approot="/Applications/Xamarin Workbooks.app"
+
+updates_url="https://software.xamarin.com/Service/Updates?v=2&pv42a8c70f-b3dc-42f4-b8a5-435a1bb2410c=0&level=Alpha";
+packages="$(curl "$updates_url" | \
+	xmllint -xpath '/UpdateInfo/Application/Update[@versionId >= 1010000000]/@url' - | \
+	sed -E $'s|url="([^"]+)"|\\1\\\n|g;' | \
+	tail -r)";
+
+mkdir -p _pkgs
+cd _pkgs
+
+for uri in $packages; do
+	rm -rf "$fxroot" "$approot"
+
+	curl -OL "$uri"
+	package="$(basename "$uri")"
+	
+	installer -pkg "$package" -target / -dumplog
+	installer -pkg "$new_package" -target / -dumplog
+	
+	installed_updateinfo_version="$(head -n1 < "$fxcurrent/updateinfo" | cut -f2 -d' ')"
+	if [ "$installed_updateinfo_version" != "$updateinfo_version" ]; then
+		echo "FAIL: installed updateinfo version is $installed_updateinfo_version; expected $updateinfo_version" 1>&2
+		exit 51
+	fi
+
+	installed_cfbundle_version="$(/usr/libexec/PlistBuddy -c 'Print :CFBundleVersion' "$approot/Contents/Info.plist")"
+	if [ "$installed_cfbundle_version" != "$cfbundle_version" ]; then
+		echo "FAIL: installed CFBundleVersion is $installed_cfbundle_version; expected $cfbundle_version" 1>&2
+		exit 52
+	fi
+done

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Target Name="_BuildBundles">
+    <PropertyGroup>
+      <Targets>Clean;Restore;Build</Targets>
+    </PropertyGroup>
+    <MSBuild Projects="BuildBundle.proj" Targets="$(Targets)" Properties="WorkbookAppTarget=Modern;LSMinimumSystemVersion=10.11" />
+    <MSBuild Projects="BuildBundle.proj" Targets="$(Targets)" Properties="WorkbookAppTarget=Modern;LSMinimumSystemVersion=10.12" />
+    <MSBuild Projects="BuildBundle.proj" Targets="$(Targets)" Properties="WorkbookAppTarget=Full;LSMinimumSystemVersion=10.11" />
+    <MSBuild Projects="BuildBundle.proj" Targets="$(Targets)" Properties="WorkbookAppTarget=Full;LSMinimumSystemVersion=10.12" />
+  </Target>
+  <Target Name="_CleanBundles">
+    <RemoveDir Directories="bin;obj" />
+  </Target>
+  <PropertyGroup>
+    <BuildDependsOn>
+      $(BuildDependsOn);
+      _BuildBundles
+    </BuildDependsOn>
+    <CleanDependsOn>
+      $(CleanDependsOn);
+      _CleanBundles
+    </CleanDependsOn>
+  </PropertyGroup>
+</Project> 

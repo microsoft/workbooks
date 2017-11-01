@@ -1,0 +1,65 @@
+---
+uti: com.xamarin.workbook
+platforms:
+- Console
+---
+
+The following non-definition expression-terminating cells should not render any results as they are either `void`or awaited as a non-generic `Task`.
+
+```csharp
+await Task.Delay (1000)
+```
+
+```csharp
+void Void () { }
+```
+
+```csharp
+Void ()
+```
+
+```csharp
+Action a = () => { };
+```
+
+```csharp
+a ()
+```
+
+```csharp
+var task = Task.Delay (1000)
+```
+
+```csharp
+await task
+```
+
+The following non-definition expression cells terminate with a renderable expression:
+
+```csharp
+1
+```
+
+```csharp
+true
+```
+
+```csharp
+(1 + 2)
+```
+
+```csharp
+Math.Pow (10, 10)
+```
+
+```csharp
+Task<int> RandomAsync () => Task.FromResult (new Random ().Next ())
+```
+
+```csharp
+await RandomAsync ()
+```
+
+```csharp
+Console.WriteLine ("void"); "not void"
+```

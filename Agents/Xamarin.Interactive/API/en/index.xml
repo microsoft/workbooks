@@ -1,0 +1,150 @@
+<Overview>
+  <Assemblies>
+    <Assembly Name="Xamarin.Interactive" Version="1.0.0.0">
+      <Attributes>
+        <Attribute>
+          <AttributeName>System.Diagnostics.Debuggable(System.Diagnostics.DebuggableAttribute+DebuggingModes.IgnoreSymbolStoreSequencePoints)</AttributeName>
+        </Attribute>
+        <Attribute>
+          <AttributeName>System.Reflection.AssemblyCopyright("Copyright 2016-2017 Microsoft. All rights reserved.
+Copyright 2014-2016 Xamarin Inc. All rights reserved.")</AttributeName>
+        </Attribute>
+        <Attribute>
+          <AttributeName>System.Reflection.AssemblyFileVersion("0.65.70.86")</AttributeName>
+        </Attribute>
+        <Attribute>
+          <AttributeName>System.Runtime.CompilerServices.CompilationRelaxations(8)</AttributeName>
+        </Attribute>
+        <Attribute>
+          <AttributeName>System.Runtime.CompilerServices.InternalsVisibleTo("Xamarin.Interactive.DotNetCore")</AttributeName>
+        </Attribute>
+        <Attribute>
+          <AttributeName>System.Runtime.CompilerServices.InternalsVisibleTo("Xamarin.Interactive.Android")</AttributeName>
+        </Attribute>
+        <Attribute>
+          <AttributeName>System.Runtime.CompilerServices.InternalsVisibleTo("Xamarin.Interactive.iOS")</AttributeName>
+        </Attribute>
+        <Attribute>
+          <AttributeName>System.Runtime.CompilerServices.InternalsVisibleTo("Xamarin.Interactive.Mac.Desktop")</AttributeName>
+        </Attribute>
+        <Attribute>
+          <AttributeName>System.Runtime.CompilerServices.InternalsVisibleTo("Xamarin.Interactive.Mac.Mobile")</AttributeName>
+        </Attribute>
+        <Attribute>
+          <AttributeName>System.Runtime.CompilerServices.InternalsVisibleTo("Xamarin.Interactive.Wpf")</AttributeName>
+        </Attribute>
+        <Attribute>
+          <AttributeName>System.Runtime.CompilerServices.InternalsVisibleTo("Xamarin.Interactive.Console")</AttributeName>
+        </Attribute>
+        <Attribute>
+          <AttributeName>System.Runtime.CompilerServices.InternalsVisibleTo("Xamarin.Interactive.Forms")</AttributeName>
+        </Attribute>
+        <Attribute>
+          <AttributeName>System.Runtime.CompilerServices.InternalsVisibleTo("Xamarin.Interactive.Forms.iOS")</AttributeName>
+        </Attribute>
+        <Attribute>
+          <AttributeName>System.Runtime.CompilerServices.InternalsVisibleTo("Xamarin.Interactive.Forms.Android")</AttributeName>
+        </Attribute>
+        <Attribute>
+          <AttributeName>System.Runtime.CompilerServices.InternalsVisibleTo("workbook")</AttributeName>
+        </Attribute>
+        <Attribute>
+          <AttributeName>System.Runtime.CompilerServices.InternalsVisibleTo("Xamarin Workbooks")</AttributeName>
+        </Attribute>
+        <Attribute>
+          <AttributeName>System.Runtime.CompilerServices.InternalsVisibleTo("Xamarin Inspector")</AttributeName>
+        </Attribute>
+        <Attribute>
+          <AttributeName>System.Runtime.CompilerServices.InternalsVisibleTo("Xamarin.Interactive.Tests.Mac")</AttributeName>
+        </Attribute>
+        <Attribute>
+          <AttributeName>System.Runtime.CompilerServices.InternalsVisibleTo("Xamarin.Interactive.Tests.Windows")</AttributeName>
+        </Attribute>
+        <Attribute>
+          <AttributeName>System.Runtime.CompilerServices.InternalsVisibleTo("Xamarin.Interactive.Tests.Android")</AttributeName>
+        </Attribute>
+        <Attribute>
+          <AttributeName>System.Runtime.CompilerServices.InternalsVisibleTo("Xamarin.Workbooks.DotNetCore")</AttributeName>
+        </Attribute>
+        <Attribute>
+          <AttributeName>System.Runtime.CompilerServices.InternalsVisibleTo("Xamarin.Workbooks.Android")</AttributeName>
+        </Attribute>
+        <Attribute>
+          <AttributeName>System.Runtime.CompilerServices.InternalsVisibleTo("Xamarin.Workbooks.iOS")</AttributeName>
+        </Attribute>
+        <Attribute>
+          <AttributeName>System.Runtime.CompilerServices.InternalsVisibleTo("Xamarin.Workbooks.Forms.Android")</AttributeName>
+        </Attribute>
+        <Attribute>
+          <AttributeName>System.Runtime.CompilerServices.InternalsVisibleTo("Xamarin.Workbooks.Forms.iOS")</AttributeName>
+        </Attribute>
+        <Attribute>
+          <AttributeName>System.Runtime.CompilerServices.InternalsVisibleTo("Workbook Mac App (Desktop Profile)")</AttributeName>
+        </Attribute>
+        <Attribute>
+          <AttributeName>System.Runtime.CompilerServices.InternalsVisibleTo("Workbook Mac App (Mobile Profile)")</AttributeName>
+        </Attribute>
+        <Attribute>
+          <AttributeName>System.Runtime.CompilerServices.InternalsVisibleTo("Xamarin Workbooks Agent (WPF)")</AttributeName>
+        </Attribute>
+        <Attribute>
+          <AttributeName>System.Runtime.CompilerServices.InternalsVisibleTo("Xamarin.Interactive.XS")</AttributeName>
+        </Attribute>
+        <Attribute>
+          <AttributeName>System.Runtime.CompilerServices.InternalsVisibleTo("Xamarin.Interactive.VS")</AttributeName>
+        </Attribute>
+        <Attribute>
+          <AttributeName>System.Runtime.CompilerServices.RuntimeCompatibility(WrapNonExceptionThrows=true)</AttributeName>
+        </Attribute>
+        <Attribute>
+          <AttributeName>System.Runtime.Versioning.TargetFramework(".NETPortable,Version=v4.5,Profile=Profile111", FrameworkDisplayName=".NET Portable Subset")</AttributeName>
+        </Attribute>
+        <Attribute>
+          <AttributeName>Xamarin.Interactive.BuildInfo</AttributeName>
+        </Attribute>
+      </Attributes>
+    </Assembly>
+  </Assemblies>
+  <Remarks>To be added.</Remarks>
+  <Copyright>To be added.</Copyright>
+  <Types>
+    <Namespace Name="Xamarin.Interactive">
+      <Type Name="AgentIntegrationAttribute" Kind="Class" />
+      <Type Name="BuildInfoAttribute" Kind="Class" />
+      <Type Name="IAgent" Kind="Interface" />
+      <Type Name="IAgentIntegration" Kind="Interface" />
+      <Type Name="IAgentSynchronizationContext" Kind="Interface" />
+    </Namespace>
+    <Namespace Name="Xamarin.Interactive.Logging">
+      <Type Name="Log" Kind="Class" />
+      <Type Name="LogEntry" Kind="Structure" />
+      <Type Name="LogLevel" Kind="Enumeration" />
+    </Namespace>
+    <Namespace Name="Xamarin.Interactive.Representations">
+      <Type Name="Color" Kind="Class" />
+      <Type Name="ColorSpace" Kind="Enumeration" />
+      <Type Name="GeoLocation" Kind="Class" />
+      <Type Name="GeoPolyline" Kind="Class" />
+      <Type Name="Image" Kind="Class" />
+      <Type Name="ImageFormat" Kind="Enumeration" />
+      <Type Name="IRepresentationManager" Kind="Interface" />
+      <Type Name="Point" Kind="Class" />
+      <Type Name="Rectangle" Kind="Class" />
+      <Type Name="Representation" Kind="Structure" />
+      <Type Name="RepresentationProvider" Kind="Class" />
+      <Type Name="Size" Kind="Class" />
+      <Type Name="VerbatimHtml" Kind="Class" />
+    </Namespace>
+    <Namespace Name="Xamarin.Interactive.Representations.Reflection">
+      <Type Name="IRepresentedMemberInfo" Kind="Interface" />
+      <Type Name="IRepresentedType" Kind="Interface" />
+      <Type Name="RepresentedMemberKind" Kind="Enumeration" />
+    </Namespace>
+    <Namespace Name="Xamarin.Interactive.Serialization">
+      <Type Name="ISerializableObject" Kind="Interface" />
+      <Type Name="ObjectSerializer" Kind="Class" />
+      <Type Name="PropertyOptions" Kind="Enumeration" />
+    </Namespace>
+  </Types>
+  <Title>Xamarin.Interactive</Title>
+</Overview>

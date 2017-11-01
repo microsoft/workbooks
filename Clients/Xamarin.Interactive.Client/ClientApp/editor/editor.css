@@ -1,0 +1,92 @@
+﻿/*
+editor.css
+
+Author:
+  Aaron Bockover <abock@xamarin.com>
+  Vaclav Vancura <vacvan@microsoft.com>
+
+Copyright 2016 Xamarin Inc. All rights reserved.
+Copyright 2016 Microsoft. All rights reserved.
+*/
+
+/* When changing border/padding, be sure to sync with updateLayout in code-editor.ts */
+.monaco-editor {
+  border: 1px solid #ddd;
+  padding: 0.25em 0.5em;
+}
+
+.monaco-editor,
+.monaco-editor .margin,
+.monaco-editor.mac.vs,
+.monaco-editor-background {
+  background: #FAFAFA !important;
+}
+
+.interactive-workspace > article:not(.focused) .monaco-editor .view-overlays {
+  display: none;
+}
+
+/* We like this behavior better, but also it works around what appears to be an
+   animation regression in Safari 10.1 (and macOS ~10.12.4)
+   See https://github.com/Microsoft/monaco-editor/issues/408
+*/
+.monaco-editor .monaco-editor-hover {
+    animation: none !important;
+}
+
+/* Workaround for signature help layout bug in Safari.
+   See https://github.com/Microsoft/monaco-editor/issues/253
+*/
+.monaco-editor.mac .parameter-hints-widget {
+  flex-direction: row !important;
+}
+
+/* Work around Safari display:flex issue.
+   See https://github.com/Microsoft/monaco-editor/issues/282 */
+.monaco-editor.mac .parameter-hints-widget .monaco-scrollable-element {
+  display: block !important;
+}
+
+/* Recommended workaround for annoying auto-scroll-to-top behavior that occurs
+   if top-left of editor text area is not in view when typing.
+   See https://github.com/Microsoft/monaco-editor/issues/113
+*/
+.monaco-editor .inputarea {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  margin: 20px;
+  opacity: 0;
+}
+
+.monaco-editor .suggest-widget .monaco-list .monaco-list-row .icon {
+  background-size: 16px 16px !important;
+  top: 0; /* Override placement that prevents aligning icon with completion text */
+}
+
+.monaco-editor .editor-widget,
+.monaco-editor .monaco-editor-hover {
+	z-index: 10000; /* Same as our UI dropdowns */
+}
+
+.monaco-editor .current-line {
+  display: none !important;
+}
+
+.monaco-editor.vs .cursor {
+  width: 1px !important;
+  opacity: 0.8 !important;
+}
+
+.monaco-editor .selectionHighlight {
+  background: rgba(173, 214, 255, 0.5) !important;
+}
+
+.monaco-editor .line-numbers {
+  color: #ccc !important;
+}
+
+/* TODO: Rename (see https://github.com/xamarin/inspector/pull/711#discussion_r76283414) */
+.CodeMirror-diagnostic {
+  border-bottom: 1px solid rgba(219, 33, 49, 0.25);
+}

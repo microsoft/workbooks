@@ -1,0 +1,210 @@
+﻿<Controls:MetroWindow x:Class="Xamarin.Interactive.Client.Windows.Views.OptionsWindow"
+    x:ClassModifier="internal"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:System="clr-namespace:System;assembly=mscorlib"
+    xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+    xmlns:client="clr-namespace:Xamarin.Interactive.Client.Windows"
+    xmlns:converters="clr-namespace:Xamarin.Interactive.Client.Windows.Converters"
+    xmlns:commands="clr-namespace:Xamarin.Interactive.Client.Windows.Commands"
+    xmlns:Updater="clr-namespace:Xamarin.Interactive.Client.Updater;assembly=Xamarin.Interactive.Client"
+    mc:Ignorable="d"
+    Title="Preferences"
+    Icon="{x:Static client:App.AppIconSource}"
+    ShowTitleBar="True"
+    IconTemplate="{StaticResource InspectorTitlebarIconDataTemplate}"
+    BorderThickness="1"
+    WindowStartupLocation="CenterScreen"
+    MinWidth="450"
+    MaxWidth="450"
+    ResizeMode="NoResize"
+    SizeToContent="WidthAndHeight"
+    Style="{DynamicResource MetroWindowStyle}">
+
+    <Controls:MetroWindow.Resources>
+        <converters:BoolToVisibilityConverter
+            x:Key="visibilityConverter"
+            TrueValue="Visible"
+            FalseValue="Collapsed"/>
+        <converters:QueryFrequencyConverter
+            x:Key="queryFrequencyConverter"/>
+        <ObjectDataProvider
+            x:Key="UpdateQueryFrequencies"
+            MethodName="GetValues"
+            ObjectType="{x:Type System:Enum}">
+            <ObjectDataProvider.MethodParameters>
+                <x:Type TypeName="Updater:QueryFrequency"/>
+            </ObjectDataProvider.MethodParameters>
+        </ObjectDataProvider>
+    </Controls:MetroWindow.Resources>
+
+    <Window.InputBindings>
+        <KeyBinding Key="Esc" Command="{x:Static commands:Commands.CloseWindow}"
+                    CommandParameter="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=Window}}"/>
+    </Window.InputBindings>
+
+    <TabControl
+        x:Name="tabControl"
+        Margin="10">
+        <TabItem
+            Style="{DynamicResource TabItemStyle}"
+            Header="general">
+            <StackPanel Orientation="Vertical">
+                <GroupBox Style="{DynamicResource GroupBoxStyle}" Header="UI" Margin="0,10,0,0">
+                    <StackPanel Orientation="Vertical">
+                        <StackPanel Orientation="Horizontal">
+                            <Label>Font Size:</Label>
+                            <Controls:NumericUpDown
+                                Maximum="{Binding MaxFontSize, Mode=OneWay}"
+                                Minimum="{Binding MinFontSize, Mode=OneWay}"
+                                Value="{Binding WorkbookFontSize, Mode=TwoWay}"/>
+                        </StackPanel>
+                        <CheckBox
+                            Margin="0,10,0,0"
+                            IsChecked="{Binding ShowLineNumbers, Mode=TwoWay}">
+                            <TextBlock Text="Show line numbers in code cells" />
+                        </CheckBox>
+                        <CheckBox
+                            Margin="0,10,0,0"
+                            IsChecked="{Binding ShowSubmissionExecutionTimings, Mode=TwoWay}">
+                            <TextBlock Text="Show execution timings on code cells" />
+                        </CheckBox>
+                    </StackPanel>
+                </GroupBox>
+                <GroupBox
+                    Header="REPL"
+                    x:Name="replGroup"
+                    Margin="0,10,0,0"
+                    Style="{DynamicResource GroupBoxStyle}"
+                    Visibility="{Binding IsInspectorClient, Converter={StaticResource visibilityConverter}}">
+                    <StackPanel Orientation="Horizontal">
+                        <CheckBox IsChecked="{Binding SaveHistory, Mode=TwoWay}">
+                            <TextBlock Text="Save History" />
+                        </CheckBox>
+                    </StackPanel>
+                </GroupBox>
+                <GroupBox
+                    Header="Theme"
+                    x:Name="themeGroup"
+                    Margin="0,10,0,0"
+                    Style="{DynamicResource GroupBoxStyle}"
+                    Visibility="{Binding IsLocalDebugBuild, Converter={StaticResource visibilityConverter}}">
+                    <StackPanel Orientation="Horizontal">
+                        <Label>Theme:</Label>
+                        <ComboBox
+                            ItemContainerStyle="{DynamicResource ComboBoxItem}"
+                            ItemsSource="{Binding AvailableThemes}"
+                            SelectedItem="{Binding Path=CurrentTheme, Mode=TwoWay}" />
+                    </StackPanel>
+                </GroupBox>
+                <Button
+                    Margin="0,10,0,0"
+                    Style="{DynamicResource WorkbooksButton}"
+                    Click="OnResetAllPreferences">Reset All Preferences</Button>
+            </StackPanel>
+        </TabItem>
+        <TabItem
+            Style="{DynamicResource TabItemStyle}"
+            Foreground="{DynamicResource TextBrush}"
+            Header="updates">
+            <Grid IsSharedSizeScope="True">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition SharedSizeGroup="UpdaterRow"/>
+                    <RowDefinition SharedSizeGroup="UpdaterRow"/>
+                    <RowDefinition SharedSizeGroup="UpdaterRow"/>
+                </Grid.RowDefinitions>
+                <TextBlock
+                    Grid.Row="0"
+                    Grid.Column="0"
+                    Margin="0,10,10,0"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Center">
+                    Automatically check for updates:
+                </TextBlock>
+                <ComboBox
+                    Grid.Row="0"
+                    Grid.Column="1"
+                    Margin="0,10,0,0"
+                    ItemContainerStyle="{DynamicResource ComboBoxItem}"
+                    ItemsSource="{Binding Source={StaticResource UpdateQueryFrequencies}}"
+                    SelectedItem="{Binding Path=UpdateQueryFrequency, Mode=TwoWay}">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Converter={StaticResource queryFrequencyConverter}}"/>
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+                <TextBlock
+                    Grid.Row="1"
+                    Grid.Column="0"
+                    Margin="0,10,10,0"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Center">
+                    Update channel:
+                </TextBlock>
+                <ComboBox
+                    Grid.Row="1"
+                    Grid.Column="1"
+                    Margin="0,10,0,0"
+                    ItemContainerStyle="{DynamicResource ComboBoxItem}"
+                    ItemsSource="{Binding Path=AvailableUpdateChannels}"
+                    SelectedItem="{Binding Path=UpdateChannel, Mode=TwoWay}"/>
+                <TextBlock
+                    Grid.Row="2"
+                    Grid.Column="0"
+                    Margin="0,10,10,0"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Center"
+                    Opacity="0.5">
+                    Last Checked:
+                </TextBlock>
+                <TextBlock
+                    Grid.Row="2"
+                    Grid.Column="1"
+                    Margin="0,10,0,0"
+                    VerticalAlignment="Center"
+                    Opacity="0.5"
+                    Text="{Binding Path=UpdateQueryLastRun}"/>
+            </Grid>
+        </TabItem>
+        <TabItem
+            Style="{DynamicResource TabItemStyle}"
+            Header="feedback">
+            <StackPanel Orientation="Vertical">
+                <StackPanel>
+                    <RichTextBox
+                            x:Name="telemetryNotice"
+                            Margin="0,10,0,0"
+                            BorderThickness="0"
+                            IsReadOnly="True"
+                            IsDocumentEnabled="True"
+                            HorizontalAlignment="Left">
+                        <RichTextBox.Resources>
+                            <Style TargetType="Hyperlink">
+                                <Setter Property="Cursor" Value="Hand" />
+                                <EventSetter Event="RequestNavigate" Handler="Hyperlink_RequestNavigate" />
+                            </Style>
+                        </RichTextBox.Resources>
+                    </RichTextBox>
+                </StackPanel>
+                <Separator Margin="0,10"/>
+                <RadioButton
+                    GroupName="TelemetryEnabled"
+                    Content="Yes, I am willing to participate (Recommended)"
+                    IsChecked="{Binding EnableTelemetry, Mode=TwoWay}"/>
+                <RadioButton
+                    Margin="0,5,0,0"
+                    GroupName="TelemetryEnabled"
+                    Content="No, I would not like to participate"
+                    IsChecked="{Binding DisableTelemetry, Mode=TwoWay}"/>
+            </StackPanel>
+        </TabItem>
+    </TabControl>
+
+</Controls:MetroWindow>

@@ -1,0 +1,45 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <UsingTask
+    TaskName="Xamarin.MSBuild.TypeScriptConfig"
+    AssemblyFile="..\Build\Xamarin.Build\Xamarin.Build.dll" />
+
+  <PropertyGroup>
+    <PathEnv Condition=" '$(OS)' == 'Unix' ">PATH=/usr/local/bin:/opt/brew/bin </PathEnv>
+    <NodeModulesDirectory>$(MSBuildThisFileDirectory)..\node_modules\</NodeModulesDirectory>
+    <NodeBinDirectory>$(NodeModulesDirectory).bin\</NodeBinDirectory>
+    <BrowserifyTool>$(PathEnv)&quot;$(NodeBinDirectory)browserify&quot;</BrowserifyTool>
+    <BrowserifyOutputName Condition=" '$(BrowserifyOutputName)' == '' ">app.js</BrowserifyOutputName>
+    <BrowserifyOutputDirectory>$(MSBuildThisFileDirectory)obj\</BrowserifyOutputDirectory>
+    <BrowserifyOutputPath>$(BrowserifyOutputDirectory)$(BrowserifyOutputName)</BrowserifyOutputPath>
+    <BrowserifyOptions Condition=" '$(Configuration)' == 'Debug' ">--debug</BrowserifyOptions>
+    <TypeScriptJSTarget Condition=" '$(TypeScriptJSTarget)' == '' ">ES5</TypeScriptJSTarget>
+    <TypeScriptConfigDirectory Condition=" '$(TypeScriptConfigFile)' == '' ">$(MSBuildThisFileDirectory)Xamarin.Interactive.Client\ClientApp\</TypeScriptConfigDirectory>
+  </PropertyGroup>
+
+  <Target Name="_Browserify">
+    <TypeScriptConfig TSConfigFile="$(TypeScriptConfigDirectory)tsconfig.json">
+      <Output TaskParameter="Files" ItemName="TSConfigSourceFiles"/>
+    </TypeScriptConfig>
+    <ItemGroup>
+      <TypeScriptCompile Include="$(TypeScriptConfigDirectory)%(TSConfigSourceFiles.Identity)"/>
+    </ItemGroup>
+    <MakeDir Directories="$(BrowserifyOutputDirectory)"/>
+    <Exec Command="$(BrowserifyTool) $(BrowserifyOptions) --outfile &quot;$(BrowserifyOutputPath)&quot; -p [ tsify --target $(TypeScriptJSTarget) ] @(TypeScriptCompile -> '&quot;%(Identity)&quot;', ' ') "/>
+  </Target>
+
+  <Target Name="_BrowserifyClean">
+    <Delete Files="$(BrowserifyOutputPath)"/>
+  </Target>
+
+  <PropertyGroup>
+    <BuildDependsOn>
+      _Browserify;
+      $(BuildDependsOn)
+    </BuildDependsOn>
+
+    <CleanDependsOn>
+      _BrowserifyClean;
+      $(CleanDependsOn)
+    </CleanDependsOn>
+  </PropertyGroup>
+</Project>

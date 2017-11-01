@@ -1,0 +1,45 @@
+---
+uti: com.xamarin.workbook
+id: 65086702-3d18-4c76-acb6-8a80846a5539
+title: OxyPlot
+platforms:
+- Console
+packages:
+- id: OxyPlot.Core
+  version: 1.0.0
+---
+
+```csharp
+#r "OxyPlot"
+```
+
+```csharp
+using OxyPlot;
+using OxyPlot.Series;
+```
+
+```csharp
+var plotModel = new PlotModel {
+    Title = "Trigonometric functions",
+    Subtitle = "Example using the FunctionSeries",
+    PlotType = PlotType.Cartesian
+};
+
+plotModel.Series.Add (new FunctionSeries (
+    Math.Sin, -10, 10, 0.1, "sin(x)"));
+
+plotModel.Series.Add (new FunctionSeries (
+    Math.Cos, -10, 10, 0.1, "cos(x)"));
+
+plotModel.Series.Add (new FunctionSeries (
+    t => 5 * Math.Cos (t),
+    t => 5 * Math.Sin (t),
+    0,
+    2 * Math.PI,
+    0.1,
+    "cos(t),sin(t)"));
+```
+
+```csharp
+plotModel
+```

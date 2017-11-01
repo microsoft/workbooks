@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <SharedGUID>{0BE4E82E-2409-4425-811D-BC7C8B134320}</SharedGUID>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <Import_RootNamespace>Xamarin.Interactive.Mac</Import_RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)AppKitExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MacAgent.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MacEvaluationContextGlobalObject.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MacInspectView.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)NativeExtenstions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UnifiedExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UnifiedEvaluationContextGlobalObject.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MacRepresentationProvider.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UnifiedRepresentationProvider.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UnifiedInspectorSupport.cs" />
+  </ItemGroup>
+</Project>

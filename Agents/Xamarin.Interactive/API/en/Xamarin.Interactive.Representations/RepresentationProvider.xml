@@ -1,0 +1,222 @@
+<Type Name="RepresentationProvider" FullName="Xamarin.Interactive.Representations.RepresentationProvider">
+  <TypeSignature Language="C#" Value="public abstract class RepresentationProvider" />
+  <TypeSignature Language="ILAsm" Value=".class public auto ansi abstract beforefieldinit RepresentationProvider extends System.Object" />
+  <AssemblyInfo>
+    <AssemblyName>Xamarin.Interactive</AssemblyName>
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
+  </AssemblyInfo>
+  <Base>
+    <BaseTypeName>System.Object</BaseTypeName>
+  </Base>
+  <Interfaces />
+  <Docs>
+    <summary>To be added.</summary>
+    <remarks>To be added.</remarks>
+  </Docs>
+  <Members>
+    <Member MemberName=".ctor">
+      <MemberSignature Language="C#" Value="protected RepresentationProvider ();" />
+      <MemberSignature Language="ILAsm" Value=".method familyhidebysig specialname rtspecialname instance void .ctor() cil managed" />
+      <MemberType>Constructor</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <Parameters />
+      <Docs>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="HasSensibleEnumerator">
+      <MemberSignature Language="C#" Value="public virtual bool HasSensibleEnumerator (System.Collections.IEnumerable enumerable);" />
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig newslot virtual instance bool HasSensibleEnumerator(class System.Collections.IEnumerable enumerable) cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Boolean</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="enumerable" Type="System.Collections.IEnumerable" />
+      </Parameters>
+      <Docs>
+        <param name="enumerable">To be added.</param>
+        <summary>
+             Determine if the given object is representable as an enumerable. Many
+             types that implement <see cref="T:System.Collections.IEnumerable" /> do so
+             in a way that does not make sense to display to the user. For instance,
+             <see cref="T:System.String" /> is enumerable, but we would not want to
+             offer an enumerable representation of it to a user.
+             </summary>
+        <returns>
+          <c>true</c> if the object should possibly be represented as an enumerable
+             (other <see cref="T:Xamarin.Interactive.Representations.RepresentationProvider" /> objects may decide otherwise, 
+             <c>false</c> if the object should definitely not be represented as
+             an enumerable (further processing will halt).
+             </returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="ProvideRepresentations">
+      <MemberSignature Language="C#" Value="public virtual System.Collections.Generic.IEnumerable&lt;object&gt; ProvideRepresentations (object obj);" />
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig newslot virtual instance class System.Collections.Generic.IEnumerable`1&lt;object&gt; ProvideRepresentations(object obj) cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Collections.Generic.IEnumerable&lt;System.Object&gt;</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="obj" Type="System.Object" />
+      </Parameters>
+      <Docs>
+        <param name="obj">To be added.</param>
+        <summary>
+             Provide zero or more alternate representations for an object.
+             </summary>
+        <returns>To be added.</returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="ShouldReadMemberValue">
+      <MemberSignature Language="C#" Value="public virtual bool ShouldReadMemberValue (Xamarin.Interactive.Representations.Reflection.IRepresentedMemberInfo representedMemberInfo, object obj);" />
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig newslot virtual instance bool ShouldReadMemberValue(class Xamarin.Interactive.Representations.Reflection.IRepresentedMemberInfo representedMemberInfo, object obj) cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Boolean</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="representedMemberInfo" Type="Xamarin.Interactive.Representations.Reflection.IRepresentedMemberInfo" />
+        <Parameter Name="obj" Type="System.Object" />
+      </Parameters>
+      <Docs>
+        <param name="representedMemberInfo">To be added.</param>
+        <param name="obj">To be added.</param>
+        <summary>
+             Determine if the given member on an object should be inspected via reflection.
+             Some object members are known to exhibit bad behavior or side effects when
+             accessed. This hook provides a way to skip them.
+             </summary>
+        <returns>
+          <c>true</c>, if reflection is allowed, <c>false</c> otherwise.
+             </returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="ShouldReflect">
+      <MemberSignature Language="C#" Value="public virtual bool ShouldReflect (object obj);" />
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig newslot virtual instance bool ShouldReflect(object obj) cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Boolean</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="obj" Type="System.Object" />
+      </Parameters>
+      <Docs>
+        <param name="obj">To be added.</param>
+        <summary>
+             Determine if the given object should be inspected via reflection. Most
+             types should be reflectable so that the full object member graph can
+             be presented. There are some types however where it makes sense to hide
+             members and simply display a custom representation, or skip them for
+             reflection altogether due to known bad behavior or side effects.
+             </summary>
+        <returns>
+          <c>true</c>, if reflection is allowed, <c>false</c> otherwise.
+             </returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="TryConvertFromRepresentation">
+      <MemberSignature Language="C#" Value="public virtual bool TryConvertFromRepresentation (Xamarin.Interactive.Representations.Reflection.IRepresentedType representedType, object[] representations, out object represented);" />
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig newslot virtual instance bool TryConvertFromRepresentation(class Xamarin.Interactive.Representations.Reflection.IRepresentedType representedType, object[] representations, object represented) cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Boolean</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="representedType" Type="Xamarin.Interactive.Representations.Reflection.IRepresentedType" />
+        <Parameter Name="representations" Type="System.Object[]" />
+        <Parameter Name="represented" Type="System.Object&amp;" RefType="out" />
+      </Parameters>
+      <Docs>
+        <param name="representedType">
+             The expected type of the represented return value after conversion, such
+             as a UIKit.UIColor.
+             </param>
+        <param name="representations">
+             Possible representation values to convert, such as a <see cref="T:Xamarin.Interactive.Representations.Color" />.
+             Implementations of this method will pick the best representation from the
+             set as the basis for the conversion to the represented form.
+             </param>
+        <param name="represented">
+             The converted represented object (e.g. a UIKit.UIColor) to be used (e.g.
+             this value will be set on an inspected object if edited in the property
+             editor).
+             </param>
+        <summary>
+             Converts from a representation object (e.g. a <see cref="T:Xamarin.Interactive.Representations.Color" />) back to
+             the represented form (e.g. a UIKit.UIColor). This is used when the client
+             makes edits to object member values in the property grid, for example.
+             Implementations of this method are essentially the inverse of
+             <see cref="M:Xamarin.Interactive.Representations.RepresentationProvider.ProvideRepresentations(System.Object)" /> for any representations provided
+             as a <see cref="T:Xamarin.Interactive.Representations.Representation" /> with <see cref="P:Xamarin.Interactive.Representations.Representation.CanEdit" />
+             set to <c>true</c>.
+             </summary>
+        <returns>
+          <c>true</c> if conversion was successful, <c>false</c> otherwise.
+             </returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="TryFindMatchingRepresentation&lt;TResolvedType,TRepresentationType&gt;">
+      <MemberSignature Language="C#" Value="protected virtual bool TryFindMatchingRepresentation&lt;TResolvedType,TRepresentationType&gt; (Xamarin.Interactive.Representations.Reflection.IRepresentedType representedType, object[] representations, out TRepresentationType matchedRepresentation) where TRepresentationType : class;" />
+      <MemberSignature Language="ILAsm" Value=".method familyhidebysig newslot virtual instance bool TryFindMatchingRepresentation&lt;TResolvedType, class TRepresentationType&gt;(class Xamarin.Interactive.Representations.Reflection.IRepresentedType representedType, object[] representations, !!TRepresentationType matchedRepresentation) cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Boolean</ReturnType>
+      </ReturnValue>
+      <TypeParameters>
+        <TypeParameter Name="TResolvedType" />
+        <TypeParameter Name="TRepresentationType">
+          <Constraints>
+            <ParameterAttribute>ReferenceTypeConstraint</ParameterAttribute>
+          </Constraints>
+        </TypeParameter>
+      </TypeParameters>
+      <Parameters>
+        <Parameter Name="representedType" Type="Xamarin.Interactive.Representations.Reflection.IRepresentedType" />
+        <Parameter Name="representations" Type="System.Object[]" />
+        <Parameter Name="matchedRepresentation" Type="TRepresentationType&amp;" RefType="out" />
+      </Parameters>
+      <Docs>
+        <typeparam name="TResolvedType">The expected resolved type.</typeparam>
+        <typeparam name="TRepresentationType">The representation type we're looking for.</typeparam>
+        <param name="representedType">The type that we're trying to find a representation for.</param>
+        <param name="representations">Possible representations that might match the one we're looking for.</param>
+        <param name="matchedRepresentation">The found representation matching <typeparamref name="TRepresentationType" />.</param>
+        <summary>
+             Tries to find a representation matching <typeparamref name="TRepresentationType" /> if the represented
+             type's resolved type matches <typeparamref name="TResolvedType" /></summary>
+        <returns>
+          <c>true</c> if a matching representation was found, <c>false</c> otherwise.</returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+  </Members>
+</Type>

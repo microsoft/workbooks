@@ -1,0 +1,91 @@
+<Type Name="IAgentSynchronizationContext" FullName="Xamarin.Interactive.IAgentSynchronizationContext">
+  <TypeSignature Language="C#" Value="public interface IAgentSynchronizationContext" />
+  <TypeSignature Language="ILAsm" Value=".class public interface auto ansi abstract IAgentSynchronizationContext" />
+  <AssemblyInfo>
+    <AssemblyName>Xamarin.Interactive</AssemblyName>
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
+  </AssemblyInfo>
+  <Interfaces />
+  <Docs>
+    <summary>To be added.</summary>
+    <remarks>To be added.</remarks>
+  </Docs>
+  <Members>
+    <Member MemberName="PeekContext">
+      <MemberSignature Language="C#" Value="public System.Threading.SynchronizationContext PeekContext ();" />
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig newslot virtual instance class System.Threading.SynchronizationContext PeekContext() cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Threading.SynchronizationContext</ReturnType>
+      </ReturnValue>
+      <Parameters />
+      <Docs>
+        <summary>To be added.</summary>
+        <returns>To be added.</returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="PopContext">
+      <MemberSignature Language="C#" Value="public System.Threading.SynchronizationContext PopContext ();" />
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig newslot virtual instance class System.Threading.SynchronizationContext PopContext() cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Threading.SynchronizationContext</ReturnType>
+      </ReturnValue>
+      <Parameters />
+      <Docs>
+        <summary>To be added.</summary>
+        <returns>To be added.</returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="PushContext">
+      <MemberSignature Language="C#" Value="public System.Threading.SynchronizationContext PushContext (System.Threading.SynchronizationContext context);" />
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig newslot virtual instance class System.Threading.SynchronizationContext PushContext(class System.Threading.SynchronizationContext context) cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Threading.SynchronizationContext</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="context" Type="System.Threading.SynchronizationContext" />
+      </Parameters>
+      <Docs>
+        <param name="context">To be added.</param>
+        <summary>To be added.</summary>
+        <returns>To be added.</returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="PushContext">
+      <MemberSignature Language="C#" Value="public System.Threading.SynchronizationContext PushContext (Action&lt;Action&gt; postHandler, Action&lt;Action&gt; sendHandler = null);" />
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig newslot virtual instance class System.Threading.SynchronizationContext PushContext(class System.Action`1&lt;class System.Action&gt; postHandler, class System.Action`1&lt;class System.Action&gt; sendHandler) cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Threading.SynchronizationContext</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="postHandler" Type="System.Action&lt;System.Action&gt;" />
+        <Parameter Name="sendHandler" Type="System.Action&lt;System.Action&gt;" />
+      </Parameters>
+      <Docs>
+        <param name="postHandler">To be added.</param>
+        <param name="sendHandler">To be added.</param>
+        <summary>To be added.</summary>
+        <returns>To be added.</returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+  </Members>
+</Type>

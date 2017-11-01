@@ -1,0 +1,216 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <DefineSolutionProperties>false</DefineSolutionProperties>
+    <TargetFrameworkVersion>v3.10</TargetFrameworkVersion>
+    <TargetFrameworkIdentifier>WiX</TargetFrameworkIdentifier>
+    <TargetFrameworkMoniker>$(TargetFrameworkIdentifier),Version=$(TargetFrameworkVersion)</TargetFrameworkMoniker>
+    <ProductVersion>3.10</ProductVersion>
+    <ProjectGuid>0e6a0965-35ec-436d-b8c2-279eb68d0836</ProjectGuid>
+    <SchemaVersion>2.0</SchemaVersion>
+    <OutputName>XamarinInteractive</OutputName>
+    <OutputType>Package</OutputType>
+    <WixTargetsPath Condition=" '$(WixTargetsPath)' == '' AND '$(MSBuildExtensionsPath32)' != '' ">$(MSBuildExtensionsPath32)\Microsoft\WiX\v3.x\Wix.targets</WixTargetsPath>
+    <WixTargetsPath Condition=" '$(WixTargetsPath)' == '' ">$(MSBuildExtensionsPath)\Microsoft\WiX\v3.x\Wix.targets</WixTargetsPath>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <OutputPath>bin\$(Configuration)\</OutputPath>
+    <IntermediateOutputPath>obj\$(Configuration)\</IntermediateOutputPath>
+    <DefineConstants>Debug</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <OutputPath>bin\$(Configuration)\</OutputPath>
+    <IntermediateOutputPath>obj\$(Configuration)\</IntermediateOutputPath>
+    <SuppressIces>ICE38;ICE64</SuppressIces>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="AgentAppFiles.wxs" />
+    <Compile Include="AgentFiles.wxs" />
+    <Compile Include="Checks.wxs" />
+    <Compile Include="ClientFiles.wxs" />
+    <Compile Include="Product.wxs" />
+    <Compile Include="ProvidesKey.wxs" />
+    <Compile Include="Registry.wxs" />
+    <Compile Include="Sdk.wxs" />
+    <Compile Include="TargetDir.wxs" />
+    <Compile Include="RootFiles.wxs" />
+    <Compile Include="ToolsFiles.wxs" />
+    <Compile Include="iOSWorkbookAppFiles.wxs" />
+    <Compile Include="AndroidAgentAppAssemblies.wxs" />
+    <Compile Include="DotNetCoreAgentAppFiles.wxs" />
+  </ItemGroup>
+  <ItemGroup>
+    <WixExtension Include="WixVSExtension">
+      <HintPath>$(WixExtDir)\WixVSExtension.dll</HintPath>
+      <Name>WixVSExtension</Name>
+    </WixExtension>
+    <WixExtension Include="WixNetFxExtension">
+      <HintPath>$(WixExtDir)\WixNetFxExtension.dll</HintPath>
+      <Name>WixNetFxExtension</Name>
+    </WixExtension>
+    <WixExtension Include="WixUIExtension">
+      <HintPath>$(WixExtDir)\WixUIExtension.dll</HintPath>
+      <Name>WixUIExtension</Name>
+    </WixExtension>
+    <WixExtension Include="WixDependencyExtension">
+      <HintPath>$(WixExtDir)WixDependencyExtension.dll</HintPath>
+      <Name>WixDependencyExtension</Name>
+    </WixExtension>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Strings.wxl" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Bitmaps" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Bitmaps\Dialog.bmp" />
+    <Content Include="Bitmaps\TopBanner.bmp" />
+    <Content Include="license.rtf" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Agents\Xamarin.Interactive.Android.ActivityTrackerShim\Xamarin.Interactive.Android.ActivityTrackerShim.csproj">
+      <Name>Xamarin.Interactive.Android.ActivityTrackerShim</Name>
+      <Project>{ffcb3fde-7622-4195-a502-5ca95432172f}</Project>
+      <Private>True</Private>
+      <DoNotHarvest>True</DoNotHarvest>
+      <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>
+      <RefTargetDir>INSTALLFOLDER</RefTargetDir>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Agents\Xamarin.Interactive.Android\Xamarin.Interactive.Android.csproj">
+      <Name>Xamarin.Interactive.Android</Name>
+      <Project>{22fd0fae-d093-446c-9adb-4b59a97f413e}</Project>
+      <Private>True</Private>
+      <DoNotHarvest>True</DoNotHarvest>
+      <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>
+      <RefTargetDir>INSTALLFOLDER</RefTargetDir>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Agents\Xamarin.Interactive.Console\Xamarin.Interactive.Console.csproj">
+      <Name>Xamarin.Interactive.Console</Name>
+      <Project>{7a522415-e2f7-4e4b-8e11-3d7cf9a854a8}</Project>
+      <Private>True</Private>
+      <DoNotHarvest>True</DoNotHarvest>
+      <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>
+      <RefTargetDir>INSTALLFOLDER</RefTargetDir>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Agents\Xamarin.Interactive.Forms.iOS\Xamarin.Interactive.Forms.iOS.csproj">
+      <Name>Xamarin.Interactive.Forms.iOS</Name>
+      <Project>{a534bea1-1a39-4355-b6ef-f6a3ef7e65fc}</Project>
+      <Private>True</Private>
+      <DoNotHarvest>True</DoNotHarvest>
+      <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>
+      <RefTargetDir>INSTALLFOLDER</RefTargetDir>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Agents\Xamarin.Interactive.iOS\Xamarin.Interactive.iOS.csproj">
+      <Name>Xamarin.Interactive.iOS</Name>
+      <Project>{32a8ebc6-bab4-403b-9a8b-89f836cfe95a}</Project>
+      <Private>True</Private>
+      <DoNotHarvest>True</DoNotHarvest>
+      <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>
+      <RefTargetDir>INSTALLFOLDER</RefTargetDir>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Agents\Xamarin.Interactive.Wpf\Xamarin.Interactive.Wpf.csproj">
+      <Name>Xamarin.Interactive.Wpf</Name>
+      <Project>{8dfce7a8-ba80-475d-97c1-dfbcce17c8e3}</Project>
+      <Private>True</Private>
+      <DoNotHarvest>True</DoNotHarvest>
+      <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>
+      <RefTargetDir>INSTALLFOLDER</RefTargetDir>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Agents\Xamarin.Interactive\Xamarin.Interactive.csproj">
+      <Name>Xamarin.Interactive</Name>
+      <Project>{955f473a-04ec-4716-b75e-509ba892499b}</Project>
+      <Private>True</Private>
+      <DoNotHarvest>True</DoNotHarvest>
+      <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>
+      <RefTargetDir>INSTALLFOLDER</RefTargetDir>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Clients\CrossBrowser\Xamarin.CrossBrowser.Wpf\Xamarin.CrossBrowser.Wpf.csproj">
+      <Name>Xamarin.CrossBrowser.Wpf</Name>
+      <Project>{6d864ab3-aab0-4d18-9ae2-68fe6383802f}</Project>
+      <Private>True</Private>
+      <DoNotHarvest>True</DoNotHarvest>
+      <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>
+      <RefTargetDir>INSTALLFOLDER</RefTargetDir>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Clients\Xamarin.Interactive.Client.Mac.SimChecker\Xamarin.Interactive.Client.Mac.SimChecker.csproj">
+      <Name>Xamarin.Interactive.Client.Mac.SimChecker</Name>
+      <Project>{d495e2ae-bf3e-444b-b3d6-91ef14293831}</Project>
+      <Private>True</Private>
+      <DoNotHarvest>True</DoNotHarvest>
+      <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>
+      <RefTargetDir>INSTALLFOLDER</RefTargetDir>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Clients\Xamarin.Interactive.Client.Windows\Xamarin.Interactive.Client.Windows.csproj">
+      <Name>Xamarin.Interactive.Client.Windows</Name>
+      <Project>{8a84e7d0-5b66-4bde-ade2-20e814d361b2}</Project>
+      <Private>True</Private>
+      <DoNotHarvest>True</DoNotHarvest>
+      <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>
+      <RefTargetDir>INSTALLFOLDER</RefTargetDir>
+    </ProjectReference>
+    <ProjectReference Include="..\..\WorkbookApps\Xamarin.Workbooks.Android\Xamarin.Workbooks.Android.csproj">
+      <Name>Xamarin.Workbooks.Android</Name>
+      <Project>{08f4622b-08e3-45ab-b0a1-d360406f6a15}</Project>
+      <Private>True</Private>
+      <DoNotHarvest>True</DoNotHarvest>
+      <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>
+      <RefTargetDir>INSTALLFOLDER</RefTargetDir>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Agents\Xamarin.Interactive.Forms.Android\Xamarin.Interactive.Forms.Android.csproj">
+      <Name>Xamarin.Interactive.Forms.Android</Name>
+      <Project>{159A14A0-F8C7-460F-ADF7-967D60E63689}</Project>
+      <Private>True</Private>
+      <DoNotHarvest>True</DoNotHarvest>
+      <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>
+      <RefTargetDir>INSTALLFOLDER</RefTargetDir>
+    </ProjectReference>
+    <ProjectReference Include="..\..\WorkbookApps\Xamarin.Workbooks.iOS\Xamarin.Workbooks.iOS.csproj">
+      <Name>Xamarin.Workbooks.iOS</Name>
+      <Project>{c91f06ee-c8fc-475c-8a3c-ca171bceb46d}</Project>
+      <Private>True</Private>
+      <DoNotHarvest>True</DoNotHarvest>
+      <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>
+      <RefTargetDir>INSTALLFOLDER</RefTargetDir>
+    </ProjectReference>
+    <ProjectReference Include="..\..\WorkbookApps\Xamarin.Workbooks.Wpf\Xamarin.Workbooks.Wpf.csproj">
+      <Name>Xamarin.Workbooks.Wpf</Name>
+      <Project>{f98cce56-c44f-4096-a2fa-7298f339f846}</Project>
+      <Private>True</Private>
+      <DoNotHarvest>True</DoNotHarvest>
+      <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>
+      <RefTargetDir>INSTALLFOLDER</RefTargetDir>
+    </ProjectReference>
+    <ProjectReference Include="..\..\WorkbookApps\Xamarin.Workbooks.DotNetCore\Xamarin.Workbooks.DotNetCore.csproj">
+      <Name>Xamarin.Workbooks.DotNetCore</Name>
+      <Private>True</Private>
+      <DoNotHarvest>True</DoNotHarvest>
+      <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>
+      <RefTargetDir>INSTALLFOLDER</RefTargetDir>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Agents\Xamarin.Interactive.DotNetCore\Xamarin.Interactive.DotNetCore.csproj">
+      <Name>Xamarin.Interactive.DotNetCore</Name>
+      <Private>True</Private>
+      <DoNotHarvest>True</DoNotHarvest>
+      <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>
+      <RefTargetDir>INSTALLFOLDER</RefTargetDir>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Agents\Xamarin.Interactive.NetStandard\Xamarin.Interactive.NetStandard.csproj">
+      <Name>Xamarin.Interactive.NetStandard</Name>
+      <Private>True</Private>
+      <DoNotHarvest>True</DoNotHarvest>
+      <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>
+      <RefTargetDir>INSTALLFOLDER</RefTargetDir>
+    </ProjectReference>
+  </ItemGroup>
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\..\packages\WiX.3.11.0\build\wix.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\WiX.3.11.0\build\wix.props'))" />
+  </Target>
+  <Import Project="..\..\packages\WiX.3.11.0\build\wix.props" Condition=" Exists('..\..\packages\WiX.3.11.0\build\wix.props') " />
+  <Import Project="$(WixTargetsPath)" Condition=" Exists('$(WixTargetsPath)') " />
+</Project>

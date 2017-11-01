@@ -1,0 +1,648 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <Fragment>
+    <?define iOSWorkbookAppContainerDir="..\..\_build\$(var.Configuration)\WorkbookApps\iOS"?>
+    <?define iOSWorkbookAppDir="$(var.iOSWorkbookAppContainerDir)\Xamarin.Workbooks.iOS.app"?>
+    <?define iOSWorkbookAppStoryboardDir="$(var.iOSWorkbookAppDir)\Main.storyboardc"?>
+    <?define iOSWorkbookAppFacadesDir="$(var.iOSWorkbookAppDir)\Facades"?>
+    <?define iOSWorkbookAppClientIntegrationDir="$(var.iOSWorkbookAppContainerDir)\ClientIntegration"?>
+    <ComponentGroup Id="iOSWorkbookAppComponents" Directory="iOSAgentAppRootInstallFolder">
+      <Component Id="iOSWorkbookApp.FSharp.Core.dll" Guid="8C913C4B-A299-420E-B5BC-0B30460F30B2">
+        <File Id="iOSWorkbookApp.FSharp.Core.dll" Source="$(var.iOSWorkbookAppDir)\FSharp.Core.dll" />
+      </Component>
+      <Component Id="iOSWorkbookApp.I18N.CJK.dll" Guid="5624ED95-A7E1-4672-92B6-7982072476EA">
+        <File Id="iOSWorkbookApp.I18N.CJK.dll" Source="$(var.iOSWorkbookAppDir)\I18N.CJK.dll" />
+      </Component>
+      <Component Id="iOSWorkbookApp.I18N.MidEast.dll" Guid="55799BBD-40CC-4B22-ABA4-6364E9F1A9AF">
+        <File Id="iOSWorkbookApp.I18N.MidEast.dll" Source="$(var.iOSWorkbookAppDir)\I18N.MidEast.dll" />
+      </Component>
+      <Component Id="iOSWorkbookApp.I18N.Other.dll" Guid="B6B8E8B1-2B26-4409-A425-3181E30D1116">
+        <File Id="iOSWorkbookApp.I18N.Other.dll" Source="$(var.iOSWorkbookAppDir)\I18N.Other.dll" />
+      </Component>
+      <Component Id="iOSWorkbookApp.I18N.Rare.dll" Guid="A1E20692-055F-44BE-B34E-4E5827F5C748">
+        <File Id="iOSWorkbookApp.I18N.Rare.dll" Source="$(var.iOSWorkbookAppDir)\I18N.Rare.dll" />
+      </Component>
+      <Component Id="iOSWorkbookApp.I18N.West.dll" Guid="4CEF88C0-5E30-4B11-A2DF-041E39220D35">
+        <File Id="iOSWorkbookApp.I18N.West.dll" Source="$(var.iOSWorkbookAppDir)\I18N.West.dll" />
+      </Component>
+      <Component Id="iOSWorkbookApp.I18N.dll" Guid="69A81A04-D884-48C7-9DFE-E53A4D89BADF">
+        <File Id="iOSWorkbookApp.I18N.dll" Source="$(var.iOSWorkbookAppDir)\I18N.dll" />
+      </Component>
+      <Component Id="iOSWorkbookApp.Info.plist" Guid="ABB9DFF4-E51F-448F-AECD-BDEEDFDB7FAD">
+        <File Id="iOSWorkbookApp.Info.plist" Source="$(var.iOSWorkbookAppDir)\Info.plist" />
+      </Component>
+      <Component Id="iOSWorkbookApp.LaunchScreen.nib" Guid="66812A9D-D790-463B-8BF0-8459EF9EBA91">
+        <File Id="iOSWorkbookApp.LaunchScreen.nib" Source="$(var.iOSWorkbookAppDir)\LaunchScreen.nib" />
+      </Component>
+      <Component Id="iOSWorkbookApp.Microsoft.CSharp.dll" Guid="6FC23AA3-A72B-43F1-BFDF-68893C32F9DE">
+        <File Id="iOSWorkbookApp.Microsoft.CSharp.dll" Source="$(var.iOSWorkbookAppDir)\Microsoft.CSharp.dll" />
+      </Component>
+      <Component Id="iOSWorkbookApp.Mono.CSharp.dll" Guid="48895E48-01A0-4F68-B0F4-04645ACB7AF9">
+        <File Id="iOSWorkbookApp.Mono.CSharp.dll" Source="$(var.iOSWorkbookAppDir)\Mono.CSharp.dll" />
+      </Component>
+      <Component Id="iOSWorkbookApp.Mono.Data.Sqlite.dll" Guid="95E770B7-A7EA-4E88-95EC-80C5DB64BCB2">
+        <File Id="iOSWorkbookApp.Mono.Data.Sqlite.dll" Source="$(var.iOSWorkbookAppDir)\Mono.Data.Sqlite.dll" />
+      </Component>
+      <Component Id="iOSWorkbookApp.Mono.Data.Tds.dll" Guid="2D92D2E6-F9EF-40D0-8395-33EDF5147502">
+        <File Id="iOSWorkbookApp.Mono.Data.Tds.dll" Source="$(var.iOSWorkbookAppDir)\Mono.Data.Tds.dll" />
+      </Component>
+      <Component Id="iOSWorkbookApp.Mono.Security.dll" Guid="0150B0CC-CB4A-4907-B025-2D1099DAEB5F">
+        <File Id="iOSWorkbookApp.Mono.Security.dll" Source="$(var.iOSWorkbookAppDir)\Mono.Security.dll" />
+      </Component>
+      <Component Id="iOSWorkbookApp.MonoTouch.Dialog_1.dll" Guid="43B99BD9-4952-423B-AB82-4CC2752DE62C">
+        <File Id="iOSWorkbookApp.MonoTouch.Dialog_1.dll" Source="$(var.iOSWorkbookAppDir)\MonoTouch.Dialog-1.dll" />
+      </Component>
+      <Component Id="iOSWorkbookApp.MonoTouch.NUnitLite.dll" Guid="77E17D48-99F1-4F77-82F1-2FF42D4D31F5">
+        <File Id="iOSWorkbookApp.MonoTouch.NUnitLite.dll" Source="$(var.iOSWorkbookAppDir)\MonoTouch.NUnitLite.dll" />
+      </Component>
+      <Component Id="iOSWorkbookApp.OpenTK_1.0.dll" Guid="A0017340-77B6-4E6B-B3E7-AD10DA3E0E34">
+        <File Id="iOSWorkbookApp.OpenTK_1.0.dll" Source="$(var.iOSWorkbookAppDir)\OpenTK-1.0.dll" />
+      </Component>
+      <Component Id="iOSWorkbookApp.PkgInfo" Guid="906C38B5-9055-4618-BD02-3FCB7383ECBC">
+        <File Id="iOSWorkbookApp.PkgInfo" Source="$(var.iOSWorkbookAppDir)\PkgInfo" />
+      </Component>
+      <Component Id="iOSWorkbookApp.System.Collections.dll" Guid="C5F6DD4E-85BB-4C06-AA48-6E2B7C542B03">
+        <File Id="iOSWorkbookApp.System.Collections.dll" Source="$(var.iOSWorkbookAppDir)\System.Collections.dll" />
+      </Component>
+      <Component Id="iOSWorkbookApp.System.ComponentModel.Composition.dll" Guid="D331B13D-2425-4CD6-B0C2-34B685790B5E">
+        <File Id="iOSWorkbookApp.System.ComponentModel.Composition.dll" Source="$(var.iOSWorkbookAppDir)\System.ComponentModel.Composition.dll" />
+      </Component>
+      <Component Id="iOSWorkbookApp.System.ComponentModel.DataAnnotations.dll" Guid="C05E88E4-FF7B-4961-BCCF-01468F8521A3">
+        <File Id="iOSWorkbookApp.System.ComponentModel.DataAnnotations.dll" Source="$(var.iOSWorkbookAppDir)\System.ComponentModel.DataAnnotations.dll" />
+      </Component>
+      <Component Id="iOSWorkbookApp.System.Core.dll" Guid="5270AD3E-BF31-4A0D-B9F4-3AD30E254BF5">
+        <File Id="iOSWorkbookApp.System.Core.dll" Source="$(var.iOSWorkbookAppDir)\System.Core.dll" />
+      </Component>
+      <Component Id="iOSWorkbookApp.System.Data.Services.Client.dll" Guid="BA513F96-144C-4D83-9803-C0DEBF43B135">
+        <File Id="iOSWorkbookApp.System.Data.Services.Client.dll" Source="$(var.iOSWorkbookAppDir)\System.Data.Services.Client.dll" />
+      </Component>
+      <Component Id="iOSWorkbookApp.System.Data.dll" Guid="CCE067DD-74FC-4AFB-90B5-4F650AABC883">
+        <File Id="iOSWorkbookApp.System.Data.dll" Source="$(var.iOSWorkbookAppDir)\System.Data.dll" />
+      </Component>
+      <Component Id="iOSWorkbookApp.System.Diagnostics.Debug.dll" Guid="16DC1A8E-121B-4029-8EFA-5DE8C2E412A7">
+        <File Id="iOSWorkbookApp.System.Diagnostics.Debug.dll" Source="$(var.iOSWorkbookAppDir)\System.Diagnostics.Debug.dll" />
+      </Component>
+      <Component Id="iOSWorkbookApp.System.Dynamic.Runtime.dll" Guid="D5B0C2B1-2238-4272-BCCA-9D1A6D8F812D">
+        <File Id="iOSWorkbookApp.System.Dynamic.Runtime.dll" Source="$(var.iOSWorkbookAppDir)\System.Dynamic.Runtime.dll" />
+      </Component>
+      <Component Id="iOSWorkbookApp.System.Globalization.dll" Guid="086A1E93-A857-4F30-B256-B22B26F629DF">
+        <File Id="iOSWorkbookApp.System.Globalization.dll" Source="$(var.iOSWorkbookAppDir)\System.Globalization.dll" />
+      </Component>
+      <Component Id="iOSWorkbookApp.System.IO.Compression.FileSystem.dll" Guid="ED706206-9702-4748-A5A0-B0B81614B903">
+        <File Id="iOSWorkbookApp.System.IO.Compression.FileSystem.dll" Source="$(var.iOSWorkbookAppDir)\System.IO.Compression.FileSystem.dll" />
+      </Component>
+      <Component Id="iOSWorkbookApp.System.IO.Compression.dll" Guid="1EF75F5F-82E0-4EF7-9604-73550FF3BC75">
+        <File Id="iOSWorkbookApp.System.IO.Compression.dll" Source="$(var.iOSWorkbookAppDir)\System.IO.Compression.dll" />
+      </Component>
+      <Component Id="iOSWorkbookApp.System.IO.dll" Guid="6EE68FE4-A6D3-4FA6-9DCD-23B94603FA45">
+        <File Id="iOSWorkbookApp.System.IO.dll" Source="$(var.iOSWorkbookAppDir)\System.IO.dll" />
+      </Component>
+      <Component Id="iOSWorkbookApp.System.IdentityModel.dll" Guid="39394645-7EDD-443B-9E1D-1CD249A3A0F2">
+        <File Id="iOSWorkbookApp.System.IdentityModel.dll" Source="$(var.iOSWorkbookAppDir)\System.IdentityModel.dll" />
+      </Component>
+      <Component Id="iOSWorkbookApp.System.Json.dll" Guid="4B54A426-D27A-4D52-BA62-EFF8CD7215FF">
+        <File Id="iOSWorkbookApp.System.Json.dll" Source="$(var.iOSWorkbookAppDir)\System.Json.dll" />
+      </Component>
+      <Component Id="iOSWorkbookApp.System.Linq.dll" Guid="72216D52-DB43-4DDA-98B4-E7BFE7AF6039">
+        <File Id="iOSWorkbookApp.System.Linq.dll" Source="$(var.iOSWorkbookAppDir)\System.Linq.dll" />
+      </Component>
+      <Component Id="iOSWorkbookApp.System.Net.Http.WinHttpHandler.dll" Guid="6B4CAFD3-D47F-496F-ACA3-8BD4DA3B9794">
+        <File Id="iOSWorkbookApp.System.Net.Http.WinHttpHandler.dll" Source="$(var.iOSWorkbookAppDir)\System.Net.Http.WinHttpHandler.dll" />
+      </Component>
+      <Component Id="iOSWorkbookApp.System.Net.Http.dll" Guid="05F4C817-0346-4ABA-A109-924306F2B8B9">
+        <File Id="iOSWorkbookApp.System.Net.Http.dll" Source="$(var.iOSWorkbookAppDir)\System.Net.Http.dll" />
+      </Component>
+      <Component Id="iOSWorkbookApp.System.Net.dll" Guid="0CAB6E88-CC83-4CCE-A407-8B59550FA448">
+        <File Id="iOSWorkbookApp.System.Net.dll" Source="$(var.iOSWorkbookAppDir)\System.Net.dll" />
+      </Component>
+      <Component Id="iOSWorkbookApp.System.Numerics.Vectors.dll" Guid="9CD47943-A6E8-41A2-963F-43579869E91E">
+        <File Id="iOSWorkbookApp.System.Numerics.Vectors.dll" Source="$(var.iOSWorkbookAppDir)\System.Numerics.Vectors.dll" />
+      </Component>
+      <Component Id="iOSWorkbookApp.System.Numerics.dll" Guid="C61D5F10-B554-47FE-964A-9E996D254537">
+        <File Id="iOSWorkbookApp.System.Numerics.dll" Source="$(var.iOSWorkbookAppDir)\System.Numerics.dll" />
+      </Component>
+      <Component Id="iOSWorkbookApp.System.Reflection.Context.dll" Guid="06A2EB65-FB27-4442-AD60-F190CC7A5390">
+        <File Id="iOSWorkbookApp.System.Reflection.Context.dll" Source="$(var.iOSWorkbookAppDir)\System.Reflection.Context.dll" />
+      </Component>
+      <Component Id="iOSWorkbookApp.System.Reflection.Extensions.dll" Guid="B2A26F3E-A53E-4441-A348-B61697B3DB65">
+        <File Id="iOSWorkbookApp.System.Reflection.Extensions.dll" Source="$(var.iOSWorkbookAppDir)\System.Reflection.Extensions.dll" />
+      </Component>
+      <Component Id="iOSWorkbookApp.System.Reflection.dll" Guid="C690A01F-192E-4B5E-A77E-51B67F84938C">
+        <File Id="iOSWorkbookApp.System.Reflection.dll" Source="$(var.iOSWorkbookAppDir)\System.Reflection.dll" />
+      </Component>
+      <Component Id="iOSWorkbookApp.System.Runtime.Extensions.dll" Guid="6DB1B75D-5942-4365-8148-9DF4C9AF5CF9">
+        <File Id="iOSWorkbookApp.System.Runtime.Extensions.dll" Source="$(var.iOSWorkbookAppDir)\System.Runtime.Extensions.dll" />
+      </Component>
+      <Component Id="iOSWorkbookApp.System.Runtime.Serialization.dll" Guid="839FBF95-62D2-45E5-8FF8-5066E3DC54DF">
+        <File Id="iOSWorkbookApp.System.Runtime.Serialization.dll" Source="$(var.iOSWorkbookAppDir)\System.Runtime.Serialization.dll" />
+      </Component>
+      <Component Id="iOSWorkbookApp.System.Runtime.dll" Guid="C6810D91-B322-4747-A0B4-2E2A064121BE">
+        <File Id="iOSWorkbookApp.System.Runtime.dll" Source="$(var.iOSWorkbookAppDir)\System.Runtime.dll" />
+      </Component>
+      <Component Id="iOSWorkbookApp.System.Security.dll" Guid="EEF679E5-948C-4752-AAAC-648954132D07">
+        <File Id="iOSWorkbookApp.System.Security.dll" Source="$(var.iOSWorkbookAppDir)\System.Security.dll" />
+      </Component>
+      <Component Id="iOSWorkbookApp.System.ServiceModel.Internals.dll" Guid="60B05A94-60A6-47AE-98AC-F0869059F574">
+        <File Id="iOSWorkbookApp.System.ServiceModel.Internals.dll" Source="$(var.iOSWorkbookAppDir)\System.ServiceModel.Internals.dll" />
+      </Component>
+      <Component Id="iOSWorkbookApp.System.ServiceModel.Web.dll" Guid="B3F8784A-49C2-4585-ADC9-AD292848948C">
+        <File Id="iOSWorkbookApp.System.ServiceModel.Web.dll" Source="$(var.iOSWorkbookAppDir)\System.ServiceModel.Web.dll" />
+      </Component>
+      <Component Id="iOSWorkbookApp.System.ServiceModel.dll" Guid="FDAE5EA7-D201-400C-8B52-3AFD82806703">
+        <File Id="iOSWorkbookApp.System.ServiceModel.dll" Source="$(var.iOSWorkbookAppDir)\System.ServiceModel.dll" />
+      </Component>
+      <Component Id="iOSWorkbookApp.System.Text.Encoding.Extensions.dll" Guid="B1C1EB8C-DBC3-4027-BB36-01DE24A5922D">
+        <File Id="iOSWorkbookApp.System.Text.Encoding.Extensions.dll" Source="$(var.iOSWorkbookAppDir)\System.Text.Encoding.Extensions.dll" />
+      </Component>
+      <Component Id="iOSWorkbookApp.System.Text.Encoding.dll" Guid="91D87D9F-2268-469A-8B47-D61D80B107F9">
+        <File Id="iOSWorkbookApp.System.Text.Encoding.dll" Source="$(var.iOSWorkbookAppDir)\System.Text.Encoding.dll" />
+      </Component>
+      <Component Id="iOSWorkbookApp.System.Text.RegularExpressions.dll" Guid="E7C33DCC-A235-4384-984F-9966488CCF81">
+        <File Id="iOSWorkbookApp.System.Text.RegularExpressions.dll" Source="$(var.iOSWorkbookAppDir)\System.Text.RegularExpressions.dll" />
+      </Component>
+      <Component Id="iOSWorkbookApp.System.Threading.Tasks.dll" Guid="C5CD48EF-42A9-4E4C-9A03-D2D3A77F8BF0">
+        <File Id="iOSWorkbookApp.System.Threading.Tasks.dll" Source="$(var.iOSWorkbookAppDir)\System.Threading.Tasks.dll" />
+      </Component>
+      <Component Id="iOSWorkbookApp.System.Threading.dll" Guid="D968CC6F-FB6F-452D-8AD6-38953843739F">
+        <File Id="iOSWorkbookApp.System.Threading.dll" Source="$(var.iOSWorkbookAppDir)\System.Threading.dll" />
+      </Component>
+      <Component Id="iOSWorkbookApp.System.Transactions.dll" Guid="BC4373BD-8384-47CC-AAB3-C3E0EA1CC237">
+        <File Id="iOSWorkbookApp.System.Transactions.dll" Source="$(var.iOSWorkbookAppDir)\System.Transactions.dll" />
+      </Component>
+      <Component Id="iOSWorkbookApp.System.Web.Services.dll" Guid="0BCA5D2D-83A0-4059-9087-367F44357753">
+        <File Id="iOSWorkbookApp.System.Web.Services.dll" Source="$(var.iOSWorkbookAppDir)\System.Web.Services.dll" />
+      </Component>
+      <Component Id="iOSWorkbookApp.System.Windows.dll" Guid="EACC154E-3627-4B4F-B163-A845225A891A">
+        <File Id="iOSWorkbookApp.System.Windows.dll" Source="$(var.iOSWorkbookAppDir)\System.Windows.dll" />
+      </Component>
+      <Component Id="iOSWorkbookApp.System.Xml.Linq.dll" Guid="6DE70B74-ACBC-46B9-85AA-9D0238C3E55D">
+        <File Id="iOSWorkbookApp.System.Xml.Linq.dll" Source="$(var.iOSWorkbookAppDir)\System.Xml.Linq.dll" />
+      </Component>
+      <Component Id="iOSWorkbookApp.System.Xml.Serialization.dll" Guid="A57A4CAF-4E97-48A8-B2B5-D45100D02D79">
+        <File Id="iOSWorkbookApp.System.Xml.Serialization.dll" Source="$(var.iOSWorkbookAppDir)\System.Xml.Serialization.dll" />
+      </Component>
+      <Component Id="iOSWorkbookApp.System.Xml.dll" Guid="3D442A19-1791-4AC1-B0DE-A2E468C0B669">
+        <File Id="iOSWorkbookApp.System.Xml.dll" Source="$(var.iOSWorkbookAppDir)\System.Xml.dll" />
+      </Component>
+      <Component Id="iOSWorkbookApp.System.dll" Guid="E02828CB-6254-4448-9D93-945B84F61485">
+        <File Id="iOSWorkbookApp.System.dll" Source="$(var.iOSWorkbookAppDir)\System.dll" />
+      </Component>
+      <Component Id="iOSWorkbookApp.WorkbooksIcon.png" Guid="B5FC5073-CB3C-4BDA-A271-9D6301C4B057">
+        <File Id="iOSWorkbookApp.WorkbooksIcon.png" Source="$(var.iOSWorkbookAppDir)\WorkbooksIcon.png" />
+      </Component>
+      <Component Id="iOSWorkbookApp.Xamarin.Interactive.dll" Guid="4146F6C8-E814-431B-AAA2-FDB9591DCEB2">
+        <File Id="iOSWorkbookApp.Xamarin.Interactive.dll" Source="$(var.iOSWorkbookAppDir)\Xamarin.Interactive.dll" />
+      </Component>
+      <Component Id="iOSWorkbookApp.Xamarin.Interactive.iOS.dll" Guid="773DF714-59DB-4E8B-AC5C-3960EA1F34EA">
+        <File Id="iOSWorkbookApp.Xamarin.Interactive.iOS.dll" Source="$(var.iOSWorkbookAppDir)\Xamarin.Interactive.iOS.dll" />
+      </Component>
+      <Component Id="iOSWorkbookApp.Xamarin.Workbooks.iOS" Guid="84B36DAB-FEF9-43A1-B2ED-ADF28D57115C">
+        <File Id="iOSWorkbookApp.Xamarin.Workbooks.iOS" Source="$(var.iOSWorkbookAppDir)\Xamarin.Workbooks.iOS" />
+      </Component>
+      <Component Id="iOSWorkbookApp.Xamarin.Workbooks.iOS.exe" Guid="3FBC83EE-4005-4EFF-91B9-76EE1BEEFB8F">
+        <File Id="iOSWorkbookApp.Xamarin.Workbooks.iOS.exe" Source="$(var.iOSWorkbookAppDir)\Xamarin.Workbooks.iOS.exe" />
+      </Component>
+      <Component Id="iOSWorkbookApp.Xamarin.iOS.dll" Guid="E9D9F8CC-CF1B-4887-803D-B02B9FCE5B13">
+        <File Id="iOSWorkbookApp.Xamarin.iOS.dll" Source="$(var.iOSWorkbookAppDir)\Xamarin.iOS.dll" />
+      </Component>
+      <Component Id="iOSWorkbookApp.mscorlib.dll" Guid="70EA03D4-8BDB-44C7-92D7-A0D0F681CDE5">
+        <File Id="iOSWorkbookApp.mscorlib.dll" Source="$(var.iOSWorkbookAppDir)\mscorlib.dll" />
+      </Component>
+      <Component Id="iOSWorkbookApp.runtime_options.plist" Guid="9E336B17-ACEE-4CC1-9E1F-A08F0D716528">
+        <File Id="iOSWorkbookApp.runtime_options.plist" Source="$(var.iOSWorkbookAppDir)\runtime-options.plist" />
+      </Component>
+    </ComponentGroup>
+    <ComponentGroup Id="iOSWorkbookAppStoryboardComponents" Directory="iOSAgentAppStoryboardInstallFolder">
+      <Component Id="iOSWorkbookAppStoryboard.BYZ_38_t0r_view_8bC_Xf_vdC.nib" Guid="D0B07659-99FC-4292-B727-6C214C066B55">
+        <File Id="iOSWorkbookAppStoryboard.BYZ_38_t0r_view_8bC_Xf_vdC.nib" Source="$(var.iOSWorkbookAppStoryboardDir)\BYZ-38-t0r-view-8bC-Xf-vdC.nib" />
+      </Component>
+      <Component Id="iOSWorkbookAppStoryboard.Info.plist" Guid="4F5F6FFB-F0D9-4B08-8A68-540BEF8849B5">
+        <File Id="iOSWorkbookAppStoryboard.Info.plist" Source="$(var.iOSWorkbookAppStoryboardDir)\Info.plist" />
+      </Component>
+      <Component Id="iOSWorkbookAppStoryboard.UIViewController_BYZ_38_t0r.nib" Guid="338F52FA-8809-42EB-B8C1-0633B3019742">
+        <File Id="iOSWorkbookAppStoryboard.UIViewController_BYZ_38_t0r.nib" Source="$(var.iOSWorkbookAppStoryboardDir)\UIViewController-BYZ-38-t0r.nib" />
+      </Component>
+    </ComponentGroup>
+    <ComponentGroup Id="iOSWorkbookAppFacadesComponents" Directory="iOSAgentAppFacadesInstallFolder">
+      <Component Id="iOSWorkbookAppFacades.Microsoft.Win32.Primitives.dll" Guid="4C6A73F3-2952-46B4-8774-F115E1D343E3">
+        <File Id="iOSWorkbookAppFacades.Microsoft.Win32.Primitives.dll" Source="$(var.iOSWorkbookAppFacadesDir)\Microsoft.Win32.Primitives.dll" />
+      </Component>
+      <Component Id="iOSWorkbookAppFacades.Microsoft.Win32.Registry.AccessControl.dll" Guid="8D018565-3544-4FB5-A365-4FC18DB58E47">
+        <File Id="iOSWorkbookAppFacades.Microsoft.Win32.Registry.AccessControl.dll" Source="$(var.iOSWorkbookAppFacadesDir)\Microsoft.Win32.Registry.AccessControl.dll" />
+      </Component>
+      <Component Id="iOSWorkbookAppFacades.Microsoft.Win32.Registry.dll" Guid="E1445F0A-78FD-4425-ADE4-FDDBB4FF1F44">
+        <File Id="iOSWorkbookAppFacades.Microsoft.Win32.Registry.dll" Source="$(var.iOSWorkbookAppFacadesDir)\Microsoft.Win32.Registry.dll" />
+      </Component>
+      <Component Id="iOSWorkbookAppFacades.System.AppContext.dll" Guid="8CE32AD2-8091-4A7C-B7D1-500EBC0BE53D">
+        <File Id="iOSWorkbookAppFacades.System.AppContext.dll" Source="$(var.iOSWorkbookAppFacadesDir)\System.AppContext.dll" />
+      </Component>
+      <Component Id="iOSWorkbookAppFacades.System.Collections.Concurrent.dll" Guid="AF412FB0-2A98-4DE1-BBD6-4A6EAB1D701A">
+        <File Id="iOSWorkbookAppFacades.System.Collections.Concurrent.dll" Source="$(var.iOSWorkbookAppFacadesDir)\System.Collections.Concurrent.dll" />
+      </Component>
+      <Component Id="iOSWorkbookAppFacades.System.Collections.NonGeneric.dll" Guid="DD7F83EA-73D9-457F-97BE-656AA3B57028">
+        <File Id="iOSWorkbookAppFacades.System.Collections.NonGeneric.dll" Source="$(var.iOSWorkbookAppFacadesDir)\System.Collections.NonGeneric.dll" />
+      </Component>
+      <Component Id="iOSWorkbookAppFacades.System.Collections.Specialized.dll" Guid="8DE60680-DF0C-44AC-BDE4-2E8F9FD582E0">
+        <File Id="iOSWorkbookAppFacades.System.Collections.Specialized.dll" Source="$(var.iOSWorkbookAppFacadesDir)\System.Collections.Specialized.dll" />
+      </Component>
+      <Component Id="iOSWorkbookAppFacades.System.Collections.dll" Guid="403E341F-75CD-4DEB-9845-C751DF3A2312">
+        <File Id="iOSWorkbookAppFacades.System.Collections.dll" Source="$(var.iOSWorkbookAppFacadesDir)\System.Collections.dll" />
+      </Component>
+      <Component Id="iOSWorkbookAppFacades.System.ComponentModel.Annotations.dll" Guid="8E196BB1-E9BE-491B-B3D8-9E81FE65DD45">
+        <File Id="iOSWorkbookAppFacades.System.ComponentModel.Annotations.dll" Source="$(var.iOSWorkbookAppFacadesDir)\System.ComponentModel.Annotations.dll" />
+      </Component>
+      <Component Id="iOSWorkbookAppFacades.System.ComponentModel.EventBasedAsync.dll" Guid="98A52809-2DEA-4BA9-8BA2-5BD5FAD46DC2">
+        <File Id="iOSWorkbookAppFacades.System.ComponentModel.EventBasedAsync.dll" Source="$(var.iOSWorkbookAppFacadesDir)\System.ComponentModel.EventBasedAsync.dll" />
+      </Component>
+      <Component Id="iOSWorkbookAppFacades.System.ComponentModel.Primitives.dll" Guid="1FED94B6-95C8-4DC7-8C38-F56AA7BB8EF2">
+        <File Id="iOSWorkbookAppFacades.System.ComponentModel.Primitives.dll" Source="$(var.iOSWorkbookAppFacadesDir)\System.ComponentModel.Primitives.dll" />
+      </Component>
+      <Component Id="iOSWorkbookAppFacades.System.ComponentModel.TypeConverter.dll" Guid="18299702-6AC1-42BB-8161-BDF2A54C7F60">
+        <File Id="iOSWorkbookAppFacades.System.ComponentModel.TypeConverter.dll" Source="$(var.iOSWorkbookAppFacadesDir)\System.ComponentModel.TypeConverter.dll" />
+      </Component>
+      <Component Id="iOSWorkbookAppFacades.System.ComponentModel.dll" Guid="EF028C39-CE80-4B1F-ABA4-5743328CDF7B">
+        <File Id="iOSWorkbookAppFacades.System.ComponentModel.dll" Source="$(var.iOSWorkbookAppFacadesDir)\System.ComponentModel.dll" />
+      </Component>
+      <Component Id="iOSWorkbookAppFacades.System.Console.dll" Guid="9F5CA5AC-0A84-4607-A4B0-3055C13DE5AD">
+        <File Id="iOSWorkbookAppFacades.System.Console.dll" Source="$(var.iOSWorkbookAppFacadesDir)\System.Console.dll" />
+      </Component>
+      <Component Id="iOSWorkbookAppFacades.System.Data.Common.dll" Guid="104713A8-7248-4934-A8A8-018686B18567">
+        <File Id="iOSWorkbookAppFacades.System.Data.Common.dll" Source="$(var.iOSWorkbookAppFacadesDir)\System.Data.Common.dll" />
+      </Component>
+      <Component Id="iOSWorkbookAppFacades.System.Data.SqlClient.dll" Guid="D1E26D55-979F-4FC0-A6CE-CD4C8134918A">
+        <File Id="iOSWorkbookAppFacades.System.Data.SqlClient.dll" Source="$(var.iOSWorkbookAppFacadesDir)\System.Data.SqlClient.dll" />
+      </Component>
+      <Component Id="iOSWorkbookAppFacades.System.Diagnostics.Contracts.dll" Guid="FAEAF308-12BF-4778-B2C5-9A7B0FAD0923">
+        <File Id="iOSWorkbookAppFacades.System.Diagnostics.Contracts.dll" Source="$(var.iOSWorkbookAppFacadesDir)\System.Diagnostics.Contracts.dll" />
+      </Component>
+      <Component Id="iOSWorkbookAppFacades.System.Diagnostics.Debug.dll" Guid="1AAB4077-15EC-4043-B2E9-B8E904E8D6F5">
+        <File Id="iOSWorkbookAppFacades.System.Diagnostics.Debug.dll" Source="$(var.iOSWorkbookAppFacadesDir)\System.Diagnostics.Debug.dll" />
+      </Component>
+      <Component Id="iOSWorkbookAppFacades.System.Diagnostics.FileVersionInfo.dll" Guid="C3F24216-2D7B-47B9-B4DD-7F0F7560450F">
+        <File Id="iOSWorkbookAppFacades.System.Diagnostics.FileVersionInfo.dll" Source="$(var.iOSWorkbookAppFacadesDir)\System.Diagnostics.FileVersionInfo.dll" />
+      </Component>
+      <Component Id="iOSWorkbookAppFacades.System.Diagnostics.Process.dll" Guid="BC1E7983-0ED6-456B-98F3-402521F97C9B">
+        <File Id="iOSWorkbookAppFacades.System.Diagnostics.Process.dll" Source="$(var.iOSWorkbookAppFacadesDir)\System.Diagnostics.Process.dll" />
+      </Component>
+      <Component Id="iOSWorkbookAppFacades.System.Diagnostics.StackTrace.dll" Guid="CF36EDB8-9887-4740-8346-304D6715CB02">
+        <File Id="iOSWorkbookAppFacades.System.Diagnostics.StackTrace.dll" Source="$(var.iOSWorkbookAppFacadesDir)\System.Diagnostics.StackTrace.dll" />
+      </Component>
+      <Component Id="iOSWorkbookAppFacades.System.Diagnostics.TextWriterTraceListener.dll" Guid="31D65672-B2D1-4B60-83ED-869306C667FF">
+        <File Id="iOSWorkbookAppFacades.System.Diagnostics.TextWriterTraceListener.dll" Source="$(var.iOSWorkbookAppFacadesDir)\System.Diagnostics.TextWriterTraceListener.dll" />
+      </Component>
+      <Component Id="iOSWorkbookAppFacades.System.Diagnostics.Tools.dll" Guid="8990EFE4-33F5-40C1-8E8C-55313C62253C">
+        <File Id="iOSWorkbookAppFacades.System.Diagnostics.Tools.dll" Source="$(var.iOSWorkbookAppFacadesDir)\System.Diagnostics.Tools.dll" />
+      </Component>
+      <Component Id="iOSWorkbookAppFacades.System.Diagnostics.TraceEvent.dll" Guid="F11B4BA5-E844-4E06-A7FC-008487806FE3">
+        <File Id="iOSWorkbookAppFacades.System.Diagnostics.TraceEvent.dll" Source="$(var.iOSWorkbookAppFacadesDir)\System.Diagnostics.TraceEvent.dll" />
+      </Component>
+      <Component Id="iOSWorkbookAppFacades.System.Diagnostics.TraceSource.dll" Guid="38985201-671D-461B-997B-479AEEF8C77B">
+        <File Id="iOSWorkbookAppFacades.System.Diagnostics.TraceSource.dll" Source="$(var.iOSWorkbookAppFacadesDir)\System.Diagnostics.TraceSource.dll" />
+      </Component>
+      <Component Id="iOSWorkbookAppFacades.System.Diagnostics.Tracing.dll" Guid="E4BDB420-7BB5-43A7-A238-1A7E3A30B4CE">
+        <File Id="iOSWorkbookAppFacades.System.Diagnostics.Tracing.dll" Source="$(var.iOSWorkbookAppFacadesDir)\System.Diagnostics.Tracing.dll" />
+      </Component>
+      <Component Id="iOSWorkbookAppFacades.System.Drawing.Primitives.dll" Guid="2055CBCA-62A0-4286-A0DC-59F84EC2C27B">
+        <File Id="iOSWorkbookAppFacades.System.Drawing.Primitives.dll" Source="$(var.iOSWorkbookAppFacadesDir)\System.Drawing.Primitives.dll" />
+      </Component>
+      <Component Id="iOSWorkbookAppFacades.System.Dynamic.Runtime.dll" Guid="BB9D23E7-A564-466B-B6D5-D5F37BAF2FBF">
+        <File Id="iOSWorkbookAppFacades.System.Dynamic.Runtime.dll" Source="$(var.iOSWorkbookAppFacadesDir)\System.Dynamic.Runtime.dll" />
+      </Component>
+      <Component Id="iOSWorkbookAppFacades.System.Globalization.Calendars.dll" Guid="34BF58AB-C08A-4A4A-A765-61B894940B6D">
+        <File Id="iOSWorkbookAppFacades.System.Globalization.Calendars.dll" Source="$(var.iOSWorkbookAppFacadesDir)\System.Globalization.Calendars.dll" />
+      </Component>
+      <Component Id="iOSWorkbookAppFacades.System.Globalization.Extensions.dll" Guid="A890BEC9-CBDD-4DAA-8729-5232A2089494">
+        <File Id="iOSWorkbookAppFacades.System.Globalization.Extensions.dll" Source="$(var.iOSWorkbookAppFacadesDir)\System.Globalization.Extensions.dll" />
+      </Component>
+      <Component Id="iOSWorkbookAppFacades.System.Globalization.dll" Guid="A9A5258B-ED76-425E-80C9-41E22007BF92">
+        <File Id="iOSWorkbookAppFacades.System.Globalization.dll" Source="$(var.iOSWorkbookAppFacadesDir)\System.Globalization.dll" />
+      </Component>
+      <Component Id="iOSWorkbookAppFacades.System.IO.Compression.ZipFile.dll" Guid="117AD7B3-F426-4D36-AF19-9B127A9BD76C">
+        <File Id="iOSWorkbookAppFacades.System.IO.Compression.ZipFile.dll" Source="$(var.iOSWorkbookAppFacadesDir)\System.IO.Compression.ZipFile.dll" />
+      </Component>
+      <Component Id="iOSWorkbookAppFacades.System.IO.FileSystem.AccessControl.dll" Guid="396A7AAD-C6EC-4159-AB64-58187B8C588E">
+        <File Id="iOSWorkbookAppFacades.System.IO.FileSystem.AccessControl.dll" Source="$(var.iOSWorkbookAppFacadesDir)\System.IO.FileSystem.AccessControl.dll" />
+      </Component>
+      <Component Id="iOSWorkbookAppFacades.System.IO.FileSystem.DriveInfo.dll" Guid="4675FEB7-E76F-42FF-B794-0B7238C01281">
+        <File Id="iOSWorkbookAppFacades.System.IO.FileSystem.DriveInfo.dll" Source="$(var.iOSWorkbookAppFacadesDir)\System.IO.FileSystem.DriveInfo.dll" />
+      </Component>
+      <Component Id="iOSWorkbookAppFacades.System.IO.FileSystem.Primitives.dll" Guid="AC9832DC-ABD1-44D6-A0CB-E99A1864E4C3">
+        <File Id="iOSWorkbookAppFacades.System.IO.FileSystem.Primitives.dll" Source="$(var.iOSWorkbookAppFacadesDir)\System.IO.FileSystem.Primitives.dll" />
+      </Component>
+      <Component Id="iOSWorkbookAppFacades.System.IO.FileSystem.Watcher.dll" Guid="E191AEC9-512D-44F5-B1E1-F09A9770EA0B">
+        <File Id="iOSWorkbookAppFacades.System.IO.FileSystem.Watcher.dll" Source="$(var.iOSWorkbookAppFacadesDir)\System.IO.FileSystem.Watcher.dll" />
+      </Component>
+      <Component Id="iOSWorkbookAppFacades.System.IO.FileSystem.dll" Guid="9C916E4E-AAA1-467D-88A7-9B3AA4DDCA0B">
+        <File Id="iOSWorkbookAppFacades.System.IO.FileSystem.dll" Source="$(var.iOSWorkbookAppFacadesDir)\System.IO.FileSystem.dll" />
+      </Component>
+      <Component Id="iOSWorkbookAppFacades.System.IO.IsolatedStorage.dll" Guid="32C91F56-5C58-4DC8-A3CD-214588C58683">
+        <File Id="iOSWorkbookAppFacades.System.IO.IsolatedStorage.dll" Source="$(var.iOSWorkbookAppFacadesDir)\System.IO.IsolatedStorage.dll" />
+      </Component>
+      <Component Id="iOSWorkbookAppFacades.System.IO.MemoryMappedFiles.dll" Guid="7BD02B6C-020A-4290-A529-BC5D9C078063">
+        <File Id="iOSWorkbookAppFacades.System.IO.MemoryMappedFiles.dll" Source="$(var.iOSWorkbookAppFacadesDir)\System.IO.MemoryMappedFiles.dll" />
+      </Component>
+      <Component Id="iOSWorkbookAppFacades.System.IO.Pipes.dll" Guid="BE176FC6-2226-4FDC-9E32-FFF2A7038892">
+        <File Id="iOSWorkbookAppFacades.System.IO.Pipes.dll" Source="$(var.iOSWorkbookAppFacadesDir)\System.IO.Pipes.dll" />
+      </Component>
+      <Component Id="iOSWorkbookAppFacades.System.IO.UnmanagedMemoryStream.dll" Guid="85FD9BBF-C15E-4D60-8422-C64A2A91FEB2">
+        <File Id="iOSWorkbookAppFacades.System.IO.UnmanagedMemoryStream.dll" Source="$(var.iOSWorkbookAppFacadesDir)\System.IO.UnmanagedMemoryStream.dll" />
+      </Component>
+      <Component Id="iOSWorkbookAppFacades.System.IO.dll" Guid="E3951A4D-016A-458C-9C8B-12501E43DCC0">
+        <File Id="iOSWorkbookAppFacades.System.IO.dll" Source="$(var.iOSWorkbookAppFacadesDir)\System.IO.dll" />
+      </Component>
+      <Component Id="iOSWorkbookAppFacades.System.Linq.Expressions.dll" Guid="838FE324-9ABB-48A2-89BC-A29027483A1D">
+        <File Id="iOSWorkbookAppFacades.System.Linq.Expressions.dll" Source="$(var.iOSWorkbookAppFacadesDir)\System.Linq.Expressions.dll" />
+      </Component>
+      <Component Id="iOSWorkbookAppFacades.System.Linq.Parallel.dll" Guid="A60CA2C7-17DC-4CA7-8264-295DD4CA5437">
+        <File Id="iOSWorkbookAppFacades.System.Linq.Parallel.dll" Source="$(var.iOSWorkbookAppFacadesDir)\System.Linq.Parallel.dll" />
+      </Component>
+      <Component Id="iOSWorkbookAppFacades.System.Linq.Queryable.dll" Guid="FB084B9C-0F04-465C-B0B4-B0008DBED208">
+        <File Id="iOSWorkbookAppFacades.System.Linq.Queryable.dll" Source="$(var.iOSWorkbookAppFacadesDir)\System.Linq.Queryable.dll" />
+      </Component>
+      <Component Id="iOSWorkbookAppFacades.System.Linq.dll" Guid="F2F07370-43BC-49D2-B716-87A5AB3F3522">
+        <File Id="iOSWorkbookAppFacades.System.Linq.dll" Source="$(var.iOSWorkbookAppFacadesDir)\System.Linq.dll" />
+      </Component>
+      <Component Id="iOSWorkbookAppFacades.System.Net.AuthenticationManager.dll" Guid="879C8768-C546-426D-B291-0D09711CC1B2">
+        <File Id="iOSWorkbookAppFacades.System.Net.AuthenticationManager.dll" Source="$(var.iOSWorkbookAppFacadesDir)\System.Net.AuthenticationManager.dll" />
+      </Component>
+      <Component Id="iOSWorkbookAppFacades.System.Net.Cache.dll" Guid="89728F85-84AB-4419-B965-2D3BFE12B40F">
+        <File Id="iOSWorkbookAppFacades.System.Net.Cache.dll" Source="$(var.iOSWorkbookAppFacadesDir)\System.Net.Cache.dll" />
+      </Component>
+      <Component Id="iOSWorkbookAppFacades.System.Net.HttpListener.dll" Guid="A9B9751F-9F82-41A2-9893-BE15783F4939">
+        <File Id="iOSWorkbookAppFacades.System.Net.HttpListener.dll" Source="$(var.iOSWorkbookAppFacadesDir)\System.Net.HttpListener.dll" />
+      </Component>
+      <Component Id="iOSWorkbookAppFacades.System.Net.Mail.dll" Guid="63000102-FA26-4F45-88F2-77A380109614">
+        <File Id="iOSWorkbookAppFacades.System.Net.Mail.dll" Source="$(var.iOSWorkbookAppFacadesDir)\System.Net.Mail.dll" />
+      </Component>
+      <Component Id="iOSWorkbookAppFacades.System.Net.NameResolution.dll" Guid="0F1348E5-85D1-4BA5-ACFB-CF77009398A3">
+        <File Id="iOSWorkbookAppFacades.System.Net.NameResolution.dll" Source="$(var.iOSWorkbookAppFacadesDir)\System.Net.NameResolution.dll" />
+      </Component>
+      <Component Id="iOSWorkbookAppFacades.System.Net.NetworkInformation.dll" Guid="C6987CE3-301A-43F2-BC13-7A98CECE2678">
+        <File Id="iOSWorkbookAppFacades.System.Net.NetworkInformation.dll" Source="$(var.iOSWorkbookAppFacadesDir)\System.Net.NetworkInformation.dll" />
+      </Component>
+      <Component Id="iOSWorkbookAppFacades.System.Net.Ping.dll" Guid="2E7EEDB0-F27F-44ED-9237-B6E42A56A4E7">
+        <File Id="iOSWorkbookAppFacades.System.Net.Ping.dll" Source="$(var.iOSWorkbookAppFacadesDir)\System.Net.Ping.dll" />
+      </Component>
+      <Component Id="iOSWorkbookAppFacades.System.Net.Primitives.dll" Guid="A0911693-2B17-4DAA-A6B5-57A3ED773B1A">
+        <File Id="iOSWorkbookAppFacades.System.Net.Primitives.dll" Source="$(var.iOSWorkbookAppFacadesDir)\System.Net.Primitives.dll" />
+      </Component>
+      <Component Id="iOSWorkbookAppFacades.System.Net.Requests.dll" Guid="4D5BF80E-2CBC-4451-B008-4B8413B15AF9">
+        <File Id="iOSWorkbookAppFacades.System.Net.Requests.dll" Source="$(var.iOSWorkbookAppFacadesDir)\System.Net.Requests.dll" />
+      </Component>
+      <Component Id="iOSWorkbookAppFacades.System.Net.Security.dll" Guid="3D055A45-E77C-4742-9F9A-7BB58FE2B2AD">
+        <File Id="iOSWorkbookAppFacades.System.Net.Security.dll" Source="$(var.iOSWorkbookAppFacadesDir)\System.Net.Security.dll" />
+      </Component>
+      <Component Id="iOSWorkbookAppFacades.System.Net.ServicePoint.dll" Guid="ED0E7EBD-0C06-4F31-B9C4-A9FF79D3F770">
+        <File Id="iOSWorkbookAppFacades.System.Net.ServicePoint.dll" Source="$(var.iOSWorkbookAppFacadesDir)\System.Net.ServicePoint.dll" />
+      </Component>
+      <Component Id="iOSWorkbookAppFacades.System.Net.Sockets.dll" Guid="4D3F8D43-E99C-4687-AC89-0A45F09BF1D7">
+        <File Id="iOSWorkbookAppFacades.System.Net.Sockets.dll" Source="$(var.iOSWorkbookAppFacadesDir)\System.Net.Sockets.dll" />
+      </Component>
+      <Component Id="iOSWorkbookAppFacades.System.Net.Utilities.dll" Guid="3C03AF01-35AB-437F-971B-AFF84DC834D8">
+        <File Id="iOSWorkbookAppFacades.System.Net.Utilities.dll" Source="$(var.iOSWorkbookAppFacadesDir)\System.Net.Utilities.dll" />
+      </Component>
+      <Component Id="iOSWorkbookAppFacades.System.Net.WebHeaderCollection.dll" Guid="AFCE0677-984E-45F9-827B-D8F7D6767580">
+        <File Id="iOSWorkbookAppFacades.System.Net.WebHeaderCollection.dll" Source="$(var.iOSWorkbookAppFacadesDir)\System.Net.WebHeaderCollection.dll" />
+      </Component>
+      <Component Id="iOSWorkbookAppFacades.System.Net.WebSockets.Client.dll" Guid="75B179DD-7B11-4DBF-843F-C36A7C9551FE">
+        <File Id="iOSWorkbookAppFacades.System.Net.WebSockets.Client.dll" Source="$(var.iOSWorkbookAppFacadesDir)\System.Net.WebSockets.Client.dll" />
+      </Component>
+      <Component Id="iOSWorkbookAppFacades.System.Net.WebSockets.dll" Guid="23FD5755-7A98-4FA1-A016-85AE2E9558ED">
+        <File Id="iOSWorkbookAppFacades.System.Net.WebSockets.dll" Source="$(var.iOSWorkbookAppFacadesDir)\System.Net.WebSockets.dll" />
+      </Component>
+      <Component Id="iOSWorkbookAppFacades.System.ObjectModel.dll" Guid="E883148C-E1D4-4F06-B803-4F8A75274AB9">
+        <File Id="iOSWorkbookAppFacades.System.ObjectModel.dll" Source="$(var.iOSWorkbookAppFacadesDir)\System.ObjectModel.dll" />
+      </Component>
+      <Component Id="iOSWorkbookAppFacades.System.Reflection.DispatchProxy.dll" Guid="5FF5B67F-870F-411B-91E2-A5E858274A8C">
+        <File Id="iOSWorkbookAppFacades.System.Reflection.DispatchProxy.dll" Source="$(var.iOSWorkbookAppFacadesDir)\System.Reflection.DispatchProxy.dll" />
+      </Component>
+      <Component Id="iOSWorkbookAppFacades.System.Reflection.Emit.ILGeneration.dll" Guid="BC3A6660-E6B8-4DD6-9C6A-13ACE777EB67">
+        <File Id="iOSWorkbookAppFacades.System.Reflection.Emit.ILGeneration.dll" Source="$(var.iOSWorkbookAppFacadesDir)\System.Reflection.Emit.ILGeneration.dll" />
+      </Component>
+      <Component Id="iOSWorkbookAppFacades.System.Reflection.Emit.Lightweight.dll" Guid="08CF4D17-4699-4096-B89B-E8180E055C94">
+        <File Id="iOSWorkbookAppFacades.System.Reflection.Emit.Lightweight.dll" Source="$(var.iOSWorkbookAppFacadesDir)\System.Reflection.Emit.Lightweight.dll" />
+      </Component>
+      <Component Id="iOSWorkbookAppFacades.System.Reflection.Emit.dll" Guid="3AD80C1F-B1B2-422B-A256-70B63AB34B23">
+        <File Id="iOSWorkbookAppFacades.System.Reflection.Emit.dll" Source="$(var.iOSWorkbookAppFacadesDir)\System.Reflection.Emit.dll" />
+      </Component>
+      <Component Id="iOSWorkbookAppFacades.System.Reflection.Extensions.dll" Guid="850C4D52-8F87-4302-933F-050C564CBE97">
+        <File Id="iOSWorkbookAppFacades.System.Reflection.Extensions.dll" Source="$(var.iOSWorkbookAppFacadesDir)\System.Reflection.Extensions.dll" />
+      </Component>
+      <Component Id="iOSWorkbookAppFacades.System.Reflection.Primitives.dll" Guid="64682AE1-5476-462D-9921-80862D9BFB79">
+        <File Id="iOSWorkbookAppFacades.System.Reflection.Primitives.dll" Source="$(var.iOSWorkbookAppFacadesDir)\System.Reflection.Primitives.dll" />
+      </Component>
+      <Component Id="iOSWorkbookAppFacades.System.Reflection.TypeExtensions.dll" Guid="7353E566-A4EF-41AC-BFC6-138AC8C63137">
+        <File Id="iOSWorkbookAppFacades.System.Reflection.TypeExtensions.dll" Source="$(var.iOSWorkbookAppFacadesDir)\System.Reflection.TypeExtensions.dll" />
+      </Component>
+      <Component Id="iOSWorkbookAppFacades.System.Reflection.dll" Guid="D1C7E557-7020-4E13-9720-F8B4C40E1836">
+        <File Id="iOSWorkbookAppFacades.System.Reflection.dll" Source="$(var.iOSWorkbookAppFacadesDir)\System.Reflection.dll" />
+      </Component>
+      <Component Id="iOSWorkbookAppFacades.System.Resources.ReaderWriter.dll" Guid="8A1A943A-3394-463D-A168-0649E5C78112">
+        <File Id="iOSWorkbookAppFacades.System.Resources.ReaderWriter.dll" Source="$(var.iOSWorkbookAppFacadesDir)\System.Resources.ReaderWriter.dll" />
+      </Component>
+      <Component Id="iOSWorkbookAppFacades.System.Resources.ResourceManager.dll" Guid="75C64132-1B07-4E69-B841-838B99064C72">
+        <File Id="iOSWorkbookAppFacades.System.Resources.ResourceManager.dll" Source="$(var.iOSWorkbookAppFacadesDir)\System.Resources.ResourceManager.dll" />
+      </Component>
+      <Component Id="iOSWorkbookAppFacades.System.Runtime.CompilerServices.VisualC.dll" Guid="8EB73D75-4AEB-40E0-9ABE-05504FB8EF20">
+        <File Id="iOSWorkbookAppFacades.System.Runtime.CompilerServices.VisualC.dll" Source="$(var.iOSWorkbookAppFacadesDir)\System.Runtime.CompilerServices.VisualC.dll" />
+      </Component>
+      <Component Id="iOSWorkbookAppFacades.System.Runtime.Extensions.dll" Guid="C4B676C3-577C-447E-AC3D-0126DCC65138">
+        <File Id="iOSWorkbookAppFacades.System.Runtime.Extensions.dll" Source="$(var.iOSWorkbookAppFacadesDir)\System.Runtime.Extensions.dll" />
+      </Component>
+      <Component Id="iOSWorkbookAppFacades.System.Runtime.Handles.dll" Guid="D845C3A4-3AEC-4F0A-ABBB-97574C699989">
+        <File Id="iOSWorkbookAppFacades.System.Runtime.Handles.dll" Source="$(var.iOSWorkbookAppFacadesDir)\System.Runtime.Handles.dll" />
+      </Component>
+      <Component Id="iOSWorkbookAppFacades.System.Runtime.InteropServices.WindowsRuntime.dll" Guid="725A504B-9B15-4B32-80F0-23E9DDF420B6">
+        <File Id="iOSWorkbookAppFacades.System.Runtime.InteropServices.WindowsRuntime.dll" Source="$(var.iOSWorkbookAppFacadesDir)\System.Runtime.InteropServices.WindowsRuntime.dll" />
+      </Component>
+      <Component Id="iOSWorkbookAppFacades.System.Runtime.InteropServices.dll" Guid="EB6B62C1-23E5-4586-8F76-C7189B8B769B">
+        <File Id="iOSWorkbookAppFacades.System.Runtime.InteropServices.dll" Source="$(var.iOSWorkbookAppFacadesDir)\System.Runtime.InteropServices.dll" />
+      </Component>
+      <Component Id="iOSWorkbookAppFacades.System.Runtime.Loader.dll" Guid="525BD728-4BAA-4B70-96AF-8BDC1F56F566">
+        <File Id="iOSWorkbookAppFacades.System.Runtime.Loader.dll" Source="$(var.iOSWorkbookAppFacadesDir)\System.Runtime.Loader.dll" />
+      </Component>
+      <Component Id="iOSWorkbookAppFacades.System.Runtime.Numerics.dll" Guid="7CBD3916-AAEE-4FA5-9607-70286224F749">
+        <File Id="iOSWorkbookAppFacades.System.Runtime.Numerics.dll" Source="$(var.iOSWorkbookAppFacadesDir)\System.Runtime.Numerics.dll" />
+      </Component>
+      <Component Id="iOSWorkbookAppFacades.System.Runtime.Serialization.Formatters.dll" Guid="AC7983FD-7556-462E-84F1-570867CC472C">
+        <File Id="iOSWorkbookAppFacades.System.Runtime.Serialization.Formatters.dll" Source="$(var.iOSWorkbookAppFacadesDir)\System.Runtime.Serialization.Formatters.dll" />
+      </Component>
+      <Component Id="iOSWorkbookAppFacades.System.Runtime.Serialization.Json.dll" Guid="599D1A2A-732B-4EA1-8331-7107053B5A8D">
+        <File Id="iOSWorkbookAppFacades.System.Runtime.Serialization.Json.dll" Source="$(var.iOSWorkbookAppFacadesDir)\System.Runtime.Serialization.Json.dll" />
+      </Component>
+      <Component Id="iOSWorkbookAppFacades.System.Runtime.Serialization.Primitives.dll" Guid="CF9B0206-FF3A-4D4A-BAD8-93E3D8BC85F6">
+        <File Id="iOSWorkbookAppFacades.System.Runtime.Serialization.Primitives.dll" Source="$(var.iOSWorkbookAppFacadesDir)\System.Runtime.Serialization.Primitives.dll" />
+      </Component>
+      <Component Id="iOSWorkbookAppFacades.System.Runtime.Serialization.Xml.dll" Guid="274E58F0-B514-4739-9F2F-3F1153CE7FE7">
+        <File Id="iOSWorkbookAppFacades.System.Runtime.Serialization.Xml.dll" Source="$(var.iOSWorkbookAppFacadesDir)\System.Runtime.Serialization.Xml.dll" />
+      </Component>
+      <Component Id="iOSWorkbookAppFacades.System.Runtime.dll" Guid="3980F421-18E0-42FA-916A-3A6ACB39609F">
+        <File Id="iOSWorkbookAppFacades.System.Runtime.dll" Source="$(var.iOSWorkbookAppFacadesDir)\System.Runtime.dll" />
+      </Component>
+      <Component Id="iOSWorkbookAppFacades.System.Security.AccessControl.dll" Guid="3822ACFA-3CCB-4D73-B0F5-3DDD1DFA9CA7">
+        <File Id="iOSWorkbookAppFacades.System.Security.AccessControl.dll" Source="$(var.iOSWorkbookAppFacadesDir)\System.Security.AccessControl.dll" />
+      </Component>
+      <Component Id="iOSWorkbookAppFacades.System.Security.Claims.dll" Guid="A838DAEE-95C8-403F-8E6D-04780191DEA5">
+        <File Id="iOSWorkbookAppFacades.System.Security.Claims.dll" Source="$(var.iOSWorkbookAppFacadesDir)\System.Security.Claims.dll" />
+      </Component>
+      <Component Id="iOSWorkbookAppFacades.System.Security.Cryptography.Algorithms.dll" Guid="D6576F80-9F78-4350-B89A-E5BFD019AD44">
+        <File Id="iOSWorkbookAppFacades.System.Security.Cryptography.Algorithms.dll" Source="$(var.iOSWorkbookAppFacadesDir)\System.Security.Cryptography.Algorithms.dll" />
+      </Component>
+      <Component Id="iOSWorkbookAppFacades.System.Security.Cryptography.Cng.dll" Guid="80E5C6C7-6266-4A7F-BF29-E30CEC8B8D7C">
+        <File Id="iOSWorkbookAppFacades.System.Security.Cryptography.Cng.dll" Source="$(var.iOSWorkbookAppFacadesDir)\System.Security.Cryptography.Cng.dll" />
+      </Component>
+      <Component Id="iOSWorkbookAppFacades.System.Security.Cryptography.Csp.dll" Guid="8B78CEA6-1F2E-44A1-AD49-8E90FD44491F">
+        <File Id="iOSWorkbookAppFacades.System.Security.Cryptography.Csp.dll" Source="$(var.iOSWorkbookAppFacadesDir)\System.Security.Cryptography.Csp.dll" />
+      </Component>
+      <Component Id="iOSWorkbookAppFacades.System.Security.Cryptography.DeriveBytes.dll" Guid="A0719B33-F1E7-4554-8B28-DCF203FFBDFB">
+        <File Id="iOSWorkbookAppFacades.System.Security.Cryptography.DeriveBytes.dll" Source="$(var.iOSWorkbookAppFacadesDir)\System.Security.Cryptography.DeriveBytes.dll" />
+      </Component>
+      <Component Id="iOSWorkbookAppFacades.System.Security.Cryptography.Encoding.dll" Guid="531D43AD-6347-47C7-BC52-2CF3AB11F63E">
+        <File Id="iOSWorkbookAppFacades.System.Security.Cryptography.Encoding.dll" Source="$(var.iOSWorkbookAppFacadesDir)\System.Security.Cryptography.Encoding.dll" />
+      </Component>
+      <Component Id="iOSWorkbookAppFacades.System.Security.Cryptography.Encryption.Aes.dll" Guid="AFEC5AD0-87D7-45CE-9DDB-4DD31657C5FD">
+        <File Id="iOSWorkbookAppFacades.System.Security.Cryptography.Encryption.Aes.dll" Source="$(var.iOSWorkbookAppFacadesDir)\System.Security.Cryptography.Encryption.Aes.dll" />
+      </Component>
+      <Component Id="iOSWorkbookAppFacades.System.Security.Cryptography.Encryption.ECDsa.dll" Guid="5B582815-29EB-4D3F-B3BE-7F3057BDBB25">
+        <File Id="iOSWorkbookAppFacades.System.Security.Cryptography.Encryption.ECDsa.dll" Source="$(var.iOSWorkbookAppFacadesDir)\System.Security.Cryptography.Encryption.ECDsa.dll" />
+      </Component>
+      <Component Id="iOSWorkbookAppFacades.System.Security.Cryptography.Encryption.dll" Guid="FD2EA4AE-D0C5-4005-A26B-F47E5A215822">
+        <File Id="iOSWorkbookAppFacades.System.Security.Cryptography.Encryption.dll" Source="$(var.iOSWorkbookAppFacadesDir)\System.Security.Cryptography.Encryption.dll" />
+      </Component>
+      <Component Id="iOSWorkbookAppFacades.System.Security.Cryptography.Hashing.dll" Guid="6226A976-25BC-4CBC-9598-7B60249519F9">
+        <File Id="iOSWorkbookAppFacades.System.Security.Cryptography.Hashing.dll" Source="$(var.iOSWorkbookAppFacadesDir)\System.Security.Cryptography.Hashing.dll" />
+      </Component>
+      <Component Id="iOSWorkbookAppFacades.System.Security.Cryptography.OpenSsl.dll" Guid="47A5A57D-1763-4660-B477-B4A0EB529DA2">
+        <File Id="iOSWorkbookAppFacades.System.Security.Cryptography.OpenSsl.dll" Source="$(var.iOSWorkbookAppFacadesDir)\System.Security.Cryptography.OpenSsl.dll" />
+      </Component>
+      <Component Id="iOSWorkbookAppFacades.System.Security.Cryptography.Pkcs.dll" Guid="7E367832-3AD0-42F5-A6F7-13742A59AE4D">
+        <File Id="iOSWorkbookAppFacades.System.Security.Cryptography.Pkcs.dll" Source="$(var.iOSWorkbookAppFacadesDir)\System.Security.Cryptography.Pkcs.dll" />
+      </Component>
+      <Component Id="iOSWorkbookAppFacades.System.Security.Cryptography.Primitives.dll" Guid="20C52CF3-FCE0-4501-8ECD-7BE62F714C75">
+        <File Id="iOSWorkbookAppFacades.System.Security.Cryptography.Primitives.dll" Source="$(var.iOSWorkbookAppFacadesDir)\System.Security.Cryptography.Primitives.dll" />
+      </Component>
+      <Component Id="iOSWorkbookAppFacades.System.Security.Cryptography.ProtectedData.dll" Guid="9BAB29E3-5A62-4C07-89AC-C7383BCE5E92">
+        <File Id="iOSWorkbookAppFacades.System.Security.Cryptography.ProtectedData.dll" Source="$(var.iOSWorkbookAppFacadesDir)\System.Security.Cryptography.ProtectedData.dll" />
+      </Component>
+      <Component Id="iOSWorkbookAppFacades.System.Security.Cryptography.RSA.dll" Guid="B6DBD1CC-7E78-426D-ABD8-17FCAB9EED12">
+        <File Id="iOSWorkbookAppFacades.System.Security.Cryptography.RSA.dll" Source="$(var.iOSWorkbookAppFacadesDir)\System.Security.Cryptography.RSA.dll" />
+      </Component>
+      <Component Id="iOSWorkbookAppFacades.System.Security.Cryptography.X509Certificates.dll" Guid="324BBBC9-3A9D-4E8B-9AB0-B6FFE301067B">
+        <File Id="iOSWorkbookAppFacades.System.Security.Cryptography.X509Certificates.dll" Source="$(var.iOSWorkbookAppFacadesDir)\System.Security.Cryptography.X509Certificates.dll" />
+      </Component>
+      <Component Id="iOSWorkbookAppFacades.System.Security.Principal.Windows.dll" Guid="07114375-A95E-4B5E-B255-5125552387AE">
+        <File Id="iOSWorkbookAppFacades.System.Security.Principal.Windows.dll" Source="$(var.iOSWorkbookAppFacadesDir)\System.Security.Principal.Windows.dll" />
+      </Component>
+      <Component Id="iOSWorkbookAppFacades.System.Security.Principal.dll" Guid="5C7F4C84-074D-47E5-86D0-A2725BFD6187">
+        <File Id="iOSWorkbookAppFacades.System.Security.Principal.dll" Source="$(var.iOSWorkbookAppFacadesDir)\System.Security.Principal.dll" />
+      </Component>
+      <Component Id="iOSWorkbookAppFacades.System.Security.SecureString.dll" Guid="9AD52016-C2A0-4A7E-8F69-4FFDE2532782">
+        <File Id="iOSWorkbookAppFacades.System.Security.SecureString.dll" Source="$(var.iOSWorkbookAppFacadesDir)\System.Security.SecureString.dll" />
+      </Component>
+      <Component Id="iOSWorkbookAppFacades.System.ServiceModel.Duplex.dll" Guid="01621E6A-42EC-4678-94BD-A92D28FA33C0">
+        <File Id="iOSWorkbookAppFacades.System.ServiceModel.Duplex.dll" Source="$(var.iOSWorkbookAppFacadesDir)\System.ServiceModel.Duplex.dll" />
+      </Component>
+      <Component Id="iOSWorkbookAppFacades.System.ServiceModel.Http.dll" Guid="08B4CA8E-4EF3-46EB-A361-623217FD6988">
+        <File Id="iOSWorkbookAppFacades.System.ServiceModel.Http.dll" Source="$(var.iOSWorkbookAppFacadesDir)\System.ServiceModel.Http.dll" />
+      </Component>
+      <Component Id="iOSWorkbookAppFacades.System.ServiceModel.NetTcp.dll" Guid="184F3878-6121-48C9-9FF7-E414FC5005D8">
+        <File Id="iOSWorkbookAppFacades.System.ServiceModel.NetTcp.dll" Source="$(var.iOSWorkbookAppFacadesDir)\System.ServiceModel.NetTcp.dll" />
+      </Component>
+      <Component Id="iOSWorkbookAppFacades.System.ServiceModel.Primitives.dll" Guid="FDCB9B28-5EB9-4898-9E49-FDEAFE8A2C11">
+        <File Id="iOSWorkbookAppFacades.System.ServiceModel.Primitives.dll" Source="$(var.iOSWorkbookAppFacadesDir)\System.ServiceModel.Primitives.dll" />
+      </Component>
+      <Component Id="iOSWorkbookAppFacades.System.ServiceModel.Security.dll" Guid="975D55D3-E057-4496-B6D6-01D9B0F52DEA">
+        <File Id="iOSWorkbookAppFacades.System.ServiceModel.Security.dll" Source="$(var.iOSWorkbookAppFacadesDir)\System.ServiceModel.Security.dll" />
+      </Component>
+      <Component Id="iOSWorkbookAppFacades.System.ServiceProcess.ServiceController.dll" Guid="519BCC13-A90C-429A-89D5-1281703A3F23">
+        <File Id="iOSWorkbookAppFacades.System.ServiceProcess.ServiceController.dll" Source="$(var.iOSWorkbookAppFacadesDir)\System.ServiceProcess.ServiceController.dll" />
+      </Component>
+      <Component Id="iOSWorkbookAppFacades.System.Text.Encoding.CodePages.dll" Guid="32C9731B-85E4-41BC-BD54-25593DDDA03B">
+        <File Id="iOSWorkbookAppFacades.System.Text.Encoding.CodePages.dll" Source="$(var.iOSWorkbookAppFacadesDir)\System.Text.Encoding.CodePages.dll" />
+      </Component>
+      <Component Id="iOSWorkbookAppFacades.System.Text.Encoding.Extensions.dll" Guid="45B4834E-BE65-4A18-BFB9-17410BB92660">
+        <File Id="iOSWorkbookAppFacades.System.Text.Encoding.Extensions.dll" Source="$(var.iOSWorkbookAppFacadesDir)\System.Text.Encoding.Extensions.dll" />
+      </Component>
+      <Component Id="iOSWorkbookAppFacades.System.Text.Encoding.dll" Guid="678EAEE6-BCB8-4B21-BBF4-853F9E76BA16">
+        <File Id="iOSWorkbookAppFacades.System.Text.Encoding.dll" Source="$(var.iOSWorkbookAppFacadesDir)\System.Text.Encoding.dll" />
+      </Component>
+      <Component Id="iOSWorkbookAppFacades.System.Text.RegularExpressions.dll" Guid="4D47FBB0-1EFC-4CAF-8DB3-B47448A58869">
+        <File Id="iOSWorkbookAppFacades.System.Text.RegularExpressions.dll" Source="$(var.iOSWorkbookAppFacadesDir)\System.Text.RegularExpressions.dll" />
+      </Component>
+      <Component Id="iOSWorkbookAppFacades.System.Threading.AccessControl.dll" Guid="5522B6ED-8F83-41C7-981D-4203D748AA9F">
+        <File Id="iOSWorkbookAppFacades.System.Threading.AccessControl.dll" Source="$(var.iOSWorkbookAppFacadesDir)\System.Threading.AccessControl.dll" />
+      </Component>
+      <Component Id="iOSWorkbookAppFacades.System.Threading.Overlapped.dll" Guid="C9E470F8-CEFC-44BF-97FB-6EE3AEA0C20E">
+        <File Id="iOSWorkbookAppFacades.System.Threading.Overlapped.dll" Source="$(var.iOSWorkbookAppFacadesDir)\System.Threading.Overlapped.dll" />
+      </Component>
+      <Component Id="iOSWorkbookAppFacades.System.Threading.Tasks.Parallel.dll" Guid="DFBF7210-0F01-47AB-80EE-DA174AA63CA5">
+        <File Id="iOSWorkbookAppFacades.System.Threading.Tasks.Parallel.dll" Source="$(var.iOSWorkbookAppFacadesDir)\System.Threading.Tasks.Parallel.dll" />
+      </Component>
+      <Component Id="iOSWorkbookAppFacades.System.Threading.Tasks.dll" Guid="72E60627-15B9-45A0-ADBB-7F3519B5D855">
+        <File Id="iOSWorkbookAppFacades.System.Threading.Tasks.dll" Source="$(var.iOSWorkbookAppFacadesDir)\System.Threading.Tasks.dll" />
+      </Component>
+      <Component Id="iOSWorkbookAppFacades.System.Threading.Thread.dll" Guid="A4776DC7-9114-4A74-A30D-14B2473A1401">
+        <File Id="iOSWorkbookAppFacades.System.Threading.Thread.dll" Source="$(var.iOSWorkbookAppFacadesDir)\System.Threading.Thread.dll" />
+      </Component>
+      <Component Id="iOSWorkbookAppFacades.System.Threading.ThreadPool.dll" Guid="4E6E102E-B289-409C-B3F9-A9E2563C0564">
+        <File Id="iOSWorkbookAppFacades.System.Threading.ThreadPool.dll" Source="$(var.iOSWorkbookAppFacadesDir)\System.Threading.ThreadPool.dll" />
+      </Component>
+      <Component Id="iOSWorkbookAppFacades.System.Threading.Timer.dll" Guid="1EB548EF-69A5-48AE-BF92-1C566EB6ACC5">
+        <File Id="iOSWorkbookAppFacades.System.Threading.Timer.dll" Source="$(var.iOSWorkbookAppFacadesDir)\System.Threading.Timer.dll" />
+      </Component>
+      <Component Id="iOSWorkbookAppFacades.System.Threading.dll" Guid="200906AF-C25B-41BF-9162-34A9E30FF397">
+        <File Id="iOSWorkbookAppFacades.System.Threading.dll" Source="$(var.iOSWorkbookAppFacadesDir)\System.Threading.dll" />
+      </Component>
+      <Component Id="iOSWorkbookAppFacades.System.ValueTuple.dll" Guid="8213DEEA-AA0F-4D5F-BA81-EFD1E1144452">
+        <File Id="iOSWorkbookAppFacades.System.ValueTuple.dll" Source="$(var.iOSWorkbookAppFacadesDir)\System.ValueTuple.dll" />
+      </Component>
+      <Component Id="iOSWorkbookAppFacades.System.Xml.ReaderWriter.dll" Guid="3BCB2178-6028-4A86-BD19-6C0D956B7607">
+        <File Id="iOSWorkbookAppFacades.System.Xml.ReaderWriter.dll" Source="$(var.iOSWorkbookAppFacadesDir)\System.Xml.ReaderWriter.dll" />
+      </Component>
+      <Component Id="iOSWorkbookAppFacades.System.Xml.XDocument.dll" Guid="62108C9B-D537-42C4-BEC6-F4170D728A47">
+        <File Id="iOSWorkbookAppFacades.System.Xml.XDocument.dll" Source="$(var.iOSWorkbookAppFacadesDir)\System.Xml.XDocument.dll" />
+      </Component>
+      <Component Id="iOSWorkbookAppFacades.System.Xml.XPath.XDocument.dll" Guid="F17D4F92-15BB-482C-9321-DB3D79462B2C">
+        <File Id="iOSWorkbookAppFacades.System.Xml.XPath.XDocument.dll" Source="$(var.iOSWorkbookAppFacadesDir)\System.Xml.XPath.XDocument.dll" />
+      </Component>
+      <Component Id="iOSWorkbookAppFacades.System.Xml.XPath.XmlDocument.dll" Guid="0697035B-57DA-4F5E-AB41-D19CBC2EBB89">
+        <File Id="iOSWorkbookAppFacades.System.Xml.XPath.XmlDocument.dll" Source="$(var.iOSWorkbookAppFacadesDir)\System.Xml.XPath.XmlDocument.dll" />
+      </Component>
+      <Component Id="iOSWorkbookAppFacades.System.Xml.XPath.dll" Guid="82589D41-0E63-45E5-84B3-752FE6AEAEFE">
+        <File Id="iOSWorkbookAppFacades.System.Xml.XPath.dll" Source="$(var.iOSWorkbookAppFacadesDir)\System.Xml.XPath.dll" />
+      </Component>
+      <Component Id="iOSWorkbookAppFacades.System.Xml.XmlDocument.dll" Guid="B2ED8D9E-1958-40F7-B295-6354D40147DC">
+        <File Id="iOSWorkbookAppFacades.System.Xml.XmlDocument.dll" Source="$(var.iOSWorkbookAppFacadesDir)\System.Xml.XmlDocument.dll" />
+      </Component>
+      <Component Id="iOSWorkbookAppFacades.System.Xml.XmlSerializer.dll" Guid="0E2FB7EB-475A-45F9-9EF5-F0086F2D4024">
+        <File Id="iOSWorkbookAppFacades.System.Xml.XmlSerializer.dll" Source="$(var.iOSWorkbookAppFacadesDir)\System.Xml.XmlSerializer.dll" />
+      </Component>
+      <Component Id="iOSWorkbookAppFacades.System.Xml.Xsl.Primitives.dll" Guid="A7B6E638-F638-469C-869D-EAE556EB70CD">
+        <File Id="iOSWorkbookAppFacades.System.Xml.Xsl.Primitives.dll" Source="$(var.iOSWorkbookAppFacadesDir)\System.Xml.Xsl.Primitives.dll" />
+      </Component>
+      <Component Id="iOSWorkbookAppFacades.netstandard.dll" Guid="46B716C5-8223-433F-BAA0-E9D596A7047D">
+        <File Id="iOSWorkbookAppFacades.netstandard.dll" Source="$(var.iOSWorkbookAppFacadesDir)\netstandard.dll" />
+      </Component>
+      <Component Id="File1e87c614be99972b69a10133976f29ceaf3856d0" Guid="E93B3323-A2C8-4E3D-9729-3E264AFD3208">
+        <File Id="File1e87c614be99972b69a10133976f29ceaf3856d0" Source="$(var.iOSWorkbookAppFacadesDir)\System.Runtime.InteropServices.RuntimeInformation.dll" />
+      </Component>
+      <Component Id="Filebc8eadf010f89065482ef410235385deaf227e9a" Guid="08D374C6-037E-4A77-A977-2CCFB1D1D00F">
+        <File Id="Filebc8eadf010f89065482ef410235385deaf227e9a" Source="$(var.iOSWorkbookAppFacadesDir)\System.Security.Cryptography.Encryption.ECDiffieHellman.dll" />
+      </Component>
+      <Component Id="File8a209a4de5ce3e2fafa123562feeb86e37c262ec" Guid="A200A513-FDFC-4DDD-97E1-1771E3E92E31">
+        <File Id="File8a209a4de5ce3e2fafa123562feeb86e37c262ec" Source="$(var.iOSWorkbookAppFacadesDir)\System.Security.Cryptography.Hashing.Algorithms.dll" />
+      </Component>
+      <Component Id="File957a64dc0529d7d7b7d772068bb88a78b2fab699" Guid="F3662CE4-F12D-4107-9479-1D341E6724A2">
+        <File Id="File957a64dc0529d7d7b7d772068bb88a78b2fab699" Source="$(var.iOSWorkbookAppFacadesDir)\System.Security.Cryptography.RandomNumberGenerator.dll" />
+      </Component>
+    </ComponentGroup>
+    <ComponentGroup Id="iOSWorkbookAppClientIntegrationComponents" Directory="iOSAgentAppClientIntegrationInstallFolder">
+      <Component Id="Filef9d331e1a8fb665602e4f328e687005046e96da4" Guid="680E50D5-E9F7-4D94-BAA5-96D0D2E76D8D">
+        <File Id="Filef9d331e1a8fb665602e4f328e687005046e96da4" Source="$(var.iOSWorkbookAppClientIntegrationDir)\Xamarin.Workbooks.Client.iOS.dll" />
+      </Component>
+      <Component Id="File84358ba335bb1766019acce7f58e3b567b3659f4" Guid="1725EBEC-DC84-4BE6-BD4E-9785807990D4">
+        <File Id="File84358ba335bb1766019acce7f58e3b567b3659f4" Source="$(var.iOSWorkbookAppClientIntegrationDir)\Renci.SshNet.dll" />
+      </Component>
+    </ComponentGroup>
+  </Fragment>
+</Wix>

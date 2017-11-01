@@ -1,0 +1,20 @@
+---
+uti: com.xamarin.workbook
+platforms:
+- Console
+packages:
+- id: Newtonsoft.Json
+  version: 9.0.1
+---
+
+```csharp
+#r "Newtonsoft.Json"
+```
+
+```csharp
+using Newtonsoft.Json
+```
+
+```csharp
+JsonConvert.SerializeObject (new { Name = "Aaron", Age = 12 })
+```

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <Fragment>
+
+    <ComponentGroup Id="SdkComponents" Directory="SdkInstallFolder">
+
+      <Component Id="Xamarin.Interactive.dll" Guid="1AA85838-5E87-4181-9E80-F1F955E96A9E">
+        <File Id="Xamarin.Interactive.dll" Source="$(var.Xamarin.Interactive.TargetDir)\Xamarin.Interactive.dll"/>
+      </Component>
+      <Component Id="Xamarin.Interactive.pdb" Guid="6D2E7E4B-B99F-478F-8518-C7BAEA49B6D1">
+        <File Id="Xamarin.Interactive.pdb" Source="$(var.Xamarin.Interactive.TargetDir)\Xamarin.Interactive.pdb"/>
+      </Component>
+
+      <Component Id="xamarin.interactive.d.ts" Guid="6B0EE826-2390-4633-A7FC-53502B694A66">
+        <File Id="xamarin.interactive.d.ts" Source="..\..\Clients\Xamarin.Interactive.Client\ClientApp\typings\xamarin-interactive.d.ts"/>
+      </Component>
+
+    </ComponentGroup>
+
+  </Fragment>
+</Wix>

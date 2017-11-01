@@ -1,0 +1,34 @@
+---
+uti: com.xamarin.workbook
+platforms:
+- Console
+---
+
+```csharp
+// these directives are illegal but should still be collected by WorkbookDependencyCollector
+const string illegal = "foo"
+#load "subdir/test.csx";
+void x = 10;
+#load "illegal-directive/and-file-does-not-exist.csx";
+```
+
+```csharp
+#load "legal/load/directive/but/file-does-not-exist.csx"
+#r "does not exist"
+```
+
+```csharp
+#r "subdir/foo.dll"
+```
+
+* ![Banana](banana.jpg "Banana")
+
+* ![Banana](subdir/banana.jpg "Banana")
+
+* ![Banana](subdir/another/banana.jpg "Banana")
+
+* [Hello](hello.html "Hello")
+
+```csharp
+1 + 1
+```

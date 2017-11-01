@@ -1,0 +1,43 @@
+﻿/*
+renderers.css
+
+Author:
+  Aaron Bockover <abock@xamarin.com>
+
+Copyright 2015-2016 Xamarin Inc. All rights reserved.
+*/
+
+@import url('base.css');
+@import url('object.css');
+@import url('color.css');
+@import url('image.css');
+@import url('enumerable.css');
+@import url('exception.css');
+@import url('help.css');
+@import url('datetime.css');
+@import url('map.css');
+@import url('verbatim-html.css');
+@import url('hex-dump.css');
+
+.render-manager-container {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.render-manager-container > .renderer-expandable {
+  flex-basis: 100%;
+  display: none;
+}
+
+.render-manager-container > .renderer-expandable.expanded {
+  display: block;
+}
+
+.render-manager-container > .xiui-dropdown-menu {
+  margin-left: 0.5em;
+}
+
+.submission > section > .result > .render-manager-container > .xiui-expander-button {
+  margin-right: 0.25em;
+}

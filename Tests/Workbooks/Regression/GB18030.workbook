@@ -1,0 +1,98 @@
+---
+uti: com.xamarin.workbook
+platforms:
+- Console
+title: GB18030 Compliance
+---
+
+# GB18030 Compliance
+
+This workbook serves as a regression test for GB18030 compliance as outlined by the “GB18030 Quick status check” document.
+
+## §2.2 Sample Characters
+
+Workbooks has two editor surfaces within its embedded IE/mshtml (Windows) or WebKit (Mac) HTML controls. What immediately follows is the test for GB18030 compliance within the markdown cell editor.
+
+* **Single byte:** !"#)6=@Aa}~
+
+* **Double byte:** 啊齄丂狛狜隣郎隣兀﨩ˊ▇█〞〡¦TEL(株)‐ー\*+@、〓ix1.€(一)(十)IXII!¯ぁんァヶΑ\_АЯаяāɡㄅㄩ─╋(』【—__ixɑ ɡ〇〾⿻⺁ 䜣 €
+
+* **Four byte (Ext-A):** 㐀㒣㕴㕵㙉㙊䵯䵰䶴䶵
+
+* **Four byte (Ext-B, Optional):** 𪛖𪛕𪛔𪛓𪛒𪛑𠀃𠀂𠀁𠀀
+
+* **Four byte (Mongolian):** ᠀᠐᠙ᠠᡷᢀᡨᡩᡪᡫ
+
+* **Four byte (Tibetan):** ༀཇཉཪཱྋ྾࿌࿏ྼྼ
+
+* **Four byte (Yi):** ꀀ ꒌ ꂋ ꂌ ꂍ ꂎ ꂔ ꂕ ꒐ ꓆
+
+* **Four byte (Uighur):** پپڭیئبلإلا،؟ئبتجدرشعە
+
+* **Four byte (Tai Le):** ᥐᥥᥦᥧᥨᥭᥰᥱᥲᥴ
+
+* **Four byte (Hangul):** ᄓᄕᇬᇌᇜᇱ기가힝
+
+The rest of the document tests for GB18030 compliance within the code cell editor (Monaco), and also the output rendering for an accompanying input string.
+
+### Single Byte
+
+```csharp
+"!\"#)6=@Aa}~"
+```
+
+### Double Byte
+
+```csharp
+"啊齄丂狛狜隣郎隣兀﨩ˊ▇█〞〡¦TEL(株)‐ー*+@、〓ix1.€(一)(十)IXII!¯ぁんァヶΑ_АЯаяāɡㄅㄩ─╋(』【—__ixɑ ɡ〇〾⿻⺁ 䜣 €"
+```
+
+### Four byte (Ext-A)
+
+```csharp
+"㐀㒣㕴㕵㙉㙊䵯䵰䶴䶵"
+```
+
+### Four byte (Ext-B, Optional)
+
+Note that this is not support on Mac out of the box.
+
+```csharp
+"𪛖𪛕𪛔𪛓𪛒𪛑𠀃𠀂𠀁𠀀"
+```
+
+### Four byte (Mongolian)
+
+```csharp
+"᠀᠐᠙ᠠᡷᢀᡨᡩᡪᡫ"
+```
+
+### Four byte (Tibetan)
+
+```csharp
+"ༀཇཉཪཱྋ྾࿌࿏ྼྼ"
+```
+
+### Four byte (Yi)
+
+```csharp
+"ꀀ ꒌ ꂋ ꂌ ꂍ ꂎ ꂔ ꂕ ꒐ ꓆"
+```
+
+### Four byte (Uighur)
+
+```csharp
+"پپڭیئبلإلا،؟ئبتجدرشعە"
+```
+
+### Four byte (Tai Le)
+
+```csharp
+"ᥐᥥᥦᥧᥨᥭᥰᥱᥲᥴ"
+```
+
+### Four byte (Hangul)
+
+```csharp
+"ᄓᄕᇬᇌᇜᇱ기가힝"
+```

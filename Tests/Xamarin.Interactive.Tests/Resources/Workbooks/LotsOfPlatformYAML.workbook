@@ -1,0 +1,16 @@
+﻿---
+uti: com.xamarin.workbook
+platform:
+- iOS
+- android
+- wpf
+- wpf
+- console
+- not real
+- MacMobile
+-
+- IOS
+- ios
+- Android
+platforms: macmobile
+---

@@ -1,0 +1,5 @@
+Version: 0.0.0.0
+Hash: @PACKAGE_HEAD_REV_SHORT@
+Branch: @PACKAGE_HEAD_BRANCH@
+Build date: @PACKAGE_BUILD_DATE@
+Client compatibility: 1

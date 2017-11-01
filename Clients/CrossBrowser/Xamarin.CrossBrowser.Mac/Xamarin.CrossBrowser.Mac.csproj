@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectTypeGuids>{A3F8F2AB-B479-4A4A-A458-A89E7DC349F1};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <ProjectGuid>{68B5F01B-6F1C-49D5-9491-96F826AFE211}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>Xamarin.CrossBrowser</RootNamespace>
+    <MonoMacResourcePrefix>Resources</MonoMacResourcePrefix>
+    <AssemblyName>Xamarin.CrossBrowser.Mac</AssemblyName>
+    <UseXamMacFullFramework>true</UseXamMacFullFramework>
+    <ProductVersion>8.0.30703</ProductVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug</OutputPath>
+    <DefineConstants>DEBUG;MAC</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+    <UseRefCounting>false</UseRefCounting>
+    <UseSGen>false</UseSGen>
+    <IncludeMonoRuntime>false</IncludeMonoRuntime>
+    <CreatePackage>false</CreatePackage>
+    <EnableCodeSigning>false</EnableCodeSigning>
+    <EnablePackageSigning>false</EnablePackageSigning>
+    <Profiling>false</Profiling>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+    <UseRefCounting>false</UseRefCounting>
+    <UseSGen>false</UseSGen>
+    <IncludeMonoRuntime>false</IncludeMonoRuntime>
+    <CreatePackage>false</CreatePackage>
+    <EnableCodeSigning>false</EnableCodeSigning>
+    <EnablePackageSigning>false</EnablePackageSigning>
+    <Profiling>false</Profiling>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DefineConstants>MAC</DefineConstants>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="Xamarin.Mac" />
+    <Reference Include="Microsoft.CSharp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Resources\" />
+    <Folder Include="JavaScriptCore\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildExtensionsPath)\Xamarin\Mac\Xamarin.Mac.CSharp.targets" />
+  <ProjectExtensions>
+    <MonoDevelop>
+      <Properties>
+        <Policies>
+          <DotNetNamingPolicy DirectoryNamespaceAssociation="None" ResourceNamePolicy="FileFormatDefault" />
+        </Policies>
+      </Properties>
+    </MonoDevelop>
+  </ProjectExtensions>
+  <ItemGroup>
+    <Compile Include="Generated\Document.cs" />
+    <Compile Include="Generated\DocumentPosition.cs" />
+    <Compile Include="Generated\Element.cs" />
+    <Compile Include="Generated\Event.cs" />
+    <Compile Include="Generated\EventTarget.cs" />
+    <Compile Include="Generated\Node.cs" />
+    <Compile Include="Generated\NodeType.cs" />
+    <Compile Include="Generated\WrappedObject.cs" />
+    <Compile Include="WrappedObject.cs" />
+    <Compile Include="JSValueExtensions.cs" />
+    <Compile Include="Generated\HtmlDocument.cs" />
+    <Compile Include="Generated\HtmlElement.cs" />
+    <Compile Include="XcbWebView.cs" />
+    <Compile Include="Generated\KeyboardEvent.cs" />
+    <Compile Include="Generated\UIEvent.cs" />
+    <Compile Include="Generated\EventPhase.cs" />
+    <Compile Include="Generated\Range.cs" />
+    <Compile Include="Generated\Selection.cs" />
+    <Compile Include="EventTarget.cs" />
+    <Compile Include="EventListener.cs" />
+    <Compile Include="Generated\ClientRect.cs" />
+    <Compile Include="ScrollIntoViewOptions.cs" />
+    <Compile Include="ScrollIntoViewBehavior.cs" />
+    <Compile Include="ScrollIntoViewBlock.cs" />
+    <Compile Include="Generated\Text.cs" />
+    <Compile Include="WebKitExtensions.cs" />
+    <Compile Include="Generated\StyleSheetList.cs" />
+    <Compile Include="Generated\CssStyleSheet.cs" />
+    <Compile Include="Generated\StyleSheet.cs" />
+    <Compile Include="Generated\CssStyleDeclaration.cs" />
+    <Compile Include="Generated\HtmlStyleElement.cs" />
+    <Compile Include="ScriptContext.cs" />
+    <Compile Include="WrappedObject_Dynamic.cs" />
+    <Compile Include="ScriptDelegate.cs" />
+    <Compile Include="Generated\CssRule.cs" />
+    <Compile Include="Generated\CssRuleType.cs" />
+    <Compile Include="Generated\HtmlInputElement.cs" />
+    <Compile Include="JSException.cs" />
+  </ItemGroup>
+</Project>

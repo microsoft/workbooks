@@ -1,0 +1,37 @@
+---
+uti: com.xamarin.workbook
+platforms:
+- Console
+---
+
+# What’s new in C# 7
+
+C# 7 adds a number of new features to the C# language:
+
+* `out` variables:
+
+  * You can declare `out` values inline as arguments to the method where they are used
+
+## Tuples
+
+> Tuples were available before C# 7 as an API, but had many limitations. Most importantly, the members of these tuples were named `Item1`, `Item2` and so on. The language support enables semantic names for the fields of a Tuple.
+
+You can create a tuple by assigning each member to a value:
+
+```csharp
+var letters = ("a", "b")
+```
+
+That assignment creates a tuple whose members are `Item1` and `Item2`, following the existing Tuple syntax. You can modify that assignment to create a tuple that provides semantic names to each of the members of the tuple:
+
+```csharp
+(string Alpha, string Beta) namedLetters = ("a", "b");
+```
+
+> The new tuples features require the `System.ValueTuple` type. For Visual Studio 15 Preview 5 and earlier preview releases, you must add the NuGet package "System.ValueTuple", available in the pre-release stream.
+
+The `namedLetters` tuple contains fields referred to as `Alpha` and `Beta`. In a tuple assignment, you can also specify the names of the fields on the right-hand side of the assignment:
+
+```csharp
+var alphabetStart = (Alpha: "a", Beta: "b");
+```

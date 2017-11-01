@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" xmlns:local="clr-namespace:Xamarin.Workbooks.Forms" x:Class="Xamarin.Workbooks.Forms.MainPage">
+	<StackLayout x:Name="MainLayout" VerticalOptions="Center" HorizontalOptions="Center">
+		<Label Text="Welcome to Xamarin Forms!" VerticalOptions="Center" HorizontalOptions="Center" />
+		<Button x:Name="PushButton" Text="Click Me!" />
+	</StackLayout>
+	<ContentPage.ToolbarItems>
+		<ToolbarItem Name="Menu1" Order="Primary" Priority="0" />
+		<ToolbarItem Name="Menu2" Order="Primary" Priority="1" />
+	</ContentPage.ToolbarItems>
+</ContentPage>

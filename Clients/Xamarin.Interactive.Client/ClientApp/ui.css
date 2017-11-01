@@ -1,0 +1,127 @@
+﻿/*
+ui.css
+
+Author:
+  Aaron Bockover <abock@xamarin.com>
+  Vaclav Vancura <vacvan@microsoft.com>
+
+Copyright 2016 Xamarin Inc. All rights reserved.
+*/
+
+.xiui-button,
+.xiui-dropdown-menu {
+  font-size: 0.7em !important;
+  font-family: sans-serif;
+  color: #777;
+  cursor: default;
+
+  /* Ignore selection */
+  user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+}
+
+.xiui-button,
+.xiui-dropdown-menu > * {
+  border: 1px solid #ddd;
+}
+
+.xiui-button,
+.xiui-dropdown-menu > .button {
+  display: inline-block;
+  padding: 0.2em 0.7em !important;
+  border-radius: 1.25em;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
+}
+
+.xiui-dropdown-menu > .button::after {
+  content: " ▾";
+}
+
+.xiui-dropdown-menu > .button.no-label {
+  border-color: #eee;
+  background-color: #fff;
+}
+
+.xiui-dropdown-menu > .button.no-label::after {
+  content: "…";
+  font-weight: bold;
+}
+
+.xiui-button,
+.xiui-dropdown-menu > .button:hover {
+  background: #eee;
+}
+
+.xiui-dropdown-menu.open > .button,
+.xiui-dropdown-menu > .menu li:hover {
+  background: rgba(200, 200, 200, 0.2);
+}
+
+.interactive-workspace.is-mac .xiui-dropdown-menu.open > .button,
+.interactive-workspace.is-mac .xiui-dropdown-menu > .menu li:hover {
+  background-color: #0584f6;
+  color: white;
+}
+
+.xiui-dropdown-menu > .menu {
+  visibility: hidden;
+  position: absolute;
+  padding: 0.25em 0 0.4em !important;
+  margin: 1px 0 0 0 !important;
+  list-style: none;
+  border-radius: 0.5em;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  z-index: 10000;
+  background: white;
+  border-color: rgba(0, 0, 0, 0.15);
+}
+
+.xiui-dropdown-menu.open > .menu {
+  visibility: visible;
+}
+
+/*noinspection CssUnknownProperty,CssMissingSemicolon*/
+@supports (backdrop-filter: none) or (-webkit-backdrop-filter: none) {
+  .xiui-dropdown-menu.open > .menu {
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+  }
+}
+
+.xiui-dropdown-menu > .menu > li {
+  margin: 0 !important;
+  padding: 0.25em 1.5em 0.25em 0.75em !important;
+}
+
+.xiui-dropdown-menu > .menu > li::before {
+  display: inline-block;
+  min-width: 1.2em;
+  width: 1em;
+  content: "";
+}
+
+.xiui-dropdown-menu > .menu > li.selected::before {
+  content: "✔";
+}
+
+.xiui-expander-button {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  opacity: 0.6;
+  background-size: 0.5em;
+  background: transparent url(expander-arrow.svg) no-repeat center center;
+  transition: transform 150ms;
+  -webkit-transition: transform 150ms;
+}
+
+.xiui-expander-button.spacer {
+  visibility: hidden;
+}
+
+.xiui-expander-button.expanded {
+  transform: rotate(90deg);
+  -webkit-transform: rotate(90deg);
+}
