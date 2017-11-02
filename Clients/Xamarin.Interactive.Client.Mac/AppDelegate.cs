@@ -50,42 +50,6 @@ namespace Xamarin.Interactive.Client.Mac
 
             Log.EntryAdded += LogEntryAdded;
 
-            var workbookAppsDirectory = new FilePath (NSBundle.MainBundle.SharedSupportPath)
-                .Combine ("WorkbookApps");
-            if (workbookAppsDirectory.DirectoryExists)
-                WorkbookAppInstallation.RegisterSearchPath (workbookAppsDirectory);
-
-            var macosVersionFull = NSProcessInfo.ProcessInfo.OperatingSystemVersion;
-            var macosVersion = new Version (
-                (int)macosVersionFull.Major,
-                (int)macosVersionFull.Minor,
-                (int)macosVersionFull.PatchVersion);
-            WorkbookAppInstallation.RegisterPathMapper (p => {
-                const string macosVersionVar = "{macosVersion}";
-                var index = p.IndexOf (macosVersionVar, StringComparison.Ordinal);
-                if (index < 0)
-                    return p;
-
-                var versionsParentDir = p.Substring (0, index);
-                if (!Directory.Exists (versionsParentDir))
-                    return p;
-
-                var highestCompatibleVersionDir = Directory
-                    .EnumerateDirectories (versionsParentDir)
-                    .Select (d => Path.GetFileName (d))
-                    .Select (vd => new {
-                        DirectoryName = vd,
-                        Version = Version.TryParse (vd, out var version) ? version : null,
-                    })
-                    .Where (vp => vp.Version != null)
-                    .OrderByDescending (vp => vp.Version)
-                    .FirstOrDefault (vp => vp.Version <= macosVersion);
-                if (highestCompatibleVersionDir == null)
-                    return p;
-
-                return p.Replace (macosVersionVar, highestCompatibleVersionDir.DirectoryName);
-            });
-
             NSAppleEventManager.SharedAppleEventManager.SetEventHandler (this,
                 new ObjCRuntime.Selector (getUrlWithReplyEventSel),
                 AEEventClass.Internet, AEEventID.GetUrl);

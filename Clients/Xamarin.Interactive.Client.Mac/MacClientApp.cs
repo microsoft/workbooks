@@ -7,6 +7,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -97,6 +98,47 @@ namespace Xamarin.Interactive.Client
                 "mac",
                 "42a8c70f-b3dc-42f4-b8a5-435a1bb2410c",
                 updaterChannel);
+        }
+
+        protected override void OnInitialized ()
+        {
+            var workbookAppsDirectory = new FilePath (NSBundle.MainBundle.SharedSupportPath)
+                .Combine ("WorkbookApps");
+            if (workbookAppsDirectory.DirectoryExists)
+                WorkbookAppInstallation.RegisterSearchPath (workbookAppsDirectory);
+
+            WorkbookAppInstallation.RegisterPathMapper (
+                WorkbookAppInstallation_MacosVersionPathMapper);
+        }
+
+        string WorkbookAppInstallation_MacosVersionPathMapper (string path)
+        {
+            const string macosVersionVar = "{macosVersion}";
+            var index = path.IndexOf (macosVersionVar, StringComparison.Ordinal);
+            if (index < 0)
+                return path;
+
+            var versionsParentDir = path.Substring (0, index);
+            if (!Directory.Exists (versionsParentDir))
+                return path;
+
+            var highestCompatibleVersionDir = Directory
+                .EnumerateDirectories (versionsParentDir)
+                .Select (d => Path.GetFileName (d))
+                .Select (vd => new {
+                    DirectoryName = vd,
+                    Version = Version.TryParse (vd, out var version) ? version : null,
+                })
+                .Where (vp => vp.Version != null)
+                .OrderByDescending (vp => vp.Version)
+                .FirstOrDefault (vp => vp.Version <= Host.OSVersion);
+
+            if (highestCompatibleVersionDir == null)
+                return path;
+
+            return path.Replace (
+                macosVersionVar,
+                highestCompatibleVersionDir.DirectoryName);
         }
     }
 }

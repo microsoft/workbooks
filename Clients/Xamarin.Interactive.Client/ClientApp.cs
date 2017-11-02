@@ -137,6 +137,12 @@ namespace Xamarin.Interactive
             new Telemetry.Events.AppSessionStart ().Post ();
 
             DeleteLegacyPackageCacheInBackground ();
+
+            OnInitialized ();
+        }
+
+        protected virtual void OnInitialized ()
+        {
         }
 
         void ConfigureLogging ()
