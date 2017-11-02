@@ -47,6 +47,19 @@
     <Exec Command="rm -rf &quot;$(InspectorAppBundle)&quot;" />
     <Exec Command="cp -a @(WorkbookClientAppBundle-&gt;'&quot;%(Identity)&quot;', ' ') &quot;$(InspectorAppBundle)&quot;" />
     <Exec Command="cp -a &quot;Resources\AppIconInspector.icns&quot; &quot;$(InspectorAppBundle)Contents\Resources\AppIcon.icns&quot;" />
+    <Move
+      SourceFiles="$(InspectorAppBundle)\Contents\MonoBundle\Xamarin Workbooks.exe"
+      DestinationFiles="$(InspectorAppBundle)\Contents\MonoBundle\Xamarin Inspector.exe"/>
+    <Move
+      Condition="Exists('$(InspectorAppBundle)\Contents\MonoBundle\Xamarin Workbooks.pdb')"
+      SourceFiles="$(InspectorAppBundle)\Contents\MonoBundle\Xamarin Workbooks.pdb"
+      DestinationFiles="$(InspectorAppBundle)\Contents\MonoBundle\Xamarin Inspector.pdb"/>
+    <Move
+      SourceFiles="$(InspectorAppBundle)\Contents\MacOS\Xamarin Workbooks"
+      DestinationFiles="$(InspectorAppBundle)\Contents\MacOS\Xamarin Inspector"/>
+    <RemoveDir Directories="$(InspectorAppBundle)\Contents\Resources\Workbooks"/>
+    <RemoveDir Directories="$(InspectorAppBundle)\Contents\MacOS\Xamarin Workbooks.dSYM"/>
+
     <!--
       Create the final Workbooks Info.plist by merging in Workbooks-specific
       pieces from Workbooks.plist. We delete a bunch of entries first in order
@@ -82,6 +95,14 @@
       Plist="$(InspectorAppInfoPlist)"
       Selector="CFBundleName"
       NewValue="Xamarin Inspector" />
+    <SetPlistValue
+      Plist="$(InspectorAppInfoPlist)"
+      Selector="CFBundleExecutable"
+      NewValue="Xamarin Inspector" />
+    <SetPlistValue
+      Plist="$(InspectorAppInfoPlist)"
+      Selector="MonoBundleExecutable"
+      NewValue="Xamarin Inspector.exe" />
     <!-- Finally, re-convert these to binary. -->
     <Exec Command="plutil -convert binary1 &quot;$(WorkbookAppInfoPlist)&quot;" />
     <Exec Command="plutil -convert binary1 &quot;$(InspectorAppInfoPlist)&quot;" />
