@@ -56,6 +56,14 @@ namespace Xamarin.Interactive.Client.Windows.Views
             }
         }
 
+        public bool WrapLongLinesInEditor {
+            get { return Prefs.Submissions.WrapLongLinesInEditor.GetValue (); }
+            set {
+                Prefs.Submissions.WrapLongLinesInEditor.SetValue (value);
+                OnPropertyChanged ();
+            }
+        }
+
         public bool SaveHistory {
             get { return Prefs.Repl.SaveHistory.GetValue (); }
             set {
@@ -162,6 +170,8 @@ namespace Xamarin.Interactive.Client.Windows.Views
                 OnPropertyChanged (nameof (UpdateChannel));
             else if (change.Key == Prefs.UI.Theme.ThemeName.Key)
                 OnPropertyChanged (nameof (CurrentTheme));
+            else if (change.Key == Prefs.Submissions.WrapLongLinesInEditor.Key)
+                OnPropertyChanged (nameof (WrapLongLinesInEditor));
         }
 
         void OnResetAllPreferences (object sender, RoutedEventArgs e)

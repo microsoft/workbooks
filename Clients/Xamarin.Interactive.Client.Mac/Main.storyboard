@@ -232,11 +232,11 @@ Gw
             <objects>
                 <viewController id="5cL-NK-hn5" customClass="PreferencesGeneralViewController" sceneMemberID="viewController">
                     <view key="view" id="mYQ-Sa-Mcy" customClass="PreferencesView">
-                        <rect key="frame" x="0.0" y="0.0" width="285" height="189"/>
+                        <rect key="frame" x="0.0" y="0.0" width="285" height="204"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="o2R-eF-eWs">
-                                <rect key="frame" x="18" y="149" width="64" height="17"/>
+                                <rect key="frame" x="18" y="164" width="64" height="17"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                 <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Font Size:" id="C5l-d8-3KG">
                                     <font key="font" metaFont="system"/>
@@ -245,7 +245,7 @@ Gw
                                 </textFieldCell>
                             </textField>
                             <stepper horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="GY4-9b-LLW">
-                                <rect key="frame" x="119" y="144" width="19" height="27"/>
+                                <rect key="frame" x="119" y="159" width="19" height="27"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                 <stepperCell key="cell" continuous="YES" alignment="left" minValue="1" maxValue="1" doubleValue="1" id="Ue1-oi-xnt"/>
                                 <connections>
@@ -253,7 +253,7 @@ Gw
                                 </connections>
                             </stepper>
                             <textField verticalHuggingPriority="750" fixedFrame="YES" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="72g-Vx-pTW">
-                                <rect key="frame" x="88" y="146" width="32" height="22"/>
+                                <rect key="frame" x="88" y="161" width="32" height="22"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                 <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="uqa-rh-SCR">
                                     <numberFormatter key="formatter" formatterBehavior="default10_4" numberStyle="decimal" minimumIntegerDigits="1" maximumIntegerDigits="2000000000" maximumFractionDigits="3" id="Pek-zN-6C0">
@@ -268,16 +268,16 @@ Gw
                                     <binding destination="5cL-NK-hn5" name="value" keyPath="self.fontSize" id="CcG-AB-Re3"/>
                                 </connections>
                             </textField>
-                            <button fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="CsM-Hg-B4E">
-                                <rect key="frame" x="18" y="71" width="132" height="18"/>
+                            <button fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="pTJ-Gx-mtX">
+                                <rect key="frame" x="18" y="87" width="169" height="18"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                <buttonCell key="cell" type="check" title="Save REPL history" bezelStyle="regularSquare" imagePosition="left" inset="2" id="SdN-lq-CqP">
+                                <buttonCell key="cell" type="check" title="Wrap long lines in code cell editors" bezelStyle="regularSquare" imagePosition="left" inset="2" id="5zo-g7-82A">
                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
                             </button>
                             <button fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="je4-5N-EDQ">
-                                <rect key="frame" x="18" y="97" width="249" height="18"/>
+                                <rect key="frame" x="18" y="112" width="249" height="18"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                 <buttonCell key="cell" type="check" title="Show execution timings on code cells" bezelStyle="regularSquare" imagePosition="left" inset="2" id="ziB-Yc-Gq0">
                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -285,7 +285,7 @@ Gw
                                 </buttonCell>
                             </button>
                             <button fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="WGo-hM-s2P">
-                                <rect key="frame" x="18" y="122" width="216" height="18"/>
+                                <rect key="frame" x="18" y="137" width="216" height="18"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                 <buttonCell key="cell" type="check" title="Show line numbers in code cells" bezelStyle="regularSquare" imagePosition="left" inset="2" id="NgJ-Wd-E6z">
                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -303,6 +303,14 @@ Gw
                                     <action selector="ResetAllPreferences:" target="5cL-NK-hn5" id="WHX-J7-xxC"/>
                                 </connections>
                             </button>
+                            <button fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="CsM-Hg-B4E">
+                                <rect key="frame" x="18" y="62" width="132" height="18"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                <buttonCell key="cell" type="check" title="Save REPL history" bezelStyle="regularSquare" imagePosition="left" inset="2" id="SdN-lq-CqP">
+                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                            </button>
                         </subviews>
                     </view>
                     <connections>
@@ -311,12 +319,13 @@ Gw
                         <outlet property="saveHistoryCheckButton" destination="CsM-Hg-B4E" id="O0n-8m-quh"/>
                         <outlet property="showExecutionTimingsCheckButton" destination="je4-5N-EDQ" id="c6U-gp-1gx"/>
                         <outlet property="showLineNumbersCheckButton" destination="WGo-hM-s2P" id="I3l-P9-Fys"/>
+                        <outlet property="wrapLongLinesInEditorCheckButton" destination="pTJ-Gx-mtX" id="L3q-c1-stF"/>
                     </connections>
                 </viewController>
                 <customObject id="rmc-9D-tj4" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
                 <userDefaultsController representsSharedInstance="YES" id="Aoc-p7-NIA"/>
             </objects>
-            <point key="canvasLocation" x="-1358" y="1799"/>
+            <point key="canvasLocation" x="-1358.5" y="1806"/>
         </scene>
         <!--Preferences Feedback View Controller-->
         <scene sceneID="NCH-6O-JYw">

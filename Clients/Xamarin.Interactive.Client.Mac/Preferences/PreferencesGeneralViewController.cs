@@ -54,6 +54,10 @@ namespace Xamarin.Interactive.Preferences
             AddCheckButtonPreference (
                 Prefs.Repl.SaveHistory,
                 saveHistoryCheckButton);
+
+            AddCheckButtonPreference (
+                Prefs.Submissions.WrapLongLinesInEditor,
+                wrapLongLinesInEditorCheckButton);
         }
 
         protected override void ObservePreferenceChange (PreferenceChange change)
