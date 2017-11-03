@@ -9,4 +9,12 @@
       CopySharedClientResources;
     </BuildDependsOn>
   </PropertyGroup>
+
+  <Target Name="XIInstall" BeforeTargets="Build">
+    <UpdateWixManifest
+      SourceDirectory="$(OutputPath)"
+      InputManifestPath="..\..\Package\Windows\ClientFiles.wxs"
+      DirectoryVariable="Xamarin.Interactive.Client.Windows.TargetDir"
+      ComponentGroupId="ClientComponents"/>
+  </Target>
 </Project>

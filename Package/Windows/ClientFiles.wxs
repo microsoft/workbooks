@@ -1,259 +1,237 @@
-<?xml version="1.0" encoding="UTF-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
   <Fragment>
-
     <?define WpfAgentAppDirectory="..\..\_build\$(var.Configuration)\WorkbookApps\WPF" ?>
     <ComponentGroup Id="ClientComponents" Directory="ClientInstallFolder">
-
       <!-- This ID is kept for historical purposes. Note that it does not match the filename. -->
       <Component Id="XamarinInspector.exe" Guid="5B3B9F22-FCE4-4E45-9E61-264380A1F2D9">
         <File Id="XamarinInspector.exe" Source="$(var.Xamarin.Interactive.Client.Windows.TargetPath)" KeyPath="yes" Checksum="yes">
-          <Shortcut
-            Id="StartMenuShortcut"
-            Directory="ApplicationProgramsFolder"
-            Advertise="yes"
-            Icon="xamarininspector.ico"
-            Name="Xamarin Workbooks"
-            Description="Instant C# REPL for WPF and Xamarin frameworks"
-            WorkingDirectory="APPLICATIONROOTDIRECTORY"/>
+          <Shortcut Id="StartMenuShortcut" Directory="ApplicationProgramsFolder" Advertise="yes" Icon="xamarininspector.ico" Name="Xamarin Workbooks" Description="Instant C# REPL for WPF and Xamarin frameworks" WorkingDirectory="APPLICATIONROOTDIRECTORY" />
         </File>
-        <File Id="xamarinworkbookfile.ico" Source="$(var.Xamarin.Interactive.Client.Windows.ProjectDir)/workbook-win.ico"/>
-        <RemoveFolder Id="ApplicationProgramsFolder" On="uninstall"/>
-
-        <ProgId Id="XamarinInspector.Workbook" Description="Xamarin Workbook" Icon='xamarinworkbookfile.ico'>
+        <File Id="xamarinworkbookfile.ico" Source="$(var.Xamarin.Interactive.Client.Windows.ProjectDir)/workbook-win.ico" />
+        <RemoveFolder Id="ApplicationProgramsFolder" On="uninstall" />
+        <ProgId Id="XamarinInspector.Workbook" Description="Xamarin Workbook" Icon="xamarinworkbookfile.ico">
           <Extension Id="workbook" ContentType="application/x-xamarin-workbook">
             <Verb Id="open" TargetFile="XamarinInspector.exe" Argument="&quot;%1&quot;" />
           </Extension>
         </ProgId>
       </Component>
-
       <!-- Copy in the Inspector rebuild of the client -->
       <Component Id="XamarinInspector.exe.ForRealThisTime" Guid="1439FA95-E9A5-4234-896C-469620127693">
         <!-- Inspector EXE has to build in a separate directory. This assumes it was built with /p:ClientOutputPathSuffix="InspectorExe"
              which would put it in something like "bin\ReleaseInspectorExe\" -->
-        <File Id="XamarinInspector.exe.ForRealThisTime" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)..\$(var.Configuration)InspectorExe\Xamarin Inspector.exe"/>
+        <File Id="XamarinInspector.exe.ForRealThisTime" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)..\$(var.Configuration)InspectorExe\Xamarin Inspector.exe" />
       </Component>
       <Component Id="XamarinInspector.exe.config" Guid="945928ce-39b4-4108-91a1-0a1181c197ad">
-        <File Id="XamarinInspector.exe.config" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)..\$(var.Configuration)InspectorExe\Xamarin Inspector.exe.config"/>
+        <File Id="XamarinInspector.exe.config" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)..\$(var.Configuration)InspectorExe\Xamarin Inspector.exe.config" />
       </Component>
-
       <Component Id="Xamarin.Interactive.Wpf.dll" Guid="278A9E9A-22AF-4101-BE40-C159D2F811EB">
-        <File Id="Xamarin.Interactive.Wpf.dll" Source="$(var.WpfAgentAppDirectory)\Xamarin.Interactive.Wpf.dll"/>
+        <File Id="Xamarin.Interactive.Wpf.dll" Source="$(var.WpfAgentAppDirectory)\Xamarin.Interactive.Wpf.dll" />
       </Component>
       <Component Id="Client.Xamarin.Interactive.dll" Guid="9C8497B2-6CCA-43E0-9EB9-F97C9278453A">
-        <File Id="Client.Xamarin.Interactive.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\Xamarin.Interactive.dll"/>
+        <File Id="Client.Xamarin.Interactive.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\Xamarin.Interactive.dll" />
       </Component>
       <Component Id="Xamarin.Interactive.Client.dll" Guid="A203BABE-A556-404E-9518-457C532EE76F">
-        <File Id="Xamarin.Interactive.Client.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\Xamarin.Interactive.Client.dll"/>
+        <File Id="Xamarin.Interactive.Client.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\Xamarin.Interactive.Client.dll" />
       </Component>
       <Component Id="MahApps.Metro.dll" Guid="F08EC320-8465-4F2E-A1FE-CF4BF29FEBE0">
-        <File Id="MahApps.Metro.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\MahApps.Metro.dll"/>
+        <File Id="MahApps.Metro.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\MahApps.Metro.dll" />
       </Component>
       <Component Id="MahApps.Metro.IconPacks.Material.dll" Guid="4F6D020A-798A-4912-A8A9-C8A4930AD7BD">
-        <File Id="MahApps.Metro.IconPacks.Material.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\MahApps.Metro.IconPacks.Material.dll"/>
+        <File Id="MahApps.Metro.IconPacks.Material.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\MahApps.Metro.IconPacks.Material.dll" />
       </Component>
       <Component Id="MouseKeyboardActivityMonitor.dll" Guid="619D878F-48E4-4154-A997-710391A5B58F">
-        <File Id="MouseKeyboardActivityMonitor.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\MouseKeyboardActivityMonitor.dll"/>
+        <File Id="MouseKeyboardActivityMonitor.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\MouseKeyboardActivityMonitor.dll" />
       </Component>
       <Component Id="System.Windows.Interactivity.dll" Guid="D96F1876-FCFF-432B-8435-5B53A9B15D52">
-        <File Id="System.Windows.Interactivity.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\System.Windows.Interactivity.dll"/>
+        <File Id="System.Windows.Interactivity.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\System.Windows.Interactivity.dll" />
       </Component>
       <Component Id="Xamarin.PropertyEditing.dll" Guid="D3142A84-1F18-46F0-8EA6-0F95981FAE41">
-	<File Id="Xamarin.PropertyEditing.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\Xamarin.PropertyEditing.dll"/>
+        <File Id="Xamarin.PropertyEditing.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\Xamarin.PropertyEditing.dll" />
       </Component>
       <Component Id="Xamarin.PropertyEditing.Windows.dll" Guid="76E639FC-9DA3-4D77-8A92-47D0D96AE4B3">
-        <File Id="Xamarin.PropertyEditing.Windows.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\Xamarin.PropertyEditing.Windows.dll"/>
+        <File Id="Xamarin.PropertyEditing.Windows.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\Xamarin.PropertyEditing.Windows.dll" />
       </Component>
       <Component Id="Xamarin.CrossBrowser.Wpf.dll" Guid="7D12B021-4AF6-4614-8A0B-E81EF0DE693F">
-        <File Id="Xamarin.CrossBrowser.Wpf.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\Xamarin.CrossBrowser.Wpf.dll"/>
+        <File Id="Xamarin.CrossBrowser.Wpf.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\Xamarin.CrossBrowser.Wpf.dll" />
       </Component>
       <Component Id="Microsoft.mshtml.dll" Guid="57D994B0-2EA1-473E-915C-5ACB84A046C9">
-        <File Id="Microsoft.mshtml.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\Microsoft.mshtml.dll"/>
+        <File Id="Microsoft.mshtml.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\Microsoft.mshtml.dll" />
       </Component>
-
       <Component Id="Microsoft.CodeAnalysis.dll" Guid="8A3027CE-FECC-426D-8599-475704CB5081">
-        <File Id="Microsoft.CodeAnalysis.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\Microsoft.CodeAnalysis.dll"/>
+        <File Id="Microsoft.CodeAnalysis.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\Microsoft.CodeAnalysis.dll" />
       </Component>
       <Component Id="Microsoft.CodeAnalysis.CSharp.dll" Guid="7C2B9FA7-935F-42EA-A455-351E33930170">
-        <File Id="Microsoft.CodeAnalysis.CSharp.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\Microsoft.CodeAnalysis.CSharp.dll"/>
+        <File Id="Microsoft.CodeAnalysis.CSharp.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\Microsoft.CodeAnalysis.CSharp.dll" />
       </Component>
       <Component Id="Microsoft.CodeAnalysis.CSharp.Features.dll" Guid="3D4BECA2-7A94-479E-8814-E9ED326FFD90">
-        <File Id="Microsoft.CodeAnalysis.CSharp.Features.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\Microsoft.CodeAnalysis.CSharp.Features.dll"/>
+        <File Id="Microsoft.CodeAnalysis.CSharp.Features.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\Microsoft.CodeAnalysis.CSharp.Features.dll" />
       </Component>
       <Component Id="Microsoft.CodeAnalysis.CSharp.Workspaces.dll" Guid="692D5879-687D-47C1-9F52-22958AE8B24C">
-        <File Id="Microsoft.CodeAnalysis.CSharp.Workspaces.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\Microsoft.CodeAnalysis.CSharp.Workspaces.dll"/>
+        <File Id="Microsoft.CodeAnalysis.CSharp.Workspaces.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\Microsoft.CodeAnalysis.CSharp.Workspaces.dll" />
       </Component>
       <Component Id="Microsoft.CodeAnalysis.Features.dll" Guid="2FA06776-3F27-4A23-B73A-15DEFAF6AE82">
-        <File Id="Microsoft.CodeAnalysis.Features.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\Microsoft.CodeAnalysis.Features.dll"/>
+        <File Id="Microsoft.CodeAnalysis.Features.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\Microsoft.CodeAnalysis.Features.dll" />
       </Component>
       <Component Id="Microsoft.CodeAnalysis.Workspaces.dll" Guid="D3D1B300-8D79-4580-BADA-E33410DA4E30">
-        <File Id="Microsoft.CodeAnalysis.Workspaces.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\Microsoft.CodeAnalysis.Workspaces.dll"/>
+        <File Id="Microsoft.CodeAnalysis.Workspaces.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\Microsoft.CodeAnalysis.Workspaces.dll" />
       </Component>
       <Component Id="Esent.Interop.dll" Guid="132a38ac-373c-481a-859d-37b0ef4273c0">
-        <File Id="Esent.Interop.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\Esent.Interop.dll"/>
+        <File Id="Esent.Interop.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\Esent.Interop.dll" />
       </Component>
       <Component Id="Microsoft.CodeAnalysis.Workspaces.Desktop.dll" Guid="2ae220ab-b01e-49e5-8da9-2c0deacea1c0">
-        <File Id="Microsoft.CodeAnalysis.Workspaces.Desktop.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\Microsoft.CodeAnalysis.Workspaces.Desktop.dll"/>
+        <File Id="Microsoft.CodeAnalysis.Workspaces.Desktop.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\Microsoft.CodeAnalysis.Workspaces.Desktop.dll" />
       </Component>
       <Component Id="System.AppContext.dll" Guid="82a4c41a-d9aa-40ec-b6ee-482802c21b80">
-        <File Id="System.AppContext.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\System.AppContext.dll"/>
+        <File Id="System.AppContext.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\System.AppContext.dll" />
       </Component>
       <Component Id="System.Console.dll" Guid="625e7316-8293-4b37-9ecc-a81e199c95ed">
-        <File Id="System.Console.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\System.Console.dll"/>
+        <File Id="System.Console.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\System.Console.dll" />
       </Component>
       <Component Id="System.Diagnostics.FileVersionInfo.dll" Guid="24e21a77-4e35-4afb-9180-f4df339c0c7a">
-        <File Id="System.Diagnostics.FileVersionInfo.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\System.Diagnostics.FileVersionInfo.dll"/>
+        <File Id="System.Diagnostics.FileVersionInfo.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\System.Diagnostics.FileVersionInfo.dll" />
       </Component>
       <Component Id="System.Diagnostics.StackTrace.dll" Guid="70698eed-6c8b-4aca-963c-205839864a92">
-        <File Id="System.Diagnostics.StackTrace.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\System.Diagnostics.StackTrace.dll"/>
+        <File Id="System.Diagnostics.StackTrace.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\System.Diagnostics.StackTrace.dll" />
       </Component>
       <Component Id="System.IO.FileSystem.dll" Guid="8d84d35f-8aca-4c03-9a8e-ab8ee4692c72">
-        <File Id="System.IO.FileSystem.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\System.IO.FileSystem.dll"/>
+        <File Id="System.IO.FileSystem.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\System.IO.FileSystem.dll" />
       </Component>
       <Component Id="System.IO.FileSystem.Primitives.dll" Guid="43b8cc36-aa98-48c0-998d-eda001635c14">
-        <File Id="System.IO.FileSystem.Primitives.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\System.IO.FileSystem.Primitives.dll"/>
+        <File Id="System.IO.FileSystem.Primitives.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\System.IO.FileSystem.Primitives.dll" />
       </Component>
       <Component Id="System.Security.Cryptography.Algorithms.dll" Guid="eb1f8b94-5f4a-4c36-8654-a73667cf5db7">
-        <File Id="System.Security.Cryptography.Algorithms.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\System.Security.Cryptography.Algorithms.dll"/>
+        <File Id="System.Security.Cryptography.Algorithms.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\System.Security.Cryptography.Algorithms.dll" />
       </Component>
       <Component Id="System.Security.Cryptography.Encoding.dll" Guid="36bcf627-aeb0-4cd3-92d9-443b8fa05c78">
-        <File Id="System.Security.Cryptography.Encoding.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\System.Security.Cryptography.Encoding.dll"/>
+        <File Id="System.Security.Cryptography.Encoding.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\System.Security.Cryptography.Encoding.dll" />
       </Component>
       <Component Id="System.Security.Cryptography.Primitives.dll" Guid="69bd8f87-6c96-4983-ae76-49014d239679">
-        <File Id="System.Security.Cryptography.Primitives.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\System.Security.Cryptography.Primitives.dll"/>
+        <File Id="System.Security.Cryptography.Primitives.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\System.Security.Cryptography.Primitives.dll" />
       </Component>
       <Component Id="System.Security.Cryptography.X509Certificates.dll" Guid="8c3e6ee0-0e01-4b40-8ddd-4ff53a578ef4">
-        <File Id="System.Security.Cryptography.X509Certificates.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\System.Security.Cryptography.X509Certificates.dll"/>
+        <File Id="System.Security.Cryptography.X509Certificates.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\System.Security.Cryptography.X509Certificates.dll" />
       </Component>
       <Component Id="System.Text.Encoding.CodePages.dll" Guid="296a1fa7-97a6-4252-bbb7-9e8e1cb62053">
-        <File Id="System.Text.Encoding.CodePages.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\System.Text.Encoding.CodePages.dll"/>
+        <File Id="System.Text.Encoding.CodePages.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\System.Text.Encoding.CodePages.dll" />
       </Component>
       <Component Id="System.Threading.Thread.dll" Guid="c7de91b1-8789-47b0-9521-037343a7cf50">
-        <File Id="System.Threading.Thread.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\System.Threading.Thread.dll"/>
+        <File Id="System.Threading.Thread.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\System.Threading.Thread.dll" />
       </Component>
       <Component Id="System.ValueTuple.dll" Guid="35a84d1e-3996-4d1e-b42f-154f9106618b">
-        <File Id="System.ValueTuple.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\System.ValueTuple.dll"/>
+        <File Id="System.ValueTuple.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\System.ValueTuple.dll" />
       </Component>
       <Component Id="System.Xml.ReaderWriter.dll" Guid="35f17c63-4b67-4510-8182-75e358027adf">
-        <File Id="System.Xml.ReaderWriter.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\System.Xml.ReaderWriter.dll"/>
+        <File Id="System.Xml.ReaderWriter.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\System.Xml.ReaderWriter.dll" />
       </Component>
       <Component Id="System.Xml.XmlDocument.dll" Guid="5a48492e-4809-4152-9356-2d48cdf7ee16">
-        <File Id="System.Xml.XmlDocument.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\System.Xml.XmlDocument.dll"/>
+        <File Id="System.Xml.XmlDocument.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\System.Xml.XmlDocument.dll" />
       </Component>
       <Component Id="System.Xml.XPath.dll" Guid="b65c0f23-a9af-43d6-9657-3664fb94b507">
-        <File Id="System.Xml.XPath.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\System.Xml.XPath.dll"/>
+        <File Id="System.Xml.XPath.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\System.Xml.XPath.dll" />
       </Component>
       <Component Id="System.Xml.XPath.XDocument.dll" Guid="bbb08450-a74e-4f88-9079-d5bb38057ded">
-        <File Id="System.Xml.XPath.XDocument.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\System.Xml.XPath.XDocument.dll"/>
+        <File Id="System.Xml.XPath.XDocument.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\System.Xml.XPath.XDocument.dll" />
       </Component>
       <Component Id="System.IO.Compression.dll" Guid="00b6b0b4-7b68-45f6-800a-bf8b32b13f21">
-        <File Id="System.IO.Compression.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\System.IO.Compression.dll"/>
+        <File Id="System.IO.Compression.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\System.IO.Compression.dll" />
       </Component>
       <Component Id="XamarinWorkbooks.exe.config" Guid="0afd4ca8-ef3e-474f-95d8-80d6ab9b72bb">
-        <File Id="XamarinWorkbooks.exe.config" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\Xamarin Workbooks.exe.config"/>
+        <File Id="XamarinWorkbooks.exe.config" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\Xamarin Workbooks.exe.config" />
       </Component>
-
       <Component Id="Microsoft.WindowsAPICodePack.dll" Guid="15A9B1E8-ADEC-44B1-8B62-409B2B94FFE5">
-        <File Id="Microsoft.WindowsAPICodePack.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\Microsoft.WindowsAPICodePack.dll"/>
+        <File Id="Microsoft.WindowsAPICodePack.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\Microsoft.WindowsAPICodePack.dll" />
       </Component>
       <Component Id="Microsoft.WindowsAPICodePack.Shell.dll" Guid="601D15D4-4146-46F2-A456-D466DA3CE918">
-        <File Id="Microsoft.WindowsAPICodePack.Shell.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\Microsoft.WindowsAPICodePack.Shell.dll"/>
+        <File Id="Microsoft.WindowsAPICodePack.Shell.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\Microsoft.WindowsAPICodePack.Shell.dll" />
       </Component>
-
       <Component Id="CommonMark.dll" Guid="CDCE79D7-AD5B-419D-B03E-860D5033DCF4">
-        <File Id="CommonMark.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\CommonMark.dll"/>
+        <File Id="CommonMark.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\CommonMark.dll" />
       </Component>
-
       <Component Id="System.Collections.Immutable.dll" Guid="2C512767-2DAF-4042-B6BE-01BD5C7C96EF">
-        <File Id="System.Collections.Immutable.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\System.Collections.Immutable.dll"/>
+        <File Id="System.Collections.Immutable.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\System.Collections.Immutable.dll" />
       </Component>
-
       <Component Id="System.Composition.AttributedModel.dll" Guid="2310C1E3-9758-42C2-B801-08DD7FCD8322">
-        <File Id="System.Composition.AttributedModel.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\System.Composition.AttributedModel.dll"/>
+        <File Id="System.Composition.AttributedModel.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\System.Composition.AttributedModel.dll" />
       </Component>
       <Component Id="System.Composition.Convention.dll" Guid="03FE4728-D596-492D-8706-BB9C2A662AA3">
-        <File Id="System.Composition.Convention.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\System.Composition.Convention.dll"/>
+        <File Id="System.Composition.Convention.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\System.Composition.Convention.dll" />
       </Component>
       <Component Id="System.Composition.Hosting.dll" Guid="B73C980D-76EC-4F9D-B736-2144DD225611">
-        <File Id="System.Composition.Hosting.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\System.Composition.Hosting.dll"/>
+        <File Id="System.Composition.Hosting.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\System.Composition.Hosting.dll" />
       </Component>
       <Component Id="System.Composition.Runtime.dll" Guid="B3C40A6F-5497-4ED8-9984-CF6FF4E926E3">
-        <File Id="System.Composition.Runtime.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\System.Composition.Runtime.dll"/>
+        <File Id="System.Composition.Runtime.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\System.Composition.Runtime.dll" />
       </Component>
       <Component Id="System.Composition.TypedParts.dll" Guid="88DFA343-ECB0-4B7C-A07E-D156A142C9B8">
-        <File Id="System.Composition.TypedParts.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\System.Composition.TypedParts.dll"/>
+        <File Id="System.Composition.TypedParts.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\System.Composition.TypedParts.dll" />
       </Component>
-
       <Component Id="System.Reflection.Metadata.dll" Guid="2C0B2925-777A-483C-A95B-E5305F22E078">
-        <File Id="System.Reflection.Metadata.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\System.Reflection.Metadata.dll"/>
+        <File Id="System.Reflection.Metadata.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\System.Reflection.Metadata.dll" />
       </Component>
-
       <Component Id="YamlDotNet.dll" Guid="0E4D0029-A314-4719-9C77-E95CC9C1593D">
-        <File Id="YamlDotNet.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\YamlDotNet.dll"/>
+        <File Id="YamlDotNet.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\YamlDotNet.dll" />
       </Component>
-
       <Component Id="Microsoft.Web.XmlTransform.dll" Guid="AE3A704D-C275-4F6F-8C35-20D61298DAD7">
-        <File Id="Microsoft.Web.XmlTransform.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\Microsoft.Web.XmlTransform.dll"/>
+        <File Id="Microsoft.Web.XmlTransform.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\Microsoft.Web.XmlTransform.dll" />
       </Component>
-
       <Component Id="Newtonsoft.Json.dll" Guid="A217C230-178F-4B18-B85E-C194677BD0B3">
-        <File Id="Newtonsoft.Json.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)Newtonsoft.Json.dll"/>
+        <File Id="Newtonsoft.Json.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)Newtonsoft.Json.dll" />
       </Component>
       <Component Id="NuGet.Commands.dll" Guid="2AFC9D58-CDDE-4353-94C4-E78F2B93EE01">
-        <File Id="NuGet.Commands.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\NuGet.Commands.dll"/>
+        <File Id="NuGet.Commands.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\NuGet.Commands.dll" />
       </Component>
       <Component Id="NuGet.Common.dll" Guid="C53D9C1F-63ED-43EB-9352-F08B1A0DDDA0">
-        <File Id="NuGet.Common.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\NuGet.Common.dll"/>
+        <File Id="NuGet.Common.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\NuGet.Common.dll" />
       </Component>
       <Component Id="NuGet.Configuration.dll" Guid="E0972696-8D87-419B-88FA-0DABC80FE5E2">
-        <File Id="NuGet.Configuration.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\NuGet.Configuration.dll"/>
+        <File Id="NuGet.Configuration.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\NuGet.Configuration.dll" />
       </Component>
       <Component Id="NuGet.DependencyResolver.Core.dll" Guid="6E5FB27D-E8ED-425B-B0F5-695DF6FCA616">
-        <File Id="NuGet.DependencyResolver.Core.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\NuGet.DependencyResolver.Core.dll"/>
+        <File Id="NuGet.DependencyResolver.Core.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\NuGet.DependencyResolver.Core.dll" />
       </Component>
       <Component Id="NuGet.Frameworks.dll" Guid="D05D0B2D-FC20-4F2E-85E2-3087E5437686">
-        <File Id="NuGet.Frameworks.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\NuGet.Frameworks.dll"/>
+        <File Id="NuGet.Frameworks.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\NuGet.Frameworks.dll" />
       </Component>
       <Component Id="NuGet.LibraryModel.dll" Guid="243EA905-7E05-4B25-9BCD-177BE9548EAD">
-        <File Id="NuGet.LibraryModel.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\NuGet.LibraryModel.dll"/>
+        <File Id="NuGet.LibraryModel.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\NuGet.LibraryModel.dll" />
       </Component>
       <Component Id="NuGet.PackageManagement.dll" Guid="D27DC688-7020-4239-B0F5-A9F7C5F28D4D">
-        <File Id="NuGet.PackageManagement.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\NuGet.PackageManagement.dll"/>
+        <File Id="NuGet.PackageManagement.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\NuGet.PackageManagement.dll" />
       </Component>
       <Component Id="NuGet.Packaging.Core.dll" Guid="B63159AF-B443-4BE6-B33D-1B4D1425AF97">
-        <File Id="NuGet.Packaging.Core.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\NuGet.Packaging.Core.dll"/>
+        <File Id="NuGet.Packaging.Core.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\NuGet.Packaging.Core.dll" />
       </Component>
       <Component Id="NuGet.Packaging.dll" Guid="3455210C-74B3-4EFB-9FC3-F9635BD6ECC7">
-        <File Id="NuGet.Packaging.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\NuGet.Packaging.dll"/>
+        <File Id="NuGet.Packaging.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\NuGet.Packaging.dll" />
       </Component>
       <Component Id="NuGet.ProjectModel.dll" Guid="000393DF-8284-4CC7-A1EF-B84D658F5FB2">
-        <File Id="NuGet.ProjectModel.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\NuGet.ProjectModel.dll"/>
+        <File Id="NuGet.ProjectModel.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\NuGet.ProjectModel.dll" />
       </Component>
       <Component Id="NuGet.Protocol.dll" Guid="BAFDB5F5-A3E2-44F8-A748-56C9151BBE4D">
-        <File Id="NuGet.Protocol.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\NuGet.Protocol.dll"/>
+        <File Id="NuGet.Protocol.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\NuGet.Protocol.dll" />
       </Component>
       <Component Id="NuGet.Resolver.dll" Guid="A3241B86-E528-4B5A-AE1A-DA9975CCAD2C">
-        <File Id="NuGet.Resolver.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\NuGet.Resolver.dll"/>
+        <File Id="NuGet.Resolver.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\NuGet.Resolver.dll" />
       </Component>
       <Component Id="NuGet.Versioning.dll" Guid="339AD996-9842-4A36-87C1-454B78AFD287">
-        <File Id="NuGet.Versioning.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\NuGet.Versioning.dll"/>
+        <File Id="NuGet.Versioning.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\NuGet.Versioning.dll" />
       </Component>
-
       <Component Id="License.rtf" Guid="3A9213DC-1771-46D3-ACEA-E5AA9BB42143">
-        <File Id="License.rtf" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\License.rtf"/>
+        <File Id="License.rtf" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\License.rtf" />
       </Component>
-
       <Component Id="ThirdPartyNotices.txt" Guid="F6949505-BB74-4DA0-AA70-82CB5F5B5379">
-        <File Id="ThirdPartyNotices.txt" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ThirdPartyNotices.txt"/>
+        <File Id="ThirdPartyNotices.txt" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ThirdPartyNotices.txt" />
+      </Component>
+      <Component Id="Newtonsoft.Json.dll" Guid="1CB8EA53-1859-4651-B13A-312D0C9D9023">
+        <File Id="Newtonsoft.Json.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\Newtonsoft.Json.dll" />
       </Component>
     </ComponentGroup>
-
     <ComponentGroup Id="ClientReplEditorResources" Directory="InspectorResourcesReplEditorFolder">
       <Component Id="editor.css" Guid="C9070752-B1DA-4918-81BD-3DA8869D9A62">
-        <File Id="editor.css" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\editor.css"/>
+        <File Id="editor.css" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\editor.css" />
       </Component>
     </ComponentGroup>
-
     <?define ClientIconsDirectory="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\Icons"?>
     <ComponentGroup Id="ClientIconResources" Directory="ClientIconResourcesFolder">
       <Component Id="project_android_32.png" Guid="49919DBD-9E26-46E5-970F-AADF38EFBDA1">
@@ -413,573 +391,558 @@
         <File Id="project_netcore_console_32_sel_2x.png" Source="$(var.ClientIconsDirectory)\project-netcore-console-32~sel@2x.png" />
       </Component>
     </ComponentGroup>
-
     <ComponentGroup Id="ClientReplEditorGlyphsResources" Directory="InspectorResourcesReplEditorGlyphsFolder">
       <Component Id="elementclass16.png" Guid="a69f187e-704f-455e-84ea-0774d1271099">
-        <File Id="elementclass16.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-class-16.png"/>
+        <File Id="elementclass16.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-class-16.png" />
       </Component>
       <Component Id="elementclass162x.png" Guid="a9731bed-4f54-4459-a46f-b5bc14a3cc1c">
-        <File Id="elementclass162x.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-class-16@2x.png"/>
+        <File Id="elementclass162x.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-class-16@2x.png" />
       </Component>
       <Component Id="elementclass16sel.png" Guid="7be3afe4-ad7c-49f1-9ca6-e70f385613ee">
-        <File Id="elementclass16sel.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-class-16~sel.png"/>
+        <File Id="elementclass16sel.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-class-16~sel.png" />
       </Component>
       <Component Id="elementclass16sel2x.png" Guid="82a58506-325d-4cc4-a44e-4ed0e1d83066">
-        <File Id="elementclass16sel2x.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-class-16~sel@2x.png"/>
+        <File Id="elementclass16sel2x.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-class-16~sel@2x.png" />
       </Component>
       <Component Id="elementconstant16.png" Guid="49b98944-6431-4e06-a31b-76496f5d99ad">
-        <File Id="elementconstant16.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-constant-16.png"/>
+        <File Id="elementconstant16.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-constant-16.png" />
       </Component>
       <Component Id="elementconstant162x.png" Guid="4dc73333-a608-4f08-b3f1-4b36708f4e0c">
-        <File Id="elementconstant162x.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-constant-16@2x.png"/>
+        <File Id="elementconstant162x.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-constant-16@2x.png" />
       </Component>
       <Component Id="elementconstant16sel.png" Guid="15658a1d-dd0b-4fb2-8edd-fb4757a6b91b">
-        <File Id="elementconstant16sel.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-constant-16~sel.png"/>
+        <File Id="elementconstant16sel.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-constant-16~sel.png" />
       </Component>
       <Component Id="elementconstant16sel2x.png" Guid="ec67fa8a-955f-4d59-88b5-7361387af882">
-        <File Id="elementconstant16sel2x.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-constant-16~sel@2x.png"/>
+        <File Id="elementconstant16sel2x.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-constant-16~sel@2x.png" />
       </Component>
       <Component Id="elementdelegate16.png" Guid="f2c6e651-9cf8-4142-af61-e51b77658208">
-        <File Id="elementdelegate16.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-delegate-16.png"/>
+        <File Id="elementdelegate16.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-delegate-16.png" />
       </Component>
       <Component Id="elementdelegate162x.png" Guid="61aca908-9550-4fa5-99e4-5bd0d0ade4e4">
-        <File Id="elementdelegate162x.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-delegate-16@2x.png"/>
+        <File Id="elementdelegate162x.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-delegate-16@2x.png" />
       </Component>
       <Component Id="elementdelegate16sel.png" Guid="44b9beef-5b74-4cf6-8dc8-67639559633b">
-        <File Id="elementdelegate16sel.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-delegate-16~sel.png"/>
+        <File Id="elementdelegate16sel.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-delegate-16~sel.png" />
       </Component>
       <Component Id="elementdelegate16sel2x.png" Guid="c1ada342-d6a0-411d-80e5-202b1172df98">
-        <File Id="elementdelegate16sel2x.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-delegate-16~sel@2x.png"/>
+        <File Id="elementdelegate16sel2x.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-delegate-16~sel@2x.png" />
       </Component>
       <Component Id="elementenum16.png" Guid="aa1495ca-1482-4e98-8641-34d2c52ac844">
-        <File Id="elementenum16.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-enum-16.png"/>
+        <File Id="elementenum16.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-enum-16.png" />
       </Component>
       <Component Id="elementenum162x.png" Guid="c86d3c67-89c6-4aa3-84a2-29df1b52cd67">
-        <File Id="elementenum162x.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-enum-16@2x.png"/>
+        <File Id="elementenum162x.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-enum-16@2x.png" />
       </Component>
       <Component Id="elementenum16sel.png" Guid="dbfe3681-6f9a-414c-9bfb-825b7560cdca">
-        <File Id="elementenum16sel.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-enum-16~sel.png"/>
+        <File Id="elementenum16sel.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-enum-16~sel.png" />
       </Component>
       <Component Id="elementenum16sel2x.png" Guid="1b1497e3-a5e9-4545-9b75-bbebac1784f6">
-        <File Id="elementenum16sel2x.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-enum-16~sel@2x.png"/>
+        <File Id="elementenum16sel2x.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-enum-16~sel@2x.png" />
       </Component>
       <Component Id="elementevent16.png" Guid="162815ca-f9b9-43c9-bd02-4045a16b45d6">
-        <File Id="elementevent16.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-event-16.png"/>
+        <File Id="elementevent16.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-event-16.png" />
       </Component>
       <Component Id="elementevent162x.png" Guid="ccfdafcf-cab3-449e-9eb9-9a988469b827">
-        <File Id="elementevent162x.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-event-16@2x.png"/>
+        <File Id="elementevent162x.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-event-16@2x.png" />
       </Component>
       <Component Id="elementevent16sel.png" Guid="4dadeb96-8f26-428f-b24a-07b5fb44cf35">
-        <File Id="elementevent16sel.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-event-16~sel.png"/>
+        <File Id="elementevent16sel.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-event-16~sel.png" />
       </Component>
       <Component Id="elementevent16sel2x.png" Guid="2b99148e-f049-45fd-81ca-5f7188b40425">
-        <File Id="elementevent16sel2x.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-event-16~sel@2x.png"/>
+        <File Id="elementevent16sel2x.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-event-16~sel@2x.png" />
       </Component>
       <Component Id="elementexception16.png" Guid="689a55e8-02b3-4043-b036-629df222ff61">
-        <File Id="elementexception16.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-exception-16.png"/>
+        <File Id="elementexception16.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-exception-16.png" />
       </Component>
       <Component Id="elementexception162x.png" Guid="ff12812c-2735-4abd-9be5-a82804f9164e">
-        <File Id="elementexception162x.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-exception-16@2x.png"/>
+        <File Id="elementexception162x.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-exception-16@2x.png" />
       </Component>
       <Component Id="elementexception16sel.png" Guid="c910cbfb-da3a-4550-9a57-8484cfbcfe0d">
-        <File Id="elementexception16sel.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-exception-16~sel.png"/>
+        <File Id="elementexception16sel.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-exception-16~sel.png" />
       </Component>
       <Component Id="elementexception16sel2x.png" Guid="e31fcbdb-d76d-4642-a95d-4fb1ffab3dfc">
-        <File Id="elementexception16sel2x.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-exception-16~sel@2x.png"/>
+        <File Id="elementexception16sel2x.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-exception-16~sel@2x.png" />
       </Component>
       <Component Id="elementextensionmethod16.png" Guid="73470c23-d0c4-4298-9b83-0bc82caab04b">
-        <File Id="elementextensionmethod16.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-extensionmethod-16.png"/>
+        <File Id="elementextensionmethod16.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-extensionmethod-16.png" />
       </Component>
       <Component Id="elementextensionmethod162x.png" Guid="2a30d6a5-af26-4497-bf18-6b57b8cabcf6">
-        <File Id="elementextensionmethod162x.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-extensionmethod-16@2x.png"/>
+        <File Id="elementextensionmethod162x.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-extensionmethod-16@2x.png" />
       </Component>
       <Component Id="elementextensionmethod16sel.png" Guid="26db4557-1d15-4f68-accd-fe8d73b44d5e">
-        <File Id="elementextensionmethod16sel.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-extensionmethod-16~sel.png"/>
+        <File Id="elementextensionmethod16sel.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-extensionmethod-16~sel.png" />
       </Component>
       <Component Id="elementextensionmethod16sel2x.png" Guid="815e9864-db1c-4274-be69-a04eaba78d94">
-        <File Id="elementextensionmethod16sel2x.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-extensionmethod-16~sel@2x.png"/>
+        <File Id="elementextensionmethod16sel2x.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-extensionmethod-16~sel@2x.png" />
       </Component>
       <Component Id="elementfield16.png" Guid="b1f8efb5-1246-4a7e-b730-2327c5fde93d">
-        <File Id="elementfield16.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-field-16.png"/>
+        <File Id="elementfield16.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-field-16.png" />
       </Component>
       <Component Id="elementfield162x.png" Guid="83eed462-3a4c-43f5-80fb-d100b8b1fd90">
-        <File Id="elementfield162x.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-field-16@2x.png"/>
+        <File Id="elementfield162x.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-field-16@2x.png" />
       </Component>
       <Component Id="elementfield16sel.png" Guid="7b663398-ee05-4d87-a5b0-0facfdca6299">
-        <File Id="elementfield16sel.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-field-16~sel.png"/>
+        <File Id="elementfield16sel.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-field-16~sel.png" />
       </Component>
       <Component Id="elementfield16sel2x.png" Guid="57f4ac6f-d3fe-47e6-9c1e-8c775579d547">
-        <File Id="elementfield16sel2x.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-field-16~sel@2x.png"/>
+        <File Id="elementfield16sel2x.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-field-16~sel@2x.png" />
       </Component>
       <Component Id="elementinterface16.png" Guid="3409c183-2038-4352-ae95-f5d382f81dd6">
-        <File Id="elementinterface16.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-interface-16.png"/>
+        <File Id="elementinterface16.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-interface-16.png" />
       </Component>
       <Component Id="elementinterface162x.png" Guid="575b0681-2fc2-463b-9a73-918293966e08">
-        <File Id="elementinterface162x.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-interface-16@2x.png"/>
+        <File Id="elementinterface162x.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-interface-16@2x.png" />
       </Component>
       <Component Id="elementinterface16sel.png" Guid="f7290ae5-d2dd-42a9-b590-694323495826">
-        <File Id="elementinterface16sel.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-interface-16~sel.png"/>
+        <File Id="elementinterface16sel.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-interface-16~sel.png" />
       </Component>
       <Component Id="elementinterface16sel2x.png" Guid="227c0c69-6044-41ca-b384-8ea1b98bb0bc">
-        <File Id="elementinterface16sel2x.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-interface-16~sel@2x.png"/>
+        <File Id="elementinterface16sel2x.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-interface-16~sel@2x.png" />
       </Component>
       <Component Id="elementkeyword16.png" Guid="f8cde4d4-5569-4208-b000-8e1c2045c497">
-        <File Id="elementkeyword16.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-keyword-16.png"/>
+        <File Id="elementkeyword16.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-keyword-16.png" />
       </Component>
       <Component Id="elementkeyword162x.png" Guid="4699970c-2b49-497e-892f-b30403695fae">
-        <File Id="elementkeyword162x.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-keyword-16@2x.png"/>
+        <File Id="elementkeyword162x.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-keyword-16@2x.png" />
       </Component>
       <Component Id="elementkeyword16sel.png" Guid="46304c64-e6b0-4409-a83c-d595f5ddfdc2">
-        <File Id="elementkeyword16sel.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-keyword-16~sel.png"/>
+        <File Id="elementkeyword16sel.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-keyword-16~sel.png" />
       </Component>
       <Component Id="elementkeyword16sel2x.png" Guid="1adb72c5-48c9-4c0f-8003-a5b8c88415e7">
-        <File Id="elementkeyword16sel2x.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-keyword-16~sel@2x.png"/>
+        <File Id="elementkeyword16sel2x.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-keyword-16~sel@2x.png" />
       </Component>
       <Component Id="elementmethod16.png" Guid="0ace3e02-8cd7-4574-8d05-d9e610f750c0">
-        <File Id="elementmethod16.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-method-16.png"/>
+        <File Id="elementmethod16.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-method-16.png" />
       </Component>
       <Component Id="elementmethod162x.png" Guid="d03b2d1a-8cce-4ac9-863c-a606f77b90ed">
-        <File Id="elementmethod162x.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-method-16@2x.png"/>
+        <File Id="elementmethod162x.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-method-16@2x.png" />
       </Component>
       <Component Id="elementmethod16sel.png" Guid="e60aeb15-dd89-4061-8e22-2f9e607dda42">
-        <File Id="elementmethod16sel.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-method-16~sel.png"/>
+        <File Id="elementmethod16sel.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-method-16~sel.png" />
       </Component>
       <Component Id="elementmethod16sel2x.png" Guid="7a3abbc4-9459-4d53-ba43-34ecd038bb78">
-        <File Id="elementmethod16sel2x.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-method-16~sel@2x.png"/>
+        <File Id="elementmethod16sel2x.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-method-16~sel@2x.png" />
       </Component>
       <Component Id="elementmodule16.png" Guid="c1ce51da-bc8c-4225-a318-1842b54571b0">
-        <File Id="elementmodule16.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-module-16.png"/>
+        <File Id="elementmodule16.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-module-16.png" />
       </Component>
       <Component Id="elementmodule162x.png" Guid="d8c32e8b-a8be-4877-9e1a-59c6e55b2b7d">
-        <File Id="elementmodule162x.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-module-16@2x.png"/>
+        <File Id="elementmodule162x.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-module-16@2x.png" />
       </Component>
       <Component Id="elementmodule16sel.png" Guid="74ef4b54-b40f-469a-a463-163745adcc12">
-        <File Id="elementmodule16sel.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-module-16~sel.png"/>
+        <File Id="elementmodule16sel.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-module-16~sel.png" />
       </Component>
       <Component Id="elementmodule16sel2x.png" Guid="65f15afe-701a-4fff-86ad-e17c28c1ce2b">
-        <File Id="elementmodule16sel2x.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-module-16~sel@2x.png"/>
+        <File Id="elementmodule16sel2x.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-module-16~sel@2x.png" />
       </Component>
       <Component Id="elementnamespace16.png" Guid="67c13460-b392-4b96-86b4-5dc1292aa42b">
-        <File Id="elementnamespace16.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-namespace-16.png"/>
+        <File Id="elementnamespace16.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-namespace-16.png" />
       </Component>
       <Component Id="elementnamespace162x.png" Guid="518bc825-5d89-4cc6-ae25-f07b1dc20d69">
-        <File Id="elementnamespace162x.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-namespace-16@2x.png"/>
+        <File Id="elementnamespace162x.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-namespace-16@2x.png" />
       </Component>
       <Component Id="elementnamespace16sel.png" Guid="97555007-78c3-44a5-ae69-6e94c1c0dd2c">
-        <File Id="elementnamespace16sel.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-namespace-16~sel.png"/>
+        <File Id="elementnamespace16sel.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-namespace-16~sel.png" />
       </Component>
       <Component Id="elementnamespace16sel2x.png" Guid="ab38c7dd-3027-4642-8e98-a3e9f1ba42a1">
-        <File Id="elementnamespace16sel2x.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-namespace-16~sel@2x.png"/>
+        <File Id="elementnamespace16sel2x.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-namespace-16~sel@2x.png" />
       </Component>
       <Component Id="elementproperty16.png" Guid="28a98dcb-0dfb-42d7-b9d8-bb82e8a78c37">
-        <File Id="elementproperty16.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-property-16.png"/>
+        <File Id="elementproperty16.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-property-16.png" />
       </Component>
       <Component Id="elementproperty162x.png" Guid="3614e8c7-f63e-4b96-9b1f-f785c6899975">
-        <File Id="elementproperty162x.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-property-16@2x.png"/>
+        <File Id="elementproperty162x.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-property-16@2x.png" />
       </Component>
       <Component Id="elementproperty16sel.png" Guid="46b838be-9590-4512-9656-c0c80f0d0636">
-        <File Id="elementproperty16sel.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-property-16~sel.png"/>
+        <File Id="elementproperty16sel.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-property-16~sel.png" />
       </Component>
       <Component Id="elementproperty16sel2x.png" Guid="7274be54-6b0f-498e-b825-8cebb1d71804">
-        <File Id="elementproperty16sel2x.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-property-16~sel@2x.png"/>
+        <File Id="elementproperty16sel2x.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-property-16~sel@2x.png" />
       </Component>
       <Component Id="elementstruct16.png" Guid="eb494e8c-b0eb-4227-9187-62949383bb83">
-        <File Id="elementstruct16.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-struct-16.png"/>
+        <File Id="elementstruct16.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-struct-16.png" />
       </Component>
       <Component Id="elementstruct162x.png" Guid="6a95364a-4c28-4c48-a453-fe8aa59d4ba8">
-        <File Id="elementstruct162x.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-struct-16@2x.png"/>
+        <File Id="elementstruct162x.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-struct-16@2x.png" />
       </Component>
       <Component Id="elementstruct16sel.png" Guid="d96eba27-ef53-4609-b31e-613ff7ff8281">
-        <File Id="elementstruct16sel.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-struct-16~sel.png"/>
+        <File Id="elementstruct16sel.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-struct-16~sel.png" />
       </Component>
       <Component Id="elementstruct16sel2x.png" Guid="7ca79b06-30b9-4ec7-af5e-c8ba9ba95918">
-        <File Id="elementstruct16sel2x.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-struct-16~sel@2x.png"/>
+        <File Id="elementstruct16sel2x.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-struct-16~sel@2x.png" />
       </Component>
       <Component Id="elementtype16.png" Guid="da3f1aa7-94ad-4890-a02a-2ec821839e2b">
-        <File Id="elementtype16.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-type-16.png"/>
+        <File Id="elementtype16.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-type-16.png" />
       </Component>
       <Component Id="elementtype162x.png" Guid="6e14bf56-9b84-4f53-a191-c7c2e5e65e90">
-        <File Id="elementtype162x.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-type-16@2x.png"/>
+        <File Id="elementtype162x.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-type-16@2x.png" />
       </Component>
       <Component Id="elementtype16sel.png" Guid="8237de66-277f-4f14-ba5f-6bb7088e4996">
-        <File Id="elementtype16sel.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-type-16~sel.png"/>
+        <File Id="elementtype16sel.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-type-16~sel.png" />
       </Component>
       <Component Id="elementtype16sel2x.png" Guid="9a44f521-4387-45c8-b30e-1d6cfb46f284">
-        <File Id="elementtype16sel2x.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-type-16~sel@2x.png"/>
+        <File Id="elementtype16sel2x.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-type-16~sel@2x.png" />
       </Component>
       <Component Id="elementvariable16.png" Guid="c9561268-f066-4481-8605-70ea90ecb8e5">
-        <File Id="elementvariable16.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-variable-16.png"/>
+        <File Id="elementvariable16.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-variable-16.png" />
       </Component>
       <Component Id="elementvariable162x.png" Guid="f63f4117-832e-4cb8-859c-b888a2033ad5">
-        <File Id="elementvariable162x.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-variable-16@2x.png"/>
+        <File Id="elementvariable162x.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-variable-16@2x.png" />
       </Component>
       <Component Id="elementvariable16sel.png" Guid="df83cf42-655c-4303-9d52-a9911eee520c">
-        <File Id="elementvariable16sel.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-variable-16~sel.png"/>
+        <File Id="elementvariable16sel.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-variable-16~sel.png" />
       </Component>
       <Component Id="elementvariable16sel2x.png" Guid="01eecd05-a6c7-40f6-b72a-067d4124240c">
-        <File Id="elementvariable16sel2x.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-variable-16~sel@2x.png"/>
+        <File Id="elementvariable16sel2x.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-variable-16~sel@2x.png" />
       </Component>
       <Component Id="elementvisibilityinternaldiamondoverlay16.png" Guid="5d9c3b1a-a17a-4f0c-bd32-bedb9368f6a0">
-        <File Id="elementvisibilityinternaldiamondoverlay16.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-visibility-internal-diamond-overlay-16.png"/>
+        <File Id="elementvisibilityinternaldiamondoverlay16.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-visibility-internal-diamond-overlay-16.png" />
       </Component>
       <Component Id="elementvisibilityinternaldiamondoverlay162x.png" Guid="f24d795a-23a5-4b38-9fd8-8986070b4910">
-        <File Id="elementvisibilityinternaldiamondoverlay162x.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-visibility-internal-diamond-overlay-16@2x.png"/>
+        <File Id="elementvisibilityinternaldiamondoverlay162x.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-visibility-internal-diamond-overlay-16@2x.png" />
       </Component>
       <Component Id="elementvisibilityinternaldiamondoverlay16sel.png" Guid="933f785d-e525-444f-a325-8525ac352b4b">
-        <File Id="elementvisibilityinternaldiamondoverlay16sel.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-visibility-internal-diamond-overlay-16~sel.png"/>
+        <File Id="elementvisibilityinternaldiamondoverlay16sel.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-visibility-internal-diamond-overlay-16~sel.png" />
       </Component>
       <Component Id="elementvisibilityinternaldiamondoverlay16sel2x.png" Guid="0e27670a-da78-4943-b9d1-e693b9f2ff2e">
-        <File Id="elementvisibilityinternaldiamondoverlay16sel2x.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-visibility-internal-diamond-overlay-16~sel@2x.png"/>
+        <File Id="elementvisibilityinternaldiamondoverlay16sel2x.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-visibility-internal-diamond-overlay-16~sel@2x.png" />
       </Component>
       <Component Id="elementvisibilityinternalsquareoverlay16.png" Guid="af14cc7c-4c8d-4c0a-ab53-15da189bc338">
-        <File Id="elementvisibilityinternalsquareoverlay16.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-visibility-internal-square-overlay-16.png"/>
+        <File Id="elementvisibilityinternalsquareoverlay16.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-visibility-internal-square-overlay-16.png" />
       </Component>
       <Component Id="elementvisibilityinternalsquareoverlay162x.png" Guid="e83c5f69-249d-41e0-8368-abd69941f571">
-        <File Id="elementvisibilityinternalsquareoverlay162x.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-visibility-internal-square-overlay-16@2x.png"/>
+        <File Id="elementvisibilityinternalsquareoverlay162x.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-visibility-internal-square-overlay-16@2x.png" />
       </Component>
       <Component Id="elementvisibilityinternalsquareoverlay16sel.png" Guid="c7bc9db3-0ad6-4edd-b29c-a2c512719d9c">
-        <File Id="elementvisibilityinternalsquareoverlay16sel.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-visibility-internal-square-overlay-16~sel.png"/>
+        <File Id="elementvisibilityinternalsquareoverlay16sel.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-visibility-internal-square-overlay-16~sel.png" />
       </Component>
       <Component Id="elementvisibilityinternalsquareoverlay16sel2x.png" Guid="cb48c330-eb41-433d-adef-ddc4646afba1">
-        <File Id="elementvisibilityinternalsquareoverlay16sel2x.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-visibility-internal-square-overlay-16~sel@2x.png"/>
+        <File Id="elementvisibilityinternalsquareoverlay16sel2x.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-visibility-internal-square-overlay-16~sel@2x.png" />
       </Component>
       <Component Id="elementvisibilityprivatediamondoverlay16.png" Guid="2b197b49-bac3-4d00-8b29-dc979b75538a">
-        <File Id="elementvisibilityprivatediamondoverlay16.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-visibility-private-diamond-overlay-16.png"/>
+        <File Id="elementvisibilityprivatediamondoverlay16.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-visibility-private-diamond-overlay-16.png" />
       </Component>
       <Component Id="elementvisibilityprivatediamondoverlay162x.png" Guid="5d058d0b-0781-4291-84df-20c23f38a692">
-        <File Id="elementvisibilityprivatediamondoverlay162x.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-visibility-private-diamond-overlay-16@2x.png"/>
+        <File Id="elementvisibilityprivatediamondoverlay162x.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-visibility-private-diamond-overlay-16@2x.png" />
       </Component>
       <Component Id="elementvisibilityprivatediamondoverlay16sel.png" Guid="0a00b1bf-dfd7-41cc-b04a-035e997d0a15">
-        <File Id="elementvisibilityprivatediamondoverlay16sel.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-visibility-private-diamond-overlay-16~sel.png"/>
+        <File Id="elementvisibilityprivatediamondoverlay16sel.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-visibility-private-diamond-overlay-16~sel.png" />
       </Component>
       <Component Id="elementvisibilityprivatediamondoverlay16sel2x.png" Guid="b1c74e35-6845-425f-9241-18076cfc0581">
-        <File Id="elementvisibilityprivatediamondoverlay16sel2x.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-visibility-private-diamond-overlay-16~sel@2x.png"/>
+        <File Id="elementvisibilityprivatediamondoverlay16sel2x.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-visibility-private-diamond-overlay-16~sel@2x.png" />
       </Component>
       <Component Id="elementvisibilityprivatesquareoverlay16.png" Guid="cef2c741-9013-4740-b3a0-e0264974e296">
-        <File Id="elementvisibilityprivatesquareoverlay16.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-visibility-private-square-overlay-16.png"/>
+        <File Id="elementvisibilityprivatesquareoverlay16.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-visibility-private-square-overlay-16.png" />
       </Component>
       <Component Id="elementvisibilityprivatesquareoverlay162x.png" Guid="e093b306-00e3-4d7b-a893-192219257d9e">
-        <File Id="elementvisibilityprivatesquareoverlay162x.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-visibility-private-square-overlay-16@2x.png"/>
+        <File Id="elementvisibilityprivatesquareoverlay162x.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-visibility-private-square-overlay-16@2x.png" />
       </Component>
       <Component Id="elementvisibilityprivatesquareoverlay16sel.png" Guid="5f2ccf1e-a894-4c1a-9944-28c378f6b2b4">
-        <File Id="elementvisibilityprivatesquareoverlay16sel.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-visibility-private-square-overlay-16~sel.png"/>
+        <File Id="elementvisibilityprivatesquareoverlay16sel.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-visibility-private-square-overlay-16~sel.png" />
       </Component>
       <Component Id="elementvisibilityprivatesquareoverlay16sel2x.png" Guid="aceb20b8-6afd-4b98-b555-bc8a6591b967">
-        <File Id="elementvisibilityprivatesquareoverlay16sel2x.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-visibility-private-square-overlay-16~sel@2x.png"/>
+        <File Id="elementvisibilityprivatesquareoverlay16sel2x.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-visibility-private-square-overlay-16~sel@2x.png" />
       </Component>
       <Component Id="elementvisibilityprotecteddiamondoverlay16.png" Guid="f7e9097b-cf57-4afa-87d1-735afb836778">
-        <File Id="elementvisibilityprotecteddiamondoverlay16.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-visibility-protected-diamond-overlay-16.png"/>
+        <File Id="elementvisibilityprotecteddiamondoverlay16.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-visibility-protected-diamond-overlay-16.png" />
       </Component>
       <Component Id="elementvisibilityprotecteddiamondoverlay162x.png" Guid="e107bb7a-c41a-4eb1-b31e-143cae9556cb">
-        <File Id="elementvisibilityprotecteddiamondoverlay162x.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-visibility-protected-diamond-overlay-16@2x.png"/>
+        <File Id="elementvisibilityprotecteddiamondoverlay162x.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-visibility-protected-diamond-overlay-16@2x.png" />
       </Component>
       <Component Id="elementvisibilityprotecteddiamondoverlay16sel.png" Guid="0f1e85ce-37db-4142-8a10-c7f8e1ed09b0">
-        <File Id="elementvisibilityprotecteddiamondoverlay16sel.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-visibility-protected-diamond-overlay-16~sel.png"/>
+        <File Id="elementvisibilityprotecteddiamondoverlay16sel.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-visibility-protected-diamond-overlay-16~sel.png" />
       </Component>
       <Component Id="elementvisibilityprotecteddiamondoverlay16sel2x.png" Guid="cfcc66ab-7679-4b2f-915e-75c85f857064">
-        <File Id="elementvisibilityprotecteddiamondoverlay16sel2x.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-visibility-protected-diamond-overlay-16~sel@2x.png"/>
+        <File Id="elementvisibilityprotecteddiamondoverlay16sel2x.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-visibility-protected-diamond-overlay-16~sel@2x.png" />
       </Component>
       <Component Id="elementvisibilityprotectedsquareoverlay16.png" Guid="5c7cf55a-aab9-4add-b64b-1866a256e369">
-        <File Id="elementvisibilityprotectedsquareoverlay16.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-visibility-protected-square-overlay-16.png"/>
+        <File Id="elementvisibilityprotectedsquareoverlay16.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-visibility-protected-square-overlay-16.png" />
       </Component>
       <Component Id="elementvisibilityprotectedsquareoverlay162x.png" Guid="dc88fba1-6bc8-429b-aa22-5235697b05fa">
-        <File Id="elementvisibilityprotectedsquareoverlay162x.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-visibility-protected-square-overlay-16@2x.png"/>
+        <File Id="elementvisibilityprotectedsquareoverlay162x.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-visibility-protected-square-overlay-16@2x.png" />
       </Component>
       <Component Id="elementvisibilityprotectedsquareoverlay16sel.png" Guid="6f02ebef-bd73-4a03-b22e-dd3b4bc625ba">
-        <File Id="elementvisibilityprotectedsquareoverlay16sel.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-visibility-protected-square-overlay-16~sel.png"/>
+        <File Id="elementvisibilityprotectedsquareoverlay16sel.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-visibility-protected-square-overlay-16~sel.png" />
       </Component>
       <Component Id="elementvisibilityprotectedsquareoverlay16sel2x.png" Guid="4e4c0d2e-3efa-46c1-9f8f-34a51b63feab">
-        <File Id="elementvisibilityprotectedsquareoverlay16sel2x.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-visibility-protected-square-overlay-16~sel@2x.png"/>
+        <File Id="elementvisibilityprotectedsquareoverlay16sel2x.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\element-visibility-protected-square-overlay-16~sel@2x.png" />
       </Component>
       <Component Id="glyphs.css" Guid="b50a8097-8436-4e52-966f-623db44ad94c">
-        <File Id="glyphs.css" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\glyphs.css"/>
+        <File Id="glyphs.css" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\editor\glyphs\glyphs.css" />
       </Component>
     </ComponentGroup>
-
     <ComponentGroup Id="ClientReplResources" Directory="InspectorResourcesReplFolder">
       <Component Id="app.js" Guid="71261911-7E6E-4965-8DDC-2B6775677AFE">
-        <File Id="app.js" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\app.js"/>
+        <File Id="app.js" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\app.js" />
       </Component>
       <Component Id="app.html" Guid="6A3A3EC2-E763-4FA1-A3DD-BAFFD5B31648">
-        <File Id="app.html" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\app.html"/>
+        <File Id="app.html" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\app.html" />
       </Component>
       <Component Id="app.css" Guid="6E74A76C-7A1F-4008-8584-07300B169B09">
-        <File Id="app.css" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\app.css"/>
+        <File Id="app.css" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\app.css" />
       </Component>
       <Component Id="prosemirror.css" Guid="DBF3C0F8-8471-464F-AB8A-490941BE4E6B">
-        <File Id="prosemirror.css" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\prosemirror.css"/>
+        <File Id="prosemirror.css" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\prosemirror.css" />
       </Component>
       <Component Id="shell.css" Guid="B823EFD4-04B0-4738-8486-A90FF7BF5C18">
-        <File Id="shell.css" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\shell.css"/>
+        <File Id="shell.css" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\shell.css" />
       </Component>
       <Component Id="theme.css" Guid="C5FBC478-68EA-411B-9156-97BE11803872">
-        <File Id="theme.css" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\theme.css"/>
+        <File Id="theme.css" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\theme.css" />
       </Component>
       <Component Id="ui.css" Guid="E90065AE-E9BE-441F-8BD0-744CC87290E1">
-        <File Id="ui.css" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\ui.css"/>
+        <File Id="ui.css" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\ui.css" />
       </Component>
       <Component Id="workspace.css" Guid="8F920EAF-64FE-4AB2-994D-A25FC7DF2788">
-        <File Id="workspace.css" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\workspace.css"/>
+        <File Id="workspace.css" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\workspace.css" />
       </Component>
       <Component Id="high_contrast.css" Guid="2E60F51F-2C43-4968-B6C7-F454A53F43A2">
-        <File Id="high_contrast.css" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\high-contrast.css"/>
+        <File Id="high_contrast.css" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\high-contrast.css" />
       </Component>
       <Component Id="exception_16.png" Guid="1F4D2E78-0F8E-4161-AB91-8870918EB4FE">
-        <File Id="exception_16.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\exception-16.png"/>
+        <File Id="exception_16.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\exception-16.png" />
       </Component>
       <Component Id="exception_162x.png" Guid="DC4C38CE-BA31-4370-9BD0-F5362A4039BE">
-        <File Id="exception_162x.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\exception-16@2x.png"/>
+        <File Id="exception_162x.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\exception-16@2x.png" />
       </Component>
       <Component Id="preview_active_16.png" Guid="48F3D3CC-A73D-4B50-893F-60232CA80C21">
-        <File Id="preview_active_16.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\preview-active-16.png"/>
+        <File Id="preview_active_16.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\preview-active-16.png" />
       </Component>
       <Component Id="preview_active_162x.png" Guid="E32EB40D-FDDD-4678-AA53-B7311884E86A">
-        <File Id="preview_active_162x.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\preview-active-16@2x.png"/>
+        <File Id="preview_active_162x.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\preview-active-16@2x.png" />
       </Component>
       <Component Id="preview_normal_16.png" Guid="253755CA-49D9-4E5A-B711-D1C17ADCB0DE">
-        <File Id="preview_normal_16.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\preview-normal-16.png"/>
+        <File Id="preview_normal_16.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\preview-normal-16.png" />
       </Component>
       <Component Id="preview_normal_162x.png" Guid="43C4DA96-1E5D-4D42-A982-7C486D8BAE5E">
-        <File Id="preview_normal_162x.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\preview-normal-16@2x.png"/>
+        <File Id="preview_normal_162x.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\preview-normal-16@2x.png" />
       </Component>
       <Component Id="repl_add_active_16.png" Guid="E477B065-B577-48C9-90DD-9E429845828E">
-        <File Id="repl_add_active_16.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\repl-add-active-16.png"/>
+        <File Id="repl_add_active_16.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\repl-add-active-16.png" />
       </Component>
       <Component Id="repl_add_active_162x.png" Guid="A4F488E2-FD5C-4D4B-9E3D-7ACF1708CF4F">
-        <File Id="repl_add_active_162x.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\repl-add-active-16@2x.png"/>
+        <File Id="repl_add_active_162x.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\repl-add-active-16@2x.png" />
       </Component>
       <Component Id="repl_add_16.png" Guid="BB0907AA-BB39-41DE-B578-661DF2A5ED37">
-        <File Id="repl_add_16.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\repl-add-16.png"/>
+        <File Id="repl_add_16.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\repl-add-16.png" />
       </Component>
       <Component Id="repl_add_162x.png" Guid="43137084-FCBF-4218-B407-D40CBD465F84">
-        <File Id="repl_add_162x.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\repl-add-16@2x.png"/>
+        <File Id="repl_add_162x.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\repl-add-16@2x.png" />
       </Component>
       <Component Id="delete_entry_16.png" Guid="C8BF84AA-4A9F-4AEE-A4CB-3AE7A6E263C3">
-        <File Id="delete_entry_16.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\delete-entry-16.png"/>
+        <File Id="delete_entry_16.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\delete-entry-16.png" />
       </Component>
       <Component Id="delete_entry_162x.png" Guid="CC8E8D51-C60D-4B13-A86C-C9DB4DC0E31D">
-        <File Id="delete_entry_162x.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\delete-entry-16@2x.png"/>
+        <File Id="delete_entry_162x.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\delete-entry-16@2x.png" />
       </Component>
       <Component Id="delete_entry_inverted_16.png" Guid="2B3BA07A-C380-4AD4-920B-C759C8AC4575">
-        <File Id="delete_entry_inverted_16.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\delete-entry-inverted-16.png"/>
+        <File Id="delete_entry_inverted_16.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\delete-entry-inverted-16.png" />
       </Component>
       <Component Id="delete_entry_16_inverted2x.png" Guid="F0DE8436-68F7-4D41-9B94-97C6CC35DD50">
-        <File Id="delete_entry_inverted_162x.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\delete-entry-inverted-16@2x.png"/>
+        <File Id="delete_entry_inverted_162x.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\delete-entry-inverted-16@2x.png" />
       </Component>
       <Component Id="new_documentation_entry_16.png" Guid="77BC1E4C-657F-497C-AF5F-27A3B851DB3B">
-        <File Id="new_documentation_entry_16.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\new-documentation-entry-16.png"/>
+        <File Id="new_documentation_entry_16.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\new-documentation-entry-16.png" />
       </Component>
       <Component Id="new_documentation_entry_162x.png" Guid="AD2851B6-0238-4D8C-8420-33A9EBEAACBA">
-        <File Id="new_documentation_entry_162x.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\new-documentation-entry-16@2x.png"/>
+        <File Id="new_documentation_entry_162x.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\new-documentation-entry-16@2x.png" />
       </Component>
       <Component Id="new_documentation_entry_inverted_16.png" Guid="1B88AE9F-48FE-4155-9EFF-C6BF0178640D">
-        <File Id="new_documentation_entry_inverted_16.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\new-documentation-entry-inverted-16.png"/>
+        <File Id="new_documentation_entry_inverted_16.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\new-documentation-entry-inverted-16.png" />
       </Component>
       <Component Id="new_documentation_entry_inverted_162x.png" Guid="0AD4FFE4-D1D3-4293-BC8F-A9776E3E55BA">
-        <File Id="new_documentation_entry_inverted_162x.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\new-documentation-entry-inverted-16@2x.png"/>
+        <File Id="new_documentation_entry_inverted_162x.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\new-documentation-entry-inverted-16@2x.png" />
       </Component>
       <Component Id="expander_arrow.svg" Guid="B521BBB0-677D-40B1-ABCE-FBFB17DB4EC4">
-        <File Id="expander_arrow.svg" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\expander-arrow.svg"/>
+        <File Id="expander_arrow.svg" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\expander-arrow.svg" />
       </Component>
       <Component Id="new_code_entry_16.png" Guid="2F1747DB-27C1-44F4-9497-EF5F73AEC050">
-        <File Id="new_code_entry_16.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\new-code-entry-16.png"/>
+        <File Id="new_code_entry_16.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\new-code-entry-16.png" />
       </Component>
       <Component Id="new_code_entry_162x.png" Guid="E77A0311-08F9-497F-9587-F39F30763256">
-        <File Id="new_code_entry_162x.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\new-code-entry-16@2x.png"/>
+        <File Id="new_code_entry_162x.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\new-code-entry-16@2x.png" />
       </Component>
       <Component Id="new_code_entry_inverted_16.png" Guid="3C280580-44F2-445D-A8B9-01185B52E37D">
-        <File Id="new_code_entry_inverted_16.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\new-code-entry-inverted-16.png"/>
+        <File Id="new_code_entry_inverted_16.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\new-code-entry-inverted-16.png" />
       </Component>
       <Component Id="new_code_entry_inverted_162x.png" Guid="CCB14FB2-F7C8-4A6F-8BF4-D427F481E66A">
-        <File Id="new_code_entry_inverted_162x.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\new-code-entry-inverted-16@2x.png"/>
+        <File Id="new_code_entry_inverted_162x.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\new-code-entry-inverted-16@2x.png" />
       </Component>
       <Component Id="run_code_entry_16.png" Guid="F03E75B4-AB0E-4C11-9F7F-9A3D0C5E2214">
-        <File Id="run_code_entry_16.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\run-code-entry-16.png"/>
+        <File Id="run_code_entry_16.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\run-code-entry-16.png" />
       </Component>
       <Component Id="run_code_entry_162x.png" Guid="06757A24-3AA2-49BF-A65C-79B2E50561A9">
-        <File Id="run_code_entry_162x.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\run-code-entry-16@2x.png"/>
+        <File Id="run_code_entry_162x.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\run-code-entry-16@2x.png" />
       </Component>
       <Component Id="run_code_entry_inverted_16.png" Guid="23B1593F-AE16-4114-8922-073DA87ABDB8">
-        <File Id="run_code_entry_inverted_16.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\run-code-entry-inverted-16.png"/>
+        <File Id="run_code_entry_inverted_16.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\run-code-entry-inverted-16.png" />
       </Component>
       <Component Id="run_code_entry_inverted_162x.png" Guid="46F4A1E7-319B-4506-9BD7-2A7324742D7F">
-        <File Id="run_code_entry_inverted_162x.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\run-code-entry-inverted-16@2x.png"/>
+        <File Id="run_code_entry_inverted_162x.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\run-code-entry-inverted-16@2x.png" />
       </Component>
     </ComponentGroup>
-
     <ComponentGroup Id="ClientReplRendererResources" Directory="InspectorResourcesReplRenderersFolder">
       <Component Id="alphachecker.png" Guid="DB386564-8C52-4B2F-8DEC-528D3F2A430B">
-        <File Id="alphachecker.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\renderers\alpha-checker.png"/>
+        <File Id="alphachecker.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\renderers\alpha-checker.png" />
       </Component>
       <Component Id="base.css" Guid="12890092-B1BF-4D73-836F-EF9B79866C07">
-        <File Id="base.css" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\renderers\base.css"/>
+        <File Id="base.css" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\renderers\base.css" />
       </Component>
       <Component Id="color.css" Guid="3F742F00-740E-45B3-9657-96BD769DF390">
-        <File Id="color.css" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\renderers\color.css"/>
+        <File Id="color.css" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\renderers\color.css" />
       </Component>
       <Component Id="enumerable.css" Guid="5C92605E-CB13-44D0-A2A5-1D6F436E5905">
-        <File Id="enumerable.css" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\renderers\enumerable.css"/>
+        <File Id="enumerable.css" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\renderers\enumerable.css" />
       </Component>
       <Component Id="exception.css" Guid="78ED50D0-AC9A-4232-A7DD-D6FE8B0B43FA">
-        <File Id="exception.css" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\renderers\exception.css"/>
+        <File Id="exception.css" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\renderers\exception.css" />
       </Component>
       <Component Id="help.css" Guid="5083221F-0498-49EC-BF82-92FEE2FDB310">
-        <File Id="help.css" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\renderers\help.css"/>
+        <File Id="help.css" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\renderers\help.css" />
       </Component>
       <Component Id="image.css" Guid="DBA7BCD6-5C22-4175-A206-D9357A4A26B7">
-        <File Id="image.css" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\renderers\image.css"/>
+        <File Id="image.css" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\renderers\image.css" />
       </Component>
       <Component Id="renderers.css" Guid="AF5851C2-A180-4E8C-A7AE-AB4A7AB8A7ED">
-        <File Id="renderers.css" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\renderers\renderers.css"/>
+        <File Id="renderers.css" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\renderers\renderers.css" />
       </Component>
       <Component Id="object.css" Guid="C83F0EF0-DEA8-4600-8DB2-C6C3262D1FF8">
-        <File Id="object.css" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\renderers\object.css"/>
+        <File Id="object.css" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\renderers\object.css" />
       </Component>
       <Component Id="datetime.css" Guid="D43D87D8-CB06-4628-B0A6-86010C40DD69">
-        <File Id="datetime.css" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\renderers\datetime.css"/>
+        <File Id="datetime.css" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\renderers\datetime.css" />
       </Component>
       <Component Id="map.css" Guid="6EDEF93B-333B-459D-BF99-A13DF06C409C">
-        <File Id="map.css" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\renderers\map.css"/>
+        <File Id="map.css" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\renderers\map.css" />
       </Component>
       <Component Id="verbatimhtml.css" Guid="CC08892D-A21A-4278-A5A2-C6C76645300B">
-        <File Id="verbatimhtml.css" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\renderers\verbatim-html.css"/>
+        <File Id="verbatimhtml.css" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\renderers\verbatim-html.css" />
       </Component>
       <Component Id="hexdump.css" Guid="BE097A0A-DFD8-4813-9BDE-C8931D2A04EA">
-        <File Id="hexdump.css" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\renderers\hex-dump.css"/>
+        <File Id="hexdump.css" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\renderers\hex-dump.css" />
       </Component>
     </ComponentGroup>
-
     <ComponentGroup Id="ClientReplPmtoolbarResources" Directory="InspectorResourcesReplPmtoolbar">
       <Component Id="blockquote.png" Guid="56B92508-2099-4277-9560-2001905902DF">
-        <File Id="blockquote.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\pm-toolbar\blockquote.png"/>
+        <File Id="blockquote.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\pm-toolbar\blockquote.png" />
       </Component>
       <Component Id="blockquote402x.png" Guid="748FF2BA-42F6-474D-A5C4-0DA5FE5DF317">
-        <File Id="blockquote402x.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\pm-toolbar\blockquote@2x.png"/>
+        <File Id="blockquote402x.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\pm-toolbar\blockquote@2x.png" />
       </Component>
       <Component Id="italic.png" Guid="A3D20F56-F213-4CC3-9675-1E5CBE950664">
-        <File Id="italic.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\pm-toolbar\italic.png"/>
+        <File Id="italic.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\pm-toolbar\italic.png" />
       </Component>
       <Component Id="bold.png" Guid="F9482CD1-0F78-48E4-9C1F-3F2AE65C3554">
-        <File Id="bold.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\pm-toolbar\bold.png"/>
+        <File Id="bold.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\pm-toolbar\bold.png" />
       </Component>
       <Component Id="bold402x.png" Guid="618937F8-844D-411A-AE81-647F333DCD8E">
-        <File Id="bold402x.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\pm-toolbar\bold@2x.png"/>
+        <File Id="bold402x.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\pm-toolbar\bold@2x.png" />
       </Component>
       <Component Id="italic402x.png" Guid="36ECB6A2-82A7-4893-905A-FAACEB121E6C">
-        <File Id="italic402x.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\pm-toolbar\italic@2x.png"/>
+        <File Id="italic402x.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\pm-toolbar\italic@2x.png" />
       </Component>
       <Component Id="code402x.png" Guid="37368CC7-0DBC-4883-B444-3C0688CD53EA">
-        <File Id="code402x.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\pm-toolbar\code@2x.png"/>
+        <File Id="code402x.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\pm-toolbar\code@2x.png" />
       </Component>
       <Component Id="code.png" Guid="586534CC-3132-4DB1-8009-8F8802F4A4E8">
-        <File Id="code.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\pm-toolbar\code.png"/>
+        <File Id="code.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\pm-toolbar\code.png" />
       </Component>
       <Component Id="link.png" Guid="1359CA8A-B0F6-4FF2-BCB9-16E1D5D5DF15">
-        <File Id="link.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\pm-toolbar\link.png"/>
+        <File Id="link.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\pm-toolbar\link.png" />
       </Component>
       <Component Id="link402x.png" Guid="1825DADD-2F32-4461-872F-A404FC997A69">
-        <File Id="link402x.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\pm-toolbar\link@2x.png"/>
+        <File Id="link402x.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\pm-toolbar\link@2x.png" />
       </Component>
       <Component Id="unorderedlist402x.png" Guid="E53FC117-C235-4EF2-A508-09C8A2D8B3F4">
-        <File Id="unorderedlist402x.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\pm-toolbar\unordered-list@2x.png"/>
+        <File Id="unorderedlist402x.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\pm-toolbar\unordered-list@2x.png" />
       </Component>
       <Component Id="unorderedlist.png" Guid="E352FD04-F1B7-4AE4-884D-5B399FC353BF">
-        <File Id="unorderedlist.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\pm-toolbar\unordered-list.png"/>
+        <File Id="unorderedlist.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\pm-toolbar\unordered-list.png" />
       </Component>
       <Component Id="orderedlist.png" Guid="241FC9E9-3DFB-48F7-B128-FE43ED15E87F">
-        <File Id="orderedlist.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\pm-toolbar\ordered-list.png"/>
+        <File Id="orderedlist.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\pm-toolbar\ordered-list.png" />
       </Component>
       <Component Id="orderedlist402x.png" Guid="6C34579E-7AEF-4A1F-A91F-36B20DCF75B2">
-        <File Id="orderedlist402x.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\pm-toolbar\ordered-list@2x.png"/>
+        <File Id="orderedlist402x.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\pm-toolbar\ordered-list@2x.png" />
       </Component>
       <Component Id="liftout.png" Guid="2DDCF87A-7258-41C8-836F-2E6597C33166">
-        <File Id="liftout.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\pm-toolbar\lift-out.png"/>
+        <File Id="liftout.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\pm-toolbar\lift-out.png" />
       </Component>
       <Component Id="liftout402x.png" Guid="43B66865-2AF3-4CF0-9327-E54A092BDDD9">
-        <File Id="liftout402x.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\pm-toolbar\lift-out@2x.png"/>
+        <File Id="liftout402x.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\pm-toolbar\lift-out@2x.png" />
       </Component>
       <Component Id="selectparent.png" Guid="792DBB64-976F-419E-9FCA-3375047F0EE2">
-        <File Id="selectparent.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\pm-toolbar\select-parent.png"/>
+        <File Id="selectparent.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\pm-toolbar\select-parent.png" />
       </Component>
       <Component Id="selectparent402x.png" Guid="DCCFAA7F-BBD9-4DA7-981D-16DD44B88353">
-        <File Id="selectparent402x.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\pm-toolbar\select-parent@2x.png"/>
+        <File Id="selectparent402x.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\pm-toolbar\select-parent@2x.png" />
       </Component>
       <Component Id="boldactive402x.png" Guid="516853C1-E6EB-48E5-9EEF-1ABE1E71889A">
-        <File Id="boldactive402x.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\pm-toolbar\bold-active@2x.png"/>
+        <File Id="boldactive402x.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\pm-toolbar\bold-active@2x.png" />
       </Component>
       <Component Id="boldactive.png" Guid="644A47C5-41E7-4A8F-AA37-C85436338023">
-        <File Id="boldactive.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\pm-toolbar\bold-active.png"/>
+        <File Id="boldactive.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\pm-toolbar\bold-active.png" />
       </Component>
       <Component Id="italicactive.png" Guid="A9CCFF52-8582-42F5-AF99-0B5B3831BB40">
-        <File Id="italicactive.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\pm-toolbar\italic-active.png"/>
+        <File Id="italicactive.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\pm-toolbar\italic-active.png" />
       </Component>
       <Component Id="italicactive402x.png" Guid="0CEE7DE9-AEEE-416F-9761-54917A568E4F">
-        <File Id="italicactive402x.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\pm-toolbar\italic-active@2x.png"/>
+        <File Id="italicactive402x.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\pm-toolbar\italic-active@2x.png" />
       </Component>
       <Component Id="glyph.png" Guid="4BE35F75-8D6B-47A3-A6D5-2FD564E47326">
-        <File Id="glyph.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\pm-toolbar\glyph.png"/>
+        <File Id="glyph.png" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\pm-toolbar\glyph.png" />
       </Component>
     </ComponentGroup>
-
-
     <!-- Monaco Editor Files -->
-
     <ComponentGroup Id="ClientReplMonacoEditorVsResources" Directory="InspectorResourcesReplMonacoEditorVsFolder">
       <Component Id="loader.js" Guid="B4D70917-5329-4332-9591-01D992D07C6D">
-        <File Id="loader.js" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\monaco-editor\vs\loader.js"/>
+        <File Id="loader.js" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\monaco-editor\vs\loader.js" />
       </Component>
     </ComponentGroup>
-
     <ComponentGroup Id="ClientReplMonacoEditorWorkerResources" Directory="InspectorResourcesReplMonacoEditorVsBaseWorkerFolder">
       <Component Id="workerMain.js" Guid="11C0896B-9E4F-44FA-A869-EDB0A32378B1">
-        <File Id="workerMain.js" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\monaco-editor\vs\base\worker\workerMain.js"/>
+        <File Id="workerMain.js" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\monaco-editor\vs\base\worker\workerMain.js" />
       </Component>
     </ComponentGroup>
-
     <ComponentGroup Id="ClientReplMonacoEditorBasicLanguagesSrcResources" Directory="InspectorResourcesReplMonacoEditorVsBasicLanguagesSrcFolder">
       <Component Id="csharp.js" Guid="B07C3768-A5AC-4519-ACB4-46A7BE75C1AF">
-        <File Id="csharp.js" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\monaco-editor\vs\basic-languages\src\csharp.js"/>
+        <File Id="csharp.js" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\monaco-editor\vs\basic-languages\src\csharp.js" />
       </Component>
     </ComponentGroup>
-
     <ComponentGroup Id="ClientReplMonacoEditorVsEditorResources" Directory="InspectorResourcesReplMonacoEditorVsEditorFolder">
       <Component Id="editor.main.js" Guid="98FE1CDE-7799-4120-9EBA-D22384E969DC">
-        <File Id="editor.main.js" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\monaco-editor\vs\editor\editor.main.js"/>
+        <File Id="editor.main.js" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\monaco-editor\vs\editor\editor.main.js" />
       </Component>
       <Component Id="editor.main.css" Guid="0FD4DB2B-D6CD-4E0B-8A2F-B3E82A2270DB">
-        <File Id="editor.main.css" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\monaco-editor\vs\editor\editor.main.css"/>
+        <File Id="editor.main.css" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\monaco-editor\vs\editor\editor.main.css" />
       </Component>
       <Component Id="editor.main.nls.js" Guid="531A8B90-FD59-41A5-A64F-2B857FD8DFFB">
-        <File Id="editor.main.nls.js" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\monaco-editor\vs\editor\editor.main.nls.js"/>
+        <File Id="editor.main.nls.js" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\monaco-editor\vs\editor\editor.main.nls.js" />
       </Component>
     </ComponentGroup>
-
     <ComponentGroup Id="ClientReplMinMapsVs" Directory="InspectorResourcesReplMinMapsVs">
       <Component Id="loader.js.map" Guid="E388B81D-105B-4D37-8245-E6B9F3845BF7">
-        <File Id="loader.js.map" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\min-maps\vs\loader.js.map"/>
+        <File Id="loader.js.map" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\min-maps\vs\loader.js.map" />
       </Component>
     </ComponentGroup>
-
     <ComponentGroup Id="ClientReplMinMapsVsBaseWorker" Directory="InspectorResourcesReplMinMapsVsBaseWorker">
       <Component Id="workerMain.js.map" Guid="CDE3A826-BBEC-4893-A3CB-BE44605E9B1F">
-        <File Id="workerMain.js.map" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\min-maps\vs\base\worker\workerMain.js.map"/>
+        <File Id="workerMain.js.map" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\min-maps\vs\base\worker\workerMain.js.map" />
       </Component>
     </ComponentGroup>
-
     <ComponentGroup Id="ClientReplMinMapsVsEditor" Directory="InspectorResourcesReplMinMapsVsEditor">
       <Component Id="editor.main.js.map" Guid="3049F05F-D01A-437D-9767-8C3572737992">
-        <File Id="editor.main.js.map" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\min-maps\vs\editor\editor.main.js.map"/>
+        <File Id="editor.main.js.map" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\min-maps\vs\editor\editor.main.js.map" />
       </Component>
       <Component Id="editor.main.nls.js.map" Guid="ADAEB660-A2DE-4258-8C4A-D8A5B28C6F18">
-        <File Id="editor.main.nls.js.map" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\min-maps\vs\editor\editor.main.nls.js.map"/>
+        <File Id="editor.main.nls.js.map" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\min-maps\vs\editor\editor.main.nls.js.map" />
       </Component>
     </ComponentGroup>
-
     <ComponentGroup Id="ClientSampleWorkbooks" Directory="SampleWorkbooksFolder">
       <Component Id="HelloWorkbooks.workbook" Guid="00BECB24-0D82-4932-9FE1-270F0FB07EF9">
-        <File Id="HelloWorkbooks.workbook" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\Workbooks\Hello Workbooks.workbook"/>
+        <File Id="HelloWorkbooks.workbook" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\Workbooks\Hello Workbooks.workbook" />
       </Component>
     </ComponentGroup>
-
   </Fragment>
 </Wix>
