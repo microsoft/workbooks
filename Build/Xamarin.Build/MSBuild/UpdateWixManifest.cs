@@ -38,7 +38,7 @@ namespace Xamarin.MSBuild
 
         public string IdPrefix { get; set; } = string.Empty;
         public bool ScanRecursively { get; set; } = false;
-        public string [] IncludedExtensions { get; set; } = new [] { "*.dll" };
+        public string [] IncludedExtensions { get; set; } = new [] { "dll" };
         public string [] ExcludedExtensions { get; set; } = Array.Empty<string> ();
         public bool FailOnManifestChanges { get; set; } = true;
         public bool UseHashForId { get; set; } = false;
