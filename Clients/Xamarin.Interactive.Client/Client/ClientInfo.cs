@@ -6,6 +6,7 @@
 // Licensed under the MIT License.
 
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 
@@ -25,10 +26,7 @@ namespace Xamarin.Interactive.Client
         public static ClientFlavor Flavor {
             get {
                 if (flavor == null) {
-                    if (Assembly
-                        .GetEntryAssembly ()
-                        .GetName ()
-                        .Name
+                    if (Path.GetFileName (Process.GetCurrentProcess ().MainModule.FileName)
                         .IndexOf ("workbook", StringComparison.OrdinalIgnoreCase) >= 0)
                         flavor = ClientFlavor.Workbooks;
                     else
