@@ -40,12 +40,14 @@
       SourceDirectory="$(InstallDir)Android\Framework"
       InputManifestPath="$(WixInputManifest)"
       DirectoryVariable="AndroidAppAssembliesDir"
+      IdPrefix="AndroidAgentApp"
       ComponentGroupId="AndroidAgentAppAssembliesComponents"/>
     <!-- Sometimes IDs are too long for this, so use hashes instead for Android facades. -->
     <UpdateWixManifest
       SourceDirectory="$(InstallDir)Android\Framework\Facades"
       InputManifestPath="$(WixInputManifest)"
       DirectoryVariable="AndroidAppAssembliesFacadesDir"
+      IdPrefix="AndroidAgentAppFacades"
       ComponentGroupId="AndroidAgentAppAssembliesFacadesComponents"
       UseHashForId="True"/>
   </Target>
