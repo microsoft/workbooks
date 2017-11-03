@@ -33,7 +33,9 @@ namespace Xamarin.Interactive.Client
 
         readonly HttpClient httpClient;
 
-        public Action<object> AgentMessageHandler { get; set; }
+        readonly Observable<object> messages = new Observable<object> ();
+        public IObservable<object> Messages => messages;
+
         public CancellationToken SessionCancellationToken { get; set; }
 
         public AgentClient (string host, ushort port)
@@ -83,13 +85,15 @@ namespace Xamarin.Interactive.Client
                         case MessageChannel.Ping ping:
                             break;
                         default:
-                            AgentMessageHandler?.Invoke (message);
+                            messages.Observers.OnNext (message);
                             break;
                         }
                     }, cancellationToken).GetAwaiter ().GetResult ();
                 }, cancellationToken);
             } catch {
             }
+
+            messages.Observers.OnCompleted ();
         }
 
         public Task<TargetCompilationConfiguration> InitializeEvaluationContextAsync (bool includePeImage)
