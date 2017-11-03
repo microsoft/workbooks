@@ -326,8 +326,21 @@
     </PropertyGroup>
 
     <Exec
-      Condition="'$(CodesignKeychainPassword)' != ''"
-      Command="security unlock-keychain -p &quot;$(CodesignKeychainPassword)&quot;"/>
+      Condition="'$(ProductsignIdentity)' != '' Or '$(CodesignIdentity)' != ''"
+      Command="security -v find-identity"/>
+
+    <Exec
+      Condition="'$(LoginKeychainPassword)' != ''"
+      Command="security unlock-keychain -p &quot;$(LoginKeychainPassword)&quot;"/>
+
+    <ItemGroup>
+      <CodesignItems Include="$(InstallDestDir)Applications/Xamarin Workbooks.app"/>
+      <CodesignItems Include="$(InstallDestDir)Library/Frameworks/Xamarin.Interactive.framework/Versions/Current/InspectorClient/Xamarin Inspector.app"/>
+    </ItemGroup>
+
+    <Exec
+      Condition="'$(CodesignIdentity)' != ''"
+      Command="codesign --deep --force --sign &quot;$(CodesignIdentity)&quot; &quot;%(CodesignItems.Identity)&quot;"/>
 
     <ItemGroup>
       <Replacement Include="@VERSION@">
@@ -356,10 +369,6 @@
     </ItemGroup>
     <Exec Command="@(PkgBuild, ' ')"/>
 
-    <Exec
-      Condition="'$(CodesignKey)' != ''"
-      Command="security -v find-identity"/>
-
     <ItemGroup>
       <ProductBuild Include="productbuild"/>
       <ProductBuild Include="--distribution Package\Mac\Distribution.xml"/>
@@ -367,8 +376,8 @@
       <ProductBuild Include="--resources Package\Mac\Resources"/>
       <ProductBuild Include="$(PackageFile)"/>
       <ProductBuild
-        Condition="'$(CodesignKey)' != ''"
-        Include="--sign &quot;$(CodesignKey)&quot;"/>
+        Condition="'$(ProductsignIdentity)' != ''"
+        Include="--sign &quot;$(ProductsignIdentity)&quot;"/>
     </ItemGroup>
     <Exec Command="@(ProductBuild, ' ')"/>
 
