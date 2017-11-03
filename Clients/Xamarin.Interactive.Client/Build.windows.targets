@@ -1,0 +1,8 @@
+<Project>
+  <ItemGroup>
+    <Reference Include="PresentationCore" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\CrossBrowser\Xamarin.CrossBrowser.Wpf\Xamarin.CrossBrowser.Wpf.csproj" />
+  </ItemGroup>
+</Project>
