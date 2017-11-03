@@ -49,7 +49,7 @@ namespace ApiDump
             IAstVisitor [] visitors = {
                 new PublicApiVisitor (),
                 new SortTreeVisitor (),
-                new CSharpOutputVisitor (writer, formattingPolicy)
+                new CSharpOutputVisitor (TokenWriter.Create (writer, indentation: "    "), formattingPolicy)
             };
 
             foreach (var visitor in visitors)
