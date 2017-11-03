@@ -136,8 +136,7 @@ interface WorkbookCodeEditorOptions {
   onFocus?: () => void
   onChange?: (event: WorkbookCodeEditorChangeEvent) => void
   theme?: string,
-  wordWrap?: "off" | "on" | "wordWrapColumn" | "bounded",
-  scrollbarHorizontal?: "auto" | "hidden"
+  wrapLongLines: boolean,
 }
 
 class WorkbookCodeEditor {
@@ -159,7 +158,7 @@ class WorkbookCodeEditor {
       fontSize: options.fontSize,
       overviewRulerLanes: 0, // 0 = hide overview ruler
       formatOnType: true,
-      wordWrap: options.wordWrap || 'on',
+      wordWrap: options.wrapLongLines ? "on" : "off",
       renderIndentGuides: false,
       contextmenu: false,
       cursorBlinking: 'phase',
@@ -168,7 +167,7 @@ class WorkbookCodeEditor {
       },
       scrollbar: {
         // must explicitly hide scrollbars so they don't interfere with mouse events
-        horizontal: options.scrollbarHorizontal || 'hidden',
+        horizontal: options.wrapLongLines ? "hidden" : "auto",
         vertical: 'hidden',
         handleMouseWheel: false,
         useShadows: false,
@@ -180,7 +179,7 @@ class WorkbookCodeEditor {
     this.mEditor = monaco.editor.create(
       options.placeElem, this.monacoEditorOptions)
 
-    monaco.editor.setTheme(options.theme)
+    monaco.editor.setTheme(options.theme || "vs")
     this.mEditor.onKeyDown(e => this.onKeyDown(e))
 
     if (this.options.onChange)
@@ -317,6 +316,12 @@ class WorkbookCodeEditor {
 
   setTheme(themeName: string) {
     monaco.editor.setTheme(themeName)
+  }
+
+  setWordWrap(wrapLongLines: boolean) {
+    this.monacoEditorOptions.wordWrap = wrapLongLines ? "on" : "off"
+    this.monacoEditorOptions.scrollbar.horizontal = wrapLongLines ? "hidden" : "auto"
+    this.updateOptions()
   }
 
   setShowLineNumbers(showLineNumbers: boolean) {

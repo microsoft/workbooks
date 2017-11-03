@@ -1,6 +1,6 @@
 // WARNING
 //
-// This file has been generated automatically by Xamarin Studio to store outlets and
+// This file has been generated automatically by Visual Studio to store outlets and
 // actions made in the UI designer. If it is removed, they will be lost.
 // Manual changes to this file may not be handled correctly.
 //
@@ -27,9 +27,12 @@ namespace Xamarin.Interactive.Preferences
         [Outlet]
         AppKit.NSButton showLineNumbersCheckButton { get; set; }
 
+        [Outlet]
+        AppKit.NSButton wrapLongLinesInEditorCheckButton { get; set; }
+
         [Action ("ResetAllPreferences:")]
         partial void ResetAllPreferences (Foundation.NSObject sender);
-        
+
         void ReleaseDesignerOutlets ()
         {
             if (fontSizeStepper != null) {
@@ -55,6 +58,11 @@ namespace Xamarin.Interactive.Preferences
             if (showLineNumbersCheckButton != null) {
                 showLineNumbersCheckButton.Dispose ();
                 showLineNumbersCheckButton = null;
+            }
+
+            if (wrapLongLinesInEditorCheckButton != null) {
+                wrapLongLinesInEditorCheckButton.Dispose ();
+                wrapLongLinesInEditorCheckButton = null;
             }
         }
     }

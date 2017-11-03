@@ -51,6 +51,9 @@ namespace Xamarin.Interactive.Preferences
 
             public static readonly Preference<bool> ShowExecutionTimings
                 = new Preference<bool> ("submissions.showExecutionTimings", false);
+
+            public static readonly Preference<bool> WrapLongLinesInEditor
+                = new Preference<bool> ("submissions.wrapLongLinesInEditor", true);
         }
 
         public static class Repl

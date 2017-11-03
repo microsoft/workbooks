@@ -7,6 +7,9 @@ product documentation for [Workbooks][docs-workbooks] and
 
 ## NEW & IMPROVED
 
+* Users can now choose whether long lines in the code editor should be
+  wrapped or not via a preference.
+
 ## FIXED
 
 * Additional accessibility fixes for High Contrast mode users, particularly

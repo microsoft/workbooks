@@ -76,6 +76,7 @@ namespace Xamarin.Interactive.Workbook.Views
                 o.onCursorUpDown = (ScriptFunc)HandleCursorUpDown;
                 o.onEnter = (ScriptFunc)HandleEnter;
                 o.theme = GetThemeName ();
+                o.wrapLongLines = Prefs.Submissions.WrapLongLinesInEditor.GetValue ();
             }));
 
             codeCell.CodeAnalysisBuffer.TextChanged += HandleBufferTextChanged;
@@ -90,6 +91,8 @@ namespace Xamarin.Interactive.Workbook.Views
                     codeEditor.setShowLineNumbers (Prefs.Editor.ShowLineNumbers.GetValue ());
                 else if (change.Key == Prefs.UI.Theme.UseHighContrast.Key || change.Key == Prefs.UI.Theme.ThemeName.Key)
                     codeEditor.setTheme (GetThemeName ());
+                else if (change.Key == Prefs.Submissions.WrapLongLinesInEditor.Key)
+                    codeEditor.setWordWrap (Prefs.Submissions.WrapLongLinesInEditor.GetValue ());
             });
         }
 

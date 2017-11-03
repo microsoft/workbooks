@@ -71,6 +71,11 @@
                             IsChecked="{Binding ShowSubmissionExecutionTimings, Mode=TwoWay}">
                             <TextBlock Text="Show execution timings on code cells" />
                         </CheckBox>
+                        <CheckBox
+                            Margin="0,10,0,0"
+                            IsChecked="{Binding WrapLongLinesInEditor, Mode=TwoWay}">
+                            <TextBlock Text="Wrap long lines in code cell editors" />
+                        </CheckBox>
                     </StackPanel>
                 </GroupBox>
                 <GroupBox
