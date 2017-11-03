@@ -31,12 +31,10 @@ namespace Xamarin.Interactive.Rendering
         public event EventHandler<MemberReferenceRequestArgs> MemberReferenceRequested;
         public event EventHandler<AsyncRenderCompleteEventArgs> AsyncRenderComplete;
 
-        public RendererContext (ClientSession clientSession)
+        public RendererContext (ClientSession clientSession, HtmlDocument document)
         {
-            if (clientSession == null)
-                throw new ArgumentNullException (nameof (clientSession));
-
-            ClientSession = clientSession;
+            ClientSession = clientSession
+                ?? throw new ArgumentNullException (nameof (clientSession));
 
             Options = ImmutableDictionary.Create<string, object> ().Add (
                 // Only allow getting quick references to interactive object
@@ -46,7 +44,7 @@ namespace Xamarin.Interactive.Rendering
                 clientSession.SessionKind == ClientSessionKind.LiveInspection
             );
 
-            Document = clientSession.WebView.Document;
+            Document = document;
 
             Renderers = new JavaScriptRendererRegistry (Document);
             Renderers.Initialize ();

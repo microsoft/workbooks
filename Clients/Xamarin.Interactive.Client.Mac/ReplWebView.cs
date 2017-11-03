@@ -19,11 +19,10 @@ using WebKit;
 
 using Xamarin.CrossBrowser;
 
-using Xamarin.Interactive.Core;
 using Xamarin.Interactive.Logging;
 using Xamarin.Interactive.Preferences;
-
 using Xamarin.Interactive.Client.Mac.WebDocument.MapView;
+using Xamarin.Interactive.Workbook.Views;
 
 namespace Xamarin.Interactive.Client.Mac
 {
@@ -246,11 +245,11 @@ namespace Xamarin.Interactive.Client.Mac
             {
                 // scroll to fragment/IDs via JS
                 if (!string.IsNullOrEmpty (fragment)) {
-                    ((webView as ReplWebView)
-                         ?.Window
-                         ?.WindowController as SessionWindowController)
+                    (((webView as ReplWebView)
+                        ?.Window
+                        ?.WindowController as SessionWindowController)
                         ?.Session
-                        ?.WorkbookPageView
+                        ?.WorkbookPageViewModel as XcbWorkbookPageView)
                         ?.ScrollToElementWithId (fragment);
                     return true;
                 }

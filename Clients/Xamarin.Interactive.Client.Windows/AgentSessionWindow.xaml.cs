@@ -28,7 +28,6 @@ using MahApps.Metro.Controls.Dialogs;
 
 using Xamarin.CrossBrowser;
 
-using Xamarin.Interactive.Core;
 using Xamarin.Interactive.Editor.Events;
 using Xamarin.Interactive.I18N;
 using Xamarin.Interactive.Logging;
@@ -37,6 +36,7 @@ using Xamarin.Interactive.Preferences;
 using Xamarin.Interactive.PropertyEditor;
 using Xamarin.Interactive.Workbook.LoadAndSave;
 using Xamarin.Interactive.Workbook.Structure;
+using Xamarin.Interactive.Workbook.Views;
 
 using Xamarin.Interactive.Client.Windows.ViewModels;
 using Xamarin.Interactive.Client.Windows.Views;
@@ -52,6 +52,9 @@ namespace Xamarin.Interactive.Client.Windows
         readonly MenuManager menuManager;
         NativeWebBrowserEventHandler browserEventHandler;
         IDisposable preferenceSubscription;
+        XcbWebView webView;
+
+        public ClientSession Session { get; private set; }
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -290,7 +293,7 @@ namespace Xamarin.Interactive.Client.Windows
         bool ScrollToElementWithId (string fragment)
         {
             if (!string.IsNullOrEmpty (fragment)) {
-                Session.WorkbookPageView.ScrollToElementWithId (fragment);
+                ((XcbWorkbookPageView)Session.WorkbookPageViewModel).ScrollToElementWithId (fragment);
                 return true;
             }
 
@@ -313,7 +316,7 @@ namespace Xamarin.Interactive.Client.Windows
 
             // When alt-tabbing away and back, WebBrowser focus gets lost. So we just always restore focus
             // to the browser control when this window is activated.
-            Activated += (o, e) => Session.WebView.Focus ();
+            Activated += (o, e) => webView.Focus ();
 
             // since most of the REPL is monospace and the major focus of the UI, increasing
             // the default font size by two points helps a lot for legibility and rendering
@@ -321,8 +324,8 @@ namespace Xamarin.Interactive.Client.Windows
             Prefs.UI.Font.DefaultFontSize = FontSize + 2;
             Prefs.UI.Font.MinFontSize = Prefs.UI.Font.DefaultFontSize / 2;
 
-            var styleElement = (HtmlStyleElement)Session.WebView.Document.CreateElement ("style");
-            Session.WebView.Document.Head.AppendChild (styleElement);
+            var styleElement = (HtmlStyleElement)webView.Document.CreateElement ("style");
+            webView.Document.Head.AppendChild (styleElement);
             styleElement.Sheet.InsertRule ($"body {{ font-family: '{FontFamily}' !important; }}", 0);
 
             // hack because we can't set a preferred/default 'monospace' font family globally
@@ -379,7 +382,7 @@ namespace Xamarin.Interactive.Client.Windows
                 switch (group.SelectedIndex) {
                 case 0:
                     group.Focus ();
-                    Session?.WebView?.Focus ();
+                    webView?.Focus ();
                     menuManager.RemoveMenu ((MenuItem)Resources ["viewMenu"]);
                     break;
                 case 1:
@@ -404,7 +407,7 @@ namespace Xamarin.Interactive.Client.Windows
         void UpdateFont ()
         {
             var fontSize = Prefs.UI.Font.GetSize ();
-            Session.WebView.Document.DocumentElement.Style.SetProperty ("font-size", $"{fontSize}px");
+            webView.Document.DocumentElement.Style.SetProperty ("font-size", $"{fontSize}px");
         }
 
         async void InspectModel_PropertyChanged (object sender, PropertyChangedEventArgs args)
@@ -431,7 +434,7 @@ namespace Xamarin.Interactive.Client.Windows
 
             if (!string.IsNullOrEmpty (view?.PublicCSharpType)
                 && Session.SessionKind == ClientSessionKind.LiveInspection)
-                await Session.WorkbookPageView.EvaluateAsync (
+                await Session.WorkbookPageViewModel.EvaluateAsync (
                     $"var selectedView = GetObject<{view.PublicCSharpType}> (0x{view.Handle:x})");
         }
 
@@ -541,7 +544,7 @@ namespace Xamarin.Interactive.Client.Windows
         async void OnExecuteAllCommandExecuted (object sender, ExecutedRoutedEventArgs args)
         {
             try {
-                await Session.WorkbookPageView.EvaluateAllAsync ();
+                await Session.WorkbookPageViewModel.EvaluateAllAsync ();
             } catch (Exception e) {
                 Log.Error (TAG, e);
             }
@@ -563,8 +566,8 @@ namespace Xamarin.Interactive.Client.Windows
 
         void OnAddPackageCommandExecuted (object sender, ExecutedRoutedEventArgs args)
         {
-            if (Session.WorkbookPageView != null)
-                new PackageManagerWindow (Session) {Owner = this}.ShowDialog ();
+            if (Session.CanAddPackages)
+                new PackageManagerWindow (Session) { Owner = this }.ShowDialog ();
         }
 
         void CanExecuteAddPackageCommand (object sender, CanExecuteRoutedEventArgs args)
@@ -580,8 +583,6 @@ namespace Xamarin.Interactive.Client.Windows
             else if (evnt is FocusEvent)
                 menuManager.Update (Session.Workbook.EditorHub);
         }
-
-        public ClientSession Session { get; private set; }
 
         void IObserver<ClientSessionEvent>.OnNext (ClientSessionEvent evnt)
         {
@@ -607,9 +608,9 @@ namespace Xamarin.Interactive.Client.Windows
 
         void OnSessionAvailable ()
         {
-            var replXcbWebView = new XcbWebView (replWebView) { IsContextMenuEnabled = false };
+            webView = new XcbWebView (replWebView) { IsContextMenuEnabled = false };
 
-            Session.InitializeAsync (replXcbWebView).Forget ();
+            Session.InitializeAsync (new WorkbookWebPageViewHost (webView)).Forget ();
 
             Session.Workbook.EditorHub.Events.Subscribe (
                 new Observer<EditorEvent> (HandleEditorEvent));
@@ -617,7 +618,7 @@ namespace Xamarin.Interactive.Client.Windows
             preferenceSubscription = PreferenceStore.Default.Subscribe (ObservePreferenceChange);
             ViewModel.PropertyChanged += InspectModel_PropertyChanged;
 
-            replXcbWebView.NewWindow += ReplXcbWebView_NewWindow;
+            webView.NewWindow += ReplXcbWebView_NewWindow;
         }
 
         private void ReplXcbWebView_NewWindow (string url, string targetFrame, ref bool cancel)
@@ -627,9 +628,8 @@ namespace Xamarin.Interactive.Client.Windows
 
         void OnOutlineSelected (object sender, RoutedPropertyChangedEventArgs<object> e)
         {
-            var toc = e.NewValue as Workbook.Structure.TableOfContentsNode;
-            if (toc != null)
-                Session.WorkbookPageView.ScrollToElementWithId (toc.Id);
+            if (e.NewValue is TableOfContentsNode toc)
+                ((XcbWorkbookPageView)Session.WorkbookPageViewModel).ScrollToElementWithId (toc.Id);
         }
 
         void HandleTabControlMouseDown (object sender, MouseButtonEventArgs e)

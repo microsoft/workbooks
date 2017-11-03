@@ -10,8 +10,6 @@ using System;
 using System.Globalization;
 using System.Text;
 
-using Microsoft.CodeAnalysis;
-
 using Xamarin.CrossBrowser;
 
 using Xamarin.Interactive.CodeAnalysis;
@@ -21,11 +19,10 @@ using Xamarin.Interactive.Rendering;
 using Xamarin.Interactive.Preferences;
 using Xamarin.Interactive.Workbook.Events;
 using Xamarin.Interactive.Workbook.Models;
-using Xamarin.Interactive.SystemInformation;
 
 namespace Xamarin.Interactive.Workbook.Views
 {
-    sealed class CodeCellView : CellView
+    sealed class CodeCellView : CellView, ICodeCellView
     {
         readonly Observable<IEvent> events = new Observable<IEvent> ();
         public IObservable<IEvent> Events => events;
@@ -189,9 +186,6 @@ namespace Xamarin.Interactive.Workbook.Views
                     ContentElement.RemoveCssClass ("outdated");
             }
         }
-
-        public void RenderDiagnostic (Diagnostic diagnostic)
-            => RenderDiagnostic ((InteractiveDiagnostic)diagnostic);
 
         public void RenderDiagnostic (InteractiveDiagnostic diagnostic)
         {

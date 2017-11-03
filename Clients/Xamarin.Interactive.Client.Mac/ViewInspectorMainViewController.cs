@@ -93,7 +93,7 @@ namespace Xamarin.Interactive.Client.Mac
                 && !string.IsNullOrEmpty (view?.PublicCSharpType)
                 && Session.SessionKind == ClientSessionKind.LiveInspection) {
                 var code = $"var selectedView = GetObject<{view.PublicCSharpType}> (0x{view.Handle:x})";
-                Session.WorkbookPageView.EvaluateAsync (code).Forget ();
+                Session.WorkbookPageViewModel.EvaluateAsync (code).Forget ();
             }
 
             if (withinExistingTree && representedRootView != null && view != null)
