@@ -125,9 +125,7 @@ namespace Xamarin.Interactive
                 ?? throw new InitializeException<ClientWebServer> (
                     nameof (CreateClientWebServer));
 
-            Updater = CreateUpdaterService ()
-                ?? throw new InitializeException<UpdaterService> (
-                    nameof (CreateUpdaterService));
+            Updater = CreateUpdaterService ();
 
             if (asSharedInstance)
                 SharedInstance = this;
