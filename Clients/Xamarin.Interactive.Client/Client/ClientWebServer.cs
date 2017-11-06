@@ -99,7 +99,7 @@ namespace Xamarin.Interactive.Client
                 clientResourcesSourceBasePath = clientResourcesSourceBasePath.Combine (
                     "Xamarin.Interactive.Client", "ClientApp");
 
-            if (!clientResourcesBundledBasePath.DirectoryExists)
+            if (!clientResourcesBundledBasePath.IsNull && !clientResourcesBundledBasePath.DirectoryExists)
                 throw new DirectoryNotFoundException (clientResourcesSourceBasePath);
 
             Start ();
