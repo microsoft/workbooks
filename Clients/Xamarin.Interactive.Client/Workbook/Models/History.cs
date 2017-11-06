@@ -78,6 +78,8 @@ namespace Xamarin.Interactive.Workbook.Models
             if (!persist)
                 try {
                     File.Delete (HistoryFile);
+                } catch (FileNotFoundException) {
+                } catch (DirectoryNotFoundException) {
                 } catch (Exception e) {
                     Log.Warning (
                         TAG,
