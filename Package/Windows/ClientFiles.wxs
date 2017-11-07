@@ -2,6 +2,7 @@
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
   <Fragment>
 
+    <?define WpfAgentAppDirectory="..\..\_build\$(var.Configuration)\WorkbookApps\WPF" ?>
     <ComponentGroup Id="ClientComponents" Directory="ClientInstallFolder">
 
       <!-- This ID is kept for historical purposes. Note that it does not match the filename. -->
@@ -36,6 +37,9 @@
         <File Id="XamarinInspector.exe.config" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)..\$(var.Configuration)InspectorExe\Xamarin Inspector.exe.config"/>
       </Component>
 
+      <Component Id="Xamarin.Interactive.Wpf.dll" Guid="278A9E9A-22AF-4101-BE40-C159D2F811EB">
+        <File Id="Xamarin.Interactive.Wpf.dll" Source="$(var.WpfAgentAppDirectory)\Xamarin.Interactive.Wpf.dll"/>
+      </Component>
       <Component Id="Client.Xamarin.Interactive.dll" Guid="9C8497B2-6CCA-43E0-9EB9-F97C9278453A">
         <File Id="Client.Xamarin.Interactive.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\Xamarin.Interactive.dll"/>
       </Component>
