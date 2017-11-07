@@ -284,10 +284,6 @@
       DestinationFolder="$(FrameworkInstallDir)Agents\DotNetCore"/>
   </Target>
 
-  <ItemGroup>
-    <SimCheckerFiles Include="Clients\Xamarin.Interactive.Client.Mac.SimChecker\bin\$(Configuration)\*"/>
-  </ItemGroup>
-
   <Target Name="_InstallClientAppMac">
     <PropertyGroup>
       <WorkbooksAppBundleName>Xamarin Workbooks.app</WorkbooksAppBundleName>
