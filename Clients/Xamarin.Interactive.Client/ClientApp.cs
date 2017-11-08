@@ -74,9 +74,11 @@ namespace Xamarin.Interactive
         protected ClientApp ()
             => MainThread.Initialize ();
 
-        public void Initialize (bool asSharedInstance = true)
+        public void Initialize (
+            bool asSharedInstance = true,
+            ILogProvider logProvider = null)
         {
-            Log.Initialize (new LogProvider (
+            Log.Initialize (logProvider ?? new LogProvider (
                 #if DEBUG
                 LogLevel.Debug
                 #else
