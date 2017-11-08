@@ -269,11 +269,11 @@ namespace Xamarin.Interactive.Client.Windows.Views
             // Prefer tracking to zooming if both buttons are pressed.
             if (e.LeftButton == MouseButtonState.Pressed && (Keyboard.Modifiers == ModifierKeys.None)) {
                 DragRotate (currentPosition, (float)EventSource.ActualWidth, (float)EventSource.ActualHeight);
-            } else if (e.LeftButton == MouseButtonState.Pressed && Keyboard.Modifiers.HasFlag (ModifierKeys.Control)
+            } else if (e.LeftButton == MouseButtonState.Pressed && Keyboard.Modifiers.HasFlag (ModifierKeys.Shift)
                 || e.RightButton == MouseButtonState.Pressed && (Keyboard.Modifiers == ModifierKeys.None)) {
                 DragPan (currentPosition, (float)EventSource.ActualWidth, (float)EventSource.ActualHeight);
             } else if (e.MiddleButton == MouseButtonState.Pressed
-                || (e.LeftButton == MouseButtonState.Pressed && Keyboard.Modifiers.HasFlag (ModifierKeys.Shift))) {
+                || (e.LeftButton == MouseButtonState.Pressed && Keyboard.Modifiers.HasFlag (ModifierKeys.Control))) {
                 DragZoom (currentPosition, (float)EventSource.ActualWidth, (float)EventSource.ActualHeight);
             }
         }
