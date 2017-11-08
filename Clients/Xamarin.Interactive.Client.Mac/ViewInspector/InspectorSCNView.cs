@@ -108,8 +108,11 @@ namespace Xamarin.Interactive.Client.Mac.ViewInspector
 
         public override void MouseDragged (NSEvent theEvent)
         {
-            Trackball.DragRotate (ConvertPointFromView (theEvent.LocationInWindow, null), (float)Frame.Width, (float)Frame.Height);
-
+            if (theEvent.ModifierFlags.HasFlag (NSEventModifierMask.CommandKeyMask))
+                Trackball.DragZoom (ConvertPointFromView (theEvent.LocationInWindow, null), (float)Frame.Width, (float)Frame.Height);
+            else
+                Trackball.DragRotate (ConvertPointFromView (theEvent.LocationInWindow, null), (float)Frame.Width, (float)Frame.Height);
+            
             base.MouseDragged (theEvent);
             isDragging = true;
         }
@@ -137,10 +140,15 @@ namespace Xamarin.Interactive.Client.Mac.ViewInspector
         public override void ScrollWheel (NSEvent theEvent)
         {
             base.ScrollWheel (theEvent);
-            Trackball.Pan (new Vector3 (
-                (float)(theEvent.ScrollingDeltaX / Frame.Width),
-                (float)(-theEvent.ScrollingDeltaY / Frame.Height),
-                0));
+
+            if (theEvent.ModifierFlags.HasFlag (NSEventModifierMask.CommandKeyMask)) {
+                float zoom = -(float)(theEvent.ScrollingDeltaY / Frame.Height);
+                Trackball.Zoom (new SCNVector3 (zoom, zoom, zoom)); 
+            } else 
+                Trackball.Pan (new Vector3 (
+                    (float)(theEvent.ScrollingDeltaX / Frame.Width),
+                    (float)(-theEvent.ScrollingDeltaY / Frame.Height),
+                    0));
         }
 
         public override void RotateWithEvent (NSEvent theEvent)
