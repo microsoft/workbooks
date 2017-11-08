@@ -11,8 +11,7 @@ namespace Xamarin.Interactive
 {
     sealed class Observable<T> : IObservable<T>
     {
-        ImmutableObserverCollection<T> observers;
-
+        readonly ObserverCollection<T> observers;
         public IObserver<T> Observers => observers;
 
         class Subscription : IDisposable
@@ -27,22 +26,13 @@ namespace Xamarin.Interactive
             }
 
             public void Dispose ()
-            {
-                observable.observers = observable.observers.Remove (observer);
-            }
+                => observable.observers.Remove (observer);
         }
 
-        public Observable (IObserver<T> dispatcher = null)
-        {
-            observers = ImmutableObserverCollection<T>.Create (
-                observer => new Subscription (this, observer));
-        }
+        public Observable ()
+            => observers = new ObserverCollection<T> (observer => new Subscription (this, observer));
 
         public IDisposable Subscribe (IObserver<T> observer)
-        {
-            IDisposable subscription;
-            observers = observers.Subscribe (observer, out subscription);
-            return subscription;
-        }
+            => observers.Subscribe (observer);
     }
 }

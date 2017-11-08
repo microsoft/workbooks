@@ -22,7 +22,7 @@ namespace Xamarin.Interactive.Telemetry.Objects
             => Instance = Instance ?? new Application ();
 
         readonly string flavor = ClientInfo.Flavor.ToString ().ToLowerInvariant ();
-        readonly string updateChannel = ClientApp.SharedInstance.Updater.UpdateChannel;
+        readonly string updateChannel = ClientApp.SharedInstance.Updater?.UpdateChannel;
 
         Application ()
         {
@@ -38,8 +38,10 @@ namespace Xamarin.Interactive.Telemetry.Objects
             writer.WritePropertyName ("build");
             Build.Instance.Serialize (writer);
 
-            writer.WritePropertyName ("updateChannel");
-            writer.WriteValue (updateChannel);
+            if (updateChannel != null) {
+                writer.WritePropertyName ("updateChannel");
+                writer.WriteValue (updateChannel);
+            }
         }
     }
 }

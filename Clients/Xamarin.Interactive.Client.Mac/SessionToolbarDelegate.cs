@@ -11,6 +11,7 @@ using AppKit;
 using CoreGraphics;
 
 using Xamarin.Interactive.I18N;
+using Xamarin.Interactive.Workbook.Views;
 
 namespace Xamarin.Interactive.Client.Mac
 {
@@ -141,13 +142,13 @@ namespace Xamarin.Interactive.Client.Mac
                     RemoveItem (Identifiers.Refresh);
                     if (clientSession.SessionKind != ClientSessionKind.LiveInspection)
                         toolbar.InsertItem (Identifiers.RunAll, 0);
-                    clientSession.WorkbookPageView.DelayNewCodeCellFocus = false;
+                    ((XcbWorkbookPageView)clientSession.WorkbookPageViewModel).DelayNewCodeCellFocus = false;
                     break;
                 case 1:
                     RemoveItem (Identifiers.RunAll);
                     toolbar.InsertItem (Identifiers.Inspect, 0);
                     toolbar.InsertItem (Identifiers.Refresh, 0);
-                    clientSession.WorkbookPageView.DelayNewCodeCellFocus = true;
+                    ((XcbWorkbookPageView)clientSession.WorkbookPageViewModel).DelayNewCodeCellFocus = true;
                     break;
                 }
 

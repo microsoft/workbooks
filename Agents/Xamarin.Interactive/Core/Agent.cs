@@ -33,7 +33,7 @@ namespace Xamarin.Interactive.Core
         static Agent ()
         {
             if (!Log.IsInitialized)
-                Log.Initialize (new LogProvider (LogLevel.Info));
+                Log.Initialize (new LogProvider (LogLevel.Info, null));
 
             AppDomain.CurrentDomain.AssemblyLoad += AppDomain_AssemblyLoad;
 

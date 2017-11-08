@@ -86,13 +86,9 @@ namespace Xamarin.Interactive.Client
             WorkbookAppInstallation workbookApp,
             ClientSessionUri clientSessionUri,
             IMessageService messageService,
-            Action<object> agentMessageHandler,
             Action disconnectedHandler,
             CancellationToken cancellationToken)
         {
-            if (agentMessageHandler == null)
-                throw new ArgumentNullException (nameof (agentMessageHandler));
-
             if (disconnectedHandler == null)
                 throw new ArgumentNullException (nameof (disconnectedHandler));
 
@@ -121,7 +117,6 @@ namespace Xamarin.Interactive.Client
                 throw new Exception ("IAgentTicket.GetClientAsync did not return a client");
 
             apiClient.SessionCancellationToken = cancellationToken;
-            apiClient.AgentMessageHandler = agentMessageHandler;
 
             return new AgentConnection (
                 ticket,

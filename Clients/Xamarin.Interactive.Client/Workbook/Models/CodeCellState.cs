@@ -20,7 +20,7 @@ namespace Xamarin.Interactive.Workbook.Models
         public CodeCell Cell { get; }
 
         public IEditor Editor { get; set; }
-        public CodeCellView View { get; set; }
+        public ICodeCellView View { get; set; }
         public RoslynCompilationWorkspace CompilationWorkspace { get; set; }
         public DocumentId DocumentId { get; set; }
         public Guid LastEvaluationRequestId { get; set; }

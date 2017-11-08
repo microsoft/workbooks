@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net461</TargetFramework>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <OutputType>Exe</OutputType>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Agents\Xamarin.Interactive\Xamarin.Interactive.csproj" />
+    <ProjectReference Include="..\..\Clients\Xamarin.Interactive.Client\Xamarin.Interactive.Client.csproj" />
+  </ItemGroup>
+</Project>

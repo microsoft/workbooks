@@ -7,10 +7,14 @@
 
 using System;
 
+using Xamarin.Interactive.Workbook.Views;
+
 namespace Xamarin.Interactive.Client.Mac
 {
     sealed partial class WorkbookWebViewController : SessionViewController
     {
+        IWorkbookPageHost workbookPageViewHost;
+
         WorkbookWebViewController (IntPtr handle) : base (handle)
         {
         }
@@ -30,6 +34,11 @@ namespace Xamarin.Interactive.Client.Mac
         }
 
         protected override void OnSessionAvailable ()
-            => Session.InitializeAsync (webView.XcbWebView).Forget ();
+        {
+            if (workbookPageViewHost == null)
+                workbookPageViewHost = new WorkbookWebPageViewHost (webView.XcbWebView);
+
+            Session.InitializeAsync (workbookPageViewHost).Forget ();
+        }
     }
 }

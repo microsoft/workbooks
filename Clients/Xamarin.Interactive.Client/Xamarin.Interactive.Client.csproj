@@ -40,7 +40,7 @@
     <Folder Include="SystemInformation\" />
     <Folder Include="Markdown\" />
   </ItemGroup>
-  <Import Condition="'$(OS)' == 'Windows_NT'" Project="Build.windows.targets"/>
+  <Import Condition="'$(OS)' == 'Windows_NT'" Project="Build.windows.targets" />
   <Import Project="..\..\Bootstrap\Xamarin.Interactive.Bootstrap\Xamarin.Interactive.Bootstrap.projitems" Label="Shared" Condition="Exists('..\..\Bootstrap\Xamarin.Interactive.Bootstrap\Xamarin.Interactive.Bootstrap.projitems')" />
   <Import Project="..\..\Agents\Xamarin.Interactive\Xamarin.Interactive.Shared.projitems" Label="Shared" Condition="Exists('..\..\Agents\Xamarin.Interactive\Xamarin.Interactive.Shared.projitems')" />
   <Import Project="..\..\Build\Common.targets" />

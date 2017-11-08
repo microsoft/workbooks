@@ -16,8 +16,8 @@ namespace Xamarin.Interactive.Logging
     sealed class LogProvider : ILogProvider
     {
         static readonly bool isDebuggerAttached = Debugger.IsAttached;
-        static readonly TextWriter stderr = Console.Error;
 
+        readonly TextWriter writer;
         readonly ReaderWriterLockSlim rwlock = new ReaderWriterLockSlim ();
         readonly List<LogEntry> entries = new List<LogEntry> ();
 
@@ -25,9 +25,14 @@ namespace Xamarin.Interactive.Logging
 
         public LogLevel LogLevel { get; set; }
 
-        public LogProvider (LogLevel logLevel)
+        public LogProvider (LogLevel logLevel) : this (logLevel, Console.Error)
+        {
+        }
+
+        public LogProvider (LogLevel logLevel, TextWriter writer)
         {
             LogLevel = logLevel;
+            this.writer = writer;
         }
 
         public void Commit (LogEntry entry)
@@ -45,7 +50,7 @@ namespace Xamarin.Interactive.Logging
                 if (ignoreEntry)
                     return;
 
-                stderr.WriteLine (entry);
+                writer?.WriteLine (entry);
             } finally {
                 if (!ignoreEntry) {
                     rwlock.EnterWriteLock ();

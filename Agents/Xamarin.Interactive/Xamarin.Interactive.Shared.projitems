@@ -114,7 +114,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)ISimplyObservable.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Observable.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Observer.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)ImmutableObserverCollection.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ObserverCollection.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CodeAnalysis\Compilation.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CodeAnalysis\AssemblyDefinition.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CodeAnalysis\AssemblyDependency.cs" />

@@ -11,6 +11,7 @@ using AppKit;
 using Foundation;
 
 using Xamarin.Interactive.OutlineView;
+using Xamarin.Interactive.Workbook.Views;
 
 namespace Xamarin.Interactive.Client.Mac
 {
@@ -45,7 +46,7 @@ namespace Xamarin.Interactive.Client.Mac
 
             outlineViewDelegate = new WorkbookOutlineViewDelegate (outlineView);
             outlineViewDelegate.NavigateTableOfContents += toc =>
-                Session.WorkbookPageView.ScrollToElementWithId (toc.Id);
+                ((XcbWorkbookPageView)Session.WorkbookPageViewModel).ScrollToElementWithId (toc.Id);
             outlineView.Delegate = outlineViewDelegate;
         }
 

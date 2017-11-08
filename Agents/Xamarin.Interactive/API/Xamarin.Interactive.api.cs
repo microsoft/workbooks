@@ -13,6 +13,7 @@
 [assembly: InternalsVisibleTo ("Xamarin Workbooks")]
 [assembly: InternalsVisibleTo ("Xamarin Inspector")]
 [assembly: InternalsVisibleTo ("Xamarin.Interactive.Client")]
+[assembly: InternalsVisibleTo ("Xamarin.Interactive.Client.Console")]
 [assembly: InternalsVisibleTo ("Xamarin.Interactive.Tests")]
 [assembly: InternalsVisibleTo ("Xamarin.Interactive.Tests.Mac")]
 [assembly: InternalsVisibleTo ("Xamarin.Interactive.Tests.Windows")]
