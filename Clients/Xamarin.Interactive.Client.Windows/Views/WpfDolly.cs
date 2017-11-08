@@ -162,6 +162,7 @@ namespace Xamarin.Interactive.Client.Windows.Views
 
         void SetScale (SN.Vector3 s, TimeSpan duration)
         {
+            s = ClampScale (s);
             AnimateFromVector3 (
                 scale,
                 s,
@@ -186,6 +187,7 @@ namespace Xamarin.Interactive.Client.Windows.Views
                     eventSource.MouseDown -= EventSource_MouseDown;
                     eventSource.MouseUp -= EventSource_MouseUp;
                     eventSource.MouseMove -= EventSource_MouseMove;
+                    eventSource.MouseWheel -= EventSource_MouseWheel;
                 }
 
                 eventSource = value;
@@ -195,6 +197,7 @@ namespace Xamarin.Interactive.Client.Windows.Views
                     eventSource.MouseDown += EventSource_MouseDown;
                     eventSource.MouseUp += EventSource_MouseUp;
                     eventSource.MouseMove += EventSource_MouseMove;
+                    eventSource.MouseWheel += EventSource_MouseWheel;
                 }
             }
         }
@@ -272,6 +275,14 @@ namespace Xamarin.Interactive.Client.Windows.Views
             } else if (e.MiddleButton == MouseButtonState.Pressed
                 || (e.LeftButton == MouseButtonState.Pressed && Keyboard.Modifiers.HasFlag (ModifierKeys.Shift))) {
                 DragZoom (currentPosition, (float)EventSource.ActualWidth, (float)EventSource.ActualHeight);
+            }
+        }
+
+        void EventSource_MouseWheel (object sender, MouseWheelEventArgs e)
+        {
+            if (Keyboard.Modifiers.HasFlag (ModifierKeys.Control)) {
+                var zoom = -(float)(e.Delta * .01);
+                Zoom (new SN.Vector3 (zoom, zoom, zoom));
             }
         }
 
