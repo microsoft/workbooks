@@ -35,5 +35,7 @@ namespace Xamarin.Interactive
             foreach (var workItem in queue.GetConsumingEnumerable ())
                 workItem.Key (workItem.Value);
         }
+
+        public void Complete () => queue.CompleteAdding ();
     }
 }
