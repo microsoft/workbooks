@@ -28,6 +28,7 @@ namespace Xamarin.Interactive
         public struct ClientAppPaths
         {
             public FilePath LogFileDirectory { get; }
+            public FilePath SessionLogFile { get; }
             public FilePath PreferencesDirectory { get; }
             public FilePath CacheDirectory { get; }
 
@@ -39,6 +40,9 @@ namespace Xamarin.Interactive
                 LogFileDirectory = logFileDirectory;
                 PreferencesDirectory = preferencesDirectory;
                 CacheDirectory = cacheDirectory;
+
+                SessionLogFile = LogFileDirectory.Combine (
+                    $"{ClientInfo.FullProductName} {DateTime.Now:yyyy-MM-dd}.log");
             }
         }
 
@@ -168,8 +172,8 @@ namespace Xamarin.Interactive
             }
 
             try {
-                logStream = File.Open (Paths.LogFileDirectory.Combine (
-                    $"Xamarin Inspector {DateTime.Now:yyyy-MM-dd}.log"),
+                logStream = File.Open (
+                    Paths.SessionLogFile,
                     FileMode.Append,
                     FileAccess.Write,
                     FileShare.Read);
