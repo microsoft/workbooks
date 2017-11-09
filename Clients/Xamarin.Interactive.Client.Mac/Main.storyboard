@@ -1179,6 +1179,13 @@ Gw
                                                 <action selector="showForums:" target="Ady-hI-5gd" id="cEK-MI-gSq"/>
                                             </connections>
                                         </menuItem>
+                                        <menuItem isSeparatorItem="YES" id="rgy-VH-Aks"/>
+                                        <menuItem title="Reveal Log File in Finder" id="rYd-cJ-Dwj">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="revealLogFile:" target="Ady-hI-5gd" id="dJi-Cf-OUt"/>
+                                            </connections>
+                                        </menuItem>
                                         <menuItem title="Copy Version Information" id="KYI-fp-zo4">
                                             <modifierMask key="keyEquivalentModifierMask"/>
                                             <connections>

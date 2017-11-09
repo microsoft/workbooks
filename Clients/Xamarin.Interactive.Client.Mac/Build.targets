@@ -93,6 +93,10 @@
       NewValue="Xamarin Inspector" />
     <SetPlistValue
       Plist="$(InspectorAppInfoPlist)"
+      Selector="CFBundleIdentifier"
+      NewValue="com.xamarin.Inspector" />
+    <SetPlistValue
+      Plist="$(InspectorAppInfoPlist)"
       Selector="CFBundleName"
       NewValue="Xamarin Inspector" />
     <SetPlistValue

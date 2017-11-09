@@ -198,6 +198,13 @@ namespace Xamarin.Interactive.Client.Mac
         public void ShowForums (NSObject sender)
             => NSWorkspace.SharedWorkspace.OpenUrl (ClientInfo.ForumsUri);
 
+        [Export ("revealLogFile:")]
+        public void RevealLogFile (NSObject sender)
+            => NSWorkspace.SharedWorkspace.ActivateFileViewer (
+                new [] {
+                    NSUrl.FromFilename (ClientApp.SharedInstance.Paths.SessionLogFile)
+                });
+
         [Export ("copyVersionInformation:")]
         public void CopyVersionInformation (NSObject sender)
         {

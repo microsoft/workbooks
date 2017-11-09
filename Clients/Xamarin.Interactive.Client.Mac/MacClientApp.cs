@@ -18,11 +18,14 @@ using Xamarin.Interactive.Core;
 using Xamarin.Interactive.IO;
 using Xamarin.Interactive.Preferences;
 using Xamarin.Interactive.SystemInformation;
+using Xamarin.Interactive.Logging;
 
 namespace Xamarin.Interactive.Client
 {
     sealed class MacClientApp : ClientApp
     {
+        const string TAG = nameof (MacClientApp);
+
         sealed class MacHostEnvironment : HostEnvironment
         {
             public override HostOS OSName { get; } = HostOS.macOS;
@@ -68,14 +71,72 @@ namespace Xamarin.Interactive.Client
                 NSSearchPathDomain.User,
                 true).FirstOrDefault ());
 
+            var flavor = ClientInfo.Flavor.ToString ();
+
             return new ClientAppPaths (
-                userLibraryDirectory.Combine ("Logs", "Xamarin", "Inspector"),
-                userLibraryDirectory.Combine ("Preferences", "Xamarin", "Inspector"),
-                userLibraryDirectory.Combine ("Caches", "com.xamarin.Inspector"));
+                userLibraryDirectory.Combine ("Logs", "Xamarin", flavor),
+                userLibraryDirectory.Combine ("Preferences", "Xamarin", flavor),
+                userLibraryDirectory.Combine ("Caches", $"com.xamarin.{flavor}"));
         }
 
         protected override IPreferenceStore CreatePreferenceStore ()
-            => new NSUserDefaultsPreferenceStore (synchronizeOnSet: true);
+        {
+            const string preferencesVersionKey = "preferencesVersion";
+            const string inspectorBundleId = "com.xamarin.Inspector";
+
+            var preferenceStore = new NSUserDefaultsPreferenceStore (synchronizeOnSet: true);
+
+            // Check for, and if necessary, perform a one-time preferences migration from
+            // com.xamarin.Inspector to com.xamarin.Workbooks, allowing the two client
+            // applications to more fully split (they no longer share CFBundleIdentifier)
+            if (ClientInfo.Flavor == ClientFlavor.Inspector ||
+                preferenceStore.GetInt64 (preferencesVersionKey) >= 2)
+                return preferenceStore;
+
+            var migratedPrefs = 0;
+
+            using (var inspectorDefaults = new NSUserDefaults ()) {
+                inspectorDefaults.AddSuite (inspectorBundleId);
+
+                foreach (var item in inspectorDefaults.ToDictionary ()) {
+                    if (item.Key is NSString nsKey && item.Value != null) {
+                        var key = nsKey.ToString ();
+                        switch (key) {
+                        // preserve some Cocoa/WebKit preferences
+                        case "WebKitDeveloperExtras":
+                        case "NSNavLastRootDirectory":
+                        case "NSNavRecentPlaces":
+                            break;
+                        default:
+                            // preserve all nav panel (open/save) prefs
+                            if (key.StartsWith ("NSNavPanel", StringComparison.Ordinal))
+                                break;
+
+                            // lastly, preserve our own explicit preferences
+                            if (key.StartsWith (inspectorBundleId + ".", StringComparison.Ordinal)) {
+                                key = preferenceStore.BundleId + key.Substring (inspectorBundleId.Length);
+                                break;
+                            }
+
+                            // there are tons of "junk" preferences/state stored by various
+                            // controls (e.g. frame dimensions) that I'd rather just discard
+                            continue;
+                        }
+
+                        preferenceStore.UserDefaults.SetValueForKey (item.Value, new NSString (key));
+                        migratedPrefs++;
+                    }
+                }
+
+                preferenceStore.Set (preferencesVersionKey, 2);
+                preferenceStore.UserDefaults.Synchronize ();
+
+                Log.Info (TAG, $"Migrated {migratedPrefs} preferences from " +
+                    $"{inspectorBundleId} to {preferenceStore.BundleId}");
+            }
+
+            return preferenceStore;
+        }
 
         protected override HostEnvironment CreateHostEnvironment ()
             => new MacHostEnvironment ();

@@ -15,9 +15,10 @@ namespace Xamarin.Interactive.Preferences
     sealed class NSUserDefaultsPreferenceStore : IPreferenceStore
     {
         readonly Observable<PreferenceChange> observable = new Observable<PreferenceChange> ();
-        readonly NSUserDefaults userDefaults;
-        readonly string bundleId;
         readonly bool synchronizeOnUpdate;
+
+        public NSUserDefaults UserDefaults { get; }
+        public string BundleId { get; }
 
         public NSUserDefaultsPreferenceStore (bool synchronizeOnSet = false)
             : this (NSUserDefaults.StandardUserDefaults, NSBundle.MainBundle, synchronizeOnSet)
@@ -35,61 +36,61 @@ namespace Xamarin.Interactive.Preferences
             if (bundle == null)
                 throw new ArgumentNullException (nameof (bundle));
 
-            this.userDefaults = userDefaults;
-            this.bundleId = bundle.BundleIdentifier;
+            this.UserDefaults = userDefaults;
+            this.BundleId = bundle.BundleIdentifier;
             this.synchronizeOnUpdate = synchronizeOnSet;
         }
 
-        string MakeKey (string key) => $"{bundleId}.{key}";
+        string MakeKey (string key) => $"{BundleId}.{key}";
 
         void Set (string key, Action setter)
         {
             setter ();
             if (synchronizeOnUpdate)
-                userDefaults.Synchronize ();
+                UserDefaults.Synchronize ();
             observable.Observers.OnNext (new PreferenceChange (key));
         }
 
         public void Set (string key, bool value)
-            => Set (key, () => userDefaults.SetBool (value, MakeKey (key)));
+            => Set (key, () => UserDefaults.SetBool (value, MakeKey (key)));
 
         public void Set (string key, long value)
-            => Set (key, () => userDefaults.SetInt ((nint)value, MakeKey (key)));
+            => Set (key, () => UserDefaults.SetInt ((nint)value, MakeKey (key)));
 
         public void Set (string key, double value)
-            => Set (key, () => userDefaults.SetDouble (value, MakeKey (key)));
+            => Set (key, () => UserDefaults.SetDouble (value, MakeKey (key)));
 
         public void Set (string key, string value)
-            => Set (key, () => userDefaults.SetString (value, MakeKey (key)));
+            => Set (key, () => UserDefaults.SetString (value, MakeKey (key)));
 
         public void Set (string key, string [] value)
             => Set (key, () => {
                 using (var strings = NSArray.FromStrings (value))
-                    userDefaults [MakeKey (key)] = strings;
+                    UserDefaults [MakeKey (key)] = strings;
             });
 
         public bool GetBoolean (string key, bool defaultValue = false)
-            => userDefaults [key = MakeKey (key)] == null ? defaultValue : userDefaults.BoolForKey (key);
+            => UserDefaults [key = MakeKey (key)] == null ? defaultValue : UserDefaults.BoolForKey (key);
 
         public double GetDouble (string key, double defaultValue = 0.0)
-            => userDefaults [key = MakeKey (key)] == null ? defaultValue : userDefaults.DoubleForKey (key);
+            => UserDefaults [key = MakeKey (key)] == null ? defaultValue : UserDefaults.DoubleForKey (key);
 
         public long GetInt64 (string key, long defaultValue = 0)
-            => userDefaults [key = MakeKey (key)] == null ? defaultValue : userDefaults.IntForKey (key);
+            => UserDefaults [key = MakeKey (key)] == null ? defaultValue : UserDefaults.IntForKey (key);
 
         public string GetString (string key, string defaultValue = null)
-            => userDefaults [key = MakeKey (key)] == null ? defaultValue : userDefaults.StringForKey (key);
+            => UserDefaults [key = MakeKey (key)] == null ? defaultValue : UserDefaults.StringForKey (key);
 
         public string [] GetStringArray (string key, string [] defaultValue = null)
-            => userDefaults [key = MakeKey (key)] == null
+            => UserDefaults [key = MakeKey (key)] == null
                 ? defaultValue
-                : userDefaults.StringArrayForKey (key);
+                : UserDefaults.StringArrayForKey (key);
 
         public void Remove (string key)
         {
-            userDefaults.RemoveObject (MakeKey (key));
+            UserDefaults.RemoveObject (MakeKey (key));
             if (synchronizeOnUpdate)
-                userDefaults.Synchronize ();
+                UserDefaults.Synchronize ();
             observable.Observers.OnNext (new PreferenceChange (key));
         }
 
@@ -98,10 +99,10 @@ namespace Xamarin.Interactive.Preferences
             var toNotify = Keys;
 
             foreach (var key in toNotify)
-                userDefaults.RemoveObject (key);
+                UserDefaults.RemoveObject (key);
 
             if (synchronizeOnUpdate)
-                userDefaults.Synchronize ();
+                UserDefaults.Synchronize ();
 
             foreach (var key in toNotify)
                 observable.Observers.OnNext (new PreferenceChange (key));
@@ -111,11 +112,11 @@ namespace Xamarin.Interactive.Preferences
             get {
                 var keys = ImmutableList<string>.Empty;
 
-                foreach (var nsKey in userDefaults.ToDictionary ().Keys) {
+                foreach (var nsKey in UserDefaults.ToDictionary ().Keys) {
                     var key = nsKey?.ToString ();
-                    if (key != null && key.StartsWith ($"{bundleId}.", StringComparison.Ordinal)) {
-                        userDefaults.RemoveObject (key);
-                        keys = keys.Add (key.Substring (bundleId.Length + 1));
+                    if (key != null && key.StartsWith ($"{BundleId}.", StringComparison.Ordinal)) {
+                        UserDefaults.RemoveObject (key);
+                        keys = keys.Add (key.Substring (BundleId.Length + 1));
                     }
                 }
 
