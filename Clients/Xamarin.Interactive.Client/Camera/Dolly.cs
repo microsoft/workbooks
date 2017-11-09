@@ -38,7 +38,7 @@ namespace Xamarin.Interactive.Camera
         }
 
         protected virtual void SetScale (Vector3 s)
-            => scale = VectorUtilities.ClampComponents (s, MinScale, MaxScale);
+            => scale = ClampScale (s);
 
         Vector3 position = new Vector3 ();
         protected Vector3 Position {
@@ -127,6 +127,9 @@ namespace Xamarin.Interactive.Camera
             Pan (new Vector3 { X = delta.X / width, Y = delta.Y / height, Z = 0 });
             previousLocation = location;
         }
+
+        protected Vector3 ClampScale (Vector3 s) =>
+             VectorUtilities.ClampComponents (s, MinScale, MaxScale);
 
         protected virtual Quaternion Clamp (Quaternion q)
         {
