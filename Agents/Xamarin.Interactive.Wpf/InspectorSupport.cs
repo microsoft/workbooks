@@ -15,21 +15,19 @@ using Xamarin.Interactive.Wpf;
 
 namespace Xamarin
 {
-    public static partial class InspectorSupport
+    public static class InspectorSupport
     {
+        static Agent agent;
         static string connectionInfoPipeHandle;
-
-        static partial void CreateAgent (AgentStartOptions startOptions)
-        {
-            // NOTE: This needs to be called from the main thread
-            agent = new WpfAgent ().Start (startOptions);
-        }
 
         public static void Start (string connectionInfoPipeHandle)
         {
             InspectorSupport.connectionInfoPipeHandle = connectionInfoPipeHandle;
 
-            Start ();
+            // NOTE: This needs to be called from the main thread
+            agent = new WpfAgent ().Start (new AgentStartOptions {
+                AgentStarted = AgentStarted,
+            });
         }
 
         internal static void AgentStarted (string agentConnectUri)

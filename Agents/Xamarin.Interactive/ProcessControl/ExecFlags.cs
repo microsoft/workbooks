@@ -10,7 +10,7 @@ using System;
 namespace Xamarin.ProcessControl
 {
     [Flags]
-    public enum ExecFlags
+    enum ExecFlags
     {
         None = 0 << 0,
         RedirectStdin = 1 << 0,

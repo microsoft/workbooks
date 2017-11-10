@@ -22,6 +22,7 @@ using Xamarin.Interactive.CodeAnalysis;
 using Xamarin.Interactive.Core;
 using Xamarin.Interactive.Inspection;
 using Xamarin.Interactive.Remote;
+using Xamarin.Interactive.Unified;
 
 namespace Xamarin.Interactive.iOS
 {
@@ -39,6 +40,7 @@ namespace Xamarin.Interactive.iOS
                 screenHeight: (int)UIScreen.MainScreen.Bounds.Height);
 
             RepresentationManager.AddProvider (new iOSRepresentationProvider ());
+            new UnifiedNativeHelper ().Initialize ();
 
             ViewHierarchyHandlerManager.AddViewHierarchyHandler ("UIKit", this);
         }

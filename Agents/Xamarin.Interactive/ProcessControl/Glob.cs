@@ -14,7 +14,7 @@ using System.Collections.Generic;
 
 namespace Xamarin.ProcessControl
 {
-    public static class Glob
+    static class Glob
     {
         static string [] ParseParts (string path, out string rootComponent)
         {

@@ -15,7 +15,7 @@ using Xamarin.Interactive.Serialization;
 namespace Xamarin.Interactive.Representations
 {
     [Serializable]
-    public sealed class ReplHelp : IRepresentationObject, IEnumerable<ReplHelp.Item>
+    sealed class ReplHelp : IRepresentationObject, IEnumerable<ReplHelp.Item>
     {
         [Serializable]
         public struct Item : IRepresentationObject

@@ -13,7 +13,7 @@ using System.Text;
 
 namespace Xamarin.ProcessControl
 {
-    public sealed class ConsoleRedirection
+    sealed class ConsoleRedirection
     {
         public enum FileDescriptor
         {

@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using Xamarin.Interactive.Client.AgentProcesses;
 using Xamarin.Interactive.Core;
 using Xamarin.Interactive.Messages;
+using Xamarin.Interactive.Unified;
 
 using Foundation;
 

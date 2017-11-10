@@ -6,7 +6,7 @@
     <Compile Include="..\Xamarin.Interactive.Console\MacIntegration.cs" Link="MacIntegration.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Xamarin.Interactive.NetStandard\Xamarin.Interactive.NetStandard.csproj" />
+    <ProjectReference Include="..\Xamarin.Interactive\Xamarin.Interactive.csproj" />
   </ItemGroup>
   <Import Project="..\..\Build\Common.targets" />
 </Project>

@@ -18,7 +18,7 @@ using Xamarin.Interactive.Core;
 
 namespace Xamarin.Interactive.Representations.Reflection
 {
-    public interface IReflectionRemotingVisitor
+    interface IReflectionRemotingVisitor
     {
         void VisitExceptionNode (ExceptionNode exception);
         void VisitStackTrace (StackTrace stackTrace);
@@ -30,7 +30,7 @@ namespace Xamarin.Interactive.Representations.Reflection
         void VisitTypeSpec (TypeSpec typeSpec);
     }
 
-    public class CSharpWriter : IReflectionRemotingVisitor
+    class CSharpWriter : IReflectionRemotingVisitor
     {
         public class TokenWriter
         {
@@ -409,7 +409,7 @@ namespace Xamarin.Interactive.Representations.Reflection
     }
 
     [Serializable]
-    public abstract class Node
+    abstract class Node
     {
         internal Node ()
         {
@@ -419,7 +419,7 @@ namespace Xamarin.Interactive.Representations.Reflection
     }
 
     [Serializable]
-    public sealed class ExceptionNode : Node
+    sealed class ExceptionNode : Node
     {
         public TypeSpec Type { get; set; }
         public string Message { get; set; }
@@ -453,7 +453,7 @@ namespace Xamarin.Interactive.Representations.Reflection
     }
 
     [Serializable]
-    public sealed class StackTrace : Node
+    sealed class StackTrace : Node
     {
         StackFrame [] frames;
         public IReadOnlyList<StackFrame> Frames {
@@ -505,7 +505,7 @@ namespace Xamarin.Interactive.Representations.Reflection
     }
 
     [Serializable]
-    public sealed class StackFrame : Node
+    sealed class StackFrame : Node
     {
         public string FileName { get; set; }
         public int Line { get; set; }
@@ -685,14 +685,14 @@ namespace Xamarin.Interactive.Representations.Reflection
         }
     }
 
-    public interface ITypeMember
+    interface ITypeMember
     {
         TypeSpec DeclaringType { get; }
         string Name { get; }
         void AcceptVisitor (IReflectionRemotingVisitor visitor);
     }
 
-    public static class TypeMember
+    static class TypeMember
     {
         public static ITypeMember Create (MemberInfo memberInfo)
         {
@@ -711,7 +711,7 @@ namespace Xamarin.Interactive.Representations.Reflection
     }
 
     [Serializable]
-    public sealed class Parameter : Node
+    sealed class Parameter : Node
     {
         public string Name { get; set; }
         public TypeSpec Type { get; set; }
@@ -745,7 +745,7 @@ namespace Xamarin.Interactive.Representations.Reflection
     }
 
     [Serializable]
-    public sealed class Method : Node, ITypeMember
+    sealed class Method : Node, ITypeMember
     {
         public string Name { get; set; }
         public string WrapperType { get; set; }
@@ -788,7 +788,7 @@ namespace Xamarin.Interactive.Representations.Reflection
     }
 
     [Serializable]
-    public sealed class Field : Node, ITypeMember
+    sealed class Field : Node, ITypeMember
     {
         public string Name { get; set; }
         public TypeSpec DeclaringType { get; set; }
@@ -815,7 +815,7 @@ namespace Xamarin.Interactive.Representations.Reflection
     }
 
     [Serializable]
-    public sealed class Property : Node, ITypeMember
+    sealed class Property : Node, ITypeMember
     {
         public string Name { get; set; }
         public TypeSpec DeclaringType { get; set; }

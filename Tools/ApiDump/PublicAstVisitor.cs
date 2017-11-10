@@ -30,7 +30,11 @@ namespace ApiDump
         {
             var section = (AttributeSection)attribute.Parent;
 
-            switch (((SimpleType)attribute.Type).Identifier) {
+            // Equivalent to SimpleType.Identifier and MemberType.MemberName
+            // (attribute.Type is a MemberType in the case of inner classes)
+            var attributeName = attribute.Type.GetChildByRole (Roles.Identifier).Name;
+
+            switch (attributeName) {
             case "CompilationRelaxations":
             case "RuntimeCompatibility":
             case "SecurityPermission":

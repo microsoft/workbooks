@@ -1,6 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
   <Fragment>
+
     <?define WpfAgentAppDirectory="..\..\_build\$(var.Configuration)\WorkbookApps\WPF" ?>
     <ComponentGroup Id="ClientComponents" Directory="ClientInstallFolder">
       <!-- This ID is kept for historical purposes. Note that it does not match the filename. -->
@@ -25,8 +26,9 @@
       <Component Id="XamarinInspector.exe.config" Guid="945928ce-39b4-4108-91a1-0a1181c197ad">
         <File Id="XamarinInspector.exe.config" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)..\$(var.Configuration)InspectorExe\Xamarin Inspector.exe.config" />
       </Component>
+
       <Component Id="Xamarin.Interactive.Wpf.dll" Guid="278A9E9A-22AF-4101-BE40-C159D2F811EB">
-        <File Id="Xamarin.Interactive.Wpf.dll" Source="$(var.WpfAgentAppDirectory)\Xamarin.Interactive.Wpf.dll" />
+        <File Id="Xamarin.Interactive.Wpf.dll" Source="$(var.WpfAgentAppDirectory)\Xamarin.Interactive.Wpf.dll"/>
       </Component>
       <Component Id="Client.Xamarin.Interactive.dll" Guid="9C8497B2-6CCA-43E0-9EB9-F97C9278453A">
         <File Id="Client.Xamarin.Interactive.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\Xamarin.Interactive.dll" />
@@ -175,9 +177,6 @@
       <Component Id="Microsoft.Web.XmlTransform.dll" Guid="AE3A704D-C275-4F6F-8C35-20D61298DAD7">
         <File Id="Microsoft.Web.XmlTransform.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\Microsoft.Web.XmlTransform.dll" />
       </Component>
-      <Component Id="Newtonsoft.Json.dll" Guid="A217C230-178F-4B18-B85E-C194677BD0B3">
-        <File Id="Newtonsoft.Json.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)Newtonsoft.Json.dll" />
-      </Component>
       <Component Id="NuGet.Commands.dll" Guid="2AFC9D58-CDDE-4353-94C4-E78F2B93EE01">
         <File Id="NuGet.Commands.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\NuGet.Commands.dll" />
       </Component>
@@ -223,7 +222,244 @@
       <Component Id="ThirdPartyNotices.txt" Guid="F6949505-BB74-4DA0-AA70-82CB5F5B5379">
         <File Id="ThirdPartyNotices.txt" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ThirdPartyNotices.txt" />
       </Component>
-      <Component Id="Newtonsoft.Json.dll" Guid="1CB8EA53-1859-4651-B13A-312D0C9D9023">
+      <Component Id="Microsoft.Win__.Primitives.dll" Guid="858A99D4-3F58-4D27-B10D-211DF223FE3F">
+        <File Id="Microsoft.Win__.Primitives.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\Microsoft.Win32.Primitives.dll" />
+      </Component>
+      <Component Id="netstandard.dll" Guid="EA11BD9C-6733-41FF-A27F-BA74810C6738">
+        <File Id="netstandard.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\netstandard.dll" />
+      </Component>
+      <Component Id="System.Collections.Concurrent.dll" Guid="3C27737F-60EF-4A39-B6F1-13121F206E3B">
+        <File Id="System.Collections.Concurrent.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\System.Collections.Concurrent.dll" />
+      </Component>
+      <Component Id="System.Collections.dll" Guid="C584D413-C16E-42E3-B689-06C0B7991AD1">
+        <File Id="System.Collections.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\System.Collections.dll" />
+      </Component>
+      <Component Id="System.Collections.NonGeneric.dll" Guid="E2BEA850-01C7-455B-A87A-E88E1C98C263">
+        <File Id="System.Collections.NonGeneric.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\System.Collections.NonGeneric.dll" />
+      </Component>
+      <Component Id="System.Collections.Specialized.dll" Guid="54D77B19-71B5-4AB7-820B-9198A909EEBD">
+        <File Id="System.Collections.Specialized.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\System.Collections.Specialized.dll" />
+      </Component>
+      <Component Id="System.ComponentModel.dll" Guid="3EBF80FD-542F-44D6-9814-931A6A591E6D">
+        <File Id="System.ComponentModel.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\System.ComponentModel.dll" />
+      </Component>
+      <Component Id="System.ComponentModel.EventBasedAsync.dll" Guid="7A1F3AEE-F467-4BB5-831E-47319F358F0C">
+        <File Id="System.ComponentModel.EventBasedAsync.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\System.ComponentModel.EventBasedAsync.dll" />
+      </Component>
+      <Component Id="System.ComponentModel.Primitives.dll" Guid="125EC93A-ABF5-483C-ADD8-6CE371ED1D84">
+        <File Id="System.ComponentModel.Primitives.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\System.ComponentModel.Primitives.dll" />
+      </Component>
+      <Component Id="System.ComponentModel.TypeConverter.dll" Guid="BE039193-CC07-4BFB-BA49-4F9F845A2815">
+        <File Id="System.ComponentModel.TypeConverter.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\System.ComponentModel.TypeConverter.dll" />
+      </Component>
+      <Component Id="System.Data.Common.dll" Guid="13706BB4-833B-4E87-BAC9-68F31E77E91F">
+        <File Id="System.Data.Common.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\System.Data.Common.dll" />
+      </Component>
+      <Component Id="System.Diagnostics.Contracts.dll" Guid="8AF0EBF9-1A8E-48AB-A562-89551C64B33E">
+        <File Id="System.Diagnostics.Contracts.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\System.Diagnostics.Contracts.dll" />
+      </Component>
+      <Component Id="System.Diagnostics.Debug.dll" Guid="DEAEDC72-15AF-4926-9908-9C568F09023F">
+        <File Id="System.Diagnostics.Debug.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\System.Diagnostics.Debug.dll" />
+      </Component>
+      <Component Id="System.Diagnostics.Process.dll" Guid="7217172D-5CE0-4B12-BC05-431EF89DACCB">
+        <File Id="System.Diagnostics.Process.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\System.Diagnostics.Process.dll" />
+      </Component>
+      <Component Id="System.Diagnostics.TextWriterTraceListener.dll" Guid="F881D20A-C954-4424-A1CF-941F42421B71">
+        <File Id="System.Diagnostics.TextWriterTraceListener.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\System.Diagnostics.TextWriterTraceListener.dll" />
+      </Component>
+      <Component Id="System.Diagnostics.Tools.dll" Guid="33454A52-ABA5-4829-9519-E797D4FD6C08">
+        <File Id="System.Diagnostics.Tools.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\System.Diagnostics.Tools.dll" />
+      </Component>
+      <Component Id="System.Diagnostics.TraceSource.dll" Guid="2090BB07-FAD5-49B3-A764-85B241126C0B">
+        <File Id="System.Diagnostics.TraceSource.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\System.Diagnostics.TraceSource.dll" />
+      </Component>
+      <Component Id="System.Diagnostics.Tracing.dll" Guid="7419783E-2ABE-4374-8D94-65B3635BBD77">
+        <File Id="System.Diagnostics.Tracing.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\System.Diagnostics.Tracing.dll" />
+      </Component>
+      <Component Id="System.Drawing.Primitives.dll" Guid="A85C500A-DC26-429E-803B-CDF2602507F1">
+        <File Id="System.Drawing.Primitives.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\System.Drawing.Primitives.dll" />
+      </Component>
+      <Component Id="System.Dynamic.Runtime.dll" Guid="1ECDE678-CFD0-445D-8A4F-CBF08C2D9520">
+        <File Id="System.Dynamic.Runtime.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\System.Dynamic.Runtime.dll" />
+      </Component>
+      <Component Id="System.Globalization.Calendars.dll" Guid="511B506E-A6C3-4600-ACB3-02A56465564C">
+        <File Id="System.Globalization.Calendars.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\System.Globalization.Calendars.dll" />
+      </Component>
+      <Component Id="System.Globalization.dll" Guid="9A39584A-A467-458B-A068-38019508F35A">
+        <File Id="System.Globalization.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\System.Globalization.dll" />
+      </Component>
+      <Component Id="System.Globalization.Extensions.dll" Guid="DABAB13E-4A32-47D2-B010-9EA566CA6EC5">
+        <File Id="System.Globalization.Extensions.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\System.Globalization.Extensions.dll" />
+      </Component>
+      <Component Id="System.IO.Compression.ZipFile.dll" Guid="C6D418EC-AF99-4868-8397-16A6A997394F">
+        <File Id="System.IO.Compression.ZipFile.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\System.IO.Compression.ZipFile.dll" />
+      </Component>
+      <Component Id="System.IO.dll" Guid="399F7E92-8319-4EA2-B4CE-53B88A2E2366">
+        <File Id="System.IO.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\System.IO.dll" />
+      </Component>
+      <Component Id="System.IO.FileSystem.DriveInfo.dll" Guid="ACDD604C-5B2D-4D82-9E73-6E49E6AF8FC5">
+        <File Id="System.IO.FileSystem.DriveInfo.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\System.IO.FileSystem.DriveInfo.dll" />
+      </Component>
+      <Component Id="System.IO.FileSystem.Watcher.dll" Guid="57D66E16-46A4-4363-BCAB-C0B25AAAE2B8">
+        <File Id="System.IO.FileSystem.Watcher.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\System.IO.FileSystem.Watcher.dll" />
+      </Component>
+      <Component Id="System.IO.IsolatedStorage.dll" Guid="AD38C2C6-D969-4698-B880-AB0D1B24603A">
+        <File Id="System.IO.IsolatedStorage.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\System.IO.IsolatedStorage.dll" />
+      </Component>
+      <Component Id="System.IO.MemoryMappedFiles.dll" Guid="31AEB375-046C-4E1A-AA89-EE86CC351906">
+        <File Id="System.IO.MemoryMappedFiles.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\System.IO.MemoryMappedFiles.dll" />
+      </Component>
+      <Component Id="System.IO.Pipes.dll" Guid="21C93450-1E37-4E28-BC02-F1D42ECAFC06">
+        <File Id="System.IO.Pipes.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\System.IO.Pipes.dll" />
+      </Component>
+      <Component Id="System.IO.UnmanagedMemoryStream.dll" Guid="42A9B1FC-E230-4BFF-93D0-59D9B99B060F">
+        <File Id="System.IO.UnmanagedMemoryStream.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\System.IO.UnmanagedMemoryStream.dll" />
+      </Component>
+      <Component Id="System.Linq.dll" Guid="A10305A1-882C-4568-A3D3-4B85D6F8B2F5">
+        <File Id="System.Linq.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\System.Linq.dll" />
+      </Component>
+      <Component Id="System.Linq.Expressions.dll" Guid="D4BC45D3-D457-4FD2-84E6-6ADC87A75431">
+        <File Id="System.Linq.Expressions.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\System.Linq.Expressions.dll" />
+      </Component>
+      <Component Id="System.Linq.Parallel.dll" Guid="D84EBCB7-3CEB-4D35-8246-29C951E153FC">
+        <File Id="System.Linq.Parallel.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\System.Linq.Parallel.dll" />
+      </Component>
+      <Component Id="System.Linq.Queryable.dll" Guid="3093346E-AAAC-4C09-A543-0A4C6C415B94">
+        <File Id="System.Linq.Queryable.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\System.Linq.Queryable.dll" />
+      </Component>
+      <Component Id="System.Net.Http.dll" Guid="F9ACCCB9-7E13-4973-8986-33403ECF2F06">
+        <File Id="System.Net.Http.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\System.Net.Http.dll" />
+      </Component>
+      <Component Id="System.Net.NameResolution.dll" Guid="AD37F9E8-0DCE-4D4D-AFA1-4106154ECFA8">
+        <File Id="System.Net.NameResolution.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\System.Net.NameResolution.dll" />
+      </Component>
+      <Component Id="System.Net.NetworkInformation.dll" Guid="9EC3C1D4-E1C5-4B6B-A05D-A1F633D7053A">
+        <File Id="System.Net.NetworkInformation.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\System.Net.NetworkInformation.dll" />
+      </Component>
+      <Component Id="System.Net.Ping.dll" Guid="BB75CF9A-8F1A-493C-B5BB-57D52092CB17">
+        <File Id="System.Net.Ping.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\System.Net.Ping.dll" />
+      </Component>
+      <Component Id="System.Net.Primitives.dll" Guid="C69DDF19-8FB3-4860-B5F1-E6896EC4161E">
+        <File Id="System.Net.Primitives.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\System.Net.Primitives.dll" />
+      </Component>
+      <Component Id="System.Net.Requests.dll" Guid="D1A9BF92-AFFF-407B-9A57-BEDDC5F4EC50">
+        <File Id="System.Net.Requests.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\System.Net.Requests.dll" />
+      </Component>
+      <Component Id="System.Net.Security.dll" Guid="27ED394A-AA65-43AB-8A24-1AF5A88199D4">
+        <File Id="System.Net.Security.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\System.Net.Security.dll" />
+      </Component>
+      <Component Id="System.Net.Sockets.dll" Guid="9D6B232D-2C62-4AC5-8A06-41FEAD9F21F5">
+        <File Id="System.Net.Sockets.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\System.Net.Sockets.dll" />
+      </Component>
+      <Component Id="System.Net.WebHeaderCollection.dll" Guid="B7CB8FBD-7B41-4B0A-9666-49F27BAF8FF2">
+        <File Id="System.Net.WebHeaderCollection.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\System.Net.WebHeaderCollection.dll" />
+      </Component>
+      <Component Id="System.Net.WebSockets.Client.dll" Guid="6910C76B-AB1D-495F-86B4-54903D0FD70B">
+        <File Id="System.Net.WebSockets.Client.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\System.Net.WebSockets.Client.dll" />
+      </Component>
+      <Component Id="System.Net.WebSockets.dll" Guid="658E50CB-A0CB-4A31-AE1A-DD22DF069363">
+        <File Id="System.Net.WebSockets.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\System.Net.WebSockets.dll" />
+      </Component>
+      <Component Id="System.ObjectModel.dll" Guid="D6269FFF-C6F1-4F02-970A-696D126FBB35">
+        <File Id="System.ObjectModel.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\System.ObjectModel.dll" />
+      </Component>
+      <Component Id="System.Reflection.dll" Guid="B812CB42-A707-4F8E-A188-B3D7D33E2496">
+        <File Id="System.Reflection.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\System.Reflection.dll" />
+      </Component>
+      <Component Id="System.Reflection.Extensions.dll" Guid="30A0B850-E367-4A31-8DC1-9B6406E8BA76">
+        <File Id="System.Reflection.Extensions.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\System.Reflection.Extensions.dll" />
+      </Component>
+      <Component Id="System.Reflection.Primitives.dll" Guid="596DB3FE-3642-4507-BFA2-D6CC6ADE352A">
+        <File Id="System.Reflection.Primitives.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\System.Reflection.Primitives.dll" />
+      </Component>
+      <Component Id="System.Resources.Reader.dll" Guid="4CC05F8E-38B6-4AA2-97A9-27246260FCD5">
+        <File Id="System.Resources.Reader.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\System.Resources.Reader.dll" />
+      </Component>
+      <Component Id="System.Resources.ResourceManager.dll" Guid="3AD450D0-FAA7-49DA-BD1C-9B65F54114EC">
+        <File Id="System.Resources.ResourceManager.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\System.Resources.ResourceManager.dll" />
+      </Component>
+      <Component Id="System.Resources.Writer.dll" Guid="EC9A37A7-9C86-4142-86BC-190BA953A970">
+        <File Id="System.Resources.Writer.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\System.Resources.Writer.dll" />
+      </Component>
+      <Component Id="System.Runtime.CompilerServices.VisualC.dll" Guid="A92239C6-62C9-4AEF-9992-AEEEC59CB161">
+        <File Id="System.Runtime.CompilerServices.VisualC.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\System.Runtime.CompilerServices.VisualC.dll" />
+      </Component>
+      <Component Id="System.Runtime.dll" Guid="6EDA6157-812A-49DC-B70C-D798767F2C1E">
+        <File Id="System.Runtime.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\System.Runtime.dll" />
+      </Component>
+      <Component Id="System.Runtime.Extensions.dll" Guid="C1E4D60C-AEFB-45E5-93B1-7009874B4B3D">
+        <File Id="System.Runtime.Extensions.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\System.Runtime.Extensions.dll" />
+      </Component>
+      <Component Id="System.Runtime.Handles.dll" Guid="6DBD5571-B149-4E49-BBA4-A29108A9E0B0">
+        <File Id="System.Runtime.Handles.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\System.Runtime.Handles.dll" />
+      </Component>
+      <Component Id="System.Runtime.InteropServices.dll" Guid="E50B5008-C837-46C9-AFB3-7C4775F35304">
+        <File Id="System.Runtime.InteropServices.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\System.Runtime.InteropServices.dll" />
+      </Component>
+      <Component Id="System.Runtime.InteropServices.RuntimeInformation.dll" Guid="C556B440-D112-4756-A9A9-2360BCE0BD21">
+        <File Id="System.Runtime.InteropServices.RuntimeInformation.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\System.Runtime.InteropServices.RuntimeInformation.dll" />
+      </Component>
+      <Component Id="System.Runtime.Numerics.dll" Guid="0F77548D-645D-4FD7-80AE-AF21F1165FA7">
+        <File Id="System.Runtime.Numerics.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\System.Runtime.Numerics.dll" />
+      </Component>
+      <Component Id="System.Runtime.Serialization.Formatters.dll" Guid="3B6E8E39-778A-4167-8078-4BF6634A0DE4">
+        <File Id="System.Runtime.Serialization.Formatters.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\System.Runtime.Serialization.Formatters.dll" />
+      </Component>
+      <Component Id="System.Runtime.Serialization.Json.dll" Guid="93969EC6-3DF7-4BCE-A39D-2547C6B07419">
+        <File Id="System.Runtime.Serialization.Json.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\System.Runtime.Serialization.Json.dll" />
+      </Component>
+      <Component Id="System.Runtime.Serialization.Primitives.dll" Guid="6B257264-4526-417E-945E-BF7C7A676F08">
+        <File Id="System.Runtime.Serialization.Primitives.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\System.Runtime.Serialization.Primitives.dll" />
+      </Component>
+      <Component Id="System.Runtime.Serialization.Xml.dll" Guid="4F91BE04-02D3-49EE-B8E3-70D5E9D02547">
+        <File Id="System.Runtime.Serialization.Xml.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\System.Runtime.Serialization.Xml.dll" />
+      </Component>
+      <Component Id="System.Security.Claims.dll" Guid="33B6F195-402E-4B42-A98B-E799D73A3B73">
+        <File Id="System.Security.Claims.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\System.Security.Claims.dll" />
+      </Component>
+      <Component Id="System.Security.Cryptography.Csp.dll" Guid="A6AB275B-5ED3-4C89-9E23-192FDB3B20F4">
+        <File Id="System.Security.Cryptography.Csp.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\System.Security.Cryptography.Csp.dll" />
+      </Component>
+      <Component Id="System.Security.Principal.dll" Guid="26430751-D05E-482C-9F81-A208AFB73F14">
+        <File Id="System.Security.Principal.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\System.Security.Principal.dll" />
+      </Component>
+      <Component Id="System.Security.SecureString.dll" Guid="EB9EF8F9-D525-41BC-869E-FC60F25311D9">
+        <File Id="System.Security.SecureString.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\System.Security.SecureString.dll" />
+      </Component>
+      <Component Id="System.Text.Encoding.dll" Guid="DC50AB51-CCFD-4184-B433-619ADCC491CF">
+        <File Id="System.Text.Encoding.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\System.Text.Encoding.dll" />
+      </Component>
+      <Component Id="System.Text.Encoding.Extensions.dll" Guid="E2EC52DA-A1FB-4339-A43F-23F23DB33F49">
+        <File Id="System.Text.Encoding.Extensions.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\System.Text.Encoding.Extensions.dll" />
+      </Component>
+      <Component Id="System.Text.RegularExpressions.dll" Guid="8AF73133-8F74-41FC-9DB5-5F2B98EF994E">
+        <File Id="System.Text.RegularExpressions.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\System.Text.RegularExpressions.dll" />
+      </Component>
+      <Component Id="System.Threading.dll" Guid="8831CD69-76AA-41E9-A215-A3E5739F53EA">
+        <File Id="System.Threading.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\System.Threading.dll" />
+      </Component>
+      <Component Id="System.Threading.Overlapped.dll" Guid="045456A8-CED7-4207-A6D6-04D7D9D1F389">
+        <File Id="System.Threading.Overlapped.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\System.Threading.Overlapped.dll" />
+      </Component>
+      <Component Id="System.Threading.Tasks.dll" Guid="FB0A720B-06B9-4159-81EE-0688531D27F7">
+        <File Id="System.Threading.Tasks.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\System.Threading.Tasks.dll" />
+      </Component>
+      <Component Id="System.Threading.Tasks.Parallel.dll" Guid="CB797296-0734-47C8-8DB3-71D9AF5A03E3">
+        <File Id="System.Threading.Tasks.Parallel.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\System.Threading.Tasks.Parallel.dll" />
+      </Component>
+      <Component Id="System.Threading.ThreadPool.dll" Guid="1533B743-35F6-40C5-9680-81660FBB5BA6">
+        <File Id="System.Threading.ThreadPool.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\System.Threading.ThreadPool.dll" />
+      </Component>
+      <Component Id="System.Threading.Timer.dll" Guid="B91A2C3B-9183-4AD2-BAEC-EFC14BA94894">
+        <File Id="System.Threading.Timer.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\System.Threading.Timer.dll" />
+      </Component>
+      <Component Id="System.Xml.XDocument.dll" Guid="5A6C9974-F4EF-406A-9B81-C9A6783BF657">
+        <File Id="System.Xml.XDocument.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\System.Xml.XDocument.dll" />
+      </Component>
+      <Component Id="System.Xml.XmlSerializer.dll" Guid="39B054A5-1256-4DED-B3D6-4CB0912F05BC">
+        <File Id="System.Xml.XmlSerializer.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\System.Xml.XmlSerializer.dll" />
+      </Component>
+      <Component Id="Newtonsoft.Json.dll" Guid="E046F4A3-2799-4E0D-923A-A4EA841405BF">
         <File Id="Newtonsoft.Json.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\Newtonsoft.Json.dll" />
       </Component>
     </ComponentGroup>

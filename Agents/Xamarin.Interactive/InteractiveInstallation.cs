@@ -5,14 +5,10 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
-#if !NETSTANDARD2_0
-
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-
-using Microsoft.Win32;
 
 using Xamarin.Interactive.Client;
 
@@ -22,22 +18,22 @@ namespace Xamarin.Interactive
     {
         public static InteractiveInstallation Default { get; private set; }
 
-        public static void InitializeDefault (bool isMac, string buildPath)
+        public static void InitializeDefault (
+            bool isMac,
+            string buildPath,
+            InteractiveInstallationPaths installationPaths = null)
         {
             if (Default != null)
                 throw new InvalidOperationException ("InitializeDefault has already been called");
 
-            Default = new InteractiveInstallation (isMac, buildPath, null);
+            Default = new InteractiveInstallation (isMac, buildPath, installationPaths);
         }
-
-        const string MacFrameworkInstallPath = "Library/Frameworks/Xamarin.Interactive.framework/Versions/Current";
 
         readonly Dictionary<AgentType, List<string>> agentAssemblyPaths
             = new Dictionary<AgentType, List<string>> ();
         readonly Dictionary<AgentType, List<string>> formsAgentAssemblyPaths
             = new Dictionary<AgentType, List<string>> ();
         List<string> clientAppPaths;
-        List<string> netStandardRefAssemblyPaths;
 
         readonly string workbooksClientInstallPath;
         readonly string inspectorClientInstallPath;
@@ -49,59 +45,21 @@ namespace Xamarin.Interactive
 
         public bool IsMac { get; }
 
-        public InteractiveInstallation (bool isMac, string buildPath, string installRootPath)
+        InteractiveInstallation (
+            bool isMac,
+            string buildPath,
+            InteractiveInstallationPaths installationPaths)
         {
+            IsMac = isMac;
+
             // May come in null if initialized by an installed app
             BuildPath = buildPath ?? String.Empty;
 
-            if (isMac) {
-                IsMac = true;
-                if (String.IsNullOrEmpty (installRootPath))
-                    installRootPath = "/";
-
-                workbooksClientInstallPath = Path.Combine (
-                    installRootPath,
-                    "Applications");
-
-                inspectorClientInstallPath = Path.Combine (
-                    installRootPath,
-                    MacFrameworkInstallPath,
-                    "InspectorClient");
-
-                agentsInstallPath = Path.Combine (
-                    installRootPath,
-                    MacFrameworkInstallPath);
-
-                WorkbookAppsInstallPath = agentsInstallPath;
-
-                toolsInstallPath = Path.Combine (
-                    installRootPath,
-                    MacFrameworkInstallPath,
-                    "Tools");
-
-                return;
-            }
-
-            // On Windows, client and agent assemblies are installed elsewhere
-            using (var clientExeKey = RegistryKey.OpenBaseKey (RegistryHive.LocalMachine, RegistryView.Registry32)
-                .OpenSubKey (@"Software\Xamarin\Workbooks\")) {
-                if (clientExeKey == null)
-                    return;
-
-                var clientExePath = clientExeKey.GetValue ("location") as string;
-                if (String.IsNullOrEmpty (clientExePath))
-                    return;
-
-                inspectorClientInstallPath = workbooksClientInstallPath =
-                    Path.GetDirectoryName (clientExePath);
-
-                agentsInstallPath = WorkbookAppsInstallPath =
-                    Path.GetDirectoryName (Path.GetDirectoryName (clientExePath));
-
-                // agentsInstallPath is the root of our installation in this case--it
-                // hasn't had `Agents` combined onto it yet, so this is fine.
-                toolsInstallPath = Path.Combine (agentsInstallPath, "Tools");
-            }
+            workbooksClientInstallPath = installationPaths?.WorkbooksClientInstallPath;
+            inspectorClientInstallPath = installationPaths?.InspectorClientInstallPath;
+            agentsInstallPath = installationPaths?.AgentsInstallPath;
+            WorkbookAppsInstallPath = installationPaths?.WorkbookAppsInstallPath;
+            toolsInstallPath = installationPaths?.ToolsInstallPath;
         }
 
         public string LocateFormsAssembly (AgentType agentType)
@@ -152,26 +110,6 @@ namespace Xamarin.Interactive
 
             simCheckerExecutablePaths = LocateFiles (searchPaths, "Xamarin.Interactive.Mac.SimChecker.exe").ToList ();
             return simCheckerExecutablePaths;
-        }
-
-        public string LocateNetStandardRefAssembly ()
-            => LocateNetStandardRefAssemblies ().FirstOrDefault ();
-
-        internal IReadOnlyList<string> LocateNetStandardRefAssemblies ()
-        {
-            if (netStandardRefAssemblyPaths != null)
-                return netStandardRefAssemblyPaths;
-
-            var searchPaths = new List<string> ();
-            if (agentsInstallPath != null)
-                searchPaths.Add (agentsInstallPath);
-            if (BuildPath != null)
-                searchPaths.Add (Path.Combine (
-                    BuildPath, "Agents", "Xamarin.Interactive.NetStandard"));
-
-            netStandardRefAssemblyPaths = LocateFiles (searchPaths, "ref-Xamarin.Interactive.dll").ToList ();
-
-            return netStandardRefAssemblyPaths;
         }
 
         public string LocateAgentAssembly (AgentType agentType)
@@ -317,5 +255,3 @@ namespace Xamarin.Interactive
         }
     }
 }
-
-#endif

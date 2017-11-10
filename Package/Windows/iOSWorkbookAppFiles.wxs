@@ -61,9 +61,6 @@
       <Component Id="iOSWorkbookApp.PkgInfo" Guid="906C38B5-9055-4618-BD02-3FCB7383ECBC">
         <File Id="iOSWorkbookApp.PkgInfo" Source="$(var.iOSWorkbookAppDir)\PkgInfo" />
       </Component>
-      <Component Id="iOSWorkbookApp.System.Collections.dll" Guid="C5F6DD4E-85BB-4C06-AA48-6E2B7C542B03">
-        <File Id="iOSWorkbookApp.System.Collections.dll" Source="$(var.iOSWorkbookAppDir)\System.Collections.dll" />
-      </Component>
       <Component Id="iOSWorkbookApp.System.ComponentModel.Composition.dll" Guid="D331B13D-2425-4CD6-B0C2-34B685790B5E">
         <File Id="iOSWorkbookApp.System.ComponentModel.Composition.dll" Source="$(var.iOSWorkbookAppDir)\System.ComponentModel.Composition.dll" />
       </Component>
@@ -79,32 +76,17 @@
       <Component Id="iOSWorkbookApp.System.Data.dll" Guid="CCE067DD-74FC-4AFB-90B5-4F650AABC883">
         <File Id="iOSWorkbookApp.System.Data.dll" Source="$(var.iOSWorkbookAppDir)\System.Data.dll" />
       </Component>
-      <Component Id="iOSWorkbookApp.System.Diagnostics.Debug.dll" Guid="16DC1A8E-121B-4029-8EFA-5DE8C2E412A7">
-        <File Id="iOSWorkbookApp.System.Diagnostics.Debug.dll" Source="$(var.iOSWorkbookAppDir)\System.Diagnostics.Debug.dll" />
-      </Component>
-      <Component Id="iOSWorkbookApp.System.Dynamic.Runtime.dll" Guid="D5B0C2B1-2238-4272-BCCA-9D1A6D8F812D">
-        <File Id="iOSWorkbookApp.System.Dynamic.Runtime.dll" Source="$(var.iOSWorkbookAppDir)\System.Dynamic.Runtime.dll" />
-      </Component>
-      <Component Id="iOSWorkbookApp.System.Globalization.dll" Guid="086A1E93-A857-4F30-B256-B22B26F629DF">
-        <File Id="iOSWorkbookApp.System.Globalization.dll" Source="$(var.iOSWorkbookAppDir)\System.Globalization.dll" />
-      </Component>
       <Component Id="iOSWorkbookApp.System.IO.Compression.FileSystem.dll" Guid="ED706206-9702-4748-A5A0-B0B81614B903">
         <File Id="iOSWorkbookApp.System.IO.Compression.FileSystem.dll" Source="$(var.iOSWorkbookAppDir)\System.IO.Compression.FileSystem.dll" />
       </Component>
       <Component Id="iOSWorkbookApp.System.IO.Compression.dll" Guid="1EF75F5F-82E0-4EF7-9604-73550FF3BC75">
         <File Id="iOSWorkbookApp.System.IO.Compression.dll" Source="$(var.iOSWorkbookAppDir)\System.IO.Compression.dll" />
       </Component>
-      <Component Id="iOSWorkbookApp.System.IO.dll" Guid="6EE68FE4-A6D3-4FA6-9DCD-23B94603FA45">
-        <File Id="iOSWorkbookApp.System.IO.dll" Source="$(var.iOSWorkbookAppDir)\System.IO.dll" />
-      </Component>
       <Component Id="iOSWorkbookApp.System.IdentityModel.dll" Guid="39394645-7EDD-443B-9E1D-1CD249A3A0F2">
         <File Id="iOSWorkbookApp.System.IdentityModel.dll" Source="$(var.iOSWorkbookAppDir)\System.IdentityModel.dll" />
       </Component>
       <Component Id="iOSWorkbookApp.System.Json.dll" Guid="4B54A426-D27A-4D52-BA62-EFF8CD7215FF">
         <File Id="iOSWorkbookApp.System.Json.dll" Source="$(var.iOSWorkbookAppDir)\System.Json.dll" />
-      </Component>
-      <Component Id="iOSWorkbookApp.System.Linq.dll" Guid="72216D52-DB43-4DDA-98B4-E7BFE7AF6039">
-        <File Id="iOSWorkbookApp.System.Linq.dll" Source="$(var.iOSWorkbookAppDir)\System.Linq.dll" />
       </Component>
       <Component Id="iOSWorkbookApp.System.Net.Http.WinHttpHandler.dll" Guid="6B4CAFD3-D47F-496F-ACA3-8BD4DA3B9794">
         <File Id="iOSWorkbookApp.System.Net.Http.WinHttpHandler.dll" Source="$(var.iOSWorkbookAppDir)\System.Net.Http.WinHttpHandler.dll" />
@@ -124,20 +106,8 @@
       <Component Id="iOSWorkbookApp.System.Reflection.Context.dll" Guid="06A2EB65-FB27-4442-AD60-F190CC7A5390">
         <File Id="iOSWorkbookApp.System.Reflection.Context.dll" Source="$(var.iOSWorkbookAppDir)\System.Reflection.Context.dll" />
       </Component>
-      <Component Id="iOSWorkbookApp.System.Reflection.Extensions.dll" Guid="B2A26F3E-A53E-4441-A348-B61697B3DB65">
-        <File Id="iOSWorkbookApp.System.Reflection.Extensions.dll" Source="$(var.iOSWorkbookAppDir)\System.Reflection.Extensions.dll" />
-      </Component>
-      <Component Id="iOSWorkbookApp.System.Reflection.dll" Guid="C690A01F-192E-4B5E-A77E-51B67F84938C">
-        <File Id="iOSWorkbookApp.System.Reflection.dll" Source="$(var.iOSWorkbookAppDir)\System.Reflection.dll" />
-      </Component>
-      <Component Id="iOSWorkbookApp.System.Runtime.Extensions.dll" Guid="6DB1B75D-5942-4365-8148-9DF4C9AF5CF9">
-        <File Id="iOSWorkbookApp.System.Runtime.Extensions.dll" Source="$(var.iOSWorkbookAppDir)\System.Runtime.Extensions.dll" />
-      </Component>
       <Component Id="iOSWorkbookApp.System.Runtime.Serialization.dll" Guid="839FBF95-62D2-45E5-8FF8-5066E3DC54DF">
         <File Id="iOSWorkbookApp.System.Runtime.Serialization.dll" Source="$(var.iOSWorkbookAppDir)\System.Runtime.Serialization.dll" />
-      </Component>
-      <Component Id="iOSWorkbookApp.System.Runtime.dll" Guid="C6810D91-B322-4747-A0B4-2E2A064121BE">
-        <File Id="iOSWorkbookApp.System.Runtime.dll" Source="$(var.iOSWorkbookAppDir)\System.Runtime.dll" />
       </Component>
       <Component Id="iOSWorkbookApp.System.Security.dll" Guid="EEF679E5-948C-4752-AAAC-648954132D07">
         <File Id="iOSWorkbookApp.System.Security.dll" Source="$(var.iOSWorkbookAppDir)\System.Security.dll" />
@@ -150,21 +120,6 @@
       </Component>
       <Component Id="iOSWorkbookApp.System.ServiceModel.dll" Guid="FDAE5EA7-D201-400C-8B52-3AFD82806703">
         <File Id="iOSWorkbookApp.System.ServiceModel.dll" Source="$(var.iOSWorkbookAppDir)\System.ServiceModel.dll" />
-      </Component>
-      <Component Id="iOSWorkbookApp.System.Text.Encoding.Extensions.dll" Guid="B1C1EB8C-DBC3-4027-BB36-01DE24A5922D">
-        <File Id="iOSWorkbookApp.System.Text.Encoding.Extensions.dll" Source="$(var.iOSWorkbookAppDir)\System.Text.Encoding.Extensions.dll" />
-      </Component>
-      <Component Id="iOSWorkbookApp.System.Text.Encoding.dll" Guid="91D87D9F-2268-469A-8B47-D61D80B107F9">
-        <File Id="iOSWorkbookApp.System.Text.Encoding.dll" Source="$(var.iOSWorkbookAppDir)\System.Text.Encoding.dll" />
-      </Component>
-      <Component Id="iOSWorkbookApp.System.Text.RegularExpressions.dll" Guid="E7C33DCC-A235-4384-984F-9966488CCF81">
-        <File Id="iOSWorkbookApp.System.Text.RegularExpressions.dll" Source="$(var.iOSWorkbookAppDir)\System.Text.RegularExpressions.dll" />
-      </Component>
-      <Component Id="iOSWorkbookApp.System.Threading.Tasks.dll" Guid="C5CD48EF-42A9-4E4C-9A03-D2D3A77F8BF0">
-        <File Id="iOSWorkbookApp.System.Threading.Tasks.dll" Source="$(var.iOSWorkbookAppDir)\System.Threading.Tasks.dll" />
-      </Component>
-      <Component Id="iOSWorkbookApp.System.Threading.dll" Guid="D968CC6F-FB6F-452D-8AD6-38953843739F">
-        <File Id="iOSWorkbookApp.System.Threading.dll" Source="$(var.iOSWorkbookAppDir)\System.Threading.dll" />
       </Component>
       <Component Id="iOSWorkbookApp.System.Transactions.dll" Guid="BC4373BD-8384-47CC-AAB3-C3E0EA1CC237">
         <File Id="iOSWorkbookApp.System.Transactions.dll" Source="$(var.iOSWorkbookAppDir)\System.Transactions.dll" />
@@ -210,6 +165,36 @@
       </Component>
       <Component Id="iOSWorkbookApp.runtime_options.plist" Guid="9E336B17-ACEE-4CC1-9E1F-A08F0D716528">
         <File Id="iOSWorkbookApp.runtime_options.plist" Source="$(var.iOSWorkbookAppDir)\runtime-options.plist" />
+      </Component>
+      <Component Id="iOSWorkbookApp.netstandard.dll" Guid="6D496CED-C6ED-4E7F-AE8E-72EC7BF1F0E5">
+        <File Id="iOSWorkbookApp.netstandard.dll" Source="$(var.iOSWorkbookAppDir)\netstandard.dll" />
+      </Component>
+      <Component Id="iOSWorkbookApp.OpenTK__._.dll.config" Guid="3C0A4227-22F2-4112-AEF3-2E06F6CADADF">
+        <File Id="iOSWorkbookApp.OpenTK__._.dll.config" Source="$(var.iOSWorkbookAppDir)\OpenTK-1.0.dll.config" />
+      </Component>
+      <Component Id="iOSWorkbookApp.System.Diagnostics.StackTrace.dll" Guid="5BBCECEC-6F15-4E4B-B8FD-93547D1C7AA5">
+        <File Id="iOSWorkbookApp.System.Diagnostics.StackTrace.dll" Source="$(var.iOSWorkbookAppDir)\System.Diagnostics.StackTrace.dll" />
+      </Component>
+      <Component Id="iOSWorkbookApp.System.Globalization.Extensions.dll" Guid="27ED654B-1B2F-4546-95AD-2021999138FE">
+        <File Id="iOSWorkbookApp.System.Globalization.Extensions.dll" Source="$(var.iOSWorkbookAppDir)\System.Globalization.Extensions.dll" />
+      </Component>
+      <Component Id="iOSWorkbookApp.System.Runtime.InteropServices.RuntimeInformation.dll" Guid="186DB0D5-E23A-4F07-BAF8-14E8D4116F45">
+        <File Id="iOSWorkbookApp.System.Runtime.InteropServices.RuntimeInformation.dll" Source="$(var.iOSWorkbookAppDir)\System.Runtime.InteropServices.RuntimeInformation.dll" />
+      </Component>
+      <Component Id="iOSWorkbookApp.System.Runtime.Serialization.Primitives.dll" Guid="C7ADA62D-8042-4673-8CED-39825AC04804">
+        <File Id="iOSWorkbookApp.System.Runtime.Serialization.Primitives.dll" Source="$(var.iOSWorkbookAppDir)\System.Runtime.Serialization.Primitives.dll" />
+      </Component>
+      <Component Id="iOSWorkbookApp.System.Runtime.Serialization.Xml.dll" Guid="9DE82219-F38A-4B7A-9C62-A8FEA106D5CF">
+        <File Id="iOSWorkbookApp.System.Runtime.Serialization.Xml.dll" Source="$(var.iOSWorkbookAppDir)\System.Runtime.Serialization.Xml.dll" />
+      </Component>
+      <Component Id="iOSWorkbookApp.System.Security.Cryptography.Algorithms.dll" Guid="C02B77F2-3C8F-4CF8-AC7D-E5BD792E806C">
+        <File Id="iOSWorkbookApp.System.Security.Cryptography.Algorithms.dll" Source="$(var.iOSWorkbookAppDir)\System.Security.Cryptography.Algorithms.dll" />
+      </Component>
+      <Component Id="iOSWorkbookApp.System.Security.SecureString.dll" Guid="22526FD0-A47A-47C1-A0E2-B0900B889B58">
+        <File Id="iOSWorkbookApp.System.Security.SecureString.dll" Source="$(var.iOSWorkbookAppDir)\System.Security.SecureString.dll" />
+      </Component>
+      <Component Id="iOSWorkbookApp.System.Xml.XPath.XDocument.dll" Guid="EC1C4CFA-0552-4272-879C-B6CAA732C5F4">
+        <File Id="iOSWorkbookApp.System.Xml.XPath.XDocument.dll" Source="$(var.iOSWorkbookAppDir)\System.Xml.XPath.XDocument.dll" />
       </Component>
     </ComponentGroup>
     <ComponentGroup Id="iOSWorkbookAppStoryboardComponents" Directory="iOSAgentAppStoryboardInstallFolder">

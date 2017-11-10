@@ -18,6 +18,7 @@ using Xamarin.Interactive.Logging;
 using Xamarin.Interactive.Messages;
 using Xamarin.Interactive.MTouch;
 using Xamarin.Interactive.I18N;
+using Xamarin.Interactive.Unified;
 
 using AppKit;
 using Foundation;

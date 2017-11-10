@@ -26,7 +26,7 @@ namespace Xamarin.Interactive
 
         public static void LaunchClientAppForDebugging (Agent agent)
         {
-#if !NETSTANDARD2_0 && DEBUG
+#if DEBUG
             if (!Debugger.IsAttached)
                 return;
 

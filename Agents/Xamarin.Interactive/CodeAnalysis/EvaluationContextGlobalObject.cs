@@ -103,8 +103,8 @@ namespace Xamarin.Interactive.CodeAnalysis
             return cachedHelp;
         }
 
-        [InteractiveHelp (Description = "This help text")]
-        public ReplHelp help => GetCachedHelp ();
+        [InteractiveHelp (Description = "This help text", ShowReturnType = false)]
+        public object help => GetCachedHelp ();
 
         [InteractiveHelp (Description = "Direct public access to the agent powering the interactive session")]
         public IAgent InteractiveAgent => agent;

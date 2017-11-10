@@ -69,8 +69,8 @@ namespace Xamarin.Interactive.Tests
             },
             new PackageInstallData {
                 Id = "Xamarin.Forms",
-                VersionToInstall = new NuGetVersion (2, 3, 4, 231),
-                ExpectedInstalled = new NuGetVersion (2, 3, 4, 231),
+                VersionToInstall = InteractivePackageManager.FixedXamarinFormsPackageIdentity.Version,
+                ExpectedInstalled = InteractivePackageManager.FixedXamarinFormsPackageIdentity.Version,
             },
             new PackageInstallData {
                 Id = "Newtonsoft.Json",
@@ -80,12 +80,12 @@ namespace Xamarin.Interactive.Tests
             new PackageInstallData {
                 Id = "Xamarin.Forms",
                 VersionToInstall = new NuGetVersion (2, 3, 3, 180),
-                ExpectedInstalled = new NuGetVersion (2, 3, 4, 231),
+                ExpectedInstalled = InteractivePackageManager.FixedXamarinFormsPackageIdentity.Version,
             },
             new PackageInstallData {
                 Id = "Xamarin.Forms",
-                VersionToInstall = new NuGetVersion (2, 3, 5, 233, "pre1", string.Empty),
-                ExpectedInstalled = new NuGetVersion (2, 3, 4, 231),
+                VersionToInstall = new NuGetVersion (2, 5, 0, 19271, "pre2", string.Empty),
+                ExpectedInstalled = InteractivePackageManager.FixedXamarinFormsPackageIdentity.Version,
             },
             new PackageInstallData {
                 Id = "semver",

@@ -52,22 +52,26 @@ namespace Xamarin.Interactive.Tests.InspectorSupport.Mac
             Console.WriteLine ($"  path:  {agentAssemblyPath}");
             Console.WriteLine ($"  mtime: {File.GetLastWriteTime (agentAssemblyPath)}");
 
+            Assembly.LoadFrom (Path.Combine (
+                Path.GetDirectoryName (InteractiveInstallation.Default.LocateAgentAssembly (AgentType.Console)),
+                "netstandard.dll"));
+
             inspectorSupportType = Assembly
                 .LoadFrom (agentAssemblyPath)
                 .GetType ("Xamarin.InspectorSupport");
 
             inspectorSupportType
                 .GetField ("AgentStartedHandler", bindingFlags)
-                .SetValue (null, new Action<object> (AgentStarted));
+                .SetValue (null, new Action<string> (AgentStarted));
 
             inspectorSupportType
                 .GetMethod ("Start", bindingFlags)
                 .Invoke (null, null);
         }
 
-        static void AgentStarted (object agent)
+        static void AgentStarted (string agentConnectUri)
         {
-            Console.WriteLine ($"AgentStarted invoked: {agent}. Success.");
+            Console.WriteLine ($"AgentStarted invoked: {agentConnectUri}. Success.");
             exit (0);
         }
     }

@@ -69,7 +69,7 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <WorkbooksIntegrationNuGetPackageVersion>1.0.0-rc4</WorkbooksIntegrationNuGetPackageVersion>
+    <WorkbooksIntegrationNuGetPackageVersion>1.0.0-rc5</WorkbooksIntegrationNuGetPackageVersion>
   </PropertyGroup>
 
   <Target Name="BuildAndTest">
@@ -198,8 +198,8 @@
   </Target>
 
   <ItemGroup>
-    <SDKFiles Include="Agents\Xamarin.Interactive\bin\$(Configuration)\Xamarin.Interactive.dll" />
-    <SDKFiles Include="Agents\Xamarin.Interactive\bin\$(Configuration)\Xamarin.Interactive.pdb" />
+    <SDKFiles Include="Agents\Xamarin.Interactive\bin\$(Configuration)\netstandard2.0\Xamarin.Interactive.dll" />
+    <SDKFiles Include="Agents\Xamarin.Interactive\bin\$(Configuration)\netstandard2.0\Xamarin.Interactive.pdb" />
     <SDKFiles Include="Clients\Xamarin.Interactive.Client\ClientApp\typings\xamarin-interactive.d.ts"/>
   </ItemGroup>
 
@@ -233,14 +233,19 @@
 
   <ItemGroup>
     <AndroidAgentFiles Include="Agents\Xamarin.Interactive.Android\bin\$(Configuration)\monoandroid\*"/>
+    <AndroidAgentFiles Include="_build\$(Configuration)\WorkbookApps\Console\netstandard.dll"/>
     <AndroidFormsAgentFiles Include="Agents\Xamarin.Interactive.Forms.Android\bin\$(Configuration)\monoandroid\*"/>
+    <AndroidFormsAgentFiles Include="_build\$(Configuration)\WorkbookApps\Console\netstandard.dll"/>
     <iOSAgentFiles Include="Agents\Xamarin.Interactive.iOS\bin\$(Configuration)\Xamarin.iOS10\*"/>
+    <iOSAgentFiles Include="_build\$(Configuration)\WorkbookApps\Console\netstandard.dll"/>
     <iOSFormsAgentFiles Include="Agents\Xamarin.Interactive.Forms.iOS\bin\$(Configuration)\Xamarin.iOS10\*"/>
+    <iOSFormsAgentFiles Include="_build\$(Configuration)\WorkbookApps\Console\netstandard.dll"/>
     <MacMobileAgentFiles Include="Agents\Xamarin.Interactive.Mac.Mobile\bin\$(Configuration)\Net45\*"/>
+    <MacMobileAgentFiles Include="_build\$(Configuration)\WorkbookApps\Console\netstandard.dll"/>
     <MacDesktopAgentFiles Include="Agents\Xamarin.Interactive.Mac.Desktop\bin\$(Configuration)\Net45\*"/>
+    <MacDesktopAgentFiles Include="_build\$(Configuration)\WorkbookApps\Console\netstandard.dll"/>
     <ConsoleAgentFiles Include="Agents\Xamarin.Interactive.Console\bin\$(Configuration)\*"/>
     <DotNetCoreAgentFiles Include="Agents\Xamarin.Interactive.DotNetCore\bin\$(Configuration)\netstandard2.0\*"/>
-    <ReferenceAssemblyFile Include="Agents\Xamarin.Interactive.NetStandard\bin\$(Configuration)\netstandard2.0\ref-Xamarin.Interactive.dll"/>
   </ItemGroup>
 
   <Target Name="_InstallAgentsMac">
@@ -275,10 +280,6 @@
     <Copy
       SkipUnchangedFiles="true"
       SourceFiles="@(DotNetCoreAgentFiles)"
-      DestinationFolder="$(FrameworkInstallDir)Agents\DotNetCore"/>
-    <Copy
-      SkipUnchangedFiles="true"
-      SourceFiles="@(ReferenceAssemblyFile)"
       DestinationFolder="$(FrameworkInstallDir)Agents\DotNetCore"/>
   </Target>
 
@@ -395,8 +396,8 @@
 
   <Target Name="PackageNuGet" DependsOnTargets="Xamarin_Build_ReadAllProperties">
     <PropertyGroup>
-      <AgentPcl>$(MSBuildThisFileDirectory)Agents\Xamarin.Interactive\bin\$(Configuration)\Xamarin.Interactive.dll</AgentPcl>
-      <StrippedPcl>$(MSBuildThisFileDirectory)Agents\Xamarin.Interactive\bin\$(Configuration)\Xamarin.Interactive.Stripped.dll</StrippedPcl>
+      <AgentPcl>$(MSBuildThisFileDirectory)Agents\Xamarin.Interactive\bin\$(Configuration)\netstandard2.0\Xamarin.Interactive.dll</AgentPcl>
+      <StrippedPcl>$(MSBuildThisFileDirectory)Agents\Xamarin.Interactive\bin\$(Configuration)\netstandard2.0\Xamarin.Interactive.Stripped.dll</StrippedPcl>
     </PropertyGroup>
     <Exec Command="$(CILStrip) &quot;$(AgentPcl)&quot; &quot;$(StrippedPcl)&quot;"/>
     <Error Text="NuGet is not provisioned" Condition="!Exists('$(NuGet)')"/>
@@ -473,7 +474,7 @@
       Projects="Tools\ApiDump\ApiDump.csproj;Agents\Xamarin.Interactive\Xamarin.Interactive.csproj"
       Properties="Configuration=Release"
       Targets="Build"/>
-    <Exec Command="Tools\ApiDump\ApiDump.exe Agents\Xamarin.Interactive\bin/Release\Xamarin.Interactive.dll -o Agents\Xamarin.Interactive\API\Xamarin.Interactive.api.cs"/>
+    <Exec Command="Tools\ApiDump\ApiDump.exe Agents\Xamarin.Interactive\bin\Release\netstandard2.0\Xamarin.Interactive.dll -o Agents\Xamarin.Interactive\API\Xamarin.Interactive.api.cs"/>
   </Target>
 
   <Target

@@ -14,6 +14,7 @@ using Foundation;
 using Xamarin.Interactive;
 using Xamarin.Interactive.Logging;
 using Xamarin.Interactive.Remote;
+using Xamarin.Interactive.Unified;
 
 namespace Xamarin.Interactive.Client.Mac.ViewInspector
 {

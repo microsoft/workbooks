@@ -72,10 +72,13 @@
   <ItemGroup>
     <Compile Include="Main.cs" />
     <Compile Include="AppDelegate.cs" />
-    <Compile Include="..\..\Bootstrap\Xamarin.Interactive.Bootstrap\InteractiveInstallation.cs">
+    <Compile Include="..\..\Agents\Xamarin.Interactive\InteractiveInstallation.cs">
       <Link>InteractiveInstallation.cs</Link>
     </Compile>
-    <Compile Include="..\..\Bootstrap\Xamarin.Interactive.Bootstrap\ClientSessionKind.cs">
+    <Compile Include="..\..\Agents\Xamarin.Interactive\InteractiveInstallationPaths.cs">
+      <Link>InteractiveInstallationPaths.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Agents\Xamarin.Interactive\ClientSessionKind.cs">
       <Link>ClientSessionKind.cs</Link>
     </Compile>
     <Compile Include="..\..\Agents\Xamarin.Interactive\AgentType.cs">

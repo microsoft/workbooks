@@ -12,6 +12,7 @@ using AppKit;
 using ObjCRuntime;
 
 using Xamarin.Interactive.Logging;
+using Xamarin.Interactive.Unified;
 
 namespace Xamarin.Interactive.Client.Mac
 {

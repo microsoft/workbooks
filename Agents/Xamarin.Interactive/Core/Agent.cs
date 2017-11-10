@@ -257,8 +257,7 @@ namespace Xamarin.Interactive.Core
                 Identity.Host,
                 Identity.Port);
 
-            InspectorSupport.AgentStarted (ClientSessionUri);
-            InspectorSupport.AgentStartedHandler?.Invoke (this);
+            startOptions?.AgentStarted?.Invoke (ClientSessionUri);
 
             try {
                 var identifyAgentRequest = GetIdentifyAgentRequest ();

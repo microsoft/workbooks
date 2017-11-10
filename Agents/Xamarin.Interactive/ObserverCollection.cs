@@ -11,7 +11,7 @@ using Xamarin.Interactive.Collections;
 
 namespace Xamarin.Interactive
 {
-    public class ObserverCollection<T> : IObserver<T>
+    class ObserverCollection<T> : IObserver<T>
     {
         readonly Func<IObserver<T>, IDisposable> subscribeHandler;
         ImmutableList<IObserver<T>> observers = ImmutableList<IObserver<T>>.Empty;

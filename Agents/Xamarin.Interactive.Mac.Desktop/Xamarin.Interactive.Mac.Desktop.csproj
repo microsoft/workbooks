@@ -52,8 +52,6 @@
     <Reference Include="System.Core" />
     <Reference Include="Xamarin.Mac" />
   </ItemGroup>
-  <Import Project="..\Xamarin.Interactive\Xamarin.Interactive.Shared.projitems" Label="Shared" Condition="Exists('..\Xamarin.Interactive\Xamarin.Interactive.Shared.projitems')" />
-  <Import Project="..\..\Bootstrap\Xamarin.Interactive.Bootstrap\Xamarin.Interactive.Bootstrap.projitems" Label="Shared" Condition="Exists('..\..\Bootstrap\Xamarin.Interactive.Bootstrap\Xamarin.Interactive.Bootstrap.projitems')" />
   <Import Project="..\Xamarin.Interactive.Mac\Xamarin.Interactive.Mac.projitems" Label="Shared" Condition="Exists('..\Xamarin.Interactive.Mac\Xamarin.Interactive.Mac.projitems')" />
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Mac\Xamarin.Mac.CSharp.targets" />
   <ItemGroup>

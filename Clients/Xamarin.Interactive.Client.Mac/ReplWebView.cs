@@ -22,6 +22,7 @@ using Xamarin.CrossBrowser;
 using Xamarin.Interactive.Logging;
 using Xamarin.Interactive.Preferences;
 using Xamarin.Interactive.Client.Mac.WebDocument.MapView;
+using Xamarin.Interactive.Unified;
 using Xamarin.Interactive.Workbook.Views;
 
 namespace Xamarin.Interactive.Client.Mac

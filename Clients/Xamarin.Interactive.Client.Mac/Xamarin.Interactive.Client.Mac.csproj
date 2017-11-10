@@ -339,6 +339,9 @@
     <Compile Include="..\..\Agents\Xamarin.Interactive.Mac\UnifiedExtensions.cs">
       <Link>UnifiedExtensions.cs</Link>
     </Compile>
+    <Compile Include="..\..\Agents\Xamarin.Interactive.Mac\NativeExceptionHandler.cs">
+      <Link>NativeExceptionHandler.cs</Link>
+    </Compile>
     <Compile Include="Xamarin.Mac\StoryboardExtensions.cs" />
     <Compile Include="SystemInformation\VisualStudioForMacComponent.cs" />
     <Compile Include="Preferences\WebKitPrefs.cs" />

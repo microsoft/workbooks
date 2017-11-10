@@ -87,7 +87,7 @@ namespace Xamarin.Interactive.Forms.Android
         {
             var activity = realAgent.ActivityTracker?.StartedActivities?.FirstOrDefault ();
             var formsView = Xamarin.Forms.Application.Current.MainPage;
-            var nativeViewGroup = Platform.GetRenderer (formsView).ViewGroup;
+            var nativeViewGroup = Platform.GetRenderer (formsView).View;
             var parentToRestore = (ViewGroup) nativeViewGroup.Parent;
 
             while (parentToRestore.Parent != null)

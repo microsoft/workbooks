@@ -29,6 +29,7 @@ namespace Xamarin.Interactive.Tests
                 basePath,
                 "bin",
                 TestHelpers.Configuration,
+                "netstandard2.0",
                 assemblyFileName);
             apiReference = Path.Combine (basePath, apiReference);
 

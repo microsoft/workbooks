@@ -13,7 +13,7 @@ using System.Collections.Generic;
 namespace Xamarin.Interactive.Core
 {
     [Serializable]
-    public sealed class TypeSpec
+    sealed class TypeSpec
     {
         [Serializable]
         public struct TypeName : IEquatable<TypeName>
