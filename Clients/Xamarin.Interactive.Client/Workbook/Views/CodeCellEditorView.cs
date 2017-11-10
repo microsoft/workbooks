@@ -252,6 +252,7 @@ namespace Xamarin.Interactive.Workbook.Views
         protected override void Dispose (bool disposing)
         {
             ((CodeCell)Cell).CodeAnalysisBuffer.TextChanged -= HandleBufferTextChanged;
+            EventsObserver.OnNext (new DeleteCellEvent<CodeCell> ((CodeCell) Cell));
             preferenceSubscription.Dispose ();
             codeEditor.dispose ();
         }

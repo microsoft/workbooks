@@ -29,6 +29,7 @@ using MahApps.Metro.Controls.Dialogs;
 using Xamarin.CrossBrowser;
 
 using Xamarin.Interactive.Editor.Events;
+using Xamarin.Interactive.Events;
 using Xamarin.Interactive.I18N;
 using Xamarin.Interactive.Logging;
 using Xamarin.Interactive.NuGet;
@@ -578,7 +579,7 @@ namespace Xamarin.Interactive.Client.Windows
 
         void HandleEditorEvent (EditorEvent evnt)
         {
-            if (evnt is ChangeEvent)
+            if (evnt is IDocumentDirtyEvent)
                 IsDirty = true;
             else if (evnt is FocusEvent)
                 menuManager.Update (Session.Workbook.EditorHub);

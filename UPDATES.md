@@ -18,6 +18,9 @@ product documentation for [Workbooks][docs-workbooks] and
 * The plaintext formatter for strings now preserves whitespace in formatted
   output.
 
+* Workbooks are now marked as dirty when cells are deleted, preventing possible
+  stale workbook files on disk.
+
 # 1.3 Series Changes
 
 * [See the full release notes for the 1.3 series][13-series].
