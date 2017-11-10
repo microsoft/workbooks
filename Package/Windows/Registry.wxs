@@ -14,7 +14,11 @@
       <Component Id="RegistryEntries" Guid="FCADB68D-AA37-46A2-B2F8-3E338D88E47B">
         <RegistryKey Root="HKLM"
                      Key="Software\Xamarin\Inspector">
-          <RegistryValue Type="string" Name="location" Value="[INSTALLFOLDER]Client\Xamarin Inspector.exe" KeyPath="yes"/>
+          <RegistryValue Type="string" Name="location" Value="[INSTALLFOLDER]Client\Xamarin Inspector.exe"/>
+        </RegistryKey>
+        <RegistryKey Root="HKLM"
+                     Key="Software\Xamarin\Workbooks">
+          <RegistryValue Type="string" Name="location" Value="[INSTALLFOLDER]Client\Xamarin Workbooks.exe" KeyPath="yes"/>
         </RegistryKey>
         <RegistryKey Root="HKLM" Key="Software\Xamarin\Updater" ForceCreateOnInstall="yes">
           <RegistryValue Type="string" Name="Interactive" Value="[INSTALLFOLDER]updateinfo"/>

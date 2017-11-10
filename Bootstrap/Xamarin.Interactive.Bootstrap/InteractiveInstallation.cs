@@ -84,7 +84,7 @@ namespace Xamarin.Interactive
 
             // On Windows, client and agent assemblies are installed elsewhere
             using (var clientExeKey = RegistryKey.OpenBaseKey (RegistryHive.LocalMachine, RegistryView.Registry32)
-                .OpenSubKey (@"Software\Xamarin\Inspector\")) {
+                .OpenSubKey (@"Software\Xamarin\Workbooks\")) {
                 if (clientExeKey == null)
                     return;
 
