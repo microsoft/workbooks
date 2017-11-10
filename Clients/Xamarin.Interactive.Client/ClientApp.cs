@@ -12,6 +12,8 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
+using Microsoft.Win32;
+
 using Xamarin.Interactive.Client;
 using Xamarin.Interactive.Client.Updater;
 using Xamarin.Interactive.Core;
@@ -136,9 +138,15 @@ namespace Xamarin.Interactive
             if (asSharedInstance)
                 SharedInstance = this;
 
+            // Support both Mac and Windows installation paths in the base class
+            // so that ConsoleClientApp does not need to be built differently on
+            // different platforms.
             InteractiveInstallation.InitializeDefault (
                 Host.IsMac,
-                DevEnvironment.RepositoryRootDirectory);
+                DevEnvironment.RepositoryRootDirectory,
+                Host.IsMac
+                    ? GetMacInstallationPaths ()
+                    : GetWindowsInstallationPaths ());
 
             new Telemetry.Events.AppSessionStart ().Post ();
 
@@ -321,6 +329,44 @@ namespace Xamarin.Interactive
                     table.Render (writer);
                 }
             }
+        }
+
+        static InteractiveInstallationPaths GetWindowsInstallationPaths ()
+        {
+            using (var clientExeKey = RegistryKey.OpenBaseKey (RegistryHive.LocalMachine, RegistryView.Registry32)
+                .OpenSubKey (@"Software\Xamarin\Workbooks\")) {
+                var clientExePath = clientExeKey?.GetValue ("location") as string;
+                if (String.IsNullOrEmpty (clientExePath))
+                    return null;
+
+                var clientInstallPath = Path.GetDirectoryName (clientExePath);
+                var frameworkInstallPath = Path.GetDirectoryName (clientInstallPath);
+
+                return new InteractiveInstallationPaths (
+                    workbooksClientInstallPath: clientInstallPath,
+                    inspectorClientInstallPath: clientInstallPath,
+                    agentsInstallPath: frameworkInstallPath,
+                    workbookAppsInstallPath: frameworkInstallPath,
+                    toolsInstallPath: Path.Combine (frameworkInstallPath, "Tools"));
+            }
+        }
+
+        static InteractiveInstallationPaths GetMacInstallationPaths ()
+        {
+            const string MacFrameworkInstallPath = "Library/Frameworks/Xamarin.Interactive.framework/Versions/Current";
+
+            var installRootPath = "/";
+
+            var frameworkInstallPath = Path.Combine (
+                installRootPath,
+                MacFrameworkInstallPath);
+
+            return new InteractiveInstallationPaths (
+                workbooksClientInstallPath: Path.Combine (installRootPath, "Applications"),
+                inspectorClientInstallPath: Path.Combine (frameworkInstallPath, "InspectorClient"),
+                agentsInstallPath: frameworkInstallPath,
+                workbookAppsInstallPath: frameworkInstallPath,
+                toolsInstallPath: Path.Combine (frameworkInstallPath, "Tools"));
         }
     }
 }

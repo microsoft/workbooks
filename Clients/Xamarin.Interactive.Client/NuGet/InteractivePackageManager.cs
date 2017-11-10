@@ -41,7 +41,7 @@ namespace Xamarin.Interactive.NuGet
 
         internal static readonly PackageIdentity FixedXamarinFormsPackageIdentity = new PackageIdentity (
             "Xamarin.Forms",
-            new NuGetVersion (2, 3, 4, 231));
+            new NuGetVersion (2, 4, 0, 38779));
 
         readonly NuGetPackageManager packageManager;
         readonly InteractivePackageProjectContext projectContext;

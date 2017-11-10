@@ -23,6 +23,7 @@ using Xamarin.Interactive.Core;
 using Xamarin.Interactive.Inspection;
 using Xamarin.Interactive.Logging;
 using Xamarin.Interactive.Remote;
+using Xamarin.Interactive.Unified;
 
 namespace Xamarin.Interactive.Mac
 {
@@ -51,6 +52,7 @@ namespace Xamarin.Interactive.Mac
                 NSBundle.MainBundle.InfoDictionary ["CFBundleName"] as NSString);
 
             RepresentationManager.AddProvider (new MacRepresentationProvider ());
+            new UnifiedNativeHelper ().Initialize ();
 
             ViewHierarchyHandlerManager.AddViewHierarchyHandler ("AppKit", this);
         }

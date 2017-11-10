@@ -19,5 +19,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)MacRepresentationProvider.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UnifiedRepresentationProvider.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)UnifiedInspectorSupport.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UnifiedNativeHelper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)NativeExceptionHandler.cs" />
   </ItemGroup>
 </Project>

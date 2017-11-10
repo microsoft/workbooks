@@ -4,7 +4,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:remote="clr-namespace:Xamarin.Interactive.Remote;assembly=Xamarin.Interactive.Client"
+             xmlns:remote="clr-namespace:Xamarin.Interactive.Remote;assembly=Xamarin.Interactive"
              xmlns:views="clr-namespace:Xamarin.Interactive.Client.Windows.Views"
              xmlns:converters="clr-namespace:Xamarin.Interactive.Client.Windows.Converters"
              mc:Ignorable="d" 

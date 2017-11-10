@@ -69,8 +69,6 @@
       <Name>Xamarin.Interactive</Name>
     </ProjectReference>
   </ItemGroup>
-  <Import Project="..\Xamarin.Interactive\Xamarin.Interactive.Shared.projitems" Label="Shared" Condition="Exists('..\Xamarin.Interactive\Xamarin.Interactive.Shared.projitems')" />
-  <Import Project="..\..\Bootstrap\Xamarin.Interactive.Bootstrap\Xamarin.Interactive.Bootstrap.projitems" Label="Shared" Condition="Exists('..\..\Bootstrap\Xamarin.Interactive.Bootstrap\Xamarin.Interactive.Bootstrap.projitems')" />
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
   <Import Project="..\..\Build\Common.targets" />
 </Project>

@@ -17,7 +17,7 @@ namespace Xamarin.ProcessControl
 {
     using static ExecFlags;
 
-    public sealed class Exec
+    sealed class Exec
     {
         public sealed class ExecLog : EventArgs
         {

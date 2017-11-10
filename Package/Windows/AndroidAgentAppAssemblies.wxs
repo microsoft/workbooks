@@ -240,8 +240,8 @@
       <Component Id="AndroidAgentAppFacades.System.Runtime.InteropServices.dll" Guid="2C735561-AAA1-44FA-8F1F-D0921C707308">
         <File Id="AndroidAgentAppFacades.System.Runtime.InteropServices.dll" Source="$(var.AndroidAppAssembliesFacadesDir)\System.Runtime.InteropServices.dll" />
       </Component>
-      <Component Id="AndroidAgentApp.System.Runtime.InteropServices.RuntimeInformation.dll" Guid="CFD0C5A7-3874-4F48-9CBB-2C4D3287FA9F">
-        <File Id="AndroidAgentApp.System.Runtime.InteropServices.RuntimeInformation.dll" Source="$(var.AndroidAppAssembliesFacadesDir)\System.Runtime.InteropServices.RuntimeInformation.dll" />
+      <Component Id="AndroidAgentAppFacades.System.Runtime.InteropServices.RuntimeInformation.dll" Guid="CFD0C5A7-3874-4F48-9CBB-2C4D3287FA9F">
+        <File Id="AndroidAgentAppFacades.System.Runtime.InteropServices.RuntimeInformation.dll" Source="$(var.AndroidAppAssembliesFacadesDir)\System.Runtime.InteropServices.RuntimeInformation.dll" />
       </Component>
       <Component Id="AndroidAgentAppFacades.System.Runtime.InteropServices.WindowsRuntime.dll" Guid="8D9806BE-9EFE-482A-8B16-29273FFFE3C2">
         <File Id="AndroidAgentAppFacades.System.Runtime.InteropServices.WindowsRuntime.dll" Source="$(var.AndroidAppAssembliesFacadesDir)\System.Runtime.InteropServices.WindowsRuntime.dll" />
@@ -662,11 +662,32 @@
       <Component Id="AndroidAgentApp.System.Xml.ReaderWriter.dll" Guid="3EAAD511-5DA5-4C80-8807-6718F28D76B1">
         <File Id="AndroidAgentApp.System.Xml.ReaderWriter.dll" Source="$(var.AndroidAppAssembliesDir)\System.Xml.ReaderWriter.dll" />
       </Component>
-      <Component Id="AndroidAgentApp.System.Text.Encoding.dll" Guid="42E793A1-FCCF-4651-AE0A-822392A83F7E">
-        <File Id="AndroidAgentApp.System.Text.Encoding.dll" Source="$(var.AndroidAppAssembliesDir)\System.Text.Encoding.dll" />
+      <Component Id="AndroidAgentApp.System.Diagnostics.StackTrace.dll" Guid="6EE8BBCE-8BBF-4C02-9E38-55AA5182FA25">
+        <File Id="AndroidAgentApp.System.Diagnostics.StackTrace.dll" Source="$(var.AndroidAppAssembliesDir)\System.Diagnostics.StackTrace.dll" />
       </Component>
-      <Component Id="AndroidAgentApp.System.Text.Encoding.Extensions.dll" Guid="3FAA292A-55AE-4CD9-80A1-F09B8126A18B">
-        <File Id="AndroidAgentApp.System.Text.Encoding.Extensions.dll" Source="$(var.AndroidAppAssembliesDir)\System.Text.Encoding.Extensions.dll" />
+      <Component Id="AndroidAgentApp.System.Globalization.Extensions.dll" Guid="6EC8BBB0-4309-45C5-9B7E-42809C958AF5">
+        <File Id="AndroidAgentApp.System.Globalization.Extensions.dll" Source="$(var.AndroidAppAssembliesDir)\System.Globalization.Extensions.dll" />
+      </Component>
+      <Component Id="AndroidAgentApp.System.Runtime.InteropServices.RuntimeInformation.dll" Guid="4FC9F01D-7021-4FCE-A3E0-5D21B16D46AE">
+        <File Id="AndroidAgentApp.System.Runtime.InteropServices.RuntimeInformation.dll" Source="$(var.AndroidAppAssembliesDir)\System.Runtime.InteropServices.RuntimeInformation.dll" />
+      </Component>
+      <Component Id="AndroidAgentApp.System.Runtime.Serialization.Primitives.dll" Guid="99FAADCE-D106-4B0D-9E99-F2B23736B131">
+        <File Id="AndroidAgentApp.System.Runtime.Serialization.Primitives.dll" Source="$(var.AndroidAppAssembliesDir)\System.Runtime.Serialization.Primitives.dll" />
+      </Component>
+      <Component Id="AndroidAgentApp.System.Runtime.Serialization.Xml.dll" Guid="554370CF-CBDC-46EA-AC62-0C6A353A73F9">
+        <File Id="AndroidAgentApp.System.Runtime.Serialization.Xml.dll" Source="$(var.AndroidAppAssembliesDir)\System.Runtime.Serialization.Xml.dll" />
+      </Component>
+      <Component Id="AndroidAgentApp.System.Security.Cryptography.Algorithms.dll" Guid="4C689B5D-E6FC-459C-A704-4F1933ADAD2A">
+        <File Id="AndroidAgentApp.System.Security.Cryptography.Algorithms.dll" Source="$(var.AndroidAppAssembliesDir)\System.Security.Cryptography.Algorithms.dll" />
+      </Component>
+      <Component Id="AndroidAgentApp.System.Security.SecureString.dll" Guid="7502FADF-C6CF-4EA5-8EE7-CCD3104C3263">
+        <File Id="AndroidAgentApp.System.Security.SecureString.dll" Source="$(var.AndroidAppAssembliesDir)\System.Security.SecureString.dll" />
+      </Component>
+      <Component Id="AndroidAgentApp.System.Xml.XPath.XDocument.dll" Guid="49E66DF6-0ED4-4609-A294-B1DDDC1AE283">
+        <File Id="AndroidAgentApp.System.Xml.XPath.XDocument.dll" Source="$(var.AndroidAppAssembliesDir)\System.Xml.XPath.XDocument.dll" />
+      </Component>
+      <Component Id="AndroidAgentApp.netstandard.dll" Guid="E470B065-2E03-4AAB-A3D8-1714483D4B13">
+        <File Id="AndroidAgentApp.netstandard.dll" Source="$(var.AndroidAppAssembliesDir)\netstandard.dll" />
       </Component>
     </ComponentGroup>
     <ComponentGroup Id="AndroidAgentAppClientIntegrationComponents" Directory="AndroidAgentAppClientIntegrationInstallFolder">

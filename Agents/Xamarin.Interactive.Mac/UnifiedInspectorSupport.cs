@@ -7,9 +7,8 @@
 // Licensed under the MIT License.
 
 using System;
-using System.Linq;
-using System.IO;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 
 using Xamarin.Interactive;
 using Xamarin.Interactive.Core;
@@ -22,23 +21,12 @@ using UnifiedAgent = Xamarin.Interactive.Mac.MacAgent;
 
 namespace Xamarin
 {
-    // WARNING: this type must not _directly_ reference any type in the PCL!
-    // Doing so will break live inspection since this type implements the
-    // PCL loading (so _directly_ referencing a type in the PCL will cause
-    // the debugger to fail to load the type because the loader cannot load)
-    public static partial class InspectorSupport
+    public static class InspectorSupport
     {
-        #if IOS
-        const string netProfilesPath = "/Library/Frameworks/Xamarin.iOS.framework/Versions/Current/lib/mono";
-        #elif MAC
-        const string netProfilesPath = "/Library/Frameworks/Xamarin.Mac.framework/Versions/Current/lib/mono";
-        #endif
-
-        static bool environmentDetected;
-        static AssemblyName pclInteractiveAssemblyName;
-        static string fxPath;
-
         static IntPtr breakdanceTimerSource;
+        static Agent agent;
+
+        internal static Action<string> AgentStartedHandler;
 
         internal static void StartBreakdance ()
         {
@@ -54,11 +42,9 @@ namespace Xamarin
             }
         }
 
-        static partial void CreateAgent (AgentStartOptions startOptions)
+        static void CreateAgent (AgentStartOptions startOptions)
         {
             StopBreakdance ();
-
-            AppDomain.CurrentDomain.AssemblyResolve += HandleAssemblyResolve;
 
             var source = IntPtr.Zero;
             source = Dispatch.ScheduleRepeatingTimer (TimeSpan.FromSeconds (0), userdata => {
@@ -67,52 +53,35 @@ namespace Xamarin
             });
         }
 
-        static void DetectEnvironment ()
+        static void Start ()
         {
-            if (environmentDetected)
-                return;
-
-            environmentDetected = true;
-
-            var runningCorlibVersion = typeof (object).Assembly.GetName ().Version;
-
-            foreach (var profilePath in new DirectoryInfo (netProfilesPath).EnumerateDirectories ()) {
-                var corlibPath = Path.Combine (profilePath.FullName, "mscorlib.dll");
-                if (File.Exists (corlibPath) &&
-                    AssemblyName.GetAssemblyName (corlibPath)?.Version == runningCorlibVersion) {
-                    fxPath = profilePath.FullName;
-                    break;
-                }
+            try {
+                CreateAgent (new AgentStartOptions {
+                    AgentStarted = AgentStarted,
+                });
+            } catch (Exception e) {
+                Console.Error.WriteLine (e);
             }
-
-            pclInteractiveAssemblyName = Assembly
-                .GetExecutingAssembly ()
-                .GetReferencedAssemblies ()
-                .FirstOrDefault (a => a.Name == "Xamarin.Interactive");
         }
 
-        static Assembly HandleAssemblyResolve (object sender, ResolveEventArgs e)
+        internal static void Stop ()
         {
-            DetectEnvironment ();
+            agent?.Dispose ();
+            agent = null;
+        }
 
-            if (pclInteractiveAssemblyName == null || !Directory.Exists (fxPath))
-                return null;
+        [MethodImpl (MethodImplOptions.NoInlining | MethodImplOptions.NoOptimization)]
+        static void BreakdanceStep ()
+        {
+        }
 
-            var requestingAssemblyName = e.RequestingAssembly?.GetName ();
-
-            if (requestingAssemblyName?.FullName != pclInteractiveAssemblyName.FullName)
-                return null;
-
-            var assemblyFileName = new AssemblyName (e.Name).Name + ".dll";
-
-            var assemblyPath = Path.Combine (fxPath, assemblyFileName);
-            if (!File.Exists (assemblyPath)) {
-                assemblyPath = Path.Combine (fxPath, "Facades", assemblyFileName);
-                if (!File.Exists (assemblyPath))
-                    return null;
-            }
-
-            return Assembly.LoadFrom (assemblyPath);
+        [MethodImpl (MethodImplOptions.NoInlining | MethodImplOptions.NoOptimization)]
+        internal static void AgentStarted (string agentConnectUri)
+        {
+            // This handler is only ever used by the inspector support test.
+            // In normal use, the Inspector extension retrieves the URI by
+            // setting a breakpoint on the AgentStarted method.
+            AgentStartedHandler?.Invoke (agentConnectUri);
         }
     }
 }

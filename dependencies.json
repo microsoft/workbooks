@@ -91,7 +91,7 @@
   {
     "Kind": "NuGet",
     "Name": "Xamarin.Forms",
-    "Version": "2.3.4.231",
+    "Version": "2.4.0.38779",
     "DependentProjects": [
       "Xamarin.Interactive.Forms.Android",
       "Xamarin.Interactive.Forms.iOS",

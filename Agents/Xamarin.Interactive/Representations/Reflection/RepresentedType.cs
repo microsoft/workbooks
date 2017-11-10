@@ -16,7 +16,7 @@ using Xamarin.Interactive.Serialization;
 namespace Xamarin.Interactive.Representations.Reflection
 {
     [Serializable]
-    public sealed class RepresentedType : IRepresentedType, ISerializable, IObjectReference
+    sealed class RepresentedType : IRepresentedType, ISerializable, IObjectReference
     {
         static readonly ReaderWriterLockSlim resolveLock = new ReaderWriterLockSlim ();
         static readonly Dictionary<string, RepresentedType> fromStringMap

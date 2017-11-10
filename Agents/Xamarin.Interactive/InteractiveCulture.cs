@@ -18,9 +18,8 @@ namespace Xamarin.Interactive
         [EditorBrowsable (EditorBrowsableState.Never)]
         public static void Initialize ()
         {
-#if !WPF
+            // WPF sets this in its app.config, but calling here does no harm
             AppContext.SetSwitch ("Switch.System.Globalization.NoAsyncCurrentCulture", true);
-#endif
         }
 
         [ThreadStatic]

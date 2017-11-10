@@ -36,7 +36,6 @@ namespace Xamarin.Interactive.Android
 
         AG.Point displaySize;
         int contentId;
-        string deviceIpAddress;
 
         public IActivityTracker ActivityTracker { get; set; }
         internal int ContentId => contentId;

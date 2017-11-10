@@ -1,56 +1,340 @@
-<?xml version="1.0" encoding="UTF-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
   <Fragment>
-
+    <?define ConsoleAgentAppDirectory="..\..\_build\$(var.Configuration)\WorkbookApps\Console" ?>
     <ComponentGroup Id="AndroidAgentComponents" Directory="AndroidAgentInstallFolder">
       <Component Id="Xamarin.Interactive.Android.dll" Guid="2635679D-1D44-4BC5-99CE-6A9DCA33279B">
-        <File Id="Xamarin.Interactive.Android.dll" Source="$(var.Xamarin.Interactive.Android.ActivityTrackerShim.TargetDir)\Xamarin.Interactive.Android.dll"/>
+        <File Id="Xamarin.Interactive.Android.dll" Source="$(var.Xamarin.Interactive.Android.ActivityTrackerShim.TargetDir)\Xamarin.Interactive.Android.dll" />
       </Component>
       <Component Id="Xamarin.Interactive.Android.pdb" Guid="829AE7D4-4D0E-40F5-A0CC-680626AAC079">
-        <File Id="Xamarin.Interactive.Android.pdb" Source="$(var.Xamarin.Interactive.Android.ActivityTrackerShim.TargetDir)\Xamarin.Interactive.Android.pdb"/>
+        <File Id="Xamarin.Interactive.Android.pdb" Source="$(var.Xamarin.Interactive.Android.ActivityTrackerShim.TargetDir)\Xamarin.Interactive.Android.pdb" />
       </Component>
-
       <Component Id="AndroidAgent.Xamarin.Interactive.dll" Guid="D98193F5-B269-4EBA-AEDB-A0C32704A4D8">
-        <File Id="AndroidAgent.Xamarin.Interactive.dll" Source="$(var.Xamarin.Interactive.Android.ActivityTrackerShim.TargetDir)\Xamarin.Interactive.dll"/>
+        <File Id="AndroidAgent.Xamarin.Interactive.dll" Source="$(var.Xamarin.Interactive.Android.ActivityTrackerShim.TargetDir)\Xamarin.Interactive.dll" />
       </Component>
       <Component Id="AndroidAgent.Xamarin.Interactive.pdb" Guid="B29A3A4A-9D89-4788-B107-4B6A1228A7EB">
-        <File Id="AndroidAgent.Xamarin.Interactive.pdb" Source="$(var.Xamarin.Interactive.Android.ActivityTrackerShim.TargetDir)\Xamarin.Interactive.pdb"/>
+        <File Id="AndroidAgent.Xamarin.Interactive.pdb" Source="$(var.Xamarin.Interactive.Android.ActivityTrackerShim.TargetDir)\Xamarin.Interactive.pdb" />
+      </Component>
+      <Component Id="AndroidAgent.netstandard.dll" Guid="DCFEA7BF-3FB5-4D81-BBAE-53CA47711991">
+        <File Id="AndroidAgent.netstandard.dll" Source="$(var.ConsoleAgentAppDirectory)\netstandard.dll" />
       </Component>
     </ComponentGroup>
-
     <ComponentGroup Id="iOSAgentComponents" Directory="iOSAgentInstallFolder">
       <Component Id="Xamarin.Interactive.iOS.dll" Guid="4F6599DE-2C65-406C-B890-3115390FD696">
-        <File Id="Xamarin.Interactive.iOS.dll" Source="$(var.Xamarin.Interactive.iOS.TargetDir)\Xamarin.Interactive.iOS.dll"/>
+        <File Id="Xamarin.Interactive.iOS.dll" Source="$(var.Xamarin.Interactive.iOS.TargetDir)\Xamarin.Interactive.iOS.dll" />
       </Component>
       <Component Id="Xamarin.Interactive.iOS.pdb" Guid="5219B3AF-7153-4FB9-8BEB-EE80B170EEFA">
-        <File Id="Xamarin.Interactive.iOS.pdb" Source="$(var.Xamarin.Interactive.iOS.TargetDir)\Xamarin.Interactive.iOS.pdb"/>
+        <File Id="Xamarin.Interactive.iOS.pdb" Source="$(var.Xamarin.Interactive.iOS.TargetDir)\Xamarin.Interactive.iOS.pdb" />
       </Component>
-
       <Component Id="iOSAgent.Xamarin.Interactive.dll" Guid="9CD5316E-0F0E-496D-8BD7-7989DD425627">
-        <File Id="iOS.Xamarin.Interactive.dll" Source="$(var.Xamarin.Interactive.iOS.TargetDir)\Xamarin.Interactive.dll"/>
+        <File Id="iOS.Xamarin.Interactive.dll" Source="$(var.Xamarin.Interactive.iOS.TargetDir)\Xamarin.Interactive.dll" />
       </Component>
       <Component Id="iOSAgent.Xamarin.Interactive.pdb" Guid="A12A6151-71A2-4AAF-B252-78EF0F9F6CDC">
-        <File Id="iOS.Xamarin.Interactive.pdb" Source="$(var.Xamarin.Interactive.iOS.TargetDir)\Xamarin.Interactive.pdb"/>
+        <File Id="iOS.Xamarin.Interactive.pdb" Source="$(var.Xamarin.Interactive.iOS.TargetDir)\Xamarin.Interactive.pdb" />
+      </Component>
+      <Component Id="iOSAgent.netstandard.dll" Guid="B15C7BEF-119C-4D55-BB13-ABF1707CD532">
+        <File Id="iOSAgent.netstandard.dll" Source="$(var.ConsoleAgentAppDirectory)\netstandard.dll" />
       </Component>
     </ComponentGroup>
-
-    <?define ConsoleAgentAppDirectory="..\..\_build\$(var.Configuration)\WorkbookApps\Console" ?>
     <ComponentGroup Id="ConsoleAgentComponents" Directory="ConsoleAgentInstallFolder">
       <Component Id="Xamarin.Interactive.Console.exe" Guid="4DCACE41-D193-493C-A590-79113FA78049">
-        <File Id="Xamarin.Interactive.Console.exe" Source="$(var.ConsoleAgentAppDirectory)\Xamarin.Interactive.Console.exe"/>
+        <File Id="Xamarin.Interactive.Console.exe" Source="$(var.ConsoleAgentAppDirectory)\Xamarin.Interactive.Console.exe" />
       </Component>
       <Component Id="ConsoleAgent.Xamarin.Interactive.dll" Guid="A57FAE96-4739-417B-96F5-11EEB16D815F">
-        <File Id="ConsoleAgent.Xamarin.Interactive.dll" Source="$(var.ConsoleAgentAppDirectory)\Xamarin.Interactive.dll"/>
+        <File Id="ConsoleAgent.Xamarin.Interactive.dll" Source="$(var.ConsoleAgentAppDirectory)\Xamarin.Interactive.dll" />
       </Component>
       <Component Id="ConsoleAgent.System.ValueTuple.dll" Guid="AE1B0E25-3674-4D37-8D50-DF694423851C">
-        <File Id="ConsoleAgent.System.ValueTuple.dll" Source="$(var.ConsoleAgentAppDirectory)\System.ValueTuple.dll"/>
+        <File Id="ConsoleAgent.System.ValueTuple.dll" Source="$(var.ConsoleAgentAppDirectory)\System.ValueTuple.dll" />
       </Component>
       <!-- Not yet any need for .mdb or .pdb files for Console agent on Windows. But they'd go here. -->
+      <Component Id="ConsoleAgent.Microsoft.Win__.Primitives.dll" Guid="F56467B1-2708-4A4B-BE7F-3941ACA86305">
+        <File Id="ConsoleAgent.Microsoft.Win__.Primitives.dll" Source="$(var.ConsoleAgentAppDirectory)\Microsoft.Win32.Primitives.dll" />
+      </Component>
+      <Component Id="ConsoleAgent.netstandard.dll" Guid="A80F2C27-BD7E-4E42-AFEA-9D8A84F37B93">
+        <File Id="ConsoleAgent.netstandard.dll" Source="$(var.ConsoleAgentAppDirectory)\netstandard.dll" />
+      </Component>
+      <Component Id="ConsoleAgent.System.AppContext.dll" Guid="7ACAF63A-24E6-430F-A970-CFC804EAFC70">
+        <File Id="ConsoleAgent.System.AppContext.dll" Source="$(var.ConsoleAgentAppDirectory)\System.AppContext.dll" />
+      </Component>
+      <Component Id="ConsoleAgent.System.Collections.Concurrent.dll" Guid="2E3F06FD-147E-457A-A29C-08928CA72B0C">
+        <File Id="ConsoleAgent.System.Collections.Concurrent.dll" Source="$(var.ConsoleAgentAppDirectory)\System.Collections.Concurrent.dll" />
+      </Component>
+      <Component Id="ConsoleAgent.System.Collections.dll" Guid="8CA7A37A-2BCC-4624-96B4-5FE07B453811">
+        <File Id="ConsoleAgent.System.Collections.dll" Source="$(var.ConsoleAgentAppDirectory)\System.Collections.dll" />
+      </Component>
+      <Component Id="ConsoleAgent.System.Collections.NonGeneric.dll" Guid="06A1048A-5804-42C6-8BFF-9AF1E995F435">
+        <File Id="ConsoleAgent.System.Collections.NonGeneric.dll" Source="$(var.ConsoleAgentAppDirectory)\System.Collections.NonGeneric.dll" />
+      </Component>
+      <Component Id="ConsoleAgent.System.Collections.Specialized.dll" Guid="B03BE429-6C33-4683-A6DD-E874CC69A0BE">
+        <File Id="ConsoleAgent.System.Collections.Specialized.dll" Source="$(var.ConsoleAgentAppDirectory)\System.Collections.Specialized.dll" />
+      </Component>
+      <Component Id="ConsoleAgent.System.ComponentModel.dll" Guid="39D2F096-B2B5-4A10-8275-3C1AE28ED669">
+        <File Id="ConsoleAgent.System.ComponentModel.dll" Source="$(var.ConsoleAgentAppDirectory)\System.ComponentModel.dll" />
+      </Component>
+      <Component Id="ConsoleAgent.System.ComponentModel.EventBasedAsync.dll" Guid="A3B3A924-0C14-470F-89D8-328A42B4819A">
+        <File Id="ConsoleAgent.System.ComponentModel.EventBasedAsync.dll" Source="$(var.ConsoleAgentAppDirectory)\System.ComponentModel.EventBasedAsync.dll" />
+      </Component>
+      <Component Id="ConsoleAgent.System.ComponentModel.Primitives.dll" Guid="7759A488-2959-4163-B5A5-3DEE7464E198">
+        <File Id="ConsoleAgent.System.ComponentModel.Primitives.dll" Source="$(var.ConsoleAgentAppDirectory)\System.ComponentModel.Primitives.dll" />
+      </Component>
+      <Component Id="ConsoleAgent.System.ComponentModel.TypeConverter.dll" Guid="4B94095D-E335-4E50-8139-A9CDDFA9FFA7">
+        <File Id="ConsoleAgent.System.ComponentModel.TypeConverter.dll" Source="$(var.ConsoleAgentAppDirectory)\System.ComponentModel.TypeConverter.dll" />
+      </Component>
+      <Component Id="ConsoleAgent.System.Console.dll" Guid="95CE5F7C-742D-400A-A180-D60D91033547">
+        <File Id="ConsoleAgent.System.Console.dll" Source="$(var.ConsoleAgentAppDirectory)\System.Console.dll" />
+      </Component>
+      <Component Id="ConsoleAgent.System.Data.Common.dll" Guid="95E516BE-ABB5-476E-A500-4C0A0947DCB8">
+        <File Id="ConsoleAgent.System.Data.Common.dll" Source="$(var.ConsoleAgentAppDirectory)\System.Data.Common.dll" />
+      </Component>
+      <Component Id="ConsoleAgent.System.Diagnostics.Contracts.dll" Guid="2688C6AC-DDE3-47FE-B29F-2BD2345FF805">
+        <File Id="ConsoleAgent.System.Diagnostics.Contracts.dll" Source="$(var.ConsoleAgentAppDirectory)\System.Diagnostics.Contracts.dll" />
+      </Component>
+      <Component Id="ConsoleAgent.System.Diagnostics.Debug.dll" Guid="455C6E22-D992-4062-9092-1175FA5FDB9F">
+        <File Id="ConsoleAgent.System.Diagnostics.Debug.dll" Source="$(var.ConsoleAgentAppDirectory)\System.Diagnostics.Debug.dll" />
+      </Component>
+      <Component Id="ConsoleAgent.System.Diagnostics.FileVersionInfo.dll" Guid="6F134C02-55EC-4825-8611-B8BF24F46A33">
+        <File Id="ConsoleAgent.System.Diagnostics.FileVersionInfo.dll" Source="$(var.ConsoleAgentAppDirectory)\System.Diagnostics.FileVersionInfo.dll" />
+      </Component>
+      <Component Id="ConsoleAgent.System.Diagnostics.Process.dll" Guid="5B892252-9E48-498D-B757-6200AD305F26">
+        <File Id="ConsoleAgent.System.Diagnostics.Process.dll" Source="$(var.ConsoleAgentAppDirectory)\System.Diagnostics.Process.dll" />
+      </Component>
+      <Component Id="ConsoleAgent.System.Diagnostics.StackTrace.dll" Guid="5C85E088-8FF9-4950-B24E-42F62F0D96A6">
+        <File Id="ConsoleAgent.System.Diagnostics.StackTrace.dll" Source="$(var.ConsoleAgentAppDirectory)\System.Diagnostics.StackTrace.dll" />
+      </Component>
+      <Component Id="ConsoleAgent.System.Diagnostics.TextWriterTraceListener.dll" Guid="BB768DE9-65D8-410C-A1FA-2D4D70A15519">
+        <File Id="ConsoleAgent.System.Diagnostics.TextWriterTraceListener.dll" Source="$(var.ConsoleAgentAppDirectory)\System.Diagnostics.TextWriterTraceListener.dll" />
+      </Component>
+      <Component Id="ConsoleAgent.System.Diagnostics.Tools.dll" Guid="2DB6F2A5-DECD-476E-A335-16A92B65AE15">
+        <File Id="ConsoleAgent.System.Diagnostics.Tools.dll" Source="$(var.ConsoleAgentAppDirectory)\System.Diagnostics.Tools.dll" />
+      </Component>
+      <Component Id="ConsoleAgent.System.Diagnostics.TraceSource.dll" Guid="AA71DD50-D39F-44CF-9A2D-2C76436908AB">
+        <File Id="ConsoleAgent.System.Diagnostics.TraceSource.dll" Source="$(var.ConsoleAgentAppDirectory)\System.Diagnostics.TraceSource.dll" />
+      </Component>
+      <Component Id="ConsoleAgent.System.Diagnostics.Tracing.dll" Guid="EA2C6B56-D872-4EBC-A3B0-4C382C9DA078">
+        <File Id="ConsoleAgent.System.Diagnostics.Tracing.dll" Source="$(var.ConsoleAgentAppDirectory)\System.Diagnostics.Tracing.dll" />
+      </Component>
+      <Component Id="ConsoleAgent.System.Drawing.Primitives.dll" Guid="CC118225-8C67-49A4-8F7B-C860DAC6716F">
+        <File Id="ConsoleAgent.System.Drawing.Primitives.dll" Source="$(var.ConsoleAgentAppDirectory)\System.Drawing.Primitives.dll" />
+      </Component>
+      <Component Id="ConsoleAgent.System.Dynamic.Runtime.dll" Guid="D4DB5EFC-B9D6-459E-BB04-31AF58CEF104">
+        <File Id="ConsoleAgent.System.Dynamic.Runtime.dll" Source="$(var.ConsoleAgentAppDirectory)\System.Dynamic.Runtime.dll" />
+      </Component>
+      <Component Id="ConsoleAgent.System.Globalization.Calendars.dll" Guid="3B45ED4B-52E7-4BF1-9597-D3B16D43A220">
+        <File Id="ConsoleAgent.System.Globalization.Calendars.dll" Source="$(var.ConsoleAgentAppDirectory)\System.Globalization.Calendars.dll" />
+      </Component>
+      <Component Id="ConsoleAgent.System.Globalization.dll" Guid="5FD64165-A069-4F87-8CF6-B1149A0FD077">
+        <File Id="ConsoleAgent.System.Globalization.dll" Source="$(var.ConsoleAgentAppDirectory)\System.Globalization.dll" />
+      </Component>
+      <Component Id="ConsoleAgent.System.Globalization.Extensions.dll" Guid="D5A707F6-FDC8-4364-AF41-B2EF8EFAAEB4">
+        <File Id="ConsoleAgent.System.Globalization.Extensions.dll" Source="$(var.ConsoleAgentAppDirectory)\System.Globalization.Extensions.dll" />
+      </Component>
+      <Component Id="ConsoleAgent.System.IO.Compression.dll" Guid="982D9A1F-4139-4085-B5DA-D56DACB4F08C">
+        <File Id="ConsoleAgent.System.IO.Compression.dll" Source="$(var.ConsoleAgentAppDirectory)\System.IO.Compression.dll" />
+      </Component>
+      <Component Id="ConsoleAgent.System.IO.Compression.ZipFile.dll" Guid="296D0773-3F65-4502-ACF4-D6F5BA6ED145">
+        <File Id="ConsoleAgent.System.IO.Compression.ZipFile.dll" Source="$(var.ConsoleAgentAppDirectory)\System.IO.Compression.ZipFile.dll" />
+      </Component>
+      <Component Id="ConsoleAgent.System.IO.dll" Guid="B83DA24E-056E-4738-921C-8510391555D1">
+        <File Id="ConsoleAgent.System.IO.dll" Source="$(var.ConsoleAgentAppDirectory)\System.IO.dll" />
+      </Component>
+      <Component Id="ConsoleAgent.System.IO.FileSystem.dll" Guid="7FF267DD-34A1-47A7-8845-FE2C67BD3B10">
+        <File Id="ConsoleAgent.System.IO.FileSystem.dll" Source="$(var.ConsoleAgentAppDirectory)\System.IO.FileSystem.dll" />
+      </Component>
+      <Component Id="ConsoleAgent.System.IO.FileSystem.DriveInfo.dll" Guid="22B6DC8F-E1AB-4E92-86D3-F770D72E7144">
+        <File Id="ConsoleAgent.System.IO.FileSystem.DriveInfo.dll" Source="$(var.ConsoleAgentAppDirectory)\System.IO.FileSystem.DriveInfo.dll" />
+      </Component>
+      <Component Id="ConsoleAgent.System.IO.FileSystem.Primitives.dll" Guid="2AB54DDA-B94E-41D1-85FB-454D5735928E">
+        <File Id="ConsoleAgent.System.IO.FileSystem.Primitives.dll" Source="$(var.ConsoleAgentAppDirectory)\System.IO.FileSystem.Primitives.dll" />
+      </Component>
+      <Component Id="ConsoleAgent.System.IO.FileSystem.Watcher.dll" Guid="3D426814-ECD4-4B7D-B3D3-0AA38862CA91">
+        <File Id="ConsoleAgent.System.IO.FileSystem.Watcher.dll" Source="$(var.ConsoleAgentAppDirectory)\System.IO.FileSystem.Watcher.dll" />
+      </Component>
+      <Component Id="ConsoleAgent.System.IO.IsolatedStorage.dll" Guid="B7796C28-1C79-48EE-83AF-DC55E75A37C7">
+        <File Id="ConsoleAgent.System.IO.IsolatedStorage.dll" Source="$(var.ConsoleAgentAppDirectory)\System.IO.IsolatedStorage.dll" />
+      </Component>
+      <Component Id="ConsoleAgent.System.IO.MemoryMappedFiles.dll" Guid="3DCEE4B4-DA98-48A2-AE58-40C4E61E146F">
+        <File Id="ConsoleAgent.System.IO.MemoryMappedFiles.dll" Source="$(var.ConsoleAgentAppDirectory)\System.IO.MemoryMappedFiles.dll" />
+      </Component>
+      <Component Id="ConsoleAgent.System.IO.Pipes.dll" Guid="76634A70-5AFB-4098-AB94-095F87E6209E">
+        <File Id="ConsoleAgent.System.IO.Pipes.dll" Source="$(var.ConsoleAgentAppDirectory)\System.IO.Pipes.dll" />
+      </Component>
+      <Component Id="ConsoleAgent.System.IO.UnmanagedMemoryStream.dll" Guid="3301F7C4-70B9-403B-9208-9CA0AF85521B">
+        <File Id="ConsoleAgent.System.IO.UnmanagedMemoryStream.dll" Source="$(var.ConsoleAgentAppDirectory)\System.IO.UnmanagedMemoryStream.dll" />
+      </Component>
+      <Component Id="ConsoleAgent.System.Linq.dll" Guid="4869BCD1-95F7-4686-BD7C-7A2D0A518D6B">
+        <File Id="ConsoleAgent.System.Linq.dll" Source="$(var.ConsoleAgentAppDirectory)\System.Linq.dll" />
+      </Component>
+      <Component Id="ConsoleAgent.System.Linq.Expressions.dll" Guid="79ACF343-0138-4D63-902C-6A51C74E070A">
+        <File Id="ConsoleAgent.System.Linq.Expressions.dll" Source="$(var.ConsoleAgentAppDirectory)\System.Linq.Expressions.dll" />
+      </Component>
+      <Component Id="ConsoleAgent.System.Linq.Parallel.dll" Guid="60FC5126-321C-4074-AD1E-8A5B851EE72F">
+        <File Id="ConsoleAgent.System.Linq.Parallel.dll" Source="$(var.ConsoleAgentAppDirectory)\System.Linq.Parallel.dll" />
+      </Component>
+      <Component Id="ConsoleAgent.System.Linq.Queryable.dll" Guid="0338F416-907B-4C3A-BECB-77AFF135B0CA">
+        <File Id="ConsoleAgent.System.Linq.Queryable.dll" Source="$(var.ConsoleAgentAppDirectory)\System.Linq.Queryable.dll" />
+      </Component>
+      <Component Id="ConsoleAgent.System.Net.Http.dll" Guid="C2220F9F-CEC3-4183-840C-8CF3BEE230E3">
+        <File Id="ConsoleAgent.System.Net.Http.dll" Source="$(var.ConsoleAgentAppDirectory)\System.Net.Http.dll" />
+      </Component>
+      <Component Id="ConsoleAgent.System.Net.NameResolution.dll" Guid="4972F77A-F3A7-4F37-BC00-04108691EB18">
+        <File Id="ConsoleAgent.System.Net.NameResolution.dll" Source="$(var.ConsoleAgentAppDirectory)\System.Net.NameResolution.dll" />
+      </Component>
+      <Component Id="ConsoleAgent.System.Net.NetworkInformation.dll" Guid="08164B67-81E3-42C6-BA4F-458EAF11CC15">
+        <File Id="ConsoleAgent.System.Net.NetworkInformation.dll" Source="$(var.ConsoleAgentAppDirectory)\System.Net.NetworkInformation.dll" />
+      </Component>
+      <Component Id="ConsoleAgent.System.Net.Ping.dll" Guid="6D37BA20-741A-44A2-BF72-B7333CA7A55C">
+        <File Id="ConsoleAgent.System.Net.Ping.dll" Source="$(var.ConsoleAgentAppDirectory)\System.Net.Ping.dll" />
+      </Component>
+      <Component Id="ConsoleAgent.System.Net.Primitives.dll" Guid="353E3012-A69C-44B2-A279-D00D6CF050B8">
+        <File Id="ConsoleAgent.System.Net.Primitives.dll" Source="$(var.ConsoleAgentAppDirectory)\System.Net.Primitives.dll" />
+      </Component>
+      <Component Id="ConsoleAgent.System.Net.Requests.dll" Guid="CF6FB998-D155-4EDD-8AEE-2348C5EBEDA9">
+        <File Id="ConsoleAgent.System.Net.Requests.dll" Source="$(var.ConsoleAgentAppDirectory)\System.Net.Requests.dll" />
+      </Component>
+      <Component Id="ConsoleAgent.System.Net.Security.dll" Guid="BBC4ACE9-64C6-49E2-A346-EDCB4324D747">
+        <File Id="ConsoleAgent.System.Net.Security.dll" Source="$(var.ConsoleAgentAppDirectory)\System.Net.Security.dll" />
+      </Component>
+      <Component Id="ConsoleAgent.System.Net.Sockets.dll" Guid="032E9B54-25DA-4757-91DE-A0CC30F3DE86">
+        <File Id="ConsoleAgent.System.Net.Sockets.dll" Source="$(var.ConsoleAgentAppDirectory)\System.Net.Sockets.dll" />
+      </Component>
+      <Component Id="ConsoleAgent.System.Net.WebHeaderCollection.dll" Guid="23B8A3B2-C61C-427D-8B9D-571226E2435E">
+        <File Id="ConsoleAgent.System.Net.WebHeaderCollection.dll" Source="$(var.ConsoleAgentAppDirectory)\System.Net.WebHeaderCollection.dll" />
+      </Component>
+      <Component Id="ConsoleAgent.System.Net.WebSockets.Client.dll" Guid="309E6EC9-B75A-4CEE-BCC6-44E782867652">
+        <File Id="ConsoleAgent.System.Net.WebSockets.Client.dll" Source="$(var.ConsoleAgentAppDirectory)\System.Net.WebSockets.Client.dll" />
+      </Component>
+      <Component Id="ConsoleAgent.System.Net.WebSockets.dll" Guid="E6D80902-B1BB-40B1-89DF-60815077142B">
+        <File Id="ConsoleAgent.System.Net.WebSockets.dll" Source="$(var.ConsoleAgentAppDirectory)\System.Net.WebSockets.dll" />
+      </Component>
+      <Component Id="ConsoleAgent.System.ObjectModel.dll" Guid="0E304D31-8D3D-4B55-990B-FD9E3388BD4C">
+        <File Id="ConsoleAgent.System.ObjectModel.dll" Source="$(var.ConsoleAgentAppDirectory)\System.ObjectModel.dll" />
+      </Component>
+      <Component Id="ConsoleAgent.System.Reflection.dll" Guid="E1FDCCE4-9A2D-4067-BF3A-722C5F4C2EC4">
+        <File Id="ConsoleAgent.System.Reflection.dll" Source="$(var.ConsoleAgentAppDirectory)\System.Reflection.dll" />
+      </Component>
+      <Component Id="ConsoleAgent.System.Reflection.Extensions.dll" Guid="5E86112B-83A3-4C3E-87C7-BD0FF0DBD38B">
+        <File Id="ConsoleAgent.System.Reflection.Extensions.dll" Source="$(var.ConsoleAgentAppDirectory)\System.Reflection.Extensions.dll" />
+      </Component>
+      <Component Id="ConsoleAgent.System.Reflection.Primitives.dll" Guid="41006E32-C4C0-4CEE-AC4F-3E33B4ADCE61">
+        <File Id="ConsoleAgent.System.Reflection.Primitives.dll" Source="$(var.ConsoleAgentAppDirectory)\System.Reflection.Primitives.dll" />
+      </Component>
+      <Component Id="ConsoleAgent.System.Resources.Reader.dll" Guid="B473ACFB-353A-433A-A345-6D84EC7E9B08">
+        <File Id="ConsoleAgent.System.Resources.Reader.dll" Source="$(var.ConsoleAgentAppDirectory)\System.Resources.Reader.dll" />
+      </Component>
+      <Component Id="ConsoleAgent.System.Resources.ResourceManager.dll" Guid="419E3C64-2D86-4CA5-B362-D02FD06DF591">
+        <File Id="ConsoleAgent.System.Resources.ResourceManager.dll" Source="$(var.ConsoleAgentAppDirectory)\System.Resources.ResourceManager.dll" />
+      </Component>
+      <Component Id="ConsoleAgent.System.Resources.Writer.dll" Guid="D77379D1-C8DB-4B93-9869-F0B8D2E37B65">
+        <File Id="ConsoleAgent.System.Resources.Writer.dll" Source="$(var.ConsoleAgentAppDirectory)\System.Resources.Writer.dll" />
+      </Component>
+      <Component Id="ConsoleAgent.System.Runtime.CompilerServices.VisualC.dll" Guid="772685CC-7904-45BF-B287-2AA93DF2D4B2">
+        <File Id="ConsoleAgent.System.Runtime.CompilerServices.VisualC.dll" Source="$(var.ConsoleAgentAppDirectory)\System.Runtime.CompilerServices.VisualC.dll" />
+      </Component>
+      <Component Id="ConsoleAgent.System.Runtime.dll" Guid="FFD9F262-CB5C-4FCC-9C5C-B78CD366E033">
+        <File Id="ConsoleAgent.System.Runtime.dll" Source="$(var.ConsoleAgentAppDirectory)\System.Runtime.dll" />
+      </Component>
+      <Component Id="ConsoleAgent.System.Runtime.Extensions.dll" Guid="DC0D6C09-550B-48D4-A834-0433B3022348">
+        <File Id="ConsoleAgent.System.Runtime.Extensions.dll" Source="$(var.ConsoleAgentAppDirectory)\System.Runtime.Extensions.dll" />
+      </Component>
+      <Component Id="ConsoleAgent.System.Runtime.Handles.dll" Guid="DBEEEF98-E91E-4E55-B47F-BC862EB5480E">
+        <File Id="ConsoleAgent.System.Runtime.Handles.dll" Source="$(var.ConsoleAgentAppDirectory)\System.Runtime.Handles.dll" />
+      </Component>
+      <Component Id="ConsoleAgent.System.Runtime.InteropServices.dll" Guid="CA7026A1-E1EC-4881-80DD-BBFDD5D122F5">
+        <File Id="ConsoleAgent.System.Runtime.InteropServices.dll" Source="$(var.ConsoleAgentAppDirectory)\System.Runtime.InteropServices.dll" />
+      </Component>
+      <Component Id="ConsoleAgent.System.Runtime.InteropServices.RuntimeInformation.dll" Guid="4EB4F903-EE6E-44C7-BFF0-97B0510D0145">
+        <File Id="ConsoleAgent.System.Runtime.InteropServices.RuntimeInformation.dll" Source="$(var.ConsoleAgentAppDirectory)\System.Runtime.InteropServices.RuntimeInformation.dll" />
+      </Component>
+      <Component Id="ConsoleAgent.System.Runtime.Numerics.dll" Guid="4079DEF4-2C86-45DC-9D83-47C60791B02C">
+        <File Id="ConsoleAgent.System.Runtime.Numerics.dll" Source="$(var.ConsoleAgentAppDirectory)\System.Runtime.Numerics.dll" />
+      </Component>
+      <Component Id="ConsoleAgent.System.Runtime.Serialization.Formatters.dll" Guid="E3BE0D19-500B-44D3-A2A1-FE07F91F6563">
+        <File Id="ConsoleAgent.System.Runtime.Serialization.Formatters.dll" Source="$(var.ConsoleAgentAppDirectory)\System.Runtime.Serialization.Formatters.dll" />
+      </Component>
+      <Component Id="ConsoleAgent.System.Runtime.Serialization.Json.dll" Guid="744A6C3B-0571-4DCA-9FD1-91385BED3E85">
+        <File Id="ConsoleAgent.System.Runtime.Serialization.Json.dll" Source="$(var.ConsoleAgentAppDirectory)\System.Runtime.Serialization.Json.dll" />
+      </Component>
+      <Component Id="ConsoleAgent.System.Runtime.Serialization.Primitives.dll" Guid="26F171FA-4B6B-4363-A643-B29A9E55A3FF">
+        <File Id="ConsoleAgent.System.Runtime.Serialization.Primitives.dll" Source="$(var.ConsoleAgentAppDirectory)\System.Runtime.Serialization.Primitives.dll" />
+      </Component>
+      <Component Id="ConsoleAgent.System.Runtime.Serialization.Xml.dll" Guid="B840C2DD-CCB4-4443-A993-E496BE346ECD">
+        <File Id="ConsoleAgent.System.Runtime.Serialization.Xml.dll" Source="$(var.ConsoleAgentAppDirectory)\System.Runtime.Serialization.Xml.dll" />
+      </Component>
+      <Component Id="ConsoleAgent.System.Security.Claims.dll" Guid="E69BBD0F-F49F-46D3-9CC8-7B5B822B0F8B">
+        <File Id="ConsoleAgent.System.Security.Claims.dll" Source="$(var.ConsoleAgentAppDirectory)\System.Security.Claims.dll" />
+      </Component>
+      <Component Id="ConsoleAgent.System.Security.Cryptography.Algorithms.dll" Guid="89A56A47-256F-4265-B273-E36949A180A3">
+        <File Id="ConsoleAgent.System.Security.Cryptography.Algorithms.dll" Source="$(var.ConsoleAgentAppDirectory)\System.Security.Cryptography.Algorithms.dll" />
+      </Component>
+      <Component Id="ConsoleAgent.System.Security.Cryptography.Csp.dll" Guid="8935F603-2F48-4E23-8E58-7D628E5CE269">
+        <File Id="ConsoleAgent.System.Security.Cryptography.Csp.dll" Source="$(var.ConsoleAgentAppDirectory)\System.Security.Cryptography.Csp.dll" />
+      </Component>
+      <Component Id="ConsoleAgent.System.Security.Cryptography.Encoding.dll" Guid="0F9793F5-F761-412B-B1A2-B842FCE3B09D">
+        <File Id="ConsoleAgent.System.Security.Cryptography.Encoding.dll" Source="$(var.ConsoleAgentAppDirectory)\System.Security.Cryptography.Encoding.dll" />
+      </Component>
+      <Component Id="ConsoleAgent.System.Security.Cryptography.Primitives.dll" Guid="91A16534-0DF6-4459-8FCC-E0B17CF72C77">
+        <File Id="ConsoleAgent.System.Security.Cryptography.Primitives.dll" Source="$(var.ConsoleAgentAppDirectory)\System.Security.Cryptography.Primitives.dll" />
+      </Component>
+      <Component Id="ConsoleAgent.System.Security.Cryptography.X___Certificates.dll" Guid="C50BD929-A678-4BEA-AB12-3937A6771BDE">
+        <File Id="ConsoleAgent.System.Security.Cryptography.X___Certificates.dll" Source="$(var.ConsoleAgentAppDirectory)\System.Security.Cryptography.X509Certificates.dll" />
+      </Component>
+      <Component Id="ConsoleAgent.System.Security.Principal.dll" Guid="C0CA0619-1EC5-4DF7-B18A-1FF11E9053D6">
+        <File Id="ConsoleAgent.System.Security.Principal.dll" Source="$(var.ConsoleAgentAppDirectory)\System.Security.Principal.dll" />
+      </Component>
+      <Component Id="ConsoleAgent.System.Security.SecureString.dll" Guid="3A4590F9-CC4B-41B0-A464-D532DABD62F3">
+        <File Id="ConsoleAgent.System.Security.SecureString.dll" Source="$(var.ConsoleAgentAppDirectory)\System.Security.SecureString.dll" />
+      </Component>
+      <Component Id="ConsoleAgent.System.Text.Encoding.dll" Guid="59536413-9366-4F62-BB25-A290FC11FA61">
+        <File Id="ConsoleAgent.System.Text.Encoding.dll" Source="$(var.ConsoleAgentAppDirectory)\System.Text.Encoding.dll" />
+      </Component>
+      <Component Id="ConsoleAgent.System.Text.Encoding.Extensions.dll" Guid="1B2F9DBD-CD92-463F-8D50-B11B11C1B69A">
+        <File Id="ConsoleAgent.System.Text.Encoding.Extensions.dll" Source="$(var.ConsoleAgentAppDirectory)\System.Text.Encoding.Extensions.dll" />
+      </Component>
+      <Component Id="ConsoleAgent.System.Text.RegularExpressions.dll" Guid="E36C8D91-B573-4BAA-A884-7EDD72BAD6C6">
+        <File Id="ConsoleAgent.System.Text.RegularExpressions.dll" Source="$(var.ConsoleAgentAppDirectory)\System.Text.RegularExpressions.dll" />
+      </Component>
+      <Component Id="ConsoleAgent.System.Threading.dll" Guid="AD2A96A4-E859-4F7F-904D-935C23F9F4C7">
+        <File Id="ConsoleAgent.System.Threading.dll" Source="$(var.ConsoleAgentAppDirectory)\System.Threading.dll" />
+      </Component>
+      <Component Id="ConsoleAgent.System.Threading.Overlapped.dll" Guid="C31B10BD-1E9F-46DA-8764-5F0D90428716">
+        <File Id="ConsoleAgent.System.Threading.Overlapped.dll" Source="$(var.ConsoleAgentAppDirectory)\System.Threading.Overlapped.dll" />
+      </Component>
+      <Component Id="ConsoleAgent.System.Threading.Tasks.dll" Guid="6EAB4DF4-3ECD-4365-A965-F3426ADDC782">
+        <File Id="ConsoleAgent.System.Threading.Tasks.dll" Source="$(var.ConsoleAgentAppDirectory)\System.Threading.Tasks.dll" />
+      </Component>
+      <Component Id="ConsoleAgent.System.Threading.Tasks.Parallel.dll" Guid="9A23029C-F117-48A7-9C4F-EBC4169DB4A1">
+        <File Id="ConsoleAgent.System.Threading.Tasks.Parallel.dll" Source="$(var.ConsoleAgentAppDirectory)\System.Threading.Tasks.Parallel.dll" />
+      </Component>
+      <Component Id="ConsoleAgent.System.Threading.Thread.dll" Guid="46C9FA66-E2A6-4EF4-814D-A4B46BCB09B0">
+        <File Id="ConsoleAgent.System.Threading.Thread.dll" Source="$(var.ConsoleAgentAppDirectory)\System.Threading.Thread.dll" />
+      </Component>
+      <Component Id="ConsoleAgent.System.Threading.ThreadPool.dll" Guid="CECDCD45-36CC-42B3-B4BD-D296BB0DE01A">
+        <File Id="ConsoleAgent.System.Threading.ThreadPool.dll" Source="$(var.ConsoleAgentAppDirectory)\System.Threading.ThreadPool.dll" />
+      </Component>
+      <Component Id="ConsoleAgent.System.Threading.Timer.dll" Guid="97054317-3E55-4CF8-A3CB-14B8D8965BB2">
+        <File Id="ConsoleAgent.System.Threading.Timer.dll" Source="$(var.ConsoleAgentAppDirectory)\System.Threading.Timer.dll" />
+      </Component>
+      <Component Id="ConsoleAgent.System.Xml.ReaderWriter.dll" Guid="B513402A-1128-46A6-B11B-28AADDC3DA86">
+        <File Id="ConsoleAgent.System.Xml.ReaderWriter.dll" Source="$(var.ConsoleAgentAppDirectory)\System.Xml.ReaderWriter.dll" />
+      </Component>
+      <Component Id="ConsoleAgent.System.Xml.XDocument.dll" Guid="239CB287-A490-4517-B596-03DC53354A50">
+        <File Id="ConsoleAgent.System.Xml.XDocument.dll" Source="$(var.ConsoleAgentAppDirectory)\System.Xml.XDocument.dll" />
+      </Component>
+      <Component Id="ConsoleAgent.System.Xml.XmlDocument.dll" Guid="4F49109E-3120-4F6A-8A3F-96001AD3DB37">
+        <File Id="ConsoleAgent.System.Xml.XmlDocument.dll" Source="$(var.ConsoleAgentAppDirectory)\System.Xml.XmlDocument.dll" />
+      </Component>
+      <Component Id="ConsoleAgent.System.Xml.XmlSerializer.dll" Guid="2D8B4F0F-F03A-43B4-A147-17D80E713D40">
+        <File Id="ConsoleAgent.System.Xml.XmlSerializer.dll" Source="$(var.ConsoleAgentAppDirectory)\System.Xml.XmlSerializer.dll" />
+      </Component>
+      <Component Id="ConsoleAgent.System.Xml.XPath.dll" Guid="4D6360E6-A97B-441E-9B87-4ECAD530C699">
+        <File Id="ConsoleAgent.System.Xml.XPath.dll" Source="$(var.ConsoleAgentAppDirectory)\System.Xml.XPath.dll" />
+      </Component>
+      <Component Id="ConsoleAgent.System.Xml.XPath.XDocument.dll" Guid="3EA31A4F-CFF2-4390-B542-BE383854D265">
+        <File Id="ConsoleAgent.System.Xml.XPath.XDocument.dll" Source="$(var.ConsoleAgentAppDirectory)\System.Xml.XPath.XDocument.dll" />
+      </Component>
     </ComponentGroup>
-
     <!-- Build our own target directory paths here because WiX is wrong about .NET Core projects. It wants to do `bin\x86\<Configuration>`. -->
     <?define DotNetCoreAssembliesDir="$(var.Xamarin.Interactive.DotNetCore.ProjectDir)bin\$(var.Configuration)\netstandard2.0\"?>
-    <?define NetStandardAssembliesDir="$(var.Xamarin.Interactive.NetStandard.ProjectDir)bin\$(var.Configuration)\netstandard2.0\"?>
     <ComponentGroup Id="DotNetCoreAgentComponents" Directory="DotNetCoreAgentInstallFolder">
       <Component Id="DotNetCoreAgent.Xamarin.Interactive.dll" Guid="A75AA531-C517-4242-9777-277AA562AD59">
         <File Id="DotNetCoreAgent.Xamarin.Interactive.dll" Source="$(var.DotNetCoreAssembliesDir)Xamarin.Interactive.dll" />
@@ -64,69 +348,63 @@
       <Component Id="DotNetCoreAgent.Xamarin.Interactive.DotNetCore.pdb" Guid="5107A471-FE12-44FF-9B96-4FE0C009302A">
         <File Id="DotNetCoreAgent.Xamarin.Interactive.DotNetcore.pdb" Source="$(var.DotNetCoreAssembliesDir)Xamarin.Interactive.DotNetCore.pdb" />
       </Component>
-      <!-- copy in the special ref assembly for .NET Core -->
-      <Component Id="DotNetCoreAgent.ref_Xamarin.Interactive.dll" Guid="E279D71F-DAE8-4B6D-9092-E8DD3247E1D2">
-        <File Id="DotNetCoreAgent.ref_Xamarin.Interactive.dll" Source="$(var.NetStandardAssembliesDir)ref-Xamarin.Interactive.dll" />
-      </Component>
     </ComponentGroup>
-
     <ComponentGroup Id="AndroidFormsAgentComponents" Directory="AndroidFormsAgentInstallFolder">
       <Component Id="AndroidFormsAgent.Xamarin.Interactive.Android.dll" Guid="FAA4B1FF-0136-44DA-AF0C-170BD4225FFC">
-        <File Id="AndroidFormsAgent.Xamarin.Interactive.Android.dll" Source="$(var.Xamarin.Interactive.Android.ActivityTrackerShim.TargetDir)\Xamarin.Interactive.Android.dll"/>
+        <File Id="AndroidFormsAgent.Xamarin.Interactive.Android.dll" Source="$(var.Xamarin.Interactive.Android.ActivityTrackerShim.TargetDir)\Xamarin.Interactive.Android.dll" />
       </Component>
       <Component Id="AndroidFormsAgent.Xamarin.Interactive.Android.pdb" Guid="74BB4CA9-D8C0-476D-8C1A-47E7E69F4C41">
-        <File Id="AndroidFormsAgent.Xamarin.Interactive.Android.pdb" Source="$(var.Xamarin.Interactive.Android.ActivityTrackerShim.TargetDir)\Xamarin.Interactive.Android.pdb"/>
+        <File Id="AndroidFormsAgent.Xamarin.Interactive.Android.pdb" Source="$(var.Xamarin.Interactive.Android.ActivityTrackerShim.TargetDir)\Xamarin.Interactive.Android.pdb" />
       </Component>
-
       <Component Id="AndroidFormsAgent.Xamarin.Interactive.dll" Guid="08FDB438-A14F-4AE8-B64E-070D9ECD35B0">
-        <File Id="AndroidFormsAgent.Xamarin.Interactive.dll" Source="$(var.Xamarin.Interactive.Android.ActivityTrackerShim.TargetDir)\Xamarin.Interactive.dll"/>
+        <File Id="AndroidFormsAgent.Xamarin.Interactive.dll" Source="$(var.Xamarin.Interactive.Android.ActivityTrackerShim.TargetDir)\Xamarin.Interactive.dll" />
       </Component>
       <Component Id="AndroidFormsAgent.Xamarin.Interactive.pdb" Guid="F26DB7AD-E777-4263-BD70-53CB44F1507C">
-        <File Id="AndroidFormsAgent.Xamarin.Interactive.pdb" Source="$(var.Xamarin.Interactive.Android.ActivityTrackerShim.TargetDir)\Xamarin.Interactive.pdb"/>
+        <File Id="AndroidFormsAgent.Xamarin.Interactive.pdb" Source="$(var.Xamarin.Interactive.Android.ActivityTrackerShim.TargetDir)\Xamarin.Interactive.pdb" />
       </Component>
-
       <Component Id="Xamarin.Interactive.Forms.dll" Guid="2E2CC15D-94E3-4DAD-8BBE-759D05561973">
-        <File Id="Xamarin.Interactive.Forms.dll" Source="$(var.Xamarin.Interactive.Forms.Android.TargetDir)\Xamarin.Interactive.Forms.dll"/>
+        <File Id="Xamarin.Interactive.Forms.dll" Source="$(var.Xamarin.Interactive.Forms.Android.TargetDir)\Xamarin.Interactive.Forms.dll" />
       </Component>
       <Component Id="Xamarin.Interactive.Forms.pdb" Guid="1F666BEF-49AD-4A78-8371-FD30EA2ED52D">
-        <File Id="Xamarin.Interactive.Forms.pdb" Source="$(var.Xamarin.Interactive.Forms.Android.TargetDir)\Xamarin.Interactive.Forms.pdb"/>
+        <File Id="Xamarin.Interactive.Forms.pdb" Source="$(var.Xamarin.Interactive.Forms.Android.TargetDir)\Xamarin.Interactive.Forms.pdb" />
       </Component>
-
       <Component Id="Xamarin.Interactive.Forms.Android.dll" Guid="BE4F1B27-FF6E-43E4-8806-5D9E737C783B">
-        <File Id="Xamarin.Interactive.Forms.Android.dll" Source="$(var.Xamarin.Interactive.Forms.Android.TargetDir)\Xamarin.Interactive.Forms.Android.dll"/>
+        <File Id="Xamarin.Interactive.Forms.Android.dll" Source="$(var.Xamarin.Interactive.Forms.Android.TargetDir)\Xamarin.Interactive.Forms.Android.dll" />
       </Component>
       <Component Id="Xamarin.Interactive.Forms.Android.pdb" Guid="CBEA1285-1569-483D-996D-8C39E340CC40">
-        <File Id="Xamarin.Interactive.Forms.Android.pdb" Source="$(var.Xamarin.Interactive.Forms.Android.TargetDir)\Xamarin.Interactive.Forms.Android.pdb"/>
+        <File Id="Xamarin.Interactive.Forms.Android.pdb" Source="$(var.Xamarin.Interactive.Forms.Android.TargetDir)\Xamarin.Interactive.Forms.Android.pdb" />
+      </Component>
+      <Component Id="AndroidFormsAgent.netstandard.dll" Guid="13CC88DF-DF85-4518-9E78-5CA121E5DB54">
+        <File Id="AndroidFormsAgent.netstandard.dll" Source="$(var.ConsoleAgentAppDirectory)\netstandard.dll" />
       </Component>
     </ComponentGroup>
-
     <ComponentGroup Id="iOSFormsAgentComponents" Directory="iOSFormsAgentInstallFolder">
       <Component Id="iOSFormsAgent.Xamarin.Interactive.iOS.dll" Guid="79967E51-5970-4A48-9341-C0E4FDE98D8B">
-        <File Id="iOSFormsAgent.Xamarin.Interactive.iOS.dll" Source="$(var.Xamarin.Interactive.Forms.iOS.TargetDir)\Xamarin.Interactive.iOS.dll"/>
+        <File Id="iOSFormsAgent.Xamarin.Interactive.iOS.dll" Source="$(var.Xamarin.Interactive.Forms.iOS.TargetDir)\Xamarin.Interactive.iOS.dll" />
       </Component>
       <Component Id="iOSFormsAgent.Xamarin.Interactive.iOS.pdb" Guid="83213CC5-4149-4CE1-AD9E-8C6F87BB6D46">
-        <File Id="iOSFormsAgent.Xamarin.Interactive.iOS.pdb" Source="$(var.Xamarin.Interactive.Forms.iOS.TargetDir)\Xamarin.Interactive.iOS.pdb"/>
+        <File Id="iOSFormsAgent.Xamarin.Interactive.iOS.pdb" Source="$(var.Xamarin.Interactive.Forms.iOS.TargetDir)\Xamarin.Interactive.iOS.pdb" />
       </Component>
-
       <Component Id="iOSFormsAgent.Xamarin.Interactive.dll" Guid="9D1949F0-842F-4602-8197-4B3F31E8394F">
-        <File Id="iOSFormsAgent.Xamarin.Interactive.dll" Source="$(var.Xamarin.Interactive.Forms.iOS.TargetDir)\Xamarin.Interactive.dll"/>
+        <File Id="iOSFormsAgent.Xamarin.Interactive.dll" Source="$(var.Xamarin.Interactive.Forms.iOS.TargetDir)\Xamarin.Interactive.dll" />
       </Component>
       <Component Id="iOSFormsAgent.Xamarin.Interactive.pdb" Guid="C809DBA7-800C-4116-A4C6-60EFF2222465">
-        <File Id="iOSFormsAgent.Xamarin.Interactive.pdb" Source="$(var.Xamarin.Interactive.Forms.iOS.TargetDir)\Xamarin.Interactive.pdb"/>
+        <File Id="iOSFormsAgent.Xamarin.Interactive.pdb" Source="$(var.Xamarin.Interactive.Forms.iOS.TargetDir)\Xamarin.Interactive.pdb" />
       </Component>
-
       <Component Id="iOSFormsAgent.Xamarin.Interactive.Forms.dll" Guid="CF2F0724-B18F-4ADD-9F53-26A999F2900E">
-        <File Id="iOSFormsAgent.Xamarin.Interactive.Forms.dll" Source="$(var.Xamarin.Interactive.Forms.iOS.TargetDir)\Xamarin.Interactive.Forms.dll"/>
+        <File Id="iOSFormsAgent.Xamarin.Interactive.Forms.dll" Source="$(var.Xamarin.Interactive.Forms.iOS.TargetDir)\Xamarin.Interactive.Forms.dll" />
       </Component>
       <Component Id="iOSFormsAgent.Xamarin.Interactive.Forms.pdb" Guid="A10C0AD1-1685-4D8F-A22C-1C70658129E0">
-        <File Id="iOSFormsAgent.Xamarin.Interactive.Forms.pdb" Source="$(var.Xamarin.Interactive.Forms.iOS.TargetDir)\Xamarin.Interactive.Forms.pdb"/>
+        <File Id="iOSFormsAgent.Xamarin.Interactive.Forms.pdb" Source="$(var.Xamarin.Interactive.Forms.iOS.TargetDir)\Xamarin.Interactive.Forms.pdb" />
       </Component>
-
       <Component Id="Xamarin.Interactive.Forms.iOS.dll" Guid="DFAB784C-1E9B-4C07-9C9D-1975A4FA731A">
-        <File Id="Xamarin.Interactive.Forms.iOS.dll" Source="$(var.Xamarin.Interactive.Forms.iOS.TargetDir)\Xamarin.Interactive.Forms.iOS.dll"/>
+        <File Id="Xamarin.Interactive.Forms.iOS.dll" Source="$(var.Xamarin.Interactive.Forms.iOS.TargetDir)\Xamarin.Interactive.Forms.iOS.dll" />
       </Component>
       <Component Id="Xamarin.Interactive.Forms.iOS.pdb" Guid="80178279-C057-4F7C-820D-7E00C21192AE">
-        <File Id="Xamarin.Interactive.Forms.iOS.pdb" Source="$(var.Xamarin.Interactive.Forms.iOS.TargetDir)\Xamarin.Interactive.Forms.iOS.pdb"/>
+        <File Id="Xamarin.Interactive.Forms.iOS.pdb" Source="$(var.Xamarin.Interactive.Forms.iOS.TargetDir)\Xamarin.Interactive.Forms.iOS.pdb" />
+      </Component>
+      <Component Id="iOSFormsAgent.netstandard.dll" Guid="E48BFF31-8412-4D40-8ED7-968FC46CFB45">
+        <File Id="iOSFormsAgent.netstandard.dll" Source="$(var.ConsoleAgentAppDirectory)\netstandard.dll" />
       </Component>
     </ComponentGroup>
   </Fragment>

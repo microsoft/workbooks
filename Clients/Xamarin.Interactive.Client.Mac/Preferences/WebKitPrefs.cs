@@ -10,6 +10,7 @@ using System;
 using WebKit;
 
 using Xamarin.Interactive.Logging;
+using Xamarin.Interactive.Unified;
 
 namespace Xamarin.Interactive.Preferences
 {

@@ -48,7 +48,8 @@ namespace ApiDump
                     typeDeclaration.Modifiers.HasFlag (Modifiers.Public) &&
                     !typeDeclaration.Modifiers.HasFlag (Modifiers.Sealed) &&
                     !typeDeclaration.Modifiers.HasFlag (Modifiers.Static) &&
-                    !typeDeclaration.Modifiers.HasFlag (Modifiers.Abstract)) {
+                    !typeDeclaration.Modifiers.HasFlag (Modifiers.Abstract) &&
+                    typeDeclaration.Name != "EvaluationContextGlobalObject") {
                     var clone = (TypeDeclaration)typeDeclaration.Clone ();
                     clone.Members.Clear ();
                     issues.Add (new Issue (

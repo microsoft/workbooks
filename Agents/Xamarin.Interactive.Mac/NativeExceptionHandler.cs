@@ -7,17 +7,12 @@
 // Licensed under the MIT License.
 
 using System;
-
-#if IOS || MAC
-
 using System.Runtime.InteropServices;
 
 using ObjCRuntime;
 using Foundation;
 
-#endif
-
-namespace Xamarin.Interactive
+namespace Xamarin.Interactive.Unified
 {
     static class NativeExceptionHandler
     {
@@ -28,18 +23,15 @@ namespace Xamarin.Interactive
 
         public class TrappedNativeException : Exception
         {
-#if IOS || MAC
             public NSException NativeException { get; }
 
-            public TrappedNativeException (NSException realException) : 
-                base ($"A native exception was thrown: {realException.Description}") 
+            public TrappedNativeException (NSException realException) :
+                base ($"A native exception was thrown: {realException.Description}")
             {
                 NativeException = realException;
             }
-#endif
         }
 
-#if IOS || MAC
         [DllImport (Constants.ObjectiveCLibrary)]
         static extern IntPtr objc_setExceptionPreprocessor (IntPtr handler);
 
@@ -73,13 +65,5 @@ namespace Xamarin.Interactive
                 originalHandler = IntPtr.Zero;
             }
         }
-#else
-        public static IDisposable Trap ()
-            => new Disposable ();
-
-        public static void Release ()
-        {
-        }
-#endif
     }
 }

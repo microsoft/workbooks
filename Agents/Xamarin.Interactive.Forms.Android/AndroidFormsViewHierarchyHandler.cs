@@ -30,7 +30,7 @@ namespace Xamarin.Interactive.Forms.Android
 
         Rectangle GetNativeViewBounds (VisualElement visualElement)
         {
-            var nativeView = Platform.GetRenderer (visualElement).ViewGroup;
+            var nativeView = Platform.GetRenderer (visualElement).View;
             var location = new int [2];
             nativeView.GetLocationOnScreen (location);
 
@@ -54,7 +54,7 @@ namespace Xamarin.Interactive.Forms.Android
 
         void DrawHighlightOnView (VisualElement element)
         {
-            var view = Platform.GetRenderer (element).ViewGroup;
+            var view = Platform.GetRenderer (element).View;
 
             highlightedView = view;
             highlightedViewOriginalBackground = highlightedView.Background;

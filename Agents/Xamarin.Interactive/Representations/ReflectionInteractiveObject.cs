@@ -50,12 +50,8 @@ namespace Xamarin.Interactive.Representations
 
         protected override void ReadMembers ()
         {
-            try {
-                NativeExceptionHandler.Trap ();
+            using (NativeHelper.SharedInstance.TrapNativeExceptions ())
                 SafeReadMembers ();
-            } finally {
-                NativeExceptionHandler.Release ();
-            }
         }
 
         void SafeReadMembers ()

@@ -22,7 +22,7 @@ namespace Xamarin.ProcessControl
     /// <summary>
     /// An immutable list of process arguments. Arguments will be quoted if escaping is necessary.
     /// </summary>
-    public sealed class ProcessArguments : IReadOnlyList<string>
+    sealed class ProcessArguments : IReadOnlyList<string>
     {
         public static ProcessArguments Parse (string commandLine, bool expandGlobs = true)
         {

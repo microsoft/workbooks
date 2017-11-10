@@ -1,4 +1,7 @@
+[assembly: AssemblyConfiguration ("Release")]
 [assembly: AssemblyCopyright ("Copyright 2016-2017 Microsoft. All rights reserved.\nCopyright 2014-2016 Xamarin Inc. All rights reserved.")]
+[assembly: AssemblyProduct ("Xamarin.Interactive")]
+[assembly: AssemblyTitle ("Xamarin.Interactive")]
 [assembly: InternalsVisibleTo ("Xamarin.Interactive.DotNetCore")]
 [assembly: InternalsVisibleTo ("Xamarin.Interactive.Android")]
 [assembly: InternalsVisibleTo ("Xamarin.Interactive.iOS")]
@@ -30,7 +33,7 @@
 [assembly: InternalsVisibleTo ("Xamarin.Workbooks.Client.Android")]
 [assembly: InternalsVisibleTo ("Xamarin.Interactive.XS")]
 [assembly: InternalsVisibleTo ("Xamarin.Interactive.VS")]
-[assembly: TargetFramework (".NETPortable,Version=v4.5,Profile=Profile111", FrameworkDisplayName = ".NET Portable Subset")]
+[assembly: TargetFramework (".NETStandard,Version=v2.0", FrameworkDisplayName = "")]
 [assembly: BuildInfo]
 namespace Xamarin.Interactive
 {
@@ -87,6 +90,24 @@ namespace Xamarin.Interactive
 
         SynchronizationContext PushContext (SynchronizationContext context);
     }
+    [EditorBrowsable (EditorBrowsableState.Never)]
+    public static class InteractiveCulture
+    {
+        [EditorBrowsable (EditorBrowsableState.Never)]
+        public static CultureInfo CurrentCulture {
+            get;
+            set;
+        }
+
+        [EditorBrowsable (EditorBrowsableState.Never)]
+        public static CultureInfo CurrentUICulture {
+            get;
+            set;
+        }
+
+        [EditorBrowsable (EditorBrowsableState.Never)]
+        public static void Initialize ();
+    }
 }
 namespace Xamarin.Interactive.CodeAnalysis
 {
@@ -104,6 +125,56 @@ namespace Xamarin.Interactive.CodeAnalysis
         public override int GetHashCode ();
 
         public override string ToString ();
+    }
+    public class EvaluationContextGlobalObject
+    {
+        [EvaluationContextGlobalObject.InteractiveHelpAttribute (Description = "Clear all previous REPL results", ShowReturnType = false, LiveInspectOnly = true)]
+        public static readonly Guid clear;
+
+        [EvaluationContextGlobalObject.InteractiveHelpAttribute (Description = "Get or set the current thread culture")]
+        public static CultureInfo CurrentCulture {
+            get;
+            set;
+        }
+
+        [EvaluationContextGlobalObject.InteractiveHelpAttribute (Description = "Get or set the current thread culture by name")]
+        public static string CurrentCultureName {
+            get;
+            set;
+        }
+
+        [EvaluationContextGlobalObject.InteractiveHelpAttribute (Description = "This help text", ShowReturnType = false)]
+        public object help {
+            get;
+        }
+
+        [EvaluationContextGlobalObject.InteractiveHelpAttribute (Description = "Direct public access to the agent powering the interactive session")]
+        public IAgent InteractiveAgent {
+            get;
+        }
+
+        [EditorBrowsable (EditorBrowsableState.Never)]
+        public T __AssignmentMonitor<T> (T value, string symbolName, string nodeType, int spanStart, int spanEnd);
+
+        public T GetObject<T> (long handle);
+
+        [EvaluationContextGlobalObject.InteractiveHelpAttribute (Description = "Shows declared global variables", ShowReturnType = false)]
+        public object GetVars ();
+
+        [EvaluationContextGlobalObject.InteractiveHelpAttribute (Description = "Render an image from a path or URI")]
+        public static Image Image (Uri uri);
+
+        [EvaluationContextGlobalObject.InteractiveHelpAttribute (Description = "Render an image from a path or URI, or SVG data")]
+        public static Image Image (string uriOrTextData);
+
+        [EvaluationContextGlobalObject.InteractiveHelpAttribute (Description = "Render an image from raw data")]
+        public static Image Image (byte[] data);
+
+        [EvaluationContextGlobalObject.InteractiveHelpAttribute (Description = "Render an image from a stream")]
+        public static Task<Image> ImageAsync (Stream stream);
+
+        [EvaluationContextGlobalObject.InteractiveHelpAttribute (Description = "Uses a Stopwatch to time the specified action delegate")]
+        public static TimeSpan Time (Action action);
     }
     public struct EvaluationContextId : IEquatable<EvaluationContextId>
     {

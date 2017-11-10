@@ -12,15 +12,12 @@ using System.Runtime.Serialization;
 namespace Xamarin.Interactive.Representations.Reflection
 {
     [Serializable]
-    public sealed class RepresentedMemberInfo : IRepresentedMemberInfo, ISerializable
+    sealed class RepresentedMemberInfo : IRepresentedMemberInfo, ISerializable
     {
         readonly object resolveLock = new object ();
         bool resolved;
-
-        #if MAC || IOS
-        bool checkedForObjCSelector;
-        ObjCRuntime.Selector objCSelector;
-        #endif
+        bool checkedNativeProperty;
+        string nativePropertyError;
 
         public RepresentedType DeclaringType { get; private set; }
         public RepresentedMemberKind MemberKind { get; private set; }
@@ -122,44 +119,23 @@ namespace Xamarin.Interactive.Representations.Reflection
 
             var property = ResolvedMemberInfo as PropertyInfo;
             if (property != null) {
-                #if MAC || IOS
-                EnsureRespondsToSelector (property, target);
-                #endif
+                if (!checkedNativeProperty) {
+                    checkedNativeProperty = true;
+                    nativePropertyError = NativeHelper.SharedInstance.CheckProperty (
+                        property,
+                        target,
+                        DeclaringType);
+                }
+
+                if (nativePropertyError != null)
+                    throw new Exception (nativePropertyError);
+
                 return property.GetValue (target);
             }
 
             throw new NotImplementedException ("should not be reached; " +
                 $"unsupported MemberInfo {ResolvedMemberInfo.GetType ()}");
         }
-
-        #if MAC || IOS
-
-        void EnsureRespondsToSelector (PropertyInfo property, object target)
-        {
-            if (!checkedForObjCSelector) {
-                checkedForObjCSelector = true;
-                if (typeof(Foundation.NSObject).IsAssignableFrom (DeclaringType.ResolvedType)) {
-                    var selName = property
-                        ?.GetGetMethod (true)
-                        ?.GetCustomAttribute<Foundation.ExportAttribute> ()
-                        ?.Selector;
-                    if (selName != null)
-                        objCSelector = new ObjCRuntime.Selector (selName);
-                }
-            }
-
-            if (objCSelector == null || objCSelector.Handle == IntPtr.Zero)
-                return;
-
-            var nso = target as Foundation.NSObject;
-            if (nso == null || nso.RespondsToSelector (objCSelector))
-                return;
-
-            throw new Exception (String.Format ("{0} instance 0x{1:x} does not respond to selector {2}",
-                target.GetType (), nso.Handle, objCSelector.Name));
-        }
-
-        #endif
 
         void EnsureResolved ()
         {

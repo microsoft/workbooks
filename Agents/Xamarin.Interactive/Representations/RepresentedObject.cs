@@ -19,7 +19,7 @@ namespace Xamarin.Interactive.Representations
     // and an InteractiveObject representation. We don't return an array
     // directly since we might tack on more result metadata in the future.
     [Serializable]
-    public sealed class RepresentedObject : IReadOnlyList<object>
+    sealed class RepresentedObject : IReadOnlyList<object>
     {
         readonly RepresentedType representedType;
         Representation [] representations;

@@ -1,12 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26730.16
+VisualStudioVersion = 15.0.27004.2005
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Xamarin.Interactive.Shared", "Agents\Xamarin.Interactive\Xamarin.Interactive.Shared.shproj", "{0B64FF4D-4589-438B-A18C-9DA1DE8A2653}"
-EndProject
-Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Xamarin.Interactive.Bootstrap", "Bootstrap\Xamarin.Interactive.Bootstrap\Xamarin.Interactive.Bootstrap.shproj", "{2ECF1997-1B8A-4C03-8CA9-9710A820C4FC}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Clients", "Clients", "{1918A3C3-EAE4-4F9F-BF6B-83CB94AAF7E9}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xamarin.Interactive.Client.Mac", "Clients\Xamarin.Interactive.Client.Mac\Xamarin.Interactive.Client.Mac.csproj", "{B813E9C0-FAEF-4661-ABCE-8F3322D451D2}"
@@ -57,9 +53,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xamarin.Build", "Build\Xama
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xamarin.Workbooks.Mac", "WorkbookApps\Xamarin.Workbooks.Mac\Xamarin.Workbooks.Mac.csproj", "{88DA1F82-8CA2-46A7-B339-8D96C9138515}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xamarin.Interactive", "Agents\Xamarin.Interactive\Xamarin.Interactive.csproj", "{955F473A-04EC-4716-B75E-509BA892499B}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xamarin.Interactive.Facades", "Agents\Xamarin.Interactive.Facades\Xamarin.Interactive.Facades.csproj", "{0CB32DEF-71E4-489A-AECE-AFBFCC06854C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xamarin.Interactive", "Agents\Xamarin.Interactive\Xamarin.Interactive.csproj", "{955F473A-04EC-4716-B75E-509BA892499B}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Forms", "Forms", "{88765549-56E0-4B66-BA2D-F49E1446EF94}"
 EndProject
@@ -67,7 +61,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xamarin.Interactive.Forms.i
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xamarin.Interactive.Forms.Android", "Agents\Xamarin.Interactive.Forms.Android\Xamarin.Interactive.Forms.Android.csproj", "{159A14A0-F8C7-460F-ADF7-967D60E63689}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xamarin.Interactive.Forms", "Agents\Xamarin.Interactive.Forms\Xamarin.Interactive.Forms.csproj", "{932D2C61-5DBE-4D82-A4D6-1EA7401F10D3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xamarin.Interactive.Forms", "Agents\Xamarin.Interactive.Forms\Xamarin.Interactive.Forms.csproj", "{932D2C61-5DBE-4D82-A4D6-1EA7401F10D3}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xamarin.Interactive.Console", "Agents\Xamarin.Interactive.Console\Xamarin.Interactive.Console.csproj", "{7A522415-E2F7-4E4B-8E11-3D7CF9A854A8}"
 EndProject
@@ -84,8 +78,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ApiDump", "Tools\ApiDump\ApiDump.csproj", "{B44E528A-584A-4BAF-A398-6E2245AA8ED2}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xamarin.Interactive.DotNetCore", "Agents\Xamarin.Interactive.DotNetCore\Xamarin.Interactive.DotNetCore.csproj", "{CDF223B4-DD43-42BE-96BB-C1EEC464796C}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xamarin.Interactive.NetStandard", "Agents\Xamarin.Interactive.NetStandard\Xamarin.Interactive.NetStandard.csproj", "{7835BCA4-2F06-4AB8-B5E5-AD7934FFBA2D}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xamarin.Workbooks.DotNetCore", "WorkbookApps\Xamarin.Workbooks.DotNetCore\Xamarin.Workbooks.DotNetCore.csproj", "{5CBBD924-8B0D-4C35-A39B-751DCF9D234D}"
 EndProject
@@ -121,24 +113,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xamarin.Interactive.Client.
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
-		Agents\Xamarin.Interactive\Xamarin.Interactive.Shared.projitems*{0b64ff4d-4589-438b-a18c-9da1de8a2653}*SharedItemsImports = 13
 		Agents\Xamarin.Interactive.Mac\Xamarin.Interactive.Mac.projitems*{0be4e82e-2409-4425-811d-bc7c8b134320}*SharedItemsImports = 13
-		Agents\Xamarin.Interactive\Xamarin.Interactive.Shared.projitems*{22fd0fae-d093-446c-9adb-4b59a97f413e}*SharedItemsImports = 4
-		Bootstrap\Xamarin.Interactive.Bootstrap\Xamarin.Interactive.Bootstrap.projitems*{22fd0fae-d093-446c-9adb-4b59a97f413e}*SharedItemsImports = 4
-		Bootstrap\Xamarin.Interactive.Bootstrap\Xamarin.Interactive.Bootstrap.projitems*{2ecf1997-1b8a-4c03-8ca9-9710a820c4fc}*SharedItemsImports = 13
-		Agents\Xamarin.Interactive\Xamarin.Interactive.Shared.projitems*{32a8ebc6-bab4-403b-9a8b-89f836cfe95a}*SharedItemsImports = 4
-		Bootstrap\Xamarin.Interactive.Bootstrap\Xamarin.Interactive.Bootstrap.projitems*{32a8ebc6-bab4-403b-9a8b-89f836cfe95a}*SharedItemsImports = 4
 		Agents\Xamarin.Interactive.Mac\Xamarin.Interactive.Mac.projitems*{50e9c7dc-4ff9-44b2-bcce-85a00e3d967e}*SharedItemsImports = 4
-		Agents\Xamarin.Interactive\Xamarin.Interactive.Shared.projitems*{50e9c7dc-4ff9-44b2-bcce-85a00e3d967e}*SharedItemsImports = 4
-		Bootstrap\Xamarin.Interactive.Bootstrap\Xamarin.Interactive.Bootstrap.projitems*{50e9c7dc-4ff9-44b2-bcce-85a00e3d967e}*SharedItemsImports = 4
-		Agents\Xamarin.Interactive\Xamarin.Interactive.Shared.projitems*{7a522415-e2f7-4e4b-8e11-3d7cf9a854a8}*SharedItemsImports = 4
-		Bootstrap\Xamarin.Interactive.Bootstrap\Xamarin.Interactive.Bootstrap.projitems*{7a522415-e2f7-4e4b-8e11-3d7cf9a854a8}*SharedItemsImports = 4
-		Agents\Xamarin.Interactive\Xamarin.Interactive.Shared.projitems*{8dfce7a8-ba80-475d-97c1-dfbcce17c8e3}*SharedItemsImports = 4
-		Bootstrap\Xamarin.Interactive.Bootstrap\Xamarin.Interactive.Bootstrap.projitems*{8dfce7a8-ba80-475d-97c1-dfbcce17c8e3}*SharedItemsImports = 4
 		Clients\Xamarin.Interactive.MTouch\Xamarin.Interactive.MTouch.projitems*{a31ddded-f400-41be-92ba-6931763c27e7}*SharedItemsImports = 13
 		Agents\Xamarin.Interactive.Mac\Xamarin.Interactive.Mac.projitems*{af7b7abd-84d4-46b2-80e4-9ca457c513bc}*SharedItemsImports = 4
-		Agents\Xamarin.Interactive\Xamarin.Interactive.Shared.projitems*{af7b7abd-84d4-46b2-80e4-9ca457c513bc}*SharedItemsImports = 4
-		Bootstrap\Xamarin.Interactive.Bootstrap\Xamarin.Interactive.Bootstrap.projitems*{af7b7abd-84d4-46b2-80e4-9ca457c513bc}*SharedItemsImports = 4
 		Clients\Xamarin.Interactive.MTouch\Xamarin.Interactive.MTouch.projitems*{b813e9c0-faef-4661-abce-8f3322d451d2}*SharedItemsImports = 4
 		Clients\Xamarin.Interactive.MTouch\Xamarin.Interactive.MTouch.projitems*{d495e2ae-bf3e-444b-b3d6-91ef14293831}*SharedItemsImports = 4
 	EndGlobalSection
@@ -283,16 +261,6 @@ Global
 		{955F473A-04EC-4716-B75E-509BA892499B}.Release|macOS.Build.0 = Release|Any CPU
 		{955F473A-04EC-4716-B75E-509BA892499B}.Release|Windows.ActiveCfg = Release|Any CPU
 		{955F473A-04EC-4716-B75E-509BA892499B}.Release|Windows.Build.0 = Release|Any CPU
-		{0CB32DEF-71E4-489A-AECE-AFBFCC06854C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0CB32DEF-71E4-489A-AECE-AFBFCC06854C}.Debug|macOS.ActiveCfg = Debug|Any CPU
-		{0CB32DEF-71E4-489A-AECE-AFBFCC06854C}.Debug|macOS.Build.0 = Debug|Any CPU
-		{0CB32DEF-71E4-489A-AECE-AFBFCC06854C}.Debug|Windows.ActiveCfg = Debug|Any CPU
-		{0CB32DEF-71E4-489A-AECE-AFBFCC06854C}.Debug|Windows.Build.0 = Debug|Any CPU
-		{0CB32DEF-71E4-489A-AECE-AFBFCC06854C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{0CB32DEF-71E4-489A-AECE-AFBFCC06854C}.Release|macOS.ActiveCfg = Release|Any CPU
-		{0CB32DEF-71E4-489A-AECE-AFBFCC06854C}.Release|macOS.Build.0 = Release|Any CPU
-		{0CB32DEF-71E4-489A-AECE-AFBFCC06854C}.Release|Windows.ActiveCfg = Release|Any CPU
-		{0CB32DEF-71E4-489A-AECE-AFBFCC06854C}.Release|Windows.Build.0 = Release|Any CPU
 		{A534BEA1-1A39-4355-B6EF-F6A3EF7E65FC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{A534BEA1-1A39-4355-B6EF-F6A3EF7E65FC}.Debug|macOS.ActiveCfg = Debug|Any CPU
 		{A534BEA1-1A39-4355-B6EF-F6A3EF7E65FC}.Debug|macOS.Build.0 = Debug|Any CPU
@@ -393,16 +361,6 @@ Global
 		{CDF223B4-DD43-42BE-96BB-C1EEC464796C}.Release|macOS.Build.0 = Release|Any CPU
 		{CDF223B4-DD43-42BE-96BB-C1EEC464796C}.Release|Windows.ActiveCfg = Release|Any CPU
 		{CDF223B4-DD43-42BE-96BB-C1EEC464796C}.Release|Windows.Build.0 = Release|Any CPU
-		{7835BCA4-2F06-4AB8-B5E5-AD7934FFBA2D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{7835BCA4-2F06-4AB8-B5E5-AD7934FFBA2D}.Debug|macOS.ActiveCfg = Debug|Any CPU
-		{7835BCA4-2F06-4AB8-B5E5-AD7934FFBA2D}.Debug|macOS.Build.0 = Debug|Any CPU
-		{7835BCA4-2F06-4AB8-B5E5-AD7934FFBA2D}.Debug|Windows.ActiveCfg = Debug|Any CPU
-		{7835BCA4-2F06-4AB8-B5E5-AD7934FFBA2D}.Debug|Windows.Build.0 = Debug|Any CPU
-		{7835BCA4-2F06-4AB8-B5E5-AD7934FFBA2D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{7835BCA4-2F06-4AB8-B5E5-AD7934FFBA2D}.Release|macOS.ActiveCfg = Release|Any CPU
-		{7835BCA4-2F06-4AB8-B5E5-AD7934FFBA2D}.Release|macOS.Build.0 = Release|Any CPU
-		{7835BCA4-2F06-4AB8-B5E5-AD7934FFBA2D}.Release|Windows.ActiveCfg = Release|Any CPU
-		{7835BCA4-2F06-4AB8-B5E5-AD7934FFBA2D}.Release|Windows.Build.0 = Release|Any CPU
 		{5CBBD924-8B0D-4C35-A39B-751DCF9D234D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{5CBBD924-8B0D-4C35-A39B-751DCF9D234D}.Debug|macOS.ActiveCfg = Debug|Any CPU
 		{5CBBD924-8B0D-4C35-A39B-751DCF9D234D}.Debug|macOS.Build.0 = Debug|Any CPU
@@ -538,8 +496,6 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{0B64FF4D-4589-438B-A18C-9DA1DE8A2653} = {AE0C9371-285B-4540-AB1D-F5141FA66D19}
-		{2ECF1997-1B8A-4C03-8CA9-9710A820C4FC} = {0D5D807C-DEBE-498D-B2D8-D75E6C60D15B}
 		{B813E9C0-FAEF-4661-ABCE-8F3322D451D2} = {1918A3C3-EAE4-4F9F-BF6B-83CB94AAF7E9}
 		{32A8EBC6-BAB4-403B-9A8B-89F836CFE95A} = {ED62D731-5B6C-45F6-9A62-B9992E874E27}
 		{0BE4E82E-2409-4425-811D-BC7C8B134320} = {1281F1A8-EB27-4D6C-8E0A-03FBFAA63746}
@@ -560,7 +516,6 @@ Global
 		{056196F4-3E6B-43E5-886E-D9C8E9BEACBB} = {0D5D807C-DEBE-498D-B2D8-D75E6C60D15B}
 		{88DA1F82-8CA2-46A7-B339-8D96C9138515} = {5EF281AE-893E-49E8-BBA9-DBE86493BB39}
 		{955F473A-04EC-4716-B75E-509BA892499B} = {AE0C9371-285B-4540-AB1D-F5141FA66D19}
-		{0CB32DEF-71E4-489A-AECE-AFBFCC06854C} = {AE0C9371-285B-4540-AB1D-F5141FA66D19}
 		{88765549-56E0-4B66-BA2D-F49E1446EF94} = {AE0C9371-285B-4540-AB1D-F5141FA66D19}
 		{A534BEA1-1A39-4355-B6EF-F6A3EF7E65FC} = {88765549-56E0-4B66-BA2D-F49E1446EF94}
 		{159A14A0-F8C7-460F-ADF7-967D60E63689} = {88765549-56E0-4B66-BA2D-F49E1446EF94}
@@ -572,7 +527,6 @@ Global
 		{1601EA3E-485F-4710-9937-DCD4C46728CE} = {E3972EA9-3073-4251-AD90-87B4C90147FC}
 		{B44E528A-584A-4BAF-A398-6E2245AA8ED2} = {E3972EA9-3073-4251-AD90-87B4C90147FC}
 		{CDF223B4-DD43-42BE-96BB-C1EEC464796C} = {AE0C9371-285B-4540-AB1D-F5141FA66D19}
-		{7835BCA4-2F06-4AB8-B5E5-AD7934FFBA2D} = {AE0C9371-285B-4540-AB1D-F5141FA66D19}
 		{5CBBD924-8B0D-4C35-A39B-751DCF9D234D} = {5EF281AE-893E-49E8-BBA9-DBE86493BB39}
 		{8DFCE7A8-BA80-475D-97C1-DFBCCE17C8E3} = {AE0C9371-285B-4540-AB1D-F5141FA66D19}
 		{F98CCE56-C44F-4096-A2FA-7298F339F846} = {5EF281AE-893E-49E8-BBA9-DBE86493BB39}

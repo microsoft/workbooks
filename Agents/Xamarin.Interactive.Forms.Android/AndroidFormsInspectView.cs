@@ -118,7 +118,7 @@ namespace Xamarin.Interactive.Forms.Android
             PopulateTypeInformationFromObject (page);
 
             // TODO: Pull the ClassId or some user-set property as the description?
-            var nativeView = Platform.GetRenderer (page).ViewGroup;
+            var nativeView = Platform.GetRenderer (page).View;
             if (!useNativeViewBounds) {
                 Transform = XIVR.GetViewTransform (nativeView);
                 if (Transform == null) {
@@ -169,7 +169,7 @@ namespace Xamarin.Interactive.Forms.Android
 
             var velement = element as VisualElement;
             if (velement != null) {
-                var nativeView = Platform.GetRenderer (velement).ViewGroup;
+                var nativeView = Platform.GetRenderer (velement).View;
 
                 DisplayName = element.GetType ().Name;
                 try {
@@ -206,7 +206,7 @@ namespace Xamarin.Interactive.Forms.Android
                 // If the VisualElement is a view and is not a layout, snapshot its children,
                 // as we've reached the leaf of the tree. Otherwise, skip children.
                 var skipChildren = !(ve is View && !(ve is Layout));
-                var nativeView = Platform.GetRenderer (ve).ViewGroup;
+                var nativeView = Platform.GetRenderer (ve).View;
                 if (nativeView != null)
                     CapturedImage = XIVR.RenderAsPng (nativeView, skipChildren);
             }

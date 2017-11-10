@@ -15,6 +15,291 @@
       <Component Id="WpfAgentApp.Xamarin_Workbooks_Agent__WPF_.exe" Guid="B2E56635-B703-4088-B5BF-A4D34E9A3055">
         <File Id="WpfAgentApp.Xamarin_Workbooks_Agent__WPF_.exe" Source="$(var.WpfAgentAppDirectory)\Xamarin Workbooks Agent (WPF).exe" />
       </Component>
+      <Component Id="WpfAgentApp.Microsoft.Win__.Primitives.dll" Guid="297A9D80-37AE-4FCC-B238-AACECCB5F335">
+        <File Id="WpfAgentApp.Microsoft.Win__.Primitives.dll" Source="$(var.WpfAgentAppDirectory)\Microsoft.Win32.Primitives.dll" />
+      </Component>
+      <Component Id="WpfAgentApp.netstandard.dll" Guid="9F781AFD-3225-49E9-9A2D-DAEF66BAFA61">
+        <File Id="WpfAgentApp.netstandard.dll" Source="$(var.WpfAgentAppDirectory)\netstandard.dll" />
+      </Component>
+      <Component Id="WpfAgentApp.System.AppContext.dll" Guid="A583FAEE-DCEC-4DCA-80E5-EF43864C61D0">
+        <File Id="WpfAgentApp.System.AppContext.dll" Source="$(var.WpfAgentAppDirectory)\System.AppContext.dll" />
+      </Component>
+      <Component Id="WpfAgentApp.System.Collections.Concurrent.dll" Guid="3807D82F-F06C-4EA8-9987-B910F52672D6">
+        <File Id="WpfAgentApp.System.Collections.Concurrent.dll" Source="$(var.WpfAgentAppDirectory)\System.Collections.Concurrent.dll" />
+      </Component>
+      <Component Id="WpfAgentApp.System.Collections.dll" Guid="0E61673E-F328-449C-B8AC-6C52D0BE0483">
+        <File Id="WpfAgentApp.System.Collections.dll" Source="$(var.WpfAgentAppDirectory)\System.Collections.dll" />
+      </Component>
+      <Component Id="WpfAgentApp.System.Collections.NonGeneric.dll" Guid="F9547D7C-534C-4093-8651-1D022B4CF5F4">
+        <File Id="WpfAgentApp.System.Collections.NonGeneric.dll" Source="$(var.WpfAgentAppDirectory)\System.Collections.NonGeneric.dll" />
+      </Component>
+      <Component Id="WpfAgentApp.System.Collections.Specialized.dll" Guid="2EFBF83A-AD5D-460D-8DED-8135F4E177CA">
+        <File Id="WpfAgentApp.System.Collections.Specialized.dll" Source="$(var.WpfAgentAppDirectory)\System.Collections.Specialized.dll" />
+      </Component>
+      <Component Id="WpfAgentApp.System.ComponentModel.dll" Guid="32FBDDEB-13FA-4B3F-B264-A2C2FA24A826">
+        <File Id="WpfAgentApp.System.ComponentModel.dll" Source="$(var.WpfAgentAppDirectory)\System.ComponentModel.dll" />
+      </Component>
+      <Component Id="WpfAgentApp.System.ComponentModel.EventBasedAsync.dll" Guid="D8F6AA20-7FDE-4423-8E87-63B7B89A54BD">
+        <File Id="WpfAgentApp.System.ComponentModel.EventBasedAsync.dll" Source="$(var.WpfAgentAppDirectory)\System.ComponentModel.EventBasedAsync.dll" />
+      </Component>
+      <Component Id="WpfAgentApp.System.ComponentModel.Primitives.dll" Guid="FCDDB2CD-52C0-44A0-A97D-6454FF4E1A45">
+        <File Id="WpfAgentApp.System.ComponentModel.Primitives.dll" Source="$(var.WpfAgentAppDirectory)\System.ComponentModel.Primitives.dll" />
+      </Component>
+      <Component Id="WpfAgentApp.System.ComponentModel.TypeConverter.dll" Guid="8397F917-821D-40E1-85F7-992F7A075805">
+        <File Id="WpfAgentApp.System.ComponentModel.TypeConverter.dll" Source="$(var.WpfAgentAppDirectory)\System.ComponentModel.TypeConverter.dll" />
+      </Component>
+      <Component Id="WpfAgentApp.System.Console.dll" Guid="7CEC6B45-39BD-4792-B2C1-10B60308271A">
+        <File Id="WpfAgentApp.System.Console.dll" Source="$(var.WpfAgentAppDirectory)\System.Console.dll" />
+      </Component>
+      <Component Id="WpfAgentApp.System.Data.Common.dll" Guid="ADDD59BC-6815-41E1-9C46-712F364AD9BA">
+        <File Id="WpfAgentApp.System.Data.Common.dll" Source="$(var.WpfAgentAppDirectory)\System.Data.Common.dll" />
+      </Component>
+      <Component Id="WpfAgentApp.System.Diagnostics.Contracts.dll" Guid="B3704385-1C90-46D1-A3CA-43732B0AEF87">
+        <File Id="WpfAgentApp.System.Diagnostics.Contracts.dll" Source="$(var.WpfAgentAppDirectory)\System.Diagnostics.Contracts.dll" />
+      </Component>
+      <Component Id="WpfAgentApp.System.Diagnostics.Debug.dll" Guid="A35ADF75-B714-412D-8015-5E7029D3588C">
+        <File Id="WpfAgentApp.System.Diagnostics.Debug.dll" Source="$(var.WpfAgentAppDirectory)\System.Diagnostics.Debug.dll" />
+      </Component>
+      <Component Id="WpfAgentApp.System.Diagnostics.FileVersionInfo.dll" Guid="101173E2-6E99-459B-AC10-7F198A44CD9D">
+        <File Id="WpfAgentApp.System.Diagnostics.FileVersionInfo.dll" Source="$(var.WpfAgentAppDirectory)\System.Diagnostics.FileVersionInfo.dll" />
+      </Component>
+      <Component Id="WpfAgentApp.System.Diagnostics.Process.dll" Guid="7AED172F-C6AA-4B5C-9A51-0C8B9E8D70F1">
+        <File Id="WpfAgentApp.System.Diagnostics.Process.dll" Source="$(var.WpfAgentAppDirectory)\System.Diagnostics.Process.dll" />
+      </Component>
+      <Component Id="WpfAgentApp.System.Diagnostics.StackTrace.dll" Guid="E1201DC6-4251-45CD-81BD-2BB4C249C123">
+        <File Id="WpfAgentApp.System.Diagnostics.StackTrace.dll" Source="$(var.WpfAgentAppDirectory)\System.Diagnostics.StackTrace.dll" />
+      </Component>
+      <Component Id="WpfAgentApp.System.Diagnostics.TextWriterTraceListener.dll" Guid="18F013A1-9036-4432-BE4B-F06BA4437057">
+        <File Id="WpfAgentApp.System.Diagnostics.TextWriterTraceListener.dll" Source="$(var.WpfAgentAppDirectory)\System.Diagnostics.TextWriterTraceListener.dll" />
+      </Component>
+      <Component Id="WpfAgentApp.System.Diagnostics.Tools.dll" Guid="E14DFEA6-F0E5-4959-986C-E78E177C00B2">
+        <File Id="WpfAgentApp.System.Diagnostics.Tools.dll" Source="$(var.WpfAgentAppDirectory)\System.Diagnostics.Tools.dll" />
+      </Component>
+      <Component Id="WpfAgentApp.System.Diagnostics.TraceSource.dll" Guid="4ECB929C-7991-4599-B847-28C246EAA11D">
+        <File Id="WpfAgentApp.System.Diagnostics.TraceSource.dll" Source="$(var.WpfAgentAppDirectory)\System.Diagnostics.TraceSource.dll" />
+      </Component>
+      <Component Id="WpfAgentApp.System.Diagnostics.Tracing.dll" Guid="973FEC32-5DE2-496A-8AFB-07867B90297D">
+        <File Id="WpfAgentApp.System.Diagnostics.Tracing.dll" Source="$(var.WpfAgentAppDirectory)\System.Diagnostics.Tracing.dll" />
+      </Component>
+      <Component Id="WpfAgentApp.System.Drawing.Primitives.dll" Guid="C268D511-C844-4CF8-9EE8-BAF498FD5DB6">
+        <File Id="WpfAgentApp.System.Drawing.Primitives.dll" Source="$(var.WpfAgentAppDirectory)\System.Drawing.Primitives.dll" />
+      </Component>
+      <Component Id="WpfAgentApp.System.Dynamic.Runtime.dll" Guid="D2E18316-F5B4-4B2E-8B14-C625B334360B">
+        <File Id="WpfAgentApp.System.Dynamic.Runtime.dll" Source="$(var.WpfAgentAppDirectory)\System.Dynamic.Runtime.dll" />
+      </Component>
+      <Component Id="WpfAgentApp.System.Globalization.Calendars.dll" Guid="2DB1D8B8-2C73-4261-AA26-4829F2DB7806">
+        <File Id="WpfAgentApp.System.Globalization.Calendars.dll" Source="$(var.WpfAgentAppDirectory)\System.Globalization.Calendars.dll" />
+      </Component>
+      <Component Id="WpfAgentApp.System.Globalization.dll" Guid="2D94174E-74E7-447F-BA15-AB8ACC4A02FE">
+        <File Id="WpfAgentApp.System.Globalization.dll" Source="$(var.WpfAgentAppDirectory)\System.Globalization.dll" />
+      </Component>
+      <Component Id="WpfAgentApp.System.Globalization.Extensions.dll" Guid="75DAFF57-B4BC-4BFE-96FD-C7D1E74BD8C8">
+        <File Id="WpfAgentApp.System.Globalization.Extensions.dll" Source="$(var.WpfAgentAppDirectory)\System.Globalization.Extensions.dll" />
+      </Component>
+      <Component Id="WpfAgentApp.System.IO.Compression.dll" Guid="E291841D-5BBE-48C6-BBA1-F67AD2E53C34">
+        <File Id="WpfAgentApp.System.IO.Compression.dll" Source="$(var.WpfAgentAppDirectory)\System.IO.Compression.dll" />
+      </Component>
+      <Component Id="WpfAgentApp.System.IO.Compression.ZipFile.dll" Guid="3801FB52-679F-41DA-8004-020AA9F4FAFB">
+        <File Id="WpfAgentApp.System.IO.Compression.ZipFile.dll" Source="$(var.WpfAgentAppDirectory)\System.IO.Compression.ZipFile.dll" />
+      </Component>
+      <Component Id="WpfAgentApp.System.IO.dll" Guid="5136A700-A98C-4D75-8083-6993D0998A8F">
+        <File Id="WpfAgentApp.System.IO.dll" Source="$(var.WpfAgentAppDirectory)\System.IO.dll" />
+      </Component>
+      <Component Id="WpfAgentApp.System.IO.FileSystem.dll" Guid="186B6422-02F7-44F4-96D0-39705E476B17">
+        <File Id="WpfAgentApp.System.IO.FileSystem.dll" Source="$(var.WpfAgentAppDirectory)\System.IO.FileSystem.dll" />
+      </Component>
+      <Component Id="WpfAgentApp.System.IO.FileSystem.DriveInfo.dll" Guid="3B35CED1-4962-4648-A40C-FCEB68533A52">
+        <File Id="WpfAgentApp.System.IO.FileSystem.DriveInfo.dll" Source="$(var.WpfAgentAppDirectory)\System.IO.FileSystem.DriveInfo.dll" />
+      </Component>
+      <Component Id="WpfAgentApp.System.IO.FileSystem.Primitives.dll" Guid="F4DF834C-BCED-45DB-85E1-C0161541BC10">
+        <File Id="WpfAgentApp.System.IO.FileSystem.Primitives.dll" Source="$(var.WpfAgentAppDirectory)\System.IO.FileSystem.Primitives.dll" />
+      </Component>
+      <Component Id="WpfAgentApp.System.IO.FileSystem.Watcher.dll" Guid="E9855B0A-6590-43F2-9C34-83E1DAD82BFB">
+        <File Id="WpfAgentApp.System.IO.FileSystem.Watcher.dll" Source="$(var.WpfAgentAppDirectory)\System.IO.FileSystem.Watcher.dll" />
+      </Component>
+      <Component Id="WpfAgentApp.System.IO.IsolatedStorage.dll" Guid="AA8A6128-7E23-4FF8-8077-61D84585D2FE">
+        <File Id="WpfAgentApp.System.IO.IsolatedStorage.dll" Source="$(var.WpfAgentAppDirectory)\System.IO.IsolatedStorage.dll" />
+      </Component>
+      <Component Id="WpfAgentApp.System.IO.MemoryMappedFiles.dll" Guid="5A3EE235-7E4C-4AB4-8DC2-747D8D3FF1BD">
+        <File Id="WpfAgentApp.System.IO.MemoryMappedFiles.dll" Source="$(var.WpfAgentAppDirectory)\System.IO.MemoryMappedFiles.dll" />
+      </Component>
+      <Component Id="WpfAgentApp.System.IO.Pipes.dll" Guid="9768EE13-68BE-4674-A460-1AEAEAB41F00">
+        <File Id="WpfAgentApp.System.IO.Pipes.dll" Source="$(var.WpfAgentAppDirectory)\System.IO.Pipes.dll" />
+      </Component>
+      <Component Id="WpfAgentApp.System.IO.UnmanagedMemoryStream.dll" Guid="7CA863FA-E3E3-43F8-ABE6-BAEB388552FD">
+        <File Id="WpfAgentApp.System.IO.UnmanagedMemoryStream.dll" Source="$(var.WpfAgentAppDirectory)\System.IO.UnmanagedMemoryStream.dll" />
+      </Component>
+      <Component Id="WpfAgentApp.System.Linq.dll" Guid="38C3508B-903F-4BD0-8477-4962F90862D7">
+        <File Id="WpfAgentApp.System.Linq.dll" Source="$(var.WpfAgentAppDirectory)\System.Linq.dll" />
+      </Component>
+      <Component Id="WpfAgentApp.System.Linq.Expressions.dll" Guid="98D89F05-0ECD-407E-81F1-E0BE54DBE249">
+        <File Id="WpfAgentApp.System.Linq.Expressions.dll" Source="$(var.WpfAgentAppDirectory)\System.Linq.Expressions.dll" />
+      </Component>
+      <Component Id="WpfAgentApp.System.Linq.Parallel.dll" Guid="2DEA65D0-DBD0-41A3-B6BF-E2E1FFED0D10">
+        <File Id="WpfAgentApp.System.Linq.Parallel.dll" Source="$(var.WpfAgentAppDirectory)\System.Linq.Parallel.dll" />
+      </Component>
+      <Component Id="WpfAgentApp.System.Linq.Queryable.dll" Guid="BE974913-E057-42D0-BF55-1C0DE1F75189">
+        <File Id="WpfAgentApp.System.Linq.Queryable.dll" Source="$(var.WpfAgentAppDirectory)\System.Linq.Queryable.dll" />
+      </Component>
+      <Component Id="WpfAgentApp.System.Net.Http.dll" Guid="ED37E089-D6AD-43C3-88F0-2441DAC9D833">
+        <File Id="WpfAgentApp.System.Net.Http.dll" Source="$(var.WpfAgentAppDirectory)\System.Net.Http.dll" />
+      </Component>
+      <Component Id="WpfAgentApp.System.Net.NameResolution.dll" Guid="6E9299EA-B6C4-4D98-839F-01C85CD266C3">
+        <File Id="WpfAgentApp.System.Net.NameResolution.dll" Source="$(var.WpfAgentAppDirectory)\System.Net.NameResolution.dll" />
+      </Component>
+      <Component Id="WpfAgentApp.System.Net.NetworkInformation.dll" Guid="DFBF6967-797E-4FD4-A9CD-A54750AAC1E7">
+        <File Id="WpfAgentApp.System.Net.NetworkInformation.dll" Source="$(var.WpfAgentAppDirectory)\System.Net.NetworkInformation.dll" />
+      </Component>
+      <Component Id="WpfAgentApp.System.Net.Ping.dll" Guid="B9522AE7-0A84-43FD-8275-21E1F13DF218">
+        <File Id="WpfAgentApp.System.Net.Ping.dll" Source="$(var.WpfAgentAppDirectory)\System.Net.Ping.dll" />
+      </Component>
+      <Component Id="WpfAgentApp.System.Net.Primitives.dll" Guid="B21C446A-A67A-45D9-9E79-B3F60B1E0BAE">
+        <File Id="WpfAgentApp.System.Net.Primitives.dll" Source="$(var.WpfAgentAppDirectory)\System.Net.Primitives.dll" />
+      </Component>
+      <Component Id="WpfAgentApp.System.Net.Requests.dll" Guid="170AB6CD-B972-4513-AFAB-9FC66B7716A5">
+        <File Id="WpfAgentApp.System.Net.Requests.dll" Source="$(var.WpfAgentAppDirectory)\System.Net.Requests.dll" />
+      </Component>
+      <Component Id="WpfAgentApp.System.Net.Security.dll" Guid="F51D2156-DB76-4E16-BA2E-716E6DA667D5">
+        <File Id="WpfAgentApp.System.Net.Security.dll" Source="$(var.WpfAgentAppDirectory)\System.Net.Security.dll" />
+      </Component>
+      <Component Id="WpfAgentApp.System.Net.Sockets.dll" Guid="EBDC4596-6C9D-494F-B0B8-DE8CE6570F37">
+        <File Id="WpfAgentApp.System.Net.Sockets.dll" Source="$(var.WpfAgentAppDirectory)\System.Net.Sockets.dll" />
+      </Component>
+      <Component Id="WpfAgentApp.System.Net.WebHeaderCollection.dll" Guid="82E66BBA-4345-47F5-8D44-736BCB3E74B2">
+        <File Id="WpfAgentApp.System.Net.WebHeaderCollection.dll" Source="$(var.WpfAgentAppDirectory)\System.Net.WebHeaderCollection.dll" />
+      </Component>
+      <Component Id="WpfAgentApp.System.Net.WebSockets.Client.dll" Guid="251B7591-9944-4488-939D-BA66046C4B35">
+        <File Id="WpfAgentApp.System.Net.WebSockets.Client.dll" Source="$(var.WpfAgentAppDirectory)\System.Net.WebSockets.Client.dll" />
+      </Component>
+      <Component Id="WpfAgentApp.System.Net.WebSockets.dll" Guid="3E8A9CA2-D7C6-4946-A9A9-23A6E0F28E9F">
+        <File Id="WpfAgentApp.System.Net.WebSockets.dll" Source="$(var.WpfAgentAppDirectory)\System.Net.WebSockets.dll" />
+      </Component>
+      <Component Id="WpfAgentApp.System.ObjectModel.dll" Guid="BD45D2A0-E82E-40AA-B5A2-ED523F4AA8B3">
+        <File Id="WpfAgentApp.System.ObjectModel.dll" Source="$(var.WpfAgentAppDirectory)\System.ObjectModel.dll" />
+      </Component>
+      <Component Id="WpfAgentApp.System.Reflection.dll" Guid="54F10A88-9D3C-4CF7-86D8-48AF3A23A2A0">
+        <File Id="WpfAgentApp.System.Reflection.dll" Source="$(var.WpfAgentAppDirectory)\System.Reflection.dll" />
+      </Component>
+      <Component Id="WpfAgentApp.System.Reflection.Extensions.dll" Guid="92AA63B7-8F04-421D-9455-1E1187024DE0">
+        <File Id="WpfAgentApp.System.Reflection.Extensions.dll" Source="$(var.WpfAgentAppDirectory)\System.Reflection.Extensions.dll" />
+      </Component>
+      <Component Id="WpfAgentApp.System.Reflection.Primitives.dll" Guid="017F2EE7-CDE8-4230-AE4B-DEB8848D1AC6">
+        <File Id="WpfAgentApp.System.Reflection.Primitives.dll" Source="$(var.WpfAgentAppDirectory)\System.Reflection.Primitives.dll" />
+      </Component>
+      <Component Id="WpfAgentApp.System.Resources.Reader.dll" Guid="C649BB45-5F4D-48DF-B055-38F956AAC451">
+        <File Id="WpfAgentApp.System.Resources.Reader.dll" Source="$(var.WpfAgentAppDirectory)\System.Resources.Reader.dll" />
+      </Component>
+      <Component Id="WpfAgentApp.System.Resources.ResourceManager.dll" Guid="7C50062A-B63F-4DFC-AD59-DB65BFBC6FB1">
+        <File Id="WpfAgentApp.System.Resources.ResourceManager.dll" Source="$(var.WpfAgentAppDirectory)\System.Resources.ResourceManager.dll" />
+      </Component>
+      <Component Id="WpfAgentApp.System.Resources.Writer.dll" Guid="A8EE83C5-AE5F-4C0A-B111-A8E7039D4AEE">
+        <File Id="WpfAgentApp.System.Resources.Writer.dll" Source="$(var.WpfAgentAppDirectory)\System.Resources.Writer.dll" />
+      </Component>
+      <Component Id="WpfAgentApp.System.Runtime.CompilerServices.VisualC.dll" Guid="F210EC2C-4E0F-47FF-A2AB-79BA56E14531">
+        <File Id="WpfAgentApp.System.Runtime.CompilerServices.VisualC.dll" Source="$(var.WpfAgentAppDirectory)\System.Runtime.CompilerServices.VisualC.dll" />
+      </Component>
+      <Component Id="WpfAgentApp.System.Runtime.dll" Guid="FE6D42EC-5D0F-4B4E-BFA1-8C97E3AD4A16">
+        <File Id="WpfAgentApp.System.Runtime.dll" Source="$(var.WpfAgentAppDirectory)\System.Runtime.dll" />
+      </Component>
+      <Component Id="WpfAgentApp.System.Runtime.Extensions.dll" Guid="5604004F-1557-48EE-81CB-B6C647A14C35">
+        <File Id="WpfAgentApp.System.Runtime.Extensions.dll" Source="$(var.WpfAgentAppDirectory)\System.Runtime.Extensions.dll" />
+      </Component>
+      <Component Id="WpfAgentApp.System.Runtime.Handles.dll" Guid="76163EA1-3E74-4B74-8E51-60EB30795C50">
+        <File Id="WpfAgentApp.System.Runtime.Handles.dll" Source="$(var.WpfAgentAppDirectory)\System.Runtime.Handles.dll" />
+      </Component>
+      <Component Id="WpfAgentApp.System.Runtime.InteropServices.dll" Guid="22FB6735-4DF6-4284-B6FA-DE58295F7797">
+        <File Id="WpfAgentApp.System.Runtime.InteropServices.dll" Source="$(var.WpfAgentAppDirectory)\System.Runtime.InteropServices.dll" />
+      </Component>
+      <Component Id="WpfAgentApp.System.Runtime.InteropServices.RuntimeInformation.dll" Guid="79F99209-2446-4602-8E06-9453175FDD8D">
+        <File Id="WpfAgentApp.System.Runtime.InteropServices.RuntimeInformation.dll" Source="$(var.WpfAgentAppDirectory)\System.Runtime.InteropServices.RuntimeInformation.dll" />
+      </Component>
+      <Component Id="WpfAgentApp.System.Runtime.Numerics.dll" Guid="84033EBA-3D35-4DCD-B065-05FDB433735D">
+        <File Id="WpfAgentApp.System.Runtime.Numerics.dll" Source="$(var.WpfAgentAppDirectory)\System.Runtime.Numerics.dll" />
+      </Component>
+      <Component Id="WpfAgentApp.System.Runtime.Serialization.Formatters.dll" Guid="E726FCE2-6759-48DD-9E8B-1B18E2B9603D">
+        <File Id="WpfAgentApp.System.Runtime.Serialization.Formatters.dll" Source="$(var.WpfAgentAppDirectory)\System.Runtime.Serialization.Formatters.dll" />
+      </Component>
+      <Component Id="WpfAgentApp.System.Runtime.Serialization.Json.dll" Guid="51AC61F1-E305-425C-95E4-D1E6292E4E67">
+        <File Id="WpfAgentApp.System.Runtime.Serialization.Json.dll" Source="$(var.WpfAgentAppDirectory)\System.Runtime.Serialization.Json.dll" />
+      </Component>
+      <Component Id="WpfAgentApp.System.Runtime.Serialization.Primitives.dll" Guid="9CBBD3B4-7D73-4C1A-A4A9-44CBB26ADE43">
+        <File Id="WpfAgentApp.System.Runtime.Serialization.Primitives.dll" Source="$(var.WpfAgentAppDirectory)\System.Runtime.Serialization.Primitives.dll" />
+      </Component>
+      <Component Id="WpfAgentApp.System.Runtime.Serialization.Xml.dll" Guid="F8A60E56-2352-4C65-ADF6-8748A22FD5B9">
+        <File Id="WpfAgentApp.System.Runtime.Serialization.Xml.dll" Source="$(var.WpfAgentAppDirectory)\System.Runtime.Serialization.Xml.dll" />
+      </Component>
+      <Component Id="WpfAgentApp.System.Security.Claims.dll" Guid="F13C38BC-DF5D-429A-8066-B2D831233033">
+        <File Id="WpfAgentApp.System.Security.Claims.dll" Source="$(var.WpfAgentAppDirectory)\System.Security.Claims.dll" />
+      </Component>
+      <Component Id="WpfAgentApp.System.Security.Cryptography.Algorithms.dll" Guid="494B5D57-79D0-41A6-88B7-D333BC77B5D7">
+        <File Id="WpfAgentApp.System.Security.Cryptography.Algorithms.dll" Source="$(var.WpfAgentAppDirectory)\System.Security.Cryptography.Algorithms.dll" />
+      </Component>
+      <Component Id="WpfAgentApp.System.Security.Cryptography.Csp.dll" Guid="517732F4-73B6-4FE3-B540-3F7460C54612">
+        <File Id="WpfAgentApp.System.Security.Cryptography.Csp.dll" Source="$(var.WpfAgentAppDirectory)\System.Security.Cryptography.Csp.dll" />
+      </Component>
+      <Component Id="WpfAgentApp.System.Security.Cryptography.Encoding.dll" Guid="88D42291-5DE1-4A21-8C96-DF37BFE44D03">
+        <File Id="WpfAgentApp.System.Security.Cryptography.Encoding.dll" Source="$(var.WpfAgentAppDirectory)\System.Security.Cryptography.Encoding.dll" />
+      </Component>
+      <Component Id="WpfAgentApp.System.Security.Cryptography.Primitives.dll" Guid="BECC9D3F-9805-491D-8108-BCEA158C119C">
+        <File Id="WpfAgentApp.System.Security.Cryptography.Primitives.dll" Source="$(var.WpfAgentAppDirectory)\System.Security.Cryptography.Primitives.dll" />
+      </Component>
+      <Component Id="WpfAgentApp.System.Security.Cryptography.X___Certificates.dll" Guid="A7465190-6A77-4E89-BE08-1A8AED3E9CFF">
+        <File Id="WpfAgentApp.System.Security.Cryptography.X___Certificates.dll" Source="$(var.WpfAgentAppDirectory)\System.Security.Cryptography.X509Certificates.dll" />
+      </Component>
+      <Component Id="WpfAgentApp.System.Security.Principal.dll" Guid="FBEBFF8D-EBF8-47BA-B378-49A687035EBB">
+        <File Id="WpfAgentApp.System.Security.Principal.dll" Source="$(var.WpfAgentAppDirectory)\System.Security.Principal.dll" />
+      </Component>
+      <Component Id="WpfAgentApp.System.Security.SecureString.dll" Guid="DBEC3B9D-2AEF-4B10-A2C4-6C50D49F72AC">
+        <File Id="WpfAgentApp.System.Security.SecureString.dll" Source="$(var.WpfAgentAppDirectory)\System.Security.SecureString.dll" />
+      </Component>
+      <Component Id="WpfAgentApp.System.Text.Encoding.dll" Guid="62E98CE8-7A24-4AF0-916D-A5ED24DE3637">
+        <File Id="WpfAgentApp.System.Text.Encoding.dll" Source="$(var.WpfAgentAppDirectory)\System.Text.Encoding.dll" />
+      </Component>
+      <Component Id="WpfAgentApp.System.Text.Encoding.Extensions.dll" Guid="107BF7FD-50E7-405A-8DDE-7F54D0CF2817">
+        <File Id="WpfAgentApp.System.Text.Encoding.Extensions.dll" Source="$(var.WpfAgentAppDirectory)\System.Text.Encoding.Extensions.dll" />
+      </Component>
+      <Component Id="WpfAgentApp.System.Text.RegularExpressions.dll" Guid="DAE59742-FCAF-4844-9086-B93E41076492">
+        <File Id="WpfAgentApp.System.Text.RegularExpressions.dll" Source="$(var.WpfAgentAppDirectory)\System.Text.RegularExpressions.dll" />
+      </Component>
+      <Component Id="WpfAgentApp.System.Threading.dll" Guid="86343439-4E5C-4A1E-BE25-6AC335D64B91">
+        <File Id="WpfAgentApp.System.Threading.dll" Source="$(var.WpfAgentAppDirectory)\System.Threading.dll" />
+      </Component>
+      <Component Id="WpfAgentApp.System.Threading.Overlapped.dll" Guid="9F351ED3-B948-455C-BB4D-D1E4742CEF57">
+        <File Id="WpfAgentApp.System.Threading.Overlapped.dll" Source="$(var.WpfAgentAppDirectory)\System.Threading.Overlapped.dll" />
+      </Component>
+      <Component Id="WpfAgentApp.System.Threading.Tasks.dll" Guid="827C7CB9-8D7F-4127-9D1C-07D3EBE91B24">
+        <File Id="WpfAgentApp.System.Threading.Tasks.dll" Source="$(var.WpfAgentAppDirectory)\System.Threading.Tasks.dll" />
+      </Component>
+      <Component Id="WpfAgentApp.System.Threading.Tasks.Parallel.dll" Guid="A8EDB88C-7E5B-460D-89E3-323192B1F7AB">
+        <File Id="WpfAgentApp.System.Threading.Tasks.Parallel.dll" Source="$(var.WpfAgentAppDirectory)\System.Threading.Tasks.Parallel.dll" />
+      </Component>
+      <Component Id="WpfAgentApp.System.Threading.Thread.dll" Guid="71FA2A91-8461-42BB-856F-DB572734F24D">
+        <File Id="WpfAgentApp.System.Threading.Thread.dll" Source="$(var.WpfAgentAppDirectory)\System.Threading.Thread.dll" />
+      </Component>
+      <Component Id="WpfAgentApp.System.Threading.ThreadPool.dll" Guid="746EBA1B-5943-4DA8-8E11-B06A30141E10">
+        <File Id="WpfAgentApp.System.Threading.ThreadPool.dll" Source="$(var.WpfAgentAppDirectory)\System.Threading.ThreadPool.dll" />
+      </Component>
+      <Component Id="WpfAgentApp.System.Threading.Timer.dll" Guid="038AF8A3-8963-4215-9880-2F5D0E4FB36B">
+        <File Id="WpfAgentApp.System.Threading.Timer.dll" Source="$(var.WpfAgentAppDirectory)\System.Threading.Timer.dll" />
+      </Component>
+      <Component Id="WpfAgentApp.System.Xml.ReaderWriter.dll" Guid="379952EC-2E08-457D-9387-C3BE5834419F">
+        <File Id="WpfAgentApp.System.Xml.ReaderWriter.dll" Source="$(var.WpfAgentAppDirectory)\System.Xml.ReaderWriter.dll" />
+      </Component>
+      <Component Id="WpfAgentApp.System.Xml.XDocument.dll" Guid="ECE74CA1-52F9-4EF8-B150-2F9CF3ACE620">
+        <File Id="WpfAgentApp.System.Xml.XDocument.dll" Source="$(var.WpfAgentAppDirectory)\System.Xml.XDocument.dll" />
+      </Component>
+      <Component Id="WpfAgentApp.System.Xml.XmlDocument.dll" Guid="62C737A7-D09B-42E3-A527-BC467B918949">
+        <File Id="WpfAgentApp.System.Xml.XmlDocument.dll" Source="$(var.WpfAgentAppDirectory)\System.Xml.XmlDocument.dll" />
+      </Component>
+      <Component Id="WpfAgentApp.System.Xml.XmlSerializer.dll" Guid="AC64982D-6904-4684-993E-38DE719E08E3">
+        <File Id="WpfAgentApp.System.Xml.XmlSerializer.dll" Source="$(var.WpfAgentAppDirectory)\System.Xml.XmlSerializer.dll" />
+      </Component>
+      <Component Id="WpfAgentApp.System.Xml.XPath.dll" Guid="BB467B99-6011-479B-92E2-758920F2F509">
+        <File Id="WpfAgentApp.System.Xml.XPath.dll" Source="$(var.WpfAgentAppDirectory)\System.Xml.XPath.dll" />
+      </Component>
+      <Component Id="WpfAgentApp.System.Xml.XPath.XDocument.dll" Guid="54907165-7367-4BFB-AF25-88BBFE04AE0E">
+        <File Id="WpfAgentApp.System.Xml.XPath.XDocument.dll" Source="$(var.WpfAgentAppDirectory)\System.Xml.XPath.XDocument.dll" />
+      </Component>
     </ComponentGroup>
     <?define AndroidAgentAppDirectory="..\..\_build\$(var.Configuration)\WorkbookApps\Android" ?>
     <ComponentGroup Id="AndroidAgentAppComponents" Directory="AndroidAgentAppInstallFolder">

@@ -164,17 +164,14 @@ namespace Xamarin.Interactive.Compilation
             return dependencyResolver;
         }
 
+        static Assembly netStandardAssembly;
+        static Assembly xiAssembly;
+
         static Type ResolveHostObjectType (
             InteractiveDependencyResolver dependencyResolver,
             TargetCompilationConfiguration configuration,
             AgentType agentType)
         {
-            if (agentType == AgentType.DotNetCore) {
-                return Assembly
-                    .ReflectionOnlyLoadFrom (InteractiveInstallation.Default.LocateNetStandardRefAssembly ())
-                    .GetType (configuration.GlobalStateTypeName);
-            }
-
             using (var assemblyContext = new EvaluationAssemblyContext ()) {
                 string globalStateAssemblyCachePath = null;
                 if (configuration.GlobalStateAssembly.Content.PEImage != null)
@@ -188,15 +185,31 @@ namespace Xamarin.Interactive.Compilation
 
                 assemblyContext.AddRange (resolvedAssemblies);
 
-                var globalStateAssembly = resolvedAssemblies.First (
+                var globalStateAssemblyDef = resolvedAssemblies.First (
                     assembly => ResolvedAssembly.NameEqualityComparer.Default.Equals (
                         assembly.Name,
                         configuration.GlobalStateAssembly.Name));
 
-                return Assembly
-                    .ReflectionOnlyLoadFrom (
-                        globalStateAssemblyCachePath ?? globalStateAssembly.Content.Location)
-                    .GetType (configuration.GlobalStateTypeName);
+                netStandardAssembly = netStandardAssembly ??
+                    Assembly.ReflectionOnlyLoadFrom (
+                        new FilePath (Assembly.GetExecutingAssembly ().Location)
+                        .ParentDirectory
+                        .Combine ("netstandard.dll"));
+
+                xiAssembly = xiAssembly ??
+                    Assembly.ReflectionOnlyLoadFrom (
+                        new FilePath (Assembly.GetExecutingAssembly ().Location)
+                        .ParentDirectory
+                        .Combine ("Xamarin.Interactive.dll"));
+
+                Assembly globalStateAssembly;
+                if (globalStateAssemblyDef.Name.Name == "Xamarin.Interactive")
+                    globalStateAssembly = xiAssembly;
+                else
+                    globalStateAssembly = Assembly.ReflectionOnlyLoadFrom (
+                        globalStateAssemblyCachePath ?? globalStateAssemblyDef.Content.Location);
+
+                return globalStateAssembly.GetType (configuration.GlobalStateTypeName);
             }
         }
     }

@@ -43,8 +43,6 @@
   <ItemGroup>
     <Folder Include="Resources\" />
   </ItemGroup>
-  <Import Project="..\..\Bootstrap\Xamarin.Interactive.Bootstrap\Xamarin.Interactive.Bootstrap.projitems" Label="Shared" Condition="Exists('..\..\Bootstrap\Xamarin.Interactive.Bootstrap\Xamarin.Interactive.Bootstrap.projitems')" />
-  <Import Project="..\Xamarin.Interactive\Xamarin.Interactive.Shared.projitems" Label="Shared" Condition="Exists('..\Xamarin.Interactive\Xamarin.Interactive.Shared.projitems')" />
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
   <Import Project="..\..\Build\Common.targets" />
   <ItemGroup>
@@ -55,6 +53,12 @@
     <Compile Include="ViewRenderer.cs" />
     <Compile Include="..\Xamarin.Interactive.Mac\UnifiedExtensions.cs">
       <Link>UnifiedExtensions.cs</Link>
+    </Compile>
+    <Compile Include="..\Xamarin.Interactive.Mac\UnifiedNativeHelper.cs">
+      <Link>UnifiedNativeHelper.cs</Link>
+    </Compile>
+    <Compile Include="..\Xamarin.Interactive.Mac\NativeExceptionHandler.cs">
+      <Link>NativeExceptionHandler.cs</Link>
     </Compile>
     <Compile Include="..\Xamarin.Interactive.Mac\UnifiedEvaluationContextGlobalObject.cs">
       <Link>UnifiedEvaluationContextGlobalObject.cs</Link>
