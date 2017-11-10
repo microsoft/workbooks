@@ -7,6 +7,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
@@ -17,6 +18,7 @@ using Xamarin.Interactive.Client.Updater;
 using Xamarin.Interactive.Core;
 using Xamarin.Interactive.IO;
 using Xamarin.Interactive.IO.Windows;
+using Xamarin.Interactive.Logging;
 using Xamarin.Interactive.Preferences;
 using Xamarin.Interactive.SystemInformation;
 
@@ -24,6 +26,8 @@ namespace Xamarin.Interactive.Client
 {
     sealed class WindowsClientApp : ClientApp
     {
+        const string TAG = nameof (WindowsClientApp);
+
         sealed class WindowsHostEnvironment : HostEnvironment
         {
             public override HostOS OSName { get; } = HostOS.Windows;
@@ -94,20 +98,63 @@ namespace Xamarin.Interactive.Client
             FilePath appData = Environment.GetFolderPath (Environment.SpecialFolder.ApplicationData);
             FilePath localAppData = Environment.GetFolderPath (Environment.SpecialFolder.LocalApplicationData);
 
+            var flavor = ClientInfo.Flavor.ToString ();
+
             return new ClientAppPaths (
-                localAppData.Combine ("Xamarin", "Inspector", "logs"),
-                appData.Combine ("Xamrin", "Inspector"),
-                localAppData.Combine ("Xamarin", "Inspector", "Cache"));
+                localAppData.Combine ("Xamarin", flavor, "logs"),
+                appData.Combine ("Xamarin", flavor),
+                localAppData.Combine ("Xamarin", flavor, "Cache"));
         }
 
         protected override HostEnvironment CreateHostEnvironment ()
             => new WindowsHostEnvironment ();
 
         protected override IPreferenceStore CreatePreferenceStore ()
-            => new RegistryPreferenceStore (
+        {
+            const string preferencesVersionKey = "preferencesVersion";
+
+            var preferenceStore = new RegistryPreferenceStore (
+                RegistryHive.CurrentUser,
+                RegistryView.Registry32,
+                $@"Software\Xamarin\{ClientInfo.Flavor}\Preferences");
+
+            // Check for, and if necessary, perform a one-time migration from Inspector to Workbooks
+            if (ClientInfo.Flavor == ClientFlavor.Inspector ||
+                preferenceStore.GetInt64 (preferencesVersionKey) >= 2)
+                return preferenceStore;
+
+            // Copy registry prefs
+            var inspectorPreferenceStore = new RegistryPreferenceStore (
                 RegistryHive.CurrentUser,
                 RegistryView.Registry32,
                 @"Software\Xamarin\Inspector\Preferences");
+
+            // Copy registry prefs
+            inspectorPreferenceStore.CopyTo (preferenceStore);
+
+            preferenceStore.Set (preferencesVersionKey, 2);
+
+            // Copy recent documents
+            var inspectorRecentDocuments = FilePath.Build (
+                Environment.GetFolderPath (Environment.SpecialFolder.ApplicationData),
+                "Xamarin",
+                "Inspector",
+                "recent.yaml");
+            var workbooksRecentDocuments = Paths.PreferencesDirectory.Combine (inspectorRecentDocuments.Name);
+
+            try {
+                if (!File.Exists (workbooksRecentDocuments) && File.Exists (inspectorRecentDocuments)) {
+                    Directory.CreateDirectory (Paths.PreferencesDirectory);
+                    File.Copy (
+                        inspectorRecentDocuments,
+                        workbooksRecentDocuments);
+                }
+            } catch (Exception e) {
+                Log.Error (TAG, e);
+            }
+
+            return preferenceStore;
+        }
 
         protected override IFileSystem CreateFileSystem ()
             => new WindowsFileSystem ();

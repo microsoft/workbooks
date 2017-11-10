@@ -177,5 +177,18 @@ namespace Xamarin.Interactive.Preferences
 
         public IDisposable Subscribe (Action<PreferenceChange> nextHandler)
             => observable.Subscribe (new Observer<PreferenceChange> (nextHandler));
+
+        public void CopyTo (RegistryPreferenceStore otherStore)
+        {
+            foreach (var key in Keys) {
+                var keyPath = new KeyPath (key);
+                using (var registryKey = GetSubKey (keyPath)) {
+                    otherStore.Set (
+                        key,
+                        registryKey.GetValue (keyPath.Name),
+                        registryKey.GetValueKind (keyPath.Name));
+                }
+            }
+        }
     }
 }

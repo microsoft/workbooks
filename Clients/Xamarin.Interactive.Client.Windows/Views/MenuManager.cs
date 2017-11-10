@@ -7,6 +7,7 @@
 // Licensed under the MIT License.
 
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
@@ -194,6 +195,12 @@ namespace Xamarin.Interactive.Client.Windows.Views
                 Header = "Check for Updates",
                 Command = Commands.Commands.CheckForUpdates,
                 CommandParameter = window
+            });
+
+            helpMenu.Items.Add (new MenuItem {
+                Header = Catalog.GetString ("Reveal Log File"),
+                Command = new DelegateCommand (_ =>
+                    Process.Start ("explorer.exe", $"/select,\"{ClientApp.SharedInstance.Paths.SessionLogFile}\"")),
             });
 
             helpMenu.Items.Add (new MenuItem {
