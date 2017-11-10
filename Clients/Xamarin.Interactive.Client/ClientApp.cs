@@ -195,7 +195,7 @@ namespace Xamarin.Interactive
             logStream.Write (bytes, 0, bytes.Length);
             logStream.Flush ();
 
-            if (entry.Flags.HasFlag (LogFlags.SkipTelemetry))
+            if (entry.Flags.HasFlag (LogFlags.SkipTelemetry) || SharedInstance?.Telemetry == null)
                 return;
 
             switch (entry.Level) {
