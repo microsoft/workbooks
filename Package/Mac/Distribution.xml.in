@@ -18,20 +18,20 @@
   <background file="Background@2x.png" mime-type="image/png" alignment="bottomleft" scaling="proportional"/>
   <welcome file="Welcome.rtf" mime-type="text/rtf"/>
   <license file="License.rtf" mime-type="text/rtf"/>
-  <pkg-ref id="com.xamarin.Inspector"/>
+  <pkg-ref id="com.xamarin.Interactive"/>
   <options customize="never" require-scripts="false"/>
   <choices-outline>
     <line choice="default">
-      <line choice="com.xamarin.Inspector"/>
+      <line choice="com.xamarin.Interactive"/>
     </line>
     </choices-outline>
     <choice id="default"/>
-    <choice id="com.xamarin.Inspector" visible="false">
-      <pkg-ref id="com.xamarin.Inspector">
+    <choice id="com.xamarin.Interactive" visible="false">
+      <pkg-ref id="com.xamarin.Interactive">
         <must-close>
-          <app id="com.xamarin.Inspector"/>
+          <app id="com.xamarin.Interactive"/>
         </must-close>
       </pkg-ref>
     </choice>
-  <pkg-ref id="com.xamarin.Inspector" version="@VERSION@" onConclusion="none">Framework.pkg</pkg-ref>
+  <pkg-ref id="com.xamarin.Interactive" version="@VERSION@" onConclusion="none">Framework.pkg</pkg-ref>
 </installer-gui-script>

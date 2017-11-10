@@ -4,7 +4,7 @@
 <array>
 	<dict>
 		<key>BundleHasStrictIdentifier</key>
-		<true/>
+		<false/>
 		<key>BundleIsRelocatable</key>
 		<false/>
 		<key>BundleIsVersionChecked</key>
