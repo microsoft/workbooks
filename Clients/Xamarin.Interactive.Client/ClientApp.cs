@@ -82,6 +82,8 @@ namespace Xamarin.Interactive
             bool asSharedInstance = true,
             ILogProvider logProvider = null)
         {
+            new Telemetry.Events.AppSessionInitialize ().Post ();
+
             Log.Initialize (logProvider ?? new LogProvider (
                 #if DEBUG
                 LogLevel.Debug
@@ -195,7 +197,7 @@ namespace Xamarin.Interactive
             logStream.Write (bytes, 0, bytes.Length);
             logStream.Flush ();
 
-            if (entry.Flags.HasFlag (LogFlags.SkipTelemetry) || SharedInstance?.Telemetry == null)
+            if (entry.Flags.HasFlag (LogFlags.SkipTelemetry))
                 return;
 
             switch (entry.Level) {
