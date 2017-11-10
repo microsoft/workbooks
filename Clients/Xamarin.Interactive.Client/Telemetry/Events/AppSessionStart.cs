@@ -12,7 +12,6 @@ using Newtonsoft.Json;
 
 using Xamarin.Interactive.Logging;
 using Xamarin.Interactive.Preferences;
-using Xamarin.Interactive.SystemInformation;
 
 namespace Xamarin.Interactive.Telemetry.Events
 {
