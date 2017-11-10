@@ -96,7 +96,7 @@ namespace Xamarin.Interactive.Client
 
             return new ClientAppPaths (
                 localAppData.Combine ("Xamarin", "Inspector", "logs"),
-                appData.Combine ("Xamrin", "Inspector"),
+                appData.Combine ("Xamarin", "Inspector"),
                 localAppData.Combine ("Xamarin", "Inspector", "Cache"));
         }
 
