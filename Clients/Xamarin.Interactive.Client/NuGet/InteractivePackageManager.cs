@@ -427,7 +427,7 @@ namespace Xamarin.Interactive.NuGet
             // the same original version range string gets written to the manifest on save
             return new InteractivePackage (
                 packageIdentity,
-                isExplicit: originalInputPackage != null,
+                isExplicit: originalInputPackage?.IsExplicit == true,
                 assemblyReferences: assemblyReferences,
                 supportedVersionRange: originalInputPackage?.SupportedVersionRange);
         }
