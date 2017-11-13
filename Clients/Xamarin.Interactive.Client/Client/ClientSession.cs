@@ -601,7 +601,7 @@ namespace Xamarin.Interactive.Client
 
             var alreadyInstalledPackages = Workbook.Packages == null
                 ? ImmutableArray<InteractivePackage>.Empty
-                : Workbook.Packages.InstalledPackages.Where (p => p.IsExplicit);
+                : Workbook.Packages.InstalledPackages;
 
             Workbook.Packages = new InteractivePackageManager (
                 WorkbookApp.Sdk.TargetFramework,
@@ -615,6 +615,7 @@ namespace Xamarin.Interactive.Client
                 .Pages
                 .SelectMany (page => page.Packages)
                 .Concat (alreadyInstalledPackages)
+                .Where (p => p.IsExplicit)
                 .Distinct (PackageIdComparer.Default)
                 .ToArray ();
 
