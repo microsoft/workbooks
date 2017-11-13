@@ -22,6 +22,7 @@
     <SolidColorBrush x:Key="AccentColorBrush4" Color="{StaticResource AccentColor4}" />
 
     <SolidColorBrush x:Key="WindowTitleColorBrush" Color="{StaticResource AccentColor}" />
+    <SolidColorBrush x:Key="NonActiveWindowTitleColorBrush" Color="#757575" />
 
     <LinearGradientBrush x:Key="ProgressBrush" EndPoint="0.001,0.5" StartPoint="1.002,0.5">
         <GradientStop Color="{StaticResource HighlightColor}" Offset="0" />
