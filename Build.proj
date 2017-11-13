@@ -64,7 +64,8 @@
 
   <!-- XVS mac build host configuration (in VSTS) -->
   <PropertyGroup Condition="'$(TF_BUILD)' == 'True'">
-    <MacBuildHostAddress>bockover-1.guest.corp.microsoft.com</MacBuildHostAddress>
+    <MacBuildHostAddress Condition="'$(AGENT_NAME)' == 'RE Cambridge Windows-Inspector-1'">bockover-1.guest.corp.microsoft.com</MacBuildHostAddress>
+    <MacBuildHostAddress Condition="'$(AGENT_NAME)' == 'Cambridge Windows-Inspector-2'">inspector-1.guest.corp.microsoft.com</MacBuildHostAddress>
     <MacBuildHostUser>builder</MacBuildHostUser>
   </PropertyGroup>
 
