@@ -7,9 +7,11 @@
 
 using Microsoft.CodeAnalysis.Text;
 
+using Xamarin.Interactive.Events;
+
 namespace Xamarin.Interactive.Editor.Events
 {
-    sealed class ChangeEvent : EditorEvent
+    sealed class ChangeEvent : EditorEvent, IDocumentDirtyEvent
     {
         public string Text { get; }
 

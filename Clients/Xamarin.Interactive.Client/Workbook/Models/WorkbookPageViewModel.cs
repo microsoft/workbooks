@@ -257,7 +257,7 @@ namespace Xamarin.Interactive.Workbook.Models
 
             cell.Document.RemoveCell (cell);
 
-            UnbindCellFromView (cell.View as ICellView);
+            UnbindCellFromView (cell.View);
 
             focusCell?.View?.Focus ();
         }

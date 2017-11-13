@@ -84,7 +84,10 @@ namespace Xamarin.Interactive.Workbook.Views
             }
 
             protected override void Dispose (bool isDisposing)
-                => proseMirror.dispose ();
+            {
+                proseMirror.dispose ();
+                EventsObserver.OnNext (new DeleteCellEvent<MarkdownCell> ((MarkdownCell)Cell));
+            }
 
             string currentThemeCssClass;
 

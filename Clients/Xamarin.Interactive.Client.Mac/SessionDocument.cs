@@ -14,6 +14,7 @@ using AppKit;
 
 using Xamarin.Interactive.Core;
 using Xamarin.Interactive.Editor.Events;
+using Xamarin.Interactive.Events;
 using Xamarin.Interactive.I18N;
 using Xamarin.Interactive.Logging;
 using Xamarin.Interactive.Workbook.LoadAndSave;
@@ -102,7 +103,7 @@ namespace Xamarin.Interactive.Client.Mac
 
         void HandleEditorEvent (EditorEvent obj)
         {
-            if (obj is ChangeEvent)
+            if (obj is IDocumentDirtyEvent)
                 UpdateChangeCount (NSDocumentChangeType.Done);
         }
 
