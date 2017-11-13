@@ -23,12 +23,18 @@ namespace Xamarin.Interactive.CodeAnalysis.Monaco
     {
         const string TAG = nameof (MonacoExtensions);
 
-        static readonly SymbolDisplayFormat parameterSymbolDisplayFormat = SymbolDisplayFormat.CSharpErrorMessageFormat
+        static readonly SymbolDisplayFormat symbolDisplayFormat = SymbolDisplayFormat.CSharpErrorMessageFormat
             .WithParameterOptions (
                 SymbolDisplayParameterOptions.IncludeName |
                 SymbolDisplayParameterOptions.IncludeType |
                 SymbolDisplayParameterOptions.IncludeDefaultValue |
-                SymbolDisplayParameterOptions.IncludeParamsRefOut);
+                SymbolDisplayParameterOptions.IncludeParamsRefOut)
+            .WithMemberOptions (
+                SymbolDisplayMemberOptions.IncludeParameters |
+                SymbolDisplayMemberOptions.IncludeContainingType |
+                SymbolDisplayMemberOptions.IncludeType |
+                SymbolDisplayMemberOptions.IncludeRef |
+                SymbolDisplayMemberOptions.IncludeExplicitInterface);
 
         public static CancellationToken FromMonacoCancellationToken (dynamic token)
         {
@@ -96,36 +102,8 @@ namespace Xamarin.Interactive.CodeAnalysis.Monaco
         public static LinePosition FromMonacoPosition (dynamic position) =>
             new LinePosition ((int)position.lineNumber - 1, (int)position.column - 1);
 
-        static readonly ThreadLocal<StringBuilder> localSignatureBuilder =
-            new ThreadLocal<StringBuilder> (() => new StringBuilder (256));
-        public static string ToMonacoSignatureString (this IMethodSymbol method)
-        {
-            var signatureBuilder = localSignatureBuilder.Value;
-            signatureBuilder.Length = 0;
-
-            if (method.MethodKind == MethodKind.Constructor)
-                signatureBuilder.Append (method.ContainingType.Name);
-            else
-                signatureBuilder
-                    .Append (method.ReturnType)
-                    .Append (' ')
-                    .Append (method.Name);
-
-            signatureBuilder.Append (" (");
-
-            for (var i = 0; i < method.Parameters.Length; i++) {
-                if (i > 0)
-                    signatureBuilder.Append (", ");
-                signatureBuilder.Append (method.Parameters [i].ToMonacoSignatureString ());
-            }
-
-            signatureBuilder.Append (')');
-
-            return signatureBuilder.ToString ();
-        }
-
-        public static string ToMonacoSignatureString (this IParameterSymbol parameter)
-            => parameter.ToDisplayString (parameterSymbolDisplayFormat);
+        public static string ToMonacoSignatureString (this ISymbol symbol) =>
+            symbol.ToDisplayString (symbolDisplayFormat);
 
         public static int ToMonacoCompletionItemKind (ImmutableArray<string> completionTags)
         {

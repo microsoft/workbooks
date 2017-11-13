@@ -100,7 +100,7 @@ namespace Xamarin.Interactive.CodeAnalysis.Monaco
             if (symbolInfo.Symbol == null)
                 return hover;
 
-            hover.Contents = new [] { symbolInfo.Symbol.ToDisplayString () };
+            hover.Contents = new [] { symbolInfo.Symbol.ToMonacoSignatureString () };
             hover.Range = syntaxToken.GetLocation ().GetLineSpan ().Span;
 
             return hover;
