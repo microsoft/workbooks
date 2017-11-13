@@ -18,6 +18,7 @@ Copyright 2015-2016 Xamarin Inc. All rights reserved.
 @import url('map.css');
 @import url('verbatim-html.css');
 @import url('hex-dump.css');
+@import url('string.css');
 
 .render-manager-container {
   display: flex;

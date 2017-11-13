@@ -15,6 +15,9 @@ product documentation for [Workbooks][docs-workbooks] and
 * Additional accessibility fixes for High Contrast mode users, particularly
   for buttons and menus in the High Contrast White theme.
 
+* The plaintext formatter for strings now preserves whitespace in formatted
+  output.
+
 # 1.3 Series Changes
 
 * [See the full release notes for the 1.3 series][13-series].
