@@ -82,8 +82,6 @@ namespace Xamarin.Interactive.SystemInformation
                 writer.WritePropertyName ("environments");
                 writer.WriteStartObject ();
 
-                var serializer = JsonSerializer.CreateDefault ();
-
                 foreach (var env in softwareEnvironments) {
                     var components = env.Where (c => c.IsInstalled).ToArray ();
                     if (components.Length > 0) {
