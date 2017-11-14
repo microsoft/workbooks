@@ -42,6 +42,8 @@ namespace Xamarin.Interactive.Telemetry.Objects
                 writer.WritePropertyName ("updateChannel");
                 writer.WriteValue (updateChannel);
             }
+
+            writer.WriteEndObject ();
         }
     }
 }
