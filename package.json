@@ -1,10 +1,10 @@
 {
   "name": "xamarin-interactive",
-  "version": "1.4.0-dev",
+  "version": "1.4.0-alpha1",
   "license": "SEE LICENSE IN LICENSE.md",
   "repository": {
     "type": "git",
-    "url": "https://github.com/xamarin/inspector"
+    "url": "https://github.com/Microsoft/workbooks"
   },
   "dependencies": {
     "prosemirror": "=0.8.1",
