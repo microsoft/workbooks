@@ -1,0 +1,15 @@
+---
+uti: com.xamarin.workbook
+id: 4d5a048d-5bc4-4dfd-bd8b-1f2f99262087
+title: ExceptionRendering
+platforms:
+- Console
+---
+
+```csharp
+throw new Exception()
+```
+
+```csharp
+new [] {1}.Concat(null)
+```
