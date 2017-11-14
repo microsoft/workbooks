@@ -13,7 +13,7 @@ using System.Threading;
 namespace Xamarin.Interactive
 {
     [EditorBrowsable (EditorBrowsableState.Never)]
-    public static class InteractiveCulture
+    static class InteractiveCulture
     {
         [EditorBrowsable (EditorBrowsableState.Never)]
         public static void Initialize ()

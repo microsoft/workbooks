@@ -90,24 +90,6 @@ namespace Xamarin.Interactive
 
         SynchronizationContext PushContext (SynchronizationContext context);
     }
-    [EditorBrowsable (EditorBrowsableState.Never)]
-    public static class InteractiveCulture
-    {
-        [EditorBrowsable (EditorBrowsableState.Never)]
-        public static CultureInfo CurrentCulture {
-            get;
-            set;
-        }
-
-        [EditorBrowsable (EditorBrowsableState.Never)]
-        public static CultureInfo CurrentUICulture {
-            get;
-            set;
-        }
-
-        [EditorBrowsable (EditorBrowsableState.Never)]
-        public static void Initialize ();
-    }
 }
 namespace Xamarin.Interactive.CodeAnalysis
 {
