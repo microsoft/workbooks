@@ -7,8 +7,6 @@ product documentation for [Workbooks][docs-workbooks] and
 
 ## NEW & IMPROVED
 
-* Open-sourced under the MIT license. [Join us on GitHub!][github]
-
 * Support for iOS 11 and Xcode 9.
 
 * Camera controls on the 3D view inspector have been enhanced and now share
