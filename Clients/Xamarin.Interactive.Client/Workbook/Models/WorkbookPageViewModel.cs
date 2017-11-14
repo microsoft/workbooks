@@ -603,7 +603,12 @@ namespace Xamarin.Interactive.Workbook.Models
 
             codeCellState.View.EvaluationDuration = result.EvaluationDuration;
 
-            if (!result.Interrupted && result.Result != null || isResultAnExpression)
+            if (result.Exception != null)
+                codeCellState.View.RenderResult (
+                    cultureInfo,
+                    FilterException (result.Exception),
+                    result.ResultHandling);
+            else if (!result.Interrupted && result.Result != null || isResultAnExpression)
                 codeCellState.View.RenderResult (
                     cultureInfo,
                     result.Result,
