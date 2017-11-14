@@ -16,8 +16,6 @@ namespace Xamarin.Interactive.PropertyEditor
     class InteractiveEnumPropertyInfo<T>
         : InteractivePropertyInfo, IHavePredefinedValues<T>
     {
-        EnumValue enumValue;
-
         public bool IsValueCombinable { get; }
 
         public bool IsConstrainedToPredefined { get; }
@@ -27,7 +25,7 @@ namespace Xamarin.Interactive.PropertyEditor
         public InteractiveEnumPropertyInfo (InteractiveObjectEditor editor, int index)
             : base (editor, index)
         {
-            enumValue = GetRepresentation (Value, editor) as EnumValue;
+            var enumValue = GetEnumValue ();
             string [] names = enumValue.Names;
             Array values = enumValue.Values;
 
@@ -40,6 +38,9 @@ namespace Xamarin.Interactive.PropertyEditor
             PredefinedValues = predefinedValues;
             IsValueCombinable = enumValue.IsFlags;
         }
+
+        EnumValue GetEnumValue () =>
+            GetRepresentation (Value, Editor) as EnumValue;
 
         public override object ToRemoteValue<TValue> (object local)
         {
@@ -79,6 +80,7 @@ namespace Xamarin.Interactive.PropertyEditor
 
         public override TValue ToLocalValue<TValue> ()
         {
+            var enumValue = GetEnumValue ();
             switch (default (TValue)) {
             case IReadOnlyList<T> _:
                 T realValue = (T)enumValue.Value;
