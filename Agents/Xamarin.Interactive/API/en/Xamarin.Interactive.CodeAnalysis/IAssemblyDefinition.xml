@@ -1,0 +1,63 @@
+<Type Name="IAssemblyDefinition" FullName="Xamarin.Interactive.CodeAnalysis.IAssemblyDefinition">
+  <TypeSignature Language="C#" Value="public interface IAssemblyDefinition" />
+  <TypeSignature Language="ILAsm" Value=".class public interface auto ansi abstract IAssemblyDefinition" />
+  <AssemblyInfo>
+    <AssemblyName>Xamarin.Interactive</AssemblyName>
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
+  </AssemblyInfo>
+  <Interfaces />
+  <Docs>
+    <summary>To be added.</summary>
+    <remarks>To be added.</remarks>
+  </Docs>
+  <Members>
+    <Member MemberName="Content">
+      <MemberSignature Language="C#" Value="public Xamarin.Interactive.CodeAnalysis.IAssemblyContent Content { get; }" />
+      <MemberSignature Language="ILAsm" Value=".property instance class Xamarin.Interactive.CodeAnalysis.IAssemblyContent Content" />
+      <MemberType>Property</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Xamarin.Interactive.CodeAnalysis.IAssemblyContent</ReturnType>
+      </ReturnValue>
+      <Docs>
+        <summary>To be added.</summary>
+        <value>To be added.</value>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="EntryPoint">
+      <MemberSignature Language="C#" Value="public Xamarin.Interactive.CodeAnalysis.IAssemblyEntryPoint EntryPoint { get; }" />
+      <MemberSignature Language="ILAsm" Value=".property instance class Xamarin.Interactive.CodeAnalysis.IAssemblyEntryPoint EntryPoint" />
+      <MemberType>Property</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Xamarin.Interactive.CodeAnalysis.IAssemblyEntryPoint</ReturnType>
+      </ReturnValue>
+      <Docs>
+        <summary>To be added.</summary>
+        <value>To be added.</value>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="Identity">
+      <MemberSignature Language="C#" Value="public Xamarin.Interactive.CodeAnalysis.IAssemblyIdentity Identity { get; }" />
+      <MemberSignature Language="ILAsm" Value=".property instance class Xamarin.Interactive.CodeAnalysis.IAssemblyIdentity Identity" />
+      <MemberType>Property</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Xamarin.Interactive.CodeAnalysis.IAssemblyIdentity</ReturnType>
+      </ReturnValue>
+      <Docs>
+        <summary>To be added.</summary>
+        <value>To be added.</value>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+  </Members>
+</Type>

@@ -27,6 +27,29 @@
         <remarks>As an example, the Console workbook agent when running on macOS uses this integration to bind <typeparamref name="System.Net.Http.HttpClient" /> instances created with the default constructor to instances of <typeparamref name="Foundation.NSUrlSessionHandler" />, which provides faster and more feature-complete HTTP/TLS support.</remarks>
       </Docs>
     </Member>
+    <Member MemberName="PublishEvaluation">
+      <MemberSignature Language="C#" Value="public void PublishEvaluation (Xamarin.Interactive.CodeAnalysis.CodeCellId codeCellId, object result, Xamarin.Interactive.CodeAnalysis.EvaluationResultHandling resultHandling = Xamarin.Interactive.CodeAnalysis.EvaluationResultHandling.Replace);" />
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig newslot virtual instance void PublishEvaluation(valuetype Xamarin.Interactive.CodeAnalysis.CodeCellId codeCellId, object result, valuetype Xamarin.Interactive.CodeAnalysis.EvaluationResultHandling resultHandling) cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Void</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="codeCellId" Type="Xamarin.Interactive.CodeAnalysis.CodeCellId" />
+        <Parameter Name="result" Type="System.Object" />
+        <Parameter Name="resultHandling" Type="Xamarin.Interactive.CodeAnalysis.EvaluationResultHandling" />
+      </Parameters>
+      <Docs>
+        <param name="codeCellId">To be added.</param>
+        <param name="result">To be added.</param>
+        <param name="resultHandling">To be added.</param>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
     <Member MemberName="RegisterResetStateHandler">
       <MemberSignature Language="C#" Value="public void RegisterResetStateHandler (Action handler);" />
       <MemberSignature Language="ILAsm" Value=".method public hidebysig newslot virtual instance void RegisterResetStateHandler(class System.Action handler) cil managed" />

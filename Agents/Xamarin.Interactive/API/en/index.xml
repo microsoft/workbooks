@@ -6,11 +6,19 @@
           <AttributeName>System.Diagnostics.Debuggable(System.Diagnostics.DebuggableAttribute+DebuggingModes.IgnoreSymbolStoreSequencePoints)</AttributeName>
         </Attribute>
         <Attribute>
-          <AttributeName>System.Reflection.AssemblyCopyright("Copyright 2016-2017 Microsoft. All rights reserved.
-Copyright 2014-2016 Xamarin Inc. All rights reserved.")</AttributeName>
+          <AttributeName>System.Reflection.AssemblyConfiguration("Release")</AttributeName>
+        </Attribute>
+        <Attribute>
+          <AttributeName>System.Reflection.AssemblyCopyright("Copyright 2016-2017 Microsoft. All rights reserved.\nCopyright 2014-2016 Xamarin Inc. All rights reserved.")</AttributeName>
         </Attribute>
         <Attribute>
           <AttributeName>System.Reflection.AssemblyFileVersion("0.65.70.86")</AttributeName>
+        </Attribute>
+        <Attribute>
+          <AttributeName>System.Reflection.AssemblyProduct("Xamarin.Interactive")</AttributeName>
+        </Attribute>
+        <Attribute>
+          <AttributeName>System.Reflection.AssemblyTitle("Xamarin.Interactive")</AttributeName>
         </Attribute>
         <Attribute>
           <AttributeName>System.Runtime.CompilerServices.CompilationRelaxations(8)</AttributeName>
@@ -55,6 +63,15 @@ Copyright 2014-2016 Xamarin Inc. All rights reserved.")</AttributeName>
           <AttributeName>System.Runtime.CompilerServices.InternalsVisibleTo("Xamarin Inspector")</AttributeName>
         </Attribute>
         <Attribute>
+          <AttributeName>System.Runtime.CompilerServices.InternalsVisibleTo("Xamarin.Interactive.Client")</AttributeName>
+        </Attribute>
+        <Attribute>
+          <AttributeName>System.Runtime.CompilerServices.InternalsVisibleTo("Xamarin.Interactive.Client.Console")</AttributeName>
+        </Attribute>
+        <Attribute>
+          <AttributeName>System.Runtime.CompilerServices.InternalsVisibleTo("Xamarin.Interactive.Tests")</AttributeName>
+        </Attribute>
+        <Attribute>
           <AttributeName>System.Runtime.CompilerServices.InternalsVisibleTo("Xamarin.Interactive.Tests.Mac")</AttributeName>
         </Attribute>
         <Attribute>
@@ -88,6 +105,12 @@ Copyright 2014-2016 Xamarin Inc. All rights reserved.")</AttributeName>
           <AttributeName>System.Runtime.CompilerServices.InternalsVisibleTo("Xamarin Workbooks Agent (WPF)")</AttributeName>
         </Attribute>
         <Attribute>
+          <AttributeName>System.Runtime.CompilerServices.InternalsVisibleTo("Xamarin.Workbooks.Client.iOS")</AttributeName>
+        </Attribute>
+        <Attribute>
+          <AttributeName>System.Runtime.CompilerServices.InternalsVisibleTo("Xamarin.Workbooks.Client.Android")</AttributeName>
+        </Attribute>
+        <Attribute>
           <AttributeName>System.Runtime.CompilerServices.InternalsVisibleTo("Xamarin.Interactive.XS")</AttributeName>
         </Attribute>
         <Attribute>
@@ -97,7 +120,7 @@ Copyright 2014-2016 Xamarin Inc. All rights reserved.")</AttributeName>
           <AttributeName>System.Runtime.CompilerServices.RuntimeCompatibility(WrapNonExceptionThrows=true)</AttributeName>
         </Attribute>
         <Attribute>
-          <AttributeName>System.Runtime.Versioning.TargetFramework(".NETPortable,Version=v4.5,Profile=Profile111", FrameworkDisplayName=".NET Portable Subset")</AttributeName>
+          <AttributeName>System.Runtime.Versioning.TargetFramework(".NETStandard,Version=v2.0", FrameworkDisplayName="")</AttributeName>
         </Attribute>
         <Attribute>
           <AttributeName>Xamarin.Interactive.BuildInfo</AttributeName>
@@ -114,6 +137,25 @@ Copyright 2014-2016 Xamarin Inc. All rights reserved.")</AttributeName>
       <Type Name="IAgent" Kind="Interface" />
       <Type Name="IAgentIntegration" Kind="Interface" />
       <Type Name="IAgentSynchronizationContext" Kind="Interface" />
+    </Namespace>
+    <Namespace Name="Xamarin.Interactive.CodeAnalysis">
+      <Type Name="CodeCellId" Kind="Structure" />
+      <Type Name="EvaluationContextGlobalObject" Kind="Class" />
+      <Type Name="EvaluationContextGlobalObject+InteractiveHelpAttribute" Kind="Class" />
+      <Type Name="EvaluationContextId" Kind="Structure" />
+      <Type Name="EvaluationPhase" Kind="Enumeration" />
+      <Type Name="EvaluationResultHandling" Kind="Enumeration" />
+      <Type Name="IAssemblyContent" Kind="Interface" />
+      <Type Name="IAssemblyDefinition" Kind="Interface" />
+      <Type Name="IAssemblyEntryPoint" Kind="Interface" />
+      <Type Name="IAssemblyIdentity" Kind="Interface" />
+      <Type Name="ICompilation" Kind="Interface" />
+      <Type Name="IEvaluation" Kind="Interface" />
+      <Type Name="IEvaluationContext" Kind="Interface" />
+      <Type Name="IEvaluationContextIntegration" Kind="Interface" />
+    </Namespace>
+    <Namespace Name="Xamarin.Interactive.CodeAnalysis.Workbooks">
+      <Type Name="EvaluationContextGlobalsExtensions" Kind="Class" />
     </Namespace>
     <Namespace Name="Xamarin.Interactive.Logging">
       <Type Name="Log" Kind="Class" />
@@ -147,4 +189,27 @@ Copyright 2014-2016 Xamarin Inc. All rights reserved.")</AttributeName>
     </Namespace>
   </Types>
   <Title>Xamarin.Interactive</Title>
+  <ExtensionMethods>
+    <ExtensionMethod>
+      <Targets>
+        <Target Type="T:System.String" />
+      </Targets>
+      <Member MemberName="AsHtml">
+        <MemberSignature Language="C#" Value="public static Xamarin.Interactive.Representations.VerbatimHtml AsHtml (this string str);" />
+        <MemberSignature Language="ILAsm" Value=".method public static hidebysig class Xamarin.Interactive.Representations.VerbatimHtml AsHtml(string str) cil managed" />
+        <MemberType>ExtensionMethod</MemberType>
+        <ReturnValue>
+          <ReturnType>Xamarin.Interactive.Representations.VerbatimHtml</ReturnType>
+        </ReturnValue>
+        <Parameters>
+          <Parameter Name="str" Type="System.String" RefType="this" />
+        </Parameters>
+        <Docs>
+          <param name="str">To be added.</param>
+          <summary>To be added.</summary>
+        </Docs>
+        <Link Type="Xamarin.Interactive.CodeAnalysis.Workbooks.EvaluationContextGlobalsExtensions" Member="M:Xamarin.Interactive.CodeAnalysis.Workbooks.EvaluationContextGlobalsExtensions.AsHtml(System.String)" />
+      </Member>
+    </ExtensionMethod>
+  </ExtensionMethods>
 </Overview>

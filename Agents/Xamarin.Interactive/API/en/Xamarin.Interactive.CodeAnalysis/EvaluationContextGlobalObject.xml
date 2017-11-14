@@ -1,0 +1,330 @@
+<Type Name="EvaluationContextGlobalObject" FullName="Xamarin.Interactive.CodeAnalysis.EvaluationContextGlobalObject">
+  <TypeSignature Language="C#" Value="public class EvaluationContextGlobalObject" />
+  <TypeSignature Language="ILAsm" Value=".class public auto ansi beforefieldinit EvaluationContextGlobalObject extends System.Object" />
+  <AssemblyInfo>
+    <AssemblyName>Xamarin.Interactive</AssemblyName>
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
+  </AssemblyInfo>
+  <Base>
+    <BaseTypeName>System.Object</BaseTypeName>
+  </Base>
+  <Interfaces />
+  <Docs>
+    <summary>To be added.</summary>
+    <remarks>To be added.</remarks>
+  </Docs>
+  <Members>
+    <Member MemberName="__AssignmentMonitor&lt;T&gt;">
+      <MemberSignature Language="C#" Value="public T __AssignmentMonitor&lt;T&gt; (T value, string symbolName, string nodeType, int spanStart, int spanEnd);" />
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig instance !!T __AssignmentMonitor&lt;T&gt;(!!T value, string symbolName, string nodeType, int32 spanStart, int32 spanEnd) cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <Attributes>
+        <Attribute>
+          <AttributeName>System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)</AttributeName>
+        </Attribute>
+      </Attributes>
+      <ReturnValue>
+        <ReturnType>T</ReturnType>
+      </ReturnValue>
+      <TypeParameters>
+        <TypeParameter Name="T" />
+      </TypeParameters>
+      <Parameters>
+        <Parameter Name="value" Type="T" />
+        <Parameter Name="symbolName" Type="System.String" />
+        <Parameter Name="nodeType" Type="System.String" />
+        <Parameter Name="spanStart" Type="System.Int32" />
+        <Parameter Name="spanEnd" Type="System.Int32" />
+      </Parameters>
+      <Docs>
+        <typeparam name="T">To be added.</typeparam>
+        <param name="value">To be added.</param>
+        <param name="symbolName">To be added.</param>
+        <param name="nodeType">To be added.</param>
+        <param name="spanStart">To be added.</param>
+        <param name="spanEnd">To be added.</param>
+        <summary>To be added.</summary>
+        <returns>To be added.</returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="clear">
+      <MemberSignature Language="C#" Value="public static readonly Guid clear;" />
+      <MemberSignature Language="ILAsm" Value=".field public static initonly valuetype System.Guid clear" />
+      <MemberType>Field</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <Attributes>
+        <Attribute>
+          <AttributeName>Xamarin.Interactive.CodeAnalysis.EvaluationContextGlobalObject/InteractiveHelp(Description="Clear all previous REPL results", LiveInspectOnly=true, ShowReturnType=false)</AttributeName>
+        </Attribute>
+      </Attributes>
+      <ReturnValue>
+        <ReturnType>System.Guid</ReturnType>
+      </ReturnValue>
+      <Docs>
+        <summary>To be added.</summary>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="CurrentCulture">
+      <MemberSignature Language="C#" Value="public static System.Globalization.CultureInfo CurrentCulture { get; set; }" />
+      <MemberSignature Language="ILAsm" Value=".property class System.Globalization.CultureInfo CurrentCulture" />
+      <MemberType>Property</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <Attributes>
+        <Attribute>
+          <AttributeName>Xamarin.Interactive.CodeAnalysis.EvaluationContextGlobalObject/InteractiveHelp(Description="Get or set the current thread culture")</AttributeName>
+        </Attribute>
+      </Attributes>
+      <ReturnValue>
+        <ReturnType>System.Globalization.CultureInfo</ReturnType>
+      </ReturnValue>
+      <Docs>
+        <summary>To be added.</summary>
+        <value>To be added.</value>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="CurrentCultureName">
+      <MemberSignature Language="C#" Value="public static string CurrentCultureName { get; set; }" />
+      <MemberSignature Language="ILAsm" Value=".property string CurrentCultureName" />
+      <MemberType>Property</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <Attributes>
+        <Attribute>
+          <AttributeName>Xamarin.Interactive.CodeAnalysis.EvaluationContextGlobalObject/InteractiveHelp(Description="Get or set the current thread culture by name")</AttributeName>
+        </Attribute>
+      </Attributes>
+      <ReturnValue>
+        <ReturnType>System.String</ReturnType>
+      </ReturnValue>
+      <Docs>
+        <summary>To be added.</summary>
+        <value>To be added.</value>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="GetObject&lt;T&gt;">
+      <MemberSignature Language="C#" Value="public T GetObject&lt;T&gt; (long handle);" />
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig instance !!T GetObject&lt;T&gt;(int64 handle) cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>T</ReturnType>
+      </ReturnValue>
+      <TypeParameters>
+        <TypeParameter Name="T" />
+      </TypeParameters>
+      <Parameters>
+        <Parameter Name="handle" Type="System.Int64" />
+      </Parameters>
+      <Docs>
+        <typeparam name="T">To be added.</typeparam>
+        <param name="handle">To be added.</param>
+        <summary>To be added.</summary>
+        <returns>To be added.</returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="GetVars">
+      <MemberSignature Language="C#" Value="public object GetVars ();" />
+      <MemberSignature Language="ILAsm" Value=".method public hidebysig instance object GetVars() cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <Attributes>
+        <Attribute>
+          <AttributeName>Xamarin.Interactive.CodeAnalysis.EvaluationContextGlobalObject/InteractiveHelp(Description="Shows declared global variables", ShowReturnType=false)</AttributeName>
+        </Attribute>
+      </Attributes>
+      <ReturnValue>
+        <ReturnType>System.Object</ReturnType>
+      </ReturnValue>
+      <Parameters />
+      <Docs>
+        <summary>To be added.</summary>
+        <returns>To be added.</returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="help">
+      <MemberSignature Language="C#" Value="public object help { get; }" />
+      <MemberSignature Language="ILAsm" Value=".property instance object help" />
+      <MemberType>Property</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <Attributes>
+        <Attribute>
+          <AttributeName>Xamarin.Interactive.CodeAnalysis.EvaluationContextGlobalObject/InteractiveHelp(Description="This help text", ShowReturnType=false)</AttributeName>
+        </Attribute>
+      </Attributes>
+      <ReturnValue>
+        <ReturnType>System.Object</ReturnType>
+      </ReturnValue>
+      <Docs>
+        <summary>To be added.</summary>
+        <value>To be added.</value>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="Image">
+      <MemberSignature Language="C#" Value="public static Xamarin.Interactive.Representations.Image Image (byte[] data);" />
+      <MemberSignature Language="ILAsm" Value=".method public static hidebysig class Xamarin.Interactive.Representations.Image Image(unsigned int8[] data) cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <Attributes>
+        <Attribute>
+          <AttributeName>Xamarin.Interactive.CodeAnalysis.EvaluationContextGlobalObject/InteractiveHelp(Description="Render an image from raw data")</AttributeName>
+        </Attribute>
+      </Attributes>
+      <ReturnValue>
+        <ReturnType>Xamarin.Interactive.Representations.Image</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="data" Type="System.Byte[]" />
+      </Parameters>
+      <Docs>
+        <param name="data">To be added.</param>
+        <summary>To be added.</summary>
+        <returns>To be added.</returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="Image">
+      <MemberSignature Language="C#" Value="public static Xamarin.Interactive.Representations.Image Image (string uriOrTextData);" />
+      <MemberSignature Language="ILAsm" Value=".method public static hidebysig class Xamarin.Interactive.Representations.Image Image(string uriOrTextData) cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <Attributes>
+        <Attribute>
+          <AttributeName>Xamarin.Interactive.CodeAnalysis.EvaluationContextGlobalObject/InteractiveHelp(Description="Render an image from a path or URI, or SVG data")</AttributeName>
+        </Attribute>
+      </Attributes>
+      <ReturnValue>
+        <ReturnType>Xamarin.Interactive.Representations.Image</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="uriOrTextData" Type="System.String" />
+      </Parameters>
+      <Docs>
+        <param name="uriOrTextData">To be added.</param>
+        <summary>To be added.</summary>
+        <returns>To be added.</returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="Image">
+      <MemberSignature Language="C#" Value="public static Xamarin.Interactive.Representations.Image Image (Uri uri);" />
+      <MemberSignature Language="ILAsm" Value=".method public static hidebysig class Xamarin.Interactive.Representations.Image Image(class System.Uri uri) cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <Attributes>
+        <Attribute>
+          <AttributeName>Xamarin.Interactive.CodeAnalysis.EvaluationContextGlobalObject/InteractiveHelp(Description="Render an image from a path or URI")</AttributeName>
+        </Attribute>
+      </Attributes>
+      <ReturnValue>
+        <ReturnType>Xamarin.Interactive.Representations.Image</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="uri" Type="System.Uri" />
+      </Parameters>
+      <Docs>
+        <param name="uri">To be added.</param>
+        <summary>To be added.</summary>
+        <returns>To be added.</returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="ImageAsync">
+      <MemberSignature Language="C#" Value="public static System.Threading.Tasks.Task&lt;Xamarin.Interactive.Representations.Image&gt; ImageAsync (System.IO.Stream stream);" />
+      <MemberSignature Language="ILAsm" Value=".method public static hidebysig class System.Threading.Tasks.Task`1&lt;class Xamarin.Interactive.Representations.Image&gt; ImageAsync(class System.IO.Stream stream) cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <Attributes>
+        <Attribute>
+          <AttributeName>Xamarin.Interactive.CodeAnalysis.EvaluationContextGlobalObject/InteractiveHelp(Description="Render an image from a stream")</AttributeName>
+        </Attribute>
+      </Attributes>
+      <ReturnValue>
+        <ReturnType>System.Threading.Tasks.Task&lt;Xamarin.Interactive.Representations.Image&gt;</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="stream" Type="System.IO.Stream" />
+      </Parameters>
+      <Docs>
+        <param name="stream">To be added.</param>
+        <summary>To be added.</summary>
+        <returns>To be added.</returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="InteractiveAgent">
+      <MemberSignature Language="C#" Value="public Xamarin.Interactive.IAgent InteractiveAgent { get; }" />
+      <MemberSignature Language="ILAsm" Value=".property instance class Xamarin.Interactive.IAgent InteractiveAgent" />
+      <MemberType>Property</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <Attributes>
+        <Attribute>
+          <AttributeName>Xamarin.Interactive.CodeAnalysis.EvaluationContextGlobalObject/InteractiveHelp(Description="Direct public access to the agent powering the interactive session")</AttributeName>
+        </Attribute>
+      </Attributes>
+      <ReturnValue>
+        <ReturnType>Xamarin.Interactive.IAgent</ReturnType>
+      </ReturnValue>
+      <Docs>
+        <summary>To be added.</summary>
+        <value>To be added.</value>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="Time">
+      <MemberSignature Language="C#" Value="public static TimeSpan Time (Action action);" />
+      <MemberSignature Language="ILAsm" Value=".method public static hidebysig valuetype System.TimeSpan Time(class System.Action action) cil managed" />
+      <MemberType>Method</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <Attributes>
+        <Attribute>
+          <AttributeName>Xamarin.Interactive.CodeAnalysis.EvaluationContextGlobalObject/InteractiveHelp(Description="Uses a Stopwatch to time the specified action delegate")</AttributeName>
+        </Attribute>
+      </Attributes>
+      <ReturnValue>
+        <ReturnType>System.TimeSpan</ReturnType>
+      </ReturnValue>
+      <Parameters>
+        <Parameter Name="action" Type="System.Action" />
+      </Parameters>
+      <Docs>
+        <param name="action">To be added.</param>
+        <summary>To be added.</summary>
+        <returns>To be added.</returns>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+  </Members>
+</Type>
