@@ -1,0 +1,47 @@
+<Type Name="ICompilation" FullName="Xamarin.Interactive.CodeAnalysis.ICompilation">
+  <TypeSignature Language="C#" Value="public interface ICompilation" />
+  <TypeSignature Language="ILAsm" Value=".class public interface auto ansi abstract ICompilation" />
+  <AssemblyInfo>
+    <AssemblyName>Xamarin.Interactive</AssemblyName>
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
+  </AssemblyInfo>
+  <Interfaces />
+  <Docs>
+    <summary>To be added.</summary>
+    <remarks>To be added.</remarks>
+  </Docs>
+  <Members>
+    <Member MemberName="Assembly">
+      <MemberSignature Language="C#" Value="public Xamarin.Interactive.CodeAnalysis.IAssemblyDefinition Assembly { get; }" />
+      <MemberSignature Language="ILAsm" Value=".property instance class Xamarin.Interactive.CodeAnalysis.IAssemblyDefinition Assembly" />
+      <MemberType>Property</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Xamarin.Interactive.CodeAnalysis.IAssemblyDefinition</ReturnType>
+      </ReturnValue>
+      <Docs>
+        <summary>To be added.</summary>
+        <value>To be added.</value>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="CodeCellId">
+      <MemberSignature Language="C#" Value="public Xamarin.Interactive.CodeAnalysis.CodeCellId CodeCellId { get; }" />
+      <MemberSignature Language="ILAsm" Value=".property instance valuetype Xamarin.Interactive.CodeAnalysis.CodeCellId CodeCellId" />
+      <MemberType>Property</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Xamarin.Interactive.CodeAnalysis.CodeCellId</ReturnType>
+      </ReturnValue>
+      <Docs>
+        <summary>To be added.</summary>
+        <value>To be added.</value>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+  </Members>
+</Type>

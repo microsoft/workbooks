@@ -1,0 +1,87 @@
+<Type Name="EvaluationPhase" FullName="Xamarin.Interactive.CodeAnalysis.EvaluationPhase">
+  <TypeSignature Language="C#" Value="public enum EvaluationPhase" />
+  <TypeSignature Language="ILAsm" Value=".class public auto ansi sealed EvaluationPhase extends System.Enum" />
+  <AssemblyInfo>
+    <AssemblyName>Xamarin.Interactive</AssemblyName>
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
+  </AssemblyInfo>
+  <Base>
+    <BaseTypeName>System.Enum</BaseTypeName>
+  </Base>
+  <Docs>
+    <summary>To be added.</summary>
+    <remarks>To be added.</remarks>
+  </Docs>
+  <Members>
+    <Member MemberName="Compiled">
+      <MemberSignature Language="C#" Value="Compiled" />
+      <MemberSignature Language="ILAsm" Value=".field public static literal valuetype Xamarin.Interactive.CodeAnalysis.EvaluationPhase Compiled = int32(1)" />
+      <MemberType>Field</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Xamarin.Interactive.CodeAnalysis.EvaluationPhase</ReturnType>
+      </ReturnValue>
+      <Docs>
+        <summary>To be added.</summary>
+      </Docs>
+    </Member>
+    <Member MemberName="Completed">
+      <MemberSignature Language="C#" Value="Completed" />
+      <MemberSignature Language="ILAsm" Value=".field public static literal valuetype Xamarin.Interactive.CodeAnalysis.EvaluationPhase Completed = int32(4)" />
+      <MemberType>Field</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Xamarin.Interactive.CodeAnalysis.EvaluationPhase</ReturnType>
+      </ReturnValue>
+      <Docs>
+        <summary>To be added.</summary>
+      </Docs>
+    </Member>
+    <Member MemberName="Evaluated">
+      <MemberSignature Language="C#" Value="Evaluated" />
+      <MemberSignature Language="ILAsm" Value=".field public static literal valuetype Xamarin.Interactive.CodeAnalysis.EvaluationPhase Evaluated = int32(2)" />
+      <MemberType>Field</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Xamarin.Interactive.CodeAnalysis.EvaluationPhase</ReturnType>
+      </ReturnValue>
+      <Docs>
+        <summary>To be added.</summary>
+      </Docs>
+    </Member>
+    <Member MemberName="None">
+      <MemberSignature Language="C#" Value="None" />
+      <MemberSignature Language="ILAsm" Value=".field public static literal valuetype Xamarin.Interactive.CodeAnalysis.EvaluationPhase None = int32(0)" />
+      <MemberType>Field</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Xamarin.Interactive.CodeAnalysis.EvaluationPhase</ReturnType>
+      </ReturnValue>
+      <Docs>
+        <summary>To be added.</summary>
+      </Docs>
+    </Member>
+    <Member MemberName="Represented">
+      <MemberSignature Language="C#" Value="Represented" />
+      <MemberSignature Language="ILAsm" Value=".field public static literal valuetype Xamarin.Interactive.CodeAnalysis.EvaluationPhase Represented = int32(3)" />
+      <MemberType>Field</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Xamarin.Interactive.CodeAnalysis.EvaluationPhase</ReturnType>
+      </ReturnValue>
+      <Docs>
+        <summary>To be added.</summary>
+      </Docs>
+    </Member>
+  </Members>
+</Type>

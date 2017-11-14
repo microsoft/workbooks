@@ -1,0 +1,47 @@
+<Type Name="IAssemblyEntryPoint" FullName="Xamarin.Interactive.CodeAnalysis.IAssemblyEntryPoint">
+  <TypeSignature Language="C#" Value="public interface IAssemblyEntryPoint" />
+  <TypeSignature Language="ILAsm" Value=".class public interface auto ansi abstract IAssemblyEntryPoint" />
+  <AssemblyInfo>
+    <AssemblyName>Xamarin.Interactive</AssemblyName>
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
+  </AssemblyInfo>
+  <Interfaces />
+  <Docs>
+    <summary>To be added.</summary>
+    <remarks>To be added.</remarks>
+  </Docs>
+  <Members>
+    <Member MemberName="MethodName">
+      <MemberSignature Language="C#" Value="public string MethodName { get; }" />
+      <MemberSignature Language="ILAsm" Value=".property instance string MethodName" />
+      <MemberType>Property</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.String</ReturnType>
+      </ReturnValue>
+      <Docs>
+        <summary>To be added.</summary>
+        <value>To be added.</value>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="TypeName">
+      <MemberSignature Language="C#" Value="public string TypeName { get; }" />
+      <MemberSignature Language="ILAsm" Value=".property instance string TypeName" />
+      <MemberType>Property</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.String</ReturnType>
+      </ReturnValue>
+      <Docs>
+        <summary>To be added.</summary>
+        <value>To be added.</value>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+  </Members>
+</Type>

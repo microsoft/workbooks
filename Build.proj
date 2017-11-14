@@ -481,7 +481,7 @@
   <Target
     Name="UpdatePublicApiDocs"
     DependsOnTargets="UpdatePublicApiDefinitions">
-    <Exec Command="mdoc update --delete Agents\Xamarin.Interactive\bin\Release\Xamarin.Interactive.dll -out Agents\Xamarin.Interactive\API\en"/>
+    <Exec Command="mdoc update --delete Agents\Xamarin.Interactive\bin\Release\netstandard2.0\Xamarin.Interactive.dll -out Agents\Xamarin.Interactive\API\en -r /Library/Frameworks/Mono.framework/Versions/Current/lib/mono/4.5/Facades/netstandard.dll"/>
   </Target>
 
   <Target Name="AssemblePublicApiDocs">

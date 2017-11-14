@@ -1,0 +1,63 @@
+<Type Name="IEvaluation" FullName="Xamarin.Interactive.CodeAnalysis.IEvaluation">
+  <TypeSignature Language="C#" Value="public interface IEvaluation" />
+  <TypeSignature Language="ILAsm" Value=".class public interface auto ansi abstract IEvaluation" />
+  <AssemblyInfo>
+    <AssemblyName>Xamarin.Interactive</AssemblyName>
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
+  </AssemblyInfo>
+  <Interfaces />
+  <Docs>
+    <summary>To be added.</summary>
+    <remarks>To be added.</remarks>
+  </Docs>
+  <Members>
+    <Member MemberName="Compilation">
+      <MemberSignature Language="C#" Value="public Xamarin.Interactive.CodeAnalysis.ICompilation Compilation { get; }" />
+      <MemberSignature Language="ILAsm" Value=".property instance class Xamarin.Interactive.CodeAnalysis.ICompilation Compilation" />
+      <MemberType>Property</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Xamarin.Interactive.CodeAnalysis.ICompilation</ReturnType>
+      </ReturnValue>
+      <Docs>
+        <summary>To be added.</summary>
+        <value>To be added.</value>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="Phase">
+      <MemberSignature Language="C#" Value="public Xamarin.Interactive.CodeAnalysis.EvaluationPhase Phase { get; }" />
+      <MemberSignature Language="ILAsm" Value=".property instance valuetype Xamarin.Interactive.CodeAnalysis.EvaluationPhase Phase" />
+      <MemberType>Property</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>Xamarin.Interactive.CodeAnalysis.EvaluationPhase</ReturnType>
+      </ReturnValue>
+      <Docs>
+        <summary>To be added.</summary>
+        <value>To be added.</value>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+    <Member MemberName="Result">
+      <MemberSignature Language="C#" Value="public object Result { get; }" />
+      <MemberSignature Language="ILAsm" Value=".property instance object Result" />
+      <MemberType>Property</MemberType>
+      <AssemblyInfo>
+        <AssemblyVersion>1.0.0.0</AssemblyVersion>
+      </AssemblyInfo>
+      <ReturnValue>
+        <ReturnType>System.Object</ReturnType>
+      </ReturnValue>
+      <Docs>
+        <summary>To be added.</summary>
+        <value>To be added.</value>
+        <remarks>To be added.</remarks>
+      </Docs>
+    </Member>
+  </Members>
+</Type>
