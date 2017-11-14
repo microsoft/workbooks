@@ -37,8 +37,15 @@ namespace Xamarin.Interactive.Client.Windows.Views
 
         void HandleMouseUp (object sender, MouseButtonEventArgs e)
         {
-            var offset = e.GetPosition(CaptureBorder) - downPosition;
+            var currentPosition = e.GetPosition (CaptureBorder);
+            var offset = currentPosition - downPosition;
             if (offset.X == 0 && offset.Y == 0) {
+                FocusNode = null;
+                VisualTreeHelper.HitTest (
+                    viewport,
+                    null,
+                    ResultCallback,
+                    new PointHitTestParameters (currentPosition));
                 if (focusedViewNode != null) {
                     SelectedView = FocusNode.InspectView;
                 }
@@ -173,7 +180,7 @@ namespace Xamarin.Interactive.Client.Windows.Views
             var value = eventArgs.NewValue as InspectView;
             var view = dependencyObject as VisualRepView;
             view.currentViewNode = null;
-
+            view.FocusNode = null;
             if (value != null) {
                 view.currentViewNode = new InspectViewNode (value, 0).Rebuild (new TreeState (view.DisplayMode, view.ShowHidden));
                 view.topModel.Children.Clear ();
