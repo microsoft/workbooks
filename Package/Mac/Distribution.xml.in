@@ -29,7 +29,8 @@
     <choice id="com.xamarin.Interactive" visible="false">
       <pkg-ref id="com.xamarin.Interactive">
         <must-close>
-          <app id="com.xamarin.Interactive"/>
+          <app id="com.xamarin.Inspector"/>
+          <app id="com.xamarin.Workbooks"/>
         </must-close>
       </pkg-ref>
     </choice>
