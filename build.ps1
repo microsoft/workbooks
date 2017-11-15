@@ -51,6 +51,7 @@ if (${Git-Clean}) {
     & git clean -xffd
     Pop-Location
   }
+  Exit 0
 }
 
 $Build = $Build -Or -Not ($Package -Or $Test -Or $UpdatePublicApiDefinitions)
