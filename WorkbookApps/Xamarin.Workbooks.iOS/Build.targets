@@ -37,7 +37,10 @@
       WorkingDirectory="$(OutputPath)" />
   </Target>
 
-  <Target Name="Install" AfterTargets="$(AfterTargetForInstall)">
+  <Target
+    Name="Install"
+    AfterTargets="$(AfterTargetForInstall)"
+    Condition="Exists('$(OutputPath)\$(AssemblyName).app')">
     <PropertyGroup>
       <ManifestAppPath>$(AssemblyName).app</ManifestAppPath>
       <WixInputManifest>..\..\Package\Windows\iOSWorkbookAppFiles.wxs</WixInputManifest>
