@@ -40,7 +40,9 @@
   <Target
     Name="Install"
     AfterTargets="$(AfterTargetForInstall)"
-    Condition="Exists('$(OutputPath)\$(AssemblyName).app')">
+    Condition="
+      ('$(OS)' != 'Windows_NT' And Exists('$(OutputPath)\$(AssemblyName).app')) Or
+      ('$(OS)' == 'Windows_NT' And Exists('$(OutputPath)\$(AssemblyName).app.zip'))">
     <PropertyGroup>
       <ManifestAppPath>$(AssemblyName).app</ManifestAppPath>
       <WixInputManifest>..\..\Package\Windows\iOSWorkbookAppFiles.wxs</WixInputManifest>
