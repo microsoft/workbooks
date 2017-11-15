@@ -37,8 +37,6 @@ Param (
   $UpdatePublicApiDefinitions = $false
 )
 
-$errorActionPreference = "Stop"
-
 if ($Help) {
   Get-Help "$PSCommandPath"
   Exit 0
@@ -68,5 +66,7 @@ $Targets = $Targets -join ","
 
 & git submodule sync
 & git submodule update --recursive --init
+
+$errorActionPreference = "Stop"
 
 & msbuild /target:$Targets Build.proj
