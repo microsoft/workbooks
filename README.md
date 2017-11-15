@@ -1,8 +1,6 @@
 # Xamarin Workbooks
 
-| macOS               | Windows             |
-| ------------------- | ------------------- |
-| ![][macbuildstatus] | ![][winbuildstatus] |
+[![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/Microsoft/workbooks)
 
 Xamarin Workbooks provide a blend of documentation and code that is perfect
 for experimentation, learning, and creating guides and teaching aids.
@@ -30,6 +28,10 @@ the vast NuGet package ecosystem to make learning new APIs a breeze.
 * [File Bugs](https://bugzilla.xamarin.com/enter_bug.cgi?product=Workbooks%20%26%20Inspector)
 
 ## Build & Run
+
+| macOS               | Windows             |
+| ------------------- | ------------------- |
+| ![][macbuildstatus] | ![][winbuildstatus] |
 
 ### External Build Dependencies & Development Environment
 
