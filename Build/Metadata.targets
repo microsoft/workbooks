@@ -13,7 +13,7 @@ Copyright 2017 Microsoft. All rights reserved.
 
   <PropertyGroup>
     <CommonGitInfo_SetMinRevisionFromMostRecentTagRegex>true</CommonGitInfo_SetMinRevisionFromMostRecentTagRegex>
-    <CommonGitInfo_MostRecentTagRegex>-\d+\.\d+\.\d+-([A-Za-z\.]+\d*)(-\d+)?-release$</CommonGitInfo_MostRecentTagRegex>
+    <CommonGitInfo_MostRecentTagRegex>^v\d+</CommonGitInfo_MostRecentTagRegex>
   </PropertyGroup>
 
   <Target

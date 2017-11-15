@@ -114,18 +114,22 @@ namespace Xamarin.MSBuild
             return Exec.Run ("git", "log", "--oneline", $"{revision1}..{revision2}").Count;
         }
 
+        const string refsTagsPrefix = "refs/tags";
+
         public static IEnumerable<string> GetTagsByDateOrder ()
             => Exec.Run ("git",
                 "for-each-ref",
                 "--sort=taggerdate",
                 "--format", "%(refname)",
-                "refs/tags");
+                refsTagsPrefix);
 
         public static string GetMostRecentTag ()
             => GetTagsByDateOrder ().LastOrDefault ();
 
         public static string GetMostRecentTagMatching (Regex regex)
-            => GetTagsByDateOrder ().LastOrDefault (regex.IsMatch);
+            => GetTagsByDateOrder ().LastOrDefault (fullRef =>
+                fullRef.StartsWith (refsTagsPrefix + "/", System.StringComparison.Ordinal) &&
+                regex.IsMatch (fullRef.Substring (refsTagsPrefix.Length + 1)));
 
         public static string GetSymbolicRef (string revision)
             => Exec.Run ("git", "symbolic-ref", revision).FirstOrDefault ()?.Replace (
