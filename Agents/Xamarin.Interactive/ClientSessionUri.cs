@@ -59,11 +59,10 @@ namespace Xamarin.Interactive.Client
         public ClientSessionKind SessionKind { get; }
         public string Host { get; }
         public ushort Port { get; }
-        public string [] AssemblySearchPaths { get; } = EmptyArray<string>.Instance;
+        public string [] AssemblySearchPaths { get; } = Array.Empty<string> ();
         public string WorkbookPath { get; }
         public string WorkingDirectory { get; }
-        public KeyValuePair<string, string> [] Parameters { get; }
-            = EmptyArray<KeyValuePair<string, string>>.Instance;
+        public KeyValuePair<string, string> [] Parameters { get; } = Array.Empty<KeyValuePair<string, string>> ();
 
         public ClientSessionUri (AgentType agentType, ClientSessionKind sessionKind)
         {
@@ -426,7 +425,7 @@ namespace Xamarin.Interactive.Client
         internal static IReadOnlyList<KeyValuePair<string, string>> ParseQueryString (string query)
         {
             if (String.IsNullOrEmpty (query))
-                return EmptyArray<KeyValuePair<string, string>>.Instance;
+                return Array.Empty<KeyValuePair<string, string>> ();
 
             var items = new List<KeyValuePair<string, string>> (8);
 

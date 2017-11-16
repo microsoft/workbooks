@@ -5,13 +5,11 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
-using System.Linq;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 
 using Microsoft.CodeAnalysis;
-
-using Xamarin.Interactive.Core;
 
 namespace Xamarin.Interactive.Compilation.Roslyn
 {
@@ -30,7 +28,7 @@ namespace Xamarin.Interactive.Compilation.Roslyn
             HasErrors = false;
 
             if (diagnostics == null || diagnostics.Count == 0) {
-                this.diagnostics = EmptyArray<Diagnostic>.Instance;
+                this.diagnostics = Array.Empty<Diagnostic> ();
                 return;
             }
 

@@ -25,7 +25,7 @@ namespace Xamarin.Interactive.Client.Windows.Converters
         public object Convert (object value, Type targetType, object parameter, CultureInfo culture)
         {
             if (value == null)
-                return EmptyArray<T>.Instance;
+                return Array.Empty<T> ();
 
             return new[] { (T) value };
         }

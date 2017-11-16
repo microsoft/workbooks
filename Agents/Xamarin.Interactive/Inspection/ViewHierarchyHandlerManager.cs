@@ -33,7 +33,7 @@ namespace Xamarin.Interactive.Inspection
         }
 
         public IReadOnlyList<string> AvailableHierarchyKinds
-            => handlers?.Keys ?? EmptyArray<string>.Instance;
+            => handlers?.Keys ?? Array.Empty<string> ();
 
         public InspectView HighlightView (double x, double y, bool clear, string hierarchyKind)
         {
