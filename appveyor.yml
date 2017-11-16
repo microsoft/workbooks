@@ -1,12 +1,12 @@
 version: '{branch}-{build}-no-release'
 image: Visual Studio 2017 Preview
-clone_script:
+install:
 - cmd: >-
-    git clone https://github.com/Microsoft/workbooks --recursive
+    git submodule sync
 
-    cd workbooks
+    git submodule update --recursive --init
 cache:
-- workbooks\node_modules
+- node_modules
 - '%USERPROFILE%\.nuget\packages'
 build_script:
 - cmd: msbuild Build.proj /p:Configuration=Release
