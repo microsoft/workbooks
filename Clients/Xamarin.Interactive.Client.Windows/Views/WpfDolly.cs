@@ -281,7 +281,7 @@ namespace Xamarin.Interactive.Client.Windows.Views
         void EventSource_MouseWheel (object sender, MouseWheelEventArgs e)
         {
             if (Keyboard.Modifiers.HasFlag (ModifierKeys.Control)) {
-                var zoom = -(float)(e.Delta * .01);
+                var zoom = -(float)(e.Delta * .001);
                 Zoom (new SN.Vector3 (zoom, zoom, zoom));
             }
         }
