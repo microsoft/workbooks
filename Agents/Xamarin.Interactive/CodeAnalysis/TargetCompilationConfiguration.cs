@@ -15,6 +15,7 @@ namespace Xamarin.Interactive.CodeAnalysis
         public string GlobalStateTypeName { get; set; }
         public AssemblyDefinition GlobalStateAssembly { get; set; }
         public string[] DefaultUsings { get; set; }
+        public string[] DefaultWarningSuppressions { get; set; }
         public int EvaluationContextId { get; set; }
     }
 }

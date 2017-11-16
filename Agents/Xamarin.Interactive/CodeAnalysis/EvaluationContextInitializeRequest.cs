@@ -29,6 +29,7 @@ namespace Xamarin.Interactive.CodeAnalysis
             var response = new TargetCompilationConfiguration ();
 
             response.DefaultUsings = agent.GetReplDefaultUsingNamespaces ().ToArray ();
+            response.DefaultWarningSuppressions = agent.GetReplDefaultWarningSuppressions ().ToArray ();
 
             var evaluationContext = agent.CreateEvaluationContext ();
             response.EvaluationContextId = evaluationContext.Id;
