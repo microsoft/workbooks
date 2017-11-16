@@ -321,7 +321,9 @@ namespace Xamarin.Interactive.Compilation.Roslyn
 
         readonly Type hostObjectType;
         readonly ImmutableArray<string> initialImports;
+        readonly ImmutableArray<string> initialWarningSuppressions;
         readonly ImmutableArray<PortableExecutableReference> initialReferences;
+        readonly ImmutableDictionary<string, ReportDiagnostic> initialDiagnosticOptions;
 
         readonly CSharpParseOptions parseOptions = new CSharpParseOptions (
             LanguageVersion.CSharp7_1,
@@ -361,6 +363,10 @@ namespace Xamarin.Interactive.Compilation.Roslyn
             this.hostObjectType = hostObjectType;
             EvaluationContextId = compilationConfiguration.EvaluationContextId;
             initialImports = compilationConfiguration.DefaultUsings.ToImmutableArray ();
+            initialWarningSuppressions = compilationConfiguration.DefaultWarningSuppressions.ToImmutableArray ();
+            initialDiagnosticOptions = initialWarningSuppressions.ToImmutableDictionary (
+                warningId => warningId,
+                warningId => ReportDiagnostic.Suppress);
             initialReferences = dependencyResolver.ResolveDefaultReferences ();
 
             var byNameImplicitReferences = new Tuple<string, Func<bool>> [] {
@@ -513,7 +519,8 @@ namespace Xamarin.Interactive.Compilation.Roslyn
                     usings: ImmutableArray<string>.Empty,
                     sourceReferenceResolver: sourceReferenceResolver,
                     metadataReferenceResolver: metadataReferenceResolver,
-                    assemblyIdentityComparer: DesktopAssemblyIdentityComparer.Default),
+                    assemblyIdentityComparer: DesktopAssemblyIdentityComparer.Default,
+                    specificDiagnosticOptions: initialDiagnosticOptions),
                 parseOptions: parseOptions,
                 documents: null,
                 hostObjectType: hostObjectType,
