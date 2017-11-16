@@ -115,7 +115,7 @@ namespace Xamarin.Interactive.Forms
             if (elementController != null)
                 return elementController.LogicalChildren;
 
-            return EmptyArray<Element>.Instance;
+            return Array.Empty<Element> ();
         }
 
         static VisualElement GetViewAt (Element root, double x, double y, Func<VisualElement, Rectangle> getNativeViewBounds)

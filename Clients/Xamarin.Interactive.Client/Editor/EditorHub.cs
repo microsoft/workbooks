@@ -101,7 +101,7 @@ namespace Xamarin.Interactive.Editor
             => FocusedEditor?.SetCursorPosition (cursorPosition);
 
         public IEnumerable<EditorCommand> GetCommands ()
-            => FocusedEditor?.GetCommands () ?? EmptyArray<EditorCommand>.Instance;
+            => FocusedEditor?.GetCommands () ?? Array.Empty<EditorCommand> ();
 
         public bool TryGetCommand (string commandId, out EditorCommand command)
         {

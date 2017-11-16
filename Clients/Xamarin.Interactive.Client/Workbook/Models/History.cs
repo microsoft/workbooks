@@ -128,7 +128,7 @@ namespace Xamarin.Interactive.Workbook.Models
         public IEnumerable<string> Load ()
         {
             if (!HistoryFile.FileExists)
-                return EmptyArray<string>.Instance;
+                return Array.Empty<string> ();
 
             try {
                 var entries = new List<string> ();
@@ -142,7 +142,7 @@ namespace Xamarin.Interactive.Workbook.Models
                 return entries;
             } catch (Exception e) {
                 Log.Error (TAG, "Could not load history.", e);
-                return EmptyArray<string>.Instance;
+                return Array.Empty<string> ();
             }
         }
 

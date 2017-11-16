@@ -164,7 +164,7 @@ namespace Xamarin.Interactive.Representations
 
             var typeName = xplotType.FullName;
             if (!xplotMethodCache.TryGetValue (typeName, out var getHtmlMethod)) {
-                getHtmlMethod = xplotType.GetRuntimeMethod ("GetHtml", EmptyArray<Type>.Instance);
+                getHtmlMethod = xplotType.GetRuntimeMethod ("GetHtml", Array.Empty<Type> ());
 
                 // Drop a warning into the log the first time, subsequent hits will just hit
                 // the cache and get a null.
@@ -177,7 +177,7 @@ namespace Xamarin.Interactive.Representations
             if (getHtmlMethod == null)
                 return null;
 
-            var plotHtml = (string)getHtmlMethod.Invoke (value, EmptyArray<object>.Instance);
+            var plotHtml = (string)getHtmlMethod.Invoke (value, Array.Empty<object> ());
             return new VerbatimHtml (plotHtml);
         }
 

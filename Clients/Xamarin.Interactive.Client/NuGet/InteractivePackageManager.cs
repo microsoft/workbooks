@@ -201,7 +201,7 @@ namespace Xamarin.Interactive.NuGet
             const string integrationPackage = PackageManagerViewModel.IntegrationPackageId;
             if (PackageIdComparer.Equals (package.Identity.Id, integrationPackage)) {
                 Log.Warning (TAG, $"Refusing to add integration NuGet package {integrationPackage}.");
-                return EmptyArray<InteractivePackage>.Instance;
+                return Array.Empty<InteractivePackage> ();
             }
 
             var resolutionContext = new ResolutionContext (

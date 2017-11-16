@@ -5,6 +5,7 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
+using System;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -60,13 +61,12 @@ namespace Xamarin.Interactive
 
         public int Count => count;
 
-        public IReadOnlyList<TKey> Keys => keys ?? (IReadOnlyList<TKey>)EmptyArray<TKey>.Instance;
+        public IReadOnlyList<TKey> Keys => keys ?? (IReadOnlyList<TKey>)Array.Empty<TKey> ();
 
         IEnumerable<TKey> IReadOnlyDictionary<TKey, IReadOnlyList<TListItemValue>>.Keys => Keys;
 
         public IReadOnlyList<IReadOnlyList<TListItemValue>> Values => values
-            ?? (IReadOnlyList<IReadOnlyList<TListItemValue>>)EmptyArray<IReadOnlyList<TListItemValue>>
-                .Instance;
+            ?? (IReadOnlyList<IReadOnlyList<TListItemValue>>)Array.Empty<IReadOnlyList<TListItemValue>> ();
 
         IEnumerable<IReadOnlyList<TListItemValue>> IReadOnlyDictionary<TKey, IReadOnlyList<TListItemValue>>
             .Values => Values;
