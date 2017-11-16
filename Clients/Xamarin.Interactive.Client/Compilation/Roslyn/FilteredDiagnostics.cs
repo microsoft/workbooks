@@ -35,6 +35,9 @@ namespace Xamarin.Interactive.Compilation.Roslyn
             var filteredDiagnostics = new List<Diagnostic> ();
 
             foreach (var d in diagnostics) {
+                if (d.IsSuppressed)
+                    continue;
+
                 HasWarnings |= d.Severity == DiagnosticSeverity.Warning;
                 HasErrors |= d.Severity == DiagnosticSeverity.Error;
                 if (filteredDiagnostics.Count < maxCount)
