@@ -1491,11 +1491,6 @@ Gw
                                         <buttonCell key="cell" type="smallSquare" alternateTitle="Add" bezelStyle="smallSquare" image="NSAddTemplate" imagePosition="overlaps" alignment="center" inset="2" id="gNj-ka-jpd">
                                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                             <font key="font" metaFont="system"/>
-                                            <userDefinedRuntimeAttributes>
-                                                <userDefinedRuntimeAttribute type="color" keyPath="backgroundColor">
-                                                    <color key="value" red="0.99991267919540405" green="1" blue="0.99988144636154175" alpha="0.0" colorSpace="custom" customColorSpace="sRGB"/>
-                                                </userDefinedRuntimeAttribute>
-                                            </userDefinedRuntimeAttributes>
                                         </buttonCell>
                                         <connections>
                                             <action selector="addItem:" target="Z8w-yw-raT" id="27x-9L-x7i"/>
