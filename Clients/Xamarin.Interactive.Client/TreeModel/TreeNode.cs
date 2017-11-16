@@ -17,10 +17,10 @@ namespace Xamarin.Interactive.TreeModel
         public event PropertyChangedEventHandler PropertyChanged;
         public event PropertyChangingEventHandler PropertyChanging;
 
-        protected void NotifyPropertyChanged ([CallerMemberName] string propertyName = null)
+        protected virtual void NotifyPropertyChanged ([CallerMemberName] string propertyName = null)
             => PropertyChanged?.Invoke (this, new PropertyChangedEventArgs (propertyName));
 
-        protected void NotifyPropertyChanging ([CallerMemberName] string propertyName = null)
+        protected virtual void NotifyPropertyChanging ([CallerMemberName] string propertyName = null)
             => PropertyChanging?.Invoke (this, new PropertyChangingEventArgs (propertyName));
 
         IReadOnlyList<TreeNode> children;
@@ -115,10 +115,21 @@ namespace Xamarin.Interactive.TreeModel
 
         bool isSelected;
         public bool IsSelected {
-            get { return isSelected && isSelectable; }
+            get => isSelected && isSelectable;
             set {
                 if (isSelected != value) {
                     isSelected = value;
+                    NotifyPropertyChanged ();
+                }
+            }
+        }
+
+        bool isMouseOver;
+        public bool IsMouseOver {
+            get => isMouseOver;
+            set {
+                if (isMouseOver != value) {
+                    isMouseOver = value;
                     NotifyPropertyChanged ();
                 }
             }

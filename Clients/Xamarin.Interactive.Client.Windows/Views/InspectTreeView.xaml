@@ -1,0 +1,271 @@
+﻿<UserControl x:Class="Xamarin.Interactive.Client.Windows.Views.InspectTreeView"
+             x:ClassModifier="internal"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+             xmlns:local="clr-namespace:Xamarin.Interactive.Client.Windows.Views"
+             xmlns:Controls="http://metro.mahapps.com/winfx/xaml/controls"
+             Loaded="OnLoaded" Focusable="True">
+    <UserControl.Resources>
+        <SolidColorBrush x:Key="ViewportBackground" Color="DimGray"/>
+        <SolidColorBrush x:Key="ViewportForground" Color="White"/>
+        <Style TargetType="Button" BasedOn="{StaticResource MetroButton}">
+            <Setter Property="Foreground" Value="{DynamicResource ViewportForground}"/>
+            <Setter Property="BorderBrush" Value="Transparent"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Margin" Value="5"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type ButtonBase}">
+                        <Grid>
+                            <Border x:Name="Background"
+                                Background="{TemplateBinding Background}"
+                                CornerRadius="{Binding
+                                    RelativeSource={RelativeSource TemplatedParent},
+                                    Path=(Controls:ControlsHelper.CornerRadius),
+                                    Mode=OneWay}" />
+                            <Border x:Name="Border"
+                                Background="{x:Null}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="{Binding
+                                    RelativeSource={RelativeSource TemplatedParent},
+                                    Path=(Controls:ControlsHelper.CornerRadius),
+                                    Mode=OneWay}"
+                                SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+                            <Border x:Name="DisabledVisualElement"
+                                Background="{DynamicResource ControlsDisabledBrush}"
+                                Opacity="0"
+                                CornerRadius="{Binding
+                                    RelativeSource={RelativeSource TemplatedParent},
+                                    Path=(Controls:ControlsHelper.CornerRadius),
+                                    Mode=OneWay}"
+                                IsHitTestVisible="False"
+                                SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+                            <Controls:ContentControlEx
+                                x:Name="PART_ContentPresenter"
+                                Padding="{TemplateBinding Padding}"
+                                HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
+                                Content="{TemplateBinding Content}"
+                                ContentCharacterCasing="{Binding
+                                    RelativeSource={RelativeSource TemplatedParent},
+                                    Path=(Controls:ControlsHelper.ContentCharacterCasing)}"
+                                ContentStringFormat="{TemplateBinding ContentStringFormat}"
+                                ContentTemplate="{TemplateBinding ContentTemplate}"
+                                ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}"
+                                RecognizesAccessKey="True"
+                                SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter
+                                    TargetName="Background"
+                                    Property="Background"
+                                    Value="{DynamicResource GrayBrush1}" />
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter
+                                    TargetName="Background"
+                                    Property="Background"
+                                    Value="{DynamicResource GrayBrush7}" />
+                            </Trigger>
+                            <Trigger Property="IsKeyboardFocusWithin" Value="True">
+                                <Setter
+                                    TargetName="Border"
+                                    Property="BorderBrush"
+                                    Value="{DynamicResource ViewportForeground}" />
+                                <Setter
+                                    TargetName="Border"
+                                    Property="BorderThickness"
+                                    Value="2" />
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter
+                                    TargetName="DisabledVisualElement"
+                                    Property="Opacity"
+                                    Value="0.7" />
+                                <Setter
+                                    TargetName="PART_ContentPresenter"
+                                    Property="Opacity"
+                                    Value="0.3" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsPressed" Value="True">
+                    <Setter Property="Background" Value="{DynamicResource GrayBrush7}" />
+                </Trigger>
+                <Trigger Property="IsKeyboardFocusWithin" Value="True">
+                    <Setter Property="BorderBrush" Value="{DynamicResource WhiteBrush}" />
+                    <Setter Property="BorderThickness" Value="2" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <Style TargetType="ToggleButton" BasedOn="{StaticResource MetroToggleButton}">
+            <Setter Property="Foreground" Value="{DynamicResource WhiteBrush}"/>
+            <Setter Property="BorderBrush" Value="Transparent"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Margin" Value="5"/>
+            <Style.Triggers>
+                <Trigger Property="IsChecked" Value="True">
+                    <Setter Property="Foreground" Value="{DynamicResource ViewportBackground}"/>
+                    <Setter Property="Background" Value="{DynamicResource ViewportForground}" />
+                    <Setter Property="BorderBrush" Value="Transparent" />
+                    <Setter Property="BorderThickness" Value="2" />
+                </Trigger>
+                <MultiTrigger>
+                    <MultiTrigger.Conditions>
+                        <Condition Property="IsMouseOver" Value="True" />
+                        <Condition Property="IsChecked" Value="False" />
+                    </MultiTrigger.Conditions>
+                    <Setter Property="Background" Value="{DynamicResource GrayBrush3}" />
+                </MultiTrigger>
+                <MultiTrigger>
+                    <MultiTrigger.Conditions>
+                        <Condition Property="IsMouseOver" Value="True" />
+                        <Condition Property="IsChecked" Value="True" />
+                    </MultiTrigger.Conditions>
+                    <Setter Property="Background" Value="{DynamicResource GrayBrush1}" />
+                </MultiTrigger>
+                <Trigger Property="IsPressed" Value="True">
+                    <Setter Property="Background" Value="{DynamicResource GrayBrush7}" />
+                </Trigger>
+                <Trigger Property="IsKeyboardFocusWithin" Value="True">
+                    <Setter Property="BorderBrush" Value="{DynamicResource ViewportForground}" />
+                    <Setter Property="BorderThickness" Value="2" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <Style x:Key="PerspectiveStyle" TargetType="Viewport3D">
+            <Setter Property="Camera" Value="{DynamicResource PerspectiveCamera}"/>
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsOrthographic}" Value="True">
+                    <Setter Property="Camera" Value="{DynamicResource OthographicCamera}" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+        <PerspectiveCamera
+            x:Key="PerspectiveCamera"
+            Position="0,0,2"
+            LookDirection="0,0,-1"
+            Transform="{Binding Trackball.Transform}"/>
+        <OrthographicCamera
+            x:Key="OthographicCamera"
+            Position="0,0,1"
+            LookDirection="0,0,-1"/>
+    </UserControl.Resources>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Border Background="{DynamicResource ViewportBackground}">
+            <Viewport3D
+                x:Name="viewport"
+                Grid.Row="0"
+                Grid.Column="0"
+                Style="{StaticResource PerspectiveStyle}">
+            <ModelVisual3D
+                    x:Name="topModel">
+                    <ModelVisual3D.Children>
+                        <!-- Children generated from VisualRep.CurrentView property -->
+                    </ModelVisual3D.Children>
+                    <ModelVisual3D.Content>
+                        <DirectionalLight
+                            Color="#FFFFFFFF"
+                            Direction="0,0,-1"/>
+                    </ModelVisual3D.Content>
+                </ModelVisual3D>
+            </Viewport3D>
+        </Border>
+        <Border
+            Focusable="True"
+            Name="CaptureBorder"
+            Background="Transparent"
+            Grid.Row="0"
+            Grid.Column="0">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <Button
+                    AutomationProperties.Name="Refresh visual tree contents button"
+                    Grid.Column="0"
+                    ToolTip="Refresh the applications visual tree in Inspector"
+                    Command="{Binding RefreshVisualTreeCommand}">
+                    <iconPacks:PackIconMaterial Kind="Refresh"/>
+                </Button>
+                <ToggleButton
+                    Grid.Column="3"
+                    AutomationProperties.Name="Show frames toggle button"
+                    ToolTip="Show Frames"
+                    IsChecked="{Binding DisplayFrames}">
+                    <iconPacks:PackIconMaterial Kind="NoteOutline"/>
+                </ToggleButton>
+                <ToggleButton
+                    AutomationProperties.Name="Show contents toggle button"
+                    Grid.Column="4"
+                    ToolTip="Show Contents"
+                    IsChecked="{Binding DisplayContent}">
+                    <iconPacks:PackIconMaterial Kind="NotePlus"/>
+                </ToggleButton>
+                <Button
+                    AutomationProperties.Name="Begin highlighting button"
+                    Grid.Column="1"
+                    x:Name="captureButton"
+                    ToolTip="Select a UI element to inspect in the running application"
+                    Command="{Binding HighlightCommand}">
+                    <iconPacks:PackIconMaterial Kind="Target"/>
+                </Button>
+                <Grid
+                    HorizontalAlignment="Center"
+                    Grid.Column="2">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <Button
+                        Grid.Column="0"
+                        Margin="0"
+                        AutomationProperties.Name="Rotate viewpoint left button"
+                        ToolTip="Rotate Left"
+                        Command="{Binding Trackball.RotateLeftCommand}">
+                        <iconPacks:PackIconMaterial Kind="ChevronLeft"/>
+                    </Button>
+                    <Button
+                        Grid.Column="1"
+                        Margin="0"
+                        AutomationProperties.Name="Reset viewpoint"
+                        ToolTip="Reset View"
+                        Command="{Binding Trackball.ResetCommand}">
+                        <iconPacks:PackIconMaterial Kind="ImageFilterCenterFocus"/>
+                    </Button>
+                    <Button
+                        Grid.Column="2"
+                        Margin="0"
+                        AutomationProperties.Name="Rotate viewpoint right button"
+                        ToolTip="Rotate Left"
+                        Command="{Binding Trackball.RotateRightCommand}">
+                            <iconPacks:PackIconMaterial Kind="ChevronRight"/>
+                    </Button>
+                </Grid>
+            </Grid>
+        </Border>
+    </Grid>
+</UserControl>

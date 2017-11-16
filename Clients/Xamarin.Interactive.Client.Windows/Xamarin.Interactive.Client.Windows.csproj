@@ -119,13 +119,20 @@
     <Compile Include="IO\ZoneInfo.cs" />
     <Compile Include="Themes\ThemeHelper.cs" />
     <Compile Include="UserPresentableExceptionHandler.cs" />
+    <Compile Include="ViewModels\InspectTreeNode3D.cs" />
     <Compile Include="ViewModels\ViewInspectorViewModel.cs" />
     <Compile Include="Views\DisplayMode.cs" />
+    <Compile Include="ViewModels\InspectTreeNode.cs" />
+    <Compile Include="ViewModels\InspectTreeRoot.cs" />
+    <Compile Include="Views\InspectTreeView.xaml.cs">
+      <DependentUpon>InspectTreeView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\InspectViewNode.cs" />
     <Compile Include="Views\OutlineItem.xaml.cs">
       <DependentUpon>OutlineItem.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\RenderingDepth.cs" />
+    <Compile Include="ViewModels\TreeState.cs" />
     <Compile Include="Views\WpfDolly.cs" />
     <Compile Include="Views\UpdaterWindow.xaml.cs">
       <DependentUpon>UpdaterWindow.xaml</DependentUpon>
@@ -172,9 +179,6 @@
     <Compile Include="Views\ViewHighlightOverlayWindow.xaml.cs">
       <DependentUpon>ViewHighlightOverlayWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\VisualTree.xaml.cs">
-      <DependentUpon>VisualTree.xaml</DependentUpon>
-    </Compile>
     <Page Include="AgentSessionWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -201,6 +205,10 @@
     <Page Include="Views\AboutWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\InspectTreeView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\MetroDialogWindow.xaml">
       <SubType>Designer</SubType>
@@ -231,10 +239,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\ViewHighlightOverlayWindow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\VisualTree.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

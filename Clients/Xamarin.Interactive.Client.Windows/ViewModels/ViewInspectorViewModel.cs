@@ -23,9 +23,19 @@ using Xamarin.Interactive.Client.Windows.Commands;
 
 namespace Xamarin.Interactive.Client.Windows.ViewModels
 {
-    sealed class ViewInspectorViewModel<TView> : INotifyPropertyChanged, IObserver<ClientSessionEvent>, IDisposable where TView : Window
+
+    sealed class ViewInspectorViewModel<TView> :  ViewInspectorViewModel where TView : Window
     {
-        const string TAG = nameof (ViewInspectorViewModel<TView>);
+        public ViewInspectorViewModel (ClientSession session, TView view) : base (session)
+        {
+            View = view;
+        }
+        public TView View { get; }
+    }
+
+    class ViewInspectorViewModel : INotifyPropertyChanged, IObserver<ClientSessionEvent>, IDisposable
+    {
+        const string TAG = nameof (ViewInspectorViewModel);
 
         readonly Highlighter highlighter;
         WpfDolly trackball;
@@ -38,14 +48,15 @@ namespace Xamarin.Interactive.Client.Windows.ViewModels
         public DelegateCommand HighlightCommand { get; }
         public DelegateCommand ShowPaneCommand { get; }
 
-        public TView View { get; }
 
-        public ViewInspectorViewModel (ClientSession session, TView view)
+        public ViewInspectorViewModel (ClientSession session)
         {
             Session = session;
-            View = view;
+            
 
             Session.Subscribe (this);
+
+            RootModel = InspectTreeRoot.CreateRoot (this);
 
             RefreshVisualTreeCommand = new DelegateCommand (
                 RefreshVisualTree,
@@ -182,6 +193,8 @@ namespace Xamarin.Interactive.Client.Windows.ViewModels
                 OnPropertyChanged ();
             }
         }
+
+        public InspectTreeRoot RootModel { get; }
 
         public WpfDolly Trackball => trackball;
 
@@ -346,7 +359,7 @@ namespace Xamarin.Interactive.Client.Windows.ViewModels
 
             IsHighlighting = true;
             try {
-                highlighter.Start (Session, this.View, SelectedHierarchy);
+              // highlighter.Start (Session, this.View, SelectedHierarchy);
             } catch (Exception e) {
                 Log.Error (TAG, e);
                 IsHighlighting = false;

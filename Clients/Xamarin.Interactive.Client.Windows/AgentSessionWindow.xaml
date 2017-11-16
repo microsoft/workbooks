@@ -287,13 +287,19 @@
                             ItemContainerStyle="{DynamicResource ComboBoxItem}"
                             Visibility="{Binding SupportedHierarchies, Converter={StaticResource multipleVisibilityConverter}}"
                             SelectedValue="{Binding SelectedHierarchy}" />
-                        <localViews:VisualTree
-                            Focusable="True"
-                            AutomationProperties.Name="Visual tree"
-                            DockPanel.Dock="Top"
-                            x:Name="treeView"
-                            RootElement="{Binding RootView}"
-                            SelectedElement="{Binding SelectedView, Mode=TwoWay}"/>
+                        <TreeView
+                            SelectedItemChanged="OnInspectTreeSelected"
+                            ItemsSource="{Binding RootModel}"
+                            ItemTemplate="{DynamicResource outlineTemplate}"
+                            ItemContainerStyle="{DynamicResource OutlineViewItemStyle}">
+                            <TreeView.Resources>
+                                <HierarchicalDataTemplate
+                                    x:Key="outlineTemplate"
+                                    ItemsSource="{Binding Path=(treeModel:TreeNode.Children)}">
+                                    <localViews:OutlineItem Item="{Binding}"/>
+                                </HierarchicalDataTemplate>
+                            </TreeView.Resources>
+                        </TreeView>
                     </DockPanel>
 
                     <GridSplitter
@@ -304,17 +310,29 @@
                         ShowsPreview="True"
                         Width="5"/>
 
+                    <!--
                     <localViews:VisualRepView
                         Grid.Column="2"
                         AutomationProperties.Name="3D view"
                         x:Name="visualRep"
                         Trackball="{Binding Trackball}"
                         IsEnabled="{Binding IsWindowEnabled}"
-                        CurrentView="{Binding RepresentedView}"
+                        CurrentView="{Binding Root}"
                         DisplayMode="{Binding DisplayMode}"
                         ShowHidden="{Binding ShowHidden}"
                         SelectedView="{Binding SelectedView, Mode=TwoWay}"/>
-
+                  -->
+                    <localViews:InspectTreeView
+                        Grid.Column="2"
+                        AutomationProperties.Name="3D view"
+                        x:Name="visualTreeView"
+                        Trackball="{Binding Trackball}"
+                        IsEnabled="{Binding IsWindowEnabled}"
+                        CurrentView="{Binding RootModel}"
+                        DisplayMode="{Binding DisplayMode}"
+                        ShowHidden="{Binding ShowHidden}"
+                        />
+                       
                     <GridSplitter
                         Grid.Column="3"
                         AutomationProperties.Name="Property grid resize handle"

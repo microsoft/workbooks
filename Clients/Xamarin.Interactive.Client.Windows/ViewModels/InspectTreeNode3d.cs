@@ -1,136 +1,61 @@
-//
-// Author:
-//   Larry Ewing <lewing@xamarin.com>
-//
-// Copyright (c) Microsoft Corporation. All rights reserved.
-// Licensed under the MIT License.
-
-using System;
-using System.Collections.Generic;
+﻿using System;
+using System.ComponentModel;
 using System.IO;
-using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Media.Media3D;
-using Xamarin.Interactive.Inspection;
-using Xamarin.Interactive.Logging;
-using Xamarin.Interactive.Remote;
+using Xamarin.Interactive.Client.Windows.Views;
 
-namespace Xamarin.Interactive.Client.Windows.Views
+namespace Xamarin.Interactive.Client.Windows.ViewModels
 {
-    class InspectViewNode : ModelVisual3D
+    interface IInspectTreeModel3D<T>
+    {
+        void BuildPrimaryPlane (TreeState state);
+        T BuildChild (InspectTreeNode node, TreeState state);
+        void Add (T child);
+    }
+
+    class InspectTreeNode3D : ModelVisual3D, IInspectTreeModel3D<InspectTreeNode3D>
     {
         static readonly double ZSpacing = .1;
         static readonly double zFightIncrement = 1 / 800.0;
 
-        public InspectView InspectView { get; }
+        public InspectTreeNode Node { get; }
         static Color FocusColor => Color.FromArgb (128, 128, 128, 255);
         static Color BlurColor => Color.FromArgb (200, 255, 255, 255);
         static Color EmptyColor => Color.FromArgb (1, 255, 255, 255);
+        static Color HoverColor => Color.FromArgb (128, 128, 255, 255);
 
         int childIndex;
         DiffuseMaterial material;
 
-        public InspectViewNode (InspectView inspectView, int childIndex)
+        public InspectTreeNode3D (InspectTreeNode node, TreeState state)
         {
-            if (inspectView == null)
-                throw new ArgumentNullException (nameof (inspectView));
-
-            InspectView = inspectView;
-            this.childIndex = childIndex;
-        }
-
-        public InspectViewNode Rebuild (TreeState state)
-        {
-            try {
-                Content = null;
-                Children.Clear ();
-
-                BuildPrimaryPlane (state.Mode);
-
-                state.PushGeneration ();
-                var subviews = InspectView.Subviews;
-                var nodes = BuildNodesForCollection (subviews, state);
-
-                var sublayers = InspectView.Layer?.Sublayers ?? InspectView.Sublayers;
-                nodes = BuildNodesForCollection (sublayers, state);
-                state.PopGeneration ();
-            } catch (Exception e) {
-                Log.Error (nameof (InspectViewNode), $"Could not rebuild InspectViewNode: {e.Message}", e);
+            void NodePropertyChanged (object sender, PropertyChangedEventArgs args)
+            {
+                switch (args.PropertyName) {
+                case nameof (InspectTreeNode.Children):
+                    break;
+                case nameof (InspectTreeNode.IsSelected):
+                case nameof (InspectTreeNode.IsMouseOver):
+                    UpdateMaterial ();
+                    break;
+                case nameof (InspectTreeNode.IsExpanded):
+                    break;
+                }
             }
-
-            return this;
+            Node = node;
+            node.PropertyChanged += NodePropertyChanged;
+            childIndex = state.AddChild (node.View);
         }
 
-        InspectViewNode BuildChild (InspectView view, TreeState state)
+        void BuildPrimaryPlane (TreeState state)
         {
-            var childNode = new InspectViewNode (view, state.AddChild(view));
-            Children.Add (childNode);
-            childNode.Rebuild (state);
-            return childNode;
-        }
-
-        List<InspectViewNode> BuildNodesForCollection (
-            List<InspectView> collection,
-            TreeState state)
-        {
-            var results = new List<InspectViewNode> ();
-            var count = collection != null ? collection.Count : 0;
-            for (var i = 0; i < count; i++) {
-                var inspectView = collection [i];
-                // If the InspectView reports that it's in a Collapsed state, that means it was neither
-                // drawn, nor considered for layout. Hidden views were at least considered
-                // for layout, so draw them if `showHidden` is true, otherwise only draw Visible views.
-                if (inspectView.Visibility == ViewVisibility.Collapsed ||
-                    (inspectView.Visibility != ViewVisibility.Visible && !state.ShowHidden))
-                    continue;
-
-                results.Add (BuildChild (inspectView, state));
-            }
-            return results;
-        }
-
-        public static void Focus (InspectViewNode root, Predicate<InspectViewNode> predicate)
-        {
-            foreach (var node in root.TraverseTree (i => i.Children.OfType<InspectViewNode>())) {
-                if (predicate (node))
-                    node.Focus ();
-                else
-                    node.Blur ();
-            }
-        }
-
-        public void Focus ()
-        {
-            if (material == null)
-                return;
-
-            var solid = material.Brush as SolidColorBrush;
-
-            if (solid == null)
-                material.Color = FocusColor;
-            else
-                solid.Color = FocusColor;
-        }
-        public void Blur ()
-        {
-            if (material == null)
-                return;
-
-            var solid = material.Brush as SolidColorBrush;
-
-            if (solid == null)
-                material.Color = BlurColor;
-            else
-                solid.Color = EmptyColor;
-        }
-
-        void BuildPrimaryPlane (DisplayMode displayMode)
-        {
+            var displayMode = state.Mode;
             Brush brush = new SolidColorBrush (EmptyColor);
-            var view = this.InspectView;
+            var view = Node.View;
+            var parent = Node.View.Parent;
             var matrix = Matrix3D.Identity;
 
             if (view.Layer != null)
@@ -230,7 +155,7 @@ namespace Xamarin.Interactive.Client.Windows.Views
                 }
             };
 
-            if ((InspectView.Parent == null && !InspectView.IsFakeRoot) || (InspectView.Parent?.IsFakeRoot ?? false)) {
+            if ((parent == null && !Node.View.IsFakeRoot) || (parent?.IsFakeRoot ?? false)) {
                 var unitScale = 1.0 / Math.Max (view.Width, view.Height);
 
                 Transform = new Transform3DGroup {
@@ -251,5 +176,31 @@ namespace Xamarin.Interactive.Client.Windows.Views
                 }
             }
         }
+
+        void UpdateMaterial ()
+        {
+            if (material == null)
+                return;
+
+            var solid = material.Brush as SolidColorBrush;
+            if (solid == null)
+                material.Color = Node.IsSelected ? FocusColor : (Node.IsMouseOver ? HoverColor :BlurColor);
+            else
+                solid.Color = Node.IsSelected ? FocusColor : (Node.IsMouseOver ? HoverColor : EmptyColor);
+        }
+
+        void IInspectTreeModel3D<InspectTreeNode3D>.BuildPrimaryPlane (TreeState state) =>
+            BuildPrimaryPlane (state);
+
+        public InspectTreeNode3D BuildChild (InspectTreeNode node, TreeState state)
+        {
+            var child = new InspectTreeNode3D (node, state);
+            node.Build3D (child, state);
+            return child;
+        }
+
+        public void Add (InspectTreeNode3D child) =>
+            Children.Add (child);
+       
     }
 }

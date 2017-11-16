@@ -631,6 +631,12 @@ namespace Xamarin.Interactive.Client.Windows
             cancel = HandleNavigation (new Uri (url));
         }
 
+        void OnInspectTreeSelected (object sender, RoutedPropertyChangedEventArgs<object> e)
+        {
+            if (e.NewValue is InspectTreeNode viewNode)
+                ViewModel.SelectedView = viewNode.View;
+        }
+
         void OnOutlineSelected (object sender, RoutedPropertyChangedEventArgs<object> e)
         {
             if (e.NewValue is TableOfContentsNode toc)
