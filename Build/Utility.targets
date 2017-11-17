@@ -117,6 +117,7 @@ Copyright 2017 Microsoft. All rights reserved.
       <PublicationItem Include="$(PackageOutputDir)*.msi"/>
       <PublicationItem Include="$(PackageOutputDir)*.html"/>
       <PublicationItem Include="$(PackageOutputDir)*PDB*.zip"/>
+      <PublicationItem Remove="$(PackageOutputDir)Policheck*"/>
     </ItemGroup>
 
     <ReadLinesFromFile File="$(MSBuildThisFileDirectory)..\RETHESIS">
