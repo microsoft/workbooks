@@ -1,0 +1,26 @@
+---
+uti: com.xamarin.workbook
+id: 60f1e237-ac68-4dd6-8069-4f1ab3049a28
+title: Custom Attribute Types
+platforms:
+- Console
+---
+
+```csharp
+public class MyCustomAttribute : Attribute
+{
+    public Type TestType { get; set; }
+    public MyCustomAttribute(Type type) => TestType = type;
+}
+
+public class Foo {}
+
+public class Class
+{
+    [MyCustom(typeof(Foo))]
+    public string Foo { get; set; }
+}
+
+typeof(Class).GetMember("Foo").First().GetCustomAttributes(inherit: false)
+	.OfType<MyCustomAttribute>().First().TestType.AssemblyQualifiedName;
+```
