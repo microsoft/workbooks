@@ -500,7 +500,7 @@ namespace Xamarin.Interactive.Compilation.Roslyn
             workspace.RemoveProject (project.Id);
         }
 
-        const string assemblyNamePrefix = "🐵 XIS";
+        const string assemblyNamePrefix = "🐵🐻";
         static readonly byte [] assemblyNamePrefixBytes = Encoding.UTF8.GetBytes (assemblyNamePrefix);
 
         ProjectInfo CreateSubmissionProjectInfo ()
