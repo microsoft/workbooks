@@ -1,5 +1,11 @@
 [
   {
+    "Kind": "GitRepo",
+    "Name": "https://github.com/xamarin/workbooks-proprietary",
+    "Path": "workbooks-proprietary",
+    "Version": "master"
+  },
+  {
     "Kind": "NuGet",
     "Name": "MahApps.Metro",
     "Version": "1.3.0",

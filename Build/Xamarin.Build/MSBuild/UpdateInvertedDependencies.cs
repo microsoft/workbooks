@@ -110,7 +110,15 @@ namespace Xamarin.MSBuild
 
         public override bool Execute ()
         {
-            var invertedDependencies = GetNuGetDependencies ()
+            IEnumerable<InvertedDependency> invertedDependencies = Array.Empty<InvertedDependency> ();
+
+            if (File.Exists (OutputFile))
+                invertedDependencies = JsonConvert
+                    .DeserializeObject<InvertedDependency []> (File.ReadAllText (OutputFile))
+                    .Where (ShouldPreserve);
+
+            invertedDependencies = invertedDependencies
+                .Concat (GetNuGetDependencies ())
                 .Concat (GetNpmDependencies ())
                 .Concat (GetGitSubmoduleDependencies ());
 
@@ -123,12 +131,16 @@ namespace Xamarin.MSBuild
             return true;
         }
 
+        static bool ShouldPreserve (InvertedDependency dependency)
+            => dependency != null && dependency.Kind == DependencyKind.GitRepo;
+
         enum DependencyKind
         {
             None,
             NuGet,
             Npm,
-            GitSubmodule
+            GitSubmodule,
+            GitRepo
         }
 
         sealed class InvertedDependency
@@ -138,6 +150,7 @@ namespace Xamarin.MSBuild
 
             public string Name { get; set; }
             public string Version { get; set; }
+            public string Path { get; set; }
             public string [] DependentProjects { get; set; }
         }
     }
