@@ -86,7 +86,7 @@ export class StringRenderer implements Renderer {
         return "\\v";
       default:
         //print control and surrogate characters
-        if (charCode < 0x020 || (charCode >= 0xDC00 && charCode <= 0xDFFF) ||
+        if (charCode < 0x020 || (charCode >= 0xD800 && charCode <= 0xDFFF) ||
           // print all uncommon white spaces as numbers
           (/\s/.test(ch) && ch !== ' '))
           return "\\u" + ("000" + charCode.toString(16)).slice(-4);
