@@ -2,8 +2,8 @@
   {
     "Kind": "GitRepo",
     "Name": "https://github.com/xamarin/workbooks-proprietary",
-    "Path": "workbooks-proprietary",
-    "Version": "master"
+    "Version": "master",
+    "Path": "workbooks-proprietary"
   },
   {
     "Kind": "NuGet",
