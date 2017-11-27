@@ -37,6 +37,11 @@ Copyright 2017 Microsoft. All rights reserved.
         TaskParameter="Value"
         PropertyName="ReleaseVersion_SemVer"/>
     </CreateProperty>
+    <CreateProperty Value="$(PackageDotJson_Version)-build.$(CommonGitInfo_MinMaxCommitDistance)">
+      <Output
+        TaskParameter="Value"
+        PropertyName="ReleaseVersion_SemVerNuGetSafe"/>
+    </CreateProperty>
     <CreateProperty Value="$(CommonGitInfo_MaxRevisionTimestamp)">
       <Output
         TaskParameter="Value"

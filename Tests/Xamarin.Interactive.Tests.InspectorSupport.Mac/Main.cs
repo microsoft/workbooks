@@ -7,6 +7,7 @@
 
 using System;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Runtime.InteropServices;
@@ -43,18 +44,19 @@ namespace Xamarin.Interactive.Tests.InspectorSupport.Mac
             for (int i = 0; i < 8; i++)
                 buildRoot = Path.GetDirectoryName (buildRoot);
 
-            InteractiveInstallation.InitializeDefault (true, buildRoot);
-
-            var agentAssemblyPath = InteractiveInstallation.Default.LocateAgentAssembly (
-                AgentType.MacMobile);
+            var agentAssemblyPath = InteractiveInstallation.LocateFiles (
+                new [] { Path.Combine (buildRoot, "Agents", "Xamarin.Interactive.Mac.Mobile", "bin") },
+                "Xamarin.Interactive.Mac.Mobile.dll").First ();
 
             Console.WriteLine ("Injecting Agent Assembly");
             Console.WriteLine ($"  path:  {agentAssemblyPath}");
             Console.WriteLine ($"  mtime: {File.GetLastWriteTime (agentAssemblyPath)}");
 
-            Assembly.LoadFrom (Path.Combine (
-                Path.GetDirectoryName (InteractiveInstallation.Default.LocateAgentAssembly (AgentType.Console)),
-                "netstandard.dll"));
+            var netstandardAssemblyPath = InteractiveInstallation.LocateFiles (
+                new [] { Path.Combine (buildRoot, "Agents", "Xamarin.Interactive.Console", "bin") },
+                "netstandard.dll").First ();
+
+            Assembly.LoadFrom (netstandardAssemblyPath);
 
             inspectorSupportType = Assembly
                 .LoadFrom (agentAssemblyPath)

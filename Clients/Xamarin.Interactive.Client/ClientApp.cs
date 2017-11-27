@@ -9,6 +9,7 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Threading;
 
 using Microsoft.Win32;
@@ -263,40 +264,29 @@ namespace Xamarin.Interactive
 
         static InteractiveInstallationPaths GetWindowsInstallationPaths ()
         {
-            using (var clientExeKey = RegistryKey.OpenBaseKey (RegistryHive.LocalMachine, RegistryView.Registry32)
-                .OpenSubKey (@"Software\Xamarin\Workbooks\")) {
-                var clientExePath = clientExeKey?.GetValue ("location") as string;
-                if (String.IsNullOrEmpty (clientExePath))
-                    return null;
+            var frameworkInstallPath = new FilePath (Assembly.GetExecutingAssembly ().Location)
+                .ParentDirectory
+                .ParentDirectory;
 
-                var clientInstallPath = Path.GetDirectoryName (clientExePath);
-                var frameworkInstallPath = Path.GetDirectoryName (clientInstallPath);
+            if (!frameworkInstallPath.DirectoryExists)
+                return null;
 
-                return new InteractiveInstallationPaths (
-                    workbooksClientInstallPath: clientInstallPath,
-                    inspectorClientInstallPath: clientInstallPath,
-                    agentsInstallPath: frameworkInstallPath,
-                    workbookAppsInstallPath: frameworkInstallPath,
-                    toolsInstallPath: Path.Combine (frameworkInstallPath, "Tools"));
-            }
+            return new InteractiveInstallationPaths (
+                agentsInstallPath: frameworkInstallPath,
+                toolsInstallPath: Path.Combine (frameworkInstallPath, "Tools"));
         }
 
         static InteractiveInstallationPaths GetMacInstallationPaths ()
         {
-            const string MacFrameworkInstallPath = "Library/Frameworks/Xamarin.Interactive.framework/Versions/Current";
+            var agentsInstallPath = new FilePath (Assembly.GetExecutingAssembly ().Location)
+                .ParentDirectory
+                .ParentDirectory
+                .Combine ("SharedSupport");
 
-            var installRootPath = "/";
+            if (!agentsInstallPath.DirectoryExists)
+                return null;
 
-            var frameworkInstallPath = Path.Combine (
-                installRootPath,
-                MacFrameworkInstallPath);
-
-            return new InteractiveInstallationPaths (
-                workbooksClientInstallPath: Path.Combine (installRootPath, "Applications"),
-                inspectorClientInstallPath: Path.Combine (frameworkInstallPath, "InspectorClient"),
-                agentsInstallPath: frameworkInstallPath,
-                workbookAppsInstallPath: frameworkInstallPath,
-                toolsInstallPath: Path.Combine (frameworkInstallPath, "Tools"));
+            return new InteractiveInstallationPaths (agentsInstallPath);
         }
     }
 }

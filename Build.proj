@@ -49,6 +49,7 @@
 
     <InstallDestDir Condition="'$(InstallDestDir)' == ''">_install\</InstallDestDir>
     <PackageOutputDir Condition="'$(PackageOutputDir)' == ''">_artifacts\</PackageOutputDir>
+    <InspectorNuGetPackageBuildDir>_inspectorPackage</InspectorNuGetPackageBuildDir>
     <FrameworkInstallDir>$(InstallDestDir)Library\Frameworks\Xamarin.Interactive.framework\Versions\Current\</FrameworkInstallDir>
 
     <BuildInfoDistFile>Package/buildinfo</BuildInfoDistFile>
@@ -287,17 +288,75 @@
   <Target Name="_InstallClientAppMac">
     <PropertyGroup>
       <WorkbooksAppBundleName>Xamarin Workbooks.app</WorkbooksAppBundleName>
+      <InspectorAppBundleName>Xamarin Inspector.app</InspectorAppBundleName>
+      <InspectorClientInstallPath>$(FrameworkInstallDir)InspectorClient\</InspectorClientInstallPath>
       <WorkbooksAppBundlePath>Clients\Xamarin.Interactive.Client.Mac\bin\$(Configuration)\$(WorkbooksAppBundleName)</WorkbooksAppBundlePath>
-      <InspectorAppBundlePath>Clients\Xamarin.Interactive.Client.Mac\bin\$(Configuration)\Xamarin Inspector.app</InspectorAppBundlePath>
+      <InspectorAppBundlePath>Clients\Xamarin.Interactive.Client.Mac\bin\$(Configuration)\$(InspectorAppBundleName)</InspectorAppBundlePath>
+      <WorkbooksAppSharedSupportPath>$(InstallDestDir)Applications\$(WorkbooksAppBundleName)\Contents\SharedSupport\</WorkbooksAppSharedSupportPath>
+      <InspectorAppSharedSupportPath>$(InspectorClientInstallPath)$(InspectorAppBundleName)\Contents\SharedSupport\</InspectorAppSharedSupportPath>
     </PropertyGroup>
 
+    <!-- Install Workbooks.app -->
     <MakeDir Directories="$(InstallDestDir)Applications"/>
     <Exec Command="cp -a &quot;$(WorkbooksAppBundlePath)&quot; &quot;$(InstallDestDir)Applications&quot;"/>
     <MakeDir Directories="$(InstallDestDir)Applications\$(WorkbooksAppBundleName)\Contents\SharedSupport"/>
-    <Exec Command="cp -a &quot;_build\$(Configuration)\WorkbookApps&quot; &quot;$(InstallDestDir)Applications\$(WorkbooksAppBundleName)\Contents\SharedSupport&quot;"/>
+    <Exec Command="cp -a &quot;_build\$(Configuration)\WorkbookApps&quot; &quot;$(WorkbooksAppSharedSupportPath)&quot;"/>
+    <Copy
+      SkipUnchangedFiles="true"
+      SourceFiles="@(AndroidFormsAgentFiles)"
+      DestinationFolder="$(WorkbooksAppSharedSupportPath)Agents\Forms\Android"/>
+    <Copy
+      SkipUnchangedFiles="true"
+      SourceFiles="@(iOSFormsAgentFiles)"
+      DestinationFolder="$(WorkbooksAppSharedSupportPath)Agents\Forms\iOS"/>
+    <Copy
+      SkipUnchangedFiles="true"
+      SourceFiles="$(UpdateInfoFile)"
+      DestinationFolder="$(WorkbooksAppSharedSupportPath)"/>
+    <Copy
+      SkipUnchangedFiles="true"
+      SourceFiles="$(BuildInfoDistFile)"
+      DestinationFolder="$(WorkbooksAppSharedSupportPath)"/>
 
-    <MakeDir Directories="$(FrameworkInstallDir)InspectorClient"/>
-    <Exec Command="cp -a &quot;$(InspectorAppBundlePath)&quot; &quot;$(FrameworkInstallDir)InspectorClient&quot;"/>
+    <!-- Install Inspector.app in old location -->
+    <MakeDir Directories="$(InspectorClientInstallPath)"/>
+    <Exec Command="cp -a &quot;$(InspectorAppBundlePath)&quot; &quot;$(InspectorClientInstallPath)&quot;"/>
+    <Copy
+      SkipUnchangedFiles="true"
+      SourceFiles="@(AndroidAgentFiles)"
+      DestinationFolder="$(InspectorAppSharedSupportPath)Agents\Android"/>
+    <Copy
+      SkipUnchangedFiles="true"
+      SourceFiles="@(iOSAgentFiles)"
+      DestinationFolder="$(InspectorAppSharedSupportPath)Agents\iOS"/>
+    <Copy
+      SkipUnchangedFiles="true"
+      SourceFiles="@(MacMobileAgentFiles)"
+      DestinationFolder="$(InspectorAppSharedSupportPath)Agents\Mac\Mobile"/>
+    <Copy
+      SkipUnchangedFiles="true"
+      SourceFiles="@(MacDesktopAgentFiles)"
+      DestinationFolder="$(InspectorAppSharedSupportPath)Agents\Mac\Desktop"/>
+    <Copy
+      SkipUnchangedFiles="true"
+      SourceFiles="@(AndroidFormsAgentFiles)"
+      DestinationFolder="$(InspectorAppSharedSupportPath)Agents\Forms\Android"/>
+    <Copy
+      SkipUnchangedFiles="true"
+      SourceFiles="@(iOSFormsAgentFiles)"
+      DestinationFolder="$(InspectorAppSharedSupportPath)Agents\Forms\iOS"/>
+    <Copy
+      SkipUnchangedFiles="true"
+      SourceFiles="$(UpdateInfoFile)"
+      DestinationFolder="$(InspectorAppSharedSupportPath)"/>
+    <Copy
+      SkipUnchangedFiles="true"
+      SourceFiles="$(BuildInfoDistFile)"
+      DestinationFolder="$(InspectorAppSharedSupportPath)"/>
+
+    <!-- Copy completed Inspector.app bundle to staging area where Xamarin.Inspector.Mac.nupkg can be built later -->
+    <MakeDir Directories="$(InspectorNuGetPackageBuildDir)\contentFiles\any\any"/>
+    <Exec Command="cp -a &quot;$(InspectorClientInstallPath)\$(InspectorAppBundleName)&quot; &quot;$(InspectorNuGetPackageBuildDir)\contentFiles\any\any&quot;"/>
   </Target>
 
   <Target Name="Package">
@@ -315,6 +374,8 @@
       DestinationFolder="$(PackageOutputDir)"/>
     <Message Text="Generated $(PackageOutputDir)buildinfo" Importance="high"/>
     <CallTarget Targets="PackageNuGet" Condition="'$(SolutionPlatform)' == 'macOS'"/>
+    <CallTarget Targets="_PackageInspectorNuGetMac" Condition="'$(SolutionPlatform)' == 'macOS'"/>
+    <!--<CallTarget Targets="_PackageInspectorNuGetWin" Condition="'$(SolutionPlatform)' == 'Windows'"/>-->
     <CallTarget Targets="GenerateReleaseNotes" Condition="'$(SolutionPlatform)' == 'macOS'"/>
   </Target>
 
@@ -402,6 +463,26 @@
     <Copy
         SourceFiles="Agents\Xamarin.Interactive\Xamarin.Workbooks.Integration.$(WorkbooksIntegrationNuGetPackageVersion).nupkg"
         DestinationFiles="$(PackageOutputDir)\Xamarin.Workbooks.Integration.$(WorkbooksIntegrationNuGetPackageVersion).nupkg" />
+  </Target>
+
+  <Target Name="_PackageInspectorNuGetMac" DependsOnTargets="Xamarin_Build_ReadAllProperties;Install">
+    <PropertyGroup>
+      <InspectorPackageName>Xamarin.Inspector.Mac</InspectorPackageName>
+      <InspectorPackageFileName>$(InspectorPackageName).$(ReleaseVersion_SemVerNuGetSafe).nupkg</InspectorPackageFileName>
+    </PropertyGroup>
+    <Error Text="NuGet is not provisioned" Condition="!Exists('$(NuGet)')"/>
+    <Copy
+      SkipUnchangedFiles="true"
+      SourceFiles="Package\Mac\$(InspectorPackageName).nuspec"
+      DestinationFolder="$(InspectorNuGetPackageBuildDir)"/>
+    <!-- Use SemVerNuGetSafe to get versions in the form of x.y.z-beta1-build.123 instead of x.y.z-beta1+123.
+         NuGet does not support reading build numbers from semver metadata. -->
+    <Exec
+      Command="$(NuGet) pack $(InspectorPackageName).nuspec -Version $(ReleaseVersion_SemVerNuGetSafe) -NoPackageAnalysis"
+      WorkingDirectory="$(InspectorNuGetPackageBuildDir)"/>
+    <Copy
+      SourceFiles="$(InspectorNuGetPackageBuildDir)\$(InspectorPackageFileName)"
+      DestinationFiles="$(PackageOutputDir)\$(InspectorPackageFileName)"/>
   </Target>
 
   <Target Name="_PackagePdbs" DependsOnTargets="Xamarin_Build_ReadAllProperties">

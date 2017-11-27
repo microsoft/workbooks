@@ -14,30 +14,22 @@ namespace Xamarin.Interactive
         public string WorkbooksClientInstallPath { get; }
         public string InspectorClientInstallPath { get; }
         public string AgentsInstallPath { get; }
-        public string WorkbookAppsInstallPath { get; }
         public string ToolsInstallPath { get; }
 
         public InteractiveInstallationPaths (
-            string workbooksClientInstallPath,
-            string inspectorClientInstallPath,
             string agentsInstallPath,
-            string workbookAppsInstallPath,
-            string toolsInstallPath)
+            string workbooksClientInstallPath = null,
+            string inspectorClientInstallPath = null,
+            string toolsInstallPath = null)
         {
-            WorkbooksClientInstallPath = workbooksClientInstallPath
-                ?? throw new ArgumentNullException (nameof (workbooksClientInstallPath));
-
-            InspectorClientInstallPath = inspectorClientInstallPath
-                ?? throw new ArgumentNullException (nameof (inspectorClientInstallPath));
-
             AgentsInstallPath = agentsInstallPath
                 ?? throw new ArgumentNullException (nameof (agentsInstallPath));
 
-            WorkbookAppsInstallPath = workbookAppsInstallPath
-                ?? throw new ArgumentNullException (nameof (workbookAppsInstallPath));
+            WorkbooksClientInstallPath = workbooksClientInstallPath;
 
-            ToolsInstallPath = toolsInstallPath
-                ?? throw new ArgumentNullException (nameof (toolsInstallPath));
+            InspectorClientInstallPath = inspectorClientInstallPath;
+
+            ToolsInstallPath = toolsInstallPath;
         }
     }
 }

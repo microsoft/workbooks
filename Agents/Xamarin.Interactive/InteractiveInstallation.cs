@@ -41,7 +41,6 @@ namespace Xamarin.Interactive
         readonly string toolsInstallPath;
 
         public string BuildPath { get; }
-        public string WorkbookAppsInstallPath { get; }
 
         public bool IsMac { get; }
 
@@ -58,7 +57,6 @@ namespace Xamarin.Interactive
             workbooksClientInstallPath = installationPaths?.WorkbooksClientInstallPath;
             inspectorClientInstallPath = installationPaths?.InspectorClientInstallPath;
             agentsInstallPath = installationPaths?.AgentsInstallPath;
-            WorkbookAppsInstallPath = installationPaths?.WorkbookAppsInstallPath;
             toolsInstallPath = installationPaths?.ToolsInstallPath;
         }
 
@@ -96,7 +94,7 @@ namespace Xamarin.Interactive
 
         public string LocateSimChecker () => LocateSimCheckerExecutables ().FirstOrDefault ();
 
-        internal IReadOnlyList<string> LocateSimCheckerExecutables ()
+        IReadOnlyList<string> LocateSimCheckerExecutables ()
         {
             if (simCheckerExecutablePaths != null)
                 return simCheckerExecutablePaths;
@@ -112,71 +110,11 @@ namespace Xamarin.Interactive
             return simCheckerExecutablePaths;
         }
 
-        public string LocateAgentAssembly (AgentType agentType)
-            => LocateAgentAssemblies (agentType).FirstOrDefault ();
-
-        internal IReadOnlyList<string> LocateAgentAssemblies (AgentType agentType)
-        {
-            List<string> paths;
-            if (agentAssemblyPaths.TryGetValue (agentType, out paths))
-                return paths;
-
-            var searchPaths = new List<string> ();
-            if (agentsInstallPath != null)
-                searchPaths.Add (Path.Combine (agentsInstallPath, "Agents"));
-
-            string assemblyName = null;
-            switch (agentType) {
-            case AgentType.iOS:
-                assemblyName = "Xamarin.Interactive.iOS.dll";
-                searchPaths.Add (Path.Combine (
-                    BuildPath, "Agents", "Xamarin.Interactive.iOS", "bin"));
-                break;
-            case AgentType.Android:
-                assemblyName = "Xamarin.Interactive.Android.dll";
-                searchPaths.Add (Path.Combine (
-                    BuildPath, "Agents", "Xamarin.Interactive.Android.ActivityTrackerShim", "bin"));
-                break;
-            case AgentType.MacNet45:
-                assemblyName = "Xamarin.Interactive.Mac.Desktop.dll";
-                searchPaths.Add (Path.Combine (
-                    BuildPath, "Agents", "Xamarin.Interactive.Mac.Desktop", "bin"));
-                break;
-            case AgentType.MacMobile:
-                assemblyName = "Xamarin.Interactive.Mac.Mobile.dll";
-                searchPaths.Add (Path.Combine (
-                    BuildPath, "Agents", "Xamarin.Interactive.Mac.Mobile", "bin"));
-                break;
-            case AgentType.WPF:
-                assemblyName = "Xamarin.Interactive.Wpf.dll";
-                if (inspectorClientInstallPath != null)
-                    searchPaths.Add (inspectorClientInstallPath);
-                searchPaths.Add (Path.Combine (
-                    BuildPath, "Agents", "Xamarin.Interactive.Wpf", "bin"));
-                break;
-            case AgentType.Console:
-                assemblyName = "Xamarin.Interactive.Console.exe";
-                searchPaths.Add (Path.Combine (
-                    BuildPath, "Agents", "Xamarin.Interactive.Console", "bin"));
-                break;
-            case AgentType.DotNetCore:
-                assemblyName = "Xamarin.Interactive.DotNetCore.dll";
-                searchPaths.Add (Path.Combine (
-                    BuildPath, "Agents", "Xamarin.Interactive.DotNetCore", "bin"));
-                break;
-            default:
-                throw new ArgumentException ($"invalid AgentType: {agentType}", nameof (agentType));
-            }
-
-            agentAssemblyPaths.Add (agentType, paths = LocateFiles (searchPaths, assemblyName).ToList ());
-            return paths;
-        }
-
         public string LocateClientApplication (
             ClientSessionKind clientSessionKind = ClientSessionKind.LiveInspection)
             => LocateClientApplications (clientSessionKind).FirstOrDefault ();
 
-        internal IReadOnlyList<string> LocateClientApplications (ClientSessionKind clientSessionKind)
+        IReadOnlyList<string> LocateClientApplications (ClientSessionKind clientSessionKind)
         {
             if (clientAppPaths != null)
                 return clientAppPaths;

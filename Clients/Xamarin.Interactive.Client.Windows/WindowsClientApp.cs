@@ -167,5 +167,16 @@ namespace Xamarin.Interactive.Client
 
         protected override UpdaterService CreateUpdaterService ()
             => new UpdaterService ("win", "201185fb-fefe-4996-bdfe-4b6ac311a73b");
+
+        protected override void OnInitialized ()
+        {
+            var workbookAppsDirectory = new FilePath (Assembly.GetExecutingAssembly ().Location)
+                .ParentDirectory
+                .ParentDirectory
+                .Combine ("WorkbookApps");
+
+            if (workbookAppsDirectory.DirectoryExists)
+                WorkbookAppInstallation.RegisterSearchPath (workbookAppsDirectory);
+        }
     }
 }
