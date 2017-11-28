@@ -42,6 +42,9 @@ namespace Xamarin.Interactive.Preferences
                 public static readonly Preference<bool> UseHighContrast
                     = new Preference<bool> ("ui.theme.useHighContrast", false);
             }
+
+            public static readonly Preference<string> LastUsedWorkbookApp
+                = new Preference<string> ("ui.lastUsedWorkbookApp", null);
         }
 
         public static class Submissions
