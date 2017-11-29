@@ -28,7 +28,8 @@ namespace Xamarin.Interactive.Client.Mac.CoordinateMappers
             //       sims open simultaneously.
             var window = InspectableWindow
                 .GetWindows ("com.apple.iphonesimulator")
-                .FirstOrDefault (w => w.Title != null && w.Title.Contains ("5s"));
+                .FirstOrDefault (w => w.Title != null &&
+                    (ClientInfo.Flavor == ClientFlavor.Inspector || w.Title.Contains ("5s")));
 
             if (window == null) {
                 Log.Error (TAG, "Unable to locate simulator window");
