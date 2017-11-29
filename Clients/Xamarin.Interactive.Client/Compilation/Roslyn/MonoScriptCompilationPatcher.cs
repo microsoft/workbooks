@@ -112,7 +112,7 @@ namespace Xamarin.Interactive.Compilation.Roslyn
 
         /// <summary>
         /// Search the target byte array for an 8-byte magic value, then rewrite the string prefixed
-        /// by the magic value. Strings are terminated by '\0', '.', or '>'. This is very aggressive
+        /// by the magic value. Strings are terminated by '\0', '.', '>', or '+'. This is very aggressive
         /// and has nothing to do with the PE format, so the magic value should be very unique!
         /// </summary>
         static unsafe void Patch (byte [] target, byte [] magicBytes, PatchHandler patchHandler)
@@ -131,7 +131,7 @@ namespace Xamarin.Interactive.Compilation.Roslyn
                         var length = 8;
                         while (true) {
                             var b = target [i + length];
-                            if (b == 0 || b == '.' || b == '>')
+                            if (b == 0 || b == '.' || b == '>' || b == '+')
                                 break;
                             length++;
                         }
