@@ -147,7 +147,7 @@
                             <Setter
                                 TargetName="ContentSite"
                                 Property="TextElement.Foreground"
-                                Value="{DynamicResource PrimaryContentSelectedTabForegroundBrush}"/>
+                                Value="{DynamicResource PrimaryContentHoverTabForegroundBrush}"/>
                             <Setter
                                 TargetName="Border"
                                 Property="Background"
@@ -167,6 +167,11 @@
     <Style x:Key="VisualTreeItemStyle" TargetType="{x:Type TreeViewItem}" BasedOn="{StaticResource {x:Type TreeViewItem}}">
         <Setter Property="IsExpanded" Value="True" />
         <Setter Property="Foreground" Value="{DynamicResource TextBrush}" />
+        <Style.Triggers>
+            <Trigger Property="IsSelected" Value="True">
+                <Setter Property="Foreground" Value="{DynamicResource ListViewSelectedForegroundBrush}" />
+            </Trigger>
+        </Style.Triggers>
     </Style>
 
     <Style x:Key="OutlineViewItemStyle" TargetType="{x:Type TreeViewItem}" BasedOn="{StaticResource {x:Type TreeViewItem}}">
