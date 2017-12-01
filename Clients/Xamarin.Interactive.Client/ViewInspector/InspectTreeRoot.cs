@@ -4,15 +4,20 @@
 //
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
+//
+// Author:
+//   Larry Ewing <lewing@xamarin.com>
+//
+// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License.
 
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Windows;
 using Xamarin.Interactive.TreeModel;
 
-namespace Xamarin.Interactive.Client.Windows.ViewModels
+namespace Xamarin.Interactive.Client.ViewInspector
 {
     class InspectTreeRoot : ObservableCollection<InspectTreeNode>
     {

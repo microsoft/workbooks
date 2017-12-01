@@ -8,9 +8,9 @@
 using System.Collections.Generic;
 using Xamarin.Interactive.Remote;
 
-namespace Xamarin.Interactive.Client.Windows.Views
+namespace Xamarin.Interactive.Client.ViewInspector
 {
-    class TreeState
+    class InspectTreeState
     {
         public int TotalCount { get; private set; }
         public DisplayMode Mode { get; }
@@ -18,7 +18,7 @@ namespace Xamarin.Interactive.Client.Windows.Views
 
         List<int> ancestors = new List<int> { 0 };
 
-        public TreeState (DisplayMode mode, bool showHidden)
+        public InspectTreeState (DisplayMode mode, bool showHidden)
         {
             Mode = mode;
             ShowHidden = showHidden;

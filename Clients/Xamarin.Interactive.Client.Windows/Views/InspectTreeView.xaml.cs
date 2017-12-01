@@ -12,6 +12,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Media3D;
+using Xamarin.Interactive.Client.ViewInspector;
 using Xamarin.Interactive.Client.Windows.ViewModels;
 using Xamarin.Interactive.Remote;
 
@@ -152,7 +153,7 @@ namespace Xamarin.Interactive.Client.Windows.Views
         {
             var value = (bool)eventArgs.NewValue;
             var view = dependencyObject as InspectTreeView;
-            var state = new TreeState (view.DisplayMode, value);
+            var state = new InspectTreeState (view.DisplayMode, value);
             //view.representedNode.Rebuild (state);
         }
 
@@ -160,7 +161,7 @@ namespace Xamarin.Interactive.Client.Windows.Views
         {
             var value = (DisplayMode) eventArgs.NewValue;
             var view = dependencyObject as InspectTreeView;
-            var state = new TreeState (value, view.ShowHidden);
+            var state = new InspectTreeState (value, view.ShowHidden);
             //view.representedNode?.Rebuild (state);
         }
 
@@ -205,7 +206,7 @@ namespace Xamarin.Interactive.Client.Windows.Views
             selectedNode = null;
             topModel.Children.Clear ();
             if (Tree?.RepresentedNode != null) {
-                var state = new TreeState (DisplayMode, ShowHidden);
+                var state = new InspectTreeState (DisplayMode, ShowHidden);
                 var node3D = new InspectTreeNode3D (Tree.RepresentedNode, state);
                 Tree.RepresentedNode.Build3D (node3D, state);
                 representedNode = node3D;

@@ -7,17 +7,15 @@
 
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Windows;
 using System.Windows.Media.Imaging;
-using Xamarin.Interactive.Client.Windows.Views;
-using Xamarin.Interactive.Inspection;
 using Xamarin.Interactive.Remote;
 using Xamarin.Interactive.TreeModel;
 
-namespace Xamarin.Interactive.Client.Windows.ViewModels
+namespace Xamarin.Interactive.Client.ViewInspector
 {
     class InspectTreeNode : TreeNode
     {
@@ -35,17 +33,7 @@ namespace Xamarin.Interactive.Client.Windows.ViewModels
             var boundsDisplay = String.Empty;
 
             if (showBounds) {
-                var size = new Size (0, 0);
-                if (false || view?.CapturedImage != null) {
-                    var bitmap = new BitmapImage ();
-                    bitmap.BeginInit ();
-
-                    bitmap.StreamSource = new MemoryStream (view.CapturedImage);
-                    bitmap.EndInit ();
-
-                    size = new Size ((int)bitmap.Width, (int)bitmap.Height);
-                }
-                boundsDisplay = $"({view.X}, {view.Y}, {view.Width}, {view.Height}) - ({size.Width}, {size.Height})";
+                boundsDisplay = $"({view.X}, {view.Y}, {view.Width}, {view.Height})";
             }
 
             if (!String.IsNullOrEmpty (view.DisplayName))
@@ -85,7 +73,7 @@ namespace Xamarin.Interactive.Client.Windows.ViewModels
             IsExpanded = true;
         }
 
-        public IInspectTreeModel3D<T> Build3D<T> (IInspectTreeModel3D<T> node3D, TreeState state)
+        public IInspectTree3DNode<T> Build3D<T> (IInspectTree3DNode<T> node3D, InspectTreeState state)
         {
             node3D.BuildPrimaryPlane (state);
             state.PushGeneration ();
@@ -97,7 +85,7 @@ namespace Xamarin.Interactive.Client.Windows.ViewModels
             return node3D;
         }
 
-        IEnumerable<InspectTreeNode> GetRenderedChildren (TreeState state, bool collapseLayers = true)
+        IEnumerable<InspectTreeNode> GetRenderedChildren (InspectTreeState state, bool collapseLayers = true)
         {
             // exploit the fact that Layers can't have Subview or Layer set
             // to walk the children in collapsed layer format

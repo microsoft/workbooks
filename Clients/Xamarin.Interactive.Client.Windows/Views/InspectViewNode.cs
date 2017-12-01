@@ -14,6 +14,7 @@ using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Media.Media3D;
+using Xamarin.Interactive.Client.ViewInspector;
 using Xamarin.Interactive.Inspection;
 using Xamarin.Interactive.Logging;
 using Xamarin.Interactive.Remote;
@@ -42,7 +43,7 @@ namespace Xamarin.Interactive.Client.Windows.Views
             this.childIndex = childIndex;
         }
 
-        public InspectViewNode Rebuild (TreeState state)
+        public InspectViewNode Rebuild (InspectTreeState state)
         {
             try {
                 Content = null;
@@ -64,7 +65,7 @@ namespace Xamarin.Interactive.Client.Windows.Views
             return this;
         }
 
-        InspectViewNode BuildChild (InspectView view, TreeState state)
+        InspectViewNode BuildChild (InspectView view, InspectTreeState state)
         {
             var childNode = new InspectViewNode (view, state.AddChild(view));
             Children.Add (childNode);
@@ -74,7 +75,7 @@ namespace Xamarin.Interactive.Client.Windows.Views
 
         List<InspectViewNode> BuildNodesForCollection (
             List<InspectView> collection,
-            TreeState state)
+            InspectTreeState state)
         {
             var results = new List<InspectViewNode> ();
             var count = collection != null ? collection.Count : 0;

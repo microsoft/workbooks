@@ -39,13 +39,15 @@ using Xamarin.Interactive.Workbook.LoadAndSave;
 using Xamarin.Interactive.Workbook.Structure;
 using Xamarin.Interactive.Workbook.Views;
 
+using Xamarin.Interactive.Client.PropertyEditor;
 using Xamarin.Interactive.Client.Windows.ViewModels;
 using Xamarin.Interactive.Client.Windows.Views;
+using Xamarin.Interactive.Client.ViewInspector;
 
-using XIR = Xamarin.Interactive.Remote;
 using Xamarin.PropertyEditing.Themes;
 using Xamarin.PropertyEditing.Windows;
-using Xamarin.Interactive.Client.PropertyEditor;
+
+using XIR = Xamarin.Interactive.Remote;
 
 namespace Xamarin.Interactive.Client.Windows
 {
@@ -74,7 +76,7 @@ namespace Xamarin.Interactive.Client.Windows
         public static ClientSessionController<AgentSessionWindow> SessionController
             = new ClientSessionController<AgentSessionWindow> ();
 
-        public ViewInspectorViewModel<AgentSessionWindow> ViewModel { get; }
+        public WpfViewInspector<AgentSessionWindow> ViewModel { get; }
 
         public static AgentSessionWindow Open (ClientSessionUri clientSessionUri)
         {
@@ -194,7 +196,7 @@ namespace Xamarin.Interactive.Client.Windows
 
             InitializeComponent ();
             DataContext = this;
-            ViewModel = new ViewInspectorViewModel<AgentSessionWindow> (Session, this);
+            ViewModel = new WpfViewInspector<AgentSessionWindow> (Session, this);
             menuManager = new MenuManager (mainMenu, this, Session.SessionKind != ClientSessionKind.LiveInspection);
 
             replWebView.Loaded += HandleWebViewControlLoaded;

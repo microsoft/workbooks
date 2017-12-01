@@ -12,6 +12,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Media3D;
 using Xamarin.Interactive.Remote;
+using Xamarin.Interactive.Client.ViewInspector;
 
 namespace Xamarin.Interactive.Client.Windows.Views
 {
@@ -136,7 +137,7 @@ namespace Xamarin.Interactive.Client.Windows.Views
         {
             var value = (bool)eventArgs.NewValue;
             var view = dependencyObject as VisualRepView;
-            var state = new TreeState (view.DisplayMode, value);
+            var state = new InspectTreeState (view.DisplayMode, value);
             view.currentViewNode.Rebuild (state);
         }
 
@@ -144,7 +145,7 @@ namespace Xamarin.Interactive.Client.Windows.Views
         {
             var value = (DisplayMode) eventArgs.NewValue;
             var view = dependencyObject as VisualRepView;
-            var state = new TreeState (value, view.ShowHidden);
+            var state = new InspectTreeState (value, view.ShowHidden);
             view.currentViewNode?.Rebuild (state);
         }
 
@@ -182,7 +183,7 @@ namespace Xamarin.Interactive.Client.Windows.Views
             view.currentViewNode = null;
             view.FocusNode = null;
             if (value != null) {
-                view.currentViewNode = new InspectViewNode (value, 0).Rebuild (new TreeState (view.DisplayMode, view.ShowHidden));
+                view.currentViewNode = new InspectViewNode (value, 0).Rebuild (new InspectTreeState (view.DisplayMode, view.ShowHidden));
                 view.topModel.Children.Clear ();
                 view.topModel.Children.Add (view.currentViewNode);
             }

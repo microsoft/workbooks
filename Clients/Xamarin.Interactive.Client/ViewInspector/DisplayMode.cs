@@ -1,5 +1,4 @@
-//
-// Authors:
+﻿// Authors:
 //   Larry Ewing <lewing@xamarin.com>
 //   Bojan Rajkovic <brajkovic@xamarin.com>
 //
@@ -8,7 +7,7 @@
 
 using System;
 
-namespace Xamarin.Interactive.Client.Windows.Views
+namespace Xamarin.Interactive.Client.ViewInspector
 {
     [Flags]
     enum DisplayMode

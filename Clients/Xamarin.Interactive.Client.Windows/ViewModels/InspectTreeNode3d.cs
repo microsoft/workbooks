@@ -5,18 +5,13 @@ using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Media.Media3D;
+using Xamarin.Interactive.Client.ViewInspector;
 using Xamarin.Interactive.Client.Windows.Views;
 
 namespace Xamarin.Interactive.Client.Windows.ViewModels
 {
-    interface IInspectTreeModel3D<T>
-    {
-        void BuildPrimaryPlane (TreeState state);
-        T BuildChild (InspectTreeNode node, TreeState state);
-        void Add (T child);
-    }
 
-    class InspectTreeNode3D : ModelVisual3D, IInspectTreeModel3D<InspectTreeNode3D>
+    class InspectTreeNode3D : ModelVisual3D, IInspectTree3DNode<InspectTreeNode3D>
     {
         static readonly double ZSpacing = .1;
         static readonly double zFightIncrement = 1 / 800.0;
@@ -30,7 +25,7 @@ namespace Xamarin.Interactive.Client.Windows.ViewModels
         int childIndex;
         DiffuseMaterial material;
 
-        public InspectTreeNode3D (InspectTreeNode node, TreeState state)
+        public InspectTreeNode3D (InspectTreeNode node, InspectTreeState state)
         {
             void NodePropertyChanged (object sender, PropertyChangedEventArgs args)
             {
@@ -50,7 +45,7 @@ namespace Xamarin.Interactive.Client.Windows.ViewModels
             childIndex = state.AddChild (node.View);
         }
 
-        void BuildPrimaryPlane (TreeState state)
+        void BuildPrimaryPlane (InspectTreeState state)
         {
             var displayMode = state.Mode;
             Brush brush = new SolidColorBrush (EmptyColor);
@@ -189,10 +184,10 @@ namespace Xamarin.Interactive.Client.Windows.ViewModels
                 solid.Color = Node.IsSelected ? FocusColor : (Node.IsMouseOver ? HoverColor : EmptyColor);
         }
 
-        void IInspectTreeModel3D<InspectTreeNode3D>.BuildPrimaryPlane (TreeState state) =>
+        void IInspectTree3DNode<InspectTreeNode3D>.BuildPrimaryPlane (InspectTreeState state) =>
             BuildPrimaryPlane (state);
 
-        public InspectTreeNode3D BuildChild (InspectTreeNode node, TreeState state)
+        public InspectTreeNode3D BuildChild (InspectTreeNode node, InspectTreeState state)
         {
             var child = new InspectTreeNode3D (node, state);
             node.Build3D (child, state);
