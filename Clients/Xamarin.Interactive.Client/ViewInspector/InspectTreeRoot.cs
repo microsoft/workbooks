@@ -4,12 +4,6 @@
 //
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
-//
-// Author:
-//   Larry Ewing <lewing@xamarin.com>
-//
-// Copyright (c) Microsoft Corporation. All rights reserved.
-// Licensed under the MIT License.
 
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -117,7 +111,7 @@ namespace Xamarin.Interactive.Client.ViewInspector
             }
         }
 
-        protected void NotifyPropertyChanged ([CallerMemberName]string name = null) =>
+        protected virtual void NotifyPropertyChanged ([CallerMemberName]string name = null) =>
             OnPropertyChanged (new PropertyChangedEventArgs (name));
     }
 }

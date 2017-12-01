@@ -38,7 +38,7 @@ namespace Xamarin.Interactive.Client.ViewInspector
         {
             Session = session;
 
-            Session.Subscribe (this);
+            Session?.Subscribe (this);
 
             RootModel = InspectTreeRoot.CreateRoot (this);
 
@@ -52,7 +52,7 @@ namespace Xamarin.Interactive.Client.ViewInspector
             });
         }
 
-        void OnPropertyChanged ([CallerMemberName] string name = null) =>
+        protected virtual void OnPropertyChanged ([CallerMemberName] string name = null) =>
             PropertyChanged?.Invoke (this, new PropertyChangedEventArgs (name));
 
         public ObservableCollection<string> SupportedHierarchies { get; } = new ObservableCollection<string> ();
@@ -145,7 +145,9 @@ namespace Xamarin.Interactive.Client.ViewInspector
             }
         }
 
-        public InspectTreeRoot RootModel { get; }
+        public InspectTreeRoot RootModel {
+            get;
+        }
 
         public bool IsOrthographic {
             get { return RenderingDepth == RenderingDepth.TwoDimensional; }
@@ -207,7 +209,7 @@ namespace Xamarin.Interactive.Client.ViewInspector
             }
         }
 
-        public async Task RefreshVisualTreeAsync ()
+        public virtual async Task RefreshVisualTreeAsync ()
         {
             if (IsVisualTreeRefreshing)
                 return;
@@ -233,7 +235,7 @@ namespace Xamarin.Interactive.Client.ViewInspector
                         selectedHierarchy = null;
                     }
                 } catch (Exception e) {
-                    throw (e.ToUserPresentable (Catalog.GetString ("Error trying to inspect remote view")));
+                    PresentError (e.ToUserPresentable (Catalog.GetString ("Error trying to inspect remote view")));
                 }
 
                 SelectView (remoteView, false, false);
@@ -242,10 +244,15 @@ namespace Xamarin.Interactive.Client.ViewInspector
             }
         }
 
+        protected virtual void PresentError (UserPresentableException upe)
+        {
+            throw upe;
+        }
+
         void RefreshVisualTree (object o = null) => RefreshVisualTreeAsync ().Forget ();
 
         bool isVisualTreeRefreshing;
-        bool IsVisualTreeRefreshing {
+        public bool IsVisualTreeRefreshing {
             get { return isVisualTreeRefreshing; }
             set {
                 isVisualTreeRefreshing = value;
@@ -281,7 +288,7 @@ namespace Xamarin.Interactive.Client.ViewInspector
                 SelectedView = view;
         }
 
-        void UpdateSupportedHierarchies (IEnumerable<string> hierarchies)
+        protected void UpdateSupportedHierarchies (IEnumerable<string> hierarchies)
         {
             var hash = new HashSet<string> (hierarchies);
 

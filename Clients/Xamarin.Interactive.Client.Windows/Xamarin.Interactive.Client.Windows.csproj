@@ -123,16 +123,12 @@
     <Compile Include="Views\InspectTreeView.xaml.cs">
       <DependentUpon>InspectTreeView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\InspectViewNode.cs" />
     <Compile Include="Views\OutlineItem.xaml.cs">
       <DependentUpon>OutlineItem.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\WpfDolly.cs" />
     <Compile Include="Views\UpdaterWindow.xaml.cs">
       <DependentUpon>UpdaterWindow.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\VisualRepView.xaml.cs">
-      <DependentUpon>VisualRepView.xaml</DependentUpon>
     </Compile>
     <Compile Include="WindowsClientApp.cs" />
     <Compile Include="WpfClientSessionViewControllers.cs" />
@@ -225,10 +221,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\UpdaterWindow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\VisualRepView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

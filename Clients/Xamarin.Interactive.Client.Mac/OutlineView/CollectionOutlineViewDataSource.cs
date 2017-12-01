@@ -208,7 +208,7 @@ namespace Xamarin.Interactive.OutlineView
                 StartMonitoringNodeChildren (node);
                 NotifyReload (proxy, true);
             } else
-                        NotifyReload (proxy, false);
+                NotifyReload (proxy, false);
         }
 
         void HandleCollectionChanged (object sender, NotifyCollectionChangedEventArgs e)

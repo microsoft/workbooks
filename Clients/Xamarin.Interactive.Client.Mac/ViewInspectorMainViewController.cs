@@ -1,165 +1,82 @@
 //
-// Author:
+// Authors:
+//   Larry Ewing <lewing@xamarin.com>
 //   Aaron Bockover <abock@xamarin.com>
 //
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
 using System;
+using System.ComponentModel;
 using System.Linq;
-using System.Threading.Tasks;
 
 using AppKit;
 using Foundation;
 using ObjCRuntime;
 
-using Xamarin.Interactive.Client.Mac.ViewInspector;
-using Xamarin.Interactive.I18N;
+using Xamarin.Interactive.Client.ViewInspector;
 using Xamarin.Interactive.Remote;
 
 namespace Xamarin.Interactive.Client.Mac
 {
     sealed partial class ViewInspectorMainViewController : SessionSplitViewController, INSMenuValidation
     {
-        InspectView representedRootView;
-        string selectedHierarchy;
+        ViewInspectorViewModel model;
 
         ViewInspectorMainViewController (IntPtr handle) : base (handle)
         {
         }
 
+        protected override void OnSessionAvailable ()
+        {
+            base.OnSessionAvailable ();
+            model = new MacViewInspector (this, Session);
+        }
+
         protected override void OnAgentFeaturesUpdated ()
             => RefreshVisualTree (this);
 
-        bool isVisualTreeRefreshing;
-
-        async Task RefreshVisualTreeAsync ()
-        {
-            InspectView remoteView = null;
-            string [] supportedHierarchies = null;
-
-            isVisualTreeRefreshing = true;
-
-            try {
-                supportedHierarchies = Session.Agent?.Features?.SupportedViewInspectionHierarchies;
-
-                if (supportedHierarchies != null && supportedHierarchies.Length > 0) {
-                    if (!supportedHierarchies.Contains (selectedHierarchy))
-                        selectedHierarchy = supportedHierarchies [0];
-
-                    remoteView = await Session.Agent.Api.GetVisualTreeAsync (
-                        selectedHierarchy,
-                        captureViews: true);
-                } else {
-                    supportedHierarchies = null;
-                    selectedHierarchy = null;
-                }
-            } catch (Exception e) {
-                e.ToUserPresentable (Catalog.GetString ("Error trying to inspect remote view"))
-                    .Present (this);
-            }
-
-            SelectView (remoteView, withinExistingTree: false, setSelectedView: false);
-
-            UpdateHierarchiesList (supportedHierarchies, selectedHierarchy);
-
-            isVisualTreeRefreshing = false;
-
-            View?.Window?.Toolbar?.ValidateVisibleItems ();
-        }
-
         public void UpdateSelectedHierarchy (string selectedHierarchy)
-        {
-            this.selectedHierarchy = selectedHierarchy;
-            RefreshVisualTree (this);
-        }
-
-        public void UpdateHierarchiesList (string [] supportedHierarchies, string selectedHierarchy)
-        {
-            ChildViewControllers.OfType<ViewHierarchyViewController> ().ForEach (vc => {
-                vc.UpdateSupportedHierarchies (supportedHierarchies, selectedHierarchy);
-            });
-        }
+            => model.SelectedHierarchy = selectedHierarchy;
 
         public void SelectView (InspectView view)
             => SelectView (view, false, true);
 
-        void SelectView (InspectView view, bool withinExistingTree, bool setSelectedView)
+        void SelectView (InspectView view, bool withinExistingTree = false, bool setSelectedView = true)
+            => model.SelectView (view, withinExistingTree, setSelectedView);
+
+        static T TagToEnum<T> (nint tag)
         {
-            if (!Session.Agent.IsConnected)
-                return;
-
-            if (setSelectedView
-                && !string.IsNullOrEmpty (view?.PublicCSharpType)
-                && Session.SessionKind == ClientSessionKind.LiveInspection) {
-                var code = $"var selectedView = GetObject<{view.PublicCSharpType}> (0x{view.Handle:x})";
-                Session.WorkbookPageViewModel.EvaluateAsync (code).Forget ();
+            // Keep these synced to the tags for the 2D/3D menu items in the Main storyboard
+            object result = default (T);
+            switch (result) {
+            case DisplayMode _:
+                return (T)(object)(DisplayMode)(uint)(tag - 4);
+            case RenderingDepth _:
+                return (T)(object)(RenderingDepth)(uint)(tag - 8);
+            default:
+                return (T)result;
             }
-
-            if (withinExistingTree && representedRootView != null && view != null)
-                view = representedRootView.FindSelfOrChild (v => v.Handle == view.Handle);
-
-            if (view != null && view.Root == view && view.IsFakeRoot)
-                view = view.Children.FirstOrDefault () ?? view;
-
-            var root = view?.Root;
-            var current = view;
-
-            // find the "window" to represent in the 3D view by either
-            // using the root node of the tree for trees with real roots,
-            // or by walking up to find the real root below the fake root
-            if (root != null &&
-                root.IsFakeRoot &&
-                current != root) {
-                while (current.Parent != null && current.Parent != root)
-                    current = current.Parent;
-            } else
-                current = root;
-
-            representedRootView = root;
-            ChildViewControllers.OfType<ViewInspectorViewController> ().ForEach (viewController => {
-                viewController.RootView = root;
-                viewController.RepresentedView = current;
-                viewController.SelectedView = view;
-            });
         }
 
         public bool ValidateMenuItem (NSMenuItem item)
         {
-            if (item.Action?.Name == switchDisplayModeSel) {
-                // We're asking to validate state for the switch display mode buttons.
-                // We'll need to grab the current display mode off the scene view.
-                var visualRepController = ChildViewControllers
-                    .OfType<VisualRepViewController> ()
-                    .FirstOrDefault ();
-                var sceneView = visualRepController.scnView;
-                var currentDisplayMode = sceneView.DisplayMode;
-
-                if ((DisplayMode)(int)item.Tag == currentDisplayMode)
+            switch (item.Action?.Name) {
+            case switchDisplayModeSel:
+                if (TagToEnum<DisplayMode> (item.Tag) == model.DisplayMode)
                     item.State = NSCellStateValue.On;
                 else
                     item.State = NSCellStateValue.Off;
-            }
-
-            if (item.Action?.Name == switchDisplayDepthSel) {
-                var visualRepController = ChildViewControllers
-                    .OfType<VisualRepViewController> ()
-                    .FirstOrDefault ();
-                var currentViewDepth = visualRepController.ViewDepth;
-
-                if ((ViewDepth)(int)item.Tag == currentViewDepth)
+                break;
+            case switchDisplayDepthSel:
+                if (TagToEnum<RenderingDepth> (item.Tag) == model.RenderingDepth)
                     item.State = NSCellStateValue.On;
                 else
                     item.State = NSCellStateValue.Off;
-            }
-
-            if (item.Action?.Name == toggleHiddenSel) {
-                var visualRepController = ChildViewControllers
-                    .OfType<VisualRepViewController> ()
-                    .FirstOrDefault ();
-                var sceneView = visualRepController.scnView;
-
-                item.State = sceneView.ShowHiddenViews ? NSCellStateValue.On : NSCellStateValue.Off;
+                break;
+            case toggleHiddenSel:
+                item.State = model.ShowHidden ? NSCellStateValue.On : NSCellStateValue.Off;
+                break;
             }
 
             return item.Action != null ? RespondsToSelector (item.Action) : true;
@@ -182,7 +99,7 @@ namespace Xamarin.Interactive.Client.Mac
             case switchDisplayDepthSel:
             case switchDisplayModeSel:
             case toggleHiddenSel:
-                return Session.Agent.IsConnected && !isVisualTreeRefreshing;
+                return Session.Agent.IsConnected && !model.IsVisualTreeRefreshing;
             case inspectViewSel:
                 return Session.Agent.IsConnected;
             }
@@ -192,35 +109,15 @@ namespace Xamarin.Interactive.Client.Mac
 
         [Export (toggleHiddenSel)]
         void ToggleHiddenViews (NSObject sender)
-        {
-            var realSender = (NSMenuItem)sender;
-            // If it's currently on, turn it off. If it's off, turn it on.
-            var newDisplayMode = realSender.State == NSCellStateValue.On ? false : true;
-            ChildViewControllers.OfType<VisualRepViewController> ().ForEach (viewController => {
-                viewController.scnView.ShowHiddenViews = newDisplayMode;
-            });
-            realSender.State = newDisplayMode ? NSCellStateValue.On : NSCellStateValue.Off;
-        }
+            => model.ShowHidden = ((NSMenuItem)sender).State == NSCellStateValue.On ? false : true;
 
         [Export (switchDisplayModeSel)]
         void SwitchDisplayMode (NSObject sender)
-        {
-            var realSender = (NSMenuItem)sender;
-            var newDisplayMode = (DisplayMode)(int)realSender.Tag;
-            ChildViewControllers.OfType<VisualRepViewController> ().ForEach (viewController => {
-                viewController.scnView.DisplayMode = newDisplayMode;
-            });
-        }
+            => model.DisplayMode = TagToEnum<DisplayMode> (((NSMenuItem)sender).Tag);
 
         [Export (switchDisplayDepthSel)]
         void SwitchDisplayDepth (NSObject sender)
-        {
-            var realSender = (NSMenuItem)sender;
-            var newViewDepth = (ViewDepth)(int)realSender.Tag;
-            ChildViewControllers.OfType<VisualRepViewController> ().ForEach (viewController => {
-                viewController.ViewDepth = newViewDepth;
-            });
-        }
+            => model.RenderingDepth = TagToEnum<RenderingDepth> (((NSMenuItem)sender).Tag);
 
         [Export (resetCameraSel)]
         void ResetCamera (NSObject sender)
@@ -232,7 +129,7 @@ namespace Xamarin.Interactive.Client.Mac
 
         [Export (refreshVisualTreeSel)]
         void RefreshVisualTree (NSObject sender)
-            => RefreshVisualTreeAsync ().Forget ();
+            => model.RefreshVisualTreeAsync ().Forget ();
 
         [Export (inspectViewSel)]
         void InspectHighlightedView (NSObject sender)
@@ -240,7 +137,7 @@ namespace Xamarin.Interactive.Client.Mac
             if (!Session.Agent.IsConnected)
                 return;
 
-            var highlighter = new Highlighter (Session, selectedHierarchy);
+            var highlighter = new Highlighter (Session, model.SelectedHierarchy);
             highlighter.ViewSelected += (o, e)
                 => InvokeOnMainThread (() => SelectView (e.SelectedView, withinExistingTree: true, setSelectedView: true));
 

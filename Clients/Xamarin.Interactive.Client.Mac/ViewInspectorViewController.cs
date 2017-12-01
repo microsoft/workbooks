@@ -6,7 +6,8 @@
 // Licensed under the MIT License.
 
 using System;
-
+using System.ComponentModel;
+using Xamarin.Interactive.Client.ViewInspector;
 using Xamarin.Interactive.Remote;
 
 namespace Xamarin.Interactive.Client.Mac
@@ -22,37 +23,77 @@ namespace Xamarin.Interactive.Client.Mac
 
         InspectView representedView;
         public InspectView RepresentedView {
-            get { return representedView; }
+            get { return tree?.RepresentedNode.View ?? representedView; }
             set {
                 if (representedView == value)
                     return;
 
                 representedView = value;
-                OnRepresentedViewChanged ();
+                //OnRepresentedViewChanged ();
             }
         }
 
         InspectView selectedView;
         public InspectView SelectedView {
-            get { return selectedView; }
+            get { return tree?.SelectedNode?.View ?? selectedView; }
             set {
                 if (selectedView == value)
                     return;
 
                 selectedView = value;
-                OnSelectedViewChanged ();
+                //OnSelectedViewChanged ();
             }
         }
 
         InspectView rootView;
         public InspectView RootView {
-            get { return rootView; }
+            get { return tree?.RootNode?.View ?? rootView; }
             set {
                 if (rootView == value)
                     return;
 
                 rootView = value;
-                OnRootViewChanged ();
+
+                if (tree == null)
+                    OnRootViewChanged ();
+            }
+        }
+
+        InspectTreeRoot tree;
+        public InspectTreeRoot Tree {
+            get => tree;
+            set {
+                if (value == tree)
+                    return;
+
+                void HandleTreeEvent (object sender, PropertyChangedEventArgs args)
+                {
+                    var treeSensed = sender as InspectTreeRoot;
+                    switch (args.PropertyName) {
+                    case nameof (InspectTreeRoot.RepresentedNode):
+                        OnRepresentedViewChanged ();
+                        OnRepresentedNodeChanged ();
+                        break;
+                    case nameof (InspectTreeRoot.RootNode):
+                        OnRootViewChanged ();
+                        OnRootNodeChanged ();
+                        break;
+                    case nameof (InspectTreeRoot.SelectedNode):
+                        OnSelectedViewChanged ();
+                        OnSelectedNodeChanged ();
+                        break;
+                    }
+                }
+
+                if (tree != null)
+                    ((INotifyPropertyChanged)tree).PropertyChanged -= HandleTreeEvent;
+
+                tree = value;
+
+                if (tree != null)
+                    ((INotifyPropertyChanged)tree).PropertyChanged += HandleTreeEvent;
+
+                OnTreeChanged ();
             }
         }
 
@@ -65,6 +106,22 @@ namespace Xamarin.Interactive.Client.Mac
         }
 
         protected virtual void OnRootViewChanged ()
+        {
+        }
+
+        protected virtual void OnTreeChanged ()
+        {
+        }
+
+        protected virtual void OnRepresentedNodeChanged ()
+        {
+        }
+
+        protected virtual void OnRootNodeChanged ()
+        {
+        }
+
+        protected virtual void OnSelectedNodeChanged ()
         {
         }
     }

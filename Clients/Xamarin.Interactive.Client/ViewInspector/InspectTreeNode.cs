@@ -7,11 +7,9 @@
 
 using System;
 using System.Collections.Generic;
-using System.Drawing;
-using System.IO;
 using System.Linq;
+
 using System.Runtime.CompilerServices;
-using System.Windows.Media.Imaging;
 using Xamarin.Interactive.Remote;
 using Xamarin.Interactive.TreeModel;
 
@@ -63,7 +61,7 @@ namespace Xamarin.Interactive.Client.ViewInspector
         public InspectTreeNode (InspectTreeNode parent, InspectView view)
         {
             Parent = parent;
-            RepresentedObject = view;
+            RepresentedObject = view ?? throw new ArgumentNullException (nameof (view));
             Name = GetDisplayName ();
             Children = view.Children.Select (c => new InspectTreeNode (this, c)).ToList ();
             IsRenamable = false;
@@ -93,8 +91,12 @@ namespace Xamarin.Interactive.Client.ViewInspector
             var children = Children.OfType<InspectTreeNode>();
 
             foreach (var child in children) {
-                if (collapseLayers && child.View == layer)
-                    children = child.Children.OfType<InspectTreeNode> ();
+                if (collapseLayers && layer != null && child.View == layer) {
+                    foreach (var sublayer in child.Children.OfType<InspectTreeNode> ())
+                        yield return sublayer;
+
+                    yield break;
+                }
                 else
                     yield return child;
             }
