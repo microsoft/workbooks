@@ -51,6 +51,7 @@ namespace Xamarin.Interactive.Client.Windows.Views
 
             AgentSessionWindow window = null;
             try {
+                viewController.SaveLastCreatedWorkbookPreference ();
                 window = AgentSessionWindow.Open (viewController.SelectedItem.CreateClientSessionUri ());
             } catch (Exception ex) {
                 Log.Error (TAG, ex);

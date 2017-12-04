@@ -35,6 +35,7 @@ namespace Xamarin.Interactive.Client.ViewControllers
         public string Icon { get; }
         public bool Enabled { get; }
         public string Label { get; }
+        public string Id { get; }
         public IReadOnlyList<NewWorkbookFeature> OptionalFeatures { get; }
 
         public WorkbookAppViewController (
@@ -47,6 +48,7 @@ namespace Xamarin.Interactive.Client.ViewControllers
 
             AgentType = workbookApp.GetAgentType ();
 
+            Id = workbookApp.Id;
             Icon = workbookApp.Icon ?? "project";
             Enabled = enabled;
             Label = GetDisplayLabel (workbookApp, context);

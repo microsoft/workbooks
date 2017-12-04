@@ -55,7 +55,7 @@ namespace Xamarin.Interactive.Client.ViewControllers
                     true))
                 .ToArray ();
 
-            SelectedWorkbookApp = WorkbookApps [0];
+            selectedWorkbookApp = WorkbookApps [0];
         }
 
         void NotifyPropertyChanged ([CallerMemberName] string propertyName = null)

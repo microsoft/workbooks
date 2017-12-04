@@ -144,6 +144,7 @@ namespace Xamarin.Interactive.Client.Mac
         [Export ("createWorkbook:")]
         void CreateWorkbook (NSObject sender)
         {
+            viewController.SaveLastCreatedWorkbookPreference ();
             SessionDocumentController.SharedDocumentController.OpenDocument (
                 viewController.SelectedItem.CreateClientSessionUri ());
             ((NewWorkbookWindow)View.Window).Close (sender);
