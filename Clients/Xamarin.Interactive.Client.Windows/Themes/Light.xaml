@@ -73,6 +73,7 @@
 
     <SolidColorBrush x:Key="PrimaryContentSelectedTabBorderBrush" Color="White" />
     <SolidColorBrush x:Key="PrimaryContentSelectedTabForegroundBrush" Color="Black" />
+    <SolidColorBrush x:Key="PrimaryContentHoverTabForegroundBrush" Color="White" />
     <SolidColorBrush x:Key="PrimaryContentUnselectedTabBorderBrush" Color="Transparent" />
     <SolidColorBrush x:Key="PrimaryContentUnselectedTabForegroundBrush" Color="White" />
     <SolidColorBrush x:Key="PrimaryContentInactiveSelectedTabForegroundBrush" Color="Black" />
@@ -98,7 +99,7 @@
         <Style.Triggers>
             <Trigger Property="IsMouseOver" Value="True">
                 <Trigger.Setters>
-                    <Setter Property="Foreground" Value="White" />
+                    <Setter Property="Foreground" Value="Black" />
                 </Trigger.Setters>
             </Trigger>
             <Trigger Property="IsSelected" Value="True">

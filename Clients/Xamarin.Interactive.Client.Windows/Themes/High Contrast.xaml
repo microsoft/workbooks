@@ -103,6 +103,8 @@
     -->
     <SolidColorBrush x:Key="PrimaryContentSelectedTabForegroundBrush"
                      Color="{x:Static SystemColors.HighlightTextColor}" />
+    <SolidColorBrush x:Key="PrimaryContentHoverTabForegroundBrush"
+                     Color="{x:Static SystemColors.HighlightTextColor}" />
     <SolidColorBrush x:Key="PrimaryContentUnselectedTabForegroundBrush"
                      Color="{x:Static SystemColors.WindowTextColor}" />
     <SolidColorBrush x:Key="PrimaryContentSelectedTabBorderBrush"
