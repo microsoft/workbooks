@@ -1,11 +1,3 @@
-### Environment
-
-**[Log File](https://developer.xamarin.com/guides/cross-platform/workbooks/install/#Log_Files)**: < your link here >
-
-Select `Help > Copy Version Information` in the Workbooks client and then paste
-the results below. Alternatively, you can
-[manually provide version information](https://developer.xamarin.com/guides/cross-platform/workbooks/install/#Platform_Version_Information).
-
 ### Steps to Reproduce
 
 1. 
@@ -14,8 +6,28 @@ the results below. Alternatively, you can
 
 ### Expected Behavior
 
-
-
 ### Actual Behavior
 
+### Environment
 
+<!--
+1. From the Workbooks main menu, select: Help → Copy Version Information
+
+2. Paste below this comment block.
+-->
+
+### Log File
+
+<!--
+1. Place cursor below this comment block.
+
+2. From the Workbooks main menu, select: Help → Reveal Log File
+
+3. Drag and drop the log file on this issue editor.
+-->
+
+
+
+<!--
+Switch to the "Preview" tab to ensure your issue renders correctly.
+-->
