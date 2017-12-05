@@ -10,6 +10,10 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
+using CommonMark;
+using CommonMark.Formatters;
+using CommonMark.Syntax;
+
 using Xamarin.Interactive.Markdown;
 using Xamarin.Interactive.SystemInformation;
 
@@ -21,6 +25,50 @@ namespace Xamarin.Interactive.Client
 
         public IssueReport (HostEnvironment host)
             => this.host = host ?? throw new ArgumentNullException (nameof (host));
+
+        public string GetIssueReportUrlForGitHub (bool includeReport = true)
+        {
+            var builder = new System.Text.StringBuilder ();
+            builder.Append ("https://github.com/Microsoft/workbooks/issues/new");
+            if (includeReport)
+                builder.Append ("?body=").Append (System.Net.WebUtility.UrlEncode (GetIssueReportForGitHub ()));
+            return builder.ToString ();
+        }
+
+        public string GetIssueReportForGitHub ()
+        {
+            var writer = new StringWriter ();
+            WriteIssueReportForGitHub (writer);
+            return writer.ToString ().TrimEnd ();
+        }
+
+        public void WriteIssueReportForGitHub (TextWriter writer)
+        {
+            var environment = GetEnvironmentMarkdown ();
+
+            using (var stream = typeof (ClientApp).Assembly.GetManifestResourceStream ("ISSUE_TEMPLATE.md")) {
+                var reader = new StreamReader (stream);
+                var template = CommonMarkConverter.Parse (reader);
+                var block = template.FirstChild;
+                while (block != null) {
+                    // Find the following structure in the markdown template and replace the
+                    // HTML comment with our fancy environment markdown tables:
+                    //    ### Environment
+                    //    <!-- ... --->
+                    // (The heading level is intentionally ignored in the match)
+                    if (block.Tag == BlockTag.AtxHeading &&
+                        block.InlineContent?.LiteralContent?.Trim () == "Environment" &&
+                        block.NextSibling?.Tag == BlockTag.HtmlBlock) {
+                        block.NextSibling.StringContent.Replace (environment, 0, environment.Length);
+                        break;
+                    }
+
+                    block = block.NextSibling;
+                }
+
+                new MarkdownFormatter (writer).WriteBlock (template.Top);
+            }
+        }
 
         public string GetEnvironmentMarkdown (bool padTableCells = false)
         {

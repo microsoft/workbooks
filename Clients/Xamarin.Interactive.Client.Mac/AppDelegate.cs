@@ -215,6 +215,11 @@ namespace Xamarin.Interactive.Client.Mac
                 NSPasteboard.NSStringType);
         }
 
+        [Export ("reportIssue:")]
+        public void ReportIssue (NSObject sender)
+            => NSWorkspace.SharedWorkspace.OpenUrl (new NSUrl (
+                ClientApp.SharedInstance.IssueReport.GetIssueReportUrlForGitHub ()));
+
         [Export ("showPrivacyStatement:")]
         public void ShowPrivacyStatement (NSObject sender)
             => NSWorkspace.SharedWorkspace.OpenUrl (ClientInfo.MicrosoftPrivacyStatementUri);
