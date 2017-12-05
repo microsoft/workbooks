@@ -49,7 +49,7 @@ namespace Xamarin.Interactive.Markdown
             rows.Add (columns);
         }
 
-        public void Render (TextWriter writer)
+        public void Render (TextWriter writer, bool padTableCells = true)
         {
             writer.WriteLine ($"#### {title}");
 
@@ -63,8 +63,14 @@ namespace Xamarin.Interactive.Markdown
             for (int ri = 0; ri < rows.Count; ri++) {
                 for (int ci = 0; ci < rows [ri].Length; ci++) {
                     var text = rows [ri][ci];
-                    var pad = ri == 1 ? '-' : ' ';
-                    writer.Write ($"| {text.PadRight (widths [ci], pad)} ");
+                    if (padTableCells) {
+                        var pad = ri == 1 ? '-' : ' ';
+                        text = text.PadRight (widths [ci], pad);
+                    } else if (ri == 1) {
+                        text += "-";
+                    }
+
+                    writer.Write ($"| {text} ");
                 }
                 writer.WriteLine ("|");
             }
