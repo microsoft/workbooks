@@ -36,10 +36,10 @@
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)TelemetryNotice.md">
       <LogicalName>TelemetryNotice.md</LogicalName>
     </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="SystemInformation\" />
-    <Folder Include="Markdown\" />
+    <EmbeddedResource Include="..\..\.github\ISSUE_TEMPLATE.md">
+      <Link>ISSUE_TEMPLATE.md</Link>
+      <LogicalName>ISSUE_TEMPLATE.md</LogicalName>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Condition="'$(OS)' == 'Windows_NT'" Project="Build.windows.targets" />
   <Import Project="..\..\Build\Common.targets" />

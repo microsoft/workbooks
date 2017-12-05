@@ -211,9 +211,14 @@ namespace Xamarin.Interactive.Client.Mac
             var pasteboard = NSPasteboard.GeneralPasteboard;
             pasteboard.ClearContents ();
             pasteboard.SetStringForType (
-                ClientApp.SharedInstance.GetIssueReportForClipboard (),
+                ClientApp.SharedInstance.IssueReport.GetEnvironmentMarkdown (),
                 NSPasteboard.NSStringType);
         }
+
+        [Export ("reportIssue:")]
+        public void ReportIssue (NSObject sender)
+            => NSWorkspace.SharedWorkspace.OpenUrl (new NSUrl (
+                ClientApp.SharedInstance.IssueReport.GetIssueReportUrlForGitHub ()));
 
         [Export ("showPrivacyStatement:")]
         public void ShowPrivacyStatement (NSObject sender)

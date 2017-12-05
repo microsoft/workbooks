@@ -1192,6 +1192,13 @@ Gw
                                                 <action selector="copyVersionInformation:" target="Ady-hI-5gd" id="y7X-2Q-9np"/>
                                             </connections>
                                         </menuItem>
+                                        <menuItem isSeparatorItem="YES" id="5X7-Jf-kRd"/>
+                                        <menuItem title="Report an Issue…" id="DUP-mN-Gqa">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="reportIssue:" target="Ady-hI-5gd" id="ZGv-N5-aNR"/>
+                                            </connections>
+                                        </menuItem>
                                     </items>
                                 </menu>
                             </menuItem>

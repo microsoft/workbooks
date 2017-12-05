@@ -197,6 +197,8 @@ namespace Xamarin.Interactive.Client.Windows.Views
                 CommandParameter = window
             });
 
+            helpMenu.Items.Add (new Separator ());
+
             helpMenu.Items.Add (new MenuItem {
                 Header = Catalog.GetString ("Reveal Log File"),
                 Command = new DelegateCommand (_ =>
@@ -206,8 +208,18 @@ namespace Xamarin.Interactive.Client.Windows.Views
             helpMenu.Items.Add (new MenuItem {
                 Header = Catalog.GetString ("Copy Version Information"),
                 Command = new DelegateCommand (_ =>
-                    Clipboard.SetText (ClientApp.SharedInstance.GetIssueReportForClipboard ())),
+                    Clipboard.SetText (ClientApp.SharedInstance.IssueReport.GetEnvironmentMarkdown ())),
             });
+
+            helpMenu.Items.Add (new Separator ());
+
+            helpMenu.Items.Add (new MenuItem {
+                Header = Catalog.GetString ("Report an Issue…"),
+                Command = new DelegateCommand (_ =>
+                    Process.Start (ClientApp.SharedInstance.IssueReport.GetIssueReportUrlForGitHub ())),
+            });
+
+            helpMenu.Items.Add (new Separator ());
 
             helpMenu.Items.Add (new MenuItem {
                 Header = "About " + ClientInfo.FullProductName,
