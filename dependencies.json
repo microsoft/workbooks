@@ -8,7 +8,7 @@
   {
     "Kind": "NuGet",
     "Name": "MahApps.Metro",
-    "Version": "1.3.0",
+    "Version": "1.5.0",
     "DependentProjects": [
       "Xamarin.Interactive.Client.Windows"
     ]
@@ -16,7 +16,7 @@
   {
     "Kind": "NuGet",
     "Name": "MahApps.Metro.IconPacks.Material",
-    "Version": "1.7.1",
+    "Version": "1.9.1",
     "DependentProjects": [
       "Xamarin.Interactive.Client.Windows"
     ]
