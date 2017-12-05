@@ -50,6 +50,7 @@
     <InstallDestDir Condition="'$(InstallDestDir)' == ''">_install\</InstallDestDir>
     <PackageOutputDir Condition="'$(PackageOutputDir)' == ''">_artifacts\</PackageOutputDir>
     <InspectorNuGetPackageBuildDir>_inspectorPackage</InspectorNuGetPackageBuildDir>
+    <InspectorNuGetPackageContentDir>$(InspectorNuGetPackageBuildDir)\contentFiles\any\any\</InspectorNuGetPackageContentDir>
     <FrameworkInstallDir>$(InstallDestDir)Library\Frameworks\Xamarin.Interactive.framework\Versions\Current\</FrameworkInstallDir>
 
     <BuildInfoDistFile>Package/buildinfo</BuildInfoDistFile>
@@ -58,9 +59,14 @@
   <!-- Platform Specific Configuration -->
   <PropertyGroup Condition="'$(SolutionPlatform)' == 'Windows'">
     <UpdateInfoFile>Package\Windows\updateinfo</UpdateInfoFile>
+    <InspectorOutputPathSuffix>InspectorExe</InspectorOutputPathSuffix>
+    <InspectorPackageName>Xamarin.Inspector.Windows</InspectorPackageName>
+    <InspectorPackageNuspec>Package\Windows\$(InspectorPackageName).nuspec</InspectorPackageNuspec>
   </PropertyGroup>
   <PropertyGroup Condition="'$(SolutionPlatform)' == 'macOS'">
     <UpdateInfoFile>Package\Mac\updateinfo</UpdateInfoFile>
+    <InspectorPackageName>Xamarin.Inspector.Mac</InspectorPackageName>
+    <InspectorPackageNuspec>Package\Mac\$(InspectorPackageName).nuspec</InspectorPackageNuspec>
   </PropertyGroup>
 
   <!-- XVS mac build host configuration (in VSTS) -->
@@ -139,7 +145,7 @@
     <MSBuild
       BuildInParallel="true"
       Projects="Clients\Xamarin.Interactive.Client.Windows\Xamarin.Interactive.Client.Windows.csproj"
-      Properties="$(MSBuildCommonProperties);ClientOutputPathSuffix=InspectorExe;ClientAssemblyName=Xamarin Inspector;ClientDefineConstants=CLIENT_FLAVOR_INSPECTOR"
+      Properties="$(MSBuildCommonProperties);ClientOutputPathSuffix=$(InspectorOutputPathSuffix);ClientAssemblyName=Xamarin Inspector;ClientDefineConstants=CLIENT_FLAVOR_INSPECTOR"
       Targets="$(InteractiveBuildTarget)"/>
     <!-- Build everything else -->
     <MSBuild
@@ -248,6 +254,7 @@
     <MacDesktopAgentFiles Include="_build\$(Configuration)\WorkbookApps\Console\netstandard.dll"/>
     <ConsoleAgentFiles Include="Agents\Xamarin.Interactive.Console\bin\$(Configuration)\*"/>
     <DotNetCoreAgentFiles Include="Agents\Xamarin.Interactive.DotNetCore\bin\$(Configuration)\netstandard2.0\*"/>
+    <WpfAgentFiles Include="Agents\Xamarin.Interactive.Wpf\bin\$(Configuration)\Net45\*"/>
   </ItemGroup>
 
   <Target Name="_InstallAgentsMac">
@@ -355,8 +362,8 @@
       DestinationFolder="$(InspectorAppSharedSupportPath)"/>
 
     <!-- Copy completed Inspector.app bundle to staging area where Xamarin.Inspector.Mac.nupkg can be built later -->
-    <MakeDir Directories="$(InspectorNuGetPackageBuildDir)\contentFiles\any\any"/>
-    <Exec Command="cp -a &quot;$(InspectorClientInstallPath)\$(InspectorAppBundleName)&quot; &quot;$(InspectorNuGetPackageBuildDir)\contentFiles\any\any&quot;"/>
+    <MakeDir Directories="$(InspectorNuGetPackageContentDir)"/>
+    <Exec Command="cp -a &quot;$(InspectorClientInstallPath)\$(InspectorAppBundleName)&quot; &quot;$(InspectorNuGetPackageContentDir)&quot;"/>
   </Target>
 
   <Target Name="Package">
@@ -375,7 +382,7 @@
     <Message Text="Generated $(PackageOutputDir)buildinfo" Importance="high"/>
     <CallTarget Targets="PackageNuGet" Condition="'$(SolutionPlatform)' == 'macOS'"/>
     <CallTarget Targets="_PackageInspectorNuGetMac" Condition="'$(SolutionPlatform)' == 'macOS'"/>
-    <!--<CallTarget Targets="_PackageInspectorNuGetWin" Condition="'$(SolutionPlatform)' == 'Windows'"/>-->
+    <CallTarget Targets="_PackageInspectorNuGetWin" Condition="'$(SolutionPlatform)' == 'Windows'"/>
     <CallTarget Targets="GenerateReleaseNotes" Condition="'$(SolutionPlatform)' == 'macOS'"/>
   </Target>
 
@@ -466,19 +473,61 @@
   </Target>
 
   <Target Name="_PackageInspectorNuGetMac" DependsOnTargets="Xamarin_Build_ReadAllProperties;Install">
+    <CallTarget Targets="_DoPackageInspectorNuGet"/>
+  </Target>
+
+  <Target Name="_PackageInspectorNuGetWin" DependsOnTargets="Xamarin_Build_ReadAllProperties">
+    <ItemGroup>
+      <InspectorClientFiles Include="Clients\Xamarin.Interactive.Client.Windows\bin\$(Configuration)$(InspectorOutputPathSuffix)\**\*"/>
+    </ItemGroup>
     <PropertyGroup>
-      <InspectorPackageName>Xamarin.Inspector.Mac</InspectorPackageName>
+      <!-- Add a parent folder since there's no app bundle like on Mac -->
+      <InspectorNuGetPackageWindowsContentDir>$(InspectorNuGetPackageContentDir)\Xamarin.Inspector.Windows\</InspectorNuGetPackageWindowsContentDir>
+    </PropertyGroup>
+
+    <Copy
+      SkipUnchangedFiles="true"
+      SourceFiles="@(InspectorClientFiles)"
+      DestinationFolder="$(InspectorNuGetPackageWindowsContentDir)Client\%(RecursiveDir)"/>
+
+    <Copy
+      SkipUnchangedFiles="true"
+      SourceFiles="@(AndroidAgentFiles)"
+      DestinationFolder="$(InspectorNuGetPackageWindowsContentDir)Agents\Android"/>
+    <Copy
+      SkipUnchangedFiles="true"
+      SourceFiles="@(iOSAgentFiles)"
+      DestinationFolder="$(InspectorNuGetPackageWindowsContentDir)Agents\iOS"/>
+    <Copy
+      SkipUnchangedFiles="true"
+      SourceFiles="@(WpfAgentFiles)"
+      DestinationFolder="$(InspectorNuGetPackageWindowsContentDir)Agents\WPF"/>
+    <Copy
+      SkipUnchangedFiles="true"
+      SourceFiles="@(AndroidFormsAgentFiles)"
+      DestinationFolder="$(InspectorNuGetPackageWindowsContentDir)Agents\Forms\Android"/>
+    <Copy
+      SkipUnchangedFiles="true"
+      SourceFiles="@(iOSFormsAgentFiles)"
+      DestinationFolder="$(InspectorNuGetPackageWindowsContentDir)Agents\Forms\iOS"/>
+
+    <CallTarget Targets="_DoPackageInspectorNuGet"/>
+  </Target>
+
+  <Target Name="_DoPackageInspectorNuGet" DependsOnTargets="Xamarin_Build_ReadAllProperties">
+    <PropertyGroup>
       <InspectorPackageFileName>$(InspectorPackageName).$(ReleaseVersion_SemVerNuGetSafe).nupkg</InspectorPackageFileName>
     </PropertyGroup>
+
     <Error Text="NuGet is not provisioned" Condition="!Exists('$(NuGet)')"/>
     <Copy
       SkipUnchangedFiles="true"
-      SourceFiles="Package\Mac\$(InspectorPackageName).nuspec"
+      SourceFiles="$(InspectorPackageNuspec)"
       DestinationFolder="$(InspectorNuGetPackageBuildDir)"/>
     <!-- Use SemVerNuGetSafe to get versions in the form of x.y.z-beta1-build.123 instead of x.y.z-beta1+123.
          NuGet does not support reading build numbers from semver metadata. -->
     <Exec
-      Command="$(NuGet) pack $(InspectorPackageName).nuspec -Version $(ReleaseVersion_SemVerNuGetSafe) -NoPackageAnalysis"
+      Command="&quot;$(NuGet)&quot; pack $(InspectorPackageName).nuspec -Version $(ReleaseVersion_SemVerNuGetSafe) -NoPackageAnalysis"
       WorkingDirectory="$(InspectorNuGetPackageBuildDir)"/>
     <Copy
       SourceFiles="$(InspectorNuGetPackageBuildDir)\$(InspectorPackageFileName)"
@@ -490,7 +539,7 @@
       <Pdbs Include="Agents\**\bin\$(Configuration)\**\*.pdb" />
       <Pdbs Include="Clients\**\bin\$(Configuration)\*.pdb" />
       <Pdbs Include="WorkbookApps\**\bin\$(Configuration)\*.pdb" />
-      <Pdbs Include="Clients\Xamarin.Interactive.Client.Windows\bin\$(Configuration)InspectorExe\Xamarin Inspector.pdb" />
+      <Pdbs Include="Clients\Xamarin.Interactive.Client.Windows\bin\$(Configuration)$(InspectorOutputPathSuffix)\Xamarin Inspector.pdb" />
     </ItemGroup>
     <PropertyGroup>
       <PdbArchiveName>XamarinInteractive-PDB-$(ReleaseVersion_SemVer).zip</PdbArchiveName>
