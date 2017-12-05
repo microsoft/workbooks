@@ -10,7 +10,6 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading;
-using System.Threading.Tasks;
 
 using Microsoft.Win32;
 
@@ -19,7 +18,6 @@ using Xamarin.Interactive.Client.Updater;
 using Xamarin.Interactive.Core;
 using Xamarin.Interactive.IO;
 using Xamarin.Interactive.Logging;
-using Xamarin.Interactive.Markdown;
 using Xamarin.Interactive.Preferences;
 using Xamarin.Interactive.SystemInformation;
 
@@ -58,6 +56,7 @@ namespace Xamarin.Interactive
         public Telemetry.Client Telemetry { get; private set; }
         public IPreferenceStore Preferences { get; private set; }
         public HostEnvironment Host { get; private set; }
+        public IssueReport IssueReport { get; private set; }
         public IFileSystem FileSystem { get; private set; }
         public ClientWebServer WebServer { get; private set; }
         public UpdaterService Updater { get; private set; }
@@ -122,6 +121,8 @@ namespace Xamarin.Interactive
             Host = CreateHostEnvironment ()
                 ?? throw new InitializeException<HostEnvironment> (
                     nameof (CreateHostEnvironment));
+
+            IssueReport = new IssueReport (Host);
 
             FileSystem = CreateFileSystem ()
                 ?? throw new InitializeException<IFileSystem> (
@@ -258,77 +259,6 @@ namespace Xamarin.Interactive
             }) {
                 IsBackground = true,
             }.Start ();
-        }
-
-
-        public string GetIssueReportForClipboard ()
-        {
-            var writer = new StringWriter ();
-            WriteIssueReportForClipboardAsync (writer).GetAwaiter ().GetResult ();
-            return writer.ToString ().TrimEnd ();
-        }
-
-        public async Task WriteIssueReportForClipboardAsync (TextWriter writer)
-        {
-            var osArch = Environment.Is64BitOperatingSystem ? "64-bit" : "32-bit";
-
-            new MarkdownTable (ClientInfo.FullProductName, "Detail", "Value") {
-                { "Version", BuildInfo.Version.ToString () },
-                { "Git Branch", BuildInfo.Branch },
-                { "Git Hash", BuildInfo.HashShort },
-                { "VSTS Definition", BuildInfo.BuildHostLane }
-            }.Render (writer);
-
-            writer.WriteLine ();
-
-            string cores = null;
-
-            if (Host.ActiveProcessorCount != null)
-                cores = $"{Host.ActiveProcessorCount}";
-
-            if (Host.ProcessorCount != null) {
-                if (cores != null)
-                    cores += " / ";
-                cores += $"{Host.ProcessorCount}";
-            }
-
-            cores = cores ?? "_Unknown_";
-
-            string memory = null;
-
-            if (Host.PhysicalMemory != null)
-                memory = $"{Host.PhysicalMemory.Value / 1_073_741_824.0:N0} GB";
-
-            memory = memory ?? "_Unknown_";
-
-            new MarkdownTable ("System Info", "Component", "Value") {
-                { $"{Host.OSName}", $"{Host.OSVersionString} ({osArch})" },
-                { "CPU Cores", cores },
-                { "Physical Memory", memory }
-            }.Render (writer);
-
-            var softwareEnvironments = await Host.GetSoftwareEnvironmentsAsync ();
-            if (softwareEnvironments == null)
-                return;
-
-            foreach (var environment in softwareEnvironments) {
-                var name = environment is SystemSoftwareEnvironment
-                    ? "System-Installed Software"
-                    : $"{environment.Name} Components";
-
-                MarkdownTable table = null;
-
-                foreach (var component in environment.Where (c => c.IsInstalled)) {
-                    if (table == null)
-                        table = new MarkdownTable (name, "Component", "Version");
-                    table.Add (component.Name, component.Version);
-                }
-
-                if (table != null) {
-                    writer.WriteLine ();
-                    table.Render (writer);
-                }
-            }
         }
 
         static InteractiveInstallationPaths GetWindowsInstallationPaths ()

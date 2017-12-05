@@ -211,7 +211,7 @@ namespace Xamarin.Interactive.Client.Mac
             var pasteboard = NSPasteboard.GeneralPasteboard;
             pasteboard.ClearContents ();
             pasteboard.SetStringForType (
-                ClientApp.SharedInstance.GetIssueReportForClipboard (),
+                ClientApp.SharedInstance.IssueReport.GetEnvironmentMarkdown (),
                 NSPasteboard.NSStringType);
         }
 

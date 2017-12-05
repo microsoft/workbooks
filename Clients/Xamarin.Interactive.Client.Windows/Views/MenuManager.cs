@@ -206,7 +206,7 @@ namespace Xamarin.Interactive.Client.Windows.Views
             helpMenu.Items.Add (new MenuItem {
                 Header = Catalog.GetString ("Copy Version Information"),
                 Command = new DelegateCommand (_ =>
-                    Clipboard.SetText (ClientApp.SharedInstance.GetIssueReportForClipboard ())),
+                    Clipboard.SetText (ClientApp.SharedInstance.IssueReport.GetEnvironmentMarkdown ())),
             });
 
             helpMenu.Items.Add (new MenuItem {
