@@ -11,6 +11,7 @@ using AppKit;
 using CoreGraphics;
 using Foundation;
 
+using Xamarin.Interactive.Client;
 using Xamarin.Interactive.I18N;
 
 namespace Xamarin.Interactive.Preferences
@@ -30,6 +31,15 @@ namespace Xamarin.Interactive.Preferences
         public override void WindowDidLoad ()
         {
             base.WindowDidLoad ();
+
+            if (ClientInfo.Flavor != ClientFlavor.Inspector)
+                ContentViewController.InsertTabViewItem (new NSTabViewItem {
+                    Label = Catalog.GetString ("Updates"),
+                    Image = NSImage.ImageNamed ("preferences-updates-32"),
+                    ViewController = NSStoryboard
+                        .FromName ("Main", NSBundle.MainBundle)
+                        .InstantiateController<PreferencesUpdaterViewController> ()
+                }, 1);
 
             if (WebKitPrefs.DeveloperExtrasEnabled)
                 ContentViewController.AddTabViewItem (new NSTabViewItem {

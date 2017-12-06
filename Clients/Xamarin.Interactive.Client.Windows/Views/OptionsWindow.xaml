@@ -113,7 +113,8 @@
         <TabItem
             Style="{DynamicResource TabItemStyle}"
             Foreground="{DynamicResource TextBrush}"
-            Header="updates">
+            Header="updates"
+            Visibility="{Binding IsInspectorClient, Converter={StaticResource visibilityConverter}, ConverterParameter=Inverse}">
             <Grid IsSharedSizeScope="True">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>

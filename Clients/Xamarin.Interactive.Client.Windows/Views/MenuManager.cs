@@ -191,11 +191,12 @@ namespace Xamarin.Interactive.Client.Windows.Views
                 Command = Commands.Commands.Help,
             });
 
-            helpMenu.Items.Add (new MenuItem {
-                Header = "Check for Updates",
-                Command = Commands.Commands.CheckForUpdates,
-                CommandParameter = window
-            });
+            if (ClientInfo.Flavor != ClientFlavor.Inspector)
+                helpMenu.Items.Add (new MenuItem {
+                    Header = "Check for Updates",
+                    Command = Commands.Commands.CheckForUpdates,
+                    CommandParameter = window
+                });
 
             helpMenu.Items.Add (new Separator ());
 
