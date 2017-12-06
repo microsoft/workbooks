@@ -206,7 +206,6 @@ Gw
                 <tabViewController selectedTabViewItemIndex="0" tabStyle="toolbar" id="XgF-AY-gyd" customClass="PreferencesTabViewController" sceneMemberID="viewController">
                     <tabViewItems>
                         <tabViewItem label="General" identifier="" image="NSPreferencesGeneral" id="751-Qr-6yV"/>
-                        <tabViewItem label="Updates" image="preferences-updates-32" id="cUh-6e-Fy4"/>
                         <tabViewItem label="Feedback" image="preferences-feedback-32" id="zrc-su-VN4"/>
                     </tabViewItems>
                     <viewControllerTransitionOptions key="transitionOptions" allowUserInteraction="YES"/>
@@ -219,7 +218,6 @@ Gw
                     <connections>
                         <outlet property="tabView" destination="3cz-ac-hco" id="SUO-s3-xvG"/>
                         <segue destination="5cL-NK-hn5" kind="relationship" relationship="tabItems" id="VzD-a9-7fm"/>
-                        <segue destination="s65-8V-v1T" kind="relationship" relationship="tabItems" id="Hll-fo-JJQ"/>
                         <segue destination="sNN-bw-8fp" kind="relationship" relationship="tabItems" id="Wj9-Ui-FRl"/>
                     </connections>
                 </tabViewController>
@@ -429,7 +427,7 @@ Gw
         <!--Preferences Updater View Controller-->
         <scene sceneID="why-Gl-ECy">
             <objects>
-                <viewController id="s65-8V-v1T" customClass="PreferencesUpdaterViewController" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="PreferencesUpdaterViewController" id="s65-8V-v1T" customClass="PreferencesUpdaterViewController" sceneMemberID="viewController">
                     <view key="view" id="iYV-MS-bjK" customClass="PreferencesView">
                         <rect key="frame" x="0.0" y="0.0" width="450" height="159"/>
                         <autoresizingMask key="autoresizingMask"/>
@@ -644,18 +642,6 @@ Gw
                                             <modifierMask key="keyEquivalentModifierMask"/>
                                             <connections>
                                                 <action selector="showAbout:" target="Voe-Tx-rLC" id="4hD-os-eEc"/>
-                                            </connections>
-                                        </menuItem>
-                                        <menuItem title="Check for Updates…" id="zNo-k9-1Cf">
-                                            <modifierMask key="keyEquivalentModifierMask"/>
-                                            <connections>
-                                                <action selector="checkForUpdates:" target="Voe-Tx-rLC" id="maq-k1-ehl"/>
-                                            </connections>
-                                        </menuItem>
-                                        <menuItem title="Enable Terminal Usage…" id="xlZ-EV-ZKg">
-                                            <modifierMask key="keyEquivalentModifierMask"/>
-                                            <connections>
-                                                <action selector="installCommandLineTool:" target="Ady-hI-5gd" id="vRc-rh-XKW"/>
                                             </connections>
                                         </menuItem>
                                         <menuItem isSeparatorItem="YES" id="VOq-y0-SEH"/>

@@ -388,9 +388,6 @@
     <BundleResource Include="Resources\refresh-16%402x.png" />
     <BundleResource Include="Resources\cancel-16.png" />
     <BundleResource Include="Resources\cancel-16%402x.png" />
-    <BundleResource Include="..\..\Package\buildinfo">
-      <Link>Resources\buildinfo</Link>
-    </BundleResource>
     <BundleResource Include="Resources\project-16.png" />
     <BundleResource Include="Resources\project-16%402x.png" />
     <BundleResource Include="Resources\project-android-16.png" />
@@ -401,9 +398,6 @@
     <BundleResource Include="Resources\project-ios-16%402x.png" />
     <BundleResource Include="Resources\project-macos-16.png" />
     <BundleResource Include="Resources\project-macos-16%402x.png" />
-    <BundleResource Include="..\..\Package\Mac\updateinfo">
-      <Link>Resources\updateinfo</Link>
-    </BundleResource>
     <BundleResource Include="Resources\preferences-feedback-32.png" />
     <BundleResource Include="Resources\preferences-feedback-32%402x.png" />
     <BundleResource Include="Resources\preferences-updates-32.png" />

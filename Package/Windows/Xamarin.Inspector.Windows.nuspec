@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<package>
+  <metadata minClientVersion="3.3.0">
+    <id>Xamarin.Inspector.Windows</id>
+    <version>0.0.0</version>
+    <title>Xamarin Inspector Extension Support for Windows</title>
+    <authors>Microsoft</authors>
+    <owners>Microsoft</owners>
+    <developmentDependency>true</developmentDependency>
+    <description>Xamarin Inspector client and support files for IDE extensions.</description>
+    <copyright>Copyright 2017 Microsoft. All rights reserved.</copyright>
+    <tags>xamarin inspector</tags>
+    <contentFiles>
+        <files
+            include="any/**"
+            buildAction="None"
+            copyToOutput="true" />
+    </contentFiles>
+  </metadata>
+</package>

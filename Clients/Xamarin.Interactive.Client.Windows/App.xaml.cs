@@ -168,8 +168,9 @@ namespace Xamarin.Interactive.Client.Windows
 
             base.OnStartup (e);
 
-            ClientApp.SharedInstance.Updater.CheckForUpdatesPeriodicallyInBackground (
-                update => UpdateHandler (null, update));
+            if (ClientInfo.Flavor != ClientFlavor.Inspector)
+                ClientApp.SharedInstance.Updater.CheckForUpdatesPeriodicallyInBackground (
+                    update => UpdateHandler (null, update));
         }
 
         public static void CheckForUpdatesInBackground (Window ownerWindow = null, bool userInitiated = false)
@@ -188,6 +189,9 @@ namespace Xamarin.Interactive.Client.Windows
 
         static void UpdateHandler (Window ownerWindow, Task<UpdateItem> update)
         {
+            if (ClientInfo.Flavor == ClientFlavor.Inspector)
+                return;
+
             if (update.IsFaulted) {
                 if (ownerWindow != null)
                     update.Exception.ToUserPresentable (

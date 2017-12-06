@@ -243,7 +243,6 @@ namespace Xamarin.Interactive
 
         static IReadOnlyList<WorkbookAppInstallation> LocateWorkbookApps ()
         {
-            searchPaths.Add (InteractiveInstallation.Default.WorkbookAppsInstallPath);
             searchPaths.Add (Path.Combine (InteractiveInstallation.Default.BuildPath, "_build"));
 
             var manifestFile = InteractiveInstallation
