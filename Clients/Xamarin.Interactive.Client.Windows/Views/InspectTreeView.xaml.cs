@@ -44,24 +44,22 @@ namespace Xamarin.Interactive.Client.Windows.Views
             var currentPosition = e.GetPosition (CaptureBorder);
             var offset = currentPosition - downPosition;
             if (offset.X == 0 && offset.Y == 0) {
-                SelectedNode = null;
-                VisualTreeHelper.HitTest (
-                    viewport,
-                    null,
-                    ResultCallback,
-                    new PointHitTestParameters (currentPosition));
-                if (HoverNode != null) {
-                    SelectedNode = HoverNode;
-                    //Tree.SelectedNode = HoverNode.Node;
-                }
+                SelectedNode = HitTest (currentPosition);
             }
         }
 
         void HandleMouseMove (object sender, MouseEventArgs e)
         {
             var currentPosition = e.GetPosition (CaptureBorder);
-            var hitParams = new PointHitTestParameters (currentPosition);
+            HoverNode = HitTest (currentPosition);
+        }
+
+        InspectTreeNode3D HitTest (Point position)
+        {
+            var hitParams = new PointHitTestParameters (position);
+            HitNode = null;
             VisualTreeHelper.HitTest (viewport, null, ResultCallback, hitParams);
+            return HitNode;
         }
 
         public HitTestResultBehavior ResultCallback (HitTestResult result)
@@ -71,11 +69,11 @@ namespace Xamarin.Interactive.Client.Windows.Views
             if (meshResult != null) {
                 var node = meshResult.VisualHit as InspectTreeNode3D;
 
-                HoverNode = node;
+                HitNode = node;
                 return HitTestResultBehavior.Stop;
             }
 
-            HoverNode = null;
+            HitNode = null;
             return HitTestResultBehavior.Continue;
         }
 
@@ -87,6 +85,8 @@ namespace Xamarin.Interactive.Client.Windows.Views
             if (Trackball != null)
                 Trackball.EventSource = CaptureBorder;
         }
+
+        InspectTreeNode3D HitNode { get; set; }
 
         InspectTreeNode3D hoverNode;
         InspectTreeNode3D HoverNode {

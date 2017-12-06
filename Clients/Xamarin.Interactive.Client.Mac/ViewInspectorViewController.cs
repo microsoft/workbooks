@@ -29,7 +29,7 @@ namespace Xamarin.Interactive.Client.Mac
                     return;
 
                 representedView = value;
-                //OnRepresentedViewChanged ();
+                OnRepresentedViewChanged ();
             }
         }
 
@@ -41,7 +41,7 @@ namespace Xamarin.Interactive.Client.Mac
                     return;
 
                 selectedView = value;
-                //OnSelectedViewChanged ();
+                OnSelectedViewChanged ();
             }
         }
 
@@ -71,15 +71,12 @@ namespace Xamarin.Interactive.Client.Mac
                     var treeSensed = sender as InspectTreeRoot;
                     switch (args.PropertyName) {
                     case nameof (InspectTreeRoot.RepresentedNode):
-                        OnRepresentedViewChanged ();
                         OnRepresentedNodeChanged ();
                         break;
                     case nameof (InspectTreeRoot.RootNode):
-                        OnRootViewChanged ();
                         OnRootNodeChanged ();
                         break;
                     case nameof (InspectTreeRoot.SelectedNode):
-                        OnSelectedViewChanged ();
                         OnSelectedNodeChanged ();
                         break;
                     }
