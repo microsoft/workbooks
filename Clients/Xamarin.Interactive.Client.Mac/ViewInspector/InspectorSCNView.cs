@@ -71,19 +71,10 @@ namespace Xamarin.Interactive.Client.Mac.ViewInspector
             }
         }
 
-        void HandleTreePropertyChanged (object sender, PropertyChangedEventArgs args)
-        {
-            var senderTree = sender as InspectTreeRoot;
-            switch (args.PropertyName) {
-            case nameof (InspectTreeRoot.RepresentedNode):
-                RebuildScene (senderTree.RepresentedNode);
-                break;
-            }
-        }
 
         void RebuildScene (InspectTreeNode view, bool recreateScene = true)
         {
-            if (recreateScene)
+            if (recreateScene || Scene == null)
                 Scene = new SCNScene ();
             else
                 currentViewNode?.RemoveFromParentNode ();

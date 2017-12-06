@@ -7,7 +7,7 @@
 // Licensed under the MIT License.
 
 using System;
-
+using System.Linq;
 using SceneKit;
 
 using Xamarin.Interactive.Client.Mac.ViewInspector;
@@ -63,7 +63,12 @@ namespace Xamarin.Interactive.Client.Mac
 
         protected override void OnRepresentedNodeChanged ()
         {
-            scnView.RepresentedNode = Tree?.RepresentedNode;
+            var represented = Tree?.RepresentedNode;
+            if (represented != null)
+                if (represented.View.IsFakeRoot)
+                    represented = represented.Children.OfType<InspectTreeNode> ().FirstOrDefault ();
+            
+            scnView.RepresentedNode = represented;
         }
     }
 }

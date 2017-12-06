@@ -34,12 +34,18 @@ namespace Xamarin.Interactive.Client.Mac
             base.OnPropertyChanged (name);
             switch (name) {
             case nameof (ViewInspectorViewModel.SelectedView):
+                viewController.ChildViewControllers.OfType<ViewInspectorViewController> ().ForEach (viewController => {
+                    viewController.SelectedView = SelectedView;
+                });
+                break;
             case nameof (ViewInspectorViewModel.RepresentedView):
+                viewController.ChildViewControllers.OfType<ViewInspectorViewController> ().ForEach (viewController => {
+                    viewController.SelectedView = SelectedView;
+                });
+                break;
             case nameof (ViewInspectorViewModel.RootView):
                 viewController.ChildViewControllers.OfType<ViewInspectorViewController> ().ForEach (viewController => {
                     viewController.RootView = RootView;
-                    viewController.RepresentedView = RepresentedView;
-                    viewController.SelectedView = SelectedView;
                 });
                 break;
             case nameof (ViewInspectorViewModel.RootModel):
