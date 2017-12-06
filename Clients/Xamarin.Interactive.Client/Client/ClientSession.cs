@@ -679,6 +679,7 @@ namespace Xamarin.Interactive.Client
                     package.Identity.Version.Version,
                     this,
                     CompilationWorkspace.DependencyResolver,
+                    CompilationWorkspace.EvaluationContextId,
                     Agent.IncludePeImage);
             }
 
