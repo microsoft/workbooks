@@ -15,6 +15,7 @@ namespace Xamarin.Interactive.Client.ViewInspector
         public int TotalCount { get; private set; }
         public DisplayMode Mode { get; }
         public bool ShowHidden { get; }
+        public bool CollapseLayers { get; } = true;
 
         List<int> ancestors = new List<int> { 0 };
 

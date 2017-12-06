@@ -25,14 +25,12 @@ namespace Xamarin.Interactive.Client.Mac.ViewInspector
         const string TAG = nameof (InspectorSCNView);
 
         InspectViewNode currentViewNode;
-        InspectViewNode focusedNode;
+
         bool isDragging;
         DisplayMode displayMode = DisplayMode.FramesAndContent;
         bool showHiddenViews;
 
         public SceneKitDolly Trackball { get; } = new SceneKitDolly ();
-
-        public event Action<InspectTreeNode> ViewSelected;
 
         public InspectorSCNView (IntPtr handle) : base (handle)
         {
@@ -59,6 +57,23 @@ namespace Xamarin.Interactive.Client.Mac.ViewInspector
             }
         }
 
+        InspectViewNode hoverNode;
+        InspectViewNode HoverNode {
+            get => hoverNode;
+            set {
+                if (hoverNode != value) {
+                    if (hoverNode != null) {
+                        hoverNode.Node.IsMouseOver = false;
+                    }
+
+                    hoverNode = value;
+                    if (hoverNode != null) {
+                        hoverNode.Node.IsMouseOver = true;
+                    }
+                }
+            }
+        }
+
         InspectTreeNode representedNode;
         public InspectTreeNode RepresentedNode {
             get => representedNode;
@@ -70,7 +85,6 @@ namespace Xamarin.Interactive.Client.Mac.ViewInspector
                 RebuildScene (representedNode, true);
             }
         }
-
 
         void RebuildScene (InspectTreeNode view, bool recreateScene = true)
         {
@@ -96,16 +110,10 @@ namespace Xamarin.Interactive.Client.Mac.ViewInspector
 
         public override void MouseMoved (NSEvent theEvent)
         {
-            var inspectViewNode = HitTest (
+            HoverNode = HitTest (
                 ConvertPointFromView (theEvent.LocationInWindow, null),
                 (SCNHitTestOptions)null
             )?.FirstOrDefault ()?.Node as InspectViewNode;
-
-            if (focusedNode != inspectViewNode) {
-                focusedNode?.Blur ();
-                focusedNode = inspectViewNode;
-                focusedNode?.Focus ();
-            }
 
             base.MouseMoved (theEvent);
         }
@@ -140,13 +148,10 @@ namespace Xamarin.Interactive.Client.Mac.ViewInspector
                 (SCNHitTestOptions)null
             )?.FirstOrDefault ()?.Node as InspectViewNode;
 
-            var node = inspectViewNode?.InspectTreeNode;
+            var node = inspectViewNode?.Node;
 
-            if (node != null) {
+            if (node != null)
                 node.IsSelected = true;
-                if (isDragging)
-                    ViewSelected?.Invoke (node);
-            }
         }
 
         public override void MagnifyWithEvent (NSEvent theEvent)

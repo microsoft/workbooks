@@ -83,7 +83,7 @@ namespace Xamarin.Interactive.Client.ViewInspector
             return node3D;
         }
 
-        IEnumerable<InspectTreeNode> GetRenderedChildren (InspectTreeState state, bool collapseLayers = true)
+        IEnumerable<InspectTreeNode> GetRenderedChildren (InspectTreeState state)
         {
             // exploit the fact that Layers can't have Subview or Layer set
             // to walk the children in collapsed layer format
@@ -91,7 +91,7 @@ namespace Xamarin.Interactive.Client.ViewInspector
             var children = Children.OfType<InspectTreeNode>();
 
             foreach (var child in children) {
-                if (collapseLayers && layer != null && child.View == layer) {
+                if (state.CollapseLayers && layer != null && child.View == layer) {
                     foreach (var sublayer in child.Children.OfType<InspectTreeNode> ())
                         yield return sublayer;
 

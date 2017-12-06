@@ -310,18 +310,6 @@
                         ShowsPreview="True"
                         Width="5"/>
 
-                    <!--
-                    <localViews:VisualRepView
-                        Grid.Column="2"
-                        AutomationProperties.Name="3D view"
-                        x:Name="visualRep"
-                        Trackball="{Binding Trackball}"
-                        IsEnabled="{Binding IsWindowEnabled}"
-                        CurrentView="{Binding Root}"
-                        DisplayMode="{Binding DisplayMode}"
-                        ShowHidden="{Binding ShowHidden}"
-                        SelectedView="{Binding SelectedView, Mode=TwoWay}"/>
-                  -->
                     <localViews:InspectTreeView
                         Grid.Column="2"
                         AutomationProperties.Name="3D view"

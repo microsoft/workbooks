@@ -55,12 +55,6 @@ namespace Xamarin.Interactive.Client.Mac
             scnView.Trackball.Reset ();
         }
 
-        public override void ViewDidLoad ()
-        {
-            scnView.ViewSelected += (node) => Tree.SelectedNode = node;
-            base.ViewDidLoad ();
-        }
-
         protected override void OnRepresentedNodeChanged ()
         {
             var represented = Tree?.RepresentedNode;

@@ -21,43 +21,11 @@ namespace Xamarin.Interactive.Client.Mac
         public new ViewInspectorMainViewController ParentViewController
             => (ViewInspectorMainViewController)base.ParentViewController;
 
-        InspectView representedView;
-        public InspectView RepresentedView {
-            get { return tree?.RepresentedNode.View ?? representedView; }
-            set {
-                if (representedView == value)
-                    return;
+        public InspectView RepresentedView => tree?.RepresentedNode.View;
 
-                representedView = value;
-                OnRepresentedViewChanged ();
-            }
-        }
+        public InspectView SelectedView => tree?.SelectedNode?.View;
 
-        InspectView selectedView;
-        public InspectView SelectedView {
-            get { return tree?.SelectedNode?.View ?? selectedView; }
-            set {
-                if (selectedView == value)
-                    return;
-
-                selectedView = value;
-                OnSelectedViewChanged ();
-            }
-        }
-
-        InspectView rootView;
-        public InspectView RootView {
-            get { return tree?.RootNode?.View ?? rootView; }
-            set {
-                if (rootView == value)
-                    return;
-
-                rootView = value;
-
-                if (tree == null)
-                    OnRootViewChanged ();
-            }
-        }
+        public InspectView RootView => tree?.RootNode?.View;
 
         InspectTreeRoot tree;
         public InspectTreeRoot Tree {
@@ -108,18 +76,24 @@ namespace Xamarin.Interactive.Client.Mac
 
         protected virtual void OnTreeChanged ()
         {
+            OnRootNodeChanged ();
+            OnRepresentedNodeChanged ();
+            OnSelectedNodeChanged ();
         }
 
         protected virtual void OnRepresentedNodeChanged ()
         {
+            OnRepresentedViewChanged ();
         }
 
         protected virtual void OnRootNodeChanged ()
-        {
+        {   
+            OnRootViewChanged ();
         }
 
         protected virtual void OnSelectedNodeChanged ()
         {
+            OnSelectedViewChanged ();
         }
     }
 }
