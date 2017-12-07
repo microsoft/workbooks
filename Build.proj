@@ -477,13 +477,16 @@
   </Target>
 
   <Target Name="_PackageInspectorNuGetWin" DependsOnTargets="Xamarin_Build_ReadAllProperties">
-    <ItemGroup>
-      <InspectorClientFiles Include="Clients\Xamarin.Interactive.Client.Windows\bin\$(Configuration)$(InspectorOutputPathSuffix)\**\*"/>
-    </ItemGroup>
     <PropertyGroup>
+      <InspectorClientFilesPath>Clients\Xamarin.Interactive.Client.Windows\bin\$(Configuration)$(InspectorOutputPathSuffix)\</InspectorClientFilesPath>
       <!-- Add a parent folder since there's no app bundle like on Mac -->
       <InspectorNuGetPackageWindowsContentDir>$(InspectorNuGetPackageContentDir)\Xamarin.Inspector.Windows\</InspectorNuGetPackageWindowsContentDir>
     </PropertyGroup>
+    <ItemGroup>
+      <InspectorClientFiles
+        Include="$(InspectorClientFilesPath)**\*"
+        Exclude="$(InspectorClientFilesPath)*.pdb;$(InspectorClientFilesPath)*.xml"/>
+    </ItemGroup>
 
     <Copy
       SkipUnchangedFiles="true"
