@@ -67,6 +67,8 @@
     <UpdateInfoFile>Package\Mac\updateinfo</UpdateInfoFile>
     <InspectorPackageName>Xamarin.Inspector.Mac</InspectorPackageName>
     <InspectorPackageNuspec>Package\Mac\$(InspectorPackageName).nuspec</InspectorPackageNuspec>
+    <InspectorAppBundleName>Xamarin Inspector.app</InspectorAppBundleName>
+    <InspectorClientInstallPath>$(FrameworkInstallDir)InspectorClient\</InspectorClientInstallPath>
   </PropertyGroup>
 
   <!-- XVS mac build host configuration (in VSTS) -->
@@ -295,8 +297,6 @@
   <Target Name="_InstallClientAppMac">
     <PropertyGroup>
       <WorkbooksAppBundleName>Xamarin Workbooks.app</WorkbooksAppBundleName>
-      <InspectorAppBundleName>Xamarin Inspector.app</InspectorAppBundleName>
-      <InspectorClientInstallPath>$(FrameworkInstallDir)InspectorClient\</InspectorClientInstallPath>
       <WorkbooksAppBundlePath>Clients\Xamarin.Interactive.Client.Mac\bin\$(Configuration)\$(WorkbooksAppBundleName)</WorkbooksAppBundlePath>
       <InspectorAppBundlePath>Clients\Xamarin.Interactive.Client.Mac\bin\$(Configuration)\$(InspectorAppBundleName)</InspectorAppBundlePath>
       <WorkbooksAppSharedSupportPath>$(InstallDestDir)Applications\$(WorkbooksAppBundleName)\Contents\SharedSupport\</WorkbooksAppSharedSupportPath>
@@ -360,10 +360,6 @@
       SkipUnchangedFiles="true"
       SourceFiles="$(BuildInfoDistFile)"
       DestinationFolder="$(InspectorAppSharedSupportPath)"/>
-
-    <!-- Copy completed Inspector.app bundle to staging area where Xamarin.Inspector.Mac.nupkg can be built later -->
-    <MakeDir Directories="$(InspectorNuGetPackageContentDir)"/>
-    <Exec Command="cp -a &quot;$(InspectorClientInstallPath)\$(InspectorAppBundleName)&quot; &quot;$(InspectorNuGetPackageContentDir)&quot;"/>
   </Target>
 
   <Target Name="Package">
@@ -472,7 +468,11 @@
         DestinationFiles="$(PackageOutputDir)\Xamarin.Workbooks.Integration.$(WorkbooksIntegrationNuGetPackageVersion).nupkg" />
   </Target>
 
-  <Target Name="_PackageInspectorNuGetMac" DependsOnTargets="Xamarin_Build_ReadAllProperties;Install">
+  <Target Name="_PackageInspectorNuGetMac" DependsOnTargets="Xamarin_Build_ReadAllProperties">
+    <!-- Copy completed Inspector.app bundle to staging area where Xamarin.Inspector.Mac.nupkg can be built later -->
+    <MakeDir Directories="$(InspectorNuGetPackageContentDir)"/>
+    <Exec Command="cp -a &quot;$(InspectorClientInstallPath)\$(InspectorAppBundleName)&quot; &quot;$(InspectorNuGetPackageContentDir)&quot;"/>
+
     <CallTarget Targets="_DoPackageInspectorNuGet"/>
   </Target>
 
