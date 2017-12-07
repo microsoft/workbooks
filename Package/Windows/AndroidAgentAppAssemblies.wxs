@@ -689,6 +689,30 @@
       <Component Id="AndroidAgentApp.netstandard.dll" Guid="E470B065-2E03-4AAB-A3D8-1714483D4B13">
         <File Id="AndroidAgentApp.netstandard.dll" Source="$(var.AndroidAppAssembliesDir)\netstandard.dll" />
       </Component>
+      <Component Id="AndroidAgentApp.Xamarin.Android.Support.Annotations.dll" Guid="EE7990E2-18C4-416C-A095-914BBCA26F2D">
+        <File Id="AndroidAgentApp.Xamarin.Android.Support.Annotations.dll" Source="$(var.AndroidAppAssembliesDir)\Xamarin.Android.Support.Annotations.dll" />
+      </Component>
+      <Component Id="AndroidAgentApp.Xamarin.Android.Support.Compat.dll" Guid="8C4CDC44-2388-4CFA-B724-5D60B01550D2">
+        <File Id="AndroidAgentApp.Xamarin.Android.Support.Compat.dll" Source="$(var.AndroidAppAssembliesDir)\Xamarin.Android.Support.Compat.dll" />
+      </Component>
+      <Component Id="AndroidAgentApp.Xamarin.Android.Support.Core.UI.dll" Guid="AD27FF29-1694-4DBB-A256-7E4EE22AE609">
+        <File Id="AndroidAgentApp.Xamarin.Android.Support.Core.UI.dll" Source="$(var.AndroidAppAssembliesDir)\Xamarin.Android.Support.Core.UI.dll" />
+      </Component>
+      <Component Id="AndroidAgentApp.Xamarin.Android.Support.Core.Utils.dll" Guid="A36B5AA6-5F4F-4CDC-AE4F-07616772EDF0">
+        <File Id="AndroidAgentApp.Xamarin.Android.Support.Core.Utils.dll" Source="$(var.AndroidAppAssembliesDir)\Xamarin.Android.Support.Core.Utils.dll" />
+      </Component>
+      <Component Id="AndroidAgentApp.Xamarin.Android.Support.Fragment.dll" Guid="13AD3B0F-B1D6-4C4B-8B4F-09EAF38A6C91">
+        <File Id="AndroidAgentApp.Xamarin.Android.Support.Fragment.dll" Source="$(var.AndroidAppAssembliesDir)\Xamarin.Android.Support.Fragment.dll" />
+      </Component>
+      <Component Id="AndroidAgentApp.Xamarin.Android.Support.Media.Compat.dll" Guid="23D9C948-D5A1-48D0-9DD3-5B2DECD72497">
+        <File Id="AndroidAgentApp.Xamarin.Android.Support.Media.Compat.dll" Source="$(var.AndroidAppAssembliesDir)\Xamarin.Android.Support.Media.Compat.dll" />
+      </Component>
+      <Component Id="AndroidAgentApp.Xamarin.Android.Support.Transition.dll" Guid="3A1763BF-4841-438F-A3D1-C9656232A075">
+        <File Id="AndroidAgentApp.Xamarin.Android.Support.Transition.dll" Source="$(var.AndroidAppAssembliesDir)\Xamarin.Android.Support.Transition.dll" />
+      </Component>
+      <Component Id="AndroidAgentApp.Xamarin.Android.Support.v_.Palette.dll" Guid="1268FB88-26C6-4A29-82C0-1874B9B371C2">
+        <File Id="AndroidAgentApp.Xamarin.Android.Support.v_.Palette.dll" Source="$(var.AndroidAppAssembliesDir)\Xamarin.Android.Support.v7.Palette.dll" />
+      </Component>
     </ComponentGroup>
     <ComponentGroup Id="AndroidAgentAppClientIntegrationComponents" Directory="AndroidAgentAppClientIntegrationInstallFolder">
       <Component Id="Filedf726d8904b8bd646182c5041501fc57a86eb6a4" Guid="CA9D4CC8-8400-4DC7-B9FF-4FEAABA3802A">

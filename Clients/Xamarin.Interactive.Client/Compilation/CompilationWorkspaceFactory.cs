@@ -60,6 +60,7 @@ namespace Xamarin.Interactive.Compilation
                         formsReference.Name.Version,
                         clientSession,
                         dependencyResolver,
+                        configuration.EvaluationContextId,
                         includePeImage).ConfigureAwait (false);
             }
 
@@ -80,6 +81,7 @@ namespace Xamarin.Interactive.Compilation
             Version formsVersion,
             ClientSession clientSession,
             DependencyResolver dependencyResolver,
+            int evaluationContextId,
             bool includePeImage)
         {
             var formsAssembly = InteractiveInstallation.Default.LocateFormsAssembly (
@@ -124,7 +126,7 @@ namespace Xamarin.Interactive.Compilation
             }).ToArray ();
 
             var res = await clientSession.Agent.Api.LoadAssembliesAsync (
-                clientSession.CompilationWorkspace.EvaluationContextId,
+                evaluationContextId,
                 assembliesToLoad);
 
             var failed = res.LoadResults.Where (p => !p.Success);
