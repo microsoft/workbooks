@@ -13,8 +13,12 @@ using System.Linq;
 using System.Reflection.Metadata;
 using System.Reflection.PortableExecutable;
 
+using NuGet.Packaging;
+using NuGet.Versioning;
+
 using Xamarin.Interactive.Core;
 using Xamarin.Interactive.Logging;
+using Xamarin.Interactive.NuGet;
 
 namespace Xamarin.Interactive.Reflection
 {
@@ -54,7 +58,69 @@ namespace Xamarin.Interactive.Reflection
             if (path.Name == "Urho.dll")
                 nativeDependencies.AddRange (GetUrhoSharpDependencies (path));
 
+            if (path.Name == "Microsoft.AspNetCore.Server.Kestrel.Transport.Libuv.dll")
+                nativeDependencies.AddRange (GetKestrelLibuvDependencies (path));
+
             return resolvedAssembly.WithExternalDependencies (nativeDependencies);
+        }
+
+        IEnumerable<ExternalDependency> GetKestrelLibuvDependencies (FilePath path)
+        {
+            var packageDirectoryPath = path.ParentDirectory.ParentDirectory.ParentDirectory;
+
+            // Get all the available libuv's
+            var allPackagesPath = packageDirectoryPath.ParentDirectory.ParentDirectory;
+            var libuvPackagesPath = allPackagesPath.Combine ("libuv");
+            var libuvVersions = libuvPackagesPath.EnumerateDirectories ()
+                .Select (dir => NuGetVersion.Parse (dir.Name))
+                .ToArray ();
+
+            // Read the transport's nuspec to find the best matching version of libuv
+            var nuspecPath = packageDirectoryPath.Combine (
+                "microsoft.aspnetcore.server.kestrel.transport.libuv.nuspec");
+            var nuspecData = new NuspecReader (nuspecPath);
+            var libuvDependencyVersion = nuspecData.GetDependencyGroups ()
+                .SelectMany (dg => dg.Packages)
+                .Where (p => PackageIdComparer.Equals (p.Id, "Libuv"))
+                .Distinct (PackageIdComparer.Default)
+                .SingleOrDefault()
+                ?.VersionRange
+                .FindBestMatch (libuvVersions);
+
+            var libuvPackagePath = libuvPackagesPath.Combine (libuvDependencyVersion.ToString ());
+
+            var isMac = InteractiveInstallation.Default.IsMac;
+            var architecture = Environment.Is64BitProcess && (isMac || AgentType != AgentType.DotNetCore)
+                ? "x64"
+                : "x86";
+
+            string runtimeName, nativeLibName;
+            switch (AgentType) {
+            case AgentType.WPF:
+                // We need the win7-<bitness> library here.
+                nativeLibName = "libuv.dll";
+                runtimeName = $"win-{architecture}";
+                break;
+            case AgentType.Console:
+            case AgentType.MacNet45:
+            case AgentType.MacMobile:
+            case AgentType.DotNetCore:
+                nativeLibName = isMac ? "libuv.dylib" : "libuv.dll";
+                runtimeName = isMac ? "osx" : $"win-{architecture}";
+                break;
+            default:
+                yield break;
+            }
+
+            var nativeLibraryPath = libuvPackagePath.Combine (
+                "runtimes",
+                runtimeName,
+                "native",
+                nativeLibName
+            );
+
+            if (nativeLibraryPath.FileExists)
+                yield return new NativeDependency (nativeLibraryPath.Name, nativeLibraryPath);
         }
 
         IEnumerable<ExternalDependency> GetSkiaSharpDependencies (FilePath path)
