@@ -1058,6 +1058,9 @@
       <Component Id="hexdump.css" Guid="BE097A0A-DFD8-4813-9BDE-C8931D2A04EA">
         <File Id="hexdump.css" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\renderers\hex-dump.css" />
       </Component>
+      <Component Id="string.css" Guid="60258F23-C842-4BB3-9787-6E5116B94A4B">
+        <File Id="string.css" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\ClientApp\renderers\string.css" />
+      </Component>
     </ComponentGroup>
     <ComponentGroup Id="ClientReplPmtoolbarResources" Directory="InspectorResourcesReplPmtoolbar">
       <Component Id="blockquote.png" Guid="56B92508-2099-4277-9560-2001905902DF">
