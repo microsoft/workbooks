@@ -12,7 +12,7 @@ using NuGet.Packaging.Core;
 
 namespace Xamarin.Interactive.NuGet
 {
-    sealed class PackageIdComparer : IEqualityComparer<InteractivePackage>
+    sealed class PackageIdComparer : IEqualityComparer<InteractivePackage>, IEqualityComparer<PackageDependency>
     {
         public static bool Equals (string x, string y)
             => string.Equals (x, y, StringComparison.OrdinalIgnoreCase);
@@ -23,12 +23,21 @@ namespace Xamarin.Interactive.NuGet
         public static bool Equals (InteractivePackage x, InteractivePackage y)
             => Equals (x?.Identity, y?.Identity);
 
-        public static readonly IEqualityComparer<InteractivePackage> Default = new PackageIdComparer ();
+        public static bool Equals (PackageDependency x, PackageDependency y)
+            => Equals (x?.Id, y?.Id);
+
+        public static readonly PackageIdComparer Default = new PackageIdComparer ();
 
         bool IEqualityComparer<InteractivePackage>.Equals (InteractivePackage x, InteractivePackage y)
             => Equals (x, y);
 
+        bool IEqualityComparer<PackageDependency>.Equals (PackageDependency x, PackageDependency y)
+            => Equals (x, y);
+
         int IEqualityComparer<InteractivePackage>.GetHashCode (InteractivePackage obj)
             => obj?.Identity.Id == null ? 0 : obj.Identity.Id.GetHashCode ();
+
+        int IEqualityComparer<PackageDependency>.GetHashCode (PackageDependency obj)
+            => obj?.Id == null ? 0 : obj.Id.GetHashCode ();
     }
 }
