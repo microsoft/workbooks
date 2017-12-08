@@ -98,7 +98,7 @@ namespace Xamarin.Interactive.CodeAnalysis.Monaco
             var currentNode = syntaxToken.Parent;
             do {
                 var creationExpression = currentNode as ObjectCreationExpressionSyntax;
-                if (creationExpression != null)
+                if (creationExpression != null && creationExpression.ArgumentList.Span.Contains (position))
                     return CreateMethodGroupSignatureHelp (
                         creationExpression,
                         creationExpression.ArgumentList,
@@ -106,7 +106,7 @@ namespace Xamarin.Interactive.CodeAnalysis.Monaco
                         semanticModel);
 
                 var invocationExpression = currentNode as InvocationExpressionSyntax;
-                if (invocationExpression != null)
+                if (invocationExpression != null && invocationExpression.ArgumentList.Span.Contains (position))
                     return CreateMethodGroupSignatureHelp (
                         invocationExpression.Expression,
                         invocationExpression.ArgumentList,
