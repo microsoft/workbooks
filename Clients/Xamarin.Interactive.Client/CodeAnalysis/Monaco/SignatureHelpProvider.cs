@@ -163,10 +163,14 @@ namespace Xamarin.Interactive.CodeAnalysis.Monaco
                     semanticModel.LookupNamespacesAndTypes (throughExpression.SpanStart, name: throughSymbol.Name).Any (t => t.GetSymbolType () == throughType));
             }
 
+            // TODO: Start taking CT in here? Most calls in this method have optional CT arg. Could make this async.
+            var within = semanticModel.GetEnclosingNamedTypeOrAssembly (position, CancellationToken.None);
+
             var methods = semanticModel
                 .GetMemberGroup (expression)
                 .OfType<IMethodSymbol> ()
                 .Where (m => (m.IsStatic && includeStatic) || (!m.IsStatic && includeInstance))
+                .Where (m => m.IsAccessibleWithin (within, throughTypeOpt: throughType))
                 .ToArray ();
 
             var signatures = new List<SignatureInformation> ();
