@@ -310,6 +310,10 @@
     <Exec Command="cp -a &quot;_build\$(Configuration)\WorkbookApps&quot; &quot;$(WorkbooksAppSharedSupportPath)&quot;"/>
     <Copy
       SkipUnchangedFiles="true"
+      SourceFiles="$(MSBuildThisFileDirectory)Package\Mac\workbook"
+      DestinationFolder="$(WorkbooksAppSharedSupportPath)path-bin" />
+    <Copy
+      SkipUnchangedFiles="true"
       SourceFiles="@(AndroidFormsAgentFiles)"
       DestinationFolder="$(WorkbooksAppSharedSupportPath)Agents\Forms\Android"/>
     <Copy

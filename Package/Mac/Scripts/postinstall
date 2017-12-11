@@ -6,15 +6,16 @@ LEGACY_XS_ADDIN_INSTALL="${DSTROOT}${HOME#/*}/Library/Application Support/Xamari
 rm -rf "$LEGACY_XS_ADDIN_INSTALL/Xamarin.Inspector"
 rm -rf "$LEGACY_XS_ADDIN_INSTALL/Xamarin.Interactive"
 
-CLI_SCRIPT_PATH="${DSTROOT}usr/local/bin/workbook"
-rm -f "$CLI_SCRIPT_PATH"
-mkdir -p "${DSTROOT}usr/local/bin"
+LEGACY_CLI_SCRIPT_PATH="${DSTROOT}usr/local/bin/workbook"
+rm -f "$LEGACY_CLI_SCRIPT_PATH"
+
+PATHS_D_PATH="/etc/paths.d/workbooks"
+rm -f "$PATHS_D_PATH"
+mkdir -p "$(dirname "$PATHS_D_PATH")"
 { cat <<EOF
-#!/bin/bash
-"${DSTROOT}Applications/Xamarin Workbooks.app/Contents/MacOS/Xamarin Workbooks" cli "\$@"
+${DSTROOT}Applications/Xamarin Workbooks.app/Contents/SharedSupport/path-bin
 EOF
-} > "$CLI_SCRIPT_PATH"
-chmod 0755 "$CLI_SCRIPT_PATH"
+} > "$PATHS_D_PATH"
 
 # before CodeMirror or Monaco we set these to disable all the magic
 # stuff implied by the keys. CodeMirror, etc, handle preventing
