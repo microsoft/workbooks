@@ -11,6 +11,7 @@ using System.Diagnostics;
 using System.Reflection;
 
 using Xamarin.Interactive.I18N;
+using Xamarin.Interactive.Remote;
 using Xamarin.Interactive.Representations;
 using Xamarin.Interactive.Representations.Reflection;
 using Xamarin.Interactive.Serialization;
@@ -190,6 +191,11 @@ namespace Xamarin.Interactive.PropertyEditor
                     : Catalog.GetString ("cannot evaluate");
             case InteractiveObject interactiveRepresentation:
                 return UnpackValue (interactiveRepresentation, editor);
+            case InteractiveEnumerable source:
+                var name = TypeHelper.GetCSharpTypeName (source.RepresentedType.Name);
+                return $"{name} - {source.Count} items";
+            case Image image:
+                return $"image ({image.Width},{image.Height})";
             default:
                 return representation;
             }

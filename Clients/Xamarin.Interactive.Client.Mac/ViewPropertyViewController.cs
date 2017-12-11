@@ -12,6 +12,7 @@ using Xamarin.Interactive.I18N;
 using Xamarin.Interactive.Remote;
 using Xamarin.Interactive.Representations;
 using Xamarin.Interactive.PropertyEditor;
+using Xamarin.PropertyEditing.Mac;
 
 namespace Xamarin.Interactive.Client.Mac
 {
@@ -25,6 +26,7 @@ namespace Xamarin.Interactive.Client.Mac
         public override void ViewDidLoad ()
         {
             base.ViewDidLoad ();
+            PropertyEditorPanel.ThemeManager.Theme = PropertyEditing.Themes.PropertyEditorTheme.Light;
         }
 
         protected override void OnSelectedViewChanged ()
