@@ -15,9 +15,9 @@ using Xamarin.Interactive.Core;
 using Xamarin.Interactive.Logging;
 using Xamarin.Interactive.Messages;
 
-[assembly: AgentProcessManager.Registration (
+[assembly: AgentProcessRegistration (
     "console-netcore",
-    typeof (AgentProcessManager<DotNetCoreAgentProcess>))]
+    typeof (DotNetCoreAgentProcess))]
 
 namespace Xamarin.Interactive.Client.AgentProcesses
 {
@@ -27,11 +27,11 @@ namespace Xamarin.Interactive.Client.AgentProcesses
 
         Process workbookAppProcess;
 
-        public WorkbookAppInstallation WorkbookApp { get; }
+        public IWorkbookAppInstallation WorkbookApp { get; }
 
         public event EventHandler UnexpectedlyTerminated;
 
-        public DotNetCoreAgentProcess (WorkbookAppInstallation workbookApp)
+        public DotNetCoreAgentProcess (IWorkbookAppInstallation workbookApp)
             => WorkbookApp = workbookApp ?? throw new ArgumentNullException (nameof (workbookApp));
 
         public Task StartAgentProcessAsync (

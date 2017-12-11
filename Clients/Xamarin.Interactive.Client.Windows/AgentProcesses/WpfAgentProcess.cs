@@ -15,9 +15,9 @@ using Xamarin.Interactive.Core;
 using Xamarin.Interactive.Logging;
 using Xamarin.Interactive.Messages;
 
-[assembly: AgentProcessManager.Registration (
+[assembly: AgentProcessRegistration (
     "wpf",
-    typeof (AgentProcessManager<WpfAgentProcess>))]
+    typeof (WpfAgentProcess))]
 
 namespace Xamarin.Interactive.Client.AgentProcesses
 {
@@ -27,11 +27,11 @@ namespace Xamarin.Interactive.Client.AgentProcesses
 
         Process workbookAppProcess;
 
-        public WorkbookAppInstallation WorkbookApp { get; }
+        public IWorkbookAppInstallation WorkbookApp { get; }
 
         public event EventHandler UnexpectedlyTerminated;
 
-        public WpfAgentProcess (WorkbookAppInstallation workbookApp)
+        public WpfAgentProcess (IWorkbookAppInstallation workbookApp)
             => WorkbookApp = workbookApp ?? throw new ArgumentNullException (nameof (workbookApp));
 
         public Task StartAgentProcessAsync (

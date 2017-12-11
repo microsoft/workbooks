@@ -6,7 +6,11 @@
 // Licensed under the MIT License.
 
 using System;
+#if HAVE_SYSTEM_COLLECTIONS_IMMUTABLE
 using System.Collections.Immutable;
+#else
+using Xamarin.Interactive.Collections;
+#endif
 
 namespace Xamarin.Interactive.Messages
 {

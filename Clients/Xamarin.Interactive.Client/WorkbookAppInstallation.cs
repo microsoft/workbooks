@@ -27,7 +27,7 @@ using Xamarin.Interactive.Reflection;
 
 namespace Xamarin.Interactive
 {
-    sealed class WorkbookAppInstallation
+    sealed class WorkbookAppInstallation : IWorkbookAppInstallation
     {
         const string TAG = nameof (WorkbookAppInstallation);
 
@@ -38,16 +38,16 @@ namespace Xamarin.Interactive
 
         static bool registeredDefaultProcessManagers;
 
-        static HashSet<AgentProcessManager.RegistrationAttribute> processManagers;
+        static HashSet<AgentProcessRegistrationAttribute> processManagers;
 
         public static void RegisterProcessManagers (Assembly assembly)
         {
             if (processManagers == null)
-                processManagers = new HashSet<AgentProcessManager.RegistrationAttribute> ();
+                processManagers = new HashSet<AgentProcessRegistrationAttribute> ();
 
             foreach (var attribute in assembly
-                .GetCustomAttributes (typeof (AgentProcessManager.RegistrationAttribute), false)
-                .Cast<AgentProcessManager.RegistrationAttribute> ())
+                .GetCustomAttributes (typeof (AgentProcessRegistrationAttribute), false)
+                .Cast<AgentProcessRegistrationAttribute> ())
                 processManagers.Add (attribute);
         }
 
@@ -201,21 +201,19 @@ namespace Xamarin.Interactive
             else
                 RegisterProcessManagers (Assembly.LoadFrom (appManagerAssembly));
 
-            var processManagerType = processManagers
+            var processType = processManagers
                 .FirstOrDefault (r => r.WorkbookAppId == Id)
-                ?.ProcessManagerType;
+                ?.ProcessType;
 
-            if (processManagerType == null)
+            if (processType == null)
                 throw new Exception (
-                    $"No {nameof (AgentProcessManager)} registered for workbook app ID '{Id}'");
+                    $"No {nameof (IAgentProcess)} registered for workbook app ID '{Id}'");
 
             try {
-                processManager = (IAgentProcessManager)Activator.CreateInstance (
-                    processManagerType,
-                    this);
+                processManager = new AgentProcessManager (this, processType);
             } catch (Exception e) {
                 throw new Exception (
-                    $"Unable to instantiate {processManagerType.FullName} " +
+                    $"Unable to instantiate AgentProcessManager with {processType.FullName} " +
                          $"for workbook app ID '{Id}'",
                     e);
             }

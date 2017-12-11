@@ -59,6 +59,19 @@ namespace Xamarin.Interactive.Collections
             return new ImmutableList<T> (newItems);
         }
 
+        public int FindLastIndex (Predicate<T> match)
+        {
+            if (match == null)
+                throw new ArgumentNullException (nameof (match));
+
+            for (var i = items.Count - 1; i >= 0; i--) {
+                if (match (items [i]))
+                    return i;
+            }
+
+            return -1;
+        }
+
         public int IndexOf (T item)
             => IndexOf (item, EqualityComparer<T>.Default);
 

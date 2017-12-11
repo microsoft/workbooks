@@ -7,7 +7,12 @@
 
 using System;
 using System.Linq;
+using System.Collections.Generic;
+#if HAVE_SYSTEM_COLLECTIONS_IMMUTABLE
 using System.Collections.Immutable;
+#else
+using Xamarin.Interactive.Collections;
+#endif
 using System.Threading;
 
 namespace Xamarin.Interactive.Messages
@@ -28,10 +33,12 @@ namespace Xamarin.Interactive.Messages
         public string DetailedText { get; }
         public bool ShowSpinner { get; }
 
-        public ImmutableArray<MessageAction> Actions { get; }
+        readonly ImmutableList<MessageAction> actions;
+        public IReadOnlyList<MessageAction> Actions => actions;
+
         public Action<Message, MessageAction> ActionResponseHandler { get; }
 
-        public bool HasActions => Actions.Length > 0;
+        public bool HasActions => actions.Count > 0;
 
         public MessageAction AffirmativeAction
             => Actions.FirstOrDefault (a => a.Kind == MessageActionKind.Affirmative);
@@ -50,7 +57,7 @@ namespace Xamarin.Interactive.Messages
             string text,
             string detailedText,
             bool showSpinner,
-            ImmutableArray<MessageAction> actions,
+            ImmutableList<MessageAction> actions,
             Action<Message, MessageAction> actionResponseHandler)
         {
             this.id = id;
@@ -60,7 +67,7 @@ namespace Xamarin.Interactive.Messages
             Text = text;
             DetailedText = detailedText;
             ShowSpinner = showSpinner;
-            Actions = actions;
+            this.actions = actions;
             ActionResponseHandler = actionResponseHandler;
         }
 
@@ -76,7 +83,7 @@ namespace Xamarin.Interactive.Messages
                 Text,
                 DetailedText,
                 ShowSpinner,
-                Actions,
+                actions,
                 ActionResponseHandler);
 
         public Message WithActionResponseHandler (Action<Message, MessageAction> actionResponseHandler)
@@ -88,7 +95,7 @@ namespace Xamarin.Interactive.Messages
                 Text,
                 DetailedText,
                 ShowSpinner,
-                Actions,
+                actions,
                 actionResponseHandler);
 
         public Message WithAction (MessageAction action)
@@ -104,7 +111,7 @@ namespace Xamarin.Interactive.Messages
                 Text,
                 DetailedText,
                 ShowSpinner,
-                Actions.Add (action),
+                actions.Add (action),
                 ActionResponseHandler);
         }
 
@@ -122,7 +129,7 @@ namespace Xamarin.Interactive.Messages
                 text,
                 detailedText,
                 showSpinner,
-                ImmutableArray<MessageAction>.Empty,
+                ImmutableList<MessageAction>.Empty,
                 null);
 
         public static Message CreateInfoStatus (

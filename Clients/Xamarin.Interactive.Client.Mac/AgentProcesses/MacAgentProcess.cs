@@ -16,13 +16,13 @@ using Xamarin.Interactive.Unified;
 
 using Foundation;
 
-[assembly: AgentProcessManager.Registration (
+[assembly: AgentProcessRegistration (
     "mac-xamarinmac-modern",
-    typeof (AgentProcessManager<MacAgentProcess>))]
+    typeof (MacAgentProcess))]
 
-[assembly: AgentProcessManager.Registration (
+[assembly: AgentProcessRegistration (
     "mac-xamarinmac-full",
-    typeof (AgentProcessManager<MacAgentProcess>))]
+    typeof (MacAgentProcess))]
 
 namespace Xamarin.Interactive.Client.AgentProcesses
 {
@@ -31,11 +31,11 @@ namespace Xamarin.Interactive.Client.AgentProcesses
         NSTask workbookAppProcess;
         NSObject terminatedObserver;
 
-        public WorkbookAppInstallation WorkbookApp { get; }
+        public IWorkbookAppInstallation WorkbookApp { get; }
 
         public event EventHandler UnexpectedlyTerminated;
 
-        public MacAgentProcess (WorkbookAppInstallation workbookApp)
+        public MacAgentProcess (IWorkbookAppInstallation workbookApp)
             => WorkbookApp = workbookApp ?? throw new ArgumentNullException (nameof (workbookApp));
 
         public Task StartAgentProcessAsync (

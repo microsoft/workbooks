@@ -25,9 +25,9 @@ using Xamarin.Interactive.Messages;
 using Xamarin.Interactive.MTouch;
 using Xamarin.Interactive.I18N;
 
-[assembly: AgentProcessManager.Registration (
+[assembly: AgentProcessRegistration (
     "ios-xamarinios",
-    typeof (AgentProcessManager<iOSAgentProcess>))]
+    typeof (iOSAgentProcess))]
 
 namespace Xamarin.Interactive.Client.AgentProcesses
 {
@@ -44,14 +44,14 @@ namespace Xamarin.Interactive.Client.AgentProcesses
         SshCommands sshCommands;
         string deviceUdid;
 
-        public WorkbookAppInstallation WorkbookApp { get; }
+        public IWorkbookAppInstallation WorkbookApp { get; }
 
         // FIXME: implement?
         #pragma warning disable 0067
         public event EventHandler UnexpectedlyTerminated;
         #pragma warning restore 0067
 
-        public iOSAgentProcess (WorkbookAppInstallation workbookApp)
+        public iOSAgentProcess (IWorkbookAppInstallation workbookApp)
             => WorkbookApp = workbookApp ?? throw new ArgumentNullException (nameof (workbookApp));
 
         IEnumerable<RegistryKnownServer> GetXvsMacBuildHosts ()
@@ -284,7 +284,7 @@ namespace Xamarin.Interactive.Client.AgentProcesses
         {
             const string fileToCheck = "Xamarin.Interactive.iOS.dll";
 
-            var localWorkbookApp = new FilePath (WorkbookAppInstallation.Locate (AgentType.iOS).AppPath);
+            var localWorkbookApp = new FilePath (WorkbookApp.AppPath);
             var targetPathForApp = $"{macTempPath}/{localWorkbookApp.Name}";
 
             var localWorkbookAppExecutablePath = localWorkbookApp.Combine (fileToCheck);

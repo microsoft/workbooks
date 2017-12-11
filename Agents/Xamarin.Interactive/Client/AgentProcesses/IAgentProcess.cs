@@ -18,7 +18,7 @@ namespace Xamarin.Interactive.Client.AgentProcesses
     {
         event EventHandler UnexpectedlyTerminated;
 
-        WorkbookAppInstallation WorkbookApp { get; }
+        IWorkbookAppInstallation WorkbookApp { get; }
 
         Task StartAgentProcessAsync (
             IdentifyAgentRequest identifyAgentRequest,

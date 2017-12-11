@@ -16,7 +16,6 @@ using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 
 using Xamarin.Interactive.Core;
-using Xamarin.Interactive.Collections;
 using Xamarin.Interactive.Editor;
 using Xamarin.Interactive.IO;
 using Xamarin.Interactive.Logging;
@@ -96,7 +95,8 @@ namespace Xamarin.Interactive.Workbook.Models
         public TreeNode TreeNode { get; }
 
         readonly NuGetPackagesNode nugetPackagesNode = new NuGetPackagesNode ();
-        readonly ObservableCollection<FileNode> filesystem = new ObservableCollection<FileNode> ();
+        readonly Collections.ObservableCollection<FileNode> filesystem =
+            new Collections.ObservableCollection<FileNode> ();
 
         readonly List<WorkbookPage> pages = new List<WorkbookPage> ();
         public IReadOnlyList<WorkbookPage> Pages => pages;
@@ -152,7 +152,7 @@ namespace Xamarin.Interactive.Workbook.Models
         {
             logicalPath = pendingOpenPath;
 
-            var children = new AggregateObservableCollection<TreeNode> ();
+            var children = new Collections.AggregateObservableCollection<TreeNode> ();
             children.AddSource (new [] { nugetPackagesNode });
             children.AddSource (filesystem);
 
