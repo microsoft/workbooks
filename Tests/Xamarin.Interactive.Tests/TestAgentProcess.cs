@@ -14,9 +14,9 @@ using Xamarin.Interactive.Client.AgentProcesses;
 using Xamarin.Interactive.Core;
 using Xamarin.Interactive.Messages;
 
-[assembly: AgentProcessManager.Registration (
+[assembly: AgentProcessRegistration (
     "test",
-    typeof (AgentProcessManager<Xamarin.Interactive.Tests.TestAgentProcess>))]
+    typeof (Xamarin.Interactive.Tests.TestAgentProcess))]
 
 namespace Xamarin.Interactive.Tests
 {
@@ -38,7 +38,7 @@ namespace Xamarin.Interactive.Tests
         TestAgent agent;
 
         public AgentClient AgentClient { get; private set; }
-        public WorkbookAppInstallation WorkbookApp { get; }
+        public IWorkbookAppInstallation WorkbookApp { get; }
 
         public event EventHandler UnexpectedlyTerminated;
 

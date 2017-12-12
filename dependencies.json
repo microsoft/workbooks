@@ -55,6 +55,14 @@
   },
   {
     "Kind": "NuGet",
+    "Name": "Newtonsoft.Json",
+    "Version": "9.0.1",
+    "DependentProjects": [
+      "Xamarin.Workbooks.Client.iOS"
+    ]
+  },
+  {
+    "Kind": "NuGet",
     "Name": "NuGet.PackageManagement",
     "Version": "4.3.0",
     "DependentProjects": [

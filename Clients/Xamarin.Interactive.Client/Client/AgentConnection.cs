@@ -83,7 +83,7 @@ namespace Xamarin.Interactive.Client
         }
 
         public async Task<AgentConnection> ConnectAsync (
-            WorkbookAppInstallation workbookApp,
+            IWorkbookAppInstallation workbookApp,
             ClientSessionUri clientSessionUri,
             IMessageService messageService,
             Action disconnectedHandler,

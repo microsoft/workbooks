@@ -6,7 +6,11 @@
 // Licensed under the MIT License.
 
 using System;
+#if HAVE_SYSTEM_COLLECTIONS_IMMUTABLE
 using System.Collections.Immutable;
+#else
+using Xamarin.Interactive.Collections;
+#endif
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -17,7 +21,7 @@ namespace Xamarin.Interactive.Messages
 {
     sealed class MessageViewController : IMessageService
     {
-        ImmutableArray<IMessageService> routes = ImmutableArray<IMessageService>.Empty;
+        ImmutableList<IMessageService> routes = ImmutableList<IMessageService>.Empty;
 
         public MessageViewController (
             IStatusMessageViewDelegate statusMessageViewDelegate,

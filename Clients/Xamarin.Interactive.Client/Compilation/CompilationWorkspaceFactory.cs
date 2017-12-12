@@ -6,7 +6,7 @@
 // Licensed under the MIT License.
 
 using System;
-using System.Collections.Immutable;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -141,7 +141,7 @@ namespace Xamarin.Interactive.Compilation
 
         static InteractiveDependencyResolver CreateDependencyResolver (
             AgentType agentType,
-            ImmutableArray<string> assemblySearchPaths)
+            IEnumerable<string> assemblySearchPaths)
         {
             var dependencyResolver = new InteractiveDependencyResolver (agentType: agentType);
             var consoleOrWpf = agentType == AgentType.WPF || agentType == AgentType.Console;;

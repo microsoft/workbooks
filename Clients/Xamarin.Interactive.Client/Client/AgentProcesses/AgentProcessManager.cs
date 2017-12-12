@@ -1,4 +1,4 @@
-//
+﻿//
 // Author:
 //   Aaron Bockover <abock@xamarin.com>
 //
@@ -15,52 +15,18 @@ using Xamarin.Interactive.Logging;
 
 namespace Xamarin.Interactive.Client.AgentProcesses
 {
-    interface IAgentProcessManager
-    {
-        Task<IAgentProcessState> StartAsync (
-            AgentProcessTicket ticket,
-            CancellationToken cancellationToken = default (CancellationToken));
-
-        void Terminate ();
-    }
-
-    interface IAgentProcessState
-    {
-        IAgentProcess AgentProcess { get; }
-        AgentIdentity AgentIdentity { get; }
-        AgentClient AgentClient { get; }
-    }
-
-    static class AgentProcessManager
-    {
-        [AttributeUsage (AttributeTargets.Assembly, AllowMultiple = true)]
-        public sealed class RegistrationAttribute : Attribute
-        {
-            public string WorkbookAppId { get; }
-            public Type ProcessManagerType { get; }
-
-            public RegistrationAttribute (string workbookAppId, Type processManagerType)
-            {
-                WorkbookAppId = workbookAppId;
-                ProcessManagerType = processManagerType;
-            }
-        }
-    }
-
-    sealed class AgentProcessManager<TAgentProcess> : IAgentProcessManager
-        where TAgentProcess : class, IAgentProcess
+    sealed class AgentProcessManager : IAgentProcessManager
     {
         sealed class AgentProcessState : IAgentProcessState
         {
-            public TAgentProcess AgentProcess { get; }
-            IAgentProcess IAgentProcessState.AgentProcess => AgentProcess;
+            public IAgentProcess AgentProcess { get; }
 
             public AgentIdentity AgentIdentity { get; set; }
             public AgentClient AgentClient { get; set; }
 
-            public AgentProcessState (WorkbookAppInstallation workbookApp)
-                => AgentProcess = (TAgentProcess)Activator.CreateInstance (
-                    typeof (TAgentProcess),
+            public AgentProcessState (IWorkbookAppInstallation workbookApp, Type agentProcessType)
+                => AgentProcess = (IAgentProcess)Activator.CreateInstance (
+                    agentProcessType,
                     workbookApp);
         }
 
@@ -69,16 +35,21 @@ namespace Xamarin.Interactive.Client.AgentProcesses
         readonly List<AgentProcessTicket> tickets = new List<AgentProcessTicket> ();
         readonly SemaphoreSlim startWait = new SemaphoreSlim (1, 1);
 
-        readonly WorkbookAppInstallation workbookApp;
+        readonly IWorkbookAppInstallation workbookApp;
+        readonly Type agentProcessType;
 
         readonly object runningAgentProcessStateLock = new object ();
         AgentProcessState runningAgentProcessState;
 
-        public AgentProcessManager (WorkbookAppInstallation workbookApp)
+        public AgentProcessManager (IWorkbookAppInstallation workbookApp, Type agentProcessType)
         {
-            TAG = $"{nameof (AgentProcessManager<TAgentProcess>)}<{typeof (TAgentProcess).Name}>";
+            if (!typeof (IAgentProcess).IsAssignableFrom (agentProcessType))
+                throw new ArgumentException ("Must be an IAgentProcess", nameof (agentProcessType));
+
+            TAG = $"{nameof (AgentProcessManager)}<{agentProcessType.Name}>";
 
             this.workbookApp = workbookApp;
+            this.agentProcessType = agentProcessType;
         }
 
         void HandleTicketDisposed (object sender, EventArgs args)
@@ -188,7 +159,7 @@ namespace Xamarin.Interactive.Client.AgentProcesses
                 }
 
                 LogStartStatus (ticket, "creating new agent process manager");
-                agentProcessState = new AgentProcessState (workbookApp);
+                agentProcessState = new AgentProcessState (workbookApp, agentProcessType);
                 agentProcessState.AgentProcess.UnexpectedlyTerminated
                     += HandleAgentProcessUnexpectedlyTerminated;
 

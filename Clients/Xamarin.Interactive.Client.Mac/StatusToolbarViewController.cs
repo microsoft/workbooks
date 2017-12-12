@@ -131,7 +131,7 @@ namespace Xamarin.Interactive.Client.Mac
             case MessageKind.Status:
                 return true;
             case MessageKind.Alert:
-                if (message.Actions.Length != 1)
+                if (message.Actions.Count != 1)
                     return false;
 
                 switch (message.AffirmativeAction?.Id) {

@@ -3,10 +3,11 @@
     <TargetFramework>net461</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="9.0.1" />
     <PackageReference Include="SSH.NET" Version="2016.0.0" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Clients\Xamarin.Interactive.Client\Xamarin.Interactive.Client.csproj" />
+    <ProjectReference Include="..\..\Agents\Xamarin.Interactive\Xamarin.Interactive.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System.Security" />

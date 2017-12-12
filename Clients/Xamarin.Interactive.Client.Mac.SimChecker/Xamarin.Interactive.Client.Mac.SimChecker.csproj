@@ -41,7 +41,7 @@
     <Compile Include="..\..\Agents\Xamarin.Interactive\BuildInfo.cs">
       <Link>BuildInfo.cs</Link>
     </Compile>
-    <Compile Include="..\Xamarin.Interactive.Client\I18N\Catalog.cs">
+    <Compile Include="..\..\Agents\Xamarin.Interactive\I18N\Catalog.cs">
       <Link>Catalog.cs</Link>
     </Compile>
     <Compile Include="..\..\Agents\Xamarin.Interactive\Versioning\ReleaseVersion.cs">

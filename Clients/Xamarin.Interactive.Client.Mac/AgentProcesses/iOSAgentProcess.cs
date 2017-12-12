@@ -23,9 +23,9 @@ using Xamarin.Interactive.Unified;
 using AppKit;
 using Foundation;
 
-[assembly: AgentProcessManager.Registration (
+[assembly: AgentProcessRegistration (
     "ios-xamarinios",
-    typeof (AgentProcessManager<iOSAgentProcess>))]
+    typeof (iOSAgentProcess))]
 
 namespace Xamarin.Interactive.Client.AgentProcesses
 {
@@ -41,11 +41,11 @@ namespace Xamarin.Interactive.Client.AgentProcesses
         NSTask mlaunchProcess;
         NSObject terminatedObserver;
 
-        public WorkbookAppInstallation WorkbookApp { get; }
+        public IWorkbookAppInstallation WorkbookApp { get; }
 
         public event EventHandler UnexpectedlyTerminated;
 
-        public iOSAgentProcess (WorkbookAppInstallation workbookApp)
+        public iOSAgentProcess (IWorkbookAppInstallation workbookApp)
             => WorkbookApp = workbookApp ?? throw new ArgumentNullException (nameof (workbookApp));
 
         public async Task StartAgentProcessAsync (
