@@ -12,12 +12,14 @@ using System.Threading;
 using System.Threading.Tasks;
 
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
 
 using Xamarin.CrossBrowser;
 
 using Xamarin.Interactive.Compilation.Roslyn;
+using Xamarin.Interactive.RoslynInternals;
 
 namespace Xamarin.Interactive.CodeAnalysis.Monaco
 {
@@ -98,7 +100,7 @@ namespace Xamarin.Interactive.CodeAnalysis.Monaco
             var currentNode = syntaxToken.Parent;
             do {
                 var creationExpression = currentNode as ObjectCreationExpressionSyntax;
-                if (creationExpression != null)
+                if (creationExpression != null && creationExpression.ArgumentList.Span.Contains (position))
                     return CreateMethodGroupSignatureHelp (
                         creationExpression,
                         creationExpression.ArgumentList,
@@ -106,7 +108,7 @@ namespace Xamarin.Interactive.CodeAnalysis.Monaco
                         semanticModel);
 
                 var invocationExpression = currentNode as InvocationExpressionSyntax;
-                if (invocationExpression != null)
+                if (invocationExpression != null && invocationExpression.ArgumentList.Span.Contains (position))
                     return CreateMethodGroupSignatureHelp (
                         invocationExpression.Expression,
                         invocationExpression.ArgumentList,
@@ -138,9 +140,37 @@ namespace Xamarin.Interactive.CodeAnalysis.Monaco
             var symbolInfo = semanticModel.GetSymbolInfo (expression);
             var bestGuessMethod = symbolInfo.Symbol as IMethodSymbol;
 
+            // Include everything by default (global eval context)
+            var includeInstance = true;
+            var includeStatic = true;
+
+            ITypeSymbol throughType = null;
+
+            // When accessing method via some member, only show static methods in static context and vice versa for instance methods.
+            // This block based on https://github.com/dotnet/roslyn/blob/3b6536f4a616e5f3b8ede940c63663a828e68b5d/src/Features/CSharp/Portable/SignatureHelp/InvocationExpressionSignatureHelpProvider_MethodGroup.cs#L44-L50
+            if (expression is MemberAccessExpressionSyntax memberAccessExpression) {
+                var throughExpression = (memberAccessExpression).Expression;
+                if (!(throughExpression is BaseExpressionSyntax))
+                    throughType = semanticModel.GetTypeInfo (throughExpression).Type;
+                var throughSymbolInfo = semanticModel.GetSymbolInfo (throughExpression);
+                var throughSymbol = throughSymbolInfo.Symbol ?? throughSymbolInfo.CandidateSymbols.FirstOrDefault ();
+
+                includeInstance = !throughExpression.IsKind (SyntaxKind.IdentifierName) ||
+                    semanticModel.LookupSymbols (throughExpression.SpanStart, name: throughSymbol.Name).Any (s => !(s is INamedTypeSymbol)) ||
+                    (!(throughSymbol is INamespaceOrTypeSymbol) && semanticModel.LookupSymbols (throughExpression.SpanStart, throughSymbol.ContainingType).Any (s => !(s is INamedTypeSymbol)));
+                includeStatic = throughSymbol is INamedTypeSymbol ||
+                    (throughExpression.IsKind (SyntaxKind.IdentifierName) &&
+                    semanticModel.LookupNamespacesAndTypes (throughExpression.SpanStart, name: throughSymbol.Name).Any (t => t.GetSymbolType () == throughType));
+            }
+
+            // TODO: Start taking CT in here? Most calls in this method have optional CT arg. Could make this async.
+            var within = semanticModel.GetEnclosingNamedTypeOrAssembly (position, CancellationToken.None);
+
             var methods = semanticModel
                 .GetMemberGroup (expression)
                 .OfType<IMethodSymbol> ()
+                .Where (m => (m.IsStatic && includeStatic) || (!m.IsStatic && includeInstance))
+                .Where (m => m.IsAccessibleWithin (within, throughTypeOpt: throughType))
                 .ToArray ();
 
             var signatures = new List<SignatureInformation> ();
