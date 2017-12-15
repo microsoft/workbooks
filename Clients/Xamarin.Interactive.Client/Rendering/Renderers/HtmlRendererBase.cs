@@ -71,7 +71,10 @@ namespace Xamarin.Interactive.Rendering.Renderers
 
         protected HtmlElement CreateRenderedTypeNameElement (RepresentedType type)
         {
-            return Document.CreateElement ("code", innerHtml: TypeHelper.GetCSharpTypeName (type.Name));
+            using (var writer = new StringWriter ()) {
+                writer.WriteHtmlEscaped (TypeHelper.GetCSharpTypeName (type.Name));
+                return Document.CreateElement ("code", innerHtml: writer.ToString ());
+            }
         }
 
         protected HtmlElement CreateHeaderElement (object obj, string detailsText = null)
