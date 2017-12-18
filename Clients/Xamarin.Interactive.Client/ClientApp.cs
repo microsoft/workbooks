@@ -262,7 +262,7 @@ namespace Xamarin.Interactive
             }.Start ();
         }
 
-        static InteractiveInstallationPaths GetWindowsInstallationPaths ()
+        public static InteractiveInstallationPaths GetWindowsInstallationPaths ()
         {
             var frameworkInstallPath = new FilePath (Assembly.GetExecutingAssembly ().Location)
                 .ParentDirectory
@@ -276,7 +276,7 @@ namespace Xamarin.Interactive
                 toolsInstallPath: Path.Combine (frameworkInstallPath, "Tools"));
         }
 
-        static InteractiveInstallationPaths GetMacInstallationPaths ()
+        public static InteractiveInstallationPaths GetMacInstallationPaths ()
         {
             var agentsInstallPath = new FilePath (Assembly.GetExecutingAssembly ().Location)
                 .ParentDirectory
