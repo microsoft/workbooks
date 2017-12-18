@@ -16,14 +16,41 @@ namespace Xamarin.Interactive.CodeAnalysis
 {
     sealed class EvaluationAssemblyContext : IDisposable
     {
+        // Implement a custom AssemblyName comparer so that we don't have to insert
+        // multiple different varieties of the same assembly name into the dictionary.
+        // Different pieces of external code seem to look up our submission assemblies in
+        // different ways: JSON.NET uses bare names (see https://bugzilla.xamarin.com/show_bug.cgi?id=58801),
+        // most of the framework uses fully qualified assembly names, and ASP.NET Core
+        // seems to use fully-qualified-except-no-version names. As submission assemblies
+        // aren't versioned, don't have a culture, and don't have a public key token, treating
+        // the name in a case insensitive way is fine.
+        sealed class AssemblyNameInsensitiveNameOnlyComparer : IEqualityComparer<AssemblyName>
+        {
+            public static bool Equals (string x, string y)
+                => string.Equals (x, y, StringComparison.OrdinalIgnoreCase);
+
+            public static bool Equals (AssemblyName x, AssemblyName y)
+                => Equals (x?.Name, y?.Name);
+
+            public static readonly IEqualityComparer<AssemblyName> Default
+                = new AssemblyNameInsensitiveNameOnlyComparer ();
+
+            bool IEqualityComparer<AssemblyName>.Equals (AssemblyName x, AssemblyName y)
+                => Equals (x?.Name, y?.Name);
+
+            int IEqualityComparer<AssemblyName>.GetHashCode (AssemblyName obj)
+                => obj?.Name == null ? 0 : obj.Name.GetHashCode ();
+        }
+
         const string TAG = nameof (EvaluationAssemblyContext);
 
         readonly Dictionary<string, AssemblyDefinition> assemblyMap
             = new Dictionary<string, AssemblyDefinition> (
                 StringComparer.OrdinalIgnoreCase);
 
-        readonly Dictionary<string, Assembly> netAssemblyMap
-            = new Dictionary<string, Assembly> ();
+        readonly Dictionary<AssemblyName, Assembly> netAssemblyMap
+            = new Dictionary<AssemblyName, Assembly> (
+                AssemblyNameInsensitiveNameOnlyComparer.Default);
 
         public Action<Assembly, AssemblyDefinition> AssemblyResolvedHandler { get; set; }
 
@@ -46,7 +73,7 @@ namespace Xamarin.Interactive.CodeAnalysis
                 Log.Verbose (TAG, $"    {key}");
 
             Assembly netAssembly;
-            if (netAssemblyMap.TryGetValue (new AssemblyName (args.Name).ToString (), out netAssembly))
+            if (netAssemblyMap.TryGetValue (new AssemblyName (args.Name), out netAssembly))
                 return netAssembly;
 
             AssemblyDefinition assembly;
@@ -112,16 +139,7 @@ namespace Xamarin.Interactive.CodeAnalysis
             if (assembly == null)
                 throw new ArgumentNullException (nameof (assembly));
 
-            var assemblyName = assembly.GetName ().ToString ();
-
-            netAssemblyMap [assemblyName] = assembly;
-
-            // Sometimes these assemblies are looked up w/o the FQAN--for example
-            // when doing round-trip serialization via Newtonsoft.Json including
-            // type names. See https://bugzilla.xamarin.com/show_bug.cgi?id=58801
-            // for an example workbook that fails without this patch. Insert the
-            // bare assembly name into the cache as well to deal with these cases.
-            netAssemblyMap [assembly.GetName ().Name] = assembly;
+            netAssemblyMap [assembly.GetName ()] = assembly;
         }
     }
 }
