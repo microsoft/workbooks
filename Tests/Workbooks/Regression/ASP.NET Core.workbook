@@ -1,0 +1,183 @@
+﻿---
+uti: com.xamarin.workbook
+id: e14493f7-1e2b-4b8e-9d6e-5a0d47018cc6
+title: ASP.NET Core
+platforms:
+- DotNetCore
+packages:
+- id: Microsoft.AspNetCore
+  version: 2.0.1
+- id: Microsoft.AspNetCore.Mvc
+  version: 2.0.1
+- id: Serilog.Extensions.Logging
+  version: 2.0.2
+- id: Serilog.Sinks.Console
+  version: 3.1.1
+---
+
+## ASP.NET Core server inside Workbooks
+
+We’ve installed a number of needed NuGet packages to get us started:
+
+* `Microsoft.AspNetCore`
+
+* `Microsoft.AspNetCore.Mvc`
+
+* `Serilog.Extensions.Logging`
+
+* `Serilog.Sinks.Console`
+
+First, we’ll pull in all our needed references and usings.
+
+```csharp
+#r "Microsoft.AspNetCore"
+#r "Microsoft.AspNetCore.Mvc"
+#r "Serilog.Extensions.Logging"
+#r "Serilog.Sinks.Console"
+
+using Microsoft.AspNetCore;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http;
+using System.ComponentModel;
+using System.Runtime.InteropServices;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Microsoft.AspNetCore.Mvc;
+using System.Runtime;
+using System.Reflection;
+using Serilog;
+using System.IO;
+```
+
+Next, we need to set up our startup class, and two simple request handlers, one raw handler, and an MVC controller.
+
+```csharp
+class Startup
+{
+    public void ConfigureServices(IServiceCollection services)
+    {
+        // Clear the providers to remove the default Console logger
+        // and add Serilog's Console logger. The default Console logger
+        // causes deadlocks.
+        services.AddLogging(lf => {
+            lf.ClearProviders();
+            
+            var lb = new LoggerConfiguration()
+                .WriteTo.Console()
+                .Enrich.FromLogContext()
+                .MinimumLevel.Is(Serilog.Events.LogEventLevel.Verbose);
+            lf.AddSerilog (lb.CreateLogger());
+        });
+        // Add MVC, and try to add the current assembly so that the controller gets
+        // found.
+        services.AddMvc();
+    }
+
+    public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
+    {
+        // Configure a basic "raw" handler so we can see something working.
+        app.Use(async (context, next) => {
+            if (context.Request.Path.ToString().EndsWith("rawhello")) {
+                await context.Response.WriteAsync("Raw hello from Workbooks, no MVC!");
+                return;
+            }
+            if (context.Request.Path.ToString().EndsWith("routes")) {
+                var provider = context.RequestServices.GetRequiredService<IActionDescriptorCollectionProvider>();
+                var routes = provider.ActionDescriptors.Items.Select(x => new { 
+                    Action = x.RouteValues["Action"], 
+                    Controller = x.RouteValues["Controller"], 
+                    Name = x.AttributeRouteInfo.Name, 
+                    Template = x.AttributeRouteInfo.Template 
+                }).ToList();
+                await context.Response.WriteAsync(Newtonsoft.Json.JsonConvert.SerializeObject (routes, Newtonsoft.Json.Formatting.Indented));
+                return;
+            }
+            await next.Invoke();
+        });
+        // And try to use MVC too.
+        app.UseMvc(routes => {
+            routes.MapRoute("hello route", "hello/hello", new {
+                controller = "Hello",
+                action = "Hello"
+            });
+        });
+    }
+}
+
+// Basic controller for test purposes.
+[Route("[controller]")]
+class HelloController : Controller
+{
+    ILogger<HelloController> fooLogger;
+    
+    public HelloController(ILoggerFactory lf)
+    {
+        fooLogger = lf.CreateLogger<HelloController>();
+        fooLogger.LogDebug("Created HelloController instance.");
+    }
+
+    [Route("hello")]
+    [HttpGet]
+    public string Hello()
+    {
+        fooLogger.LogDebug("HelloController!Hello called!");
+        return "Hello, Workbooks!";
+    }
+}
+
+// Work around resolution bug for GAC-ed assemblies.
+var home = Path.GetDirectoryName(Environment.GetFolderPath(Environment.SpecialFolder.Personal));
+Assembly.LoadFrom($"{home}\\.nuget\\packages\\system.numerics.vectors\\4.4.0\\lib\\net46\\System.Numerics.Vectors.dll");
+```
+
+Finally, create our builder and webhost…
+
+```csharp
+var builder = WebHost.CreateDefaultBuilder().UseKestrel();
+var webhost = builder.UseStartup<Startup>().Build();
+```
+
+And start the server! We do this on a separate thread so that we can continue using the agent.
+
+```csharp
+var thread = new Thread (state => {
+    webhost.Run();
+});
+thread.Start();
+
+// Wait 1 second to ensure the server has started.
+await Task.Delay(TimeSpan.FromSeconds(1));
+```
+
+To make sure it’s working, we can make a request to our server!
+
+```csharp
+var hostUrl = webhost.ServerFeatures.Get<Microsoft.AspNetCore.Hosting.Server.Features.IServerAddressesFeature>().Addresses.First();
+var httpClient = new System.Net.Http.HttpClient {
+    BaseAddress = new Uri(hostUrl),
+};
+
+try {
+    Console.WriteLine("Making request to /hello/hello...");
+    await Task.Delay(TimeSpan.FromSeconds(0.5));
+    var mvcResult = await httpClient.GetStringAsync("/hello/hello");
+    Console.WriteLine($"/hello/hello result: {mvcResult}");
+} catch {
+} finally {
+    await Task.Delay(TimeSpan.FromSeconds(0.5));
+}
+
+Console.WriteLine("Making request to /rawhello...");
+await Task.Delay(TimeSpan.FromSeconds(0.5));
+var rawResult = await httpClient.GetStringAsync("rawhello");
+await Task.Delay(TimeSpan.FromSeconds(0.5));
+Console.WriteLine($"/rawhello response: {rawResult}");
+
+Console.WriteLine("Making request to /routes");
+await Task.Delay(TimeSpan.FromSeconds(0.5));
+var routesResult = await httpClient.GetStringAsync("routes");
+await Task.Delay(TimeSpan.FromSeconds (0.5));
+Console.WriteLine($"/routes result: {routesResult}");
+```
