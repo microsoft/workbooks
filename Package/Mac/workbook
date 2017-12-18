@@ -1,0 +1,6 @@
+#!/bin/bash
+
+set -e
+
+bundle_macos_dir="$(cd "$(dirname "$0")/../../MacOS" && pwd)"
+"$bundle_macos_dir/Xamarin Workbooks" cli "$@"

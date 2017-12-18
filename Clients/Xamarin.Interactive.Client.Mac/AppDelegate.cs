@@ -158,34 +158,32 @@ namespace Xamarin.Interactive.Client.Mac
         static async Task InstallCommandLineToolAsync ()
         {
             try {
-                const string scriptPath = "/usr/local/bin/workbook";
-                var authOpen = await Security.AuthOpen.PreauthorizeAsync (
+                const string pathsDPath = "/etc/paths.d/workbooks";
+                var pathsDAuthOpen = await Security.AuthOpen.PreauthorizeAsync (
                     new XamCore.Security.AuthorizationEnvironment {
                         Prompt = Catalog.Format (Catalog.GetString (
-                            "{0} would like to install a script to " +
+                            "{0} would like to install a path helper to " +
                             "support terminal usage: {1}",
                             comment: "{0} is the app name; {1} is a file path"),
                             ClientInfo.FullProductName,
-                            scriptPath),
+                            pathsDPath),
                         AddToSharedCredentialPool = true
                     },
-                    scriptPath,
-                    mode: 493 /*0755*/);
+                    pathsDPath,
+                    mode: 420 /* 0644 */);
 
-                await authOpen.WriteAsync (h => h.WriteData (NSData.FromString (
-                    "#!/bin/bash\n" +
-                    "\"" + NSBundle.MainBundle.ExecutablePath + "\" cli \"$@\""
+                await pathsDAuthOpen.WriteAsync (h => h.WriteData (NSData.FromString (
+                    Path.Combine (
+                        NSBundle.MainBundle.SharedSupportPath,
+                        "path-bin")
                 )));
 
                 new NSAlert {
                     AlertStyle = NSAlertStyle.Informational,
                     MessageText = Catalog.GetString ("Installation Complete"),
                     InformativeText = Catalog.Format (Catalog.GetString (
-                        "The '{0}' tool has been installed to {1}. " +
-                        "Ensure that {1} is in your PATH.",
-                        comment: "{0} and {1} are both file paths"),
-                        Path.GetFileName (scriptPath),
-                        Path.GetDirectoryName (scriptPath))
+                        "The path helper to support terminal usage has been installed. " +
+                        "Close and reopen your terminal to ensure that PATH updates."))
                 }.RunModal ();
             } catch (Exception e) {
                 e.ToUserPresentable (

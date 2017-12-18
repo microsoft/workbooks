@@ -16,9 +16,14 @@ namespace Xamarin.Interactive.Client.CommandLineTool
     {
         static Driver ()
         {
+            var isMac = Environment.OSVersion.Platform == PlatformID.Unix;
+            var installationPaths = isMac
+                ? ClientApp.GetMacInstallationPaths ()
+                : ClientApp.GetWindowsInstallationPaths ();
             InteractiveInstallation.InitializeDefault (
-                Environment.OSVersion.Platform == PlatformID.Unix,
-                null);
+                isMac,
+                DevEnvironment.RepositoryRootDirectory,
+                installationPaths);
         }
 
         public string [] ClientLaunchUris { get; set; }
