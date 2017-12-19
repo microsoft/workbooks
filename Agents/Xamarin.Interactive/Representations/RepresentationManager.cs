@@ -44,8 +44,7 @@ namespace Xamarin.Interactive.Representations
 
             MainThread.Ensure ();
 
-            var agentProvider = provider as AgentRepresentationProvider;
-            if (agentProvider != null) {
+            if (provider is AgentRepresentationProvider agentProvider) {
                 if (agentRepresentationProvider != null)
                     throw new InvalidOperationException (
                         $"{agentRepresentationProvider.GetType ()} already registered; " +
@@ -144,12 +143,11 @@ namespace Xamarin.Interactive.Representations
             // which can cause a stack overflow in Normalize if the provider
             // decides to directly pack the provied Representation object in
             // another Representation object for whatever reason.
-            if (obj is Representation)
-                obj = ((Representation)obj).Value;
+            if (obj is Representation representationObj)
+                obj = representationObj.Value;
 
             foreach (var provider in providers) {
                 try {
-
                     foreach (var representation in provider.ProvideRepresentations (obj)) {
                         representations.Add (Normalize (representation));
                         skipInteractive |= representation
@@ -182,17 +180,16 @@ namespace Xamarin.Interactive.Representations
         /// <param name="obj">The object to normalize.</param>
         object Normalize (object obj)
         {
-            if (obj == null)
+            switch (obj) {
+            case null:
                 return null;
-
-            if (obj is Representation) {
+            case Representation originalRepresentation:
                 // an object may be boxed in a Representation object if it has metadata
                 // associated with it, such as whether the representation provider supports
                 // "editing" via TryConvertFromRepresentation. We must still normalize the
                 // value inside to ensure we can safely serialize it. If the value differs
                 // after normalization, but is serializable, we re-box it with the normalized
                 // value and the canEdit flag unset.
-                var originalRepresentation = (Representation)obj;
                 var normalizedRepresentationValue = Normalize (originalRepresentation.Value);
 
                 if (Equals (originalRepresentation.Value, normalizedRepresentationValue))
@@ -216,58 +213,51 @@ namespace Xamarin.Interactive.Representations
                 }
             }
 
-            if (obj is Enum)
-                return new EnumValue ((Enum)obj);
-
-            if (obj is IInteractiveObject) {
-                var interactive = (IInteractiveObject)obj;
+            switch (obj) {
+            case Enum enumValue:
+                return new EnumValue (enumValue);
+            case IInteractiveObject interactive:
                 interactive.Handle = ObjectCache.Shared.GetHandle (interactive);
                 return interactive;
-            }
-
-            if (obj is IRepresentationObject)
+            case IRepresentationObject _:
                 return obj;
-
-            if (obj is ISerializableObject && currentPreparePassAllowsISerializableObject)
-                return (JsonPayload)((ISerializableObject)obj).SerializeToString ();
-
-            if (obj is IFallbackRepresentationObject)
+            case ISerializableObject iserializableObject when currentPreparePassAllowsISerializableObject:
+                return (JsonPayload)iserializableObject.SerializeToString ();
+            case IFallbackRepresentationObject _:
                 return obj;
-
-            if (obj is Exception)
-                return ExceptionNode.Create ((Exception)obj);
-
-            if (obj is MemberInfo) {
+            case Exception exception:
+                return ExceptionNode.Create (exception);
+            case MemberInfo memberInfo:
                 try {
-                    var remoteMemberInfo = TypeMember.Create ((MemberInfo)obj);
+                    var remoteMemberInfo = TypeMember.Create (memberInfo);
                     if (remoteMemberInfo != null)
                         return remoteMemberInfo;
-                } catch {
+                } catch (Exception e) {
+                    Log.Warning (TAG, "unable to create TypeMember from MemberInfo", e);
                 }
-            }
-
-            if (obj is TimeSpan || obj is Guid)
+                return null;
+            case TimeSpan _:
+            case Guid _:
                 return obj;
-
-            if (obj is IntPtr)
+            case IntPtr intptr:
                 return new WordSizedNumber (
                     obj,
                     WordSizedNumberFlags.Pointer | WordSizedNumberFlags.Signed,
-                    (ulong)(IntPtr)obj);
-
-            if (obj is UIntPtr)
+                    (ulong)intptr);
+            case UIntPtr uintptr:
                 return new WordSizedNumber (
                     obj,
                     WordSizedNumberFlags.Pointer,
-                    (ulong)(UIntPtr)obj);
+                    (ulong)uintptr);
+            default:
+                if (Type.GetTypeCode (obj.GetType ()) != TypeCode.Object)
+                    return obj;
 
-            if (Type.GetTypeCode (obj.GetType ()) != TypeCode.Object)
-                return obj;
+                if (obj is byte [])
+                    return obj;
 
-            if (obj is byte [])
-                return obj;
-
-            return null;
+                return null;
+            }
         }
 
         /// <summary>
