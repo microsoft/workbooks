@@ -39,14 +39,12 @@ namespace Xamarin.Interactive.Forms
         {
             represented = null;
 
-            XIR.Color color;
-            if (TryFindMatchingRepresentation<XF.Color, XIR.Color> (
+            if (TryConvertRepresentation<XF.Color, XIR.Color> (
                 representedType,
                 representations,
-                out color)) {
-                represented = new XF.Color (color.Red, color.Green, color.Blue, color.Alpha);
+                out represented,
+                color => new XF.Color (r: color.Red, g: color.Green, b: color.Blue, a: color.Alpha)))
                 return true;
-            }
 
             return base.TryConvertFromRepresentation (representedType, representations, out represented);
         }

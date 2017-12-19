@@ -58,25 +58,23 @@ namespace Xamarin.Interactive.iOS
         {
             represented = null;
 
-            if (TryFindMatchingRepresentation<UIColor, Color> (
+            if (TryConvertRepresentation<UIColor, Color> (
                 representedType,
                 representations,
-                out var color)) {
-                represented = new UIColor (
-                    (nfloat)color.Red,
-                    (nfloat)color.Green,
-                    (nfloat)color.Blue,
-                    (nfloat)color.Alpha);
+                out represented,
+                color => new UIColor (
+                    red: (nfloat)color.Red,
+                    green: (nfloat)color.Green,
+                    blue: (nfloat)color.Blue,
+                    alpha: (nfloat)color.Alpha)))
                 return true;
-            }
-
-            if (TryFindMatchingRepresentation<MKPolyline, GeoPolyline> (
+            
+            if (TryConvertRepresentation<MKPolyline, GeoPolyline> (
                 representedType,
                 representations,
-                out var polyline)) {
-                represented = polyline.ToMKPolyline ();
+                out represented,
+                polyline => polyline.ToMKPolyline ()))
                 return true;
-            }
 
             return base.TryConvertFromRepresentation (
                 representedType,
