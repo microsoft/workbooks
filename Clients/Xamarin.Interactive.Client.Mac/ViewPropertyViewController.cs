@@ -13,6 +13,7 @@ using Xamarin.Interactive.Remote;
 using Xamarin.Interactive.Representations;
 using Xamarin.Interactive.PropertyEditor;
 using Xamarin.PropertyEditing.Mac;
+using Xamarin.Interactive.Client.PropertyEditor;
 
 namespace Xamarin.Interactive.Client.Mac
 {
@@ -38,7 +39,7 @@ namespace Xamarin.Interactive.Client.Mac
                 return;
 
             if (propertyEditor.EditorProvider == null)
-                propertyEditor.EditorProvider = new InteractiveEditorProvider (Session, new MacPropertyHelper ());
+                propertyEditor.EditorProvider = new InteractiveEditorProvider (Session, new CommonPropertyViewHelper ());
 
             InteractiveObject properties = null;
             try {
