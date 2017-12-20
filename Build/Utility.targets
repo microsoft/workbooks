@@ -139,15 +139,19 @@ Copyright 2017 Microsoft. All rights reserved.
       <SignTarget Include="Agents\**\*.exe"/>
       <SignTarget Include="Clients\**\Xamarin*.dll"/>
       <SignTarget Include="Clients\**\*.exe"/>
-      <SignTarget Include="WorkbookApps\**\Xamarin*.dll"/>
-      <SignTarget Include="WorkbookApps\**\*.exe"/>
+      <SignTarget Include="ClientIntegrations\**\Xamarin*.dll"/>
+      <SignTarget Include="_build\$(Configuration)\WorkbookApps\**\Xamarin*.dll"/>
+      <SignTarget Include="_build\$(Configuration)\WorkbookApps\**\*.exe"/>
+      <SignTarget Include="workbooks-proprietary\ClientIntegrations\**\Xamarin*.dll"/>
 
       <SignTarget Remove="Agents\**\Xamarin.Forms*"/>
       <SignTarget Remove="Agents\**\Xamarin.Android*"/>
       <SignTarget Remove="Clients\**\Xamarin.Forms*"/>
       <SignTarget Remove="Clients\**\Xamarin.Android*"/>
-      <SignTarget Remove="WorkbookApps\**\Xamarin.Forms*"/>
-      <SignTarget Remove="WorkbookApps\**\Xamarin.Android*"/>
+      <SignTarget Remove="_build\$(Configuration)\WorkbookApps\**\Xamarin.Forms*"/>
+      <SignTarget Remove="_build\$(Configuration)\WorkbookApps\**\Xamarin.Android*"/>
+      <SignTarget Remove="workbooks-proprietary\**\Xamarin.Forms*"/>
+      <SignTarget Remove="workbooks-proprietary\**\Xamarin.Android*"/>
     </ItemGroup>
     <PropertyGroup>
       <SignTargetPath>$(PackageOutputDir)sign-target.txt</SignTargetPath>
