@@ -93,7 +93,6 @@ namespace Xamarin.Interactive.Unified
                     -layer.AnchorPointZ);
         }
 
-
         public static CATransform3D GetChildTransform (this CALayer layer)
         {
             var childTransform = layer.SublayerTransform;

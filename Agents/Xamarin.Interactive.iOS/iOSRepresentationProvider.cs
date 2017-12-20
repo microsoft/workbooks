@@ -58,11 +58,10 @@ namespace Xamarin.Interactive.iOS
         {
             represented = null;
 
-            Color color;
             if (TryFindMatchingRepresentation<UIColor, Color> (
                 representedType,
                 representations,
-                out color)) {
+                out var color)) {
                 represented = new UIColor (
                     (nfloat)color.Red,
                     (nfloat)color.Green,
@@ -71,11 +70,10 @@ namespace Xamarin.Interactive.iOS
                 return true;
             }
 
-            GeoPolyline polyline;
             if (TryFindMatchingRepresentation<MKPolyline, GeoPolyline> (
                 representedType,
                 representations,
-                out polyline)) {
+                out var polyline)) {
                 represented = polyline.ToMKPolyline ();
                 return true;
             }

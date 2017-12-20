@@ -45,9 +45,9 @@ namespace Xamarin.Interactive.Unified
                     true);
             });
 
-            RegisterHandler<CGRect> (CoreGraphicsExtensions.RemoteRepresentation);
-            RegisterHandler<CGPoint> (CoreGraphicsExtensions.RemoteRepresentation);
-            RegisterHandler<CGSize> (CoreGraphicsExtensions.RemoteRepresentation);
+            RegisterHandler<CGRect> (o => new Representation (o.RemoteRepresentation (), true));
+            RegisterHandler<CGPoint> (o => new Representation (o.RemoteRepresentation (), true));
+            RegisterHandler<CGSize> (o => new Representation (o.RemoteRepresentation (), true));
 
             RegisterHandler<CLLocation> (LocationExtensions.RemoteRepresentation);
             RegisterHandler<CLLocationCoordinate2D> (LocationExtensions.RemoteRepresentation);
@@ -125,7 +125,7 @@ namespace Xamarin.Interactive.Unified
                 representedType,
                 representations,
                 out var size)) {
-                represented = new CGPoint (
+                represented = new CGSize (
                     size.Width,
                     size.Height);
                 return true;

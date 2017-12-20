@@ -43,6 +43,9 @@ using Xamarin.Interactive.Client.Windows.ViewModels;
 using Xamarin.Interactive.Client.Windows.Views;
 
 using XIR = Xamarin.Interactive.Remote;
+using Xamarin.PropertyEditing.Themes;
+using Xamarin.PropertyEditing.Windows;
+using Xamarin.Interactive.Client.PropertyEditor;
 
 namespace Xamarin.Interactive.Client.Windows
 {
@@ -197,7 +200,8 @@ namespace Xamarin.Interactive.Client.Windows
             replWebView.Loaded += HandleWebViewControlLoaded;
             replWebView.LoadCompleted += HandleWebViewSourceLoadCompleted;
 
-            propertyEditor.EditorProvider = new InteractiveEditorProvider (Session, new WpfPropertyViewHelper ());
+            propertyEditor.EditorProvider = new InteractiveEditorProvider (Session, new CommonPropertyViewHelper ());
+            PropertyEditorPanel.ThemeManager.Theme = PropertyEditorTheme.Light;
         }
 
         void NoteRecentDocument ()

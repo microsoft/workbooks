@@ -11,6 +11,7 @@ using System.Diagnostics;
 using System.Reflection;
 
 using Xamarin.Interactive.I18N;
+using Xamarin.Interactive.Remote;
 using Xamarin.Interactive.Representations;
 using Xamarin.Interactive.Representations.Reflection;
 using Xamarin.Interactive.Serialization;
@@ -93,28 +94,21 @@ namespace Xamarin.Interactive.PropertyEditor
             var value = UnpackValue (representation, Editor);
             var valueType = value?.GetType ();
 
-            var hasValues = isResolvedEnum || isEnumValue;
-
             if (type == null && isEnumValue)
                 type = valueType;
-            else if (type != null && type != valueType && valueType != null && !isResolvedEnum)
+            else if (type != valueType && valueType != null && !isResolvedEnum && valueType != typeof (string))
                 type = valueType;
+
+            var hasEditor = isResolvedEnum || isEnumValue || Editor.PropertyHelper.IsConvertable (type);
 
             var browsable = info?.GetCustomAttribute<DebuggerBrowsableAttribute> ();
             if (browsable != null && browsable.State == DebuggerBrowsableState.Never) {
                 // clear the type so we won't inspect it
                 type = null;
-            } else if (type == null) {
-                switch (value) {
-                case string _:
-                case bool _:
-                case double _:
-                    type = value.GetType ();
-                    break;
-                }
             }
+
             Type = type;
-            CanWrite = member.CanWrite && (hasValues || (member.MemberType.Name == type?.FullName));
+            CanWrite = member.CanWrite && type != null && (hasEditor || (member.MemberType.Name == type?.FullName));
         }
 
         public virtual TValue ToLocalValue<TValue> ()
@@ -190,6 +184,15 @@ namespace Xamarin.Interactive.PropertyEditor
                     : Catalog.GetString ("cannot evaluate");
             case InteractiveObject interactiveRepresentation:
                 return UnpackValue (interactiveRepresentation, editor);
+            case InteractiveEnumerable source:
+                var name = TypeHelper.GetCSharpTypeName (source.RepresentedType.Name);
+                return Catalog.Format (Catalog.GetString (
+                    "{0} - {1} items",
+                    comment: "{0} is a CLR type name; {1} is a count (integer) of items"),
+                    name,
+                    source.Count);
+            case Image image:
+                return Catalog.GetString ("not represented");
             default:
                 return representation;
             }

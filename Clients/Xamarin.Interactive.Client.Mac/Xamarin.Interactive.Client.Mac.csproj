@@ -336,7 +336,6 @@
     <Compile Include="WindowDragImageView.cs" />
     <Compile Include="Xamarin.Mac\AuthOpen.cs" />
     <Compile Include="Xamarin.Mac\Authorization.cs" />
-    <Compile Include="MacPropertyHelper.cs" />
     <Compile Include="..\..\Agents\Xamarin.Interactive.Mac\UnifiedExtensions.cs">
       <Link>UnifiedExtensions.cs</Link>
     </Compile>
