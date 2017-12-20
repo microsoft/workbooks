@@ -68,6 +68,7 @@ namespace Xamarin.Interactive.Client.ViewInspector
             IsEditing = false;
             IsSelectable = !view.IsFakeRoot;
             ToolTip = view.Description;
+            IconName = view.Kind == ViewKind.Primary ? "view" : "layer";
             IsExpanded = true;
         }
 
@@ -99,15 +100,6 @@ namespace Xamarin.Interactive.Client.ViewInspector
                 }
                 else
                     yield return child;
-            }
-        }
-
-        protected override void NotifyPropertyChanged ([CallerMemberName]string name = null)
-        {
-            base.NotifyPropertyChanged (name);
-            switch (name) {
-            case nameof (IsExpanded):
-                break;
             }
         }
     }

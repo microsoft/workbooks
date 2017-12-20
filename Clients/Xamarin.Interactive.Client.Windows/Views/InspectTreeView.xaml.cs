@@ -7,6 +7,7 @@
 
 using System;
 using System.ComponentModel;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -68,7 +69,10 @@ namespace Xamarin.Interactive.Client.Windows.Views
 
             if (meshResult != null) {
                 var node = meshResult.VisualHit as InspectTreeNode3D;
-
+                if (!node.IsHitTestVisible ()) {
+                    HitNode = null;
+                    return HitTestResultBehavior.Continue;
+                }
                 HitNode = node;
                 return HitTestResultBehavior.Stop;
             }
@@ -118,6 +122,8 @@ namespace Xamarin.Interactive.Client.Windows.Views
 
                 if (selectedNode != null)
                     selectedNode.Node.IsSelected = true;
+
+                CurrentView.SelectedNode = selectedNode?.Node;
             }
         }
 
@@ -150,20 +156,10 @@ namespace Xamarin.Interactive.Client.Windows.Views
                     new PropertyChangedCallback (ShowHiddenValueChanged)));
 
         static void ShowHiddenValueChanged (DependencyObject dependencyObject, DependencyPropertyChangedEventArgs eventArgs)
-        {
-            var value = (bool)eventArgs.NewValue;
-            var view = dependencyObject as InspectTreeView;
-            var state = new InspectTreeState (view.DisplayMode, value);
-            //view.representedNode.Rebuild (state);
-        }
+            => (dependencyObject as InspectTreeView)?.Rebuild ();
 
         static void DisplayModeValueChanged (DependencyObject dependencyObject, DependencyPropertyChangedEventArgs eventArgs)
-        {
-            var value = (DisplayMode) eventArgs.NewValue;
-            var view = dependencyObject as InspectTreeView;
-            var state = new InspectTreeState (value, view.ShowHidden);
-            //view.representedNode?.Rebuild (state);
-        }
+            => (dependencyObject as InspectTreeView)?.Rebuild ();
 
         public static readonly DependencyProperty CurrentViewProperty =
             DependencyProperty.Register (
@@ -187,6 +183,9 @@ namespace Xamarin.Interactive.Client.Windows.Views
                 case nameof (InspectTreeRoot.RepresentedNode):
                     view.Rebuild ();
                     break;
+                case nameof (InspectTreeRoot.SelectedNode):
+                    view.UpdateSelected ();
+                    break;
                 }
             }
 
@@ -197,6 +196,7 @@ namespace Xamarin.Interactive.Client.Windows.Views
 
             if (view.Tree != null)
                 (view.Tree as INotifyPropertyChanged).PropertyChanged += TreePropertyChanged;
+
             view.Rebuild ();
         }
 
@@ -211,7 +211,17 @@ namespace Xamarin.Interactive.Client.Windows.Views
                 Tree.RepresentedNode.Build3D (node3D, state);
                 representedNode = node3D;
                 topModel.Children.Add (representedNode);
+                UpdateSelected ();
             }
+        }
+
+        void UpdateSelected ()
+        {
+            if (Tree?.SelectedNode == null)
+                SelectedNode = null;
+
+            selectedNode = representedNode.TraverseTree (c => c.Children.OfType<InspectTreeNode3D> ())
+                .FirstOrDefault (node3D => node3D.Node == Tree?.SelectedNode);
         }
 
         internal InspectTreeRoot CurrentView {

@@ -26,6 +26,12 @@
                 <DataTrigger Binding="{Binding IconName}" Value="highlight">
                     <Setter Property="Kind" Value="Tag"/>
                 </DataTrigger>
+                <DataTrigger Binding="{Binding IconName}" Value="view">
+                    <Setter Property="Kind" Value="DrawingBox"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding IconName}" Value="layer">
+                    <Setter Property="Kind" Value="Drawing"/>
+                </DataTrigger>
             </Style.Triggers>
         </Style>
         <Style TargetType="MenuItem" BasedOn="{StaticResource {x:Type MenuItem}}">
@@ -66,6 +72,7 @@
         </Grid.ContextMenu>
         <DockPanel Margin="2">
             <iconPacks:PackIconMaterial
+                Padding="0,2,2,2"
                 Width="16"
                 Height="16"
                 HorizontalAlignment="Center"

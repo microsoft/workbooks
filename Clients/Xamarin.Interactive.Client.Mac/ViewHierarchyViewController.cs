@@ -1,6 +1,7 @@
 //
-// Author:
+// Authors:
 //   Aaron Bockover <abock@xamarin.com>
+//   Larry Ewing <lewing@xamarin.com>
 //
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
@@ -9,24 +10,26 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Input;
+
 using AppKit;
 using Foundation;
+
 using Xamarin.Interactive.Client.ViewInspector;
+using Xamarin.Interactive.Logging;
 using Xamarin.Interactive.OutlineView;
-using Xamarin.Interactive.Remote;
 using Xamarin.Interactive.TreeModel;
 
 namespace Xamarin.Interactive.Client.Mac
 {
     sealed partial class ViewHierarchyViewController : ViewInspectorViewController
     {
+        const string TAG = nameof (ViewHierarchyViewController);
+
         InspectorOutlineViewDelegate outlineViewDelegate;
         CollectionOutlineViewDataSource dataSource;
 
         ViewHierarchyViewController (IntPtr handle) : base (handle)
-        {
-            BindData ();
-        }
+            => BindData ();
 
         public override void ViewDidLoad ()
         {
@@ -67,7 +70,9 @@ namespace Xamarin.Interactive.Client.Mac
                 return;
 
             try {
-                dataSource = new CollectionOutlineViewDataSource (Tree?.RootNode);
+                var oldSource = dataSource;
+
+                dataSource = new InspectorOutlineViewDataSource (Tree);
                 dataSource.Reload += (sender, e) => {
                     if (e.Item == null)
                         outlineView.ReloadData ();
@@ -79,22 +84,55 @@ namespace Xamarin.Interactive.Client.Mac
                 outlineView.ReloadData ();
                 outlineViewDelegate = new InspectorOutlineViewDelegate (this);
                 outlineView.Delegate = outlineViewDelegate;
-            } finally {
-                if (outlineViewDelegate != null)
-                    outlineViewDelegate.InhibitSelectionDidChange = false;
+
+                oldSource?.Dispose ();
+            } catch (Exception e) {
+                Log.Error (TAG, e);
             }
         }
 
-        protected override void OnRootNodeChanged ()
+        protected override void OnRootNodeChanged () => BindData ();
+
+        class InspectorOutlineViewDataSource : CollectionOutlineViewDataSource 
         {
-            BindData ();
+            InspectTreeRoot Tree { get; }
+
+            public InspectorOutlineViewDataSource (InspectTreeRoot tree) : base (tree.RootNode)
+                => Tree = tree;
+
+            public override nint GetChildrenCount (NSOutlineView outlineView, NSObject item)
+            {
+                if (item == null)
+                    return (nint)Tree.Count;
+
+                var children = (item as NodeProxy)?.Node?.Children;
+                if (children != null)
+                    return children.Count;
+
+                return 0;
+            }
+
+            public override NSObject GetChild (NSOutlineView outlineView, nint childIndex, NSObject item)
+            {
+                TreeNode node;
+                if (item == null) {
+                    node = Tree [(int)childIndex];
+                    return BindOutlineViewNode (node);
+                }
+
+                node = (item as NodeProxy)?.Node;
+                if (node != null) {
+                    var child = node.Children [(int)childIndex];
+                    return BindOutlineViewNode (child);
+                }
+
+                return null;
+            }
         }
 
         class InspectorOutlineViewDelegate : CollectionOutlineViewDelegate
         {
             readonly ViewHierarchyViewController viewController;
-
-            public bool InhibitSelectionDidChange { get; set; }
 
             public InspectorOutlineViewDelegate (ViewHierarchyViewController viewController) : base (viewController.outlineView) 
                 => this.viewController = viewController;
@@ -102,24 +140,18 @@ namespace Xamarin.Interactive.Client.Mac
             public override bool SelectionShouldChange (NSOutlineView outlineView)
                 => viewController.Session.Agent.IsConnected;
 
+            public override void SelectionDidChange (TreeNode node)
+                => viewController.Tree.SelectedNode = (node as InspectTreeNode);
+
             public override NSView GetView (
-            NSTableColumn tableColumn,
-            CollectionOutlineViewDataSource.NodeProxy nodeProxy)
+                NSTableColumn tableColumn,
+                CollectionOutlineViewDataSource.NodeProxy nodeProxy)
             {
                 var view = (Views.XIIconThemeOutlineCellView)OutlineView.MakeView (
                     tableColumn.Identifier,
                     this);
                 view.IconName = nodeProxy.Node.IconName;
                 return view;
-            }
-
-            public override void SelectionDidChange (TreeNode node)
-            {
-                if (InhibitSelectionDidChange)
-                    return;
-                
-                var treeNode = node as InspectTreeNode;
-                viewController.Tree.SelectedNode = treeNode;
             }
 
             public override IEnumerable<NSMenuItem> ContextMenuItemsForNode (TreeNode node)

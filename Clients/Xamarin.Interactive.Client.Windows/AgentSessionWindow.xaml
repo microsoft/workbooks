@@ -318,9 +318,8 @@
                         IsEnabled="{Binding IsWindowEnabled}"
                         CurrentView="{Binding RootModel}"
                         DisplayMode="{Binding DisplayMode}"
-                        ShowHidden="{Binding ShowHidden}"
-                        />
-                       
+                        ShowHidden="{Binding ShowHidden}"/>
+
                     <GridSplitter
                         Grid.Column="3"
                         AutomationProperties.Name="Property grid resize handle"

@@ -1640,8 +1640,8 @@ Gw
                                                                                 <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="iBj-xF-EbN">
                                                                                     <rect key="frame" x="3" y="-1" width="16" height="16"/>
                                                                                     <constraints>
-                                                                                        <constraint firstAttribute="height" constant="16" id="3c9-kD-Pp1"/>
-                                                                                        <constraint firstAttribute="width" constant="16" id="duc-VV-gAq"/>
+                                                                                        <constraint firstAttribute="height" relation="lessThanOrEqual" constant="16" id="3c9-kD-Pp1"/>
+                                                                                        <constraint firstAttribute="width" relation="lessThanOrEqual" constant="16" id="duc-VV-gAq"/>
                                                                                     </constraints>
                                                                                     <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="NSActionTemplate" id="YFj-aE-Xut"/>
                                                                                 </imageView>

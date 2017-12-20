@@ -13,9 +13,7 @@ using Foundation;
 using AppKit;
 using SceneKit;
 
-using Xamarin.Interactive.Remote;
 using Xamarin.Interactive.Client.ViewInspector;
-using System.ComponentModel;
 
 namespace Xamarin.Interactive.Client.Mac.ViewInspector
 {
@@ -82,7 +80,7 @@ namespace Xamarin.Interactive.Client.Mac.ViewInspector
                     return;
 
                 representedNode = value;
-                RebuildScene (representedNode, true);
+                RebuildScene (representedNode, false);
             }
         }
 
@@ -152,6 +150,9 @@ namespace Xamarin.Interactive.Client.Mac.ViewInspector
 
             if (node != null)
                 node.IsSelected = true;
+            else if (RepresentedNode != null)
+                foreach (var item in RepresentedNode.TraverseTree (n => n.Children.OfType<InspectTreeNode> ()))
+                    item.IsSelected = false;
         }
 
         public override void MagnifyWithEvent (NSEvent theEvent)

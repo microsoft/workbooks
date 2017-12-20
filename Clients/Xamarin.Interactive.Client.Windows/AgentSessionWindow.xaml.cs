@@ -636,7 +636,7 @@ namespace Xamarin.Interactive.Client.Windows
         void OnInspectTreeSelected (object sender, RoutedPropertyChangedEventArgs<object> e)
         {
             if (e.NewValue is InspectTreeNode viewNode)
-                ViewModel.SelectedView = viewNode.View;
+                ViewModel.RootModel.SelectedNode = viewNode;
         }
 
         void OnOutlineSelected (object sender, RoutedPropertyChangedEventArgs<object> e)

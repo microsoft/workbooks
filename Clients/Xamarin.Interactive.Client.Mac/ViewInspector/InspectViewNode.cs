@@ -6,7 +6,6 @@
 // Licensed under the MIT License.
 
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 
 using AppKit;
@@ -15,7 +14,6 @@ using Foundation;
 using SceneKit;
 
 using Xamarin.Interactive.Client.ViewInspector;
-using Xamarin.Interactive.Inspection;
 using Xamarin.Interactive.Remote;
 
 namespace Xamarin.Interactive.Client.Mac.ViewInspector
@@ -30,24 +28,24 @@ namespace Xamarin.Interactive.Client.Mac.ViewInspector
 
         NSColor boundsColor;
         int childIndex;
-         
+
         public InspectViewNode (InspectTreeNode node, InspectTreeState state)
         {
             Node = node;
-            void NodePropertyChanged (object sender, PropertyChangedEventArgs args)
-            {
-                InspectTreeNode senderNode = sender as InspectTreeNode;
-                switch (args.PropertyName) {
-                case nameof (Node.IsSelected):
-                case nameof (Node.IsMouseOver):
-                case nameof (Node.IsExpanded):
-                    UpdateState ();
-                    break;
-                }
-            }
-
             node.PropertyChanged += NodePropertyChanged;
             this.childIndex = state.AddChild (node.View);
+        }
+
+        void NodePropertyChanged (object sender, PropertyChangedEventArgs args)
+        {
+            InspectTreeNode senderNode = sender as InspectTreeNode;
+            switch (args.PropertyName) {
+            case nameof (Node.IsSelected):
+            case nameof (Node.IsMouseOver):
+            case nameof (Node.IsExpanded):
+                UpdateState ();
+                break;
+            }
         }
 
         static internal SCNGeometrySource [] CreateGeometrySources (nfloat width, nfloat height)
@@ -147,6 +145,7 @@ namespace Xamarin.Interactive.Client.Mac.ViewInspector
 
             Geometry.Materials = new [] { highlightMaterial, firstMaterial, boundsMaterial };
             UpdateState ();
+
             // This is a hack to avoid Z-fighting of planes/frames that intersect within
             // the same node-depth level (or if we ever allow ZSpacing to drop to zero).
             // z-fighting appears on some controls such as some subviews of UISwitch.

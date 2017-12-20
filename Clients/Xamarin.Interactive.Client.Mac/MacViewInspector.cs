@@ -58,7 +58,7 @@ namespace Xamarin.Interactive.Client.Mac
                 var selected = SelectedHierarchy;
 
                 if (!supportedHierarchies.Contains (SelectedHierarchy))
-                    selected = supportedHierarchies? [0];
+                    selected = supportedHierarchies [0];
 
                 viewController.ChildViewControllers.OfType<ViewHierarchyViewController> ().ForEach (vc => {
                     vc.UpdateSupportedHierarchies (supportedHierarchies, selected);

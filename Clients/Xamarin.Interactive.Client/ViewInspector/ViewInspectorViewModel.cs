@@ -181,7 +181,8 @@ namespace Xamarin.Interactive.Client.ViewInspector
             set {
                 if (selectedView != value) {
                     selectedView = value;
-                    SelectView (selectedView, false, false);
+                    if (selectedView != null)
+                        SelectView (selectedView, false, false);
                     OnPropertyChanged ();
                 }
             }
@@ -280,7 +281,7 @@ namespace Xamarin.Interactive.Client.ViewInspector
                 while (current.Parent != null && current.Parent != root)
                     current = current.Parent;
             } else
-                current = root;
+                current = root.IsFakeRoot ? root.Children.FirstOrDefault() ?? root : root;
 
             RootView = root;
             RepresentedView = current;

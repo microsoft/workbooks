@@ -1,10 +1,20 @@
-﻿using System;
+﻿//
+// Author:
+//   Larry Ewing <lewing@xamarin.com>
+//
+// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License.
+
+using System;
 using System.ComponentModel;
 using System.IO;
+using System.Linq;
+
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Media.Media3D;
+
 using Xamarin.Interactive.Client.ViewInspector;
 using Xamarin.Interactive.Client.Windows.Views;
 
@@ -16,19 +26,23 @@ namespace Xamarin.Interactive.Client.Windows.ViewModels
         static readonly double ZSpacing = .1;
         static readonly double zFightIncrement = 1 / 800.0;
 
-        public InspectTreeNode Node { get; }
-        static Color FocusColor => Color.FromArgb (128, 128, 128, 255);
+        static Color FocusColor => Color.FromArgb (200, 0x1, 0x73, 0xc7);
+        static Color SecondaryFocusColor => Color.FromArgb (200, 0x2a, 0x8a, 0xd4);
         static Color BlurColor => Color.FromArgb (200, 255, 255, 255);
         static Color EmptyColor => Color.FromArgb (1, 255, 255, 255);
-        static Color HoverColor => Color.FromArgb (128, 128, 255, 255);
+        static Color HoverColor => Color.FromArgb (128, 0xe6, 0xf2, 0xfa);
 
-        int childIndex;
+        readonly ScaleTransform3D expandTransform = new ScaleTransform3D ();
+        readonly int childIndex;
         DiffuseMaterial material;
+
+        public InspectTreeNode Node { get; }
 
         public InspectTreeNode3D (InspectTreeNode node, InspectTreeState state)
         {
             void NodePropertyChanged (object sender, PropertyChangedEventArgs args)
             {
+                var senderNode = sender as InspectTreeNode;
                 switch (args.PropertyName) {
                 case nameof (InspectTreeNode.Children):
                     break;
@@ -37,6 +51,8 @@ namespace Xamarin.Interactive.Client.Windows.ViewModels
                     UpdateMaterial ();
                     break;
                 case nameof (InspectTreeNode.IsExpanded):
+                    foreach (var child in Children.OfType<InspectTreeNode3D> ())
+                        child.IsFlattened = !senderNode.IsExpanded;
                     break;
                 }
             }
@@ -150,38 +166,60 @@ namespace Xamarin.Interactive.Client.Windows.ViewModels
                 }
             };
 
+            var group = new Transform3DGroup ();
             if ((parent == null && !Node.View.IsFakeRoot) || (parent?.IsFakeRoot ?? false)) {
                 var unitScale = 1.0 / Math.Max (view.Width, view.Height);
-
-                Transform = new Transform3DGroup {
-                    Children = new Transform3DCollection {
+                group.Children = new Transform3DCollection {
                         new TranslateTransform3D {
                             OffsetX = -view.Width / 2.0,
                             OffsetY = -view.Height / 2.0,
                             OffsetZ = zOffset
                         },
                         new ScaleTransform3D (unitScale, -unitScale, 1),
-                    }
+                        expandTransform
                 };
             } else {
                 if (view.Transform != null) {
-                    Transform = new MatrixTransform3D () { Matrix = matrix };
+                    group.Children = new Transform3DCollection {
+                        new MatrixTransform3D () { Matrix = matrix },
+                        expandTransform
+                       };
                 } else {
-                    Transform = new TranslateTransform3D (view.X, view.Y, zOffset);
+                    group.Children = new Transform3DCollection {
+                        new TranslateTransform3D (view.X, view.Y, zOffset),
+                        expandTransform
+                    };
                 }
             }
+            Transform = group;
         }
+
+        bool isFlattened = false;
+        bool IsFlattened {
+            get => isFlattened;
+            set {
+                isFlattened = value;
+                expandTransform.ScaleZ = isFlattened ? 0.001 : 1;
+            }
+        }
+
+        public bool IsHitTestVisible ()
+            => !IsFlattened && ((VisualTreeHelper.GetParent (this) as InspectTreeNode3D)?.IsHitTestVisible () ?? true);
 
         void UpdateMaterial ()
         {
             if (material == null)
                 return;
 
-            var solid = material.Brush as SolidColorBrush;
-            if (solid == null)
-                material.Color = Node.IsSelected ? FocusColor : (Node.IsMouseOver ? HoverColor :BlurColor);
-            else
-                solid.Color = Node.IsSelected ? FocusColor : (Node.IsMouseOver ? HoverColor : EmptyColor);
+            var selected = Node.IsMouseOver ? SecondaryFocusColor : FocusColor;
+            switch (material.Brush) {
+            case SolidColorBrush solid:
+                solid.Color = Node.IsSelected ? selected : (Node.IsMouseOver ? HoverColor : EmptyColor);
+                break;
+            default:
+                material.Color = Node.IsSelected ? selected : (Node.IsMouseOver ? HoverColor : BlurColor);
+                break;
+            }
         }
 
         void IInspectTree3DNode<InspectTreeNode3D>.BuildPrimaryPlane (InspectTreeState state) =>
@@ -196,6 +234,5 @@ namespace Xamarin.Interactive.Client.Windows.ViewModels
 
         public void Add (InspectTreeNode3D child) =>
             Children.Add (child);
-       
     }
 }

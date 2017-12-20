@@ -7,6 +7,7 @@
 
 using System;
 using System.ComponentModel;
+
 using Xamarin.Interactive.Client.ViewInspector;
 using Xamarin.Interactive.Remote;
 
@@ -82,18 +83,12 @@ namespace Xamarin.Interactive.Client.Mac
         }
 
         protected virtual void OnRepresentedNodeChanged ()
-        {
-            OnRepresentedViewChanged ();
-        }
+            => OnRepresentedViewChanged ();
 
         protected virtual void OnRootNodeChanged ()
-        {   
-            OnRootViewChanged ();
-        }
+            => OnRootViewChanged ();
 
         protected virtual void OnSelectedNodeChanged ()
-        {
-            OnSelectedViewChanged ();
-        }
+            => OnSelectedViewChanged ();
     }
 }

@@ -18,7 +18,7 @@ using Xamarin.Interactive.TreeModel;
 
 namespace Xamarin.Interactive.OutlineView
 {
-    sealed class CollectionOutlineViewDataSource : NSOutlineViewDataSource
+    class CollectionOutlineViewDataSource : NSOutlineViewDataSource
     {
         public struct ReloadEventArgs
         {
@@ -112,7 +112,7 @@ namespace Xamarin.Interactive.OutlineView
             return nodeCache.TryGetValue (node, out proxy);
         }
 
-        NodeProxy BindOutlineViewNode (TreeNode node)
+        protected NodeProxy BindOutlineViewNode (TreeNode node)
         {
             if (node == null)
                 return null;
