@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27004.2005
+VisualStudioVersion = 15.0.27110.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Clients", "Clients", "{1918A3C3-EAE4-4F9F-BF6B-83CB94AAF7E9}"
 EndProject
@@ -111,6 +111,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xamarin.Workbooks.Client.iO
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xamarin.Interactive.Client.Console", "Clients\Xamarin.Interactive.Client.Console\Xamarin.Interactive.Client.Console.csproj", "{3B87985C-5F40-40BF-9BC3-8458501AAA93}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InstallerVerifier", "Tools\InstallerVerifier\InstallerVerifier.csproj", "{F6BFEAE8-F71D-4D1A-AC04-07ABB4FBF9A7}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		Agents\Xamarin.Interactive.Mac\Xamarin.Interactive.Mac.projitems*{0be4e82e-2409-4425-811d-bc7c8b134320}*SharedItemsImports = 13
@@ -174,13 +176,11 @@ Global
 		{22FD0FAE-D093-446C-9ADB-4B59A97F413E}.Release|Windows.ActiveCfg = Release|Any CPU
 		{22FD0FAE-D093-446C-9ADB-4B59A97F413E}.Release|Windows.Build.0 = Release|Any CPU
 		{FFCB3FDE-7622-4195-A502-5CA95432172F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{FFCB3FDE-7622-4195-A502-5CA95432172F}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
 		{FFCB3FDE-7622-4195-A502-5CA95432172F}.Debug|macOS.ActiveCfg = Debug|Any CPU
 		{FFCB3FDE-7622-4195-A502-5CA95432172F}.Debug|macOS.Build.0 = Debug|Any CPU
 		{FFCB3FDE-7622-4195-A502-5CA95432172F}.Debug|Windows.ActiveCfg = Debug|Any CPU
 		{FFCB3FDE-7622-4195-A502-5CA95432172F}.Debug|Windows.Build.0 = Debug|Any CPU
 		{FFCB3FDE-7622-4195-A502-5CA95432172F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{FFCB3FDE-7622-4195-A502-5CA95432172F}.Release|Any CPU.Deploy.0 = Release|Any CPU
 		{FFCB3FDE-7622-4195-A502-5CA95432172F}.Release|macOS.ActiveCfg = Release|Any CPU
 		{FFCB3FDE-7622-4195-A502-5CA95432172F}.Release|macOS.Build.0 = Release|Any CPU
 		{FFCB3FDE-7622-4195-A502-5CA95432172F}.Release|Windows.ActiveCfg = Release|Any CPU
@@ -222,13 +222,11 @@ Global
 		{C91F06EE-C8FC-475C-8A3C-CA171BCEB46D}.Release|Windows.ActiveCfg = Release|iPhoneSimulator
 		{C91F06EE-C8FC-475C-8A3C-CA171BCEB46D}.Release|Windows.Build.0 = Release|iPhoneSimulator
 		{08F4622B-08E3-45AB-B0A1-D360406F6A15}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{08F4622B-08E3-45AB-B0A1-D360406F6A15}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
 		{08F4622B-08E3-45AB-B0A1-D360406F6A15}.Debug|macOS.ActiveCfg = Debug|Any CPU
 		{08F4622B-08E3-45AB-B0A1-D360406F6A15}.Debug|macOS.Build.0 = Debug|Any CPU
 		{08F4622B-08E3-45AB-B0A1-D360406F6A15}.Debug|Windows.ActiveCfg = Debug|Any CPU
 		{08F4622B-08E3-45AB-B0A1-D360406F6A15}.Debug|Windows.Build.0 = Debug|Any CPU
 		{08F4622B-08E3-45AB-B0A1-D360406F6A15}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{08F4622B-08E3-45AB-B0A1-D360406F6A15}.Release|Any CPU.Deploy.0 = Release|Any CPU
 		{08F4622B-08E3-45AB-B0A1-D360406F6A15}.Release|macOS.ActiveCfg = Release|Any CPU
 		{08F4622B-08E3-45AB-B0A1-D360406F6A15}.Release|macOS.Build.0 = Release|Any CPU
 		{08F4622B-08E3-45AB-B0A1-D360406F6A15}.Release|Windows.ActiveCfg = Release|Any CPU
@@ -302,13 +300,11 @@ Global
 		{7A522415-E2F7-4E4B-8E11-3D7CF9A854A8}.Release|Windows.ActiveCfg = Release|Any CPU
 		{7A522415-E2F7-4E4B-8E11-3D7CF9A854A8}.Release|Windows.Build.0 = Release|Any CPU
 		{C675C808-1FA9-4925-B4DF-87240ED2E3B8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C675C808-1FA9-4925-B4DF-87240ED2E3B8}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
 		{C675C808-1FA9-4925-B4DF-87240ED2E3B8}.Debug|macOS.ActiveCfg = Debug|Any CPU
 		{C675C808-1FA9-4925-B4DF-87240ED2E3B8}.Debug|macOS.Build.0 = Debug|Any CPU
 		{C675C808-1FA9-4925-B4DF-87240ED2E3B8}.Debug|Windows.ActiveCfg = Debug|Any CPU
 		{C675C808-1FA9-4925-B4DF-87240ED2E3B8}.Debug|Windows.Build.0 = Debug|Any CPU
 		{C675C808-1FA9-4925-B4DF-87240ED2E3B8}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C675C808-1FA9-4925-B4DF-87240ED2E3B8}.Release|Any CPU.Deploy.0 = Release|Any CPU
 		{C675C808-1FA9-4925-B4DF-87240ED2E3B8}.Release|macOS.ActiveCfg = Release|Any CPU
 		{C675C808-1FA9-4925-B4DF-87240ED2E3B8}.Release|macOS.Build.0 = Release|Any CPU
 		{C675C808-1FA9-4925-B4DF-87240ED2E3B8}.Release|Windows.ActiveCfg = Release|Any CPU
@@ -380,22 +376,18 @@ Global
 		{8DFCE7A8-BA80-475D-97C1-DFBCCE17C8E3}.Release|Windows.ActiveCfg = Release|Any CPU
 		{8DFCE7A8-BA80-475D-97C1-DFBCCE17C8E3}.Release|Windows.Build.0 = Release|Any CPU
 		{F98CCE56-C44F-4096-A2FA-7298F339F846}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F98CCE56-C44F-4096-A2FA-7298F339F846}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F98CCE56-C44F-4096-A2FA-7298F339F846}.Debug|macOS.ActiveCfg = Debug|Any CPU
 		{F98CCE56-C44F-4096-A2FA-7298F339F846}.Debug|Windows.ActiveCfg = Debug|Any CPU
 		{F98CCE56-C44F-4096-A2FA-7298F339F846}.Debug|Windows.Build.0 = Debug|Any CPU
 		{F98CCE56-C44F-4096-A2FA-7298F339F846}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F98CCE56-C44F-4096-A2FA-7298F339F846}.Release|Any CPU.Build.0 = Release|Any CPU
 		{F98CCE56-C44F-4096-A2FA-7298F339F846}.Release|macOS.ActiveCfg = Release|Any CPU
 		{F98CCE56-C44F-4096-A2FA-7298F339F846}.Release|Windows.ActiveCfg = Release|Any CPU
 		{F98CCE56-C44F-4096-A2FA-7298F339F846}.Release|Windows.Build.0 = Release|Any CPU
 		{8A84E7D0-5B66-4BDE-ADE2-20E814D361B2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8A84E7D0-5B66-4BDE-ADE2-20E814D361B2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8A84E7D0-5B66-4BDE-ADE2-20E814D361B2}.Debug|macOS.ActiveCfg = Debug|Any CPU
 		{8A84E7D0-5B66-4BDE-ADE2-20E814D361B2}.Debug|Windows.ActiveCfg = Debug|Any CPU
 		{8A84E7D0-5B66-4BDE-ADE2-20E814D361B2}.Debug|Windows.Build.0 = Debug|Any CPU
 		{8A84E7D0-5B66-4BDE-ADE2-20E814D361B2}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{8A84E7D0-5B66-4BDE-ADE2-20E814D361B2}.Release|Any CPU.Build.0 = Release|Any CPU
 		{8A84E7D0-5B66-4BDE-ADE2-20E814D361B2}.Release|macOS.ActiveCfg = Release|Any CPU
 		{8A84E7D0-5B66-4BDE-ADE2-20E814D361B2}.Release|Windows.ActiveCfg = Release|Any CPU
 		{8A84E7D0-5B66-4BDE-ADE2-20E814D361B2}.Release|Windows.Build.0 = Release|Any CPU
@@ -480,17 +472,24 @@ Global
 		{B5F889E8-E396-4C7E-836E-DC5A9A260DB3}.Release|Windows.ActiveCfg = Release|Any CPU
 		{B5F889E8-E396-4C7E-836E-DC5A9A260DB3}.Release|Windows.Build.0 = Release|Any CPU
 		{3B87985C-5F40-40BF-9BC3-8458501AAA93}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{3B87985C-5F40-40BF-9BC3-8458501AAA93}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3B87985C-5F40-40BF-9BC3-8458501AAA93}.Debug|macOS.ActiveCfg = Debug|Any CPU
 		{3B87985C-5F40-40BF-9BC3-8458501AAA93}.Debug|macOS.Build.0 = Debug|Any CPU
 		{3B87985C-5F40-40BF-9BC3-8458501AAA93}.Debug|Windows.ActiveCfg = Debug|Any CPU
 		{3B87985C-5F40-40BF-9BC3-8458501AAA93}.Debug|Windows.Build.0 = Debug|Any CPU
 		{3B87985C-5F40-40BF-9BC3-8458501AAA93}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{3B87985C-5F40-40BF-9BC3-8458501AAA93}.Release|Any CPU.Build.0 = Release|Any CPU
 		{3B87985C-5F40-40BF-9BC3-8458501AAA93}.Release|macOS.ActiveCfg = Release|Any CPU
 		{3B87985C-5F40-40BF-9BC3-8458501AAA93}.Release|macOS.Build.0 = Release|Any CPU
 		{3B87985C-5F40-40BF-9BC3-8458501AAA93}.Release|Windows.ActiveCfg = Release|Any CPU
 		{3B87985C-5F40-40BF-9BC3-8458501AAA93}.Release|Windows.Build.0 = Release|Any CPU
+		{F6BFEAE8-F71D-4D1A-AC04-07ABB4FBF9A7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F6BFEAE8-F71D-4D1A-AC04-07ABB4FBF9A7}.Debug|macOS.ActiveCfg = Debug|Any CPU
+		{F6BFEAE8-F71D-4D1A-AC04-07ABB4FBF9A7}.Debug|macOS.Build.0 = Debug|Any CPU
+		{F6BFEAE8-F71D-4D1A-AC04-07ABB4FBF9A7}.Debug|Windows.ActiveCfg = Debug|Any CPU
+		{F6BFEAE8-F71D-4D1A-AC04-07ABB4FBF9A7}.Debug|Windows.Build.0 = Debug|Any CPU
+		{F6BFEAE8-F71D-4D1A-AC04-07ABB4FBF9A7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F6BFEAE8-F71D-4D1A-AC04-07ABB4FBF9A7}.Release|macOS.ActiveCfg = Release|Any CPU
+		{F6BFEAE8-F71D-4D1A-AC04-07ABB4FBF9A7}.Release|Windows.ActiveCfg = Release|Any CPU
+		{F6BFEAE8-F71D-4D1A-AC04-07ABB4FBF9A7}.Release|Windows.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -541,6 +540,7 @@ Global
 		{D5DE60DD-C8EE-41B9-A364-3ED89D668E2F} = {CA7D68B0-F4A3-4679-96C0-7F967056F1FC}
 		{B5F889E8-E396-4C7E-836E-DC5A9A260DB3} = {CED232BB-D8C8-43A9-BAF2-17321AE454D3}
 		{3B87985C-5F40-40BF-9BC3-8458501AAA93} = {1918A3C3-EAE4-4F9F-BF6B-83CB94AAF7E9}
+		{F6BFEAE8-F71D-4D1A-AC04-07ABB4FBF9A7} = {E3972EA9-3073-4251-AD90-87B4C90147FC}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D588CD6A-A8A7-4CCE-A894-95F307675CBF}
