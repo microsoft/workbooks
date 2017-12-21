@@ -147,7 +147,7 @@ namespace Xamarin.Interactive.Unified
                 representedType,
                 representations,
                 out var point)) {
-                represented = new Point (
+                represented = new CGPoint (
                     point.X,
                     point.Y);
                 return true;
