@@ -47,6 +47,14 @@
   },
   {
     "Kind": "NuGet",
+    "Name": "Mono.Options",
+    "Version": "5.3.0.1",
+    "DependentProjects": [
+      "InstallerVerifier"
+    ]
+  },
+  {
+    "Kind": "NuGet",
     "Name": "MouseKeyboardActivityMonitor",
     "Version": "4.0.5150.10665",
     "DependentProjects": [
@@ -58,7 +66,8 @@
     "Name": "Newtonsoft.Json",
     "Version": "9.0.1",
     "DependentProjects": [
-      "Xamarin.Workbooks.Client.iOS"
+      "Xamarin.Workbooks.Client.iOS",
+      "InstallerVerifier"
     ]
   },
   {
@@ -67,6 +76,14 @@
     "Version": "4.3.0",
     "DependentProjects": [
       "Xamarin.Interactive.Client"
+    ]
+  },
+  {
+    "Kind": "NuGet",
+    "Name": "Serilog.Sinks.Console",
+    "Version": "3.1.1",
+    "DependentProjects": [
+      "InstallerVerifier"
     ]
   },
   {
@@ -144,6 +161,6 @@
   {
     "Kind": "GitSubmodule",
     "Name": "External/Xamarin.PropertyEditing",
-    "Version": "953d37877f78fdf1fa99a33e189aa99a6b5f4655"
+    "Version": "1ad39236886f30dded16811e588ae4accddc4a19"
   }
 ]
