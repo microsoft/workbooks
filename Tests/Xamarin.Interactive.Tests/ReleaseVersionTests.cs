@@ -80,6 +80,17 @@ namespace Xamarin.Interactive.Tests
                 .ToString (ReleaseVersionFormat.FriendlyShort, withBuildComponent)
                 .ShouldEqual (expectedFriendly);
 
+        [TestCase ("1.2.0", "1.2.0")]
+        [TestCase ("1.2.0+8", "1.2.0-build.8")]
+        [TestCase ("1.4.0-alpha1+3", "1.4.0-alpha1-build.3")]
+        [TestCase ("1.4.0-rc4", "1.4.0-rc4")]
+        [TestCase ("1.4.3-rc4+938", "1.4.3-rc4-build.938")]
+        public void NuGetSafe (string semVer, string expectedNuGetSafe)
+            => ReleaseVersion
+                .Parse (semVer)
+                .ToString (ReleaseVersionFormat.SemVer, true, true)
+                .ShouldEqual (expectedNuGetSafe);
+
         [TestCase ("1.4.0-alpha1", "1.4a1")]
         [TestCase ("1.4.1-alpha2", "1.4.1a2")]
         [TestCase ("1.4.2-alpha3", "1.4.2a3")]

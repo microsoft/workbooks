@@ -51,6 +51,9 @@ Copyright 2017 Microsoft. All rights reserved.
         TaskParameter="SemVer"
         PropertyName="ReleaseVersion_SemVer"/>
       <Output
+        TaskParameter="SemVerNuGetSafe"
+        PropertyName="ReleaseVersion_SemVerNuGetSafe"/>
+      <Output
         TaskParameter="SemVerWithoutBuild"
         PropertyName="ReleaseVersion_SemVerWithoutBuild"/>
       <Output
@@ -70,6 +73,7 @@ Copyright 2017 Microsoft. All rights reserved.
         PropertyName="ReleaseVersion_FriendlyShort"/>
     </ReleaseVersion>
     <Message Text="SemVer: $(ReleaseVersion_SemVer)" Importance="high"/>
+    <Message Text="SemVerNuGetSafe: $(ReleaseVersion_SemVerNuGetSafe)" Importance="high"/>
     <Message Text="SemVerWithoutBuild: $(ReleaseVersion_SemVerWithoutBuild)" Importance="high"/>
     <Message Text="AppleCFBundleVersion: $(ReleaseVersion_AppleCFBundleVersion)" Importance="high"/>
     <Message Text="AppleCFBundleShortVersion: $(ReleaseVersion_AppleCFBundleShortVersion)" Importance="high"/>
