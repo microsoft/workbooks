@@ -1,8 +1,16 @@
-﻿using System;
+﻿//
+// Author:
+//   Aaron Bockover <abock@microsoft.com>
+//
+// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License.
+
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Xml.Linq;
 
@@ -14,10 +22,18 @@ using Serilog.Events;
 
 using Mono.Options;
 
-namespace InstallerDeepSignVerify
+namespace InstallerVerifier
 {
     static class Program
     {
+        enum VerifyResult
+        {
+            Signed,
+            Unsigned,
+            Skipped,
+            Excluded
+        }
+
         static readonly HashSet<string> extensionsToCheck = new HashSet<string>
         {
             ".dll",
@@ -119,10 +135,6 @@ namespace InstallerDeepSignVerify
                 return 1;
             }
 
-            var signtool = FindSigntool ();
-            if (signtool == null)
-                return 1;
-
             int totalUnsigned = 0;
 
             try {
@@ -146,11 +158,17 @@ namespace InstallerDeepSignVerify
                 foreach (var entry in fileMap)
                     exclusions.MarkHandled (entry.Value.InstallPath);
 
+                var stopwatch = new Stopwatch ();
+                stopwatch.Start ();
+
                 totalUnsigned = VerifySignatures (
-                    signtool,
                     fileMap,
                     exclusions,
                     exclusionsBootstrapReason);
+
+                stopwatch.Stop ();
+
+                Log.Debug ("Signature verification completed: {Duration}", stopwatch.Elapsed);
 
                 if (exclusionsBootstrapReason != null || updateExclusionsFile)
                     exclusions.Save ();
@@ -170,32 +188,31 @@ namespace InstallerDeepSignVerify
         }
 
         static int VerifySignatures (
-            string signtool,
             Dictionary<string, FileMapTarget> fileMap,
             ExclusionSet exclusions,
             string exclusionsBootstrapReason)
         {
             int totalUnsigned = 0;
             int i = 0;
+
             foreach (var entry in fileMap) {
                 var extension = Path.GetExtension (entry.Value.SourcePath).ToLowerInvariant ();
 
-                SignToolResult result;
+                VerifyResult result;
                 if (exclusions.Contains (entry.Value.InstallPath))
-                    result = SignToolResult.Excluded;
+                    result = VerifyResult.Excluded;
                 else if (extensionsToCheck.Contains (extension))
-                    result = RunSigntool (signtool, entry.Value.SourcePath);
+                    result = WinTrust.VerifyAuthenticodeTrust (
+                        entry.Value.SourcePath) == SignatureVerificationResult.Valid
+                        ? VerifyResult.Signed
+                        : VerifyResult.Unsigned;
                 else
-                    result = SignToolResult.Skipped;
+                    result = VerifyResult.Skipped;
 
                 var level = LogEventLevel.Verbose;
 
                 switch (result) {
-                case SignToolResult.Unknown:
-                case SignToolResult.Warning:
-                    level = LogEventLevel.Warning;
-                    break;
-                case SignToolResult.Unsigned:
+                case VerifyResult.Unsigned:
                     if (exclusionsBootstrapReason != null)
                         exclusions.Bootstrap (entry.Value.InstallPath, exclusionsBootstrapReason);
                     level = LogEventLevel.Error;
@@ -360,114 +377,6 @@ namespace InstallerDeepSignVerify
                     .OrderByDescending (Path.GetFileName)
                     .First (),
                 "tools");
-        }
-
-        static string FindSigntool ()
-        {
-            var windowsKits = Path.Combine (
-                Environment.GetFolderPath (Environment.SpecialFolder.ProgramFilesX86),
-                "Windows Kits");
-
-            var kit = Directory
-                .EnumerateDirectories (windowsKits)
-                .Select (root => {
-                    var name = Path.GetFileName (root);
-                    Version version = null;
-
-                    if (!char.IsDigit (name [0]))
-                        version = null;
-                    else if (int.TryParse (name, out var major))
-                        version = new Version (major, 0);
-                    else if (!Version.TryParse (name, out version))
-                        Log.Warning ("{WindowsKitPath} does not represent a valid System.Version", root);
-
-                    return new {
-                        Version = version,
-                        Root = root
-                    };
-                })
-                .Where (root => root.Version != null)
-                .OrderByDescending (root => root.Version)
-                .FirstOrDefault ();
-
-            if (kit != null) {
-                var signtool = Directory.EnumerateFiles (
-                    kit.Root,
-                    "signtool.exe",
-                    SearchOption.AllDirectories).FirstOrDefault ();
-                if (signtool != null)
-                    return signtool;
-            }
-
-            Log.Fatal ("Unable to locate a {Signtool} in {WindowsKitsPath}", "signtool.exe", windowsKits);
-
-            return null;
-        }
-
-        enum SignToolResult
-        {
-            Unknown,
-            Signed,
-            Unsigned,
-            Warning,
-            Skipped,
-            Excluded
-        }
-
-        static SignToolResult RunSigntool (string signtool, string file)
-        {
-            var process = new Process {
-                StartInfo = new ProcessStartInfo {
-                    FileName = signtool,
-                    Arguments = "verify /pa " + file,
-                    UseShellExecute = false,
-                    RedirectStandardError = true,
-                    RedirectStandardOutput = true,
-                }
-            };
-
-            var output = new StringBuilder ();
-
-            void AppendOutput (object o, DataReceivedEventArgs e)
-            {
-                if (e.Data != null) {
-                    lock (output)
-                        output.AppendLine (e.Data);
-                }
-            }
-
-            process.OutputDataReceived += AppendOutput;
-            process.ErrorDataReceived += AppendOutput;
-
-            process.Start ();
-            process.BeginOutputReadLine ();
-            process.BeginErrorReadLine ();
-            process.WaitForExit ();
-
-            string outputString;
-            lock (output)
-                outputString = output.ToString ();
-
-            switch (process.ExitCode) {
-            case 0:
-                return SignToolResult.Signed;
-            case 1:
-                if (outputString.IndexOf (
-                    "file format cannot be verified",
-                    StringComparison.OrdinalIgnoreCase) >= 0)
-                    return SignToolResult.Skipped;
-                return SignToolResult.Unsigned;
-            default:
-                var result = process.ExitCode == 2
-                    ? SignToolResult.Warning
-                    : SignToolResult.Unknown;
-                Log.Warning (
-                    "{Signtool} → Result {Result}: {Output}",
-                    "signtool",
-                    result,
-                    outputString);
-                return result;
-            }
         }
 
         static void Exec (string logTag, string fileName, params string [] arguments)
