@@ -1,9 +1,51 @@
 # Version @BUILD_DOCUMENTATION_VERSION@
 
-A summary of the 1.4 release series is below. Please refer to the
-[detailed release notes][docs-detailed-release-notes] and full
-product documentation for [Workbooks][docs-workbooks] and
+Please refer to the [detailed release notes][docs-detailed-release-notes] and
+full product documentation for [Workbooks][docs-workbooks] and
 [Inspector][docs-inspector] for complete information.
+
+## NEW & IMPROVED
+
+* It is now possible to use ASP.NET Core in your .NET Core workbooks.
+
+* Signature help now behaves more like Visual Studio.
+
+* The visual tree inspector is now more consistent between Windows and macOS
+  and has improved view selection and navigation features.
+
+* More improvements to the new property editor including custom editors for
+  various `CoreGraphics` and `System.Windows.Media` types.
+
+* Choose the new _Report an Issue_ menu item in the _Help_ menu to easily
+  report issues.
+
+* Xamarin.Forms support has been bumped to 2.5.0.
+
+* The New Workbook dialog now defaults to the last selected type.
+
+## FIXED
+
+* Fixed a rendering issue in the Mac sidebar. Thank you to Yusuke Yamada
+  (@yamachu) for our
+  [first ever public contribution](https://github.com/Microsoft/workbooks/pull/97)!
+
+* Fixed an SDK location bug that prevented Android workbooks from running.
+
+* Add `workbook` tool to `PATH` using `/etc/paths.d` instead of writing a
+  script to `/usr/local/bin`.
+
+* Fix generic type name rendering.
+
+* Inspector view picking once again works with devices other than iPhone 5s.
+
+* Fix rendering of emoji in C# string literals.
+
+* Fix user interface rendering issues after unlocking your computer on Windows.
+
+* Fix custom attributes using types defined in the workbook, enabling
+  custom JSON deserialization.
+
+# Version 1.4.0 Beta 1
 
 ## NEW & IMPROVED
 
