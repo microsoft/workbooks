@@ -53,7 +53,8 @@ function CloneOrUpdate {
 
   Push-Location $checkoutPath
   try {
-    if (-Not (& git checkout $gitRef)) {
+    & git checkout $gitRef
+    if ($LASTEXITCODE -ne 0) {
       Write-Error "Unable to check out $gitRef"
       Exit 1
     }
