@@ -12,7 +12,7 @@ using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-
+using Xamarin.Interactive.Client.ViewInspector;
 using Xamarin.Interactive.Client.Windows.Commands;
 using Xamarin.Interactive.Editor;
 using Xamarin.Interactive.I18N;

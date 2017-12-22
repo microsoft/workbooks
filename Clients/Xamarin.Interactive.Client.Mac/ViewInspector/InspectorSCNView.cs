@@ -7,13 +7,13 @@
 
 using System;
 using System.Linq;
+using System.Numerics;
 
 using Foundation;
 using AppKit;
 using SceneKit;
 
-using Xamarin.Interactive.Remote;
-using System.Numerics;
+using Xamarin.Interactive.Client.ViewInspector;
 
 namespace Xamarin.Interactive.Client.Mac.ViewInspector
 {
@@ -23,14 +23,12 @@ namespace Xamarin.Interactive.Client.Mac.ViewInspector
         const string TAG = nameof (InspectorSCNView);
 
         InspectViewNode currentViewNode;
-        IInspectViewNode focusedNode;
+
         bool isDragging;
         DisplayMode displayMode = DisplayMode.FramesAndContent;
         bool showHiddenViews;
 
         public SceneKitDolly Trackball { get; } = new SceneKitDolly ();
-
-        public event Action<InspectView> ViewSelected;
 
         public InspectorSCNView (IntPtr handle) : base (handle)
         {
@@ -45,7 +43,7 @@ namespace Xamarin.Interactive.Client.Mac.ViewInspector
             get { return showHiddenViews; }
             set {
                 showHiddenViews = value;
-                RebuildScene (CurrentView, false);
+                RebuildScene (RepresentedNode, false);
             }
         }
 
@@ -53,18 +51,42 @@ namespace Xamarin.Interactive.Client.Mac.ViewInspector
             get { return displayMode; }
             set {
                 displayMode = value;
-                RebuildScene (CurrentView, false);
+                RebuildScene (RepresentedNode, false);
             }
         }
 
-        public InspectView CurrentView {
-            get { return currentViewNode?.InspectView; }
-            set { RebuildScene (value); }
+        InspectViewNode hoverNode;
+        InspectViewNode HoverNode {
+            get => hoverNode;
+            set {
+                if (hoverNode != value) {
+                    if (hoverNode != null) {
+                        hoverNode.Node.IsMouseOver = false;
+                    }
+
+                    hoverNode = value;
+                    if (hoverNode != null) {
+                        hoverNode.Node.IsMouseOver = true;
+                    }
+                }
+            }
         }
 
-        void RebuildScene (InspectView view, bool recreateScene = true)
+        InspectTreeNode representedNode;
+        public InspectTreeNode RepresentedNode {
+            get => representedNode;
+            set {
+                if (representedNode == value)
+                    return;
+
+                representedNode = value;
+                RebuildScene (representedNode, false);
+            }
+        }
+
+        void RebuildScene (InspectTreeNode view, bool recreateScene = true)
         {
-            if (recreateScene)
+            if (recreateScene || Scene == null)
                 Scene = new SCNScene ();
             else
                 currentViewNode?.RemoveFromParentNode ();
@@ -72,9 +94,10 @@ namespace Xamarin.Interactive.Client.Mac.ViewInspector
             currentViewNode = null;
 
             if (view != null) {
-                currentViewNode = new InspectViewNode (view).Rebuild (
-                    new TreeState (DisplayMode, ShowHiddenViews));
-
+                var state = new InspectTreeState (DisplayMode, ShowHiddenViews);
+                var node3D = new InspectViewNode (RepresentedNode, state);
+                RepresentedNode.Build3D (node3D, state);
+                currentViewNode = node3D;
                 Scene.Add (currentViewNode);
 
                 Trackball.Target = Scene.RootNode;
@@ -85,16 +108,10 @@ namespace Xamarin.Interactive.Client.Mac.ViewInspector
 
         public override void MouseMoved (NSEvent theEvent)
         {
-            var inspectViewNode = HitTest (
+            HoverNode = HitTest (
                 ConvertPointFromView (theEvent.LocationInWindow, null),
                 (SCNHitTestOptions)null
-            )?.FirstOrDefault ()?.Node as IInspectViewNode;
-
-            if (focusedNode != inspectViewNode) {
-                focusedNode?.Blur ();
-                focusedNode = inspectViewNode;
-                focusedNode?.Focus ();
-            }
+            )?.FirstOrDefault ()?.Node as InspectViewNode;
 
             base.MouseMoved (theEvent);
         }
@@ -112,7 +129,7 @@ namespace Xamarin.Interactive.Client.Mac.ViewInspector
                 Trackball.DragZoom (ConvertPointFromView (theEvent.LocationInWindow, null), (float)Frame.Width, (float)Frame.Height);
             else
                 Trackball.DragRotate (ConvertPointFromView (theEvent.LocationInWindow, null), (float)Frame.Width, (float)Frame.Height);
-            
+
             base.MouseDragged (theEvent);
             isDragging = true;
         }
@@ -124,9 +141,18 @@ namespace Xamarin.Interactive.Client.Mac.ViewInspector
             if (isDragging)
                 return;
 
-            var inspectView = focusedNode?.InspectView;
-            if (inspectView != null)
-                ViewSelected?.Invoke (inspectView);
+            var inspectViewNode = HitTest (
+                ConvertPointFromView (theEvent.LocationInWindow, null),
+                (SCNHitTestOptions)null
+            )?.FirstOrDefault ()?.Node as InspectViewNode;
+
+            var node = inspectViewNode?.Node;
+
+            if (node != null)
+                node.IsSelected = true;
+            else if (RepresentedNode != null)
+                foreach (var item in RepresentedNode.TraverseTree (n => n.Children.OfType<InspectTreeNode> ()))
+                    item.IsSelected = false;
         }
 
         public override void MagnifyWithEvent (NSEvent theEvent)
@@ -143,8 +169,8 @@ namespace Xamarin.Interactive.Client.Mac.ViewInspector
 
             if (theEvent.ModifierFlags.HasFlag (NSEventModifierMask.CommandKeyMask)) {
                 float zoom = -(float)(theEvent.ScrollingDeltaY / Frame.Height);
-                Trackball.Zoom (new SCNVector3 (zoom, zoom, zoom)); 
-            } else 
+                Trackball.Zoom (new SCNVector3 (zoom, zoom, zoom));
+            } else
                 Trackball.Pan (new Vector3 (
                     (float)(theEvent.ScrollingDeltaX / Frame.Width),
                     (float)(-theEvent.ScrollingDeltaY / Frame.Height),

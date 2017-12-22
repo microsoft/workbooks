@@ -114,7 +114,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AppDelegate.cs" />
-    <Compile Include="InspectViewDataSource.cs" />
     <Compile Include="Entry.cs" />
     <Compile Include="ReplWebView.cs" />
     <Compile Include="MouseMonitor.cs" />
@@ -125,7 +124,6 @@
     <Compile Include="InspectorPropertyView.designer.cs">
       <DependentUpon>InspectorPropertyView.cs</DependentUpon>
     </Compile>
-    <Compile Include="InspectorOutlineView.cs" />
     <Compile Include="LogWindow.cs" />
     <Compile Include="LogWindow.designer.cs">
       <DependentUpon>LogWindow.cs</DependentUpon>
@@ -155,7 +153,6 @@
     <Compile Include="ViewInspector\InspectorSCNView.cs" />
     <Compile Include="ViewInspector\InspectViewNode.cs" />
     <Compile Include="ViewInspector\InspectViewMaterial.cs" />
-    <Compile Include="ViewInspector\IInspectViewNode.cs" />
     <Compile Include="ViewInspector\SceneKitDolly.cs" />
     <Compile Include="WebDocument\XIWebDocumentRepresentation.cs" />
     <Compile Include="WebDocument\XIWebDocumentView.cs" />
@@ -259,8 +256,6 @@
     <Compile Include="Menu\XIDebugMenuItem.cs" />
     <Compile Include="Menu\XIInspectorOnlyMenuItem.cs" />
     <Compile Include="Menu\XIWorkbooksOnlyMenuItem.cs" />
-    <Compile Include="ViewInspector\ViewDepth.cs" />
-    <Compile Include="ViewInspector\DisplayMode.cs" />
     <Compile Include="CoordinateMappers\iOSSimulatorCoordinateMapper.cs" />
     <Compile Include="CoordinateMappers\MacCoordinateMapper.cs" />
     <Compile Include="CoordinateMappers\MacAndroidCoordinateMapper.cs" />
@@ -346,6 +341,7 @@
     <Compile Include="SystemInformation\VisualStudioForMacComponent.cs" />
     <Compile Include="Preferences\WebKitPrefs.cs" />
     <Compile Include="MacClientApp.cs" />
+    <Compile Include="MacViewInspector.cs" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="LogWindow.xib" />

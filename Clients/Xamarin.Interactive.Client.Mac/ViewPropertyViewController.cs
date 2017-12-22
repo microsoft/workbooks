@@ -30,7 +30,7 @@ namespace Xamarin.Interactive.Client.Mac
             PropertyEditorPanel.ThemeManager.Theme = PropertyEditing.Themes.PropertyEditorTheme.Light;
         }
 
-        protected override void OnSelectedViewChanged ()
+        protected override void OnSelectedNodeChanged ()
             => LoadPropertiesAsync ().Forget ();
 
         async Task LoadPropertiesAsync ()

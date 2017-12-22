@@ -60,10 +60,10 @@ namespace Xamarin.Interactive.OutlineView
 
             selectedNode = (notification.Object as CollectionOutlineView)?.SelectedNode as TreeNode;
 
-            if (selectedNode != null) {
+            if (selectedNode != null) 
                 selectedNode.IsSelected = true;
-                SelectionDidChange (selectedNode);
-            }
+
+            SelectionDidChange (selectedNode);
         }
 
         public virtual void SelectionDidChange (TreeNode node)

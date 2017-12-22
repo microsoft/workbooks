@@ -121,8 +121,13 @@ namespace Xamarin.Interactive.OutlineView
             get { return GetNodeProxy (SelectedRow); }
             set {
                 nint row = -1;
+
                 if (value != null)
                     row = RowForItem (value);
+
+                if (row == -1)
+                    DeselectRow (SelectedRow);
+
                 SelectRow (row, false);
             }
         }

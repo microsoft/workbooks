@@ -35,21 +35,24 @@ namespace Xamarin.Interactive.Client.Mac.ViewInspector
                 ? Quaternion.Inverse (Orientation)
                 : Orientation;
 
-            Target.Orientation = Convert (targetOrientation);
+            if (Target != null)
+                Target.Orientation = Convert (targetOrientation);
         }
 
         protected override void SetScale (Vector3 s)
         {
             base.SetScale (s);
 
-            Target.Scale = Convert (Scale);
+            if (Target != null)
+                Target.Scale = Convert (Scale);
         }
 
         protected override void SetPosition (Vector3 p)
         {
             base.SetPosition (p);
 
-            Target.Position = Convert (Position);
+            if (Target != null)
+                Target.Position = Convert (Position);
         }
 
         public void StartDrag (CGPoint point, CGSize size)

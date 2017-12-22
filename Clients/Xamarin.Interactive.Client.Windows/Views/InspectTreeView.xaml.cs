@@ -6,22 +6,27 @@
 // Licensed under the MIT License.
 
 using System;
+using System.ComponentModel;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Media3D;
+using Xamarin.Interactive.Client.ViewInspector;
+using Xamarin.Interactive.Client.Windows.ViewModels;
 using Xamarin.Interactive.Remote;
 
 namespace Xamarin.Interactive.Client.Windows.Views
 {
-    partial class VisualRepView : UserControl
+    partial class InspectTreeView : UserControl
     {
-        InspectViewNode currentViewNode;
-        InspectViewNode focusedViewNode;
+        InspectTreeRoot Tree;
+        InspectTreeNode3D selectedNode;
+        InspectTreeNode3D representedNode;
         Point downPosition;
 
-        public VisualRepView ()
+        public InspectTreeView ()
         {
             InitializeComponent ();
 
@@ -40,23 +45,22 @@ namespace Xamarin.Interactive.Client.Windows.Views
             var currentPosition = e.GetPosition (CaptureBorder);
             var offset = currentPosition - downPosition;
             if (offset.X == 0 && offset.Y == 0) {
-                FocusNode = null;
-                VisualTreeHelper.HitTest (
-                    viewport,
-                    null,
-                    ResultCallback,
-                    new PointHitTestParameters (currentPosition));
-                if (focusedViewNode != null) {
-                    SelectedView = FocusNode.InspectView;
-                }
+                SelectedNode = HitTest (currentPosition);
             }
         }
 
         void HandleMouseMove (object sender, MouseEventArgs e)
         {
             var currentPosition = e.GetPosition (CaptureBorder);
-            var hitParams = new PointHitTestParameters (currentPosition);
+            HoverNode = HitTest (currentPosition);
+        }
+
+        InspectTreeNode3D HitTest (Point position)
+        {
+            var hitParams = new PointHitTestParameters (position);
+            HitNode = null;
             VisualTreeHelper.HitTest (viewport, null, ResultCallback, hitParams);
+            return HitNode;
         }
 
         public HitTestResultBehavior ResultCallback (HitTestResult result)
@@ -64,13 +68,16 @@ namespace Xamarin.Interactive.Client.Windows.Views
             var meshResult = result as RayMeshGeometry3DHitTestResult;
 
             if (meshResult != null) {
-                var node = meshResult.VisualHit as InspectViewNode;
-
-                FocusNode = node;
+                var node = meshResult.VisualHit as InspectTreeNode3D;
+                if (!node.IsHitTestVisible ()) {
+                    HitNode = null;
+                    return HitTestResultBehavior.Continue;
+                }
+                HitNode = node;
                 return HitTestResultBehavior.Stop;
             }
 
-            FocusNode = null;
+            HitNode = null;
             return HitTestResultBehavior.Continue;
         }
 
@@ -83,15 +90,40 @@ namespace Xamarin.Interactive.Client.Windows.Views
                 Trackball.EventSource = CaptureBorder;
         }
 
-        InspectViewNode FocusNode {
-            get { return focusedViewNode; }
+        InspectTreeNode3D HitNode { get; set; }
+
+        InspectTreeNode3D hoverNode;
+        InspectTreeNode3D HoverNode {
+            get => hoverNode;
             set {
-                if (value == focusedViewNode)
+                if (value == hoverNode)
                     return;
 
-                focusedViewNode?.Blur ();
-                focusedViewNode = value;
-                focusedViewNode?.Focus ();
+                if (hoverNode != null)
+                    hoverNode.Node.IsMouseOver = false;
+            
+                hoverNode = value;
+
+                if (hoverNode != null)
+                    hoverNode.Node.IsMouseOver = true;
+            }
+        }
+
+        InspectTreeNode3D SelectedNode {
+            get { return selectedNode; }
+            set {
+                if (value == selectedNode)
+                    return;
+
+                if (selectedNode != null)
+                    selectedNode.Node.IsSelected = false;
+
+                selectedNode = value;
+
+                if (selectedNode != null)
+                    selectedNode.Node.IsSelected = true;
+
+                CurrentView.SelectedNode = selectedNode?.Node;
             }
         }
 
@@ -105,20 +137,11 @@ namespace Xamarin.Interactive.Client.Windows.Views
             set { SetValue (ShowHiddenProperty, value); }
         }
 
-        public static readonly DependencyProperty SelectedViewProperty =
-            DependencyProperty.Register (
-                nameof (SelectedView),
-                typeof (InspectView),
-                typeof (VisualRepView),
-                new PropertyMetadata (
-                    null,
-                    new PropertyChangedCallback (SelectedViewValueChanged)));
-
         public static readonly DependencyProperty DisplayModeProperty =
             DependencyProperty.Register (
                 nameof (DisplayMode),
                 typeof (DisplayMode),
-                typeof (VisualRepView),
+                typeof (InspectTreeView),
                 new PropertyMetadata (
                     DisplayMode.FramesAndContent,
                     new PropertyChangedCallback (DisplayModeValueChanged)));
@@ -127,69 +150,82 @@ namespace Xamarin.Interactive.Client.Windows.Views
             DependencyProperty.Register (
                 nameof (ShowHidden),
                 typeof (bool),
-                typeof (VisualRepView),
+                typeof (InspectTreeView),
                 new PropertyMetadata (
                     false,
                     new PropertyChangedCallback (ShowHiddenValueChanged)));
 
         static void ShowHiddenValueChanged (DependencyObject dependencyObject, DependencyPropertyChangedEventArgs eventArgs)
-        {
-            var value = (bool)eventArgs.NewValue;
-            var view = dependencyObject as VisualRepView;
-            var state = new TreeState (view.DisplayMode, value);
-            view.currentViewNode.Rebuild (state);
-        }
+            => (dependencyObject as InspectTreeView)?.Rebuild ();
 
         static void DisplayModeValueChanged (DependencyObject dependencyObject, DependencyPropertyChangedEventArgs eventArgs)
-        {
-            var value = (DisplayMode) eventArgs.NewValue;
-            var view = dependencyObject as VisualRepView;
-            var state = new TreeState (value, view.ShowHidden);
-            view.currentViewNode?.Rebuild (state);
-        }
-
-        static void SelectedViewValueChanged (DependencyObject dependencyObject, DependencyPropertyChangedEventArgs eventArgs)
-        {
-            var value = eventArgs.NewValue as InspectView;
-            var view = dependencyObject as VisualRepView;
-
-            if (view.FocusNode?.InspectView == value)
-                return;
-
-            if (view.currentViewNode != null)
-                InspectViewNode.Focus (view.currentViewNode, node => node?.InspectView == value);
-        }
-
-        internal InspectView SelectedView
-        {
-            get { return (InspectView) GetValue (SelectedViewProperty); }
-            set { SetValue (SelectedViewProperty, value); }
-        }
+            => (dependencyObject as InspectTreeView)?.Rebuild ();
 
         public static readonly DependencyProperty CurrentViewProperty =
             DependencyProperty.Register (
                 nameof (CurrentView),
-                typeof (InspectView),
-                typeof (VisualRepView),
+                typeof (InspectTreeRoot),
+                typeof (InspectTreeView),
                 new PropertyMetadata (
                     null,
                     new PropertyChangedCallback (CurrentViewValueChanged)));
 
         private static void CurrentViewValueChanged (DependencyObject dependencyObject, DependencyPropertyChangedEventArgs eventArgs)
         {
-            var value = eventArgs.NewValue as InspectView;
-            var view = dependencyObject as VisualRepView;
-            view.currentViewNode = null;
-            view.FocusNode = null;
-            if (value != null) {
-                view.currentViewNode = new InspectViewNode (value, 0).Rebuild (new TreeState (view.DisplayMode, view.ShowHidden));
-                view.topModel.Children.Clear ();
-                view.topModel.Children.Add (view.currentViewNode);
+            var value = eventArgs.NewValue as InspectTreeRoot;
+            var view = dependencyObject as InspectTreeView;
+
+            void TreePropertyChanged (object sender, PropertyChangedEventArgs args)
+            {
+                var treeModel = sender as InspectTreeRoot;
+                switch (args.PropertyName)
+                {
+                case nameof (InspectTreeRoot.RepresentedNode):
+                    view.Rebuild ();
+                    break;
+                case nameof (InspectTreeRoot.SelectedNode):
+                    view.UpdateSelected ();
+                    break;
+                }
+            }
+
+            if (view.Tree != null)
+                   (view.Tree as INotifyPropertyChanged).PropertyChanged -= TreePropertyChanged;
+
+            view.Tree = value;
+
+            if (view.Tree != null)
+                (view.Tree as INotifyPropertyChanged).PropertyChanged += TreePropertyChanged;
+
+            view.Rebuild ();
+        }
+
+        void Rebuild ()
+        {
+            representedNode = null;
+            selectedNode = null;
+            topModel.Children.Clear ();
+            if (Tree?.RepresentedNode != null) {
+                var state = new InspectTreeState (DisplayMode, ShowHidden);
+                var node3D = new InspectTreeNode3D (Tree.RepresentedNode, state);
+                Tree.RepresentedNode.Build3D (node3D, state);
+                representedNode = node3D;
+                topModel.Children.Add (representedNode);
+                UpdateSelected ();
             }
         }
 
-        internal InspectView CurrentView {
-            get { return (InspectView) GetValue (CurrentViewProperty); }
+        void UpdateSelected ()
+        {
+            if (Tree?.SelectedNode == null)
+                SelectedNode = null;
+
+            selectedNode = representedNode.TraverseTree (c => c.Children.OfType<InspectTreeNode3D> ())
+                .FirstOrDefault (node3D => node3D.Node == Tree?.SelectedNode);
+        }
+
+        internal InspectTreeRoot CurrentView {
+            get { return (InspectTreeRoot) GetValue (CurrentViewProperty); }
             set { SetValue (CurrentViewProperty, value); }
         }
 
@@ -197,7 +233,7 @@ namespace Xamarin.Interactive.Client.Windows.Views
             DependencyProperty.Register (
                 nameof (Trackball),
                 typeof (WpfDolly),
-                typeof (VisualRepView),
+                typeof (InspectTreeView),
                 new PropertyMetadata (
                     null,
                     new PropertyChangedCallback (TrackballValueChanged)));
@@ -205,7 +241,7 @@ namespace Xamarin.Interactive.Client.Windows.Views
         private static void TrackballValueChanged (DependencyObject dependencyObject, DependencyPropertyChangedEventArgs eventArgs)
         {
             var value = eventArgs.NewValue as WpfDolly;
-            var view = dependencyObject as VisualRepView;
+            var view = dependencyObject as InspectTreeView;
 
             value.EventSource = view.CaptureBorder;
         }

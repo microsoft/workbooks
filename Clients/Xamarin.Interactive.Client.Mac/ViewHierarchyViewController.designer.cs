@@ -16,7 +16,7 @@ namespace Xamarin.Interactive.Client.Mac
         AppKit.NSSegmentedControl hierarchySelector { get; set; }
 
         [Outlet]
-        Xamarin.Interactive.Client.Mac.InspectorOutlineView outlineView { get; set; }
+        Xamarin.Interactive.OutlineView.CollectionOutlineView outlineView { get; set; }
 
         [Action ("HierarchySelectionChanged:")]
         partial void HierarchySelectionChanged (Foundation.NSObject sender);

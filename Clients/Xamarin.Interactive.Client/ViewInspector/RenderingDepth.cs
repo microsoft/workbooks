@@ -7,7 +7,7 @@
 
 using System;
 
-namespace Xamarin.Interactive.Client.Windows.Views
+namespace Xamarin.Interactive.Client.ViewInspector
 {
     enum RenderingDepth
     {

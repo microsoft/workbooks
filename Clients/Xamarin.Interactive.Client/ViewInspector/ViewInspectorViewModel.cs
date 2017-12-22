@@ -12,82 +12,47 @@ using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
-using System.Windows;
 
 using Xamarin.Interactive.I18N;
-using Xamarin.Interactive.Logging;
 using Xamarin.Interactive.Remote;
 
-using Xamarin.Interactive.Client.Windows.Views;
-using Xamarin.Interactive.Client.Windows.Commands;
+using Xamarin.Interactive.Camera;
 
-namespace Xamarin.Interactive.Client.Windows.ViewModels
+namespace Xamarin.Interactive.Client.ViewInspector
 {
-    sealed class ViewInspectorViewModel<TView> : INotifyPropertyChanged, IObserver<ClientSessionEvent>, IDisposable where TView : Window
+    class ViewInspectorViewModel : INotifyPropertyChanged, IObserver<ClientSessionEvent>
     {
-        const string TAG = nameof (ViewInspectorViewModel<TView>);
+        const string TAG = nameof (ViewInspectorViewModel);
 
-        readonly Highlighter highlighter;
-        WpfDolly trackball;
+        protected IDolly trackball;
 
         public event PropertyChangedEventHandler PropertyChanged;
 
         public ClientSession Session { get; }
 
         public DelegateCommand RefreshVisualTreeCommand { get; }
-        public DelegateCommand HighlightCommand { get; }
+        
         public DelegateCommand ShowPaneCommand { get; }
 
-        public TView View { get; }
-
-        public ViewInspectorViewModel (ClientSession session, TView view)
+        public ViewInspectorViewModel (ClientSession session)
         {
             Session = session;
-            View = view;
 
-            Session.Subscribe (this);
+            Session?.Subscribe (this);
+
+            RootModel = InspectTreeRoot.CreateRoot (this);
 
             RefreshVisualTreeCommand = new DelegateCommand (
                 RefreshVisualTree,
                 p => !IsVisualTreeRefreshing);
-
-            HighlightCommand = new DelegateCommand (
-                InspectHighlightedView,
-                p => !IsHighlighting);
-
+          
             ShowPaneCommand = new DelegateCommand (p => {
-                int pane;
-                if (int.TryParse (p.ToString (), out pane))
+                if (int.TryParse (p.ToString (), out var pane))
                     SelectedPane = pane;
             });
-
-            highlighter = new Highlighter ();
-            highlighter.HighlightEnded += OnHighlightEnded;
-            highlighter.ViewSelected += OnHighlighterViewSelected;
-
-            trackball = new WpfDolly ();
         }
 
-        public void Dispose ()
-        {
-            highlighter.Dispose ();
-            highlighter.HighlightEnded -= OnHighlightEnded;
-            highlighter.ViewSelected -= OnHighlighterViewSelected;
-        }
-
-        void OnHighlightEnded (object sender, EventArgs args)
-            => IsHighlighting = false;
-
-        void OnHighlighterViewSelected (object sender, HighlightSelectionEventArgs args)
-        {
-            try {
-                SelectView (args.SelectedView, true, true);
-            } catch (Exception e) {
-                Log.Error (TAG, e);
-            }
-        }
-
-        void OnPropertyChanged ([CallerMemberName] string name = null) =>
+        protected virtual void OnPropertyChanged ([CallerMemberName] string name = null) =>
             PropertyChanged?.Invoke (this, new PropertyChangedEventArgs (name));
 
         public ObservableCollection<string> SupportedHierarchies { get; } = new ObservableCollection<string> ();
@@ -155,35 +120,34 @@ namespace Xamarin.Interactive.Client.Windows.ViewModels
         public bool DisplayContent {
             get => displayMode.HasFlag (DisplayMode.Content);
             set {
-                if (value)
-                    DisplayMode = displayMode | DisplayMode.Content;
-                else
-                    DisplayMode = DisplayMode & ~DisplayMode.Content;
+                DisplayMode = SetFlag (displayMode, DisplayMode.Content, value);
             }
         }
 
         public bool DisplayFrames {
             get => displayMode.HasFlag (DisplayMode.Frames);
             set {
-                if (value)
-                    DisplayMode = displayMode | DisplayMode.Frames;
-                else
-                    DisplayMode = DisplayMode & ~DisplayMode.Frames;
+                DisplayMode = SetFlag (displayMode, DisplayMode.Frames, value);             
             }
         }
+
+        static DisplayMode SetFlag (DisplayMode mode, DisplayMode flag, bool isSet) =>
+            isSet ? mode | flag : mode & ~flag;
 
         RenderingDepth renderingDepth = RenderingDepth.ThreeDimensional;
         public RenderingDepth RenderingDepth {
             get { return renderingDepth; }
             set {
                 renderingDepth = value;
-                trackball.Reset ();
+                trackball?.Reset ();
                 OnPropertyChanged (nameof (IsOrthographic));
                 OnPropertyChanged ();
             }
         }
 
-        public WpfDolly Trackball => trackball;
+        public InspectTreeRoot RootModel {
+            get;
+        }
 
         public bool IsOrthographic {
             get { return RenderingDepth == RenderingDepth.TwoDimensional; }
@@ -217,7 +181,8 @@ namespace Xamarin.Interactive.Client.Windows.ViewModels
             set {
                 if (selectedView != value) {
                     selectedView = value;
-                    SelectView (selectedView, false, false);
+                    if (selectedView != null)
+                        SelectView (selectedView, false, false);
                     OnPropertyChanged ();
                 }
             }
@@ -245,7 +210,7 @@ namespace Xamarin.Interactive.Client.Windows.ViewModels
             }
         }
 
-        public async Task RefreshVisualTreeAsync ()
+        public virtual async Task RefreshVisualTreeAsync ()
         {
             if (IsVisualTreeRefreshing)
                 return;
@@ -271,7 +236,7 @@ namespace Xamarin.Interactive.Client.Windows.ViewModels
                         selectedHierarchy = null;
                     }
                 } catch (Exception e) {
-                    throw (e.ToUserPresentable (Catalog.GetString ("Error trying to inspect remote view")));
+                    PresentError (e.ToUserPresentable (Catalog.GetString ("Error trying to inspect remote view")));
                 }
 
                 SelectView (remoteView, false, false);
@@ -280,10 +245,15 @@ namespace Xamarin.Interactive.Client.Windows.ViewModels
             }
         }
 
+        protected virtual void PresentError (UserPresentableException upe)
+        {
+            throw upe;
+        }
+
         void RefreshVisualTree (object o = null) => RefreshVisualTreeAsync ().Forget ();
 
         bool isVisualTreeRefreshing;
-        bool IsVisualTreeRefreshing {
+        public bool IsVisualTreeRefreshing {
             get { return isVisualTreeRefreshing; }
             set {
                 isVisualTreeRefreshing = value;
@@ -311,7 +281,7 @@ namespace Xamarin.Interactive.Client.Windows.ViewModels
                 while (current.Parent != null && current.Parent != root)
                     current = current.Parent;
             } else
-                current = root;
+                current = root.IsFakeRoot ? root.Children.FirstOrDefault() ?? root : root;
 
             RootView = root;
             RepresentedView = current;
@@ -319,7 +289,7 @@ namespace Xamarin.Interactive.Client.Windows.ViewModels
                 SelectedView = view;
         }
 
-        void UpdateSupportedHierarchies (IEnumerable<string> hierarchies)
+        protected void UpdateSupportedHierarchies (IEnumerable<string> hierarchies)
         {
             var hash = new HashSet<string> (hierarchies);
 
@@ -337,29 +307,6 @@ namespace Xamarin.Interactive.Client.Windows.ViewModels
             NoSupportedHierarchies = SupportedHierarchies.Count == 0;
 
             OnPropertyChanged (nameof (SupportedHierarchies));
-        }
-
-        void InspectHighlightedView (object obj = null)
-        {
-            if (!Session.Agent.IsConnected)
-                return;
-
-            IsHighlighting = true;
-            try {
-                highlighter.Start (Session, this.View, SelectedHierarchy);
-            } catch (Exception e) {
-                Log.Error (TAG, e);
-                IsHighlighting = false;
-            }
-        }
-
-        bool isHighlighting;
-        bool IsHighlighting {
-            get { return isHighlighting; }
-            set {
-                isHighlighting = value;
-                HighlightCommand.InvalidateCanExecute ();
-            }
         }
 
         void OnSessionTitleUpdated ()

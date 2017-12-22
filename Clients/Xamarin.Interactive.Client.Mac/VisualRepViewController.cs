@@ -7,10 +7,11 @@
 // Licensed under the MIT License.
 
 using System;
-
+using System.Linq;
 using SceneKit;
 
 using Xamarin.Interactive.Client.Mac.ViewInspector;
+using Xamarin.Interactive.Client.ViewInspector;
 
 namespace Xamarin.Interactive.Client.Mac
 {
@@ -18,13 +19,13 @@ namespace Xamarin.Interactive.Client.Mac
     {
         const string TAG = nameof (VisualRepViewController);
 
-        ViewDepth viewDepth = ViewDepth.ThreeDimensional;
-        public ViewDepth ViewDepth {
-            get { return viewDepth; }
+        RenderingDepth renderingDepth = RenderingDepth.ThreeDimensional;
+        public RenderingDepth Depth {
+            get { return renderingDepth; }
             set {
-                if (value != viewDepth)
+                if (value != renderingDepth)
                     SwitchDepth (value);
-                viewDepth = value;
+                renderingDepth = value;
             }
         }
 
@@ -32,9 +33,9 @@ namespace Xamarin.Interactive.Client.Mac
         {
         }
 
-        void SwitchDepth (ViewDepth depth)
+        void SwitchDepth (RenderingDepth depth)
         {
-            if (depth == ViewDepth.TwoDimensional) {
+            if (depth == RenderingDepth.TwoDimensional) {
                 scnView.Trackball.PushSettings ();
                 scnView.Trackball.Around = new System.Numerics.Quaternion (0, 0, 1, 0);
                 scnView.Trackball.Reset (() => {
@@ -54,15 +55,14 @@ namespace Xamarin.Interactive.Client.Mac
             scnView.Trackball.Reset ();
         }
 
-        public override void ViewDidLoad ()
+        protected override void OnRepresentedNodeChanged ()
         {
-            scnView.ViewSelected += ParentViewController.SelectView;
-            base.ViewDidLoad ();
-        }
-
-        protected override void OnRepresentedViewChanged ()
-        {
-            scnView.CurrentView = RepresentedView;
+            var represented = Tree?.RepresentedNode;
+            if (represented != null)
+                if (represented.View.IsFakeRoot)
+                    represented = represented.Children.OfType<InspectTreeNode> ().FirstOrDefault ();
+            
+            scnView.RepresentedNode = represented;
         }
     }
 }

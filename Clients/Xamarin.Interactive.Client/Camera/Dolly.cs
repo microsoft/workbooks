@@ -11,7 +11,12 @@ using System.Numerics;
 
 namespace Xamarin.Interactive.Camera
 {
-    abstract class Dolly<TQuaternion, TPoint>
+    interface IDolly
+    {
+        void Reset ();
+    }
+
+    abstract class Dolly<TQuaternion, TPoint> : IDolly
     {
         Quaternion around = Quaternion.Identity;
         public Quaternion Around {
@@ -238,6 +243,9 @@ namespace Xamarin.Interactive.Camera
                 );
             }
         }
+
+        void IDolly.Reset () =>
+            Reset ();
 
         sealed class Settings
         {

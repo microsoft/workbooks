@@ -6,131 +6,46 @@
 // Licensed under the MIT License.
 
 using System;
-using System.Collections.Generic;
+using System.ComponentModel;
 
 using AppKit;
 using CoreGraphics;
 using Foundation;
 using SceneKit;
 
-using Xamarin.Interactive.Inspection;
+using Xamarin.Interactive.Client.ViewInspector;
 using Xamarin.Interactive.Remote;
 
 namespace Xamarin.Interactive.Client.Mac.ViewInspector
 {
-    class TreeState
-    {
-        public int TotalCount { get; private set; }
-        public DisplayMode Mode { get; }
-        public bool ShowHidden { get; }
-
-        List<int> ancestors = new List<int> { 0 };
-
-        public TreeState (DisplayMode mode, bool showHidden)
-        {
-            Mode = mode;
-            ShowHidden = showHidden;
-        }
-
-        public void PushGeneration ()
-        {
-            ancestors.Add (0);
-        }
-
-        public int AddChild (InspectView view)
-        {
-            var pos = ancestors.Count - 1;
-            var count = ancestors [pos];
-            ancestors [pos] = count + 1;
-            TotalCount = TotalCount + 1;
-
-            return count;
-        }
-
-        public int PopGeneration ()
-        {
-            var pos = ancestors.Count - 1;
-            var count = ancestors [pos];
-
-            ancestors.RemoveAt (ancestors.Count - 1);
-            return count;
-        }
-    }
-
-    sealed class InspectViewNode : SCNNode, IInspectViewNode
+    sealed class InspectViewNode : SCNNode, IInspectTree3DNode<InspectViewNode>
     {
         const float ZSpacing = 20f;
         const float ZFightDenominator = 20f;
 
-        public InspectView InspectView { get; }
+        public InspectTreeNode Node { get; }
+        public InspectView View => Node?.View;
 
+        NSColor boundsColor;
         int childIndex;
 
-        public InspectViewNode (InspectView inspectView) : this (inspectView, 0)
+        public InspectViewNode (InspectTreeNode node, InspectTreeState state)
         {
+            Node = node;
+            node.PropertyChanged += NodePropertyChanged;
+            this.childIndex = state.AddChild (node.View);
         }
 
-        InspectViewNode (InspectView inspectView, int childIndex)
+        void NodePropertyChanged (object sender, PropertyChangedEventArgs args)
         {
-            if (inspectView == null)
-                throw new ArgumentNullException (nameof (inspectView));
-
-            InspectView = inspectView;
-            this.childIndex = childIndex;
-        }
-
-        /// <summary>
-        /// Rebuild the node's spatial and visual contents. Must be called after the node
-        /// has parented via an SCNNode.Add call, except for the root node. 
-        /// </summary>
-        public InspectViewNode Rebuild (TreeState state)
-        {
-            // We always need to build the primary plane—BuildPrimaryPlane itself will decide if it should
-            // draw the image content.
-            BuildPrimaryPlane (state.Mode);
-
-
-            state.PushGeneration ();
-            var subviews = InspectView.Subviews;
-            BuildNodesForCollection (subviews, state);
-
-            var sublayers = InspectView.Layer?.Sublayers ?? InspectView.Sublayers;
-            BuildNodesForCollection (sublayers, state);
-            state.PopGeneration ();
-            return this;
-        }
-
-        void AddRange (IEnumerable<InspectViewNode> nodes)
-        {
-            nodes.ForEach (Add);
-        }
-
-        List<InspectViewNode> BuildNodesForCollection (
-            List<InspectView> collection,
-            TreeState state)
-        {
-            var results = new List<InspectViewNode> ();
-            var count = collection != null ? collection.Count : 0;
-            for (var i = 0; i < count; i++) {
-                var inspectView = collection [i];
-                // If the InspectView reports that it's in a Collapsed state, that means it was neither
-                // drawn, nor considered for layout. Hidden views were at least considered
-                // for layout, so draw them if `showHidden` is true, otherwise only draw Visible views.
-                if (inspectView.Visibility == ViewVisibility.Collapsed ||
-                    (inspectView.Visibility != ViewVisibility.Visible && !state.ShowHidden))
-                    continue;
-
-                results.Add (BuildChild (inspectView, state));
+            InspectTreeNode senderNode = sender as InspectTreeNode;
+            switch (args.PropertyName) {
+            case nameof (Node.IsSelected):
+            case nameof (Node.IsMouseOver):
+            case nameof (Node.IsExpanded):
+                UpdateState ();
+                break;
             }
-            return results;
-        }
-
-        InspectViewNode BuildChild (InspectView view, TreeState state)
-        {
-            var childNode = new InspectViewNode (view, state.AddChild (view));
-            Add (childNode);
-            childNode.Rebuild (state);
-            return childNode;
         }
 
         static internal SCNGeometrySource [] CreateGeometrySources (nfloat width, nfloat height)
@@ -179,25 +94,37 @@ namespace Xamarin.Interactive.Client.Mac.ViewInspector
                 });
 
 
-        public void Focus () {
-            Geometry.Materials [0].Transparency = 0.5f;
-            Geometry.Materials [2].Transparency = 0.5f;
-        }
-
-        public void Blur () {
-            Geometry.Materials [0].Transparency = 0;
-            Geometry.Materials [2].Transparency = 1;
-        }
-
-        void BuildPrimaryPlane (DisplayMode displayMode)
+        public void UpdateState ()
         {
-            var view = InspectView;
-            if (InspectView.Layer != null)
-                view = InspectView.Layer;
+            if (Node.IsSelected) {
+                Geometry.Materials [0].Transparency = Node.IsMouseOver ? 0.75f : 0.5f;
+                Geometry.Materials [0].Diffuse.ContentColor = NSColor.AlternateSelectedControl;
+                Geometry.Materials [2].Transparency = 1f;
+                Geometry.Materials [2].Diffuse.ContentColor = NSColor.AlternateSelectedControl;
+            } else if (Node.IsMouseOver) {
+                Geometry.Materials [0].Transparency = 0.5f;
+                Geometry.Materials [0].Diffuse.ContentColor = NSColor.SelectedControl;
+                Geometry.Materials [2].Transparency = 0.5f;
+                Geometry.Materials [2].Diffuse.ContentColor = NSColor.AlternateSelectedControl;
+            } else {
+                Geometry.Materials [0].Transparency = 0;
+                Geometry.Materials [2].Transparency = 1;
+                Geometry.Materials [2].Diffuse.ContentColor = boundsColor;
+            }
+            foreach (var child in ChildNodes) {
+                child.Hidden = !Node.IsExpanded;
+            }
+        }
+
+        void BuildPrimaryPlane (InspectTreeState state)
+        {
+            var view = View;
+            if (View.Layer != null)
+                view = View.Layer;
 
             Geometry = CreateGeometry ((nfloat)view.Width, (nfloat)view.Height);
 
-            var renderImage = displayMode == DisplayMode.Content || displayMode == DisplayMode.FramesAndContent;
+            var renderImage = state.Mode == DisplayMode.Content || state.Mode == DisplayMode.FramesAndContent;
             var materialContents = InspectViewMaterial.Create (view, renderImage);
 
             var firstMaterial = SCNMaterial.Create ();
@@ -205,18 +132,19 @@ namespace Xamarin.Interactive.Client.Mac.ViewInspector
             firstMaterial.Diffuse.Contents = materialContents;
             firstMaterial.DoubleSided = true;
 
-            var highightMaterial = SCNMaterial.Create ();
-            highightMaterial.Diffuse.ContentColor = NSColor.Blue;
-            highightMaterial.Transparency = 0;
-            highightMaterial.DoubleSided = true;
+            var highlightMaterial = SCNMaterial.Create ();
+            highlightMaterial.Diffuse.ContentColor = NSColor.SelectedMenuItem;
+            highlightMaterial.Transparency = 0;
+            highlightMaterial.DoubleSided = true;
 
-            var renderBounds = displayMode == DisplayMode.Frames || displayMode == DisplayMode.FramesAndContent;
+            var renderBounds = state.Mode == DisplayMode.Frames || state.Mode == DisplayMode.FramesAndContent;
             var boundsMaterial = SCNMaterial.Create ();
-            boundsMaterial.Diffuse.Contents = renderBounds ? NSColor.LightGray : NSColor.Clear;
+            boundsMaterial.Diffuse.Contents = boundsColor = renderBounds ? NSColor.LightGray : NSColor.Clear;
             boundsMaterial.Transparency = 1;
             boundsMaterial.DoubleSided = true;
 
-            Geometry.Materials = new [] { highightMaterial, firstMaterial, boundsMaterial };
+            Geometry.Materials = new [] { highlightMaterial, firstMaterial, boundsMaterial };
+            UpdateState ();
 
             // This is a hack to avoid Z-fighting of planes/frames that intersect within
             // the same node-depth level (or if we ever allow ZSpacing to drop to zero).
@@ -227,8 +155,8 @@ namespace Xamarin.Interactive.Client.Mac.ViewInspector
             //var siblingOffset = childIndex - (ParentNode as InspectViewNode)?.childIndex ?? 0;
             //var zOffset = siblingOffset * ZSpacing;
 
-            if ((InspectView.Parent == null && !InspectView.IsFakeRoot)
-                || (InspectView.Parent?.IsFakeRoot ?? false)) {
+            if ((View.Parent == null && !View.IsFakeRoot)
+                || (View.Parent?.IsFakeRoot ?? false)) {
 
                 var unitScale = (nfloat)(1.0 / Math.Max (view.Width, view.Height));
 
@@ -273,6 +201,19 @@ namespace Xamarin.Interactive.Client.Mac.ViewInspector
                         zOffset);
                 }
             }
+        }
+
+        void IInspectTree3DNode<InspectViewNode>.BuildPrimaryPlane (InspectTreeState state)
+            => BuildPrimaryPlane (state);
+        
+        void IInspectTree3DNode<InspectViewNode>.Add (InspectViewNode child)
+            => AddChildNode (child);
+
+        InspectViewNode IInspectTree3DNode<InspectViewNode>.BuildChild (InspectTreeNode node, InspectTreeState state)
+        {
+            var child = new InspectViewNode (node, state);
+            node.Build3D (child, state);
+            return child;
         }
     }
 }

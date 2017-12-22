@@ -8,7 +8,7 @@
 using System;
 using System.Windows.Input;
 
-namespace Xamarin.Interactive.Client.Windows.Commands
+namespace Xamarin.Interactive.Client.ViewInspector
 {
     class DelegateCommand : ICommand
     {

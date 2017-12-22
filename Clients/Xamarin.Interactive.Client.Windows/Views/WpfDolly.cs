@@ -12,6 +12,7 @@ using System.Windows.Media.Animation;
 using System.Windows.Media.Media3D;
 
 using Xamarin.Interactive.Camera;
+using Xamarin.Interactive.Client.ViewInspector;
 using Xamarin.Interactive.Client.Windows.Commands;
 
 using SN = System.Numerics;
