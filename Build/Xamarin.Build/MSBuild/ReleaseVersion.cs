@@ -16,6 +16,9 @@ namespace Xamarin.MSBuild
         public string SemVer { get; set; }
 
         [Output]
+        public string SemVerNuGetSafe { get; private set; }
+
+        [Output]
         public string SemVerWithoutBuild { get; private set; }
 
         [Output]
@@ -43,7 +46,13 @@ namespace Xamarin.MSBuild
 
             SemVer = semVer.ToString (
                 Versioning.ReleaseVersionFormat.SemVer,
-                withBuildComponent: true);
+                withBuildComponent: true,
+                nugetSafeBuild: false);
+
+            SemVerNuGetSafe = semVer.ToString (
+                Versioning.ReleaseVersionFormat.SemVer,
+                withBuildComponent: true,
+                nugetSafeBuild: true);
 
             SemVerWithoutBuild = semVer.ToString (
                 Versioning.ReleaseVersionFormat.SemVer,

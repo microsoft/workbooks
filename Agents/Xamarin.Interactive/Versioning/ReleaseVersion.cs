@@ -256,11 +256,14 @@ namespace Xamarin.Versioning
         public override string ToString ()
             => ToSemVerString (true);
 
-        public string ToString (ReleaseVersionFormat format, bool withBuildComponent = false)
+        public string ToString (
+            ReleaseVersionFormat format,
+            bool withBuildComponent = false,
+            bool nugetSafeBuild = false)
         {
             switch (format) {
             case ReleaseVersionFormat.SemVer:
-                return ToSemVerString (withBuildComponent);
+                return ToSemVerString (withBuildComponent, nugetSafeBuild);
             case ReleaseVersionFormat.AppleCFBundleVersion:
                 return ToAppleCFBundleVersion ();
             case ReleaseVersionFormat.AppleCFBundleShortVersion:
@@ -276,7 +279,7 @@ namespace Xamarin.Versioning
             throw new ArgumentOutOfRangeException (nameof (format));
         }
 
-        string ToSemVerString (bool withBuild)
+        string ToSemVerString (bool withBuild, bool nugetSafeBuild = false)
         {
             var builder = new StringBuilder (32);
             builder.AppendFormat (CultureInfo.InvariantCulture, "{0}.{1}.{2}", Major, Minor, Patch);
@@ -307,7 +310,10 @@ namespace Xamarin.Versioning
                 builder.AppendFormat (CultureInfo.InvariantCulture, "{0}", Candidate);
 
             if (Build > 0 && withBuild)
-                builder.AppendFormat (CultureInfo.InvariantCulture, "+{0}", Build);
+                builder.AppendFormat (
+                    CultureInfo.InvariantCulture,
+                    nugetSafeBuild ? "-build.{0}" : "+{0}",
+                    Build);
 
             return builder.ToString ();
         }
