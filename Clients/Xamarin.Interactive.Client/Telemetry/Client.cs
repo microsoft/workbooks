@@ -17,6 +17,7 @@ using Newtonsoft.Json;
 
 using Xamarin.Interactive.Logging;
 using Xamarin.Interactive.Preferences;
+using Xamarin.Interactive.Telemetry.Events;
 
 namespace Xamarin.Interactive.Telemetry
 {
@@ -93,6 +94,9 @@ namespace Xamarin.Interactive.Telemetry
             if (httpClient == null || !enabled)
                 return;
 
+            if (!(evnt is AppSessionStart))
+                return;
+
             PostEventAsync (evnt).Forget ();
         }
 
@@ -126,7 +130,7 @@ namespace Xamarin.Interactive.Telemetry
             }
 
             var response = await httpClient.PostAsync (
-                "addlog",
+                "logEvent",
                 new EventObjectStreamContent (this, evnt));
 
             if (response.StatusCode == HttpStatusCode.Forbidden) {
