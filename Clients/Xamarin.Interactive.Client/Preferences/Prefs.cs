@@ -73,9 +73,6 @@ namespace Xamarin.Interactive.Preferences
 
         public static class Telemetry
         {
-            public static readonly Preference<string> UserGuid
-                = new Preference<string> ("telemetry.userGuid", Guid.NewGuid ().ToString ());
-
             public static readonly Preference<bool> Enabled
                 = new Preference<bool> ("telemetry.enabled", true);
         }
