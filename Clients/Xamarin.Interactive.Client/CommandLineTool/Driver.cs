@@ -9,23 +9,14 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Reflection;
+
+using Xamarin.Interactive.Core;
 
 namespace Xamarin.Interactive.Client.CommandLineTool
 {
     public sealed class Driver
     {
-        static Driver ()
-        {
-            var isMac = Environment.OSVersion.Platform == PlatformID.Unix;
-            var installationPaths = isMac
-                ? ClientApp.GetMacInstallationPaths ()
-                : ClientApp.GetWindowsInstallationPaths ();
-            InteractiveInstallation.InitializeDefault (
-                isMac,
-                DevEnvironment.RepositoryRootDirectory,
-                installationPaths);
-        }
-
         public string [] ClientLaunchUris { get; set; }
         public bool Verbose { get; set; }
 
@@ -43,10 +34,17 @@ namespace Xamarin.Interactive.Client.CommandLineTool
 
         public int Run ()
         {
-            var workbooksApp = Path.Combine (
-                Environment.CurrentDirectory,
-                InteractiveInstallation.Default.LocateClientApplication (
-                    ClientSessionKind.Workbook));
+            var isMac = Environment.OSVersion.Platform == PlatformID.Unix;
+            string workbooksApp;
+
+            var driverLocation = Assembly.GetExecutingAssembly ().Location;
+            if (isMac) {
+                workbooksApp = new FilePath (Path.GetDirectoryName (driverLocation)).Combine (
+                    "..",
+                    "..").FullPath;
+            } else {
+                workbooksApp = Assembly.GetExecutingAssembly ().Location;
+            }
 
             var launchUris = new List<ClientSessionUri> ();
 
@@ -90,7 +88,7 @@ namespace Xamarin.Interactive.Client.CommandLineTool
                 arguments.Add ($"\"{uri}\"");
             }
 
-            if (InteractiveInstallation.Default.IsMac) {
+            if (isMac) {
                 arguments.Insert (0, $"\"{workbooksApp}\"");
                 arguments.Insert (0, "-a");
                 Exec ("open", arguments);

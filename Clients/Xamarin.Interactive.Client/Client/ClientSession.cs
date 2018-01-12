@@ -132,7 +132,7 @@ namespace Xamarin.Interactive.Client
             ResetAgentConnection ();
             cancellationTokenSource.Cancel ();
             observable.Observers.OnCompleted ();
-            WorkbookPageViewModel.Dispose ();
+            WorkbookPageViewModel?.Dispose ();
         }
 
         public void InitializeViewControllers (IClientSessionViewControllers viewControllers)
