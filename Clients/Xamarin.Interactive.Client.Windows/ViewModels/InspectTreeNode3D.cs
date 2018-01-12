@@ -96,6 +96,9 @@ namespace Xamarin.Interactive.Client.Windows.ViewModels
                 };
             }
 
+            if (view.Width <= 0 || view.Height <= 0)
+                return;
+
             var size = new Size (view.Width, view.Height);
             var visual = new DrawingVisual ();
             using (var context = visual.RenderOpen ()) {

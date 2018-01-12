@@ -220,7 +220,7 @@ namespace Xamarin.Interactive.Client.Windows.Views
             if (Tree?.SelectedNode == null)
                 SelectedNode = null;
 
-            selectedNode = representedNode.TraverseTree (c => c.Children.OfType<InspectTreeNode3D> ())
+            selectedNode = representedNode?.TraverseTree (c => c.Children.OfType<InspectTreeNode3D> ())
                 .FirstOrDefault (node3D => node3D.Node == Tree?.SelectedNode);
         }
 
