@@ -1,0 +1,11 @@
+---
+uti: com.xamarin.workbook
+id: f7bb14cb-0a9e-4d8f-a08f-280f587d7842
+title: Weird %Name
+platforms:
+- Console
+---
+
+```csharp
+Console.WriteLine("Hello, I have a weird name!");
+```
