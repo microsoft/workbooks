@@ -196,7 +196,7 @@ namespace Xamarin.Interactive.Client.Mac
         {
             SessionDocumentController
                 .SharedDocumentController
-                .OpenDocument (new NSUrl (filename));
+                .OpenDocument (NSUrl.FromFilename (filename));
             return true;
         }
 
