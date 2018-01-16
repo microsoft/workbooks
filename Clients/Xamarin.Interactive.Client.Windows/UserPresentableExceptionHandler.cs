@@ -21,8 +21,6 @@ namespace Xamarin.Interactive.Client.Windows
         {
             Log.Error (TAG, $"{e.Message} ({e.Details})", e.InnerException ?? e);
 
-            new Telemetry.Events.Error (e).Post ();
-
             MainThread.Ensure ();
 
             var window = new MetroDialogWindow {

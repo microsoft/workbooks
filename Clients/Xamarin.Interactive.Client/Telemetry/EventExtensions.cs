@@ -7,14 +7,16 @@
 
 using System.Collections.Concurrent;
 
+using Xamarin.Interactive.Telemetry.Models;
+
 namespace Xamarin.Interactive
 {
     static class TelemetryEventExtensions
     {
-        static readonly BlockingCollection<Telemetry.IDataEvent> pendingEvents
-            = new BlockingCollection<Telemetry.IDataEvent> ();
+        static readonly BlockingCollection<ITelemetryEvent> pendingEvents
+            = new BlockingCollection<ITelemetryEvent> ();
 
-        public static void Post (this Telemetry.IDataEvent evnt, Telemetry.Client client = null)
+        public static void Post (this ITelemetryEvent evnt, Telemetry.Client client = null)
         {
             if (client != null) {
                 client.Post (evnt);
@@ -35,8 +37,5 @@ namespace Xamarin.Interactive
 
             client.Post (evnt);
         }
-
-        public static void Post (this Telemetry.IEvent evnt, Telemetry.Client client = null)
-            => Post (new Telemetry.Event (evnt.Key, evnt.Timestamp), client);
     }
 }

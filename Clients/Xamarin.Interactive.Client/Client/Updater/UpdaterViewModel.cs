@@ -130,7 +130,8 @@ namespace Xamarin.Interactive.Client.Updater
             => cancellationTokenSource?.Cancel ();
 
         public void RemindMeLater ()
-            => Telemetry.Events.UpdateEvent.Ignored (UpdateItem).Post ();
+        {
+        }
 
         public async Task StartDownloadAsync ()
         {
@@ -144,10 +145,8 @@ namespace Xamarin.Interactive.Client.Updater
             IsCancelButtonVisible = true;
 
             try {
-                Telemetry.Events.UpdateEvent.Downloading (UpdateItem).Post ();
                 await DownloadItem.DownloadAsync (cancellationTokenSource.Token);
             } catch (Exception e) when (e is TaskCanceledException || e is OperationCanceledException) {
-                Telemetry.Events.UpdateEvent.Canceled (UpdateItem).Post ();
                 return;
             } catch (Exception e) {
                 var message = e.Message;
@@ -157,14 +156,11 @@ namespace Xamarin.Interactive.Client.Updater
                 Log.Error (TAG, $"error downloading {DownloadItem.ActualSourceUri}", e);
                 Reset ();
                 MainThread.Post (() => RunErrorDialog (true, message));
-                Telemetry.Events.UpdateEvent.Failed (UpdateItem).Post ();
                 return;
             } finally {
                 Log.Info (TAG, $"download operation lasted {DownloadItem.ElapsedTime}");
                 Reset ();
             }
-
-            Telemetry.Events.UpdateEvent.Installing (UpdateItem).Post ();
 
             try {
                 await InstallUpdateAsync ();
