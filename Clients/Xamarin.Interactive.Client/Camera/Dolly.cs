@@ -97,6 +97,12 @@ namespace Xamarin.Interactive.Camera
         public void DragRotate (TPoint p, float width, float height)
         {
             var direction = ProjectToSphere (previousLocation = Convert (p), width, height);
+            
+            // if we get here before previousDirection is initialized
+            // initalize it and fall out in the delta check
+            if (previousDirection.LengthSquared () == 0.0)
+                previousDirection = direction;
+
             if ((direction - previousDirection).LengthSquared () < 0.001)
                 return;
 
