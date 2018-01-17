@@ -17,6 +17,59 @@ namespace Xamarin.Interactive.Core
     [Serializable]
     sealed class AgentIdentity
     {
+        const string needToObsoleteAgentType =
+            "if you need this, it's really time to revisit obsoleting AgentType itself";
+
+        [Obsolete (needToObsoleteAgentType)]
+        internal static string GetFlavorId (AgentType agentType)
+        {
+            switch (agentType) {
+            case AgentType.iOS:
+                return "ios-xamarinios";
+            case AgentType.MacNet45:
+                return "mac-xamarinmac-full";
+            case AgentType.MacMobile:
+                return "mac-xamarinmac-modern";
+            case AgentType.Android:
+                return "android-xamarinandroid";
+            case AgentType.WPF:
+                return "wpf";
+            case AgentType.Console:
+                return "console";
+            case AgentType.DotNetCore:
+                return "console-netcore";
+            default:
+                return null;
+            }
+        }
+
+        [Obsolete (needToObsoleteAgentType)]
+        internal static AgentType GetAgentType (string flavorId)
+        {
+            switch (flavorId) {
+            case "ios-xamarinios":
+                return AgentType.iOS;
+            case "mac-xamarinmac-full":
+                return AgentType.MacNet45;
+            case "mac-xamarinmac-modern":
+                return AgentType.MacMobile;
+            case "android-xamarinandroid":
+                return AgentType.Android;
+            case "wpf":
+                return AgentType.WPF;
+            case "console":
+                return AgentType.Console;
+            case "console-netcore":
+                return AgentType.DotNetCore;
+            default:
+                return AgentType.Unknown;
+            }
+        }
+
+        #pragma warning disable 0162
+        public string FlavorId => GetFlavorId (AgentType);
+        #pragma warning restore 0162
+
         public Guid Id { get; }
         public AgentType AgentType { get; }
         public Sdk Sdk { get; }
