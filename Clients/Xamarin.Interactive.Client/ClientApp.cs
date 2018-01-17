@@ -12,8 +12,6 @@ using System.Linq;
 using System.Reflection;
 using System.Threading;
 
-using Microsoft.Win32;
-
 using Xamarin.Interactive.Client;
 using Xamarin.Interactive.Client.Updater;
 using Xamarin.Interactive.Core;
@@ -53,6 +51,8 @@ namespace Xamarin.Interactive
 
         FileStream logStream;
 
+        public Guid AppSessionId { get; } = Guid.NewGuid ();
+
         public ClientAppPaths Paths { get; private set; }
         public Telemetry.Client Telemetry { get; private set; }
         public IPreferenceStore Preferences { get; private set; }
@@ -84,8 +84,6 @@ namespace Xamarin.Interactive
             bool asSharedInstance = true,
             ILogProvider logProvider = null)
         {
-            new Telemetry.Events.AppSessionInitialize ().Post ();
-
             Log.Initialize (logProvider ?? new LogProvider (
                 #if DEBUG
                 LogLevel.Debug
@@ -111,9 +109,13 @@ namespace Xamarin.Interactive
                 $"├─ Branch: {BuildInfo.Branch}{nl}" +
                 $"└─ Lane: {BuildInfo.BuildHostLane}{nl}");
 
+            Log.Info (TAG, $"AppSessionId: {AppSessionId}");
+
             Preferences = CreatePreferenceStore ()
                 ?? throw new InitializeException<IPreferenceStore> (
                     nameof (CreatePreferenceStore));
+
+            Preferences.Remove ("telemetry.userGuid");
 
             PreferenceStore.Default = Preferences;
 
@@ -150,11 +152,38 @@ namespace Xamarin.Interactive
                     ? GetMacInstallationPaths ()
                     : GetWindowsInstallationPaths ());
 
-            new Telemetry.Events.AppSessionStart ().Post ();
+            PostAppSessionStarted ();
 
             DeleteLegacyPackageCacheInBackground ();
 
             OnInitialized ();
+        }
+
+        void PostAppSessionStarted ()
+        {
+            var appSession = new Telemetry.Models.AppSession {
+                AppSessionId = AppSessionId,
+                Timestamp = DateTimeOffset.UtcNow,
+                Version = BuildInfo.VersionString,
+                BuildHash = BuildInfo.Hash,
+                UpdateChannel = Updater.UpdateChannel,
+                OperatingSystem = new Telemetry.Models.OperatingSystem {
+                    Version = Host.OSVersion.ToString (),
+                    WordSize = (byte)IntPtr.Size,
+                    CpuWordSize = (byte)(Environment.Is64BitOperatingSystem ? 8 : 4)
+                }
+            };
+
+            switch (Host.OSName) {
+            case HostOS.macOS:
+                appSession.OperatingSystem.Name = Interactive.Telemetry.Models.OperatingSystemName.macOS;
+                break;
+            case HostOS.Windows:
+                appSession.OperatingSystem.Name = Interactive.Telemetry.Models.OperatingSystemName.Windows;
+                break;
+            }
+
+            appSession.Post ();
         }
 
         protected virtual void OnInitialized ()
@@ -206,16 +235,6 @@ namespace Xamarin.Interactive
             var bytes = Utf8.GetBytes (entry + Environment.NewLine);
             logStream.Write (bytes, 0, bytes.Length);
             logStream.Flush ();
-
-            if (entry.Flags.HasFlag (LogFlags.SkipTelemetry))
-                return;
-
-            switch (entry.Level) {
-            case LogLevel.Critical:
-            case LogLevel.Error:
-                new Telemetry.Events.Error (entry).Post ();
-                break;
-            }
         }
 
         /// <summary>

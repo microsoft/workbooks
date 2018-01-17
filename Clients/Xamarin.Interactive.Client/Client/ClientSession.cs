@@ -184,7 +184,6 @@ namespace Xamarin.Interactive.Client
         {
             var evnt = new ClientSessionEvent (this, eventKind);
             MainThread.Post (() => observable.Observers.OnNext (evnt));
-            evnt.Post ();
         }
 
         void PostEvent (IObserver<ClientSessionEvent> observer, ClientSessionEventKind eventKind)
@@ -446,6 +445,13 @@ namespace Xamarin.Interactive.Client
             UpdateTitle ();
 
             PostEvent (ClientSessionEventKind.AgentConnected);
+
+            new Telemetry.Models.AgentSession {
+                AppSessionId = ClientApp.SharedInstance.AppSessionId,
+                Timestamp = DateTimeOffset.UtcNow,
+                Flavor = agent.Identity.FlavorId,
+                Kind = (Telemetry.Models.AgentSessionKind)(int)SessionKind
+            }.Post ();
         }
 
         void HandleAgentMessage (object message)

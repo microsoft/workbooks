@@ -261,15 +261,12 @@ namespace Xamarin.Interactive.Client.Updater
             CheckForUpdatesAsync (cancellationTokenSource.Token).ContinueWith (task => {
                 if (task.IsCanceled) {
                     Log.Error (TAG, "update check cancelled");
-                    Telemetry.Events.UpdateEvent.Canceled ().Post ();
                 } else if (task.IsFaulted) {
                     Log.Error (TAG, "update check failed", task.Exception);
-                    Telemetry.Events.UpdateEvent.CheckFailed ().Post ();
                 } else if (task.Result == null) {
                     Log.Info (TAG, "no updates are available");
                 } else {
                     Log.Info (TAG, $"update available: {task.Result.DownloadUrl}");
-                    Telemetry.Events.UpdateEvent.Available (task.Result).Post ();
                 }
 
                 MainThread.Post (() => {

@@ -83,59 +83,15 @@ namespace Xamarin.Interactive
             => All.FirstOrDefault (app => string.Equals (
                 app.Id, workbookAppId, StringComparison.OrdinalIgnoreCase));
 
-        public static WorkbookAppInstallation Locate (AgentType agentType)
-        {
-            string id;
-            switch (agentType) {
-            case AgentType.iOS:
-                id = "ios-xamarinios";
-                break;
-            case AgentType.MacNet45:
-                id = "mac-xamarinmac-full";
-                break;
-            case AgentType.MacMobile:
-                id = "mac-xamarinmac-modern";
-                break;
-            case AgentType.Android:
-                id = "android-xamarinandroid";
-                break;
-            case AgentType.WPF:
-                id = "wpf";
-                break;
-            case AgentType.Console:
-                id = "console";
-                break;
-            case AgentType.DotNetCore:
-                id = "console-netcore";
-                break;
-            default:
-                return null;
-            }
+        #pragma warning disable 0162
 
-            return LookupById (id);
-        }
+        public static WorkbookAppInstallation Locate (AgentType agentType)
+            => LookupById (AgentIdentity.GetFlavorId (agentType));
 
         public AgentType GetAgentType ()
-        {
-            switch (Id) {
-            case "ios-xamarinios":
-                return AgentType.iOS;
-            case "mac-xamarinmac-full":
-                return AgentType.MacNet45;
-            case "mac-xamarinmac-modern":
-                return AgentType.MacMobile;
-            case "android-xamarinandroid":
-                return AgentType.Android;
-            case "wpf":
-                return AgentType.WPF;
-            case "console":
-                return AgentType.Console;
-            case "console-netcore":
-                return AgentType.DotNetCore;
-            default:
-                return AgentType.Unknown;
-            }
-        }
+            => AgentIdentity.GetAgentType (Id);
+
+        #pragma warning restore 0162
 
         readonly IAgentProcessManager processManager;
 

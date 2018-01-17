@@ -7,6 +7,7 @@
 
 using System;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -17,16 +18,14 @@ using Newtonsoft.Json;
 
 using Xamarin.Interactive.Logging;
 using Xamarin.Interactive.Preferences;
-using Xamarin.Interactive.Telemetry.Events;
+using Xamarin.Interactive.Telemetry.Models;
 
 namespace Xamarin.Interactive.Telemetry
 {
     sealed class Client
     {
         const string TAG = nameof (Telemetry);
-        const string TelemetryApiUrl = "@TELEMETRY_API_URL@";
-
-        readonly string sessionId = Guid.NewGuid ().ToString ();
+        const string DefaultTelemetryEndpoint = "@TELEMETRY_API_URL@";
 
         bool enabled;
         HttpClient httpClient;
@@ -40,8 +39,30 @@ namespace Xamarin.Interactive.Telemetry
             PreferenceStore.Default.Subscribe (ObservePreferenceChange);
 
             try {
+                var telemetryEndpoint = DefaultTelemetryEndpoint;
+
+                if (BuildInfo.IsLocalDebugBuild) {
+                    try {
+                        var serverProc = SystemInformation
+                            .SystemProcessInfo
+                            .GetAllProcesses ()
+                            .FirstOrDefault (proc =>
+                                 proc.ExecPath.EndsWith (
+                                     "dotnet",
+                                     StringComparison.Ordinal) &&
+                                 proc.Arguments.Any (a => a.EndsWith (
+                                     "/Xamarin.Interactive.Telemetry.Server.dll",
+                                     StringComparison.Ordinal)));
+
+                        if (serverProc != null)
+                            // FIXME: server process to provide endpoint somehow
+                            telemetryEndpoint = "http://localhost:5000/api/";
+                    } catch {
+                    }
+                }
+
                 if (!Prefs.Telemetry.Enabled.GetValue () ||
-                    !Uri.TryCreate (TelemetryApiUrl, UriKind.Absolute, out var telemetryApiUri)) {
+                    !Uri.TryCreate (telemetryEndpoint, UriKind.Absolute, out var telemetryApiUri)) {
                     Log.Info (TAG, "Telemetry is disabled");
                     return;
                 }
@@ -56,8 +77,6 @@ namespace Xamarin.Interactive.Telemetry
                     new ProductInfoHeaderValue (
                         "XamarinInteractiveTelemetry",
                         BuildInfo.VersionString));
-
-                Log.Info (TAG, $"Telemetry Session ID: {sessionId}");
             } catch (Exception e) {
                 Log.Error (TAG, "Unable to create HttpClient for telemetry", e);
             }
@@ -89,18 +108,15 @@ namespace Xamarin.Interactive.Telemetry
             }
         }
 
-        public void Post (IDataEvent evnt)
+        public void Post (ITelemetryEvent evnt)
         {
             if (httpClient == null || !enabled)
-                return;
-
-            if (!(evnt is AppSessionStart))
                 return;
 
             PostEventAsync (evnt).Forget ();
         }
 
-        async Task PostEventAsync (IDataEvent evnt)
+        async Task PostEventAsync (ITelemetryEvent evnt)
         {
 #pragma warning disable 0168
             for (int i = 0; i < 10; i++) {
@@ -121,14 +137,8 @@ namespace Xamarin.Interactive.Telemetry
             }
         }
 
-        async Task PostEventOnceAsync (IDataEvent evnt)
+        async Task PostEventOnceAsync (ITelemetryEvent evnt)
         {
-            if (BuildInfo.IsLocalDebugBuild) {
-                eventsSent++;
-                Log.Verbose (TAG, $"(not-sent: {eventsSent}): {evnt}");
-                return;
-            }
-
             var response = await httpClient.PostAsync (
                 "logEvent",
                 new EventObjectStreamContent (this, evnt));
@@ -148,19 +158,36 @@ namespace Xamarin.Interactive.Telemetry
 
         sealed class EventObjectStreamContent : HttpContent
         {
-            Client client;
-            IDataEvent evnt;
-
-            static readonly DateTime unixEpoch = new DateTime (
-                1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
-
-            public EventObjectStreamContent (Client client, IDataEvent evnt)
+            sealed class ModelBinder : SerializationBinder
             {
-                if (evnt == null)
-                    throw new ArgumentNullException (nameof (evnt));
+                public override void BindToName (Type serializedType, out string assemblyName, out string typeName)
+                {
+                    assemblyName = null;
+                    typeName = serializedType.Name;
+                }
 
-                this.client = client;
-                this.evnt = evnt;
+                public override Type BindToType (string assemblyName, string typeName)
+                    => throw new NotImplementedException ();
+            }
+
+            static readonly JsonSerializer serializer = new JsonSerializer {
+                Binder = new ModelBinder (),
+                TypeNameHandling = TypeNameHandling.Objects,
+                NullValueHandling = NullValueHandling.Ignore,
+                DefaultValueHandling = DefaultValueHandling.Ignore,
+                Formatting = Formatting.Indented
+            };
+
+            Client client;
+            ITelemetryEvent evnt;
+
+            public EventObjectStreamContent (Client client, ITelemetryEvent evnt)
+            {
+                this.client = client
+                    ?? throw new ArgumentNullException (nameof (client));
+
+                this.evnt = evnt
+                    ?? throw new ArgumentNullException (nameof (evnt));
 
                 EnsureHeaders ();
             }
@@ -179,35 +206,21 @@ namespace Xamarin.Interactive.Telemetry
                 Headers.ContentType = new MediaTypeHeaderValue ("application/json");
             }
 
-            protected override async Task SerializeToStreamAsync (Stream stream, TransportContext context)
+            protected override Task SerializeToStreamAsync (Stream stream, TransportContext context)
             {
                 EnsureHeaders ();
 
-                var streamWriter = new StreamWriter (stream);
-                var writer = new JsonTextWriter (streamWriter) {
-                    Formatting = Formatting.Indented
-                };
+                var writer = new StreamWriter (stream);
 
                 try {
-                    writer.WriteStartObject ();
-
-                    writer.WritePropertyName ("sessionId");
-                    writer.WriteValue (client.sessionId);
-
-                    writer.WritePropertyName ("eventKey");
-                    writer.WriteValue (evnt.Key);
-
-                    writer.WritePropertyName ("eventTime");
-                    writer.WriteValue ((evnt.Timestamp - unixEpoch).TotalSeconds);
-
-                    await evnt.SerializePropertiesAsync (writer).ConfigureAwait (false);
-
-                    writer.WriteEndObject ();
+                    serializer.Serialize (writer, evnt);
                 } catch (Exception e) {
                     throw new SerializationException ("bad use of JsonTextWriter / JsonSerializer", e);
                 }
 
                 writer.Flush ();
+
+                return Task.CompletedTask;
             }
 
             protected override bool TryComputeLength (out long length)

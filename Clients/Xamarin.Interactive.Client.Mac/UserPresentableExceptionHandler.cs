@@ -35,8 +35,6 @@ namespace Xamarin.Interactive.Client.Mac
         {
             Log.Error (TAG, $"{e.Message} ({e.Details})", e.InnerException ?? e);
 
-            new Telemetry.Events.Error (e).Post ();
-
             MainThread.Ensure ();
 
             uiContext = uiContext ?? e.UIContext;
