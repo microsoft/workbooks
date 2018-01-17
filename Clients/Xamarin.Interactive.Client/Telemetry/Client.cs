@@ -7,6 +7,7 @@
 
 using System;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -24,7 +25,7 @@ namespace Xamarin.Interactive.Telemetry
     sealed class Client
     {
         const string TAG = nameof (Telemetry);
-        const string TelemetryApiUrl = "@TELEMETRY_API_URL@";
+        const string DefaultTelemetryEndpoint = "@TELEMETRY_API_URL@";
 
         bool enabled;
         HttpClient httpClient;
@@ -38,8 +39,30 @@ namespace Xamarin.Interactive.Telemetry
             PreferenceStore.Default.Subscribe (ObservePreferenceChange);
 
             try {
+                var telemetryEndpoint = DefaultTelemetryEndpoint;
+
+                if (BuildInfo.IsLocalDebugBuild) {
+                    try {
+                        var serverProc = SystemInformation
+                            .SystemProcessInfo
+                            .GetAllProcesses ()
+                            .FirstOrDefault (proc =>
+                                 proc.ExecPath.EndsWith (
+                                     "dotnet",
+                                     StringComparison.Ordinal) &&
+                                 proc.Arguments.Any (a => a.EndsWith (
+                                     "/Xamarin.Interactive.Telemetry.Server.dll",
+                                     StringComparison.Ordinal)));
+
+                        if (serverProc != null)
+                            // FIXME: server process to provide endpoint somehow
+                            telemetryEndpoint = "http://localhost:5000/api/";
+                    } catch {
+                    }
+                }
+
                 if (!Prefs.Telemetry.Enabled.GetValue () ||
-                    !Uri.TryCreate (TelemetryApiUrl, UriKind.Absolute, out var telemetryApiUri)) {
+                    !Uri.TryCreate (telemetryEndpoint, UriKind.Absolute, out var telemetryApiUri)) {
                     Log.Info (TAG, "Telemetry is disabled");
                     return;
                 }
@@ -116,12 +139,6 @@ namespace Xamarin.Interactive.Telemetry
 
         async Task PostEventOnceAsync (ITelemetryEvent evnt)
         {
-            if (BuildInfo.IsLocalDebugBuild) {
-                eventsSent++;
-                Log.Verbose (TAG, $"(not-sent: {eventsSent}): {evnt}");
-                return;
-            }
-
             var response = await httpClient.PostAsync (
                 "logEvent",
                 new EventObjectStreamContent (this, evnt));
