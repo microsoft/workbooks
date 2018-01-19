@@ -128,7 +128,7 @@ Copyright 2017 Microsoft. All rights reserved.
       UpdateInfoFile="$(MSBuildThisFileDirectory)$(UpdateInfoFile)"
       UpdaterReleaseNotes="@(UpdaterReleaseNotes)"
       FilesToInclude="@(PublicationItem)"
-      RelativePublishBaseUrl="interactive"/>
+      BasePublishUri="https://dl.xamarin.com/interactive"/>
   </Target>
 
   <Target Name="GenerateSignFiles" DependsOnTargets="Xamarin_Build_ReadAllProperties">

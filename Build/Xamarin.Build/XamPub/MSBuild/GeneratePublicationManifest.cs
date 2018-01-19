@@ -34,7 +34,7 @@ namespace Xamarin.XamPub.MSBuild
         public ITaskItem [] FilesToInclude { get; set; }
 
         [Required]
-        public string RelativePublishBaseUrl { get; set; }
+        public string BasePublishUri { get; set; }
 
         public string ReleaseName { get; set; }
 
@@ -87,10 +87,10 @@ namespace Xamarin.XamPub.MSBuild
             if (releaseFile == null)
                 return file;
 
-            releaseFile.PublishUri = $"{RelativePublishBaseUrl}/{fileName}";
+            releaseFile.PublishUri = $"{BasePublishUri}/{fileName}";
 
             if (!string.IsNullOrEmpty (evergreenName))
-                releaseFile.EvergreenUri = $"{RelativePublishBaseUrl}/{evergreenName}";
+                releaseFile.EvergreenUri = $"{BasePublishUri}/{evergreenName}";
 
             var pdbPath = path + ".symbols.zip";
             if (File.Exists (pdbPath))
