@@ -550,7 +550,7 @@
       <Pdbs Include="Clients\Xamarin.Interactive.Client.Windows\bin\$(Configuration)$(InspectorOutputPathSuffix)\Xamarin Inspector.pdb" />
     </ItemGroup>
     <PropertyGroup>
-      <PdbArchiveName>XamarinInteractive-PDB-$(ReleaseVersion_SemVer).zip</PdbArchiveName>
+      <PdbArchiveName>XamarinInteractive-$(ReleaseVersion_SemVer).msi.symbols.zip</PdbArchiveName>
       <SevenZipListFile>PdbList.lst</SevenZipListFile>
     </PropertyGroup>
     <WriteLinesToFile File="$(SevenZipListFile)" Lines="@(Pdbs)" Overwrite="true" Encoding="UTF-8" />
@@ -576,7 +576,7 @@
   </Target>
 
   <Target
-    Name="TestInspectorInjector" 
+    Name="TestInspectorInjector"
     Condition="'$(SolutionPlatform)' == 'macOS'">
     <Exec Command="Tests/Xamarin.Interactive.Tests.InspectorSupport.Mac/bin/$(Configuration)/Xamarin.Interactive.Tests.InspectorSupport.Mac.app/Contents/MacOS/Xamarin.Interactive.Tests.InspectorSupport.Mac"/>
   </Target>

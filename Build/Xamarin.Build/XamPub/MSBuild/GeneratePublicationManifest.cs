@@ -47,7 +47,10 @@ namespace Xamarin.XamPub.MSBuild
                     new FileInfo (OutputFile.ItemSpec).FullName)
                     continue;
 
-                var releaseFile = ProcessReleaseFile (item.ItemSpec, item.GetMetadata ("Evergreen"));
+                var releaseFile = ProcessFileBase<ReleaseFile> (
+                    item.ItemSpec,
+                    item.GetMetadata ("Evergreen"));
+
                 if (releaseFile == null)
                     return false;
 
@@ -65,11 +68,12 @@ namespace Xamarin.XamPub.MSBuild
             return true;
         }
 
-        ReleaseFile ProcessReleaseFile (string path, string evergreenName)
+        TFile ProcessFileBase<TFile> (string path, string evergreenName = null)
+            where TFile : FileBase, new ()
         {
-            var releaseFile = new ReleaseFile ();
+            var file = new TFile ();
             try {
-                releaseFile.PopulateFromFile (path);
+                file.PopulateFromFile (path);
             } catch (Exception e) {
                 Log.LogError ($"error creating ingestion item for '{path}': {e.Message}");
                 return null;
@@ -77,36 +81,40 @@ namespace Xamarin.XamPub.MSBuild
 
             var fileName = Path.GetFileName (path);
 
-            releaseFile.SourceUri = fileName;
+            file.SourceUri = fileName;
+
+            var releaseFile = file as ReleaseFile;
+            if (releaseFile == null)
+                return file;
+
             releaseFile.PublishUri = $"{RelativePublishBaseUrl}/{fileName}";
 
             if (!string.IsNullOrEmpty (evergreenName))
                 releaseFile.EvergreenUri = $"{RelativePublishBaseUrl}/{evergreenName}";
 
-            return ProcessReleaseFile (releaseFile);
+            var pdbPath = path + ".symbols.zip";
+            if (File.Exists (pdbPath))
+                releaseFile.SymbolFiles = new List<SymbolFile> {
+                    ProcessFileBase<SymbolFile> (pdbPath)
+                };
+
+            ProcessReleaseFile (releaseFile);
+
+            return file;
         }
 
         static readonly Regex updaterFileRegex = new Regex (
             @"^(?<name>[\w-_]+)-(?<version>\d+.*)(?<extension>\.(msi|pkg|dmg))$",
             RegexOptions.CultureInvariant | RegexOptions.ExplicitCapture | RegexOptions.IgnoreCase);
 
-        static readonly Regex pdbArchiveRegex = new Regex (
-            @"\-PDB\-.+\.zip$",
-            RegexOptions.CultureInvariant | RegexOptions.IgnoreCase);
-
-        ReleaseFile ProcessReleaseFile (ReleaseFile releaseFile)
+        void ProcessReleaseFile (ReleaseFile releaseFile)
         {
             var relativePath = releaseFile.PublishUri;
             var relativePathFileName = Path.GetFileName (relativePath);
 
-            if (pdbArchiveRegex.IsMatch (relativePathFileName)) {
-                releaseFile.PublishUri = null;
-                return releaseFile;
-            }
-
             var updaterItem = updaterFileRegex.Match (relativePathFileName);
             if (updaterItem == null || !updaterItem.Success)
-                return releaseFile;
+                return;
 
             if (string.IsNullOrEmpty (ReleaseName))
                 ReleaseName = $"{updaterItem.Groups ["name"]}-{updaterItem.Groups ["version"]}";
@@ -149,8 +157,6 @@ namespace Xamarin.XamPub.MSBuild
                     break;
                 }
             }
-
-            return releaseFile;
         }
     }
 }
