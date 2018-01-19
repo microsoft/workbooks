@@ -57,9 +57,6 @@
     <Compile Include="MSBuild\GenerateWorkbookAppManifest.cs" />
     <Compile Include="MSBuild\ProcessPolicheckXml.cs" />
     <Compile Include="MSBuild\UpdateWixManifest.cs" />
-    <Compile Include="XamPub\PublicationItem.cs" />
-    <Compile Include="XamPub\TagItem.cs" />
-    <Compile Include="XamPub\UpdaterItem.cs" />
     <Compile Include="XamPub\MSBuild\GeneratePublicationManifest.cs" />
     <Compile Include="MSBuild\BuildEnvironment.cs" />
     <Compile Include="MSBuild\CommonGitInfo.cs" />
@@ -68,8 +65,6 @@
     <Compile Include="MSBuild\MonoRuntimeVersion.cs" />
     <Compile Include="MSBuild\PackageDotJson.cs" />
     <Compile Include="MSBuild\TypeScriptConfig.cs" />
-    <Compile Include="XamPub\Publication.cs" />
-    <Compile Include="XamPub\PublicationInfo.cs" />
     <Compile Include="PlistBuddy.cs" />
     <Compile Include="MSBuild\MergePlist.cs" />
     <Compile Include="MSBuild\SetPlistValue.cs" />

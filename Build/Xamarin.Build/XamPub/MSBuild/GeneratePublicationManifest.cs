@@ -17,6 +17,8 @@ using Newtonsoft.Json;
 
 using Xamarin.Versioning;
 
+using Xamarin.XamPub.Models;
+
 namespace Xamarin.XamPub.MSBuild
 {
     public sealed class GeneratePublicationManifest : Task
@@ -38,7 +40,7 @@ namespace Xamarin.XamPub.MSBuild
 
         public override bool Execute ()
         {
-            var publicationItems = new List<PublicationItem> ();
+            var publicationItems = new List<ReleaseFile> ();
 
             foreach (var item in FilesToInclude) {
                 if (new FileInfo (item.ItemSpec).FullName ==
@@ -53,25 +55,21 @@ namespace Xamarin.XamPub.MSBuild
             }
 
             using (var writer = new StreamWriter (OutputFile.ItemSpec))
-                new JsonSerializer {
-                    Formatting = Formatting.Indented,
-                    NullValueHandling = NullValueHandling.Ignore,
-                    DefaultValueHandling = DefaultValueHandling.Ignore
-                }.Serialize (writer, new Publication {
-                    Info = new PublicationInfo {
+                new Release {
+                    Info = new ReleaseInfo {
                         Name = ReleaseName
                     },
-                    Release = publicationItems.ToArray ()
-                });
+                    ReleaseFiles = publicationItems
+                }.Serialize (writer);
 
             return true;
         }
 
-        PublicationItem ProcessItem (string path, string evergreenName)
+        ReleaseFile ProcessItem (string path, string evergreenName)
         {
-            PublicationItem item;
+            var item = new ReleaseFile ();
             try {
-                item = PublicationItem.CreateFromFile (path);
+                item.PopulateFromFile (path);
             } catch (Exception e) {
                 Log.LogError ($"error creating ingestion item for '{path}': {e.Message}");
                 return null;
@@ -79,15 +77,11 @@ namespace Xamarin.XamPub.MSBuild
 
             var fileName = Path.GetFileName (path);
 
-            item.IngestionUri = new Uri (fileName, UriKind.Relative);
-            item.RelativePublishUrl = new Uri (
-                $"{RelativePublishBaseUrl}/{fileName}",
-                UriKind.Relative);
+            item.SourceUri = fileName;
+            item.PublishUri = $"{RelativePublishBaseUrl}/{fileName}";
 
             if (!string.IsNullOrEmpty (evergreenName))
-                item.RelativePublishEvergreenUrl = new Uri (
-                    $"{RelativePublishBaseUrl}/{evergreenName}",
-                    UriKind.Relative);
+                item.EvergreenUri = $"{RelativePublishBaseUrl}/{evergreenName}";
 
             return ProcessItem (item);
         }
@@ -100,13 +94,13 @@ namespace Xamarin.XamPub.MSBuild
             @"\-PDB\-.+\.zip$",
             RegexOptions.CultureInvariant | RegexOptions.IgnoreCase);
 
-        PublicationItem ProcessItem (PublicationItem item)
+        ReleaseFile ProcessItem (ReleaseFile item)
         {
-            var relativePath = item.RelativePublishUrl.ToString ();
+            var relativePath = item.PublishUri;
             var relativePathFileName = Path.GetFileName (relativePath);
 
             if (pdbArchiveRegex.IsMatch (relativePathFileName)) {
-                item.RelativePublishUrl = null;
+                item.PublishUri = null;
                 return item;
             }
 
@@ -117,41 +111,41 @@ namespace Xamarin.XamPub.MSBuild
             if (string.IsNullOrEmpty (ReleaseName))
                 ReleaseName = $"{updaterItem.Groups ["name"]}-{updaterItem.Groups ["version"]}";
 
-            if (UpdateInfoFile != null)
-                item.UpdaterProduct = UpdaterProduct.FromUpdateInfo (
-                    File.ReadAllText (UpdateInfoFile));
-            else
-                item.UpdaterProduct = new UpdaterProduct ();
+            item.UpdaterProduct = new XamarinUpdaterProduct {
+                Version = updaterItem.Groups ["version"].Value
+            };
 
-            item.UpdaterProduct.Size = item.Size;
-            item.UpdaterProduct.Version = updaterItem.Groups ["version"].Value;
+            if (UpdateInfoFile != null)
+                item.UpdaterProduct.PopulateFromUpdateinfoFile (UpdateInfoFile);
 
             if (UpdaterReleaseNotes != null)
-                item.UpdaterProduct.ReleaseNotes = string
+                item.UpdaterProduct.Blurb = string
                     .Join ("\n", UpdaterReleaseNotes)
                     .Trim ();
 
             if (ReleaseVersion.TryParse (item.UpdaterProduct.Version, out var version)) {
                 if (version.CandidateLevel == ReleaseCandidateLevel.Stable)
-                    item.RelativePublishEvergreenUrl = new Uri (
+                    item.EvergreenUri =
                         Path.GetDirectoryName (relativePath) + "/" +
-                            updaterItem.Groups ["name"].Value +
-                            updaterItem.Groups ["extension"].Value,
-                        UriKind.Relative);
+                        updaterItem.Groups ["name"].Value +
+                        updaterItem.Groups ["extension"].Value;
 
                 switch (version.CandidateLevel) {
                 case ReleaseCandidateLevel.Alpha:
-                    item.UpdaterProduct.IsAlpha = true;
+                    item.UpdaterProduct.Channels =
+                        XamarinUpdaterChannels.Alpha;
                     break;
                 case ReleaseCandidateLevel.Beta:
                 case ReleaseCandidateLevel.StableCandidate:
-                    item.UpdaterProduct.IsAlpha = true;
-                    item.UpdaterProduct.IsBeta = true;
+                    item.UpdaterProduct.Channels =
+                        XamarinUpdaterChannels.Alpha |
+                        XamarinUpdaterChannels.Beta;
                     break;
                 case ReleaseCandidateLevel.Stable:
-                    item.UpdaterProduct.IsAlpha = true;
-                    item.UpdaterProduct.IsBeta = true;
-                    item.UpdaterProduct.IsStable = true;
+                    item.UpdaterProduct.Channels =
+                        XamarinUpdaterChannels.Alpha |
+                        XamarinUpdaterChannels.Beta |
+                        XamarinUpdaterChannels.Stable;
                     break;
                 }
             }
