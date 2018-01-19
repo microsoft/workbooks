@@ -36,7 +36,11 @@ namespace Xamarin.XamPub.MSBuild
         [Required]
         public string BasePublishUri { get; set; }
 
+        [Required]
         public string ReleaseName { get; set; }
+
+        [Required]
+        public string ReleaseDescription { get; set; }
 
         public override bool Execute ()
         {
@@ -57,11 +61,14 @@ namespace Xamarin.XamPub.MSBuild
                 releaseFiles.Add (releaseFile);
             }
 
+            var releaseInfo = new ReleaseInfo {
+                Name = ReleaseName,
+                Description = ReleaseDescription
+            };
+
             using (var writer = new StreamWriter (OutputFile.ItemSpec))
                 new Release {
-                    Info = new ReleaseInfo {
-                        Name = ReleaseName
-                    },
+                    Info = releaseInfo,
                     ReleaseFiles = releaseFiles
                 }.Serialize (writer);
 
@@ -118,11 +125,6 @@ namespace Xamarin.XamPub.MSBuild
             if (updaterItem == null || !updaterItem.Success)
                 return;
 
-            var fileExtension = updaterItem.Groups ["extension"].Value;
-
-            if (string.IsNullOrEmpty (ReleaseName))
-                ReleaseName = $"{updaterItem.Groups ["name"]}-{updaterItem.Groups ["version"]}";
-
             releaseFile.UpdaterProduct = new XamarinUpdaterProduct {
                 Version = updaterItem.Groups ["version"].Value
             };
@@ -139,6 +141,8 @@ namespace Xamarin.XamPub.MSBuild
                 return;
 
             if (version.CandidateLevel == ReleaseCandidateLevel.Stable) {
+                var fileExtension = updaterItem.Groups ["extension"].Value;
+
                 releaseFile.EvergreenUri =
                     Path.GetDirectoryName (relativePath) + "/" +
                     updaterItem.Groups ["name"].Value +
