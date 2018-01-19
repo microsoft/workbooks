@@ -42,6 +42,10 @@ namespace Xamarin.XamPub.MSBuild
         [Required]
         public string ReleaseDescription { get; set; }
 
+        readonly string gitRepo = Environment.GetEnvironmentVariable ("BUILD_REPOSITORY_URI");
+        readonly string gitRev = Environment.GetEnvironmentVariable ("BUILD_SOURCEVERSION");
+        readonly string gitBranch = Environment.GetEnvironmentVariable ("BUILD_SOURCEBRANCH");
+
         public override bool Execute ()
         {
             var releaseFiles = new List<ReleaseFile> ();
@@ -108,6 +112,12 @@ namespace Xamarin.XamPub.MSBuild
             var releaseFile = file as ReleaseFile;
             if (releaseFile == null)
                 return file;
+
+            releaseFile.Git = new GitSource {
+                Repository = gitRepo,
+                Revision = gitRev,
+                Branch = gitBranch
+            };
 
             releaseFile.PublishUri = $"{BasePublishUri}/{fileName}";
 
