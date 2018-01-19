@@ -80,7 +80,7 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <WorkbooksIntegrationNuGetPackageVersion>1.0.0-rc5</WorkbooksIntegrationNuGetPackageVersion>
+    <WorkbooksIntegrationNuGetPackageVersion>1.0.0-rc6</WorkbooksIntegrationNuGetPackageVersion>
   </PropertyGroup>
 
   <Target Name="BuildAndTest">
