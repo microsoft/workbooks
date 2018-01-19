@@ -98,6 +98,8 @@ namespace Xamarin.XamPub.MSBuild
                     ProcessFileBase<SymbolFile> (pdbPath)
                 };
 
+            releaseFile.UploadEnvironments = UploadEnvironments.ROQ;
+
             ProcessReleaseFile (releaseFile);
 
             return file;
@@ -116,6 +118,8 @@ namespace Xamarin.XamPub.MSBuild
             if (updaterItem == null || !updaterItem.Success)
                 return;
 
+            var fileExtension = updaterItem.Groups ["extension"].Value;
+
             if (string.IsNullOrEmpty (ReleaseName))
                 ReleaseName = $"{updaterItem.Groups ["name"]}-{updaterItem.Groups ["version"]}";
 
@@ -131,31 +135,38 @@ namespace Xamarin.XamPub.MSBuild
                     .Join ("\n", UpdaterReleaseNotes)
                     .Trim ();
 
-            if (ReleaseVersion.TryParse (releaseFile.UpdaterProduct.Version, out var version)) {
-                if (version.CandidateLevel == ReleaseCandidateLevel.Stable)
-                    releaseFile.EvergreenUri =
-                        Path.GetDirectoryName (relativePath) + "/" +
-                        updaterItem.Groups ["name"].Value +
-                        updaterItem.Groups ["extension"].Value;
+            if (!ReleaseVersion.TryParse (releaseFile.UpdaterProduct.Version, out var version))
+                return;
 
-                switch (version.CandidateLevel) {
-                case ReleaseCandidateLevel.Alpha:
-                    releaseFile.UpdaterProduct.Channels =
-                        XamarinUpdaterChannels.Alpha;
-                    break;
-                case ReleaseCandidateLevel.Beta:
-                case ReleaseCandidateLevel.StableCandidate:
-                    releaseFile.UpdaterProduct.Channels =
-                        XamarinUpdaterChannels.Alpha |
-                        XamarinUpdaterChannels.Beta;
-                    break;
-                case ReleaseCandidateLevel.Stable:
-                    releaseFile.UpdaterProduct.Channels =
-                        XamarinUpdaterChannels.Alpha |
-                        XamarinUpdaterChannels.Beta |
-                        XamarinUpdaterChannels.Stable;
-                    break;
-                }
+            if (version.CandidateLevel == ReleaseCandidateLevel.Stable) {
+                releaseFile.EvergreenUri =
+                    Path.GetDirectoryName (relativePath) + "/" +
+                    updaterItem.Groups ["name"].Value +
+                    fileExtension;
+
+                if (fileExtension == ".pkg")
+                    releaseFile.UploadEnvironments |= UploadEnvironments.XamarinInstaller;
+            }
+
+            releaseFile.UploadEnvironments |= UploadEnvironments.XamarinUpdater;
+
+            switch (version.CandidateLevel) {
+            case ReleaseCandidateLevel.Alpha:
+                releaseFile.UpdaterProduct.Channels =
+                    XamarinUpdaterChannels.Alpha;
+                break;
+            case ReleaseCandidateLevel.Beta:
+            case ReleaseCandidateLevel.StableCandidate:
+                releaseFile.UpdaterProduct.Channels =
+                    XamarinUpdaterChannels.Alpha |
+                    XamarinUpdaterChannels.Beta;
+                break;
+            case ReleaseCandidateLevel.Stable:
+                releaseFile.UpdaterProduct.Channels =
+                    XamarinUpdaterChannels.Alpha |
+                    XamarinUpdaterChannels.Beta |
+                    XamarinUpdaterChannels.Stable;
+                break;
             }
         }
     }
