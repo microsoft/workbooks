@@ -121,7 +121,9 @@ namespace Xamarin.Interactive.PropertyEditor
                     thing = local?.ToString ();
 
                 try {
-                    return (TValue)thing;
+                    return (TValue)Convert.ChangeType (thing, typeof (TValue));
+                } catch (FormatException) {
+                    return default (TValue);
                 } catch (InvalidCastException) {
                     return default (TValue);
                 }
