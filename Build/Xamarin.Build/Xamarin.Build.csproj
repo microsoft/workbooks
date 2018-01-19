@@ -81,6 +81,18 @@
     <Compile Include="MSBuild\PolicheckHtmlTemplate.cs">
       <DependentUpon>PolicheckHtmlTemplate.cshtml</DependentUpon>
     </Compile>
+    <Compile Include="XamPub\Converters\FlagsEnumConverter.cs" />
+    <Compile Include="XamPub\Converters\GuidConverter.cs" />
+    <Compile Include="XamPub\Models\FileBase.cs" />
+    <Compile Include="XamPub\Models\GitSource.cs" />
+    <Compile Include="XamPub\Models\GitTag.cs" />
+    <Compile Include="XamPub\Models\Release.cs" />
+    <Compile Include="XamPub\Models\ReleaseFile.cs" />
+    <Compile Include="XamPub\Models\ReleaseInfo.cs" />
+    <Compile Include="XamPub\Models\SymbolFile.cs" />
+    <Compile Include="XamPub\Models\UploadEnvironments.cs" />
+    <Compile Include="XamPub\Models\XamarinUpdaterChannels.cs" />
+    <Compile Include="XamPub\Models\XamarinUpdaterProduct.cs" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
