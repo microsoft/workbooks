@@ -4,57 +4,25 @@ Please refer to the [detailed release notes][docs-detailed-release-notes] and
 full product documentation for [Workbooks][docs-workbooks] and
 [Inspector][docs-inspector] for complete information.
 
-## NEW & IMPROVED
+This is a significant update to the [1.3 series][13-series], with a number of
+new features and bug fixes.
 
-* It is now possible to use ASP.NET Core in your .NET Core workbooks.
+## Now Open Source
 
-* Signature help now behaves more like Visual Studio.
+Xamarin Workbooks has now been released as open source software
+under the MIT license. Ongoing development will happen in the open on
+[GitHub](https://github.com/Microsoft/workbooks). We invite interested users and
+developers to get involved with the project.
 
-* The visual tree inspector is now more consistent between Windows and macOS
-  and has improved view selection and navigation features.
-
-* More improvements to the new property editor including custom editors for
-  various `CoreGraphics` and `System.Windows.Media` types.
-
-* Choose the new _Report an Issue_ menu item in the _Help_ menu to easily
-  report issues.
-
-* Xamarin.Forms support has been bumped to 2.5.0.
-
-* The New Workbook dialog now defaults to the last selected type.
-
-## FIXED
-
-* Fixed a rendering issue in the Mac sidebar. Thank you to Yusuke Yamada
-  (@yamachu) for our
-  [first ever public contribution](https://github.com/Microsoft/workbooks/pull/97)!
-
-* Fixed an SDK location bug that prevented Android workbooks from running.
-
-* Add `workbook` tool to `PATH` using `/etc/paths.d` instead of writing a
-  script to `/usr/local/bin`.
-
-* Fix generic type name rendering.
-
-* Inspector view picking once again works with devices other than iPhone 5s.
-
-* Fix rendering of emoji in C# string literals.
-
-* Fix user interface rendering issues after unlocking your computer on Windows.
-
-* Fix custom attributes using types defined in the workbook, enabling
-  custom JSON deserialization.
-
-# Version 1.4.0 Beta 1
-
-## NEW & IMPROVED
-
-* Open-sourced under the MIT license. [Join us on GitHub!][github]
+## New & Improved
 
 * Support for iOS 11 and Xcode 9.
 
 * Camera controls on the 3D view inspector have been enhanced and now share
   functionality across macOS and Windows with support for Pan, Zoom and Rotate.
+
+* The visual tree inspector is now more consistent between Windows and macOS
+  and has improved view selection and navigation features.
 
 * The property panel in the view inspector is now based on
   [Xamarin.PropertyEditing][proppy], which provides a number of improvements:
@@ -68,25 +36,68 @@ full product documentation for [Workbooks][docs-workbooks] and
   code cells. This is the groundwork for supporting `IObservable` and allows
   for [deeper integration with cell compilations][cell-compilations].
 
-* Added "Copy Version Information" and "Reveal Log File" Help menu items to
-  make reporting issues easier.
+* It is now possible to use ASP.NET Core in your .NET Core workbooks.
 
-## FIXED
+* Signature help now behaves more like Visual Studio.
 
-* Additional accessibility fixes for High Contrast mode users, particularly
-  for buttons and menus in the High Contrast White theme.
+* Choose the new _Report an Issue_ menu item in the _Help_ menu to easily
+  report issues, and _Reveal Log File_ to quickly find the latest log.
+
+* Xamarin.Forms support has been bumped to 2.5.0.
+
+* The New Workbook dialog now defaults to the last selected type.
+
+## Notable Bug Fixes
+
+* Additional accessibility fixes for High Contrast mode users on Windows,
+  particularly for buttons and menus in the High Contrast White theme.
 
 * The plain text formatter for strings now preserves whitespace in formatted
   output.
+
+* Fix generic type name rendering.
+
+* Fix rendering of emoji in C# string literals.
 
 * Workbooks are now marked as dirty when cells are deleted, preventing possible
   stale workbook files on disk.
 
 * Fixed a few minor issues with NuGet package restoration.
 
-# 1.3 Series Changes
+* Fixed a rendering issue in the Mac sidebar. Thank you to Yusuke Yamada
+  (@yamachu) for our
+  [first ever public contribution](https://github.com/Microsoft/workbooks/pull/97)!
 
-* [See the full release notes for the 1.3 series][13-series].
+* Fix user interface rendering issues after unlocking your computer on Windows.
+
+* Fixed an SDK location bug that prevented Android workbooks from running.
+
+* Add `workbook` tool to `PATH` using `/etc/paths.d` instead of writing a
+  script to `/usr/local/bin`.
+
+* Fix custom attributes using types defined in the workbook, enabling
+  custom JSON deserialization.
+
+## Other Notable Changes
+
+[See the full documentation for details][docs-workbooks-logs]
+on the following changes:
+
+* On macOS, `/Applications/Xamarin Workbooks.app` now has a bundle identifier
+  of `com.xamarin.Workbooks` instead of `com.xamarin.Inspector`.
+
+* The log file directory has changed to facilitate more fully splitting
+  Inspector and Workbooks into separate distributables.
+
+## Known Issues
+
+* NuGet Limitations
+  - Native libraries are supported only on iOS, and only when linked with
+    the managed library.
+  - Packages which depend on `.targets` files or PowerShell scripts will likely
+    fail to work as expected.
+  - To modify a package dependency, edit the workbook's manifest with
+    a text editor. A more complete package management UI is on the way.
 
 [github]: https://github.com/Microsoft/workbooks
 [proppy]: https://github.com/xamarin/Xamarin.PropertyEditing
@@ -95,4 +106,5 @@ full product documentation for [Workbooks][docs-workbooks] and
 [docs-workbooks]: https://developer.xamarin.com/guides/cross-platform/workbooks/
 [docs-inspector]: https://developer.xamarin.com/guides/cross-platform/inspector/
 [docs-detailed-release-notes]: https://developer.xamarin.com/releases/interactive/interactive-1.4/
+[docs-workbooks-logs]: https://developer.xamarin.com/guides/cross-platform/workbooks/install/#Log_Files
 [13-series]: https://developer.xamarin.com/releases/interactive/interactive-1.3
