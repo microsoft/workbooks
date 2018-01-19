@@ -93,10 +93,11 @@ namespace Xamarin.Interactive.PropertyEditor
             var isEnumValue = representation is EnumValue;
             var value = UnpackValue (representation, Editor);
             var valueType = value?.GetType ();
+            var isInterestingValue = valueType != typeof (string) || representation is IRepresentationObject;
 
             if (type == null && isEnumValue)
                 type = valueType;
-            else if (type != valueType && valueType != null && !isResolvedEnum && valueType != typeof (string))
+            else if (type != valueType && valueType != null && !isResolvedEnum && isInterestingValue)
                 type = valueType;
 
             var hasEditor = isResolvedEnum || isEnumValue || Editor.PropertyHelper.IsConvertable (type);
