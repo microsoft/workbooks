@@ -40,18 +40,18 @@ namespace Xamarin.XamPub.MSBuild
 
         public override bool Execute ()
         {
-            var publicationItems = new List<ReleaseFile> ();
+            var releaseFiles = new List<ReleaseFile> ();
 
             foreach (var item in FilesToInclude) {
                 if (new FileInfo (item.ItemSpec).FullName ==
                     new FileInfo (OutputFile.ItemSpec).FullName)
                     continue;
 
-                var publicationItem = ProcessItem (item.ItemSpec, item.GetMetadata ("Evergreen"));
-                if (publicationItem == null)
+                var releaseFile = ProcessReleaseFile (item.ItemSpec, item.GetMetadata ("Evergreen"));
+                if (releaseFile == null)
                     return false;
 
-                publicationItems.Add (publicationItem);
+                releaseFiles.Add (releaseFile);
             }
 
             using (var writer = new StreamWriter (OutputFile.ItemSpec))
@@ -59,17 +59,17 @@ namespace Xamarin.XamPub.MSBuild
                     Info = new ReleaseInfo {
                         Name = ReleaseName
                     },
-                    ReleaseFiles = publicationItems
+                    ReleaseFiles = releaseFiles
                 }.Serialize (writer);
 
             return true;
         }
 
-        ReleaseFile ProcessItem (string path, string evergreenName)
+        ReleaseFile ProcessReleaseFile (string path, string evergreenName)
         {
-            var item = new ReleaseFile ();
+            var releaseFile = new ReleaseFile ();
             try {
-                item.PopulateFromFile (path);
+                releaseFile.PopulateFromFile (path);
             } catch (Exception e) {
                 Log.LogError ($"error creating ingestion item for '{path}': {e.Message}");
                 return null;
@@ -77,13 +77,13 @@ namespace Xamarin.XamPub.MSBuild
 
             var fileName = Path.GetFileName (path);
 
-            item.SourceUri = fileName;
-            item.PublishUri = $"{RelativePublishBaseUrl}/{fileName}";
+            releaseFile.SourceUri = fileName;
+            releaseFile.PublishUri = $"{RelativePublishBaseUrl}/{fileName}";
 
             if (!string.IsNullOrEmpty (evergreenName))
-                item.EvergreenUri = $"{RelativePublishBaseUrl}/{evergreenName}";
+                releaseFile.EvergreenUri = $"{RelativePublishBaseUrl}/{evergreenName}";
 
-            return ProcessItem (item);
+            return ProcessReleaseFile (releaseFile);
         }
 
         static readonly Regex updaterFileRegex = new Regex (
@@ -94,55 +94,55 @@ namespace Xamarin.XamPub.MSBuild
             @"\-PDB\-.+\.zip$",
             RegexOptions.CultureInvariant | RegexOptions.IgnoreCase);
 
-        ReleaseFile ProcessItem (ReleaseFile item)
+        ReleaseFile ProcessReleaseFile (ReleaseFile releaseFile)
         {
-            var relativePath = item.PublishUri;
+            var relativePath = releaseFile.PublishUri;
             var relativePathFileName = Path.GetFileName (relativePath);
 
             if (pdbArchiveRegex.IsMatch (relativePathFileName)) {
-                item.PublishUri = null;
-                return item;
+                releaseFile.PublishUri = null;
+                return releaseFile;
             }
 
             var updaterItem = updaterFileRegex.Match (relativePathFileName);
             if (updaterItem == null || !updaterItem.Success)
-                return item;
+                return releaseFile;
 
             if (string.IsNullOrEmpty (ReleaseName))
                 ReleaseName = $"{updaterItem.Groups ["name"]}-{updaterItem.Groups ["version"]}";
 
-            item.UpdaterProduct = new XamarinUpdaterProduct {
+            releaseFile.UpdaterProduct = new XamarinUpdaterProduct {
                 Version = updaterItem.Groups ["version"].Value
             };
 
             if (UpdateInfoFile != null)
-                item.UpdaterProduct.PopulateFromUpdateinfoFile (UpdateInfoFile);
+                releaseFile.UpdaterProduct.PopulateFromUpdateinfoFile (UpdateInfoFile);
 
             if (UpdaterReleaseNotes != null)
-                item.UpdaterProduct.Blurb = string
+                releaseFile.UpdaterProduct.Blurb = string
                     .Join ("\n", UpdaterReleaseNotes)
                     .Trim ();
 
-            if (ReleaseVersion.TryParse (item.UpdaterProduct.Version, out var version)) {
+            if (ReleaseVersion.TryParse (releaseFile.UpdaterProduct.Version, out var version)) {
                 if (version.CandidateLevel == ReleaseCandidateLevel.Stable)
-                    item.EvergreenUri =
+                    releaseFile.EvergreenUri =
                         Path.GetDirectoryName (relativePath) + "/" +
                         updaterItem.Groups ["name"].Value +
                         updaterItem.Groups ["extension"].Value;
 
                 switch (version.CandidateLevel) {
                 case ReleaseCandidateLevel.Alpha:
-                    item.UpdaterProduct.Channels =
+                    releaseFile.UpdaterProduct.Channels =
                         XamarinUpdaterChannels.Alpha;
                     break;
                 case ReleaseCandidateLevel.Beta:
                 case ReleaseCandidateLevel.StableCandidate:
-                    item.UpdaterProduct.Channels =
+                    releaseFile.UpdaterProduct.Channels =
                         XamarinUpdaterChannels.Alpha |
                         XamarinUpdaterChannels.Beta;
                     break;
                 case ReleaseCandidateLevel.Stable:
-                    item.UpdaterProduct.Channels =
+                    releaseFile.UpdaterProduct.Channels =
                         XamarinUpdaterChannels.Alpha |
                         XamarinUpdaterChannels.Beta |
                         XamarinUpdaterChannels.Stable;
@@ -150,7 +150,7 @@ namespace Xamarin.XamPub.MSBuild
                 }
             }
 
-            return item;
+            return releaseFile;
         }
     }
 }
