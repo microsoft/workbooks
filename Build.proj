@@ -28,6 +28,7 @@
   </PropertyGroup>
   <PropertyGroup>
     <Npm Condition="'$(Npm)' == ''">npm</Npm>
+    <NuGet Condition="'$(NuGet)' == '' And Exists('$(MSBuildThisFileDirectory)nuget.exe')">$(MSBuildThisFileDirectory)nuget.exe</NuGet>
     <NuGet Condition="'$(NuGet)' == '' And Exists('$(Provisionator_ArtifactCachePath)nuget.exe')">$(Provisionator_ArtifactCachePath)nuget.exe</NuGet>
   </PropertyGroup>
 
