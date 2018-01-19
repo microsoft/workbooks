@@ -66,6 +66,21 @@ namespace Xamarin.XamPub.MSBuild
                 Description = ReleaseDescription
             };
 
+            // if only VSTS would put this in the build environment 🙄
+            var buildRequestedForEmail = Environment.GetEnvironmentVariable ("BUILD_REQUESTEDFOREMAIL");
+            if (!string.IsNullOrEmpty (buildRequestedForEmail)) {
+                var match = Regex.Match (
+                    buildRequestedForEmail,
+                    @"^(?<alias>[a-z]{1,8})@microsoft.com$",
+                    RegexOptions.IgnoreCase);
+                if (match.Success) {
+                    releaseInfo.Alias = match.Groups["alias"].Value;
+                    releaseInfo.Region = "NORTHAMERICA"; // yep
+                } else {
+                    Log.LogError ("Unable to discern Microsoft alias from BUILD_REQUESTEDFOREMAIL");
+                }
+            }
+
             using (var writer = new StreamWriter (OutputFile.ItemSpec))
                 new Release {
                     Info = releaseInfo,
