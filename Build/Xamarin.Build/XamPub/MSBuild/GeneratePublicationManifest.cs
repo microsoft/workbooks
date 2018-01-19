@@ -17,6 +17,8 @@ using Newtonsoft.Json;
 
 using Xamarin.Versioning;
 
+using Xamarin.XamPub.Models;
+
 namespace Xamarin.XamPub.MSBuild
 {
     public sealed class GeneratePublicationManifest : Task
@@ -32,46 +34,72 @@ namespace Xamarin.XamPub.MSBuild
         public ITaskItem [] FilesToInclude { get; set; }
 
         [Required]
-        public string RelativePublishBaseUrl { get; set; }
+        public string BasePublishUri { get; set; }
 
+        [Required]
         public string ReleaseName { get; set; }
+
+        [Required]
+        public string ReleaseDescription { get; set; }
+
+        readonly string gitRepo = Environment.GetEnvironmentVariable ("BUILD_REPOSITORY_URI");
+        readonly string gitRev = Environment.GetEnvironmentVariable ("BUILD_SOURCEVERSION");
+        readonly string gitBranch = Environment.GetEnvironmentVariable ("BUILD_SOURCEBRANCH");
 
         public override bool Execute ()
         {
-            var publicationItems = new List<PublicationItem> ();
+            var releaseFiles = new List<ReleaseFile> ();
 
             foreach (var item in FilesToInclude) {
                 if (new FileInfo (item.ItemSpec).FullName ==
                     new FileInfo (OutputFile.ItemSpec).FullName)
                     continue;
 
-                var publicationItem = ProcessItem (item.ItemSpec, item.GetMetadata ("Evergreen"));
-                if (publicationItem == null)
+                var releaseFile = ProcessFileBase<ReleaseFile> (
+                    item.ItemSpec,
+                    item.GetMetadata ("Evergreen"));
+
+                if (releaseFile == null)
                     return false;
 
-                publicationItems.Add (publicationItem);
+                releaseFiles.Add (releaseFile);
+            }
+
+            var releaseInfo = new ReleaseInfo {
+                Name = ReleaseName,
+                Description = ReleaseDescription
+            };
+
+            // if only VSTS would put this in the build environment 🙄
+            var buildRequestedForEmail = Environment.GetEnvironmentVariable ("BUILD_REQUESTEDFOREMAIL");
+            if (!string.IsNullOrEmpty (buildRequestedForEmail)) {
+                var match = Regex.Match (
+                    buildRequestedForEmail,
+                    @"^(?<alias>[a-z]{1,8})@microsoft.com$",
+                    RegexOptions.IgnoreCase);
+                if (match.Success) {
+                    releaseInfo.Alias = match.Groups["alias"].Value;
+                    releaseInfo.Region = "NORTHAMERICA"; // yep
+                } else {
+                    Log.LogError ("Unable to discern Microsoft alias from BUILD_REQUESTEDFOREMAIL");
+                }
             }
 
             using (var writer = new StreamWriter (OutputFile.ItemSpec))
-                new JsonSerializer {
-                    Formatting = Formatting.Indented,
-                    NullValueHandling = NullValueHandling.Ignore,
-                    DefaultValueHandling = DefaultValueHandling.Ignore
-                }.Serialize (writer, new Publication {
-                    Info = new PublicationInfo {
-                        Name = ReleaseName
-                    },
-                    Release = publicationItems.ToArray ()
-                });
+                new Release {
+                    Info = releaseInfo,
+                    ReleaseFiles = releaseFiles
+                }.Serialize (writer);
 
             return true;
         }
 
-        PublicationItem ProcessItem (string path, string evergreenName)
+        TFile ProcessFileBase<TFile> (string path, string evergreenName = null)
+            where TFile : FileBase, new ()
         {
-            PublicationItem item;
+            var file = new TFile ();
             try {
-                item = PublicationItem.CreateFromFile (path);
+                file.PopulateFromFile (path);
             } catch (Exception e) {
                 Log.LogError ($"error creating ingestion item for '{path}': {e.Message}");
                 return null;
@@ -79,84 +107,96 @@ namespace Xamarin.XamPub.MSBuild
 
             var fileName = Path.GetFileName (path);
 
-            item.IngestionUri = new Uri (fileName, UriKind.Relative);
-            item.RelativePublishUrl = new Uri (
-                $"{RelativePublishBaseUrl}/{fileName}",
-                UriKind.Relative);
+            file.SourceUri = fileName;
+
+            var releaseFile = file as ReleaseFile;
+            if (releaseFile == null)
+                return file;
+
+            releaseFile.Git = new GitSource {
+                Repository = gitRepo,
+                Revision = gitRev,
+                Branch = gitBranch
+            };
+
+            releaseFile.PublishUri = $"{BasePublishUri}/{fileName}";
 
             if (!string.IsNullOrEmpty (evergreenName))
-                item.RelativePublishEvergreenUrl = new Uri (
-                    $"{RelativePublishBaseUrl}/{evergreenName}",
-                    UriKind.Relative);
+                releaseFile.EvergreenUri = $"{BasePublishUri}/{evergreenName}";
 
-            return ProcessItem (item);
+            var pdbPath = path + ".symbols.zip";
+            if (File.Exists (pdbPath))
+                releaseFile.SymbolFiles = new List<SymbolFile> {
+                    ProcessFileBase<SymbolFile> (pdbPath)
+                };
+
+            releaseFile.UploadEnvironments = UploadEnvironments.ROQ;
+
+            ProcessReleaseFile (releaseFile);
+
+            return file;
         }
 
         static readonly Regex updaterFileRegex = new Regex (
             @"^(?<name>[\w-_]+)-(?<version>\d+.*)(?<extension>\.(msi|pkg|dmg))$",
             RegexOptions.CultureInvariant | RegexOptions.ExplicitCapture | RegexOptions.IgnoreCase);
 
-        static readonly Regex pdbArchiveRegex = new Regex (
-            @"\-PDB\-.+\.zip$",
-            RegexOptions.CultureInvariant | RegexOptions.IgnoreCase);
-
-        PublicationItem ProcessItem (PublicationItem item)
+        void ProcessReleaseFile (ReleaseFile releaseFile)
         {
-            var relativePath = item.RelativePublishUrl.ToString ();
+            var relativePath = releaseFile.PublishUri;
             var relativePathFileName = Path.GetFileName (relativePath);
-
-            if (pdbArchiveRegex.IsMatch (relativePathFileName)) {
-                item.RelativePublishUrl = null;
-                return item;
-            }
 
             var updaterItem = updaterFileRegex.Match (relativePathFileName);
             if (updaterItem == null || !updaterItem.Success)
-                return item;
+                return;
 
-            if (string.IsNullOrEmpty (ReleaseName))
-                ReleaseName = $"{updaterItem.Groups ["name"]}-{updaterItem.Groups ["version"]}";
+            releaseFile.UpdaterProduct = new XamarinUpdaterProduct {
+                Version = updaterItem.Groups ["version"].Value
+            };
 
             if (UpdateInfoFile != null)
-                item.UpdaterProduct = UpdaterProduct.FromUpdateInfo (
-                    File.ReadAllText (UpdateInfoFile));
-            else
-                item.UpdaterProduct = new UpdaterProduct ();
-
-            item.UpdaterProduct.Size = item.Size;
-            item.UpdaterProduct.Version = updaterItem.Groups ["version"].Value;
+                releaseFile.UpdaterProduct.PopulateFromUpdateinfoFile (UpdateInfoFile);
 
             if (UpdaterReleaseNotes != null)
-                item.UpdaterProduct.ReleaseNotes = string
+                releaseFile.UpdaterProduct.Blurb = string
                     .Join ("\n", UpdaterReleaseNotes)
                     .Trim ();
 
-            if (ReleaseVersion.TryParse (item.UpdaterProduct.Version, out var version)) {
-                if (version.CandidateLevel == ReleaseCandidateLevel.Stable)
-                    item.RelativePublishEvergreenUrl = new Uri (
-                        Path.GetDirectoryName (relativePath) + "/" +
-                            updaterItem.Groups ["name"].Value +
-                            updaterItem.Groups ["extension"].Value,
-                        UriKind.Relative);
+            if (!ReleaseVersion.TryParse (releaseFile.UpdaterProduct.Version, out var version))
+                return;
 
-                switch (version.CandidateLevel) {
-                case ReleaseCandidateLevel.Alpha:
-                    item.UpdaterProduct.IsAlpha = true;
-                    break;
-                case ReleaseCandidateLevel.Beta:
-                case ReleaseCandidateLevel.StableCandidate:
-                    item.UpdaterProduct.IsAlpha = true;
-                    item.UpdaterProduct.IsBeta = true;
-                    break;
-                case ReleaseCandidateLevel.Stable:
-                    item.UpdaterProduct.IsAlpha = true;
-                    item.UpdaterProduct.IsBeta = true;
-                    item.UpdaterProduct.IsStable = true;
-                    break;
-                }
+            if (version.CandidateLevel == ReleaseCandidateLevel.Stable) {
+                var fileExtension = updaterItem.Groups ["extension"].Value;
+
+                releaseFile.EvergreenUri =
+                    Path.GetDirectoryName (relativePath) + "/" +
+                    updaterItem.Groups ["name"].Value +
+                    fileExtension;
+
+                if (fileExtension == ".pkg")
+                    releaseFile.UploadEnvironments |= UploadEnvironments.XamarinInstaller;
             }
 
-            return item;
+            releaseFile.UploadEnvironments |= UploadEnvironments.XamarinUpdater;
+
+            switch (version.CandidateLevel) {
+            case ReleaseCandidateLevel.Alpha:
+                releaseFile.UpdaterProduct.Channels =
+                    XamarinUpdaterChannels.Alpha;
+                break;
+            case ReleaseCandidateLevel.Beta:
+            case ReleaseCandidateLevel.StableCandidate:
+                releaseFile.UpdaterProduct.Channels =
+                    XamarinUpdaterChannels.Alpha |
+                    XamarinUpdaterChannels.Beta;
+                break;
+            case ReleaseCandidateLevel.Stable:
+                releaseFile.UpdaterProduct.Channels =
+                    XamarinUpdaterChannels.Alpha |
+                    XamarinUpdaterChannels.Beta |
+                    XamarinUpdaterChannels.Stable;
+                break;
+            }
         }
     }
 }
