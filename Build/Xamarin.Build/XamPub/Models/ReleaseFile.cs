@@ -14,9 +14,14 @@ namespace Xamarin.XamPub.Models
 {
     sealed class ReleaseFile : FileBase
     {
+        Guid id;
+
         [JsonProperty ("id")]
         [JsonConverter (typeof (Converters.GuidConverter))]
-        public Guid Id { get; set; }
+        public Guid Id {
+            get => id == Guid.Empty ? (id = Guid.NewGuid ()) : id;
+            set => id = value;
+        }
 
         [JsonProperty ("productName")]
         [JsonRequired]
