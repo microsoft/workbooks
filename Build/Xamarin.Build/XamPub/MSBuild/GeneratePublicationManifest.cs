@@ -42,6 +42,9 @@ namespace Xamarin.XamPub.MSBuild
         [Required]
         public string ReleaseDescription { get; set; }
 
+        [Required]
+        public string ProductName { get; set; }
+
         readonly string gitRepo = Environment.GetEnvironmentVariable ("BUILD_REPOSITORY_URI");
         readonly string gitRev = Environment.GetEnvironmentVariable ("BUILD_SOURCEVERSION");
         readonly string gitBranch = Environment.GetEnvironmentVariable ("BUILD_SOURCEBRANCH");
@@ -151,6 +154,7 @@ namespace Xamarin.XamPub.MSBuild
                 return;
 
             releaseFile.ProductType = 11; // no idea!
+            releaseFile.ProductName = ProductName;
 
             releaseFile.UpdaterProduct = new XamarinUpdaterProduct {
                 Version = updaterItem.Groups ["version"].Value
