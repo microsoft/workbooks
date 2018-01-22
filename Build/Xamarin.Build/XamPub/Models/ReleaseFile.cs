@@ -23,6 +23,9 @@ namespace Xamarin.XamPub.Models
             set => id = value;
         }
 
+        [JsonProperty ("productType")]
+        public int ProductType { get; set; }
+
         [JsonProperty ("productName")]
         [JsonRequired]
         public string ProductName { get; set; }

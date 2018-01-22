@@ -150,6 +150,8 @@ namespace Xamarin.XamPub.MSBuild
             if (updaterItem == null || !updaterItem.Success)
                 return;
 
+            releaseFile.ProductType = 11; // no idea!
+
             releaseFile.UpdaterProduct = new XamarinUpdaterProduct {
                 Version = updaterItem.Groups ["version"].Value
             };
