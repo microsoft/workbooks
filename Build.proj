@@ -199,10 +199,25 @@
   </Target>
 
   <Target Name="_InstallWin" DependsOnTargets="Xamarin_Build_ReadAllProperties">
+    <PropertyGroup>
+      <WixProject>Package\Windows\Xamarin.Interactive.Windows.Installer.wixproj</WixProject>
+
+      <InstallerDefineConstants Condition="Exists('_build\$(Configuration)\WorkbookApps\iOS\Xamarin.Workbooks.iOS.app')">$(InstallerDefineConstants);iOSSupport</InstallerDefineConstants>
+      <InstallerDefineConstants Condition="Exists('workbooks-proprietary\Build.proj')">$(InstallerDefineConstants);AndroidSupport</InstallerDefineConstants>
+
+      <InstallerDefineConstants Condition="'$(InstallerDefineConstants)' != ''">$([MSBuild]::Escape($(InstallerDefineConstants.Substring(1))))</InstallerDefineConstants>
+    </PropertyGroup>
+
+    <Message
+      Importance="high"
+      Text="InstallerDefineConstants: $(InstallerDefineConstants)"/>
+
+    <Exec Command="&quot;$(NuGet)&quot; restore &quot;$(WixProject)&quot;"/>
+
     <MSBuild
       BuildInParallel="true"
-      Projects="Package\Windows\Xamarin.Interactive.Windows.Installer.wixproj"
-      Properties="$(MSBuildCommonProperties);Configuration=Release;BuildProjectReferences=false"
+      Projects="$(WixProject)"
+      Properties="$(MSBuildCommonProperties);BuildProjectReferences=false;InstallerDefineConstants=$(InstallerDefineConstants)"
       Targets="Build"/>
   </Target>
 
