@@ -119,8 +119,12 @@ Copyright 2017 Microsoft. All rights reserved.
     </PropertyGroup>
 
     <ItemGroup>
-      <PublicationItem Include="$(PackageOutputDir)*.pkg"/>
-      <PublicationItem Include="$(PackageOutputDir)*.msi"/>
+      <PublicationItem Include="$(PackageOutputDir)*.pkg">
+        <Evergreen Condition="'$(ReleaseVersion_CandidateLevel)' == 'Stable'">XamarinInteractive.pkg</Evergreen>
+      </PublicationItem>
+      <PublicationItem Include="$(PackageOutputDir)*.msi">
+        <Evergreen Condition="'$(ReleaseVersion_CandidateLevel)' == 'Stable'">XamarinInteractive.msi</Evergreen>
+      </PublicationItem>
       <PublicationItem Include="$(PackageOutputDir)*.html"/>
       <PublicationItem Remove="$(PackageOutputDir)Policheck*"/>
     </ItemGroup>
