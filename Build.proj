@@ -26,11 +26,11 @@
   <PropertyGroup Condition="'$(SolutionPlatform)' == 'macOS'">
     <CILStrip>/Library/Frameworks/Mono.framework/Versions/Current/Commands/mono-cil-strip</CILStrip>
   </PropertyGroup>
-  <PropertyGroup>
-    <Npm Condition="'$(Npm)' == ''">npm</Npm>
-    <NuGet Condition="'$(NuGet)' == '' And Exists('$(MSBuildThisFileDirectory)nuget.exe')">$(MSBuildThisFileDirectory)nuget.exe</NuGet>
-    <NuGet Condition="'$(NuGet)' == '' And Exists('$(Provisionator_ArtifactCachePath)nuget.exe')">$(Provisionator_ArtifactCachePath)nuget.exe</NuGet>
-  </PropertyGroup>
+
+  <ItemGroup>
+    <WhichSearchPath Include="$(MSBuildThisFileDirectory)"/>
+    <WhichSearchPath Include="$(Provisionator_ArtifactCachePath)"/>
+  </ItemGroup>
 
   <!-- Build Tasks -->
   <PropertyGroup>
@@ -91,8 +91,23 @@
     <Message Text="Congratulations! Here's an ounce of confidence in your pull request!" Importance="high"/>
   </Target>
 
+  <Target Name="_ResolveToolPaths">
+    <Which
+      Condition="!Exists('$(Npm)')"
+      Program="npm"
+      PreferPaths="@(WhichSearchPath)">
+      <Output TaskParameter="FullPath" PropertyName="Npm"/>
+    </Which>
+    <Which
+      Condition="!Exists('$(NuGet)')"
+      Program="nuget"
+      PreferPaths="@(WhichSearchPath)">
+      <Output TaskParameter="FullPath" PropertyName="NuGet"/>
+    </Which>
+  </Target>
+
   <Target Name="_NpmInstall">
-    <Exec Command="$(Npm) install --save-dev" WorkingDirectory="$(MSBuildThisFileDirectory)"/>
+    <Exec Command="&quot;$(Npm)&quot; install --save-dev" WorkingDirectory="$(MSBuildThisFileDirectory)"/>
   </Target>
 
   <Target Name="ProvisioningCheck">
@@ -104,6 +119,7 @@
   <Target Name="_Bootstrap" DependsOnTargets="
     ProvisioningCheck;
     Xamarin_Build_ReadAllProperties;
+    _ResolveToolPaths;
     _NpmInstall"/>
 
   <!-- Build and Clean use the same _Build* targets since the only difference is the Target passed to each csproj/sln.
@@ -183,10 +199,25 @@
   </Target>
 
   <Target Name="_InstallWin" DependsOnTargets="Xamarin_Build_ReadAllProperties">
+    <PropertyGroup>
+      <WixProject>Package\Windows\Xamarin.Interactive.Windows.Installer.wixproj</WixProject>
+
+      <InstallerDefineConstants Condition="Exists('_build\$(Configuration)\WorkbookApps\iOS\Xamarin.Workbooks.iOS.app')">$(InstallerDefineConstants);iOSSupport</InstallerDefineConstants>
+      <InstallerDefineConstants Condition="Exists('workbooks-proprietary\Build.proj')">$(InstallerDefineConstants);AndroidSupport</InstallerDefineConstants>
+
+      <InstallerDefineConstants Condition="'$(InstallerDefineConstants)' != ''">$([MSBuild]::Escape($(InstallerDefineConstants.Substring(1))))</InstallerDefineConstants>
+    </PropertyGroup>
+
+    <Message
+      Importance="high"
+      Text="InstallerDefineConstants: $(InstallerDefineConstants)"/>
+
+    <Exec Command="&quot;$(NuGet)&quot; restore &quot;$(WixProject)&quot;"/>
+
     <MSBuild
       BuildInParallel="true"
-      Projects="Package\Windows\Xamarin.Interactive.Windows.Installer.wixproj"
-      Properties="$(MSBuildCommonProperties);Configuration=Release;BuildProjectReferences=false"
+      Projects="$(WixProject)"
+      Properties="$(MSBuildCommonProperties);BuildProjectReferences=false;InstallerDefineConstants=$(InstallerDefineConstants)"
       Targets="Build"/>
   </Target>
 
@@ -367,7 +398,9 @@
       DestinationFolder="$(InspectorAppSharedSupportPath)"/>
   </Target>
 
-  <Target Name="Package">
+  <Target
+    Name="Package"
+    DependsOnTargets="_Bootstrap">
     <MakeDir Directories="$(PackageOutputDir)"/>
     <CallTarget Targets="_PackageMac" Condition="'$(SolutionPlatform)' == 'macOS'"/>
     <CallTarget Targets="_PackageWin" Condition="'$(SolutionPlatform)' == 'Windows'"/>

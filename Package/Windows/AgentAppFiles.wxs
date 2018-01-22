@@ -301,12 +301,16 @@
         <File Id="WpfAgentApp.System.Xml.XPath.XDocument.dll" Source="$(var.WpfAgentAppDirectory)\System.Xml.XPath.XDocument.dll" />
       </Component>
     </ComponentGroup>
-    <?define AndroidAgentAppDirectory="..\..\_build\$(var.Configuration)\WorkbookApps\Android" ?>
-    <ComponentGroup Id="AndroidAgentAppComponents" Directory="AndroidAgentAppInstallFolder">
-      <Component Id="AndroidAgentApp.apk" Guid="6CD2D3A9-40D7-4583-BDD1-5B4711431381">
-        <File Id="AndroidAgentApp.apk" Source="$(var.AndroidAgentAppDirectory)\com.xamarin.workbook_app_android-Signed.apk" />
-      </Component>
-    </ComponentGroup>
+
+    <?ifdef AndroidSupport ?>
+      <?define AndroidAgentAppDirectory="..\..\_build\$(var.Configuration)\WorkbookApps\Android" ?>
+      <ComponentGroup Id="AndroidAgentAppComponents" Directory="AndroidAgentAppInstallFolder">
+        <Component Id="AndroidAgentApp.apk" Guid="6CD2D3A9-40D7-4583-BDD1-5B4711431381">
+          <File Id="AndroidAgentApp.apk" Source="$(var.AndroidAgentAppDirectory)\com.xamarin.workbook_app_android-Signed.apk" />
+        </Component>
+      </ComponentGroup>
+    <?endif?>
+
     <ComponentGroup Id="WorkbookManifestComponents" Directory="AgentAppInstallFolder">
       <Component Id="workbookapps.json" Guid="47A8314B-0E4A-48BD-AA24-84A18AE06291">
         <File Id="workbookapps.json" Source="..\..\_build\$(var.Configuration)\WorkbookApps\workbookapps.json" />
