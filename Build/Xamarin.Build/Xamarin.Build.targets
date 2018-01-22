@@ -15,6 +15,14 @@ Copyright 2017 Microsoft. All rights reserved.
   </PropertyGroup>
 
   <UsingTask
+    TaskName="Xamarin.MSBuild.SetEnvironmentVariable"
+    AssemblyFile="$(Xamarin_Build_AssemblyFile)"/>
+
+  <UsingTask
+    TaskName="Xamarin.MSBuild.UnsetEnvironmentVariable"
+    AssemblyFile="$(Xamarin_Build_AssemblyFile)"/>
+
+  <UsingTask
     TaskName="Xamarin.MSBuild.FindReplaceInFiles"
     AssemblyFile="$(Xamarin_Build_AssemblyFile)"/>
 
