@@ -57,6 +57,7 @@
     <Compile Include="MSBuild\GenerateWorkbookAppManifest.cs" />
     <Compile Include="MSBuild\ProcessPolicheckXml.cs" />
     <Compile Include="MSBuild\UpdateWixManifest.cs" />
+    <Compile Include="MSBuild\Which.cs" />
     <Compile Include="XamPub\MSBuild\GeneratePublicationManifest.cs" />
     <Compile Include="MSBuild\BuildEnvironment.cs" />
     <Compile Include="MSBuild\CommonGitInfo.cs" />
