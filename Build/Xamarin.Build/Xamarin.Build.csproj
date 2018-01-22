@@ -88,6 +88,8 @@
     <Compile Include="XamPub\Models\UploadEnvironments.cs" />
     <Compile Include="XamPub\Models\XamarinUpdaterChannels.cs" />
     <Compile Include="XamPub\Models\XamarinUpdaterProduct.cs" />
+    <Compile Include="MSBuild\SetEnvironmentVariable.cs" />
+    <Compile Include="MSBuild\UnsetEnvironmentVariable.cs" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
