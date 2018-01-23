@@ -18,13 +18,13 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <OutputPath>bin\$(Configuration)\</OutputPath>
     <IntermediateOutputPath>obj\$(Configuration)\</IntermediateOutputPath>
-    <SuppressIces>ICE38;ICE64</SuppressIces>
+    <SuppressIces>ICE38;ICE40;ICE61;ICE64</SuppressIces>
     <DefineConstants>Debug;$([MSBuild]::Unescape($(InstallerDefineConstants)))</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <OutputPath>bin\$(Configuration)\</OutputPath>
     <IntermediateOutputPath>obj\$(Configuration)\</IntermediateOutputPath>
-    <SuppressIces>ICE38;ICE64</SuppressIces>
+    <SuppressIces>ICE38;ICE40;ICE61;ICE64</SuppressIces>
     <DefineConstants>$([MSBuild]::Unescape($(InstallerDefineConstants)))</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
