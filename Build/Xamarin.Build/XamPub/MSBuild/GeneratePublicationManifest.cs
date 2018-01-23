@@ -42,6 +42,9 @@ namespace Xamarin.XamPub.MSBuild
         [Required]
         public string ReleaseDescription { get; set; }
 
+        [Required]
+        public string ProductName { get; set; }
+
         readonly string gitRepo = Environment.GetEnvironmentVariable ("BUILD_REPOSITORY_URI");
         readonly string gitRev = Environment.GetEnvironmentVariable ("BUILD_SOURCEVERSION");
         readonly string gitBranch = Environment.GetEnvironmentVariable ("BUILD_SOURCEBRANCH");
@@ -119,10 +122,15 @@ namespace Xamarin.XamPub.MSBuild
                 Branch = gitBranch
             };
 
-            releaseFile.PublishUri = $"{BasePublishUri}/{fileName}";
+            BasePublishUri = BasePublishUri.TrimEnd ('/') + "/";
+
+            string MakeUri (string relativePath)
+                => BasePublishUri + relativePath.TrimStart ('/');
+
+            releaseFile.PublishUri = MakeUri (fileName);
 
             if (!string.IsNullOrEmpty (evergreenName))
-                releaseFile.EvergreenUri = $"{BasePublishUri}/{evergreenName}";
+                releaseFile.EvergreenUri = MakeUri (evergreenName);
 
             var pdbPath = path + ".symbols.zip";
             if (File.Exists (pdbPath))
@@ -150,6 +158,9 @@ namespace Xamarin.XamPub.MSBuild
             if (updaterItem == null || !updaterItem.Success)
                 return;
 
+            releaseFile.ProductType = 11; // no idea!
+            releaseFile.ProductName = ProductName;
+
             releaseFile.UpdaterProduct = new XamarinUpdaterProduct {
                 Version = updaterItem.Groups ["version"].Value
             };
@@ -165,17 +176,9 @@ namespace Xamarin.XamPub.MSBuild
             if (!ReleaseVersion.TryParse (releaseFile.UpdaterProduct.Version, out var version))
                 return;
 
-            if (version.CandidateLevel == ReleaseCandidateLevel.Stable) {
-                var fileExtension = updaterItem.Groups ["extension"].Value;
-
-                releaseFile.EvergreenUri =
-                    Path.GetDirectoryName (relativePath) + "/" +
-                    updaterItem.Groups ["name"].Value +
-                    fileExtension;
-
-                if (fileExtension == ".pkg")
-                    releaseFile.UploadEnvironments |= UploadEnvironments.XamarinInstaller;
-            }
+            if (version.CandidateLevel == ReleaseCandidateLevel.Stable &&
+                updaterItem.Groups ["extension"].Value == ".pkg")
+                releaseFile.UploadEnvironments |= UploadEnvironments.XamarinInstaller;
 
             releaseFile.UploadEnvironments |= UploadEnvironments.XamarinUpdater;
 

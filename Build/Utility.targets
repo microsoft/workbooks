@@ -109,14 +109,22 @@ Copyright 2017 Microsoft. All rights reserved.
   <Target
     Name="GeneratePublicationManifest"
     DependsOnTargets="Xamarin_Build_ReadAllProperties">
-    <PropertyGroup>
-      <UpdateInfoFile Condition="'$(OS)' == 'Windows_NT'">..\Package\Windows\updateinfo</UpdateInfoFile>
-      <UpdateInfoFile Condition="'$(OS)' == 'Unix'">..\Package\Mac\updateinfo</UpdateInfoFile>
+    <PropertyGroup Condition="'$(OS)' == 'Windows_NT'">
+      <ProductName>Xamarin Workbooks &amp; Inspector (Win)</ProductName>
+      <UpdateInfoFile>..\Package\Windows\updateinfo</UpdateInfoFile>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(OS)' == 'Unix'">
+      <ProductName>Xamarin Workbooks &amp; Inspector (Mac)</ProductName>
+      <UpdateInfoFile>..\Package\Mac\updateinfo</UpdateInfoFile>
     </PropertyGroup>
 
     <ItemGroup>
-      <PublicationItem Include="$(PackageOutputDir)*.pkg"/>
-      <PublicationItem Include="$(PackageOutputDir)*.msi"/>
+      <PublicationItem Include="$(PackageOutputDir)*.pkg">
+        <Evergreen Condition="'$(ReleaseVersion_CandidateLevel)' == 'Stable'">XamarinInteractive.pkg</Evergreen>
+      </PublicationItem>
+      <PublicationItem Include="$(PackageOutputDir)*.msi">
+        <Evergreen Condition="'$(ReleaseVersion_CandidateLevel)' == 'Stable'">XamarinInteractive.msi</Evergreen>
+      </PublicationItem>
       <PublicationItem Include="$(PackageOutputDir)*.html"/>
       <PublicationItem Remove="$(PackageOutputDir)Policheck*"/>
     </ItemGroup>
@@ -128,6 +136,7 @@ Copyright 2017 Microsoft. All rights reserved.
     <GeneratePublicationManifest
       OutputFile="$(PackageOutputDir)publication-manifest.json"
       UpdateInfoFile="$(MSBuildThisFileDirectory)$(UpdateInfoFile)"
+      ProductName="$(ProductName)"
       UpdaterReleaseNotes="@(UpdaterReleaseNotes)"
       FilesToInclude="@(PublicationItem)"
       BasePublishUri="https://dl.xamarin.com/interactive"

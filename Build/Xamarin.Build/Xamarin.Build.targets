@@ -75,6 +75,9 @@ Copyright 2017 Microsoft. All rights reserved.
       <Output
         TaskParameter="FriendlyShort"
         PropertyName="ReleaseVersion_FriendlyShort"/>
+      <Output
+        TaskParameter="CandidateLevel"
+        PropertyName="ReleaseVersion_CandidateLevel"/>
     </ReleaseVersion>
     <Message Text="SemVer: $(ReleaseVersion_SemVer)" Importance="high"/>
     <Message Text="SemVerNuGetSafe: $(ReleaseVersion_SemVerNuGetSafe)" Importance="high"/>
@@ -84,6 +87,7 @@ Copyright 2017 Microsoft. All rights reserved.
     <Message Text="WindowsFileVersion: $(ReleaseVersion_WindowsFileVersion)" Importance="high"/>
     <Message Text="FriendlyLong: $(ReleaseVersion_FriendlyLong)" Importance="high"/>
     <Message Text="FriendlyShort: $(ReleaseVersion_FriendlyShort)" Importance="high"/>
+    <Message Text="CandidateLevel: $(ReleaseVersion_CandidateLevel)" Importance="high"/>
   </Target>
 
   <UsingTask
