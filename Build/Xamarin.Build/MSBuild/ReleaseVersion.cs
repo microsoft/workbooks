@@ -36,6 +36,9 @@ namespace Xamarin.MSBuild
         [Output]
         public string FriendlyShort { get; private set; }
 
+        [Output]
+        public string CandidateLevel { get; private set; }
+
         public override bool Execute ()
         {
             Versioning.ReleaseVersion semVer;
@@ -72,6 +75,8 @@ namespace Xamarin.MSBuild
 
             FriendlyShort = semVer.ToString (
                 Versioning.ReleaseVersionFormat.FriendlyShort);
+
+            CandidateLevel = semVer.CandidateLevel.ToString ();
 
             return true;
         }
