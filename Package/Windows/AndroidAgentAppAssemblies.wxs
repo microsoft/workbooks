@@ -240,8 +240,8 @@
       <Component Id="AndroidAgentAppFacades.System.Runtime.InteropServices.dll" Guid="2C735561-AAA1-44FA-8F1F-D0921C707308">
         <File Id="AndroidAgentAppFacades.System.Runtime.InteropServices.dll" Source="$(var.AndroidAppAssembliesFacadesDir)\System.Runtime.InteropServices.dll" />
       </Component>
-      <Component Id="AndroidAgentAppFacades.System.Runtime.InteropServices.RuntimeInformation.dll" Guid="CFD0C5A7-3874-4F48-9CBB-2C4D3287FA9F">
-        <File Id="AndroidAgentAppFacades.System.Runtime.InteropServices.RuntimeInformation.dll" Source="$(var.AndroidAppAssembliesFacadesDir)\System.Runtime.InteropServices.RuntimeInformation.dll" />
+      <Component Id="AndroidAgentAppFacades.System.Runtime.Interop.RuntimeInformation.dll" Guid="CFD0C5A7-3874-4F48-9CBB-2C4D3287FA9F">
+        <File Id="AndroidAgentAppFacades.System.Runtime.Interop.RuntimeInformation.dll" Source="$(var.AndroidAppAssembliesFacadesDir)\System.Runtime.InteropServices.RuntimeInformation.dll" />
       </Component>
       <Component Id="AndroidAgentAppFacades.System.Runtime.InteropServices.WindowsRuntime.dll" Guid="8D9806BE-9EFE-482A-8B16-29273FFFE3C2">
         <File Id="AndroidAgentAppFacades.System.Runtime.InteropServices.WindowsRuntime.dll" Source="$(var.AndroidAppAssembliesFacadesDir)\System.Runtime.InteropServices.WindowsRuntime.dll" />
