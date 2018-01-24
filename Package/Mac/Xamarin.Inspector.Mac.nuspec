@@ -29,6 +29,9 @@
       src="contentFiles\any\any\Xamarin Inspector.app\Contents\MonoBundle\Xamarin.Interactive.Client.dll"
       target="lib\net461\Xamarin.Interactive.Client.dll" />
     <file
+      src="contentFiles\any\any\Xamarin Inspector.app\Contents\MonoBundle\System.Windows.Input.dll"
+      target="lib\net461\System.Windows.Input.dll" />
+    <file
       src="contentFiles\any\any\Xamarin Inspector.app\**"
       target="contentFiles\any\any\Xamarin Inspector.app"/>
   </files>
