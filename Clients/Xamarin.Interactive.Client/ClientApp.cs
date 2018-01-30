@@ -166,7 +166,7 @@ namespace Xamarin.Interactive
                 Timestamp = DateTimeOffset.UtcNow,
                 Version = BuildInfo.VersionString,
                 BuildHash = BuildInfo.Hash,
-                UpdateChannel = Updater.UpdateChannel,
+                UpdateChannel = Updater?.UpdateChannel,
                 OperatingSystem = new Telemetry.Models.OperatingSystem {
                     Version = Host.OSVersion.ToString (),
                     WordSize = (byte)IntPtr.Size,
