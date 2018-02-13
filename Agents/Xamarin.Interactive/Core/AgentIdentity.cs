@@ -66,9 +66,9 @@ namespace Xamarin.Interactive.Core
             }
         }
 
-        #pragma warning disable 0162
+        #pragma warning disable 0618
         public string FlavorId => GetFlavorId (AgentType);
-        #pragma warning restore 0162
+        #pragma warning restore 0618
 
         public Guid Id { get; }
         public AgentType AgentType { get; }

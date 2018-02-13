@@ -83,7 +83,7 @@ namespace Xamarin.Interactive
             => All.FirstOrDefault (app => string.Equals (
                 app.Id, workbookAppId, StringComparison.OrdinalIgnoreCase));
 
-        #pragma warning disable 0162
+        #pragma warning disable 0618
 
         public static WorkbookAppInstallation Locate (AgentType agentType)
             => LookupById (AgentIdentity.GetFlavorId (agentType));
@@ -91,7 +91,7 @@ namespace Xamarin.Interactive
         public AgentType GetAgentType ()
             => AgentIdentity.GetAgentType (Id);
 
-        #pragma warning restore 0162
+        #pragma warning restore 0618
 
         readonly IAgentProcessManager processManager;
 
