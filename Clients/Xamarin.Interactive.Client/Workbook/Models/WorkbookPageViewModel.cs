@@ -124,7 +124,7 @@ namespace Xamarin.Interactive.Workbook.Models
             => WorkbookPage
                 .Contents
                 .OfType<CodeCell> ()
-                .Select (codeCell => (CellView)codeCell.View)
+                .Select (codeCell => codeCell.View)
                 .ForEach (UnbindCellFromView);
 
         DocumentId GetDocumentId (CodeCell codeCell)

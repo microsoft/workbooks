@@ -15,7 +15,7 @@ namespace Xamarin.Interactive.Workbook.Structure
 {
     sealed class NuGetPackageNode : TreeNode
     {
-        public static RoutedUICommand RemovePackage = new RoutedUICommand (
+        public static ICommand RemovePackage = RoutedCommandFactory.CreateRoutedUICommand (
             Catalog.GetString ("Remove Package"),
             "Remove",
             typeof (NuGetPackageNode));

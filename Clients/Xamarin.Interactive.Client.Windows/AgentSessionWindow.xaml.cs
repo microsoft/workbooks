@@ -483,7 +483,7 @@ namespace Xamarin.Interactive.Client.Windows
                 break;
             case Key.G:
                 e.Handled = true;
-                NuGetPackagesNode.AddPackage.Execute (null, this);
+                ((RoutedUICommand)NuGetPackagesNode.AddPackage).Execute (null, this);
                 break;
             case Key.OemPlus:
                 e.Handled = true;

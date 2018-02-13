@@ -11,6 +11,7 @@ using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
+using System.Windows.Input;
 
 using Microsoft.Win32;
 
@@ -177,6 +178,8 @@ namespace Xamarin.Interactive.Client
 
             if (workbookAppsDirectory.DirectoryExists)
                 WorkbookAppInstallation.RegisterSearchPath (workbookAppsDirectory);
+
+            RoutedCommandFactory.Initialize (new WpfRoutedCommandFactory ());
         }
     }
 }

@@ -8,8 +8,8 @@
     <PackageReference Include="DiffPlex" Version="1.4.1" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Clients\Xamarin.Interactive.Client\Xamarin.Interactive.Client.csproj" />
     <ProjectReference Include="..\..\Tools\ApiDump\ApiDump.csproj" />
+    <ProjectReference Include="..\..\Clients\Xamarin.Interactive.Client.Desktop\Xamarin.Interactive.Client.Desktop.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Compile Remove="ImageFormatTests.cs" />

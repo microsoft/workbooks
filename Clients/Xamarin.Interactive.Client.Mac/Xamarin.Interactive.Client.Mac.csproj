@@ -111,6 +111,9 @@
     <Folder Include="OutlineView\" />
     <Folder Include="Resources.xcassets\" />
     <Folder Include="SystemInformation\" />
+    <Folder Include="System\" />
+    <Folder Include="System\Windows\" />
+    <Folder Include="System\Windows\Input\" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AppDelegate.cs" />
@@ -342,6 +345,13 @@
     <Compile Include="Preferences\WebKitPrefs.cs" />
     <Compile Include="MacClientApp.cs" />
     <Compile Include="MacViewInspector.cs" />
+    <Compile Include="System\Windows\Input\MacRoutedCommandFactory.cs" />
+    <Compile Include="System\Windows\Input\InputGesture.cs" />
+    <Compile Include="System\Windows\Input\InputGestureCollection.cs" />
+    <Compile Include="System\Windows\Input\KeyGesture.cs" />
+    <Compile Include="System\Windows\Input\RoutedCommand.cs" />
+    <Compile Include="System\Windows\Input\RoutedUICommand.cs" />
+    <Compile Include="System\Windows\Input\RoutedUICommandMenuItem.cs" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="LogWindow.xib" />
@@ -432,6 +442,10 @@
     <ProjectReference Include="..\System.Windows.Input\System.Windows.Input.csproj">
       <Project>{D3C11AAD-595F-47B8-9EC5-BC2485A344DA}</Project>
       <Name>System.Windows.Input</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Xamarin.Interactive.Client.Desktop\Xamarin.Interactive.Client.Desktop.csproj">
+      <Project>{060F0356-3E5C-41CD-B2BD-4C15C99BEBC2}</Project>
+      <Name>Xamarin.Interactive.Client.Desktop</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

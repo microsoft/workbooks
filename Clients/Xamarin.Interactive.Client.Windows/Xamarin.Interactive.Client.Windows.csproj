@@ -116,6 +116,7 @@
     <Compile Include="CommonMark\FlowDocumentFormatter.cs" />
     <Compile Include="IO\WindowsFileSystem.cs" />
     <Compile Include="IO\ZoneInfo.cs" />
+    <Compile Include="System\Windows\Input\WpfRoutedCommandFactory.cs" />
     <Compile Include="Themes\ThemeHelper.cs" />
     <Compile Include="UserPresentableExceptionHandler.cs" />
     <Compile Include="ViewModels\InspectTreeNode3D.cs" />
@@ -284,6 +285,10 @@
     <ProjectReference Include="..\CrossBrowser\Xamarin.CrossBrowser.Wpf\Xamarin.CrossBrowser.Wpf.csproj">
       <Project>{6d864ab3-aab0-4d18-9ae2-68fe6383802f}</Project>
       <Name>Xamarin.CrossBrowser.Wpf</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Xamarin.Interactive.Client.Desktop\Xamarin.Interactive.Client.Desktop.csproj">
+      <Project>{060f0356-3e5c-41cd-b2bd-4c15c99bebc2}</Project>
+      <Name>Xamarin.Interactive.Client.Desktop</Name>
     </ProjectReference>
     <ProjectReference Include="..\Xamarin.Interactive.Client\Xamarin.Interactive.Client.csproj">
       <Project>{ee61a762-761d-46b0-9dfa-1d0fd47f3e85}</Project>

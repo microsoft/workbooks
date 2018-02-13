@@ -18,7 +18,7 @@ namespace Xamarin.Interactive.Workbook.Structure
 {
     sealed class NuGetPackagesNode : TreeNode
     {
-        public static readonly RoutedUICommand AddPackage = new RoutedUICommand (
+        public static readonly ICommand AddPackage = RoutedCommandFactory.CreateRoutedUICommand (
             Catalog.GetString ("Add Package…"),
             "addPackage:",
             typeof (NuGetPackagesNode));

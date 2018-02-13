@@ -157,8 +157,8 @@ namespace Xamarin.Interactive.TreeModel
             }
         }
 
-        IReadOnlyList<RoutedUICommand> commands;
-        public IReadOnlyList<RoutedUICommand> Commands {
+        IReadOnlyList<ICommand> commands;
+        public IReadOnlyList<ICommand> Commands {
             get { return commands; }
             set {
                 if (commands != value) {
@@ -168,8 +168,8 @@ namespace Xamarin.Interactive.TreeModel
             }
         }
 
-        RoutedUICommand defaultCommand;
-        public RoutedUICommand DefaultCommand {
+        ICommand defaultCommand;
+        public ICommand DefaultCommand {
             get { return defaultCommand; }
             set {
                 if (defaultCommand != value) {

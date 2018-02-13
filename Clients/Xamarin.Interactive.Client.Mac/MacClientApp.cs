@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows.Input;
 
 using Foundation;
 
@@ -170,6 +171,8 @@ namespace Xamarin.Interactive.Client
 
             WorkbookAppInstallation.RegisterPathMapper (
                 WorkbookAppInstallation_MacosVersionPathMapper);
+
+            RoutedCommandFactory.Initialize (new MacRoutedCommandFactory ());
         }
 
         string WorkbookAppInstallation_MacosVersionPathMapper (string path)

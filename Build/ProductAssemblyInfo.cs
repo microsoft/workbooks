@@ -41,6 +41,7 @@ using System.Runtime.CompilerServices;
 [assembly: InternalsVisibleTo ("Xamarin Inspector")]
 [assembly: InternalsVisibleTo ("Xamarin.Interactive.Client")]
 [assembly: InternalsVisibleTo ("Xamarin.Interactive.Client.Console")]
+[assembly: InternalsVisibleTo ("Xamarin.Interactive.Client.Desktop")]
 
 // tests
 [assembly: InternalsVisibleTo ("Xamarin.Interactive.Tests")]
