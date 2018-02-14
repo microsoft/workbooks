@@ -7,6 +7,14 @@
   },
   {
     "Kind": "NuGet",
+    "Name": "CommonMark.NET",
+    "Version": "0.15.1-abock-workbooks.1384619",
+    "DependentProjects": [
+      "Xamarin.Interactive.Client"
+    ]
+  },
+  {
+    "Kind": "NuGet",
     "Name": "MahApps.Metro",
     "Version": "1.5.0",
     "DependentProjects": [
@@ -121,6 +129,14 @@
   },
   {
     "Kind": "NuGet",
+    "Name": "WindowsAPICodePack-mono",
+    "Version": "1.1.0",
+    "DependentProjects": [
+      "Xamarin.Interactive.Client.Windows"
+    ]
+  },
+  {
+    "Kind": "NuGet",
     "Name": "Xamarin.Forms",
     "Version": "2.5.0.121934",
     "DependentProjects": [
@@ -147,16 +163,6 @@
     "Kind": "Npm",
     "Name": "prosemirror",
     "Version": "=0.8.1"
-  },
-  {
-    "Kind": "GitSubmodule",
-    "Name": "External/CommonMark.NET",
-    "Version": "72cf52c7514ce2cbea3bf023dd54707461057965"
-  },
-  {
-    "Kind": "GitSubmodule",
-    "Name": "External/WindowsAPICodePack",
-    "Version": "e61588312701812e5e237556349e90cf6b62f069"
   },
   {
     "Kind": "GitSubmodule",
