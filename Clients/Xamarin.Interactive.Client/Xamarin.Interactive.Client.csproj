@@ -10,10 +10,10 @@
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Features" Version="2.3.0" />
     <PackageReference Include="NuGet.PackageManagement" Version="4.7.0-zlocal-35658" />
     <PackageReference Include="YamlDotNet" Version="4.3.0" />
+    <PackageReference Include="CommonMark.NET" Version="0.15.1-abock-workbooks.1384619" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Agents\Xamarin.Interactive\Xamarin.Interactive.csproj" />
-    <ProjectReference Include="..\..\External\CommonMark.NET\CommonMark\CommonMark.Base.csproj" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)TelemetryNotice.md">
