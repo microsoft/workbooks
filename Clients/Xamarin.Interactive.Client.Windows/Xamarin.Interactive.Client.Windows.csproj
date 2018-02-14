@@ -265,10 +265,6 @@
       <Project>{955f473a-04ec-4716-b75e-509ba892499b}</Project>
       <Name>Xamarin.Interactive</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\External\CommonMark.NET\CommonMark\CommonMark.Base.csproj">
-      <Project>{0fd4b1dd-45a8-4f02-beb0-5881cd512573}</Project>
-      <Name>CommonMark.Base</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\External\Xamarin.PropertyEditing\Xamarin.PropertyEditing.Windows\Xamarin.PropertyEditing.Windows.csproj">
       <Project>{60af04be-1b6b-411b-bcba-c95eafbd7ac0}</Project>
       <Name>Xamarin.PropertyEditing.Windows</Name>
