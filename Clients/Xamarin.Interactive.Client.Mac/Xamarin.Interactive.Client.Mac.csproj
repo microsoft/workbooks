@@ -449,7 +449,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <NativeReference Include="..\..\Bootstrap\libMonoPosixHelper.dylib">
+    <NativeReference Include="libMonoPosixHelper.dylib">
       <Kind>Dynamic</Kind>
       <SmartLink>False</SmartLink>
     </NativeReference>
