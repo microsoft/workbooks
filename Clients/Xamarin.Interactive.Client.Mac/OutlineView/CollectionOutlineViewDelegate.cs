@@ -7,6 +7,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Windows.Input;
 
 using AppKit;
 using Foundation;
@@ -46,8 +47,7 @@ namespace Xamarin.Interactive.OutlineView
             if (node == null)
                 return;
 
-            var command = node.DefaultCommand;
-            if (command != null && command.CanExecute (null, OutlineView))
+            if (node.DefaultCommand is RoutedUICommand command && command.CanExecute (null, OutlineView))
                 command.Execute (null, OutlineView);
             else if (node.IsRenamable)
                 OutlineView.EditColumn (0, row, evnt, true);

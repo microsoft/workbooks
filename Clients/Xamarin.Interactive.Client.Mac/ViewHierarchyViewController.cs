@@ -155,12 +155,11 @@ namespace Xamarin.Interactive.Client.Mac
             }
 
             public override IEnumerable<NSMenuItem> ContextMenuItemsForNode (TreeNode node)
-            {
-                if (node.Commands == null)
-                    return Array.Empty<NSMenuItem> ();
-
-                return node.Commands.Select (c => new RoutedUICommandMenuItem (c, node));
-            }
+                => node
+                    .Commands
+                    ?.OfType<RoutedUICommand> ()
+                    .Select (c => new RoutedUICommandMenuItem (c, node))
+                    ?? Enumerable.Empty<NSMenuItem> ();
         }
     }
 }

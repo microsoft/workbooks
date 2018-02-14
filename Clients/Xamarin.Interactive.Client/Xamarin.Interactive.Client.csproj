@@ -1,36 +1,19 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net461</TargetFramework>
+    <TargetFramework>netstandard2.0</TargetFramework>
   </PropertyGroup>
   <PropertyGroup Label="Configuration">
     <Import_RootNamespace>Xamarin.Interactive</Import_RootNamespace>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <OutputPath>bin\Debug</OutputPath>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <OutputPath>bin\Release</OutputPath>
-  </PropertyGroup>
-  <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.Net" />
-    <Reference Include="System.Net.Http" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="netstandard" />
-  </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Features" Version="2.3.0" />
-    <PackageReference Include="NuGet.PackageManagement" Version="4.3.0" />
-    <PackageReference Include="YamlDotNet" Version="4.0.0" />
+    <PackageReference Include="NuGet.PackageManagement" Version="4.7.0-zlocal-35658" />
+    <PackageReference Include="YamlDotNet" Version="4.3.0" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Agents\Xamarin.Interactive\Xamarin.Interactive.csproj" />
     <ProjectReference Include="..\..\External\CommonMark.NET\CommonMark\CommonMark.Base.csproj" />
-    <ProjectReference Include="..\..\External\Xamarin.PropertyEditing\Xamarin.PropertyEditing\Xamarin.PropertyEditing.csproj" />
-    <ProjectReference Condition="'$(OS)' == 'Unix'" Include="..\System.Windows.Input\System.Windows.Input.csproj" />
-    <ProjectReference Condition="'$(OS)' == 'Unix'" Include="..\CrossBrowser\Xamarin.CrossBrowser.Mac\Xamarin.CrossBrowser.Mac.csproj" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)TelemetryNotice.md">
@@ -41,6 +24,5 @@
       <LogicalName>ISSUE_TEMPLATE.md</LogicalName>
     </EmbeddedResource>
   </ItemGroup>
-  <Import Condition="'$(OS)' == 'Windows_NT'" Project="Build.windows.targets" />
   <Import Project="..\..\Build\Common.targets" />
 </Project>

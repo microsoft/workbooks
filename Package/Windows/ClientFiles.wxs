@@ -1,7 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
   <Fragment>
-
     <?define WpfAgentAppDirectory="..\..\_build\$(var.Configuration)\WorkbookApps\WPF" ?>
     <ComponentGroup Id="ClientComponents" Directory="ClientInstallFolder">
       <!-- This ID is kept for historical purposes. Note that it does not match the filename. -->
@@ -26,9 +25,8 @@
       <Component Id="XamarinInspector.exe.config" Guid="945928ce-39b4-4108-91a1-0a1181c197ad">
         <File Id="XamarinInspector.exe.config" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)..\$(var.Configuration)InspectorExe\Xamarin Inspector.exe.config" />
       </Component>
-
       <Component Id="Xamarin.Interactive.Wpf.dll" Guid="278A9E9A-22AF-4101-BE40-C159D2F811EB">
-        <File Id="Xamarin.Interactive.Wpf.dll" Source="$(var.WpfAgentAppDirectory)\Xamarin.Interactive.Wpf.dll"/>
+        <File Id="Xamarin.Interactive.Wpf.dll" Source="$(var.WpfAgentAppDirectory)\Xamarin.Interactive.Wpf.dll" />
       </Component>
       <Component Id="Client.Xamarin.Interactive.dll" Guid="9C8497B2-6CCA-43E0-9EB9-F97C9278453A">
         <File Id="Client.Xamarin.Interactive.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\Xamarin.Interactive.dll" />
@@ -461,6 +459,9 @@
       </Component>
       <Component Id="Newtonsoft.Json.dll" Guid="E046F4A3-2799-4E0D-923A-A4EA841405BF">
         <File Id="Newtonsoft.Json.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\Newtonsoft.Json.dll" />
+      </Component>
+      <Component Id="Xamarin.Interactive.Client.Desktop.dll" Guid="5F5405B7-53D6-4930-832D-0D9DED3CA7C5">
+        <File Id="Xamarin.Interactive.Client.Desktop.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\Xamarin.Interactive.Client.Desktop.dll" />
       </Component>
     </ComponentGroup>
     <ComponentGroup Id="ClientReplEditorResources" Directory="InspectorResourcesReplEditorFolder">

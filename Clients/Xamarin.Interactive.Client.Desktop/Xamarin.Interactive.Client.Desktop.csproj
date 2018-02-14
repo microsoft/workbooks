@@ -1,0 +1,22 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net461</TargetFramework>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <Import_RootNamespace>Xamarin.Interactive</Import_RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Net" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="netstandard" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Xamarin.Interactive.Client\Xamarin.Interactive.Client.csproj" />
+    <ProjectReference Include="..\..\External\Xamarin.PropertyEditing\Xamarin.PropertyEditing\Xamarin.PropertyEditing.csproj" />
+    <ProjectReference Condition="'$(OS)' == 'Unix'" Include="..\CrossBrowser\Xamarin.CrossBrowser.Mac\Xamarin.CrossBrowser.Mac.csproj" />
+  </ItemGroup>
+  <Import Condition="'$(OS)' == 'Windows_NT'" Project="Build.windows.targets" />
+  <Import Project="..\..\Build\Common.targets" />
+</Project>

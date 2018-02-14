@@ -11,7 +11,6 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Runtime.Serialization;
 using System.Threading.Tasks;
 
 using Newtonsoft.Json;
@@ -123,7 +122,7 @@ namespace Xamarin.Interactive.Telemetry
                 try {
                     await PostEventOnceAsync (evnt);
                     return;
-                } catch (SerializationException e) {
+                } catch (JsonSerializationException e) {
                     Log.Error (TAG, e);
                     return;
                 } catch (Exception e) {
@@ -215,7 +214,7 @@ namespace Xamarin.Interactive.Telemetry
                 try {
                     serializer.Serialize (writer, evnt);
                 } catch (Exception e) {
-                    throw new SerializationException ("bad use of JsonTextWriter / JsonSerializer", e);
+                    throw new JsonSerializationException ("bad use of JsonTextWriter / JsonSerializer", e);
                 }
 
                 writer.Flush ();
@@ -228,6 +227,14 @@ namespace Xamarin.Interactive.Telemetry
                 length = -1;
                 return false;
             }
+        }
+    }
+
+    sealed class JsonSerializationException : Exception
+    {
+        public JsonSerializationException (string message, Exception innerException)
+            : base (message, innerException)
+        {
         }
     }
 }

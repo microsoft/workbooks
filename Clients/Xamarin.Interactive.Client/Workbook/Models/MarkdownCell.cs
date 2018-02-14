@@ -25,12 +25,12 @@ namespace Xamarin.Interactive.Workbook.Models
 
             public string Value {
                 get {
-                    var view = markdownCell.View as MarkdownCellView;
+                    var view = markdownCell.View as IMarkdownCellView;
                     return view == null ? value : view.MarkdownContent;
                 }
 
                 set {
-                    var view = markdownCell.View as MarkdownCellView;
+                    var view = markdownCell.View as IMarkdownCellView;
                     if (view == null)
                         this.value = value;
                     else

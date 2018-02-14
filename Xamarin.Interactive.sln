@@ -101,8 +101,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CompilationIntegration", "S
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xamarin.Interactive.Client", "Clients\Xamarin.Interactive.Client\Xamarin.Interactive.Client.csproj", "{EE61A762-761D-46B0-9DFA-1D0FD47F3E85}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "System.Windows.Input", "Clients\System.Windows.Input\System.Windows.Input.csproj", "{D3C11AAD-595F-47B8-9EC5-BC2485A344DA}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xamarin.Interactive.Tests", "Tests\Xamarin.Interactive.Tests\Xamarin.Interactive.Tests.csproj", "{D5DE60DD-C8EE-41B9-A364-3ED89D668E2F}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ClientIntegrations", "ClientIntegrations", "{CED232BB-D8C8-43A9-BAF2-17321AE454D3}"
@@ -112,6 +110,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xamarin.Interactive.Client.Console", "Clients\Xamarin.Interactive.Client.Console\Xamarin.Interactive.Client.Console.csproj", "{3B87985C-5F40-40BF-9BC3-8458501AAA93}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InstallerVerifier", "Tools\InstallerVerifier\InstallerVerifier.csproj", "{F6BFEAE8-F71D-4D1A-AC04-07ABB4FBF9A7}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xamarin.Interactive.Client.Desktop", "Clients\Xamarin.Interactive.Client.Desktop\Xamarin.Interactive.Client.Desktop.csproj", "{060F0356-3E5C-41CD-B2BD-4C15C99BEBC2}"
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
@@ -445,14 +445,6 @@ Global
 		{EE61A762-761D-46B0-9DFA-1D0FD47F3E85}.Release|macOS.Build.0 = Release|Any CPU
 		{EE61A762-761D-46B0-9DFA-1D0FD47F3E85}.Release|Windows.ActiveCfg = Release|Any CPU
 		{EE61A762-761D-46B0-9DFA-1D0FD47F3E85}.Release|Windows.Build.0 = Release|Any CPU
-		{D3C11AAD-595F-47B8-9EC5-BC2485A344DA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D3C11AAD-595F-47B8-9EC5-BC2485A344DA}.Debug|macOS.ActiveCfg = Debug|Any CPU
-		{D3C11AAD-595F-47B8-9EC5-BC2485A344DA}.Debug|macOS.Build.0 = Debug|Any CPU
-		{D3C11AAD-595F-47B8-9EC5-BC2485A344DA}.Debug|Windows.ActiveCfg = Debug|Any CPU
-		{D3C11AAD-595F-47B8-9EC5-BC2485A344DA}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D3C11AAD-595F-47B8-9EC5-BC2485A344DA}.Release|macOS.ActiveCfg = Release|Any CPU
-		{D3C11AAD-595F-47B8-9EC5-BC2485A344DA}.Release|macOS.Build.0 = Release|Any CPU
-		{D3C11AAD-595F-47B8-9EC5-BC2485A344DA}.Release|Windows.ActiveCfg = Release|Any CPU
 		{D5DE60DD-C8EE-41B9-A364-3ED89D668E2F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{D5DE60DD-C8EE-41B9-A364-3ED89D668E2F}.Debug|macOS.ActiveCfg = Debug|Any CPU
 		{D5DE60DD-C8EE-41B9-A364-3ED89D668E2F}.Debug|macOS.Build.0 = Debug|Any CPU
@@ -489,6 +481,16 @@ Global
 		{F6BFEAE8-F71D-4D1A-AC04-07ABB4FBF9A7}.Release|macOS.ActiveCfg = Release|Any CPU
 		{F6BFEAE8-F71D-4D1A-AC04-07ABB4FBF9A7}.Release|Windows.ActiveCfg = Release|Any CPU
 		{F6BFEAE8-F71D-4D1A-AC04-07ABB4FBF9A7}.Release|Windows.Build.0 = Release|Any CPU
+		{060F0356-3E5C-41CD-B2BD-4C15C99BEBC2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{060F0356-3E5C-41CD-B2BD-4C15C99BEBC2}.Debug|macOS.ActiveCfg = Debug|Any CPU
+		{060F0356-3E5C-41CD-B2BD-4C15C99BEBC2}.Debug|macOS.Build.0 = Debug|Any CPU
+		{060F0356-3E5C-41CD-B2BD-4C15C99BEBC2}.Debug|Windows.ActiveCfg = Debug|Any CPU
+		{060F0356-3E5C-41CD-B2BD-4C15C99BEBC2}.Debug|Windows.Build.0 = Debug|Any CPU
+		{060F0356-3E5C-41CD-B2BD-4C15C99BEBC2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{060F0356-3E5C-41CD-B2BD-4C15C99BEBC2}.Release|macOS.ActiveCfg = Release|Any CPU
+		{060F0356-3E5C-41CD-B2BD-4C15C99BEBC2}.Release|macOS.Build.0 = Release|Any CPU
+		{060F0356-3E5C-41CD-B2BD-4C15C99BEBC2}.Release|Windows.ActiveCfg = Release|Any CPU
+		{060F0356-3E5C-41CD-B2BD-4C15C99BEBC2}.Release|Windows.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -535,11 +537,11 @@ Global
 		{E8F4F0EB-C2B1-4116-8459-E076E0E0E485} = {6BA2A815-CF49-40C0-8174-F985894BD8BF}
 		{6BCE5E68-86E6-47F6-AC65-40595230E0F8} = {9B8D49C2-F1E2-4EBA-B912-F294AE704355}
 		{EE61A762-761D-46B0-9DFA-1D0FD47F3E85} = {1918A3C3-EAE4-4F9F-BF6B-83CB94AAF7E9}
-		{D3C11AAD-595F-47B8-9EC5-BC2485A344DA} = {1918A3C3-EAE4-4F9F-BF6B-83CB94AAF7E9}
 		{D5DE60DD-C8EE-41B9-A364-3ED89D668E2F} = {CA7D68B0-F4A3-4679-96C0-7F967056F1FC}
 		{B5F889E8-E396-4C7E-836E-DC5A9A260DB3} = {CED232BB-D8C8-43A9-BAF2-17321AE454D3}
 		{3B87985C-5F40-40BF-9BC3-8458501AAA93} = {1918A3C3-EAE4-4F9F-BF6B-83CB94AAF7E9}
 		{F6BFEAE8-F71D-4D1A-AC04-07ABB4FBF9A7} = {E3972EA9-3073-4251-AD90-87B4C90147FC}
+		{060F0356-3E5C-41CD-B2BD-4C15C99BEBC2} = {1918A3C3-EAE4-4F9F-BF6B-83CB94AAF7E9}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D588CD6A-A8A7-4CCE-A894-95F307675CBF}
