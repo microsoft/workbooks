@@ -326,7 +326,7 @@ namespace Xamarin.Interactive.Compilation.Roslyn
         readonly ImmutableDictionary<string, ReportDiagnostic> initialDiagnosticOptions;
 
         readonly CSharpParseOptions parseOptions = new CSharpParseOptions (
-            LanguageVersion.CSharp7_1,
+            LanguageVersion.CSharp7_2,
             DocumentationMode.None,
             SourceCodeKind.Script);
 
