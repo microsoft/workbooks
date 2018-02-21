@@ -34,6 +34,7 @@
     "copy-webpack-plugin": "^4.4.1"
   },
   "dependencies": {
+    "@aspnet/signalr": "^1.0.0-preview2-30131",
     "draft-js": "^0.10.5",
     "monaco-editor": "^0.10.1"
   }

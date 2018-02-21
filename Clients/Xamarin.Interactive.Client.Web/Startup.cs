@@ -12,6 +12,8 @@ using Microsoft.AspNetCore.SpaServices.Webpack;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
+using Xamarin.Interactive.Client.Web.Hosting;
+
 namespace Xamarin.Interactive.Client.Web
 {
     public sealed class Startup
@@ -25,9 +27,11 @@ namespace Xamarin.Interactive.Client.Web
 
         public void ConfigureServices (IServiceCollection services)
         {
-            services.AddSingleton<Hosting.WebClientAppService> ();
+            services.AddSingleton<WebClientAppService> ();
 
             services.AddMvc ();
+
+            services.AddSignalR ();
         }
 
         public void Configure (IApplicationBuilder app, IHostingEnvironment env)
@@ -45,6 +49,10 @@ namespace Xamarin.Interactive.Client.Web
             app.UseMonacoMuting ();
 
             app.UseStaticFiles ();
+
+            app.UseSignalR (routes => {
+                routes.MapHub<SessionHub> ("/session");
+            });
 
             app.UseMvc (routes => {
                 routes.MapRoute (
