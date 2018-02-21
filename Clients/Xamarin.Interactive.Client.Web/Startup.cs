@@ -25,6 +25,8 @@ namespace Xamarin.Interactive.Client.Web
 
         public void ConfigureServices (IServiceCollection services)
         {
+            services.AddSingleton<Hosting.WebClientAppService> ();
+
             services.AddMvc ();
         }
 
