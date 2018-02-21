@@ -64,3 +64,22 @@
         text-overflow: ellipsis;
     }
 }
+
+.public-DraftEditor-content {
+    height: 100vh;
+    overflow: auto;
+}
+
+.CodeCell-container {
+    height: 100vh;
+    width: 100vw;
+}
+
+.CodeCell-result {
+    height: 100px;
+    background-color: green;
+}
+
+.MonacoCellEditor-container {
+    height: 100vh;
+}

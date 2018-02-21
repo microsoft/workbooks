@@ -12,6 +12,8 @@ import * as ReactDOM from 'react-dom';
 import { AppContainer } from 'react-hot-loader';
 import { BrowserRouter } from 'react-router-dom';
 import * as RoutesModule from './routes';
+import { initializeMonaco } from './utils/MonacoLoader';
+
 let routes = RoutesModule.routes;
 
 function renderApp() {
@@ -26,12 +28,16 @@ function renderApp() {
     );
 }
 
-renderApp();
+initializeMonaco((monacoInitState) => {
+    console.log("initializeMonaco returned %O: calling renderApp", monacoInitState)
 
-// Allow Hot Module Replacement
-if (module.hot) {
-    module.hot.accept('./routes', () => {
-        routes = require<typeof RoutesModule>('./routes').routes;
-        renderApp();
-    });
-}
+    renderApp();
+
+    // Allow Hot Module Replacement
+    if (module.hot) {
+        module.hot.accept('./routes', () => {
+            routes = require<typeof RoutesModule>('./routes').routes;
+            renderApp();
+        });
+    }
+});

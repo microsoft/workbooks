@@ -42,6 +42,8 @@ namespace Xamarin.Interactive.Client.Web
                 app.UseExceptionHandler ("/Home/Error");
             }
 
+            app.UseMonacoMuting ();
+
             app.UseStaticFiles ();
 
             app.UseMvc (routes => {
