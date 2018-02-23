@@ -95,3 +95,16 @@
 .hidden {
     visibility: none;
 }
+
+.MonacoCellEditor-container {
+    height: 100vh;
+}
+
+.container-fluid {
+    /* Give the top container a bit of space from the top of the page */
+    margin-top: 15px;
+}
+
+.monaco-editor.mac.vs {
+    z-index: 1001;
+}

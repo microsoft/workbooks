@@ -6,7 +6,7 @@
 // Licensed under the MIT License.
 
 import * as React from 'react';
-import { CodeCell } from './CodeCell';
+import { WorkbookEditor } from './WorkbookEditor';
 import { HubConnection } from '@aspnet/signalr'
 import { StatusBar } from './StatusBar';
 
@@ -34,7 +34,7 @@ export class WorkbookShell extends React.Component {
     render() {
         return (
             <div>
-                <CodeCell />
+                <WorkbookEditor content="" />
                 <StatusBar ref={(statusBar : StatusBar | null) => this.statusBar = statusBar}/>
             </div>
         );

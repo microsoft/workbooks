@@ -8,13 +8,32 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import { MonacoCellEditor } from './MonacoCellEditor'
+import { EditorMessage } from '../utils/EditorMessages'
 
-export class CodeCell extends React.Component {
+interface CodeCellProps {
+    blockProps: {
+        editorReadOnly: (readOnly: boolean) => void,
+        subscribeToEditor: (callback: (message: EditorMessage) => void) => void,
+        selectNext: (currentKey: string) => boolean,
+        selectPrevious: (currentKey: string) => boolean,
+        updateTextContentOfBlock: (blockKey: string, textContent: string) => void,
+        setSelection: (anchorKey: string, offset: number) => void
+    }
+    block: {
+        key: string
+        text: string
+    }
+}
+
+interface CodeCellState {
+}
+
+export class CodeCell extends React.Component<CodeCellProps, CodeCellState> {
     render() {
         return (
             <div className="CodeCell-container">
-                <div className="CodeCell-editor-container">
-                    <MonacoCellEditor />
+            <div className="CodeCell-editor-container">
+                <MonacoCellEditor blockProps={this.props.blockProps} block={this.props.block} />
                 </div>
                 <div className="CodeCell-actions-container">
                     <button className="button-run btn-primary btn-small" type="button">
