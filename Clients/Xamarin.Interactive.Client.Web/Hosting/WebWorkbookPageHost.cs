@@ -15,10 +15,15 @@ namespace Xamarin.Interactive.Client.Web.Hosting
 {
     sealed class WebWorkbookPageHost : IWorkbookPageHost
     {
+        readonly IServiceProvider serviceProvider;
+
+        public WebWorkbookPageHost (IServiceProvider serviceProvider)
+            => this.serviceProvider = serviceProvider;
+
         public WorkbookPageViewModel CreatePageViewModel (
             ClientSession clientSession,
             WorkbookPage workbookPage)
-            => new WebWorkbookPageViewModel (clientSession, workbookPage);
+            => new WebWorkbookPageViewModel (serviceProvider, clientSession, workbookPage);
 
         public IEnumerable<ClientSessionTaskDelegate> GetClientSessionInitializationTasks (Uri clientWebServerUri)
             => Array.Empty<ClientSessionTaskDelegate> ();

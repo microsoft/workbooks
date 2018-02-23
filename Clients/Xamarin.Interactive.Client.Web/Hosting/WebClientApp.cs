@@ -15,6 +15,17 @@ using Xamarin.Interactive.SystemInformation;
 
 namespace Xamarin.Interactive.Client.Web.Hosting
 {
+    public sealed class WebClientAppContainer
+    {
+        internal WebClientApp ClientApp { get; }
+
+        public WebClientAppContainer ()
+        {
+            ClientApp = new WebClientApp ();
+            ClientApp.Initialize (asSharedInstance: true);
+        }
+    }
+
     sealed class WebClientApp : ClientApp
     {
         sealed class WebHostEnvironment : HostEnvironment

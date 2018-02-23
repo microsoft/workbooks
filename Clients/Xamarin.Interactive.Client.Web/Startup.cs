@@ -5,8 +5,11 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
+using System;
+
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.AspNetCore.SpaServices.Webpack;
 
 using Microsoft.Extensions.Configuration;
@@ -27,14 +30,20 @@ namespace Xamarin.Interactive.Client.Web
 
         public void ConfigureServices (IServiceCollection services)
         {
-            services.AddSingleton<WebClientAppService> ();
+            SingleThreadSynchronizationContext.StartRunLoopAsBackgroundThread ();
+            services.AddSingleton (new WebClientAppContainer ());
 
             services.AddMvc ();
 
             services.AddSignalR ();
+
+            services.AddSingleton<InteractiveSessionHubManager> ();
         }
 
-        public void Configure (IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure (
+            IApplicationBuilder app,
+            IHostingEnvironment env,
+            IServiceProvider serviceProvider)
         {
             if (env.IsDevelopment ()) {
                 app.UseDeveloperExceptionPage ();
@@ -51,7 +60,7 @@ namespace Xamarin.Interactive.Client.Web
             app.UseStaticFiles ();
 
             app.UseSignalR (routes => {
-                routes.MapHub<SessionHub> ("/session");
+                routes.MapHub<InteractiveSessionHub> ("/session");
             });
 
             app.UseMvc (routes => {

@@ -8,18 +8,23 @@
 import * as React from 'react';
 import { CodeCell } from './CodeCell';
 import { HubConnection } from '@aspnet/signalr'
+import { StatusBar } from './StatusBar';
 
 export class WorkbookShell extends React.Component {
-    private hubConnection = new HubConnection('/session')
+    private hubConnection = new HubConnection('/session');
+    private statusBar: StatusBar | null = null;
 
     componentDidMount() {
-        this.hubConnection.on('send', data => {
-            console.log('signalr: %O', data);
+        this.hubConnection.on('StatusUIAction', (action, message) => {
+            if (this.statusBar)
+                this.statusBar.update(action, message);
         });
 
         this.hubConnection
             .start()
-            .then(() => this.hubConnection.invoke('send', 'Hello from JS'));
+            .then(() => this.hubConnection.invoke(
+                'OpenSession',
+                'xamarin-interactive:///v1?agentType=DotNetCore&sessionKind=Workbook'));
     }
 
     componentWillUnmount() {
@@ -27,6 +32,11 @@ export class WorkbookShell extends React.Component {
     }
 
     render() {
-        return <CodeCell />
+        return (
+            <div>
+                <CodeCell />
+                <StatusBar ref={(statusBar : StatusBar | null) => this.statusBar = statusBar}/>
+            </div>
+        );
     }
 }
