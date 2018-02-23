@@ -92,32 +92,46 @@ export class WorkbookEditor extends React.Component<WorkbooksEditorProps, Workbo
         return null
     }
 
+    createNewEmptyBlock(currentContent: ContentState, insertBefore: boolean): ContentBlock {
+        // If this is a code block, we should insert a new block immediately after
+        const newBlock = new ContentBlock({
+            key: genKey(),
+            type: "unstyled",
+            text: "",
+            characterList: List()
+        });
+
+        const newBlockMap = currentContent.getBlockMap().set(newBlock.getKey(), newBlock)
+        const blockArray = newBlockMap.toArray();
+
+        // If we should insert the block before the current content, splice it into the 0th
+        // position in the block array.
+        if (insertBefore) {
+            const newBlockIndex = blockArray.findIndex((cb: ContentBlock, idx: number) => {
+                return cb.getKey() === newBlock.getKey();
+            });
+            blockArray.splice(newBlockIndex, 1);
+            blockArray.splice(0, 0, newBlock);
+        }
+
+        const contentState = ContentState.createFromBlockArray(blockArray, undefined);
+
+        this.setState({
+            editorState: EditorState.push(this.state.editorState, contentState, "insert-fragment"),
+        });
+        return newBlock;
+    }
+
     selectNext(currentKey: string): boolean {
         this.editorReadOnly(false)
 
-        let nextBlock = getNextBlockFor(this.getSelectionContext().currentContent, currentKey)
+        const currentContent = this.getSelectionContext().currentContent;
+        let nextBlock = getNextBlockFor(currentContent, currentKey)
         if (!nextBlock) {
-            const currentContent = this.state.editorState.getCurrentContent();
             const currentBlockType = currentContent.getBlockForKey(currentKey).getType();
-
             if (currentBlockType !== "code-block")
                 return false;
-
-            // If this is a code block, we should insert a new block immediately after
-            const newBlock = new ContentBlock({
-                key: genKey(),
-                type: "unstyled",
-                text: "",
-                characterList: List()
-            });
-
-            const newBlockMap = currentContent.getBlockMap().set(newBlock.getKey(), newBlock)
-            const contentState = ContentState.createFromBlockArray(newBlockMap.toArray(), undefined);
-
-            this.setState({
-                editorState: EditorState.push(this.state.editorState, contentState, "insert-fragment"),
-            });
-            nextBlock = newBlock;
+            nextBlock = this.createNewEmptyBlock(currentContent, false);
         }
 
         var nextSelection = SelectionState.createEmpty(nextBlock.getKey())
@@ -136,8 +150,14 @@ export class WorkbookEditor extends React.Component<WorkbooksEditorProps, Workbo
     selectPrevious(currentKey: string): boolean {
         this.editorReadOnly(false)
 
-        const nextBlock = getPrevBlockFor(this.getSelectionContext().currentContent, currentKey)
-        if (!nextBlock) return false;
+        const currentContent = this.getSelectionContext().currentContent;
+        let nextBlock = getPrevBlockFor(currentContent, currentKey)
+        if (!nextBlock) {
+            const currentBlockType = currentContent.getBlockForKey(currentKey).getType();
+            if (currentBlockType !== "code-block")
+                return false;
+            nextBlock = this.createNewEmptyBlock(currentContent, true);
+        }
         var nextSelection = SelectionState.createEmpty(nextBlock.getKey())
         nextSelection
             .set('anchorOffset', 0)
