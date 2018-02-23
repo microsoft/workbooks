@@ -106,6 +106,12 @@ export class MonacoCellEditor extends React.Component<MonacoCellEditorProps, Mon
             this.syncContent()
         })
         editor.onKeyDown(e => this.onKeyDown(e))
+        editor.onDidBlurEditor(() => {
+            this.props.blockProps.editorReadOnly(false);
+        })
+        editor.onDidFocusEditor(() => {
+            this.props.blockProps.editorReadOnly(true);
+        })
 
         const internalViewEventsHandler = {
             handleEvents: (e: any) => this.handleInternalViewEvents(e)
