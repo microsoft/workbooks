@@ -48,13 +48,6 @@ export class WorkbookEditor extends React.Component<WorkbooksEditorProps, Workbo
         }
     }
 
-    //   export() {
-    //     const content = convertToMarkdown(this.state.editorState.getCurrentContent());
-    //     console.log("Exported content:")
-    //     console.log(content)
-    //     return content
-    //   }
-
     componentDidMount() {
         this.focus()
     }
