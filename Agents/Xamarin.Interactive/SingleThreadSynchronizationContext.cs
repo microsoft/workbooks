@@ -37,5 +37,28 @@ namespace Xamarin.Interactive
         }
 
         public void Complete () => queue.CompleteAdding ();
+
+        public static void StartRunLoopAsBackgroundThread (
+            string threadName = nameof (SingleThreadSynchronizationContext) +
+                "::" + nameof (StartRunLoopAsBackgroundThread))
+        {
+            var syncContext = new SingleThreadSynchronizationContext ();
+            SetSynchronizationContext (syncContext);
+
+            using (var threadStartWait = new ManualResetEvent (false)) {
+                void Thread (object state)
+                {
+                    threadStartWait.Set ();
+                    syncContext.RunOnCurrentThread ();
+                }
+
+                new Thread (Thread) {
+                    IsBackground = true,
+                    Name = threadName
+                }.Start ();
+
+                threadStartWait.WaitOne ();
+            }
+        }
     }
 }
