@@ -46,6 +46,7 @@ using System.Runtime.CompilerServices;
 
 // tests
 [assembly: InternalsVisibleTo ("Xamarin.Interactive.Tests")]
+[assembly: InternalsVisibleTo ("Xamarin.Interactive.Tests.Core")]
 [assembly: InternalsVisibleTo ("Xamarin.Interactive.Tests.Mac")]
 [assembly: InternalsVisibleTo ("Xamarin.Interactive.Tests.Windows")]
 [assembly: InternalsVisibleTo ("Xamarin.Interactive.Tests.Android")]

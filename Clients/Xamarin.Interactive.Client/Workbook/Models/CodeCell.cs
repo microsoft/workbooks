@@ -9,6 +9,8 @@ using System;
 
 using CommonMark.Syntax;
 
+using Xamarin.Interactive.CodeAnalysis;
+
 namespace Xamarin.Interactive.Workbook.Models
 {
     sealed class CodeCell : Cell

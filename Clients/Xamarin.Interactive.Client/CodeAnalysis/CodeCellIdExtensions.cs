@@ -15,8 +15,13 @@ namespace Xamarin.Interactive.CodeAnalysis
             => new CodeCellId (documentId.ProjectId.Id, documentId.Id);
 
         public static DocumentId ToDocumentId (this CodeCellId codeCellId)
-            => DocumentId.CreateFromSerialized (
+        {
+            if (codeCellId == default)
+                return default;
+            
+            return DocumentId.CreateFromSerialized (
                 ProjectId.CreateFromSerialized (codeCellId.ProjectId),
                 codeCellId.Id);
+        }
     }
 }

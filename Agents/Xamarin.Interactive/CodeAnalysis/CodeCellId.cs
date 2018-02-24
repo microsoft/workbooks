@@ -15,6 +15,17 @@ namespace Xamarin.Interactive.CodeAnalysis
     [Serializable]
     public struct CodeCellId : IEquatable<CodeCellId>
     {
+        internal static readonly CodeCellId Empty;
+
+        internal static CodeCellId Parse (string id)
+        {
+            if (string.IsNullOrEmpty (id))
+                return Empty;
+
+            var parts = id.Split ('/');
+            return new CodeCellId (Guid.Parse (parts [0]), Guid.Parse (parts [1]));
+        }
+
         internal Guid ProjectId { get; }
         internal Guid Id { get; }
 
@@ -41,5 +52,11 @@ namespace Xamarin.Interactive.CodeAnalysis
 
         public static bool operator != (CodeCellId a, CodeCellId b)
             => !a.Equals (b);
+
+        public static implicit operator CodeCellId (string id)
+            => Parse (id);
+
+        public static implicit operator string (CodeCellId id)
+            => id.ToString ();
     }
 }

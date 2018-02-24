@@ -500,6 +500,14 @@ namespace Xamarin.Interactive.Compilation.Roslyn
             workspace.RemoveProject (project.Id);
         }
 
+        public IEnumerable<DocumentId> GetTopologicallySortedSubmissionIds ()
+            => workspace
+                .CurrentSolution
+                .GetProjectDependencyGraph ()
+                .GetTopologicallySortedProjects ()
+                .Select (workspace.CurrentSolution.GetProject)
+                .SelectMany (p => p.DocumentIds);
+
         const string assemblyNamePrefix = "🐵🐻";
         static readonly byte [] assemblyNamePrefixBytes = Encoding.UTF8.GetBytes (assemblyNamePrefix);
 

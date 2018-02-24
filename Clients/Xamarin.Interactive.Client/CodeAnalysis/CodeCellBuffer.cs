@@ -10,7 +10,9 @@ using System.Text;
 
 using Microsoft.CodeAnalysis.Text;
 
-namespace Xamarin.Interactive.Workbook.Models
+using Xamarin.Interactive.Workbook.Models;
+
+namespace Xamarin.Interactive.CodeAnalysis
 {
     sealed class CodeCellBuffer : SourceTextContainer, ICellBuffer
     {

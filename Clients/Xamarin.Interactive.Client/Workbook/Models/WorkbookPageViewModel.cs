@@ -334,15 +334,6 @@ namespace Xamarin.Interactive.Workbook.Models
 
         #region Evaluation
 
-        enum CodeCellEvaluationStatus
-        {
-            Success,
-            Disconnected,
-            Interrupted,
-            ErrorDiagnostic,
-            EvaluationException
-        }
-
         protected async Task AbortEvaluationAsync ()
         {
             if (!ClientSession.Agent.IsConnected)
@@ -554,7 +545,7 @@ namespace Xamarin.Interactive.Workbook.Models
             if (exception != null) {
                 codeCellState.View.RenderResult (
                     CultureInfo.CurrentCulture,
-                    FilterException (exception),
+                    EvaluationService.FilterException (exception),
                     EvaluationResultHandling.Replace);
                 evaluationStatus = CodeCellEvaluationStatus.EvaluationException;
             } else if (diagnostics.HasErrors) {
@@ -571,6 +562,8 @@ namespace Xamarin.Interactive.Workbook.Models
             codeCellState.NotifyEvaluated (agentTerminatedWhileEvaluating);
             return evaluationStatus;
         }
+
+        #endregion
 
         #region Evaluation Result Handling
 
@@ -606,7 +599,7 @@ namespace Xamarin.Interactive.Workbook.Models
             if (result.Exception != null)
                 codeCellState.View.RenderResult (
                     cultureInfo,
-                    FilterException (result.Exception),
+                    EvaluationService.FilterException (result.Exception),
                     result.ResultHandling);
             else if (!result.Interrupted && result.Result != null || isResultAnExpression)
                 codeCellState.View.RenderResult (
@@ -641,32 +634,6 @@ namespace Xamarin.Interactive.Workbook.Models
 
         void RenderCapturedOutputSegment (CapturedOutputSegment segment)
             => GetCodeCellStateById (segment.Context)?.View?.RenderCapturedOutputSegment (segment);
-
-        #endregion
-
-        /// <summary>
-        /// Dicards the captured traces and frames that are a result of compiler-generated
-        /// code to host the submission so we only render frames the user might actually expect.
-        /// </summary>
-        static ExceptionNode FilterException (ExceptionNode exception)
-        {
-            try {
-                var capturedTraces = exception?.StackTrace?.CapturedTraces;
-                if (capturedTraces == null || capturedTraces.Count != 2)
-                    return exception;
-
-                var submissionTrace = capturedTraces [0];
-                exception.StackTrace = exception.StackTrace.WithCapturedTraces (new [] {
-                    submissionTrace.WithFrames (
-                        submissionTrace.Frames.Take (submissionTrace.Frames.Count - 1))
-                });
-
-                return exception;
-            } catch (Exception e) {
-                Log.Error (TAG, $"error filtering ExceptionNode [[{exception}]]", e);
-                return exception;
-            }
-        }
 
         #endregion
     }

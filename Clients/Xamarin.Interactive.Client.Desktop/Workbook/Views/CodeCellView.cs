@@ -43,7 +43,7 @@ namespace Xamarin.Interactive.Workbook.Views
         public CodeCell Cell => codeCell;
 
         public CodeCellView (
-            CodeCellState codeCellState,
+            Models.CodeCellState codeCellState,
             CodeCell codeCell,
             HtmlDocument document,
             RendererContext rendererContext) : base (

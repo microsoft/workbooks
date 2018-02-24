@@ -46,7 +46,7 @@ namespace Xamarin.Interactive.Workbook.Views
         #pragma warning restore 0414
 
         Cell focusedWorkbookCell;
-        CodeCellState focusedCellState;
+        Models.CodeCellState focusedCellState;
 
         CompletionProvider completionProvider;
         SignatureHelpProvider signatureHelpProvider;
@@ -196,7 +196,7 @@ namespace Xamarin.Interactive.Workbook.Views
             cell.View = view;
         }
 
-        protected override void BindCodeCellToView (CodeCell cell, CodeCellState codeCellState)
+        protected override void BindCodeCellToView (CodeCell cell, Models.CodeCellState codeCellState)
         {
             var codeCellView = new CodeCellView (
                 codeCellState,
@@ -292,7 +292,7 @@ namespace Xamarin.Interactive.Workbook.Views
             }
         }
 
-        void HandleFocusEvent (EditorEvent evnt, CodeCellState sourceCodeCellState)
+        void HandleFocusEvent (EditorEvent evnt, Models.CodeCellState sourceCodeCellState)
         {
             var sourceCell = ((CellEditorView)evnt.Source).Cell;
 
