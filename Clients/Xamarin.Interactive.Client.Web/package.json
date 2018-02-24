@@ -35,7 +35,10 @@
   },
   "dependencies": {
     "@aspnet/signalr": "^1.0.0-preview2-30131",
+    "@types/markdown-it": "0.0.4",
     "draft-js": "^0.10.5",
+    "immutable": "^3.8.2",
+    "markdown-it": "^8.4.1",
     "monaco-editor": "^0.10.1"
   }
 }
