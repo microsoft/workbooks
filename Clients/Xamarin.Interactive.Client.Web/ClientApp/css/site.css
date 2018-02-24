@@ -108,3 +108,12 @@
 .monaco-editor.mac.vs {
     z-index: 1001;
 }
+
+.public-DraftStyleDefault-pre,
+.public-DraftStyleDefault-pre > pre {
+    border: none;
+    border-radius: 0;
+    background: transparent;
+    margin: 0;
+    padding: 0;
+}
