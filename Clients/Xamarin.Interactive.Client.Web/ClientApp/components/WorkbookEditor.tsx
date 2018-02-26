@@ -13,6 +13,7 @@ import {
 } from 'draft-js'
 import { List } from 'immutable'
 import { CodeCell } from './CodeCell'
+import { WorkbookSession } from '../WorkbookSession'
 import { EditorMessage, EditorMessageType, EditorKeys } from '../utils/EditorMessages'
 import { getNextBlockFor, getPrevBlockFor, isBlockBackwards } from '../utils/DraftStateUtils'
 import { EditorMenu, getBlockStyle, styleMap } from './Menu'
@@ -20,6 +21,7 @@ import { EditorMenu, getBlockStyle, styleMap } from './Menu'
 import { convertToMarkdown } from '../utils/draftExportUtils'*/
 
 interface WorkbooksEditorProps {
+    session: WorkbookSession
     content: string | undefined
 }
 
@@ -33,7 +35,7 @@ export class WorkbookEditor extends React.Component<WorkbooksEditorProps, Workbo
     subscriptors: ((m: EditorMessage) => void)[];
 
     constructor(props: WorkbooksEditorProps) {
-        super(props)
+        super(props);
 
         this.subscriptors = []
         this.lastFocus = undefined
@@ -72,10 +74,12 @@ export class WorkbookEditor extends React.Component<WorkbooksEditorProps, Workbo
 
     blockRenderer(block: Draft.ContentBlock) {
         if (block.getType() === 'code-block') {
+            console.log("WTF blockrenderer: %O", this.props.session)
             return {
                 component: CodeCell,
                 editable: false,
                 props: {
+                    session: this.props.session,
                     editorReadOnly: (readOnly: boolean) => this.editorReadOnly(readOnly),
                     subscribeToEditor: (callback: () => void) => this.addMessageSubscriber(callback),
                     selectNext: (currentKey: string) => this.selectNext(currentKey),

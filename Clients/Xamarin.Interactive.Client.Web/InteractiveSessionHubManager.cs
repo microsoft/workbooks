@@ -12,15 +12,19 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.SignalR;
 
 using Xamarin.Interactive.Client.Web.Models;
+using Xamarin.Interactive.CodeAnalysis;
+using Xamarin.Interactive.CodeAnalysis.Events;
 using Xamarin.Interactive.Messages;
 
 namespace Xamarin.Interactive.Client.Web
 {
     public sealed class InteractiveSessionHubManager : DefaultHubLifetimeManager<InteractiveSessionHub>
     {
-        sealed class SessionState : IDisposable
+        internal sealed class SessionState : IDisposable
         {
             public ClientSession ClientSession { get; set; }
+            public EvaluationService EvaluationService { get; set; }
+            public Observer<ICodeCellEvent> EvaluationEventObserver { get; set; }
 
             public void Dispose ()
             {
@@ -49,8 +53,18 @@ namespace Xamarin.Interactive.Client.Web
 
         internal void BindClientSession (ClientConnectionId connectionId, ClientSession clientSession)
         {
-            if (sessions.TryGetValue (connectionId, out var sessionState))
+            if (sessions.TryGetValue (connectionId, out var sessionState)) {
                 sessionState.ClientSession = clientSession;
+
+                sessionState.EvaluationEventObserver = new Observer<ICodeCellEvent> (evnt => {
+                    Console.WriteLine ("OMG: {0}", evnt);
+                });
+
+                if (sessionState.ClientSession.EvaluationService is EvaluationService evaluationService) {
+                    sessionState.EvaluationService = evaluationService;
+                    evaluationService.Events.Subscribe (sessionState.EvaluationEventObserver);
+                }
+            }
         }
 
         internal void SendStatusUIAction (
@@ -61,5 +75,8 @@ namespace Xamarin.Interactive.Client.Web
                 connectionId,
                 "statusUIAction",
                 new object [] { action, message }).Forget ();
+
+        internal SessionState GetSession (ClientConnectionId connectionId)
+            => sessions.TryGetValue (connectionId, out var session) ? session : null;
     }
 }

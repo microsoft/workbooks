@@ -7,18 +7,7 @@
 
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-
-export const enum StatusUIAction {
-    None,
-    DisplayIdle,
-    DisplayMessage,
-    StartSpinner,
-    StopSpinner
-}
-
-export interface StatusMessage {
-    text: string | null
-}
+import { StatusMessage, StatusUIAction } from '../WorkbookSession';
 
 interface StatusBarState {
     visible: boolean;

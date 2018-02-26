@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.SignalR;
 
 using Xamarin.Interactive.Client.Web.Hosting;
+using Xamarin.Interactive.CodeAnalysis;
 
 namespace Xamarin.Interactive.Client.Web
 {
@@ -19,7 +20,9 @@ namespace Xamarin.Interactive.Client.Web
         readonly IServiceProvider serviceProvider;
 
         public InteractiveSessionHub (IServiceProvider serviceProvider)
-            => this.serviceProvider = serviceProvider;
+        {
+            this.serviceProvider = serviceProvider;
+        }
 
         public override Task OnConnectedAsync ()
         {
@@ -46,17 +49,52 @@ namespace Xamarin.Interactive.Client.Web
 
             var connectionId = Context.ConnectionId;
 
-            MainThread.Post (() => {
-                var session = new ClientSession (uri);
-                session.InitializeViewControllers (new WebClientSessionViewControllers (connectionId, serviceProvider));
-                session.InitializeAsync (new WebWorkbookPageHost (serviceProvider)).ContinueWith (o => {
-                    serviceProvider
-                        .GetInteractiveSessionHubManager ()
-                        .BindClientSession (connectionId, session);
-                });
-            });
+            MainThread.Post (() => InitializeClientSessionAsync (connectionId, new ClientSession (uri)).Forget ());
 
             return Task.CompletedTask;
+        }
+
+        async Task InitializeClientSessionAsync (string connectionId, ClientSession session)
+        {
+            session.InitializeViewControllers (new WebClientSessionViewControllers (connectionId, serviceProvider));
+            await session.InitializeAsync ();
+            await session.EnsureAgentConnectionAsync ();
+
+            serviceProvider
+                .GetInteractiveSessionHubManager ()
+                .BindClientSession (connectionId, session);
+        }
+
+        public async Task<string> InsertCodeCell (
+            string initialBuffer,
+            string relativeToCodeCellId,
+            bool insertBefore)
+        {
+            var sessionState = serviceProvider
+                .GetInteractiveSessionHubManager ()
+                .GetSession (Context.ConnectionId);
+
+            var codeCellState = await sessionState
+                .EvaluationService
+                .InsertCodeCellAsync (
+                    initialBuffer,
+                    relativeToCodeCellId,
+                    insertBefore,
+                    Context.Connection.ConnectionAbortedToken);
+
+            return codeCellState.Id;
+        }
+
+        public Task Evaluate (string targetCodeCellId, bool evaluateAll)
+        {
+            var sessionState = serviceProvider
+                .GetInteractiveSessionHubManager ()
+                .GetSession (Context.ConnectionId);
+
+            return sessionState.EvaluationService.EvaluateAsync (
+                targetCodeCellId,
+                evaluateAll,
+                Context.Connection.ConnectionAbortedToken);
         }
     }
 }
