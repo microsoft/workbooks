@@ -68,7 +68,7 @@ namespace Xamarin.Interactive.Client
         AgentConnection agent;
         public IAgentConnection Agent => agent;
 
-        public WorkbookPageViewModel WorkbookPageViewModel { get; private set; }
+        public IEvaluationService EvaluationService { get; private set; }
         public WorkbookPackage Workbook { get; }
         public WorkbookAppInstallation WorkbookApp { get; private set; }
         public RoslynCompilationWorkspace CompilationWorkspace { get; private set; }
@@ -76,8 +76,8 @@ namespace Xamarin.Interactive.Client
 
         public bool CanEvaluate
             => CompilationWorkspace != null &&
-               WorkbookPageViewModel != null &&
-               WorkbookPageViewModel.CanEvaluate;
+               EvaluationService != null &&
+               EvaluationService.CanEvaluate;
 
         sealed class ViewControllersProxy : IClientSessionViewControllers
         {
@@ -132,7 +132,7 @@ namespace Xamarin.Interactive.Client
             ResetAgentConnection ();
             cancellationTokenSource.Cancel ();
             observable.Observers.OnCompleted ();
-            WorkbookPageViewModel?.Dispose ();
+            EvaluationService?.Dispose ();
         }
 
         public void InitializeViewControllers (IClientSessionViewControllers viewControllers)
@@ -161,7 +161,7 @@ namespace Xamarin.Interactive.Client
 
         void WorkbookTargets_PropertyChanged (object sender, PropertyChangedEventArgs e)
         {
-            WorkbookPageViewModel.OutdateAllCodeCells ();
+            EvaluationService.OutdateAllCodeCells ();
 
             var selectedTarget = ViewControllers.WorkbookTargets.SelectedTarget;
             if (selectedTarget == null)
@@ -237,11 +237,8 @@ namespace Xamarin.Interactive.Client
                 throw new InvalidOperationException ("not a workbook session");
         }
 
-        public async Task InitializeAsync (IWorkbookPageHost workbookPageViewHost)
+        public async Task InitializeAsync (IWorkbookPageHost workbookPageViewHost = null)
         {
-            if (workbookPageViewHost == null)
-                throw new ArgumentNullException (nameof (workbookPageViewHost));
-
             var genericLoadingMessage = SessionKind == ClientSessionKind.Workbook
                 ? Catalog.GetString ("Loading workbook…")
                 : Catalog.GetString ("Loading session…");
@@ -250,20 +247,27 @@ namespace Xamarin.Interactive.Client
                 ClientSessionTask.CreateRequired (genericLoadingMessage, LoadWorkbookAsync)
             };
 
-            initializers.AddRange (
-                workbookPageViewHost
-                    .GetClientSessionInitializationTasks (clientWebServerUri)
-                    .Select (t => ClientSessionTask.CreateRequired (genericLoadingMessage, t)));
+            if (workbookPageViewHost != null) {
+                initializers.AddRange (
+                    workbookPageViewHost
+                        .GetClientSessionInitializationTasks (clientWebServerUri)
+                        .Select (t => ClientSessionTask.CreateRequired (genericLoadingMessage, t)));
 
-            Task LoadWorkbookPageViewAsync (CancellationToken cancellationToken)
-            {
-                WorkbookPageViewModel = workbookPageViewHost.CreatePageViewModel (this, Workbook.IndexPage);
-                WorkbookPageViewModel.LoadWorkbookPage ();
-                Subscribe (WorkbookPageViewModel);
-                return Task.CompletedTask;
+                Task LoadWorkbookPageViewAsync (CancellationToken cancellationToken)
+                {
+                    var pageViewModel = workbookPageViewHost.CreatePageViewModel (this, Workbook.IndexPage);
+                    EvaluationService = pageViewModel;
+
+                    pageViewModel.LoadWorkbookPage ();
+
+                    if (pageViewModel is IObserver<ClientSessionEvent> observer)
+                        Subscribe (observer);
+
+                    return Task.CompletedTask;
+                }
+
+                initializers.Add (ClientSessionTask.CreateRequired (genericLoadingMessage, LoadWorkbookPageViewAsync));
             }
-
-            initializers.Add (ClientSessionTask.CreateRequired (genericLoadingMessage, LoadWorkbookPageViewAsync));
 
             var initializeException = await RunInitializers (initializers);
 
@@ -313,8 +317,12 @@ namespace Xamarin.Interactive.Client
 
         async Task InitializeAgentConnectionAsync ()
         {
-            using (WorkbookPageViewModel.InhibitEvaluate ())
+            if (EvaluationService != null) {
+                using (EvaluationService.InhibitEvaluate ())
+                    await DoInitalizeAgentConnectionAsync ();
+            } else {
                 await DoInitalizeAgentConnectionAsync ();
+            }
         }
 
         // Only call from InitializeAgentConnectionAsync
@@ -330,8 +338,14 @@ namespace Xamarin.Interactive.Client
 
                 using (ViewControllers.Messages.PushMessage (
                     Message.CreateInfoStatus (
-                        Catalog.GetString ("Preparing workspace…"), showSpinner: true)))
+                        Catalog.GetString ("Preparing workspace…"), showSpinner: true))) {
                     await InitializeCompilationWorkspaceAsync (CancellationToken);
+                    if (EvaluationService == null)
+                        EvaluationService = new EvaluationService (
+                            CompilationWorkspace,
+                            new EvaluationEnvironment (WorkingDirectory),
+                            agent);
+                }
             } catch (Exception e) {
                 Log.Error (TAG, e);
                 ViewControllers.Messages.PushMessage (WithReconnectSessionAction (e
@@ -465,7 +479,7 @@ namespace Xamarin.Interactive.Client
             var disconnectedAgent = agent;
 
             ResetAgentConnection ();
-            WorkbookPageViewModel.OutdateAllCodeCells ();
+            EvaluationService.OutdateAllCodeCells ();
 
             PostEvent (ClientSessionEventKind.AgentDisconnected);
 
@@ -714,7 +728,7 @@ namespace Xamarin.Interactive.Client
                                 continue;
 
                             if (AddNuGetWebResource (dependency.Location, out var id))
-                                await WorkbookPageViewModel.LoadWorkbookDependencyAsync ($"/static/{id}");
+                                await EvaluationService.LoadWorkbookDependencyAsync ($"/static/{id}");
                         }
                     }
                 }
@@ -784,7 +798,7 @@ namespace Xamarin.Interactive.Client
             }
 
             if (referenceBuffer.Length > 0)
-                await WorkbookPageViewModel.EvaluateAsync (referenceBuffer.ToString (), cancellationToken);
+                await EvaluationService.EvaluateAsync (referenceBuffer.ToString (), cancellationToken);
         }
 
         async Task RestorePackagesAsync (

@@ -28,7 +28,7 @@ using Xamarin.Interactive.Workbook.Views;
 
 namespace Xamarin.Interactive.Workbook.Models
 {
-    abstract class WorkbookPageViewModel : IObserver<ClientSessionEvent>, IDisposable
+    abstract class WorkbookPageViewModel : IObserver<ClientSessionEvent>, IEvaluationService
     {
         const string TAG = nameof (WorkbookPageViewModel);
 
@@ -99,7 +99,9 @@ namespace Xamarin.Interactive.Workbook.Models
 
         public bool CanEvaluate => !evaluationInhibitor.IsInhibited;
 
-        public virtual Task LoadWorkbookDependencyAsync (string dependency)
+        public virtual Task LoadWorkbookDependencyAsync (
+            string dependency,
+            CancellationToken cancellationToken = default)
             => Task.CompletedTask;
 
         #endregion
@@ -343,7 +345,7 @@ namespace Xamarin.Interactive.Workbook.Models
                 ClientSession.CompilationWorkspace.EvaluationContextId);
         }
 
-        public async Task EvaluateAllAsync ()
+        public async Task EvaluateAllAsync (CancellationToken cancellationToken = default)
         {
             var firstCell = WorkbookPage.Contents.GetFirstCell<CodeCell> ();
             if (firstCell?.View?.Editor == null)
