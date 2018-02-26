@@ -1,6 +1,6 @@
 import * as React from 'react'
+import Editor from 'draft-js-plugins-editor'
 import {
-    Editor,
     EditorState,
     SelectionState,
     ContentState,
@@ -11,6 +11,7 @@ import {
     genKey,
     ContentBlock
 } from 'draft-js'
+import createMarkdownPlugin from 'draft-js-markdown-plugin'
 import { List } from 'immutable'
 import { CodeCell } from './CodeCell'
 import { WorkbookSession } from '../WorkbookSession'
@@ -27,6 +28,7 @@ interface WorkbooksEditorProps {
 
 interface WorkbooksEditorState {
     editorState: EditorState,
+    plugins: any[],
     readOnly: boolean
 }
 
@@ -44,6 +46,7 @@ export class WorkbookEditor extends React.Component<WorkbooksEditorProps, Workbo
 
         this.state = {
             editorState: editorState,
+            plugins: [createMarkdownPlugin()],
             readOnly: false
         }
     }
@@ -340,27 +343,25 @@ export class WorkbookEditor extends React.Component<WorkbooksEditorProps, Workbo
                     onToggleInline={(type: string) => this.toggleInlineStyle(type)}
                 />
                 <br />
+                <button type="button" className="btn btn-primary" onClick={() => this.logContent()}>Log Draft blocks to console</button>
+                <br /><br />
                 <div className={className} onClick={(e) => this.focus(e)}>
                     <Editor
                         ref="editor"
                         placeholder=""
                         spellCheck={false}
                         readOnly={this.state.readOnly}
-                        blockRendererFn={(block) => this.blockRenderer(block)}
+                        blockRendererFn={(block: Draft.ContentBlock) => this.blockRenderer(block)}
                         blockStyleFn={getBlockStyle}
                         customStyleMap={styleMap}
                         editorState={this.state.editorState}
-                        onChange={(s) => this.onChange(s)}
-                        keyBindingFn={(e) => this.editorKeyBinding(e)}
-                        handleKeyCommand={(e) => this.handleKeyCommand(e)}
-                        onUpArrow={(e) => this.onArrow(EditorKeys.UP, e)}
-                        onDownArrow={(e) => this.onArrow(EditorKeys.DOWN, e)}
+                        onChange={(s: EditorState) => this.onChange(s)}
+                        plugins={this.state.plugins}
+                        keyBindingFn={(e: any) => this.editorKeyBinding(e)}
+                        handleKeyCommand={(e: string) => this.handleKeyCommand(e)}
+                        onUpArrow={(e: React.KeyboardEvent<{}>) => this.onArrow(EditorKeys.UP, e)}
+                        onDownArrow={(e: React.KeyboardEvent<{}>) => this.onArrow(EditorKeys.DOWN, e)}
                     />
-                </div>
-                <div>
-                    <hr />
-                    <code>dev tools</code>
-                    <i style={{ cursor: 'pointer', padding: 5 }} className="fa fa-terminal" onClick={() => this.logContent()}></i>
                 </div>
             </div>
         )

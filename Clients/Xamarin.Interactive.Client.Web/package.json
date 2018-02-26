@@ -39,6 +39,8 @@
     "draft-js": "^0.10.5",
     "immutable": "^3.8.2",
     "markdown-it": "^8.4.1",
+    "draft-js-markdown-plugin": "^1.1.1",
+    "draft-js-plugins-editor": "^2.0.4",
     "monaco-editor": "^0.10.1"
   }
 }

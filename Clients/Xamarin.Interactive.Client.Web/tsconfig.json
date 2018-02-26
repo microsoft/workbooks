@@ -14,5 +14,10 @@
   "exclude": [
       "bin",
       "node_modules"
+  ],
+  "include": [
+    "./ClientApp/typings/draft-js-plugins-editor.d.ts",
+    "**/*.ts",
+    "**/*.tsx"
   ]
 }
