@@ -174,6 +174,10 @@ namespace Xamarin.Interactive.Compilation
             TargetCompilationConfiguration configuration,
             AgentType agentType)
         {
+            if (System.Runtime.InteropServices.RuntimeInformation.FrameworkDescription.StartsWith (
+                ".NET Core", StringComparison.OrdinalIgnoreCase))
+                return typeof (object);
+
             using (var assemblyContext = new EvaluationAssemblyContext ()) {
                 string globalStateAssemblyCachePath = null;
                 if (configuration.GlobalStateAssembly.Content.PEImage != null)
