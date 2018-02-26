@@ -124,6 +124,7 @@ export class MonacoCellEditor extends React.Component<MonacoCellEditorProps, Mon
 
         setTimeout(() => {
             this.updateLayout()
+            this.focus()
         }, 0)
 
         elem.appendChild(targetElem)
