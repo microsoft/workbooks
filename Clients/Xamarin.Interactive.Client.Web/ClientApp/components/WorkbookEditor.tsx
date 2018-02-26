@@ -67,7 +67,6 @@ export class WorkbookEditor extends React.Component<WorkbooksEditorProps, Workbo
 
     blockRenderer(block: Draft.ContentBlock) {
         if (block.getType() === 'code-block') {
-            console.log("WTF blockrenderer: %O", this.props.session)
             return {
                 component: CodeCell,
                 editable: false,

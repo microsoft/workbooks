@@ -9,11 +9,12 @@ using System;
 
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.SignalR;
 using Microsoft.AspNetCore.SpaServices.Webpack;
 
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+
+using Newtonsoft.Json;
 
 using Xamarin.Interactive.Client.Web.Hosting;
 
@@ -35,7 +36,11 @@ namespace Xamarin.Interactive.Client.Web
 
             services.AddMvc ();
 
-            services.AddSignalR ();
+            services
+                .AddSignalR ()
+                .AddJsonProtocol (options => {
+                    options.PayloadSerializerSettings.TypeNameHandling = TypeNameHandling.Objects;
+                });
 
             services.AddSingleton<InteractiveSessionHubManager> ();
         }

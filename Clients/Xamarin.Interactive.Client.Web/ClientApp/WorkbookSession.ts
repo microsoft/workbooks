@@ -24,6 +24,9 @@ export class WorkbookSession {
 
     constructor(statusUIActionHandler: (action: StatusUIAction, message: StatusMessage | null) => void) {
         this.hubConnection.on('StatusUIAction', statusUIActionHandler)
+        this.hubConnection.on('EvaluationEvent', (e: any) => {
+            console.log('got result: %O', e);
+        });
     }
 
     onCodeCellEvent() {
@@ -33,8 +36,12 @@ export class WorkbookSession {
         return this.hubConnection.invoke('InsertCodeCell', '', null, false)
     }
 
-    updateCodeCell(codeCellId: string, buffer: string) {
+    updateCodeCell(codeCellId: string, buffer: string): Promise<void> {
         return this.hubConnection.invoke('UpdateCodeCell', codeCellId, buffer)
+    }
+
+    evaluate(codeCellId: string, evaluateAll: boolean = false) {
+        return this.hubConnection.invoke('Evaluate', codeCellId, evaluateAll)
     }
 
     connect() {

@@ -55,6 +55,13 @@ export class CodeCell extends React.Component<CodeCellProps, CodeCellState> {
                 this.props.block.text)
     }
 
+    async evaluate() {
+        if (this.state.codeCellId) {
+            console.log('eval: %O', this.state.codeCellId)
+            await this.session.evaluate(this.state.codeCellId)
+        }
+    }
+
     render() {
         return (
             <div className="CodeCell-container">
@@ -64,7 +71,10 @@ export class CodeCell extends React.Component<CodeCellProps, CodeCellState> {
                         block={this.props.block} />
                 </div>
                 <div className="CodeCell-actions-container">
-                    <button className="button-run btn-primary btn-small" type="button">
+                    <button
+                        className="button-run btn-primary btn-small"
+                        type="button"
+                        onClick={e => this.evaluate()}>
                         Run
                     </button>
                 </div>

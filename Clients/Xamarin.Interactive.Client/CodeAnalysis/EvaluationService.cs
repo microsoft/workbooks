@@ -70,6 +70,8 @@ namespace Xamarin.Interactive.CodeAnalysis
 
             this.evaluationEnvironment = evaluationEnvironment;
             this.agentConnection = agentConnection;
+
+            this.agentConnection.Api.Messages.Subscribe (new Observer<object> (OnAgentMessage));
         }
 
         #region IEvaluationService
@@ -94,6 +96,19 @@ namespace Xamarin.Interactive.CodeAnalysis
 
         public Task EvaluateAllAsync (CancellationToken cancellationToken = default)
             => throw new NotImplementedException ();
+
+        #endregion
+
+        #region Agent Messages
+
+        void OnAgentMessage (object message)
+        {
+            if (message is Evaluation evaluation)
+                events.Observers.OnNext (new CodeCellResultEvent (
+                    evaluation.CodeCellId,
+                    evaluation.Result,
+                    evaluation.ResultHandling));
+        }
 
         #endregion
 
