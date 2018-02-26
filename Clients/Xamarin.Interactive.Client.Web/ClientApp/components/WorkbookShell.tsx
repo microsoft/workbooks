@@ -25,7 +25,6 @@ export class WorkbookShell extends React.Component {
     }
 
     componentDidMount() {
-        console.log("connect!")
         this.session.connect()
     }
 

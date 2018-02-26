@@ -85,6 +85,18 @@ namespace Xamarin.Interactive.Client.Web
             return codeCellState.Id;
         }
 
+        public Task UpdateCodeCell (
+            string codeCellId,
+            string updatedBuffer)
+            => serviceProvider
+                .GetInteractiveSessionHubManager ()
+                .GetSession (Context.ConnectionId)
+                .EvaluationService
+                .UpdateCodeCellAsync (
+                    codeCellId,
+                    updatedBuffer,
+                    Context.Connection.ConnectionAbortedToken);
+
         public Task Evaluate (string targetCodeCellId, bool evaluateAll)
         {
             var sessionState = serviceProvider

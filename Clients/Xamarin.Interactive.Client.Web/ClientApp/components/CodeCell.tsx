@@ -28,19 +28,40 @@ interface CodeCellProps {
 }
 
 interface CodeCellState {
+    codeCellId: string | null
 }
 
 export class CodeCell extends React.Component<CodeCellProps, CodeCellState> {
+    private session: WorkbookSession
+
     constructor(props: CodeCellProps) {
         super(props)
-        props.blockProps.session.insertCodeCell().then(codeCellId => console.log("ID: %O", codeCellId))
+        this.state = {
+            codeCellId: null
+        }
+        this.session = props.blockProps.session
+    }
+
+    async componentDidMount() {
+        this.setState({
+            codeCellId: await this.session.insertCodeCell()
+        });
+    }
+
+    async componentDidUpdate() {
+        if (this.state.codeCellId)
+            await this.session.updateCodeCell(
+                this.state.codeCellId,
+                this.props.block.text)
     }
 
     render() {
         return (
             <div className="CodeCell-container">
-            <div className="CodeCell-editor-container">
-                <MonacoCellEditor blockProps={this.props.blockProps} block={this.props.block} />
+                <div className="CodeCell-editor-container">
+                    <MonacoCellEditor
+                        blockProps={this.props.blockProps}
+                        block={this.props.block} />
                 </div>
                 <div className="CodeCell-actions-container">
                     <button className="button-run btn-primary btn-small" type="button">

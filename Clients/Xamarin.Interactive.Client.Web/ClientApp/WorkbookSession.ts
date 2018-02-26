@@ -33,6 +33,10 @@ export class WorkbookSession {
         return this.hubConnection.invoke('InsertCodeCell', '', null, false)
     }
 
+    updateCodeCell(codeCellId: string, buffer: string) {
+        return this.hubConnection.invoke('UpdateCodeCell', codeCellId, buffer)
+    }
+
     connect() {
         this.hubConnection
             .start()
