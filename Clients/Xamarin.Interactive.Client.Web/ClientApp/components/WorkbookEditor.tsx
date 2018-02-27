@@ -119,6 +119,8 @@ export class WorkbookEditor extends React.Component<WorkbooksEditorProps, Workbo
                     selectPrevious: (currentKey: string) => this.selectPrevious(currentKey),
                     updateTextContentOfBlock: (blockKey: string, textContent: string) => this.updateTextContentOfBlock(blockKey, textContent),
                     setSelection: (anchorKey: string, offset: number) => this.setSelection(anchorKey, offset),
+                    getPreviousCodeBlock: (currentBlock: string) => this.getPreviousCodeBlock(currentBlock),
+                    updateBlockCodeCellId: (currentBlock: string, codeCellId: string) => this.updateBlockCodeCellId(currentBlock, codeCellId),
                 }
             }
         }
@@ -138,6 +140,27 @@ export class WorkbookEditor extends React.Component<WorkbooksEditorProps, Workbo
                 return mapping.codeCellId
 
         return null
+    }
+    
+    updateBlockCodeCellId(currentBlock: string, codeCellId: string) {
+        // FIXME: In the future, we should try not to reconstruct the entire state.
+        const content = this.state.editorState.getCurrentContent();
+        const block = content.getBlockForKey(currentBlock);
+        const newBlockData = (block.get("data") as Map<string, any>).set("codeCellId", codeCellId);
+        const newBlock = block.set("data", newBlockData) as ContentBlock;
+        const newBlockMap = content.getBlockMap().set(currentBlock, newBlock);
+        const newContent = ContentState.createFromBlockArray(newBlockMap.toArray());
+        this.setState({
+            editorState: EditorState.push(this.state.editorState, newContent, "change-block-data"),
+        });
+    }
+
+    getPreviousCodeBlock(currentBlock: string) {
+        const codeBlocks = this.state.editorState.getCurrentContent().getBlocksAsArray().filter((block: ContentBlock) => {
+            return block.getType() === "code-block"
+        });
+        const currentBlockIndex = codeBlocks.findIndex((block: ContentBlock) => block.getKey() == currentBlock);
+        return codeBlocks[currentBlockIndex - 1];
     }
 
     createNewEmptyBlock(currentContent: ContentState, insertBefore: boolean): ContentBlock {

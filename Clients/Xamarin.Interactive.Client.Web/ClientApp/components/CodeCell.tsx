@@ -10,6 +10,7 @@ import * as ReactDOM from 'react-dom';
 import { WorkbookSession, CodeCellStatus } from '../WorkbookSession'
 import { CodeCellResult, CodeCellResultHandling } from '../evaluation'
 import { MonacoCellEditor, MonacoCellEditorProps } from './MonacoCellEditor'
+import { ContentBlock } from 'draft-js';
 import { EditorMessage } from '../utils/EditorMessages'
 import { WorkbookShellContext } from './WorkbookShell'
 import { ResultRendererRepresentation } from '../rendering';
@@ -25,7 +26,9 @@ interface CodeCellProps {
         selectNext: (currentKey: string) => boolean,
         selectPrevious: (currentKey: string) => boolean,
         updateTextContentOfBlock: (blockKey: string, textContent: string) => void,
-        setSelection: (anchorKey: string, offset: number) => void
+        setSelection: (anchorKey: string, offset: number) => void,
+        getPreviousCodeBlock: (currentBlock: string) => ContentBlock,
+        updateBlockCodeCellId: (currentBlock: string, codeCellId: string) => void,
     }
     block: {
         key: string
@@ -77,11 +80,13 @@ export class CodeCell extends React.Component<CodeCellProps, CodeCellState> {
     async componentDidMount() {
         this.shellContext.session.evaluationEvent.addListener(this.evaluationEventHandler.bind(this))
 
-        var codeCellId = await this.shellContext.session.insertCodeCell()
-
+        const previousBlock = this.props.blockProps.getPreviousCodeBlock(this.props.block.key);
+        const previousBlockCodeCellId = previousBlock ? previousBlock.getData().get("codeCellId") : undefined;
+        const codeCellId = await this.shellContext.session.insertCodeCell(previousBlockCodeCellId);
         this.setState({
-            codeCellId: codeCellId
+            codeCellId
         });
+        this.props.blockProps.updateBlockCodeCellId(this.props.block.key, codeCellId);
 
         this.props.blockProps.cellMapper.registerCellInfo(
             codeCellId, this.monacoModelId)
