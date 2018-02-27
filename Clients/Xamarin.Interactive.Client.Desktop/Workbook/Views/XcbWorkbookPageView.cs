@@ -170,7 +170,9 @@ namespace Xamarin.Interactive.Workbook.Views
                 getSourceTextByModelId);
         }
 
-        public override Task LoadWorkbookDependencyAsync (string dependency)
+        public override Task LoadWorkbookDependencyAsync (
+            string dependency,
+            CancellationToken cancellationToken)
         {
             var tcs = new TaskCompletionSource ();
             try {
@@ -183,7 +185,7 @@ namespace Xamarin.Interactive.Workbook.Views
             return tcs.Task;
         }
 
-        protected override CodeCellState StartNewCodeCell ()
+        protected override Xamarin.Interactive.Workbook.Models.CodeCellState StartNewCodeCell ()
             => focusedCellState = base.StartNewCodeCell ();
 
         protected override void BindMarkdownCellToView (MarkdownCell cell)
