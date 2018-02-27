@@ -9,10 +9,11 @@ import {
     KeyBindingUtil,
     Modifier,
     genKey,
-    ContentBlock
+    ContentBlock,
+    DefaultDraftBlockRenderMap
 } from 'draft-js'
 import createMarkdownPlugin from 'draft-js-markdown-plugin'
-import { List } from 'immutable'
+import { List, Map } from 'immutable'
 import { CodeCell } from './CodeCell'
 import { WorkbookSession } from '../WorkbookSession'
 import { EditorMessage, EditorMessageType, EditorKeys } from '../utils/EditorMessages'
@@ -31,6 +32,12 @@ interface WorkbooksEditorState {
     plugins: any[],
     readOnly: boolean
 }
+
+const blockRenderMap = DefaultDraftBlockRenderMap.merge(Map({
+    'code-block': {
+        element: 'div'
+    }
+}));
 
 export class WorkbookEditor extends React.Component<WorkbooksEditorProps, WorkbooksEditorState> {
     lastFocus?: Date;
@@ -351,6 +358,7 @@ export class WorkbookEditor extends React.Component<WorkbooksEditorProps, Workbo
                         placeholder=""
                         spellCheck={false}
                         readOnly={this.state.readOnly}
+                        blockRenderMap={blockRenderMap}
                         blockRendererFn={(block: Draft.ContentBlock) => this.blockRenderer(block)}
                         blockStyleFn={getBlockStyle}
                         customStyleMap={styleMap}
