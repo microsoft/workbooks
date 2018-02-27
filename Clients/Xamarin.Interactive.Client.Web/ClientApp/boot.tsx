@@ -6,6 +6,9 @@
 // Licensed under the MIT License.
 
 import './css/site.css';
+import './css/CodeEditor.scss';
+import './css/CodeCell.scss';
+
 import 'bootstrap';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';

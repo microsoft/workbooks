@@ -21,7 +21,7 @@ indent_size = 2
 indent_size = 2
 
 # Web files
-[*.{json,html}]
+[*.{json,html,css,scss}]
 indent_size = 2
 
 # TypeScript

@@ -70,14 +70,6 @@
     overflow: auto;
 }
 
-.CodeCell-container {
-    border: 1px solid blue;
-}
-
-.MonacoCellEditor-container {
-    height: 100px;
-}
-
 .spinner {
     border: 2px solid #ddd;
     border-top: 2px solid #333;
@@ -109,8 +101,7 @@
     z-index: 1001;
 }
 
-.public-DraftStyleDefault-pre,
-.public-DraftStyleDefault-pre > pre {
+.DraftEditor-root pre {
     border: none;
     border-radius: 0;
     background: transparent;

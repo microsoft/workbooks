@@ -70,6 +70,8 @@ export class CodeCell extends React.Component<CodeCellProps, CodeCellState> {
                         blockProps={this.props.blockProps}
                         block={this.props.block} />
                 </div>
+                <div className="CodeCell-results-container">
+                </div>
                 <div className="CodeCell-actions-container">
                     <button
                         className="button-run btn-primary btn-small"

@@ -1,0 +1,38 @@
+.monaco-editor,
+.monaco-editor .margin,
+.monaco-editor.mac.vs,
+.monaco-editor-background {
+  background: #FAFAFA !important;
+}
+
+.monaco-editor {
+  border: 1px solid #ddd;
+  padding: 0;
+
+  .line-numbers {
+    color: #ccc !important;
+  }
+
+  .current-line {
+    display: none !important;
+  }
+
+  .editor-widget,
+  .monaco-editor-hover {
+    z-index: 10000; // Same as our UI dropdowns
+  }
+
+  .selectionHighlight {
+    background: rgba(173, 214, 255, 0.5) !important;
+  }
+
+  .cursor {
+    width: 1px !important;
+    opacity: 0.8 !important;
+  }
+}
+
+.monaco-editor .suggest-widget .monaco-list .monaco-list-row .icon {
+  background-size: 16px 16px !important;
+  top: 0; // Override placement that prevents aligning icon with completion text
+}
