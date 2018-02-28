@@ -109,12 +109,14 @@ export class WorkbookEditor extends React.Component<WorkbooksEditorProps, Workbo
 
     blockRenderer(block: Draft.ContentBlock) {
         if (block.getType() === 'code-block') {
+            const codeCellId: string = block.getData().get("codeCellId");
             return {
                 component: CodeCell,
                 editable: false,
                 props: {
                     shellContext: this.props.shellContext,
                     cellMapper: this,
+                    codeCellId,
                     editorReadOnly: (readOnly: boolean) => this.editorReadOnly(readOnly),
                     subscribeToEditor: (callback: () => void) => this.addMessageSubscriber(callback),
                     selectNext: (currentKey: string) => this.selectNext(currentKey),
@@ -419,9 +421,10 @@ export class WorkbookEditor extends React.Component<WorkbooksEditorProps, Workbo
         const file = event.target.files[0];
         const reader = new FileReader();
         reader.addEventListener("load", () => {
-            var newContentState = convertFromMarkdown(reader.result);
-            this.setState({
-                editorState: EditorState.createWithContent(newContentState)
+            convertFromMarkdown(reader.result, this.props.shellContext.session).then((newContentState) => {
+                this.setState({
+                    editorState: EditorState.createWithContent(newContentState)
+                });
             });
         });
         reader.readAsText(file);

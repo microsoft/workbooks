@@ -21,6 +21,7 @@ interface CodeCellProps {
     blockProps: {
         shellContext: WorkbookShellContext,
         cellMapper: MonacoCellMapper,
+        codeCellId: string,
         editorReadOnly: (readOnly: boolean) => void,
         subscribeToEditor: (callback: (message: EditorMessage) => void) => void,
         selectNext: (currentKey: string) => boolean,
@@ -55,7 +56,7 @@ export class CodeCell extends React.Component<CodeCellProps, CodeCellState> {
     constructor(props: CodeCellProps) {
         super(props)
         this.state = {
-            codeCellId: null,
+            codeCellId: this.props.blockProps.codeCellId,
             results: []
         }
         this.shellContext = props.blockProps.shellContext
@@ -79,13 +80,18 @@ export class CodeCell extends React.Component<CodeCellProps, CodeCellState> {
     async componentDidMount() {
         this.shellContext.session.evaluationEvent.addListener(this.evaluationEventHandler.bind(this))
 
-        const previousBlock = this.props.blockProps.getPreviousCodeBlock(this.props.block.key);
-        const previousBlockCodeCellId = previousBlock ? previousBlock.getData().get("codeCellId") : undefined;
-        const codeCellId = await this.shellContext.session.insertCodeCell(previousBlockCodeCellId);
-        this.setState({
-            codeCellId
-        });
-        this.props.blockProps.updateBlockCodeCellId(this.props.block.key, codeCellId);
+        let codeCellId: string;
+        if (this.state.codeCellId == null) {
+            const previousBlock = this.props.blockProps.getPreviousCodeBlock(this.props.block.key);
+            const previousBlockCodeCellId = previousBlock ? previousBlock.getData().get("codeCellId") : undefined;
+            codeCellId = await this.shellContext.session.insertCodeCell(this.props.block.text, previousBlockCodeCellId);
+            this.setState({
+                codeCellId
+            });
+            this.props.blockProps.updateBlockCodeCellId(this.props.block.key, codeCellId);
+        } else {
+            codeCellId = this.state.codeCellId;
+        }
 
         this.props.blockProps.cellMapper.registerCellInfo(
             codeCellId, this.monacoModelId)

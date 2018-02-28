@@ -1,5 +1,5 @@
 export const EditorMessageType = {
-  setSelection: 'setSelection'
+  setSelection: 'setSelection',
 }
 
 export interface EditorMessage {

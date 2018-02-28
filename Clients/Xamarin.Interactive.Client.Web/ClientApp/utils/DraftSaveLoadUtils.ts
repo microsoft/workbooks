@@ -1,8 +1,9 @@
 import * as toMarkdown from 'to-markdown'
 import * as MarkdownIt from 'markdown-it'
 import { stateToHTML } from 'draft-js-export-html'
-import { ContentState, convertFromHTML } from 'draft-js';
+import { ContentState, convertFromHTML, ContentBlock } from 'draft-js';
 import * as matter from 'gray-matter';
+import { WorkbookSession } from '../WorkbookSession';
 
 export function convertToMarkdown(contentState: Draft.ContentState): string {
     const htmlContent = stateToHTML(contentState);
@@ -31,15 +32,35 @@ function codeBlocksSerializer(content: string): string {
     return '```csharp\n' + outputContent + '\n```\n';
 }
 
-export function convertFromMarkdown(workbook: string): ContentState {
+export async function convertFromMarkdown(workbook: string, session: WorkbookSession): Promise<ContentState> {
     const { content, data } = splitMarkdownAndMetadata(workbook);
     const md = new MarkdownIt("commonmark", {
-        breaks: false,
-        typographer: false
+        breaks: true,
     });
     const html = fixUpCodeElements(md.render(content));
-    const result = convertFromHTML(html);
-    return ContentState.createFromBlockArray(result.contentBlocks, result.entityMap);
+    const { contentBlocks, entityMap } = convertFromHTML(html);
+
+    // Load all the code cells into Roslyn. This prevents us from having to deal
+    // with insanity with regards to cell ordering and async orderin later.
+    let previousDocumentId: string | null = null;
+    for (let index = 0; index < contentBlocks.length; index++) {
+        const block = contentBlocks[index];
+
+        if (block.getType() !== "code-block")
+            continue;
+
+        const codeCellId: string = await session.insertCodeCell(block.getText(), previousDocumentId);
+        console.log(`Inserted code cell, new ID is ${codeCellId}, previous cell's ID was ${previousDocumentId}`)
+        const newBlockData = (block.get("data") as Map<string, any>).set("codeCellId", codeCellId);
+        const newBlock = block.merge({
+            data: newBlockData,
+            text: block.getText().trim()
+        }) as ContentBlock;
+        contentBlocks[index] = newBlock;
+        previousDocumentId = codeCellId;
+    }
+
+    return ContentState.createFromBlockArray(contentBlocks, entityMap);
 }
 
 function splitMarkdownAndMetadata(content: string): { content: string, data: {} } {

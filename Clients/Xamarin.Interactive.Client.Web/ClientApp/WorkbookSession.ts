@@ -39,8 +39,8 @@ export class WorkbookSession {
             (e: any) => this.evaluationEvent.dispatch(<CodeCellResult>e));
     }
 
-    insertCodeCell(relativeToCodeCellId?: string): Promise<string> {
-        return this.hubConnection.invoke('InsertCodeCell', '', relativeToCodeCellId || null, false)
+    insertCodeCell(buffer: string, relativeToCodeCellId: string | null): Promise<string> {
+        return this.hubConnection.invoke('InsertCodeCell', buffer, relativeToCodeCellId, false)
     }
 
     updateCodeCell(codeCellId: string, buffer: string): Promise<CodeCellStatus> {
