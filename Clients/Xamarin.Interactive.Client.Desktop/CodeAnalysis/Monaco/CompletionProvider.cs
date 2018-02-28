@@ -88,7 +88,7 @@ namespace Xamarin.Interactive.CodeAnalysis.Monaco
                         o.detail = item.ItemDetail;
                     if (item.InsertionText != null)
                         o.insertText = item.InsertionText;
-                    o.kind = MonacoExtensions.ToMonacoCompletionItemKind (item.CompletionItem.Tags);
+                    o.kind = Client.Monaco.MonacoExtensions.ToMonacoCompletionItemKind (item.CompletionItem.Tags);
                 }));
             }
 
