@@ -16,7 +16,7 @@ import createMarkdownPlugin from 'draft-js-markdown-plugin'
 import { List, Map } from 'immutable'
 import { CodeCell } from './CodeCell'
 import { WorkbookSession } from '../WorkbookSession'
-import { MonacoCellMapper, WorkbookCompletionItemProvider } from '../utils/MonacoUtils'
+import { MonacoCellMapper, WorkbookCompletionItemProvider, WorkbookHoverProvider, WorkbookSignatureHelpProvider } from '../utils/MonacoUtils'
 import { EditorMessage, EditorMessageType, EditorKeys } from '../utils/EditorMessages'
 import { getNextBlockFor, getPrevBlockFor, isBlockBackwards } from '../utils/DraftStateUtils'
 import { EditorMenu, getBlockStyle, styleMap } from './Menu'
@@ -73,6 +73,14 @@ export class WorkbookEditor extends React.Component<WorkbooksEditorProps, Workbo
             monaco.languages.registerCompletionItemProvider(
                 "csharp",
                 new WorkbookCompletionItemProvider(this.props.shellContext, this)))
+        this.monacoProviderTickets.push(
+            monaco.languages.registerHoverProvider(
+                "csharp",
+                new WorkbookHoverProvider(this.props.shellContext, this)))
+        this.monacoProviderTickets.push(
+            monaco.languages.registerSignatureHelpProvider(
+                "csharp",
+                new WorkbookSignatureHelpProvider(this.props.shellContext, this)))
     }
 
     componentDidMount() {
