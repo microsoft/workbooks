@@ -67,7 +67,6 @@
 
 .public-DraftEditor-content {
     height: 100vh;
-    overflow: auto;
 }
 
 .spinner {
