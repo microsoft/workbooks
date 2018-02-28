@@ -16,6 +16,7 @@ using Xamarin.Interactive.CodeAnalysis;
 using Xamarin.Interactive.CodeAnalysis.Events;
 using Xamarin.Interactive.CodeAnalysis.Completion;
 using Xamarin.Interactive.CodeAnalysis.Hover;
+using Xamarin.Interactive.CodeAnalysis.SignatureHelp;
 using Xamarin.Interactive.Messages;
 
 namespace Xamarin.Interactive.Client.Web
@@ -29,6 +30,7 @@ namespace Xamarin.Interactive.Client.Web
             public Observer<ICodeCellEvent> EvaluationEventObserver { get; set; }
             public CompletionController CompletionController { get; set; }
             public HoverController HoverController { get; set; }
+            public SignatureHelpController SignatureHelpController { get; set; }
 
             public void Dispose ()
             {

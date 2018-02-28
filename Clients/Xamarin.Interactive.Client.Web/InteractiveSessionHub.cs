@@ -16,6 +16,7 @@ using Xamarin.Interactive.Client.Monaco;
 using Xamarin.Interactive.Client.Web.Hosting;
 using Xamarin.Interactive.CodeAnalysis.Completion;
 using Xamarin.Interactive.CodeAnalysis.Hover;
+using Xamarin.Interactive.CodeAnalysis.SignatureHelp;
 
 namespace Xamarin.Interactive.Client.Web
 {
@@ -165,12 +166,29 @@ namespace Xamarin.Interactive.Client.Web
             return new MonacoHover (hover);
         }
 
-        public async Task<MonacoSignatureHelp> ProvideSignatureHelp (
+        public async Task<SignatureHelpViewModel> ProvideSignatureHelp (
             string targetCodeCellId,
             int lineNumber,
             int column)
         {
-            return new MonacoSignatureHelp ();
+            var sessionState = serviceProvider
+                    .GetInteractiveSessionHubManager ()
+                    .GetSession (Context.ConnectionId);
+
+            if (sessionState.SignatureHelpController == null)
+                sessionState.SignatureHelpController = new SignatureHelpController (
+                    sessionState.ClientSession.CompilationWorkspace);
+
+            var codeCells = await sessionState.EvaluationService.GetAllCodeCellsAsync (
+                Context.Connection.ConnectionAbortedToken);
+            var targetCodeCellState = codeCells.FirstOrDefault (c => c.Id == targetCodeCellId);
+
+            var signatureHelp = await sessionState.SignatureHelpController.ComputeSignatureHelpAsync (
+                targetCodeCellState.Buffer.CurrentText,
+                new Microsoft.CodeAnalysis.Text.LinePosition (lineNumber - 1, column - 1),
+                Context.Connection.ConnectionAbortedToken);
+
+            return signatureHelp;
         }
     }
 }
