@@ -20,6 +20,7 @@ using Xamarin.Interactive.Compilation.Roslyn;
 using Xamarin.Interactive.I18N;
 using Xamarin.Interactive.Logging;
 using Xamarin.Interactive.Protocol;
+using Xamarin.Interactive.Representations;
 using Xamarin.Interactive.Representations.Reflection;
 
 namespace Xamarin.Interactive.CodeAnalysis
@@ -106,8 +107,8 @@ namespace Xamarin.Interactive.CodeAnalysis
             if (message is Evaluation evaluation)
                 events.Observers.OnNext (new CodeCellResultEvent (
                     evaluation.CodeCellId,
-                    evaluation.Result,
-                    evaluation.ResultHandling));
+                    evaluation.ResultHandling,
+                    (RepresentedObject)evaluation.Result));
         }
 
         #endregion
@@ -343,8 +344,8 @@ namespace Xamarin.Interactive.CodeAnalysis
             if (exception != null) {
                 events.Observers.OnNext (new CodeCellResultEvent (
                     codeCellState.Id,
-                    FilterException (exception),
-                    EvaluationResultHandling.Replace));
+                    EvaluationResultHandling.Replace,
+                    FilterException (exception)));
                 evaluationStatus = CodeCellEvaluationStatus.EvaluationException;
             } else if (diagnostics.HasErrors) {
                 return CodeCellEvaluationStatus.ErrorDiagnostic;

@@ -6,6 +6,7 @@
 // Licensed under the MIT License.
 
 import { HubConnection } from '@aspnet/signalr'
+import { Event } from './utils/Events'
 
 export const enum StatusUIAction {
     None,
@@ -19,17 +20,26 @@ export interface StatusMessage {
     text: string | null
 }
 
+export const enum EvaluationResultHandling {
+    Replace = 'Replace',
+    Append = 'Append'
+}
+
+export interface Evaluation {
+    codeCellId: string,
+    resultHandling: EvaluationResultHandling
+}
+
 export class WorkbookSession {
     private hubConnection = new HubConnection('/session')
+    evaluationEvent: Event<WorkbookSession, Evaluation>
 
     constructor(statusUIActionHandler: (action: StatusUIAction, message: StatusMessage | null) => void) {
+        this.evaluationEvent = new Event(<WorkbookSession>this)
         this.hubConnection.on('StatusUIAction', statusUIActionHandler)
-        this.hubConnection.on('EvaluationEvent', (e: any) => {
-            console.log('got result: %O', e);
-        });
-    }
-
-    onCodeCellEvent() {
+        this.hubConnection.on(
+            'EvaluationEvent',
+            (e: any) => this.evaluationEvent.dispatch(<Evaluation>e));
     }
 
     insertCodeCell(): Promise<string> {

@@ -14,9 +14,8 @@ using Microsoft.AspNetCore.SpaServices.Webpack;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-using Newtonsoft.Json;
-
 using Xamarin.Interactive.Client.Web.Hosting;
+using Xamarin.Interactive.Serialization;
 
 namespace Xamarin.Interactive.Client.Web
 {
@@ -39,7 +38,7 @@ namespace Xamarin.Interactive.Client.Web
             services
                 .AddSignalR ()
                 .AddJsonProtocol (options => {
-                    options.PayloadSerializerSettings.TypeNameHandling = TypeNameHandling.Objects;
+                    options.PayloadSerializerSettings = new InteractiveJsonSerializerSettings ();
                 });
 
             services.AddSingleton<InteractiveSessionHubManager> ();

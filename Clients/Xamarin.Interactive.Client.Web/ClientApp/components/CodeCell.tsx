@@ -7,7 +7,7 @@
 
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-import { WorkbookSession } from '../WorkbookSession'
+import { WorkbookSession, Evaluation } from '../WorkbookSession'
 import { MonacoCellEditor } from './MonacoCellEditor'
 import { EditorMessage } from '../utils/EditorMessages'
 
@@ -43,9 +43,11 @@ export class CodeCell extends React.Component<CodeCellProps, CodeCellState> {
     }
 
     async componentDidMount() {
+        this.session.evaluationEvent.addListener(this.evaluationEventHandler.bind(this))
+
         this.setState({
             codeCellId: await this.session.insertCodeCell()
-        });
+        })
     }
 
     async componentDidUpdate() {
@@ -55,10 +57,16 @@ export class CodeCell extends React.Component<CodeCellProps, CodeCellState> {
                 this.props.block.text)
     }
 
-    async evaluate() {
-        if (this.state.codeCellId) {
-            console.log('eval: %O', this.state.codeCellId)
+    private async evaluate() {
+        if (this.state.codeCellId)
             await this.session.evaluate(this.state.codeCellId)
+    }
+
+    private evaluationEventHandler(session: WorkbookSession, evaluation: Evaluation) {
+        console.log("GOT A CALLBACK: %O -> %O", evaluation, this)
+        if (evaluation.codeCellId === this.state.codeCellId) {
+            console.log("CELL HANDLING: %O", evaluation)
+            return 'stop'
         }
     }
 
