@@ -8,12 +8,14 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import { WorkbookSession, Evaluation } from '../WorkbookSession'
-import { MonacoCellEditor } from './MonacoCellEditor'
+import { MonacoCellEditor, MonacoCellEditorProps } from './MonacoCellEditor'
 import { EditorMessage } from '../utils/EditorMessages'
+import { MonacoCellMapper } from './WorkbookEditor'
 
 interface CodeCellProps {
     blockProps: {
         session: WorkbookSession,
+        cellMapper: MonacoCellMapper,
         editorReadOnly: (readOnly: boolean) => void,
         subscribeToEditor: (callback: (message: EditorMessage) => void) => void,
         selectNext: (currentKey: string) => boolean,
@@ -33,6 +35,8 @@ interface CodeCellState {
 
 export class CodeCell extends React.Component<CodeCellProps, CodeCellState> {
     private session: WorkbookSession
+    private monacoCellProps: MonacoCellEditorProps
+    private monacoModelId: string
 
     constructor(props: CodeCellProps) {
         super(props)
@@ -40,14 +44,33 @@ export class CodeCell extends React.Component<CodeCellProps, CodeCellState> {
             codeCellId: null
         }
         this.session = props.blockProps.session
+        this. monacoModelId = ""
+        this.monacoCellProps = {
+            block: props.block,
+            blockProps: {
+                editorReadOnly: props.blockProps.editorReadOnly,
+                subscribeToEditor: props.blockProps.subscribeToEditor,
+                selectNext: props.blockProps.selectNext,
+                selectPrevious: props.blockProps.selectPrevious,
+                updateTextContentOfBlock:
+                    props.blockProps.updateTextContentOfBlock,
+                setSelection: props.blockProps.setSelection,
+                setModelId: modelId => this.monacoModelId = modelId
+            }
+        }
     }
 
     async componentDidMount() {
         this.session.evaluationEvent.addListener(this.evaluationEventHandler.bind(this))
 
+        var codeCellId = await this.session.insertCodeCell()
+
         this.setState({
-            codeCellId: await this.session.insertCodeCell()
-        })
+            codeCellId: codeCellId
+        });
+
+        this.props.blockProps.cellMapper.registerCellInfo(
+            codeCellId, this.monacoModelId)
     }
 
     async componentDidUpdate() {
@@ -75,8 +98,8 @@ export class CodeCell extends React.Component<CodeCellProps, CodeCellState> {
             <div className="CodeCell-container">
                 <div className="CodeCell-editor-container">
                     <MonacoCellEditor
-                        blockProps={this.props.blockProps}
-                        block={this.props.block} />
+                        blockProps={this.monacoCellProps.blockProps}
+                        block={this.monacoCellProps.block} />
                 </div>
                 <div className="CodeCell-results-container">
                 </div>

@@ -54,6 +54,10 @@ export class WorkbookSession {
         return this.hubConnection.invoke('Evaluate', codeCellId, evaluateAll)
     }
 
+    provideCompletions(codeCellId: string, lineNumber: number, column: number): Promise<monaco.languages.CompletionItem[]> {
+        return this.hubConnection.invoke("ProvideCompletions", codeCellId, lineNumber, column)
+    }
+
     connect() {
         this.hubConnection
             .start()

@@ -25,6 +25,7 @@ namespace Xamarin.Interactive.Client.Web
             public ClientSession ClientSession { get; set; }
             public EvaluationService EvaluationService { get; set; }
             public Observer<ICodeCellEvent> EvaluationEventObserver { get; set; }
+            public CompletionController CompletionController { get; set; }
 
             public void Dispose ()
             {

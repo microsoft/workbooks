@@ -12,14 +12,15 @@ import * as ReactDOM from 'react-dom'
 import { SelectionState } from 'draft-js'
 import { EditorMessage, EditorMessageType, EditorKeys } from '../utils/EditorMessages'
 
-interface MonacoCellEditorProps {
+export interface MonacoCellEditorProps {
     blockProps: {
         editorReadOnly: (readOnly: boolean) => void,
         subscribeToEditor: (callback: (message: EditorMessage) => void) => void,
         selectNext: (currentKey: string) => boolean,
         selectPrevious: (currentKey: string) => boolean,
         updateTextContentOfBlock: (blockKey: string, textContent: string) => void,
-        setSelection: (anchorKey: string, offset: number) => void
+        setSelection: (anchorKey: string, offset: number) => void,
+        setModelId: (modelId: string) => void
     }
     block: {
         key: string
@@ -46,6 +47,7 @@ export class MonacoCellEditor extends React.Component<MonacoCellEditorProps, Mon
     componentDidMount() {
         const monacoContainer = ReactDOM.findDOMNode(this)
         this.editor = this.buildEditor(monacoContainer)
+        this.props.blockProps.setModelId(this.editor.getModel().id)
         this.props.blockProps.subscribeToEditor((message: EditorMessage) => {
             this.onEditorMessage(message)
         })
@@ -150,6 +152,8 @@ export class MonacoCellEditor extends React.Component<MonacoCellEditorProps, Mon
     }
 
     onKeyDown(e: monaco.IKeyboardEvent) {
+        if (this.isCompletionWindowVisible())
+            return
         if (e.keyCode == monaco.KeyCode.Enter) {
             e.stopPropagation()
             return
@@ -164,6 +168,35 @@ export class MonacoCellEditor extends React.Component<MonacoCellEditorProps, Mon
             e.preventDefault()
             e.stopPropagation()
         }
+    }
+
+
+    // TODO: It would be better if we had API access to SuggestController, and if
+    //       SuggestController had API to check widget visibility. In the future
+    //       we could add this functionality to monaco.
+    //       (or if our keybindings had access to 'suggestWidgetVisible' context key)
+    isCompletionWindowVisible() {
+        return this.isMonacoWidgetVisible("suggest-widget")
+    }
+
+    isParameterHintsWindowVisible() {
+        return this.isMonacoWidgetVisible("parameter-hints-widget")
+    }
+
+    dismissParameterHintsWindow() {
+        if (this.isParameterHintsWindowVisible())
+            this.editor.setPosition({ lineNumber: 1, column: 1 })
+    }
+
+    isMonacoWidgetVisible(widgetClassName: string) {
+        let node = this.editor.getDomNode()
+        if (node == null)
+            return false
+        let widgets = node.getElementsByClassName(widgetClassName)
+        for (var i = 0; i < widgets.length; i++)
+            if (widgets[i].classList.contains("visible"))
+                return true
+        return false
     }
 
     focus(e?: any) {

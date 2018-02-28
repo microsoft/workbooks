@@ -300,7 +300,7 @@ namespace Xamarin.Interactive.Client.Windows
         bool ScrollToElementWithId (string fragment)
         {
             if (!string.IsNullOrEmpty (fragment)) {
-                ((XcbWorkbookPageView)Session.WorkbookPageViewModel).ScrollToElementWithId (fragment);
+                ((XcbWorkbookPageView)Session.EvaluationService).ScrollToElementWithId (fragment);
                 return true;
             }
 
@@ -441,7 +441,7 @@ namespace Xamarin.Interactive.Client.Windows
 
             if (!string.IsNullOrEmpty (view?.PublicCSharpType)
                 && Session.SessionKind == ClientSessionKind.LiveInspection)
-                await Session.WorkbookPageViewModel.EvaluateAsync (
+                await Session.EvaluationService.EvaluateAsync (
                     $"var selectedView = GetObject<{view.PublicCSharpType}> (0x{view.Handle:x})");
         }
 
@@ -551,7 +551,7 @@ namespace Xamarin.Interactive.Client.Windows
         async void OnExecuteAllCommandExecuted (object sender, ExecutedRoutedEventArgs args)
         {
             try {
-                await Session.WorkbookPageViewModel.EvaluateAllAsync ();
+                await Session.EvaluationService.EvaluateAllAsync ();
             } catch (Exception e) {
                 Log.Error (TAG, e);
             }
@@ -642,7 +642,7 @@ namespace Xamarin.Interactive.Client.Windows
         void OnOutlineSelected (object sender, RoutedPropertyChangedEventArgs<object> e)
         {
             if (e.NewValue is TableOfContentsNode toc)
-                ((XcbWorkbookPageView)Session.WorkbookPageViewModel).ScrollToElementWithId (toc.Id);
+                ((XcbWorkbookPageView)Session.EvaluationService).ScrollToElementWithId (toc.Id);
         }
 
         void HandleTabControlMouseDown (object sender, MouseButtonEventArgs e)

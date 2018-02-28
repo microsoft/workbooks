@@ -33,15 +33,65 @@ interface WorkbooksEditorState {
     readOnly: boolean
 }
 
+export interface MonacoCellMapper {
+    registerCellInfo(codeCellId: string, monacoModelId: string): void
+    getCodeCellId(monacoModelId: string): string|null
+}
+
+interface WorkbookCellIdMapping {
+    codeCellId: string
+    monacoModelId: string
+}
+
 const blockRenderMap = DefaultDraftBlockRenderMap.merge(Map({
     'code-block': {
         element: 'div'
     }
 }));
 
-export class WorkbookEditor extends React.Component<WorkbooksEditorProps, WorkbooksEditorState> {
+// TODO: Should this move? Annoying that these must be registered globally
+class WorkbookCompletionItemProvider implements monaco.languages.CompletionItemProvider {
+    triggerCharacters = ['.']
+    session: WorkbookSession
+    mapper: MonacoCellMapper
+
+    constructor(session: WorkbookSession, mapper: MonacoCellMapper) {
+        this.session = session
+        this.mapper = mapper
+    }
+
+    async provideCompletionItems(
+        model: monaco.editor.IReadOnlyModel,
+        position: monaco.Position,
+        token: monaco.CancellationToken) {
+        // TODO: Investigate best way to consume Monaco CancellationTokens
+        let items: monaco.languages.CompletionItem[] = []
+        let modelId = (model as monaco.editor.IModel).id // TODO: Replace with URI usage to avoid cast?
+
+        let codeCellId = this.mapper.getCodeCellId(modelId)
+
+        if (codeCellId == null)
+            return items
+
+        items = await this.session.provideCompletions(codeCellId, position.lineNumber, position.column)
+
+        // TODO: See if we can fix this on the server side. See comments on MonacoCompletionItem
+        for (let item of items) {
+            if (item.insertText == null)
+                item.insertText = undefined
+            if (item.detail == null)
+                item.detail = undefined
+        }
+
+        return items
+    }
+}
+
+export class WorkbookEditor extends React.Component<WorkbooksEditorProps, WorkbooksEditorState> implements MonacoCellMapper {
     lastFocus?: Date;
     subscriptors: ((m: EditorMessage) => void)[];
+    monacoProviderTickets: monaco.IDisposable[] = [];
+    cellIdMappings: WorkbookCellIdMapping[] = [];
 
     constructor(props: WorkbooksEditorProps) {
         super(props);
@@ -56,10 +106,23 @@ export class WorkbookEditor extends React.Component<WorkbooksEditorProps, Workbo
             plugins: [createMarkdownPlugin()],
             readOnly: false
         }
+
+        // Monaco intellisense providers must be registered globally, not on a
+        // per-editor basis. This is why the providers need a mapping from
+        // Monaco model ID to Workbook cell ID.
+        this.monacoProviderTickets.push(
+            monaco.languages.registerCompletionItemProvider(
+                "csharp",
+                new WorkbookCompletionItemProvider(this.props.session, this)))
     }
 
     componentDidMount() {
         this.focus()
+    }
+
+    componentWillUnmount() {
+        for (let ticket of this.monacoProviderTickets)
+            ticket.dispose()
     }
 
     focus(e?: any) {
@@ -82,15 +145,31 @@ export class WorkbookEditor extends React.Component<WorkbooksEditorProps, Workbo
                 editable: false,
                 props: {
                     session: this.props.session,
+                    cellMapper: this,
                     editorReadOnly: (readOnly: boolean) => this.editorReadOnly(readOnly),
                     subscribeToEditor: (callback: () => void) => this.addMessageSubscriber(callback),
                     selectNext: (currentKey: string) => this.selectNext(currentKey),
                     selectPrevious: (currentKey: string) => this.selectPrevious(currentKey),
                     updateTextContentOfBlock: (blockKey: string, textContent: string) => this.updateTextContentOfBlock(blockKey, textContent),
-                    setSelection: (anchorKey: string, offset: number) => this.setSelection(anchorKey, offset)
+                    setSelection: (anchorKey: string, offset: number) => this.setSelection(anchorKey, offset),
                 }
             }
         }
+        return null
+    }
+
+    registerCellInfo(codeCellId: string, monacoModelId: string) {
+        this.cellIdMappings.push({
+            codeCellId: codeCellId,
+            monacoModelId: monacoModelId
+        })
+    }
+
+    getCodeCellId(monacoModelId: string) {
+        for (let mapping of this.cellIdMappings)
+            if (mapping.monacoModelId == monacoModelId)
+                return mapping.codeCellId
+
         return null
     }
 
