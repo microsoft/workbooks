@@ -13,6 +13,7 @@ import {
     DefaultDraftBlockRenderMap
 } from 'draft-js'
 import createMarkdownPlugin from 'draft-js-markdown-plugin'
+import { saveAs } from 'file-saver'
 import { List, Map } from 'immutable'
 import { CodeCell } from './CodeCell'
 import { WorkbookSession } from '../WorkbookSession'
@@ -21,8 +22,7 @@ import { EditorMessage, EditorMessageType, EditorKeys } from '../utils/EditorMes
 import { getNextBlockFor, getPrevBlockFor, isBlockBackwards } from '../utils/DraftStateUtils'
 import { EditorMenu, getBlockStyle, styleMap } from './Menu'
 import { WorkbookShellContext } from './WorkbookShell';
-/*import { convertFromMarkdown } from '../utils/draftImportUtils'
-import { convertToMarkdown } from '../utils/draftExportUtils'*/
+import { convertToMarkdown } from '../utils/DraftSaveLoadUtils'
 
 interface WorkbooksEditorProps {
     shellContext: WorkbookShellContext
@@ -402,6 +402,13 @@ export class WorkbookEditor extends React.Component<WorkbooksEditorProps, Workbo
         )
     }
 
+    saveMarkdown() {
+        var content = this.state.editorState.getCurrentContent();
+        var markdown = convertToMarkdown(content);
+        var blob = new Blob([markdown], { type: "text/markdown;charset=utf-8" })
+        saveAs(blob, `workbook-${new Date().toISOString().replace(/[:\.]/g, '-')}.md`);
+    }
+
     render() {
         let className = 'xi-editor'
         var contentState = this.state.editorState.getCurrentContent()
@@ -419,7 +426,10 @@ export class WorkbookEditor extends React.Component<WorkbooksEditorProps, Workbo
                     onToggleInline={(type: string) => this.toggleInlineStyle(type)}
                 />
                 <br />
-                <button type="button" className="btn btn-primary" onClick={() => this.logContent()}>Log Draft blocks to console</button>
+                <div className="menu-controls btn-group" role="group" aria-label="Helpers">
+                    <button type="button" className="btn btn-primary" onClick={() => this.logContent()}>Log Draft blocks to console</button>
+                    <button type="button" className="btn btn-primary" onClick={() => this.saveMarkdown()}>Save Markdown</button>
+                </div>
                 <br /><br />
                 <div className={className} onClick={(e) => this.focus(e)}>
                     <Editor
