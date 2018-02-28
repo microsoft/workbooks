@@ -159,9 +159,9 @@ export class MonacoCellEditor extends React.Component<MonacoCellEditorProps, Mon
             return
         }
         let handled = false
-        if (e.keyCode == monaco.KeyCode.UpArrow || e.keyCode == monaco.KeyCode.LeftArrow)
+        if ((e.keyCode == monaco.KeyCode.UpArrow && !this.isParameterHintsWindowVisible()) || e.keyCode == monaco.KeyCode.LeftArrow)
             handled = this.handleEditorBoundaries(-1, e.keyCode == monaco.KeyCode.UpArrow)
-        else if (e.keyCode == monaco.KeyCode.DownArrow || e.keyCode == monaco.KeyCode.RightArrow)
+        else if ((e.keyCode == monaco.KeyCode.DownArrow && !this.isParameterHintsWindowVisible()) || e.keyCode == monaco.KeyCode.RightArrow)
             handled = this.handleEditorBoundaries(1, e.keyCode == monaco.KeyCode.DownArrow)
 
         if (handled) {
