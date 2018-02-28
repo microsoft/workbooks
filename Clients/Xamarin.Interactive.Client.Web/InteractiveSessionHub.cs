@@ -12,12 +12,15 @@ using System.Threading.Tasks;
 
 using Microsoft.AspNetCore.SignalR;
 
+using Xamarin.Interactive.Client.Monaco;
 using Xamarin.Interactive.Client.Web.Hosting;
-using Xamarin.Interactive.CodeAnalysis;
+using Xamarin.Interactive.CodeAnalysis.Completion;
+using Xamarin.Interactive.CodeAnalysis.Hover;
+using Xamarin.Interactive.CodeAnalysis.SignatureHelp;
 
 namespace Xamarin.Interactive.Client.Web
 {
-    public sealed class InteractiveSessionHub : Hub
+    sealed class InteractiveSessionHub : Hub
     {
         readonly IServiceProvider serviceProvider;
 
@@ -116,53 +119,76 @@ namespace Xamarin.Interactive.Client.Web
             int lineNumber,
             int column)
         {
-            // TODO: Figure out how much we need to mess with task scheduling. See TODO at end of ModelComputation
-            async Task<List<MonacoCompletionItem>> InnerProvideCompletionsAsync () {
-                var sessionState = serviceProvider
+            var sessionState = serviceProvider
                     .GetInteractiveSessionHubManager ()
                     .GetSession (Context.ConnectionId);
 
-                if (sessionState.CompletionController == null)
-                    sessionState.CompletionController = new CompletionController (sessionState.ClientSession.CompilationWorkspace);
+            if (sessionState.CompletionController == null)
+                sessionState.CompletionController = new CompletionController (
+                    sessionState.ClientSession.CompilationWorkspace);
 
-                var codeCells = await sessionState.EvaluationService.GetAllCodeCellsAsync (
-                    Context.Connection.ConnectionAbortedToken);
-                var targetCodeCellState = codeCells.FirstOrDefault (c => c.Id == targetCodeCellId);
+            var codeCells = await sessionState.EvaluationService.GetAllCodeCellsAsync (
+                Context.Connection.ConnectionAbortedToken);
+            var targetCodeCellState = codeCells.FirstOrDefault (c => c.Id == targetCodeCellId);
 
-                var completionItems = await sessionState.CompletionController.ProvideFilteredCompletionItemsAsync (
-                    targetCodeCellState.Buffer.CurrentText,
-                    new Microsoft.CodeAnalysis.Text.LinePosition (lineNumber - 1, column - 1),
-                    Context.Connection.ConnectionAbortedToken);
+            var completionItems = await sessionState.CompletionController.ProvideFilteredCompletionItemsAsync (
+                targetCodeCellState.Buffer.CurrentText,
+                new Microsoft.CodeAnalysis.Text.LinePosition (lineNumber - 1, column - 1),
+                Context.Connection.ConnectionAbortedToken);
 
-                return completionItems
-                    .Select (i => new MonacoCompletionItem (i))
-                    .ToList ();
-            }
-
-            return await InnerProvideCompletionsAsync ();
+            return completionItems
+                .Select (i => new MonacoCompletionItem (i))
+                .ToList ();
         }
-    }
 
-    // TODO: Review accessibility. Move.
-    public class MonacoCompletionItem
-    {
-        public string Label { get; }
-
-        public string InsertText { get; }
-
-        public string Detail { get; }
-
-        // Corresponds to Monaco's CompletionItemKind enum
-        public int Kind { get; }
-
-        internal MonacoCompletionItem (CompletionItemViewModel itemViewModel)
+        public async Task<MonacoHover> ProvideHover (
+            string targetCodeCellId,
+            int lineNumber,
+            int column)
         {
-            Label = itemViewModel.DisplayText;
-            // TODO: Can we tell the serializer to exclude insertText and detail if null? Right now I'm having to
-            //       loop through the list on the client side and replace null with undefined (Monaco breaks otherwise).
-            InsertText = itemViewModel.InsertionText;
-            Detail = itemViewModel.ItemDetail;
-            Kind = 1; // TODO: How much of MonacoExtensions should move into XIC?
+            var sessionState = serviceProvider
+                    .GetInteractiveSessionHubManager ()
+                    .GetSession (Context.ConnectionId);
+
+            if (sessionState.HoverController == null)
+                sessionState.HoverController = new HoverController (
+                    sessionState.ClientSession.CompilationWorkspace);
+
+            var codeCells = await sessionState.EvaluationService.GetAllCodeCellsAsync (
+                Context.Connection.ConnectionAbortedToken);
+            var targetCodeCellState = codeCells.FirstOrDefault (c => c.Id == targetCodeCellId);
+
+            var hover = await sessionState.HoverController.ProvideHoverAsync (
+                targetCodeCellState.Buffer.CurrentText,
+                new Microsoft.CodeAnalysis.Text.LinePosition (lineNumber - 1, column - 1),
+                Context.Connection.ConnectionAbortedToken);
+
+            return new MonacoHover (hover);
+        }
+
+        public async Task<SignatureHelpViewModel> ProvideSignatureHelp (
+            string targetCodeCellId,
+            int lineNumber,
+            int column)
+        {
+            var sessionState = serviceProvider
+                    .GetInteractiveSessionHubManager ()
+                    .GetSession (Context.ConnectionId);
+
+            if (sessionState.SignatureHelpController == null)
+                sessionState.SignatureHelpController = new SignatureHelpController (
+                    sessionState.ClientSession.CompilationWorkspace);
+
+            var codeCells = await sessionState.EvaluationService.GetAllCodeCellsAsync (
+                Context.Connection.ConnectionAbortedToken);
+            var targetCodeCellState = codeCells.FirstOrDefault (c => c.Id == targetCodeCellId);
+
+            var signatureHelp = await sessionState.SignatureHelpController.ComputeSignatureHelpAsync (
+                targetCodeCellState.Buffer.CurrentText,
+                new Microsoft.CodeAnalysis.Text.LinePosition (lineNumber - 1, column - 1),
+                Context.Connection.ConnectionAbortedToken);
+
+            return signatureHelp;
         }
     }
 }

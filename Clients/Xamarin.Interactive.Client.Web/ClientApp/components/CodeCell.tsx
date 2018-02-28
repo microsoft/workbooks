@@ -11,9 +11,9 @@ import { WorkbookSession } from '../WorkbookSession'
 import { CodeCellResult, CodeCellResultHandling } from '../evaluation'
 import { MonacoCellEditor, MonacoCellEditorProps } from './MonacoCellEditor'
 import { EditorMessage } from '../utils/EditorMessages'
-import { MonacoCellMapper } from './WorkbookEditor'
 import { WorkbookShellContext } from './WorkbookShell'
 import { ResultRendererRepresentation } from '../rendering';
+import { MonacoCellMapper } from '../utils/MonacoUtils'
 
 interface CodeCellProps {
     blockProps: {

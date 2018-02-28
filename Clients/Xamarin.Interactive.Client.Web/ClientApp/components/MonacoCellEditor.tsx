@@ -38,7 +38,7 @@ enum ViewEventType {
 
 export class MonacoCellEditor extends React.Component<MonacoCellEditorProps, MonacoCellEditorState> {
     windowResizeHandler: any;
-    editor: monaco.editor.ICodeEditor;
+    editor?: monaco.editor.ICodeEditor;
     constructor(props: MonacoCellEditorProps) {
         super(props)
         this.state = { created: true }
@@ -64,7 +64,7 @@ export class MonacoCellEditor extends React.Component<MonacoCellEditorProps, Mon
     componentWillUnmount() {
         this.props.blockProps.editorReadOnly(false)
         window.removeEventListener("resize", this.windowResizeHandler)
-        this.editor.dispose()
+        this.editor!.dispose()
     }
 
     getKey() {
@@ -159,9 +159,9 @@ export class MonacoCellEditor extends React.Component<MonacoCellEditorProps, Mon
             return
         }
         let handled = false
-        if (e.keyCode == monaco.KeyCode.UpArrow || e.keyCode == monaco.KeyCode.LeftArrow)
+        if ((e.keyCode == monaco.KeyCode.UpArrow && !this.isParameterHintsWindowVisible()) || e.keyCode == monaco.KeyCode.LeftArrow)
             handled = this.handleEditorBoundaries(-1, e.keyCode == monaco.KeyCode.UpArrow)
-        else if (e.keyCode == monaco.KeyCode.DownArrow || e.keyCode == monaco.KeyCode.RightArrow)
+        else if ((e.keyCode == monaco.KeyCode.DownArrow && !this.isParameterHintsWindowVisible()) || e.keyCode == monaco.KeyCode.RightArrow)
             handled = this.handleEditorBoundaries(1, e.keyCode == monaco.KeyCode.DownArrow)
 
         if (handled) {
@@ -185,11 +185,11 @@ export class MonacoCellEditor extends React.Component<MonacoCellEditorProps, Mon
 
     dismissParameterHintsWindow() {
         if (this.isParameterHintsWindowVisible())
-            this.editor.setPosition({ lineNumber: 1, column: 1 })
+            this.editor!.setPosition({ lineNumber: 1, column: 1 })
     }
 
     isMonacoWidgetVisible(widgetClassName: string) {
-        let node = this.editor.getDomNode()
+        let node = this.editor!.getDomNode()
         if (node == null)
             return false
         let widgets = node.getElementsByClassName(widgetClassName)
@@ -200,22 +200,22 @@ export class MonacoCellEditor extends React.Component<MonacoCellEditorProps, Mon
     }
 
     focus(e?: any) {
-        this.editor.focus()
+        this.editor!.focus()
         this.props.blockProps.setSelection(this.getKey(), 0)
         if (e)
             e.stopPropagation()
     }
 
     blur(e?: any) {
-        if (this.editor.isFocused()) {
+        if (this.editor!.isFocused()) {
             (document.activeElement as any).blur()
         }
     }
 
     updateLayout() {
         let clientWidth = this.getClientWidth()
-        let fontSize = this.editor.getConfiguration().fontInfo.fontSize || 0
-        this.editor.layout({
+        let fontSize = this.editor!.getConfiguration().fontInfo.fontSize || 0
+        this.editor!.layout({
             // NOTE: Something weird happens in layout, and padding+border are added
             //       on top of the total width by monaco. So we subtract those here.
             //       Keep in sync with editor.css. Currently 0.5em left/right padding
@@ -238,7 +238,7 @@ export class MonacoCellEditor extends React.Component<MonacoCellEditorProps, Mon
 
     handleEditorBoundaries(dir: 1 | -1, useLineBoundary: boolean) {
         let handled = false
-        let pos = this.editor.getPosition()
+        let pos = this.editor!.getPosition()
         let isBeginning = (pos.lineNumber === 1 && dir === -1)
         if (!useLineBoundary)
             isBeginning = isBeginning && pos.column === 1
@@ -267,9 +267,9 @@ export class MonacoCellEditor extends React.Component<MonacoCellEditorProps, Mon
         if (!firstLine)
             lineIndex = this.getEditorLines()
 
-        const targetColumn = firstColumn ? 1 : (this.editor.getModel() as any)._lines[lineIndex - 1].text.length + 1
+        const targetColumn = firstColumn ? 1 : (this.editor!.getModel() as any)._lines[lineIndex - 1].text.length + 1
         const selection = new monaco.Selection(lineIndex, targetColumn, lineIndex, targetColumn);
-        this.editor.setSelection(selection)
+        this.editor!.setSelection(selection)
     }
 
     getClientWidth() {
@@ -277,15 +277,15 @@ export class MonacoCellEditor extends React.Component<MonacoCellEditorProps, Mon
     }
 
     getEditorLines() {
-        const model = this.editor.getModel();
+        const model = this.editor!.getModel();
         return model ? model.getLineCount() : 0;
     }
 
     getLineColumns(lineIndex: number) {
-        return this.editor.getModel().getLineContent(lineIndex).length
+        return this.editor!.getModel().getLineContent(lineIndex).length
     }
 
     getContent() {
-        return this.editor.getModel().getValue()
+        return this.editor!.getModel().getValue()
     }
 }

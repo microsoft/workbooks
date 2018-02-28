@@ -14,11 +14,14 @@ using Microsoft.AspNetCore.SignalR;
 using Xamarin.Interactive.Client.Web.Models;
 using Xamarin.Interactive.CodeAnalysis;
 using Xamarin.Interactive.CodeAnalysis.Events;
+using Xamarin.Interactive.CodeAnalysis.Completion;
+using Xamarin.Interactive.CodeAnalysis.Hover;
+using Xamarin.Interactive.CodeAnalysis.SignatureHelp;
 using Xamarin.Interactive.Messages;
 
 namespace Xamarin.Interactive.Client.Web
 {
-    public sealed class InteractiveSessionHubManager : DefaultHubLifetimeManager<InteractiveSessionHub>
+    sealed class InteractiveSessionHubManager : DefaultHubLifetimeManager<InteractiveSessionHub>
     {
         internal sealed class SessionState : IDisposable
         {
@@ -26,6 +29,8 @@ namespace Xamarin.Interactive.Client.Web
             public EvaluationService EvaluationService { get; set; }
             public Observer<ICodeCellEvent> EvaluationEventObserver { get; set; }
             public CompletionController CompletionController { get; set; }
+            public HoverController HoverController { get; set; }
+            public SignatureHelpController SignatureHelpController { get; set; }
 
             public void Dispose ()
             {

@@ -49,6 +49,14 @@ export class WorkbookSession {
         return this.hubConnection.invoke("ProvideCompletions", codeCellId, lineNumber, column)
     }
 
+    provideHover(codeCellId: string, lineNumber: number, column: number): Promise<monaco.languages.Hover> {
+        return this.hubConnection.invoke("ProvideHover", codeCellId, lineNumber, column)
+    }
+
+    provideSignatureHelp(codeCellId: string, lineNumber: number, column: number): Promise<monaco.languages.SignatureHelp> {
+        return this.hubConnection.invoke("ProvideSignatureHelp", codeCellId, lineNumber, column)
+    }
+
     connect() {
         this.hubConnection
             .start()
