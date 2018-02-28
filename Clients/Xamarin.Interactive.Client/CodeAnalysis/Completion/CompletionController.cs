@@ -66,10 +66,13 @@ namespace Xamarin.Interactive.CodeAnalysis.Completion
         {
             var model = await ProvideCompletionItemsAsync (sourceText, linePosition, cancellationToken);
 
+            if (model?.FilteredItems == null)
+                return Enumerable.Empty<CompletionItemViewModel> ();
+
             return model
-                ?.FilteredItems
-                ?.Where (i => i.Span.End <= model.Text.Length)
-                ?.Select (i => new CompletionItemViewModel (i));
+                .FilteredItems
+                .Where (i => i.Span.End <= model.Text.Length)
+                .Select (i => new CompletionItemViewModel (i));
         }
 
         void OnCompletionModelUpdated (CompletionModel model)
