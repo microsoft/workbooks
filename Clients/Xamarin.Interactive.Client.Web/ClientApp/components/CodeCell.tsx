@@ -8,14 +8,15 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import { WorkbookSession } from '../WorkbookSession'
-import { CodeCellResult } from '../evaluation'
+import { CodeCellResult, CodeCellResultHandling } from '../evaluation'
 import { MonacoCellEditor, MonacoCellEditorProps } from './MonacoCellEditor'
 import { EditorMessage } from '../utils/EditorMessages'
 import { MonacoCellMapper } from './WorkbookEditor'
+import { WorkbookShellContext } from './WorkbookShell'
 
 interface CodeCellProps {
     blockProps: {
-        session: WorkbookSession,
+        shellContext: WorkbookShellContext,
         cellMapper: MonacoCellMapper,
         editorReadOnly: (readOnly: boolean) => void,
         subscribeToEditor: (callback: (message: EditorMessage) => void) => void,
@@ -32,20 +33,22 @@ interface CodeCellProps {
 
 interface CodeCellState {
     codeCellId: string | null
+    results: CodeCellResult[]
 }
 
 export class CodeCell extends React.Component<CodeCellProps, CodeCellState> {
-    private session: WorkbookSession
+    private shellContext: WorkbookShellContext
     private monacoCellProps: MonacoCellEditorProps
     private monacoModelId: string
 
     constructor(props: CodeCellProps) {
         super(props)
         this.state = {
-            codeCellId: null
+            codeCellId: null,
+            results: []
         }
-        this.session = props.blockProps.session
-        this. monacoModelId = ""
+        this.shellContext = props.blockProps.shellContext
+        this.monacoModelId = ""
         this.monacoCellProps = {
             block: props.block,
             blockProps: {
@@ -62,9 +65,9 @@ export class CodeCell extends React.Component<CodeCellProps, CodeCellState> {
     }
 
     async componentDidMount() {
-        this.session.evaluationEvent.addListener(this.evaluationEventHandler.bind(this))
+        this.shellContext.session.evaluationEvent.addListener(this.evaluationEventHandler.bind(this))
 
-        var codeCellId = await this.session.insertCodeCell()
+        var codeCellId = await this.shellContext.session.insertCodeCell()
 
         this.setState({
             codeCellId: codeCellId
@@ -76,21 +79,30 @@ export class CodeCell extends React.Component<CodeCellProps, CodeCellState> {
 
     async componentDidUpdate() {
         if (this.state.codeCellId)
-            await this.session.updateCodeCell(
+            await this.shellContext.session.updateCodeCell(
                 this.state.codeCellId,
                 this.props.block.text)
     }
 
     private async evaluate() {
         if (this.state.codeCellId)
-            await this.session.evaluate(this.state.codeCellId)
+            await this.shellContext.session.evaluate(this.state.codeCellId)
     }
 
     private evaluationEventHandler(session: WorkbookSession, result: CodeCellResult) {
-        console.log("GOT A CALLBACK: %O -> %O", result, this)
         if (result.codeCellId === this.state.codeCellId) {
-            console.log("CELL HANDLING: %O", result)
-            return 'stop'
+            switch (result.resultHandling) {
+                case CodeCellResultHandling.Append:
+                    this.setState({
+                        results: this.state.results.concat(result)
+                    })
+                    break
+                case CodeCellResultHandling.Replace:
+                    this.setState({
+                        results: [result]
+                    })
+                    break
+            }
         }
     }
 
@@ -103,6 +115,9 @@ export class CodeCell extends React.Component<CodeCellProps, CodeCellState> {
                         block={this.monacoCellProps.block} />
                 </div>
                 <div className="CodeCell-results-container">
+                    {this.state.results.map(result => {
+                        this.shellContext.rendererRegistry.getRenderers(result)
+                    })}
                 </div>
                 <div className="CodeCell-actions-container">
                     <button

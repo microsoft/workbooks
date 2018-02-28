@@ -19,11 +19,12 @@ import { WorkbookSession } from '../WorkbookSession'
 import { EditorMessage, EditorMessageType, EditorKeys } from '../utils/EditorMessages'
 import { getNextBlockFor, getPrevBlockFor, isBlockBackwards } from '../utils/DraftStateUtils'
 import { EditorMenu, getBlockStyle, styleMap } from './Menu'
+import { WorkbookShellContext } from './WorkbookShell';
 /*import { convertFromMarkdown } from '../utils/draftImportUtils'
 import { convertToMarkdown } from '../utils/draftExportUtils'*/
 
 interface WorkbooksEditorProps {
-    session: WorkbookSession
+    shellContext: WorkbookShellContext
     content: string | undefined
 }
 
@@ -52,11 +53,11 @@ const blockRenderMap = DefaultDraftBlockRenderMap.merge(Map({
 // TODO: Should this move? Annoying that these must be registered globally
 class WorkbookCompletionItemProvider implements monaco.languages.CompletionItemProvider {
     triggerCharacters = ['.']
-    session: WorkbookSession
+    shellContext: WorkbookShellContext
     mapper: MonacoCellMapper
 
-    constructor(session: WorkbookSession, mapper: MonacoCellMapper) {
-        this.session = session
+    constructor(shellContext: WorkbookShellContext, mapper: MonacoCellMapper) {
+        this.shellContext = shellContext
         this.mapper = mapper
     }
 
@@ -73,7 +74,7 @@ class WorkbookCompletionItemProvider implements monaco.languages.CompletionItemP
         if (codeCellId == null)
             return items
 
-        items = await this.session.provideCompletions(codeCellId, position.lineNumber, position.column)
+        items = await this.shellContext.session.provideCompletions(codeCellId, position.lineNumber, position.column)
 
         // TODO: See if we can fix this on the server side. See comments on MonacoCompletionItem
         for (let item of items) {
@@ -113,7 +114,7 @@ export class WorkbookEditor extends React.Component<WorkbooksEditorProps, Workbo
         this.monacoProviderTickets.push(
             monaco.languages.registerCompletionItemProvider(
                 "csharp",
-                new WorkbookCompletionItemProvider(this.props.session, this)))
+                new WorkbookCompletionItemProvider(this.props.shellContext, this)))
     }
 
     componentDidMount() {
@@ -144,7 +145,7 @@ export class WorkbookEditor extends React.Component<WorkbooksEditorProps, Workbo
                 component: CodeCell,
                 editable: false,
                 props: {
-                    session: this.props.session,
+                    shellContext: this.props.shellContext,
                     cellMapper: this,
                     editorReadOnly: (readOnly: boolean) => this.editorReadOnly(readOnly),
                     subscribeToEditor: (callback: () => void) => this.addMessageSubscriber(callback),

@@ -9,14 +9,24 @@ import * as React from 'react'
 import { WorkbookSession, StatusUIAction, StatusMessage } from '../WorkbookSession'
 import { WorkbookEditor } from './WorkbookEditor'
 import { StatusBar } from './StatusBar'
+import { DropDownMenu, MenuItem } from './DropDownMenu'
+import { ResultRendererRegistry } from '../rendering';
+
+export interface WorkbookShellContext {
+    session: WorkbookSession
+    rendererRegistry: ResultRendererRegistry
+}
 
 export class WorkbookShell extends React.Component {
-    private session: WorkbookSession
+    private shellContext: WorkbookShellContext
     private statusBar: StatusBar | null = null
 
     constructor() {
         super()
-        this.session = new WorkbookSession(this.statusUIAction)
+        this.shellContext = {
+            session: new WorkbookSession(this.statusUIAction),
+            rendererRegistry: new ResultRendererRegistry
+        }
     }
 
     private statusUIAction(action: StatusUIAction, message: StatusMessage | null) {
@@ -25,18 +35,28 @@ export class WorkbookShell extends React.Component {
     }
 
     componentDidMount() {
-        this.session.connect()
+        this.shellContext.session.connect()
     }
 
     componentWillUnmount() {
-        this.session.disconnect()
+        this.shellContext.session.disconnect()
     }
 
     render() {
+        const items : MenuItem[] = [
+            { label: 'One' },
+            { label: 'Two' },
+            { label: 'Three' },
+        ]
+
         return (
             <div>
+                <DropDownMenu
+                    items={items}
+                    initiallySelectedIndex={0}
+                    selectionChanged={item => console.log("Selected: %O", item)}/>
                 <WorkbookEditor
-                    session={this.session}
+                    shellContext={this.shellContext}
                     content=''/>
                 <StatusBar
                     ref={(statusBar: StatusBar | null) => this.statusBar = statusBar}/>
