@@ -13,6 +13,7 @@ import { MonacoCellEditor, MonacoCellEditorProps } from './MonacoCellEditor'
 import { EditorMessage } from '../utils/EditorMessages'
 import { MonacoCellMapper } from './WorkbookEditor'
 import { WorkbookShellContext } from './WorkbookShell'
+import { ResultRendererRepresentation } from '../rendering';
 
 interface CodeCellProps {
     blockProps: {
@@ -116,6 +117,7 @@ export class CodeCell extends React.Component<CodeCellProps, CodeCellState> {
                 </div>
                 <div className="CodeCell-results-container">
                     {this.state.results.map(result => {
+                        console.log("renderresult: %O", result)
                         this.shellContext.rendererRegistry.getRenderers(result)
                     })}
                 </div>
