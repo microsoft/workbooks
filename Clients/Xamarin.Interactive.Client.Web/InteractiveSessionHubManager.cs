@@ -18,7 +18,7 @@ using Xamarin.Interactive.Messages;
 
 namespace Xamarin.Interactive.Client.Web
 {
-    public sealed class InteractiveSessionHubManager : DefaultHubLifetimeManager<InteractiveSessionHub>
+    sealed class InteractiveSessionHubManager : DefaultHubLifetimeManager<InteractiveSessionHub>
     {
         internal sealed class SessionState : IDisposable
         {

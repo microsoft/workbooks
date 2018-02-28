@@ -17,7 +17,7 @@ using Xamarin.Interactive.CodeAnalysis;
 
 namespace Xamarin.Interactive.Client.Web
 {
-    public sealed class InteractiveSessionHub : Hub
+    sealed class InteractiveSessionHub : Hub
     {
         readonly IServiceProvider serviceProvider;
 
