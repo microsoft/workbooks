@@ -8,7 +8,7 @@
 
 using Microsoft.CodeAnalysis.Completion;
 
-namespace Xamarin.Interactive.CodeAnalysis
+namespace Xamarin.Interactive.CodeAnalysis.Completion
 {
     sealed class CompletionItemViewModel
     {

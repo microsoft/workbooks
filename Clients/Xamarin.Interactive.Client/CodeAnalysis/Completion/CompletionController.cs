@@ -20,27 +20,13 @@ using Xamarin.Interactive.Compilation.Roslyn;
 using Xamarin.Interactive.Logging;
 using Xamarin.Interactive.RoslynInternals;
 
-namespace Xamarin.Interactive.CodeAnalysis
+namespace Xamarin.Interactive.CodeAnalysis.Completion
 {
     sealed class CompletionController
     {
         const string TAG = nameof (CompletionController);
 
         public const string ItemDetailPropertyName = "xi-itemdetail";
-
-        // TODO: Move this somewhere shared. Copied from MonacoExtensions
-        static readonly SymbolDisplayFormat symbolDisplayFormat = SymbolDisplayFormat.CSharpErrorMessageFormat
-            .WithParameterOptions (
-                SymbolDisplayParameterOptions.IncludeName |
-                SymbolDisplayParameterOptions.IncludeType |
-                SymbolDisplayParameterOptions.IncludeDefaultValue |
-                SymbolDisplayParameterOptions.IncludeParamsRefOut)
-            .WithMemberOptions (
-                SymbolDisplayMemberOptions.IncludeParameters |
-                SymbolDisplayMemberOptions.IncludeContainingType |
-                SymbolDisplayMemberOptions.IncludeType |
-                SymbolDisplayMemberOptions.IncludeRef |
-                SymbolDisplayMemberOptions.IncludeExplicitInterface);
 
         readonly RoslynCompilationWorkspace compilationWorkspace;
 
@@ -50,7 +36,8 @@ namespace Xamarin.Interactive.CodeAnalysis
 
         public CompletionController (RoslynCompilationWorkspace compilationWorkspace)
         {
-            this.compilationWorkspace = compilationWorkspace;
+            this.compilationWorkspace = compilationWorkspace
+                ?? throw new ArgumentNullException (nameof (compilationWorkspace));
         }
 
         public Task<CompletionModel> ProvideCompletionItemsAsync (
@@ -233,7 +220,7 @@ namespace Xamarin.Interactive.CodeAnalysis
                     .ConfigureAwait (false);
                 var overloads = symbols.OfType<IMethodSymbol> ().ToArray ();
                 if (overloads.Length > 0) {
-                    itemDetail = overloads [0].ToDisplayString (symbolDisplayFormat);
+                    itemDetail = overloads [0].ToDisplayString (Constants.SymbolDisplayFormat);
 
                     if (overloads.Length > 1)
                         itemDetail += $" (+ {overloads.Length - 1} overload(s))";

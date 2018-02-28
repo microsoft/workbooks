@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.SignalR;
 
 using Xamarin.Interactive.Client.Web.Hosting;
 using Xamarin.Interactive.CodeAnalysis;
+using Xamarin.Interactive.CodeAnalysis.Completion;
 
 namespace Xamarin.Interactive.Client.Web
 {

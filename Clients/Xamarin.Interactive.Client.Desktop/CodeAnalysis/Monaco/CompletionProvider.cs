@@ -13,6 +13,7 @@ using Microsoft.CodeAnalysis.Text;
 
 using XCB = Xamarin.CrossBrowser;
 
+using Xamarin.Interactive.CodeAnalysis.Completion;
 using Xamarin.Interactive.Compilation.Roslyn;
 
 namespace Xamarin.Interactive.CodeAnalysis.Monaco

@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.SignalR;
 using Xamarin.Interactive.Client.Web.Models;
 using Xamarin.Interactive.CodeAnalysis;
 using Xamarin.Interactive.CodeAnalysis.Events;
+using Xamarin.Interactive.CodeAnalysis.Completion;
 using Xamarin.Interactive.Messages;
 
 namespace Xamarin.Interactive.Client.Web
