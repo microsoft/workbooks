@@ -36,9 +36,16 @@ namespace Xamarin.Interactive.CodeAnalysis
         }
 
         [Fact]
+        internal EvaluationService CreateEvaluationService ()
+            => new EvaluationService (
+                CreateWorkspace (),
+                new EvaluationEnvironment (Environment.CurrentDirectory),
+                null);
+
+        [Fact]
         public async Task Append ()
         {
-            var controller = new EvaluationService (CreateWorkspace ());
+            var controller = CreateEvaluationService ();
 
             var submissionA = await controller.InsertCodeCellAsync ("buffer-a", default);
             var submissionB = await controller.InsertCodeCellAsync ("buffer-b", submissionA.Id);
@@ -63,7 +70,7 @@ namespace Xamarin.Interactive.CodeAnalysis
         [Fact]
         public async Task Insert ()
         {
-            var service = new EvaluationService (CreateWorkspace ());
+            var service = CreateEvaluationService ();
 
             var submissionC = await service.InsertCodeCellAsync ("buffer-c", default);
             var submissionD = await service.InsertCodeCellAsync ("buffer-d", submissionC.Id);
@@ -88,7 +95,7 @@ namespace Xamarin.Interactive.CodeAnalysis
         [Fact]
         public async Task Model ()
         {
-            var service = new EvaluationService (CreateWorkspace ());
+            var service = CreateEvaluationService ();
 
             await service.InsertCodeCellAsync ("var a = 10");
             await service.InsertCodeCellAsync ("var b = a * 2");
