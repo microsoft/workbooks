@@ -22,7 +22,7 @@ import { EditorMessage, EditorMessageType, EditorKeys } from '../utils/EditorMes
 import { getNextBlockFor, getPrevBlockFor, isBlockBackwards } from '../utils/DraftStateUtils'
 import { EditorMenu, getBlockStyle, styleMap } from './Menu'
 import { WorkbookShellContext } from './WorkbookShell';
-import { convertToMarkdown } from '../utils/DraftSaveLoadUtils'
+import { convertToMarkdown, convertFromMarkdown } from '../utils/DraftSaveLoadUtils'
 
 interface WorkbooksEditorProps {
     shellContext: WorkbookShellContext
@@ -47,6 +47,7 @@ const blockRenderMap = DefaultDraftBlockRenderMap.merge(Map({
 }));
 
 export class WorkbookEditor extends React.Component<WorkbooksEditorProps, WorkbooksEditorState> implements MonacoCellMapper {
+    fileButton: HTMLInputElement | null;
     lastFocus?: Date;
     subscriptors: ((m: EditorMessage) => void)[];
     monacoProviderTickets: monaco.IDisposable[] = [];
@@ -57,8 +58,9 @@ export class WorkbookEditor extends React.Component<WorkbooksEditorProps, Workbo
 
         this.subscriptors = []
         this.lastFocus = undefined
+        this.fileButton = null
 
-        let editorState = EditorState.createEmpty()
+        const editorState = EditorState.createEmpty()
 
         this.state = {
             editorState: editorState,
@@ -141,7 +143,7 @@ export class WorkbookEditor extends React.Component<WorkbooksEditorProps, Workbo
 
         return null
     }
-    
+
     updateBlockCodeCellId(currentBlock: string, codeCellId: string) {
         // FIXME: In the future, we should try not to reconstruct the entire state.
         const content = this.state.editorState.getCurrentContent();
@@ -402,6 +404,29 @@ export class WorkbookEditor extends React.Component<WorkbooksEditorProps, Workbo
         )
     }
 
+    triggerFilePicker() {
+        if (this.fileButton == null)
+            return;
+        this.fileButton.click();
+    }
+
+    loadMarkdown(event: React.ChangeEvent<HTMLInputElement>) {
+        if (event.target.files == null) {
+            alert("No files.");
+            return;
+        }
+
+        const file = event.target.files[0];
+        const reader = new FileReader();
+        reader.addEventListener("load", () => {
+            var newContentState = convertFromMarkdown(reader.result);
+            this.setState({
+                editorState: EditorState.createWithContent(newContentState)
+            });
+        });
+        reader.readAsText(file);
+    }
+
     saveMarkdown() {
         var content = this.state.editorState.getCurrentContent();
         var markdown = convertToMarkdown(content);
@@ -429,6 +454,7 @@ export class WorkbookEditor extends React.Component<WorkbooksEditorProps, Workbo
                 <div className="menu-controls btn-group" role="group" aria-label="Helpers">
                     <button type="button" className="btn btn-primary" onClick={() => this.logContent()}>Log Draft blocks to console</button>
                     <button type="button" className="btn btn-primary" onClick={() => this.saveMarkdown()}>Save Markdown</button>
+                    <button type="button" className="btn btn-primary" onClick={() => this.triggerFilePicker()}>Load Workbook</button>
                 </div>
                 <br /><br />
                 <div className={className} onClick={(e) => this.focus(e)}>
@@ -449,6 +475,9 @@ export class WorkbookEditor extends React.Component<WorkbooksEditorProps, Workbo
                         onUpArrow={(e: React.KeyboardEvent<{}>) => this.onArrow(EditorKeys.UP, e)}
                         onDownArrow={(e: React.KeyboardEvent<{}>) => this.onArrow(EditorKeys.DOWN, e)}
                     />
+                </div>
+                <div style={{ display: "none" }}>
+                    <input type="file" ref={(input) => { this.fileButton = input; }} onChange={(e: React.ChangeEvent<HTMLInputElement>) => this.loadMarkdown(e)} />
                 </div>
             </div>
         )
