@@ -9,6 +9,7 @@ export interface EditorMessage {
 }
 
 export const EditorKeys = {
+  BACKSPACE: 8,
   LEFT: 37,
   UP: 38,
   RIGHT: 39,

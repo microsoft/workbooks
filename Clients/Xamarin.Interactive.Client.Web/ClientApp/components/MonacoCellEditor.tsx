@@ -193,6 +193,8 @@ export class MonacoCellEditor extends React.Component<MonacoCellEditorProps, Mon
             handled = this.handleEditorBoundaries(-1, e.keyCode == monaco.KeyCode.UpArrow)
         else if ((e.keyCode == monaco.KeyCode.DownArrow && !this.isParameterHintsWindowVisible()) || e.keyCode == monaco.KeyCode.RightArrow)
             handled = this.handleEditorBoundaries(1, e.keyCode == monaco.KeyCode.DownArrow)
+        else if (e.keyCode == monaco.KeyCode.Backspace && !this.isParameterHintsWindowVisible())
+            handled = this.handleEditorBoundaries(-1, false);
 
         if (handled) {
             e.preventDefault()

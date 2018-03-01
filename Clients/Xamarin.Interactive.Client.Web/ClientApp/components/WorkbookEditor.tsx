@@ -283,10 +283,29 @@ export class WorkbookEditor extends React.Component<WorkbooksEditorProps, Workbo
         this.onChange(EditorState.forceSelection(this.state.editorState, selection as SelectionState))
     }
 
-    editorKeyBinding(e?: any) {
+    editorKeyBinding(e: React.KeyboardEvent<{}>) {
         const keyCode = e.keyCode
         if (keyCode === EditorKeys.LEFT || keyCode === EditorKeys.RIGHT)
             this.onArrow(keyCode, e)
+        if (keyCode === EditorKeys.BACKSPACE) {
+            const selectionContext = this.getSelectionContext();
+            const targetBlock = selectionContext.currentContent.getBlockBefore(selectionContext.selectionState.getFocusKey());
+            const selectionIsStartOfLine = selectionContext.selectionState.getStartOffset() === 0;
+
+            if (targetBlock && targetBlock.getType() === "code-block" && selectionIsStartOfLine) {
+                this.sendMessage({
+                    type: EditorMessageType.setSelection,
+                    target: targetBlock.getKey(),
+                    data: {
+                        isBackwards: true,
+                        keyCode: e.keyCode
+                    }
+                })
+                return null;
+            } else {
+                return "backspace";
+            }
+        }
 
         return getDefaultKeyBinding(e)
     }
@@ -473,7 +492,7 @@ export class WorkbookEditor extends React.Component<WorkbooksEditorProps, Workbo
                         editorState={this.state.editorState}
                         onChange={(s: EditorState) => this.onChange(s)}
                         plugins={this.state.plugins}
-                        keyBindingFn={(e: any) => this.editorKeyBinding(e)}
+                        keyBindingFn={(e: React.KeyboardEvent<{}>) => this.editorKeyBinding(e)}
                         handleKeyCommand={(e: string) => this.handleKeyCommand(e)}
                         onUpArrow={(e: React.KeyboardEvent<{}>) => this.onArrow(EditorKeys.UP, e)}
                         onDownArrow={(e: React.KeyboardEvent<{}>) => this.onArrow(EditorKeys.DOWN, e)}
