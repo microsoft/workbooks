@@ -1,0 +1,66 @@
+//
+// Author:
+//   Aaron Bockover <abock@microsoft.com>
+//   Vaclav Vancura <vacvan@microsoft.com>
+//
+// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License.
+
+.react-AbortEvaluationButton {
+  display: flex;
+  align-items: center;
+  padding: 5px 8px;
+
+  cursor: pointer;
+
+  border: none;
+  background: none;
+
+  text-transform: uppercase;
+  font-size: 0.85em;
+  font-weight: bold;
+  color: #888;
+
+  $spinnerThickness: 2px;
+  $abortColor: rgb(204, 0, 0);
+
+  .spinner {
+    border: $spinnerThickness solid rgba(0, 0, 0, 0.15);
+    border-left: $spinnerThickness solid rgba(0, 0, 0, 0.75);
+    border-radius: 50%;
+    width: 1.1em;
+    height: 1.1em;
+    margin-right: 0.55em;
+    animation: spin 1s linear infinite;
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+  }
+
+  &:hover {
+    color: #fff;
+    background-color: $abortColor;
+
+    .spinner {
+      border: $spinnerThickness solid rgba(255, 255, 255, 0.25);
+      border-left: $spinnerThickness solid rgba(255, 255, 255, 0.75);
+    }
+  }
+
+  &:active {
+    background-color: darken($abortColor, 10%);
+  }
+
+  &:focus {
+    outline: none;
+  }
+
+  &::after {
+    content: "Running…";
+  }
+
+  &:hover::after {
+    content: "Abort";
+  }
+}
