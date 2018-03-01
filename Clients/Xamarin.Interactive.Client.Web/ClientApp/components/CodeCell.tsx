@@ -157,6 +157,9 @@ export class CodeCell extends React.Component<CodeCellProps, CodeCellState> {
                 </div>
                 <div className="CodeCell-results-container">
                     {this.state.results.map((resultState, i) => {
+                        if (resultState.representations.length === 0)
+                            return
+
                         return (
                             <div
                                 key={i}
