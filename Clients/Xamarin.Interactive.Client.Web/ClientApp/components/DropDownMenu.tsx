@@ -9,15 +9,14 @@ import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 
 export interface MenuItem {
-    label: string
-    value?: any
+    getMenuLabel(): string
 }
 
 interface DropDownMenuProps {
     items: MenuItem[]
     noSelectionLabel?: string
     initiallySelectedIndex?: number
-    selectionChanged?: (item: MenuItem) => void
+    selectionChanged?: (index: number, item: MenuItem) => void
 }
 
 interface DropDownMenuState {
@@ -40,13 +39,17 @@ export class DropDownMenu extends React.Component<DropDownMenuProps, DropDownMen
         })
 
         if (this.props.selectionChanged)
-            this.props.selectionChanged(this.props.items[index])
+            this.props.selectionChanged(index, this.props.items[index])
+    }
+
+    get selectedItemIndex(): number {
+        return this.state.selectedItemIndex
     }
 
     render() {
         let buttonLabel = this.props.noSelectionLabel || 'Select Item'
         if (this.state.selectedItemIndex >= 0)
-            buttonLabel = this.props.items[this.state.selectedItemIndex].label
+            buttonLabel = this.props.items[this.state.selectedItemIndex].getMenuLabel()
 
         return (
             <div className='dropdown'>
@@ -64,7 +67,7 @@ export class DropDownMenu extends React.Component<DropDownMenuProps, DropDownMen
                                 className='dropdown-item'
                                 href='#'
                                 onClick={e => this.selectItem(i)}>
-                                {item.label}
+                                {item.getMenuLabel()}
                             </a>
                         </li>
                     )}

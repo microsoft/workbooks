@@ -8,6 +8,7 @@
 import * as React from 'react'
 import { CodeCellResult } from './evaluation'
 import { NullRenderer } from './renderers/NullRenderer'
+import { MenuItem } from './components/DropDownMenu';
 
 export const enum ResultRendererRepresentationOptions {
     None = 0,
@@ -49,14 +50,18 @@ export interface ResultRendererRepresentationState {
 }
 
 export abstract class ResultRendererRepresentation
-    extends React.Component<ResultRendererRepresentationProps, ResultRendererRepresentationState> {
+    extends React.Component<ResultRendererRepresentationProps, ResultRendererRepresentationState>
+    implements MenuItem {
+    getMenuLabel() {
+        return this.props.shortDisplayName
+    }
 }
 
 export interface ResultRenderer {
-    getRepresentations(result: CodeCellResult): ResultRendererRepresentation[] | null
+    getRepresentations(result: CodeCellResult): ResultRendererRepresentation[]
 }
 
-export type ResultRendererFactory = (result: CodeCellResult) => ResultRenderer
+export type ResultRendererFactory = (result: CodeCellResult) => ResultRenderer | null
 
 export class ResultRendererRegistry {
     private rendererFactories: ResultRendererFactory[] = []
@@ -66,8 +71,8 @@ export class ResultRendererRegistry {
     }
 
     getRenderers(result: CodeCellResult): ResultRenderer[] {
-        if (!result.valueRepresentations || result.valueRepresentations.length === 0)
-            return []
-        return this.rendererFactories.map(f => f(result))
+        return <ResultRenderer[]>this.rendererFactories
+            .map(f => f(result))
+            .filter(f => f !== null)
     }
 }

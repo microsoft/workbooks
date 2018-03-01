@@ -14,6 +14,7 @@ import { EditorMessage } from '../utils/EditorMessages'
 import { WorkbookShellContext } from './WorkbookShell'
 import { ResultRendererRepresentation } from '../rendering';
 import { MonacoCellMapper } from '../utils/MonacoUtils'
+import { DropDownMenu } from './DropDownMenu';
 
 interface CodeCellProps {
     blockProps: {
@@ -32,9 +33,15 @@ interface CodeCellProps {
     }
 }
 
+interface CodeCellResultRendererState {
+    result: CodeCellResult
+    representations: ResultRendererRepresentation[]
+    selectedRepresentationIndex: number
+}
+
 interface CodeCellState {
     codeCellId: string | null
-    results: CodeCellResult[]
+    results: CodeCellResultRendererState[]
 }
 
 export class CodeCell extends React.Component<CodeCellProps, CodeCellState> {
@@ -91,19 +98,35 @@ export class CodeCell extends React.Component<CodeCellProps, CodeCellState> {
     }
 
     private evaluationEventHandler(session: WorkbookSession, result: CodeCellResult) {
-        if (result.codeCellId === this.state.codeCellId) {
-            switch (result.resultHandling) {
-                case CodeCellResultHandling.Append:
-                    this.setState({
-                        results: this.state.results.concat(result)
-                    })
-                    break
-                case CodeCellResultHandling.Replace:
-                    this.setState({
-                        results: [result]
-                    })
-                    break
-            }
+        if (result.codeCellId !== this.state.codeCellId)
+            return
+
+        console.log("evaluationEventHandler: %O", result)
+
+        const reps = this.shellContext
+            .rendererRegistry
+            .getRenderers(result)
+            .map(r => r.getRepresentations(result))
+
+        const rendererState = {
+            result: result,
+            representations: reps.length === 0
+                ? []
+                : reps.reduce((a, b) => a.concat(b)),
+            selectedRepresentationIndex: 0
+        }
+
+        switch (result.resultHandling) {
+            case CodeCellResultHandling.Append:
+                this.setState({
+                    results: this.state.results.concat(rendererState)
+                })
+                break
+            case CodeCellResultHandling.Replace:
+                this.setState({
+                    results: [rendererState]
+                })
+                break
         }
     }
 
@@ -116,9 +139,23 @@ export class CodeCell extends React.Component<CodeCellProps, CodeCellState> {
                         block={this.monacoCellProps.block} />
                 </div>
                 <div className="CodeCell-results-container">
-                    {this.state.results.map(result => {
-                        console.log("renderresult: %O", result)
-                        this.shellContext.rendererRegistry.getRenderers(result)
+                    {this.state.results.map((resultState, i) => {
+                        return (
+                            <div
+                                key={i}
+                                className="CodeCell-result">
+                                <div className="CodeCell-result-renderer-container">
+                                    {resultState.representations[resultState.selectedRepresentationIndex].render()}
+                                </div>
+                                {resultState.representations.length > 1 && <DropDownMenu
+                                    items={resultState.representations}
+                                    initiallySelectedIndex={resultState.selectedRepresentationIndex}
+                                    selectionChanged={(i, v) => {
+                                        resultState.selectedRepresentationIndex = i
+                                        this.setState(this.state)
+                                    }}/>}
+                            </div>
+                        )
                     })}
                 </div>
                 <div className="CodeCell-actions-container">

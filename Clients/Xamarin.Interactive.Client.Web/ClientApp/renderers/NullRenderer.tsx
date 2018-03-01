@@ -13,11 +13,17 @@ class NullRepresentation extends ResultRendererRepresentation {
     }
 
     render() {
-        return <div>null</div>
+        return <pre>null</pre>
     }
 }
 
 export class NullRenderer implements ResultRenderer {
+    static factory(result: CodeCellResult) {
+        if (!result.valueRepresentations || result.valueRepresentations.length === 0)
+            return new NullRenderer
+        return null
+    }
+
     getRepresentations(result: CodeCellResult) {
         return [ new NullRepresentation ]
     }

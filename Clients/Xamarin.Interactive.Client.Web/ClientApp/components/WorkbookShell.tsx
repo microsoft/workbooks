@@ -9,8 +9,8 @@ import * as React from 'react'
 import { WorkbookSession, StatusUIAction, StatusMessage } from '../WorkbookSession'
 import { WorkbookEditor } from './WorkbookEditor'
 import { StatusBar } from './StatusBar'
-import { DropDownMenu, MenuItem } from './DropDownMenu'
 import { ResultRendererRegistry } from '../rendering';
+import { NullRenderer } from '../renderers/NullRenderer'
 
 export interface WorkbookShellContext {
     session: WorkbookSession
@@ -27,6 +27,8 @@ export class WorkbookShell extends React.Component {
             session: new WorkbookSession(this.statusUIAction),
             rendererRegistry: new ResultRendererRegistry
         }
+
+        this.shellContext.rendererRegistry.register(NullRenderer.factory)
     }
 
     private statusUIAction(action: StatusUIAction, message: StatusMessage | null) {
@@ -43,18 +45,8 @@ export class WorkbookShell extends React.Component {
     }
 
     render() {
-        const items : MenuItem[] = [
-            { label: 'One' },
-            { label: 'Two' },
-            { label: 'Three' },
-        ]
-
         return (
             <div>
-                <DropDownMenu
-                    items={items}
-                    initiallySelectedIndex={0}
-                    selectionChanged={item => console.log("Selected: %O", item)}/>
                 <WorkbookEditor
                     shellContext={this.shellContext}
                     content=''/>
