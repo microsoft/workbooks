@@ -11,6 +11,7 @@ import * as React from 'react'
 import * as ReactDOM from 'react-dom'
 import { SelectionState } from 'draft-js'
 import { EditorMessage, EditorMessageType, EditorKeys } from '../utils/EditorMessages'
+import { CodeCellStatus } from '../WorkbookSession'
 
 export interface MonacoCellEditorProps {
     blockProps: {
@@ -20,7 +21,8 @@ export interface MonacoCellEditorProps {
         selectPrevious: (currentKey: string) => boolean,
         updateTextContentOfBlock: (blockKey: string, textContent: string) => void,
         setSelection: (anchorKey: string, offset: number) => void,
-        setModelId: (modelId: string) => void
+        setModelId: (modelId: string) => void,
+        updateCodeCell(buffer: string): Promise<CodeCellStatus>
     }
     block: {
         key: string
@@ -37,8 +39,11 @@ enum ViewEventType {
 }
 
 export class MonacoCellEditor extends React.Component<MonacoCellEditorProps, MonacoCellEditorState> {
-    windowResizeHandler: any;
-    editor?: monaco.editor.ICodeEditor;
+    private windowResizeHandler: any;
+    private editor?: monaco.editor.ICodeEditor;
+    private lastStatus?: CodeCellStatus
+    private markedTextIds: string[] = []
+
     constructor(props: MonacoCellEditorProps) {
         super(props)
         this.state = { created: true }
@@ -134,7 +139,29 @@ export class MonacoCellEditor extends React.Component<MonacoCellEditorProps, Mon
     }
 
     syncContent() {
-        this.props.blockProps.updateTextContentOfBlock(this.getKey(), this.getContent())
+        let buffer = this.getContent()
+        this.props.blockProps.updateTextContentOfBlock(this.getKey(), buffer)
+        this.updateCodeCellStatus(buffer) // No need to await this
+    }
+
+    async updateCodeCellStatus(buffer: string) {
+        this.lastStatus = await this.props.blockProps.updateCodeCell(buffer)
+        this.clearMarkedText()
+        if (!this.lastStatus)
+            return
+        for (let decoration of this.lastStatus.diagnostics)
+            this.markText(decoration)
+    }
+
+    markText(decoration: monaco.editor.IModelDecoration) {
+        let newIds = this.editor!.getModel().deltaDecorations([], [decoration])
+        this.markedTextIds.push(...newIds)
+    }
+
+    // TODO: Use this on cell reset, once we have that
+    clearMarkedText() {
+        this.editor!.getModel().deltaDecorations(this.markedTextIds, [])
+        this.markedTextIds = []
     }
 
     onEditorMessage(message: EditorMessage) {

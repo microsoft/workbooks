@@ -12,15 +12,18 @@ using System.Threading.Tasks;
 
 using Microsoft.AspNetCore.SignalR;
 
+using Microsoft.CodeAnalysis;
+
 using Xamarin.Interactive.Client.Monaco;
 using Xamarin.Interactive.Client.Web.Hosting;
+using Xamarin.Interactive.CodeAnalysis;
 using Xamarin.Interactive.CodeAnalysis.Completion;
 using Xamarin.Interactive.CodeAnalysis.Hover;
 using Xamarin.Interactive.CodeAnalysis.SignatureHelp;
 
 namespace Xamarin.Interactive.Client.Web
 {
-    sealed class InteractiveSessionHub : Hub
+    sealed partial class InteractiveSessionHub : Hub
     {
         readonly IServiceProvider serviceProvider;
 
@@ -90,17 +93,40 @@ namespace Xamarin.Interactive.Client.Web
             return codeCellState.Id;
         }
 
-        public Task UpdateCodeCell (
+        public async Task<CodeCellStatus> UpdateCodeCell (
             string codeCellId,
             string updatedBuffer)
-            => serviceProvider
+        {
+            var sessionState = serviceProvider
                 .GetInteractiveSessionHubManager ()
-                .GetSession (Context.ConnectionId)
+                .GetSession (Context.ConnectionId);
+
+            var cellState = await sessionState
                 .EvaluationService
                 .UpdateCodeCellAsync (
                     codeCellId,
                     updatedBuffer,
                     Context.Connection.ConnectionAbortedToken);
+
+            var workspace = sessionState
+                    .ClientSession
+                    .CompilationWorkspace;
+            var documentId = cellState.Id.ToDocumentId ();
+
+            var diagnostics = await workspace.GetSubmissionCompilationDiagnosticsAsync (
+                documentId, Context.Connection.ConnectionAbortedToken);
+
+            return new CodeCellStatus {
+                IsSubmissionComplete = sessionState
+                    .ClientSession
+                    .CompilationWorkspace
+                    .IsDocumentSubmissionComplete (documentId),
+                Diagnostics = diagnostics
+                    .Where (d => d.Severity == DiagnosticSeverity.Error)
+                    .Select (d => new MonacoModelDeltaDecoration (d))
+                    .ToArray ()
+            };
+        }
 
         public Task Evaluate (string targetCodeCellId, bool evaluateAll)
         {

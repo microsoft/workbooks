@@ -36,3 +36,7 @@
   background-size: 16px 16px !important;
   top: 0; // Override placement that prevents aligning icon with completion text
 }
+
+.xi-diagnostic {
+  border-bottom: 1px solid rgba(219, 33, 49, 0.25);
+}

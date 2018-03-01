@@ -7,7 +7,7 @@
 
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-import { WorkbookSession } from '../WorkbookSession'
+import { WorkbookSession, CodeCellStatus } from '../WorkbookSession'
 import { CodeCellResult, CodeCellResultHandling } from '../evaluation'
 import { MonacoCellEditor, MonacoCellEditorProps } from './MonacoCellEditor'
 import { EditorMessage } from '../utils/EditorMessages'
@@ -67,7 +67,8 @@ export class CodeCell extends React.Component<CodeCellProps, CodeCellState> {
                 updateTextContentOfBlock:
                     props.blockProps.updateTextContentOfBlock,
                 setSelection: props.blockProps.setSelection,
-                setModelId: modelId => this.monacoModelId = modelId
+                setModelId: modelId => this.monacoModelId = modelId,
+                updateCodeCell: (buffer: string) => this.updateCodeCell(buffer)
             }
         }
     }
@@ -85,11 +86,16 @@ export class CodeCell extends React.Component<CodeCellProps, CodeCellState> {
             codeCellId, this.monacoModelId)
     }
 
-    async componentDidUpdate() {
+    async updateCodeCell(buffer: string): Promise<CodeCellStatus> {
         if (this.state.codeCellId)
-            await this.shellContext.session.updateCodeCell(
+            return await this.shellContext.session.updateCodeCell(
                 this.state.codeCellId,
-                this.props.block.text)
+                buffer)
+
+        return {
+            isSubmissionComplete: false,
+            diagnostics: []
+        }
     }
 
     private async evaluate() {
