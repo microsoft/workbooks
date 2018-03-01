@@ -11,7 +11,7 @@ import * as React from 'react'
 import * as ReactDOM from 'react-dom'
 import { SelectionState } from 'draft-js'
 import { EditorMessage, EditorMessageType, EditorKeys } from '../utils/EditorMessages'
-import { CodeCellStatus } from '../WorkbookSession'
+import { CodeCellUpdateResponse } from '../WorkbookSession'
 
 export interface MonacoCellEditorProps {
     blockProps: {
@@ -22,7 +22,7 @@ export interface MonacoCellEditorProps {
         updateTextContentOfBlock: (blockKey: string, textContent: string) => void,
         setSelection: (anchorKey: string, offset: number) => void,
         setModelId: (modelId: string) => void,
-        updateCodeCell(buffer: string): Promise<CodeCellStatus>,
+        updateCodeCell(buffer: string): Promise<CodeCellUpdateResponse>,
         evaluate: () => void
     }
     block: {
@@ -42,7 +42,7 @@ enum ViewEventType {
 export class MonacoCellEditor extends React.Component<MonacoCellEditorProps, MonacoCellEditorState> {
     private windowResizeHandler: any;
     private editor?: monaco.editor.ICodeEditor;
-    private lastStatus?: CodeCellStatus
+    private lastUpdateResponse?: CodeCellUpdateResponse
     private markedTextIds: string[] = []
 
     constructor(props: MonacoCellEditorProps) {
@@ -146,11 +146,11 @@ export class MonacoCellEditor extends React.Component<MonacoCellEditorProps, Mon
     }
 
     async updateCodeCellStatus(buffer: string) {
-        this.lastStatus = await this.props.blockProps.updateCodeCell(buffer)
+        this.lastUpdateResponse = await this.props.blockProps.updateCodeCell(buffer)
         this.clearMarkedText()
-        if (!this.lastStatus)
+        if (!this.lastUpdateResponse)
             return
-        for (let decoration of this.lastStatus.diagnostics)
+        for (let decoration of this.lastUpdateResponse.diagnostics)
             this.markText(decoration)
     }
 
@@ -221,8 +221,8 @@ export class MonacoCellEditor extends React.Component<MonacoCellEditorProps, Mon
         if (e.shiftKey)
             return false
 
-        if (this.lastStatus &&
-            this.lastStatus.isSubmissionComplete &&
+        if (this.lastUpdateResponse &&
+            this.lastUpdateResponse.isSubmissionComplete &&
             !this.isSomethingSelected() &&
             this.isCursorAtEnd()) {
             let content = this.getContent()

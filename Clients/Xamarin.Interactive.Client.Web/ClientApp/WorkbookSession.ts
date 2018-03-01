@@ -21,7 +21,7 @@ export interface StatusMessage {
     text: string | null
 }
 
-export interface CodeCellStatus
+export interface CodeCellUpdateResponse
 {
     isSubmissionComplete: boolean
     diagnostics: monaco.editor.IModelDecoration[]
@@ -43,7 +43,7 @@ export class WorkbookSession {
         return this.hubConnection.invoke('InsertCodeCell', buffer, relativeToCodeCellId, false)
     }
 
-    updateCodeCell(codeCellId: string, buffer: string): Promise<CodeCellStatus> {
+    updateCodeCell(codeCellId: string, buffer: string): Promise<CodeCellUpdateResponse> {
         return this.hubConnection.invoke('UpdateCodeCell', codeCellId, buffer)
     }
 
