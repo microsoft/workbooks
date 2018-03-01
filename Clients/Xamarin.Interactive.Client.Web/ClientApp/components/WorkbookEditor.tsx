@@ -233,10 +233,9 @@ export class WorkbookEditor extends React.Component<WorkbooksEditorProps, Workbo
                 return false;
             nextBlock = this.createNewEmptyBlock(currentContent, true);
         }
-        var nextSelection = SelectionState.createEmpty(nextBlock.getKey())
-        nextSelection
-            .set('anchorOffset', 0)
-            .set('focusOffset', 0)
+        let nextSelection: SelectionState = (SelectionState.createEmpty(nextBlock.getKey())
+            .set('anchorOffset', nextBlock.getText().length)
+            .set('focusOffset', nextBlock.getText().length) as SelectionState)
 
         var editorState = EditorState.forceSelection(this.state.editorState, nextSelection)
         this.setState({ editorState })
