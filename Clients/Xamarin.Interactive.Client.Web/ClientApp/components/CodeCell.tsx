@@ -68,7 +68,8 @@ export class CodeCell extends React.Component<CodeCellProps, CodeCellState> {
                     props.blockProps.updateTextContentOfBlock,
                 setSelection: props.blockProps.setSelection,
                 setModelId: modelId => this.monacoModelId = modelId,
-                updateCodeCell: (buffer: string) => this.updateCodeCell(buffer)
+                updateCodeCell: (buffer: string) => this.updateCodeCell(buffer),
+                evaluate: () => this.evaluate()
             }
         }
     }

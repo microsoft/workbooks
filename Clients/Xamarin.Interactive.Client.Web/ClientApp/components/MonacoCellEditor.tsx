@@ -22,7 +22,8 @@ export interface MonacoCellEditorProps {
         updateTextContentOfBlock: (blockKey: string, textContent: string) => void,
         setSelection: (anchorKey: string, offset: number) => void,
         setModelId: (modelId: string) => void,
-        updateCodeCell(buffer: string): Promise<CodeCellStatus>
+        updateCodeCell(buffer: string): Promise<CodeCellStatus>,
+        evaluate: () => void
     }
     block: {
         key: string
@@ -182,6 +183,8 @@ export class MonacoCellEditor extends React.Component<MonacoCellEditorProps, Mon
         if (this.isCompletionWindowVisible())
             return
         if (e.keyCode == monaco.KeyCode.Enter) {
+            if (this.onEnter(e))
+                e.preventDefault()
             e.stopPropagation()
             return
         }
@@ -197,6 +200,51 @@ export class MonacoCellEditor extends React.Component<MonacoCellEditorProps, Mon
         }
     }
 
+    onEnter(e: monaco.IKeyboardEvent): boolean {
+        let isMod = window.navigator.platform == "MacIntel" ? e.metaKey : e.ctrlKey
+
+        // Shift+Mod+Enter: new markdown cell (do we need this now?)
+        if (e.shiftKey && isMod) {
+            // TODO
+            return true
+        }
+
+        // Mod+Enter: evaluate
+        if (isMod) {
+            this.props.blockProps.evaluate()
+            return true
+        }
+
+        // Shift+Enter: regular newline+indent
+        if (e.shiftKey)
+            return false
+
+        if (this.lastStatus &&
+            this.lastStatus.isSubmissionComplete &&
+            !this.isSomethingSelected() &&
+            this.isCursorAtEnd()) {
+            let content = this.getContent()
+            if (!content || !content.trim())
+                return false
+            this.props.blockProps.evaluate()
+            return true
+        }
+
+        return false
+    }
+
+    isSomethingSelected() {
+        let sel = this.editor!.getSelection()
+        return !sel.getStartPosition().equals(sel.getEndPosition())
+    }
+
+    isCursorAtEnd() {
+        let pos = this.editor!.getPosition()
+        let model = this.editor!.getModel()
+
+        return pos.lineNumber == model.getLineCount() &&
+            pos.column == model.getLineMaxColumn(pos.lineNumber)
+    }
 
     // TODO: It would be better if we had API access to SuggestController, and if
     //       SuggestController had API to check widget visibility. In the future
