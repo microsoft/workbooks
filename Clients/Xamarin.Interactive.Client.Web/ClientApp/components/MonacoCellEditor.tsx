@@ -172,8 +172,8 @@ export class MonacoCellEditor extends React.Component<MonacoCellEditorProps, Mon
 
         if (message.type === EditorMessageType.setSelection) {
             const isBackwards = message.data.isBackwards
-            const isUpArrow = message.data.keyCode == EditorKeys.UP
-            const startColumn = !isBackwards || isBackwards && isUpArrow
+            const isUpArrow = message.data.keyCode == EditorKeys.UP || message.data.keyCode == EditorKeys.BACKSPACE
+            const startColumn = !isBackwards
             this.moveSelection(!isBackwards, startColumn)
             this.focus()
         }
