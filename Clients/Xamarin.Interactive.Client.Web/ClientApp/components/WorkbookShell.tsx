@@ -7,6 +7,7 @@
 
 import * as React from 'react'
 import { WorkbookSession, StatusUIAction, StatusMessage } from '../WorkbookSession'
+import { WorkbookCommandBar } from './WorkbookCommandBar'
 import { WorkbookEditor } from './WorkbookEditor'
 import { StatusBar } from './StatusBar'
 import { ResultRendererRegistry } from '../rendering';
@@ -46,7 +47,8 @@ export class WorkbookShell extends React.Component {
 
     render() {
         return (
-            <div>
+            <div className='WorkbookShell-container'>
+                <WorkbookCommandBar />
                 <WorkbookEditor
                     shellContext={this.shellContext}
                     content=''/>
