@@ -13,27 +13,31 @@ import {
     ResultRendererRepresentation
 } from '../rendering'
 
-class NullRepresentation extends ResultRendererRepresentation {
-    constructor() {
+class TestRepresentation extends ResultRendererRepresentation {
+    static lastId: number = 0
+    id: number = TestRepresentation.lastId++
+
+    constructor(representationName: string) {
         super({
-            shortDisplayName: 'null',
+            shortDisplayName: representationName,
             value: null
         })
     }
 
     render() {
-        return <pre>null</pre>
+        return <pre>Bogus Rendering: {this.id}</pre>
     }
 }
 
-export class NullRenderer implements ResultRenderer {
+export class TestRenderer implements ResultRenderer {
     static factory(result: CodeCellResult) {
-        if (!result.valueRepresentations || result.valueRepresentations.length === 0)
-            return new NullRenderer
-        return null
+        return new TestRenderer
     }
 
     getRepresentations(result: CodeCellResult) {
-        return [ new NullRepresentation ]
+        return [
+            new TestRepresentation('Test Rep A'),
+            new TestRepresentation('Test Rep B')
+        ]
     }
 }

@@ -14,18 +14,23 @@ import {
     Spinner,
     SpinnerSize
 } from 'office-ui-fabric-react/lib/Spinner';
+import {
+    Dropdown,
+    IDropdown,
+    DropdownMenuItemType,
+    IDropdownOption
+} from 'office-ui-fabric-react/lib/Dropdown';
 
 import { CodeCellResult, CodeCellResultHandling } from '../evaluation'
 import { ResultRendererRepresentation } from '../rendering'
 import { ResultRendererRegistry } from '../ResultRendererRegistry'
-import { DropDownMenu } from './DropDownMenu'
 
 import './CodeCellView.scss'
 
 export interface CodeCellResultRendererState {
     result: CodeCellResult
     representations: ResultRendererRepresentation[]
-    selectedRepresentationIndex: number
+    selectedRepresentation: ResultRendererRepresentation | null
 }
 
 export const enum CodeCellViewStatus {
@@ -60,12 +65,14 @@ export abstract class CodeCellView<
             .getRenderers(result)
             .map(r => r.getRepresentations(result))
 
+        const flatReps = reps.length === 0
+            ? []
+            : reps.reduce((a, b) => a.concat(b))
+
         const rendererState = {
             result: result,
-            representations: reps.length === 0
-                ? []
-                : reps.reduce((a, b) => a.concat(b)),
-            selectedRepresentationIndex: 0
+            representations: flatReps,
+            selectedRepresentation: flatReps.length > 0 ? flatReps [0] : null
         }
 
         if (!resultHandling)
@@ -126,20 +133,26 @@ export abstract class CodeCellView<
                         if (resultState.representations.length === 0)
                             return
 
+                        const dropdownOptions = resultState.representations.length > 1
+                            ? resultState.representations.map((item, index) => item.dropdownOption)
+                            : null
+
                         return (
                             <div
                                 key={i}
                                 className="CodeCell-result">
                                 <div className="CodeCell-result-renderer-container">
-                                    {resultState.representations[resultState.selectedRepresentationIndex].render()}
+                                    {resultState.selectedRepresentation &&
+                                        resultState.selectedRepresentation.render()}
                                 </div>
-                                {resultState.representations.length > 1 && <DropDownMenu
-                                    items={resultState.representations}
-                                    initiallySelectedIndex={resultState.selectedRepresentationIndex}
-                                    selectionChanged={(i, v) => {
-                                        resultState.selectedRepresentationIndex = i
+                                {dropdownOptions && <Dropdown
+                                    options={dropdownOptions}
+                                    defaultSelectedKey={dropdownOptions[0].key}
+                                    onChanged={item => {
+                                        resultState.selectedRepresentation = item.data
                                         this.setState(this.state)
-                                    }}/>}
+                                    }}/>
+                                }
                             </div>
                         )
                     })}

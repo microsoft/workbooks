@@ -9,6 +9,7 @@ import { CodeCellResult } from './evaluation'
 import { ResultRendererFactory, ResultRenderer } from './rendering'
 
 import { NullRenderer } from './renderers/NullRenderer'
+import { TestRenderer } from './renderers/TestRenderer'
 
 export class ResultRendererRegistry {
     private rendererFactories: ResultRendererFactory[] = []
@@ -26,6 +27,7 @@ export class ResultRendererRegistry {
     static createDefault(): ResultRendererRegistry {
         const registry = new ResultRendererRegistry
         registry.register(NullRenderer.factory)
+        registry.register(TestRenderer.factory)
         return registry
     }
 }

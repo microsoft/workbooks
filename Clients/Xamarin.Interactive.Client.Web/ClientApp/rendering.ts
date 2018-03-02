@@ -8,7 +8,12 @@
 import * as React from 'react'
 
 import { CodeCellResult } from './evaluation'
-import { MenuItem } from './components/DropDownMenu';
+import {
+    Dropdown,
+    IDropdown,
+    DropdownMenuItemType,
+    IDropdownOption
+} from 'office-ui-fabric-react/lib/Dropdown';
 
 export const enum ResultRendererRepresentationOptions {
     None = 0,
@@ -47,10 +52,18 @@ export interface ResultRendererRepresentationProps {
 }
 
 export abstract class ResultRendererRepresentation<TState = {}>
-    extends React.Component<ResultRendererRepresentationProps, TState>
-    implements MenuItem {
-    getMenuLabel() {
-        return this.props.shortDisplayName
+    extends React.Component<ResultRendererRepresentationProps, TState> {
+    private static lastDropdownOptionKey = 0
+
+    readonly dropdownOption: IDropdownOption
+
+    constructor(props: ResultRendererRepresentationProps) {
+        super(props)
+        this.dropdownOption = {
+            key: (ResultRendererRepresentation.lastDropdownOptionKey++).toString(),
+            text: this.props.shortDisplayName,
+            data: this
+        }
     }
 }
 

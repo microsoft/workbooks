@@ -16,7 +16,6 @@ import { WorkbookShellContext } from './WorkbookShell'
 import { ResultRendererRepresentation } from '../rendering';
 import { ResultRendererRegistry } from '../ResultRendererRegistry'
 import { MonacoCellMapper } from '../utils/MonacoUtils'
-import { DropDownMenu } from './DropDownMenu';
 
 import {
     CodeCellViewStatus,
