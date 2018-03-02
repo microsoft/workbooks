@@ -8,7 +8,8 @@ import {
 class NullRepresentation extends ResultRendererRepresentation {
     constructor() {
         super({
-            shortDisplayName: 'null'
+            shortDisplayName: 'null',
+            value: null
         })
     }
 

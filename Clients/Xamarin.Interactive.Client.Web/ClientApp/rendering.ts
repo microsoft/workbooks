@@ -41,16 +41,13 @@ export const enum ResultRendererRepresentationOptions {
 
 export interface ResultRendererRepresentationProps {
     shortDisplayName: string
+    value: any
     order?: number
     options?: ResultRendererRepresentationOptions
 }
 
-export interface ResultRendererRepresentationState {
-    value: any | null
-}
-
-export abstract class ResultRendererRepresentation
-    extends React.Component<ResultRendererRepresentationProps, ResultRendererRepresentationState>
+export abstract class ResultRendererRepresentation<TState = {}>
+    extends React.Component<ResultRendererRepresentationProps, TState>
     implements MenuItem {
     getMenuLabel() {
         return this.props.shortDisplayName
