@@ -8,10 +8,16 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 
+import { ActionButton } from 'office-ui-fabric-react/lib/Button';
+import { ProgressIndicator } from 'office-ui-fabric-react/lib/ProgressIndicator';
+import {
+    Spinner,
+    SpinnerSize
+} from 'office-ui-fabric-react/lib/Spinner';
+
 import { CodeCellResult, CodeCellResultHandling } from '../evaluation'
 import { ResultRendererRepresentation } from '../rendering';
 import { DropDownMenu } from './DropDownMenu';
-import { AbortEvaluationButton } from './AbortEvaluationButton';
 
 import './CodeCellView.scss'
 
@@ -47,17 +53,26 @@ export abstract class CodeCellView<
             case CodeCellViewStatus.Unbound:
                 return null
             case CodeCellViewStatus.Evaluating:
-                return <AbortEvaluationButton onClick={e => this.abortEvaluation()}/>
+                return (
+                    <div className='actions'>
+                        <ActionButton
+                            className='CancelButton'
+                            iconProps={{ iconName: 'Cancel' }}
+                            onClick={e => this.abortEvaluation()}>
+                            Cancel
+                        </ActionButton>
+                        <ProgressIndicator />
+                     </div>
+                )
             case CodeCellViewStatus.Aborting:
                 return <div>Aborting...</div>
             case CodeCellViewStatus.Ready:
                 return (
-                    <button
-                        className='button-run btn-primary btn-small'
-                        type='button'
+                    <ActionButton
+                        iconProps={{ iconName: 'Play' }}
                         onClick={e => this.startEvaluation()}>
                         Run
-                    </button>
+                    </ActionButton>
                 )
         }
         return <div/>

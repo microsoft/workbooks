@@ -16,14 +16,12 @@ import { WorkbookShellContext } from './WorkbookShell'
 import { ResultRendererRepresentation } from '../rendering';
 import { MonacoCellMapper } from '../utils/MonacoUtils'
 import { DropDownMenu } from './DropDownMenu';
-import { AbortEvaluationButton } from './AbortEvaluationButton';
+
 import {
     CodeCellViewStatus,
     CodeCellView,
     CodeCellViewState,
 } from './CodeCellView';
-
-import './CodeCell.scss'
 
 interface CodeCellProps {
     blockProps: {
