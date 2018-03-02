@@ -10,7 +10,6 @@ import './css/CodeEditor.scss';
 import './css/CodeCell.scss';
 import 'draft-js/dist/Draft.css';
 
-import 'bootstrap';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import { AppContainer } from 'react-hot-loader';
