@@ -23,6 +23,7 @@ import { getNextBlockFor, getPrevBlockFor, isBlockBackwards } from '../utils/Dra
 import { EditorMenu, getBlockStyle, styleMap } from './Menu'
 import { WorkbookShellContext } from './WorkbookShell';
 import { convertToMarkdown, convertFromMarkdown } from '../utils/DraftSaveLoadUtils'
+import './WorkbookEditor.scss'
 
 interface WorkbooksEditorProps {
     shellContext: WorkbookShellContext
@@ -456,50 +457,25 @@ export class WorkbookEditor extends React.Component<WorkbooksEditorProps, Workbo
     }
 
     render() {
-        let className = 'xi-editor'
-        var contentState = this.state.editorState.getCurrentContent()
-        if (!contentState.hasText()) {
-            if (contentState.getBlockMap().first().getType() !== 'unstyled') {
-                className += ' xi-editor--hidePlaceholder'
-            }
-        }
-
         return (
-            <div className="xi-editor-container">
-                <EditorMenu
+            <div className='WorkbookEditor-container' onClick={(e) => this.focus(e)}>
+                <Editor
+                    ref="editor"
+                    placeholder=""
+                    spellCheck={false}
+                    readOnly={this.state.readOnly}
+                    blockRenderMap={blockRenderMap}
+                    blockRendererFn={(block: Draft.ContentBlock) => this.blockRenderer(block)}
+                    blockStyleFn={getBlockStyle}
+                    customStyleMap={styleMap}
                     editorState={this.state.editorState}
-                    onToggleBlock={(type: string) => this.toggleBlockType(type)}
-                    onToggleInline={(type: string) => this.toggleInlineStyle(type)}
+                    onChange={(s: EditorState) => this.onChange(s)}
+                    plugins={this.state.plugins}
+                    keyBindingFn={(e: React.KeyboardEvent<{}>) => this.editorKeyBinding(e)}
+                    handleKeyCommand={(e: string) => this.handleKeyCommand(e)}
+                    onUpArrow={(e: React.KeyboardEvent<{}>) => this.onArrow(EditorKeys.UP, e)}
+                    onDownArrow={(e: React.KeyboardEvent<{}>) => this.onArrow(EditorKeys.DOWN, e)}
                 />
-                <br />
-                <div className="menu-controls btn-group" role="group" aria-label="Helpers">
-                    <button type="button" className="btn btn-primary" onClick={() => this.logContent()}>Log Draft blocks to console</button>
-                    <button type="button" className="btn btn-primary" onClick={() => this.saveMarkdown()}>Save Markdown</button>
-                    <button type="button" className="btn btn-primary" onClick={() => this.triggerFilePicker()}>Load Workbook</button>
-                </div>
-                <br /><br />
-                <div className={className} onClick={(e) => this.focus(e)}>
-                    <Editor
-                        ref="editor"
-                        placeholder=""
-                        spellCheck={false}
-                        readOnly={this.state.readOnly}
-                        blockRenderMap={blockRenderMap}
-                        blockRendererFn={(block: Draft.ContentBlock) => this.blockRenderer(block)}
-                        blockStyleFn={getBlockStyle}
-                        customStyleMap={styleMap}
-                        editorState={this.state.editorState}
-                        onChange={(s: EditorState) => this.onChange(s)}
-                        plugins={this.state.plugins}
-                        keyBindingFn={(e: React.KeyboardEvent<{}>) => this.editorKeyBinding(e)}
-                        handleKeyCommand={(e: string) => this.handleKeyCommand(e)}
-                        onUpArrow={(e: React.KeyboardEvent<{}>) => this.onArrow(EditorKeys.UP, e)}
-                        onDownArrow={(e: React.KeyboardEvent<{}>) => this.onArrow(EditorKeys.DOWN, e)}
-                    />
-                </div>
-                <div style={{ display: "none" }}>
-                    <input type="file" ref={(input) => { this.fileButton = input; }} onChange={(e: React.ChangeEvent<HTMLInputElement>) => this.loadMarkdown(e)} />
-                </div>
             </div>
         )
     }

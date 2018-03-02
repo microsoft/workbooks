@@ -12,6 +12,7 @@ import { WorkbookEditor } from './WorkbookEditor'
 import { StatusBar } from './StatusBar'
 import { ResultRendererRegistry } from '../rendering';
 import { NullRenderer } from '../renderers/NullRenderer'
+import './WorkbookShell.scss'
 
 export interface WorkbookShellContext {
     session: WorkbookSession
@@ -53,7 +54,13 @@ export class WorkbookShell extends React.Component {
                     shellContext={this.shellContext}
                     content=''/>
                 <StatusBar
-                    ref={(statusBar: StatusBar | null) => this.statusBar = statusBar}/>
+                    ref={(statusBar: StatusBar | null) => this.statusBar = statusBar} />
+                {/* <div style={{ display: "none" }}>
+                    <input
+                        type="file"
+                        ref={(input) => { this.fileButton = input; }}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => this.loadMarkdown(e)} />
+                </div> */}
             </div>
         )
     }

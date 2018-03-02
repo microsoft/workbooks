@@ -5,7 +5,7 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
-import './css/site.css';
+import './css/site.scss';
 import './css/CodeEditor.scss';
 import './css/CodeCell.scss';
 import 'draft-js/dist/Draft.css';

@@ -1,0 +1,14 @@
+//
+// Author:
+//   Aaron Bockover <abock@microsoft.com>
+//
+// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License.
+
+.WorkbookEditor-container {
+  display: flex;
+  flex-flow: column;
+  flex: 1 1 auto;
+  cursor: text;
+  overflow: auto;
+}
