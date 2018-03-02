@@ -10,7 +10,7 @@ import { WorkbookSession, StatusUIAction, StatusMessage } from '../WorkbookSessi
 import { WorkbookCommandBar } from './WorkbookCommandBar'
 import { WorkbookEditor } from './WorkbookEditor'
 import { StatusBar } from './StatusBar'
-import { ResultRendererRegistry } from '../rendering';
+import { ResultRendererRegistry } from '../ResultRendererRegistry'
 import { NullRenderer } from '../renderers/NullRenderer'
 import './WorkbookShell.scss'
 

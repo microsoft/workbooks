@@ -6,8 +6,8 @@
 // Licensed under the MIT License.
 
 import * as React from 'react'
+
 import { CodeCellResult } from './evaluation'
-import { NullRenderer } from './renderers/NullRenderer'
 import { MenuItem } from './components/DropDownMenu';
 
 export const enum ResultRendererRepresentationOptions {
@@ -59,17 +59,3 @@ export interface ResultRenderer {
 }
 
 export type ResultRendererFactory = (result: CodeCellResult) => ResultRenderer | null
-
-export class ResultRendererRegistry {
-    private rendererFactories: ResultRendererFactory[] = []
-
-    register(factory: ResultRendererFactory) {
-        this.rendererFactories.push(factory)
-    }
-
-    getRenderers(result: CodeCellResult): ResultRenderer[] {
-        return <ResultRenderer[]>this.rendererFactories
-            .map(f => f(result))
-            .filter(f => f !== null)
-    }
-}

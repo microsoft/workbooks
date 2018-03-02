@@ -16,12 +16,13 @@ import {
 } from 'office-ui-fabric-react/lib/Spinner';
 
 import { CodeCellResult, CodeCellResultHandling } from '../evaluation'
-import { ResultRendererRepresentation } from '../rendering';
-import { DropDownMenu } from './DropDownMenu';
+import { ResultRendererRepresentation } from '../rendering'
+import { ResultRendererRegistry } from '../ResultRendererRegistry'
+import { DropDownMenu } from './DropDownMenu'
 
 import './CodeCellView.scss'
 
-interface CodeCellResultRendererState {
+export interface CodeCellResultRendererState {
     result: CodeCellResult
     representations: ResultRendererRepresentation[]
     selectedRepresentationIndex: number
@@ -34,19 +35,55 @@ export const enum CodeCellViewStatus {
     Aborting
 }
 
+export interface CodeCellViewProps {
+    rendererRegistry: ResultRendererRegistry
+}
+
 export interface CodeCellViewState {
     status: CodeCellViewStatus
     results: CodeCellResultRendererState[]
 }
 
 export abstract class CodeCellView<
-    TCodeCellViewProps = {},
+    TCodeCellViewProps extends CodeCellViewProps = CodeCellViewProps,
     TCodeCellViewState extends CodeCellViewState = CodeCellViewState>
     extends React.Component<TCodeCellViewProps, TCodeCellViewState> {
 
+    protected abstract getRendererRegistry(): ResultRendererRegistry
     protected abstract abortEvaluation(): Promise<void>
     protected abstract startEvaluation(): Promise<void>
     protected abstract renderEditor(): any
+
+    protected setStateFromResult(result: CodeCellResult, resultHandling?: CodeCellResultHandling) {
+        const reps = this
+            .getRendererRegistry()
+            .getRenderers(result)
+            .map(r => r.getRepresentations(result))
+
+        const rendererState = {
+            result: result,
+            representations: reps.length === 0
+                ? []
+                : reps.reduce((a, b) => a.concat(b)),
+            selectedRepresentationIndex: 0
+        }
+
+        if (!resultHandling)
+            resultHandling = result.resultHandling
+
+        switch (resultHandling) {
+            case CodeCellResultHandling.Append:
+                this.setState({
+                    results: this.state.results.concat(rendererState)
+                })
+                break
+            case CodeCellResultHandling.Replace:
+                this.setState({
+                    results: [rendererState]
+                })
+                break
+        }
+    }
 
     private renderActions() {
         switch (this.state.status) {
@@ -115,13 +152,27 @@ export abstract class CodeCellView<
     }
 }
 
-export class MockedCodeCellView extends CodeCellView {
-    constructor(props: any) {
+export interface MockedCodeCellProps extends CodeCellViewProps {
+    results: CodeCellResult[]
+}
+
+export class MockedCodeCellView extends CodeCellView<MockedCodeCellProps> {
+    constructor(props: MockedCodeCellProps) {
         super(props)
+
         this.state = {
             status: CodeCellViewStatus.Ready,
             results: []
         }
+    }
+
+    componentDidMount() {
+        for (const result of this.props.results)
+            this.setStateFromResult(result)
+    }
+
+    protected getRendererRegistry(): ResultRendererRegistry {
+        return this.props.rendererRegistry
     }
 
     protected async startEvaluation(): Promise<void> {

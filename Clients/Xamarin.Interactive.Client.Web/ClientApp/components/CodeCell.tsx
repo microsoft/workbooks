@@ -14,28 +14,31 @@ import { ContentBlock } from 'draft-js';
 import { EditorMessage } from '../utils/EditorMessages'
 import { WorkbookShellContext } from './WorkbookShell'
 import { ResultRendererRepresentation } from '../rendering';
+import { ResultRendererRegistry } from '../ResultRendererRegistry'
 import { MonacoCellMapper } from '../utils/MonacoUtils'
 import { DropDownMenu } from './DropDownMenu';
 
 import {
     CodeCellViewStatus,
     CodeCellView,
+    CodeCellViewProps,
     CodeCellViewState,
 } from './CodeCellView';
 
-interface CodeCellProps {
+interface CodeCellProps extends CodeCellViewProps {
     blockProps: {
-        shellContext: WorkbookShellContext,
-        cellMapper: MonacoCellMapper,
-        codeCellId: string,
-        editorReadOnly: (readOnly: boolean) => void,
-        subscribeToEditor: (callback: (message: EditorMessage) => void) => void,
-        selectNext: (currentKey: string) => boolean,
-        selectPrevious: (currentKey: string) => boolean,
-        updateTextContentOfBlock: (blockKey: string, textContent: string) => void,
-        setSelection: (anchorKey: string, offset: number) => void,
-        getPreviousCodeBlock: (currentBlock: string) => ContentBlock,
-        updateBlockCodeCellId: (currentBlock: string, codeCellId: string) => void,
+        shellContext: WorkbookShellContext
+        rendererRegistry: ResultRendererRegistry
+        cellMapper: MonacoCellMapper
+        codeCellId: string
+        editorReadOnly: (readOnly: boolean) => void
+        subscribeToEditor: (callback: (message: EditorMessage) => void) => void
+        selectNext: (currentKey: string) => boolean
+        selectPrevious: (currentKey: string) => boolean
+        updateTextContentOfBlock: (blockKey: string, textContent: string) => void
+        setSelection: (anchorKey: string, offset: number) => void
+        getPreviousCodeBlock: (currentBlock: string) => ContentBlock
+        updateBlockCodeCellId: (currentBlock: string, codeCellId: string) => void
     }
     block: {
         key: string
@@ -78,6 +81,10 @@ export class CodeCell extends CodeCellView<CodeCellProps, CodeCellState> {
                 evaluate: () => this.startEvaluation()
             }
         }
+    }
+
+    protected getRendererRegistry(): ResultRendererRegistry {
+        return this.props.blockProps.rendererRegistry
     }
 
     async componentDidMount() {
@@ -142,31 +149,7 @@ export class CodeCell extends CodeCellView<CodeCellProps, CodeCellState> {
 
         console.log("evaluationEventHandler: %O", result)
 
-        const reps = this.shellContext
-            .rendererRegistry
-            .getRenderers(result)
-            .map(r => r.getRepresentations(result))
-
-        const rendererState = {
-            result: result,
-            representations: reps.length === 0
-                ? []
-                : reps.reduce((a, b) => a.concat(b)),
-            selectedRepresentationIndex: 0
-        }
-
-        switch (result.resultHandling) {
-            case CodeCellResultHandling.Append:
-                this.setState({
-                    results: this.state.results.concat(rendererState)
-                })
-                break
-            case CodeCellResultHandling.Replace:
-                this.setState({
-                    results: [rendererState]
-                })
-                break
-        }
+        this.setStateFromResult(result)
     }
 
     protected renderEditor() {
