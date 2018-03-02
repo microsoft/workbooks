@@ -8,6 +8,7 @@
 import './css/site.css';
 import './css/CodeEditor.scss';
 import './css/CodeCell.scss';
+import 'draft-js/dist/Draft.css';
 
 import 'bootstrap';
 import * as React from 'react';
