@@ -31,7 +31,8 @@ export class ComponentPlayground extends React.Component<RouteComponentProps<{}>
                 <h2>Code Cell with Results</h2>
                 <MockedCodeCellView
                     rendererRegistry={ResultRendererRegistry.createDefault()}
-                    results={[this.nullResult, this.nullResult]} />
+                    results={[this.nullResult, this.nullResult]}
+                    resultHandling={CodeCellResultHandling.Append}/>
             </article>
         )
     }

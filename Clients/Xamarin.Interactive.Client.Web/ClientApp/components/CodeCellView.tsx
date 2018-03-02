@@ -154,6 +154,7 @@ export abstract class CodeCellView<
 
 export interface MockedCodeCellProps extends CodeCellViewProps {
     results: CodeCellResult[]
+    resultHandling?: CodeCellResultHandling
 }
 
 export class MockedCodeCellView extends CodeCellView<MockedCodeCellProps> {
@@ -166,9 +167,18 @@ export class MockedCodeCellView extends CodeCellView<MockedCodeCellProps> {
         }
     }
 
+    setStateFromPendingResult() {
+        const result = this.props.results.shift()
+        if (result)
+            this.setStateFromResult(result, this.props.resultHandling)
+    }
+
     componentDidMount() {
-        for (const result of this.props.results)
-            this.setStateFromResult(result)
+        this.setStateFromPendingResult()
+    }
+
+    componentDidUpdate() {
+        this.setStateFromPendingResult()
     }
 
     protected getRendererRegistry(): ResultRendererRegistry {
