@@ -14,10 +14,46 @@ import { MockedCodeCellView } from './CodeCellView';
 
 export class ComponentPlayground extends React.Component<RouteComponentProps<{}>> {
     private readonly nullResult: CodeCellResult = {
-        codeCellId: 'ccid-1',
+        codeCellId: '85cd037b-4cb6-4489-a854-912959b60a6b/3fb9e8a3-2c29-429d-b417-e2678761b57e',
         resultHandling: CodeCellResultHandling.Replace,
         type: null,
         valueRepresentations: null
+    }
+
+    private readonly numberResult: CodeCellResult = {
+        codeCellId: '65a6fd4c-696f-4b2f-9d0d-3bf452e69f5f/eab2b254-9047-4670-bdb1-5e24aefa4843',
+        resultHandling: CodeCellResultHandling.Replace,
+        type: 'System.Double',
+        valueRepresentations: [
+            25000000000.32,
+            {
+                $type: 'System.Double',
+                $toString: [
+                    {
+                        culture: {
+                            name: 'en-US',
+                            lcid: 1033
+                        },
+                        formats: [
+                            { '{value}': '25000000000.32' },
+                            { '{value:N}': '25,000,000,000.32' },
+                            { '{value:C}': '$25,000,000,000.32' }
+                        ]
+                    },
+                    {
+                        culture: {
+                            name: '',
+                            lcid: 127
+                        },
+                        formats: [
+                            { '{value}': '25000000000.32' },
+                            { '{value:N}': '25,000,000,000.32' },
+                            { '{value:C}': '¤25,000,000,000.32' }
+                        ]
+                    }
+                ]
+            }
+        ]
     }
 
     public render() {
@@ -28,7 +64,12 @@ export class ComponentPlayground extends React.Component<RouteComponentProps<{}>
                     rendererRegistry={ResultRendererRegistry.createDefault()}
                     results={[]} />
 
-                <h2>Code Cell with Results</h2>
+                <h2>Code Cell with Number Result</h2>
+                <MockedCodeCellView
+                    rendererRegistry={ResultRendererRegistry.createDefault()}
+                    results={[this.numberResult]}/>
+
+                <h2>Code Cell with Multiple Results</h2>
                 <MockedCodeCellView
                     rendererRegistry={ResultRendererRegistry.createDefault()}
                     results={[this.nullResult, this.nullResult]}

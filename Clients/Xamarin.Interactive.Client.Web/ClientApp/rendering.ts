@@ -8,12 +8,7 @@
 import * as React from 'react'
 
 import { CodeCellResult } from './evaluation'
-import {
-    Dropdown,
-    IDropdown,
-    DropdownMenuItemType,
-    IDropdownOption
-} from 'office-ui-fabric-react/lib/Dropdown';
+import { IDropdownOption } from 'office-ui-fabric-react/lib/Dropdown';
 
 export const enum ResultRendererRepresentationOptions {
     None = 0,
