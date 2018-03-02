@@ -114,6 +114,9 @@ export class CodeCell extends CodeCellView<CodeCellProps, CodeCellState> {
             this.props.blockProps.updateBlockCodeCellId(this.props.block.key, codeCellId);
         } else {
             codeCellId = this.state.codeCellId;
+            this.setState({
+                status: CodeCellViewStatus.Ready
+            })
         }
 
         this.props.blockProps.cellMapper.registerCellInfo(codeCellId, this.monacoModelId)
