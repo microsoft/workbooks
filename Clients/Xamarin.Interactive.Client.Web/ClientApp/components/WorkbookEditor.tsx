@@ -13,7 +13,6 @@ import {
     DefaultDraftBlockRenderMap
 } from 'draft-js'
 import createMarkdownPlugin from 'draft-js-markdown-plugin'
-import { saveAs } from 'file-saver'
 import { List, Map } from 'immutable'
 import { CodeCell } from './CodeCell'
 import { WorkbookSession } from '../WorkbookSession'
@@ -48,7 +47,6 @@ const blockRenderMap = DefaultDraftBlockRenderMap.merge(Map({
 }));
 
 export class WorkbookEditor extends React.Component<WorkbooksEditorProps, WorkbooksEditorState> implements MonacoCellMapper {
-    fileButton: HTMLInputElement | null;
     lastFocus?: Date;
     subscriptors: ((m: EditorMessage) => void)[];
     monacoProviderTickets: monaco.IDisposable[] = [];
@@ -59,7 +57,6 @@ export class WorkbookEditor extends React.Component<WorkbooksEditorProps, Workbo
 
         this.subscriptors = []
         this.lastFocus = undefined
-        this.fileButton = null
 
         const editorState = EditorState.createEmpty()
 
@@ -426,35 +423,20 @@ export class WorkbookEditor extends React.Component<WorkbooksEditorProps, Workbo
         )
     }
 
-    triggerFilePicker() {
-        if (this.fileButton == null)
-            return;
-        this.fileButton.click();
+    getContentToSave(): string {
+        return convertToMarkdown(this.state.editorState.getCurrentContent());
     }
 
-    loadMarkdown(event: React.ChangeEvent<HTMLInputElement>) {
-        if (event.target.files == null) {
-            alert("No files.");
-            return;
-        }
-
-        const file = event.target.files[0];
-        const reader = new FileReader();
-        reader.addEventListener("load", () => {
-            convertFromMarkdown(reader.result, this.props.shellContext.session).then((newContentState) => {
-                this.setState({
-                    editorState: EditorState.createWithContent(newContentState)
-                });
+    loadNewContent(newContent: string): Promise<any> {
+        return convertFromMarkdown(newContent, this.props.shellContext.session).then((value: {
+            contentState: Draft.ContentState,
+            workbookMetadata: any,
+        }) => {
+            this.setState({
+                editorState: EditorState.createWithContent(value.contentState)
             });
+            return value.workbookMetadata;
         });
-        reader.readAsText(file);
-    }
-
-    saveMarkdown() {
-        var content = this.state.editorState.getCurrentContent();
-        var markdown = convertToMarkdown(content);
-        var blob = new Blob([markdown], { type: "text/markdown;charset=utf-8" })
-        saveAs(blob, `workbook-${new Date().toISOString().replace(/[:\.]/g, '-')}.md`);
     }
 
     render() {

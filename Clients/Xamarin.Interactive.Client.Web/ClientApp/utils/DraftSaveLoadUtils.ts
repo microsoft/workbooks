@@ -22,7 +22,7 @@ function codeBlocksSerializer(content: string): string {
     let outputContent = content
     // pre blocks have only one child node <code>, when exporting, it is removed
     const startCodeTagIndex = 6
-    const endCodeTagIndex = content.length - 8
+    const endCodeTagIndex = content.length - 7
     if (content.substring(0, startCodeTagIndex) === "<code>" && content.substring(endCodeTagIndex, content.length).trim() === "</code>") {
         outputContent = content.substring(startCodeTagIndex, endCodeTagIndex)
     }
@@ -32,7 +32,10 @@ function codeBlocksSerializer(content: string): string {
     return '```csharp\n' + outputContent + '\n```\n';
 }
 
-export async function convertFromMarkdown(workbook: string, session: WorkbookSession): Promise<ContentState> {
+export async function convertFromMarkdown(workbook: string, session: WorkbookSession): Promise<{
+    contentState: ContentState,
+    workbookMetadata: any
+}> {
     const { content, data } = splitMarkdownAndMetadata(workbook);
     const md = new MarkdownIt("commonmark", {
         breaks: true,
@@ -60,7 +63,10 @@ export async function convertFromMarkdown(workbook: string, session: WorkbookSes
         previousDocumentId = codeCellId;
     }
 
-    return ContentState.createFromBlockArray(contentBlocks, entityMap);
+    return {
+        contentState: ContentState.createFromBlockArray(contentBlocks, entityMap),
+        workbookMetadata: data
+    }
 }
 
 function splitMarkdownAndMetadata(content: string): { content: string, data: {} } {
