@@ -17,6 +17,11 @@ import { ResultRendererRepresentation } from '../rendering';
 import { MonacoCellMapper } from '../utils/MonacoUtils'
 import { DropDownMenu } from './DropDownMenu';
 import { AbortEvaluationButton } from './AbortEvaluationButton';
+import {
+    CodeCellViewStatus,
+    CodeCellView,
+    CodeCellViewState,
+} from './CodeCellView';
 
 import './CodeCell.scss'
 
@@ -40,26 +45,11 @@ interface CodeCellProps {
     }
 }
 
-interface CodeCellResultRendererState {
-    result: CodeCellResult
-    representations: ResultRendererRepresentation[]
-    selectedRepresentationIndex: number
-}
-
-const enum CodeCellStatus {
-    Unbound,
-    Ready,
-    Evaluating,
-    Aborting
-}
-
-interface CodeCellState {
+interface CodeCellState extends CodeCellViewState {
     codeCellId: string | null
-    results: CodeCellResultRendererState[]
-    status: CodeCellStatus
 }
 
-export class CodeCell extends React.Component<CodeCellProps, CodeCellState> {
+export class CodeCell extends CodeCellView<CodeCellProps, CodeCellState> {
     private shellContext: WorkbookShellContext
     private monacoCellProps: MonacoCellEditorProps
     private monacoModelId: string
@@ -70,7 +60,7 @@ export class CodeCell extends React.Component<CodeCellProps, CodeCellState> {
         this.state = {
             codeCellId: this.props.blockProps.codeCellId,
             results: [],
-            status: CodeCellStatus.Unbound
+            status: CodeCellViewStatus.Unbound
         }
 
         this.shellContext = props.blockProps.shellContext
@@ -87,7 +77,7 @@ export class CodeCell extends React.Component<CodeCellProps, CodeCellState> {
                 setSelection: props.blockProps.setSelection,
                 setModelId: modelId => this.monacoModelId = modelId,
                 updateCodeCell: (buffer: string) => this.updateCodeCell(buffer),
-                evaluate: () => this.evaluate()
+                evaluate: () => this.startEvaluation()
             }
         }
     }
@@ -114,7 +104,7 @@ export class CodeCell extends React.Component<CodeCellProps, CodeCellState> {
                 .insertCodeCell(this.props.block.text, previousBlockCodeCellId);
 
             this.setState({
-                status: CodeCellStatus.Ready,
+                status: CodeCellViewStatus.Ready,
                 codeCellId: codeCellId,
             });
             this.props.blockProps.updateBlockCodeCellId(this.props.block.key, codeCellId);
@@ -137,15 +127,15 @@ export class CodeCell extends React.Component<CodeCellProps, CodeCellState> {
         }
     }
 
-    private async abort() {
+    protected async startEvaluation(): Promise<void> {
+        if (this.state.codeCellId && this.state.status === CodeCellViewStatus.Ready) {
+            this.setState({ status: CodeCellViewStatus.Evaluating })
+            await this.shellContext.session.evaluate(this.state.codeCellId)
+            this.setState({ status: CodeCellViewStatus.Ready })
+        }
     }
 
-    private async evaluate() {
-        if (this.state.codeCellId && this.state.status === CodeCellStatus.Ready) {
-            this.setState({ status: CodeCellStatus.Evaluating })
-            await this.shellContext.session.evaluate(this.state.codeCellId)
-            this.setState({ status: CodeCellStatus.Ready })
-        }
+    protected async abortEvaluation(): Promise<void> {
     }
 
     private evaluationEventHandler(session: WorkbookSession, result: CodeCellResult) {
@@ -181,61 +171,9 @@ export class CodeCell extends React.Component<CodeCellProps, CodeCellState> {
         }
     }
 
-    private renderActions() {
-        switch (this.state.status) {
-            case CodeCellStatus.Unbound:
-                return null
-            case CodeCellStatus.Evaluating:
-                return <AbortEvaluationButton onClick={e => this.abort()}/>
-            case CodeCellStatus.Aborting:
-                return <div>Aborting...</div>
-            case CodeCellStatus.Ready:
-                return (
-                    <button
-                        className='button-run btn-primary btn-small'
-                        type='button'
-                        onClick={e => this.evaluate()}>
-                        Run
-                    </button>
-                )
-        }
-    }
-
-    render() {
-        return (
-            <div className="CodeCell-container">
-                <div className="CodeCell-editor-container">
-                    <MonacoCellEditor
-                        blockProps={this.monacoCellProps.blockProps}
-                        block={this.monacoCellProps.block} />
-                </div>
-                <div className="CodeCell-results-container">
-                    {this.state.results.map((resultState, i) => {
-                        if (resultState.representations.length === 0)
-                            return
-
-                        return (
-                            <div
-                                key={i}
-                                className="CodeCell-result">
-                                <div className="CodeCell-result-renderer-container">
-                                    {resultState.representations[resultState.selectedRepresentationIndex].render()}
-                                </div>
-                                {resultState.representations.length > 1 && <DropDownMenu
-                                    items={resultState.representations}
-                                    initiallySelectedIndex={resultState.selectedRepresentationIndex}
-                                    selectionChanged={(i, v) => {
-                                        resultState.selectedRepresentationIndex = i
-                                        this.setState(this.state)
-                                    }}/>}
-                            </div>
-                        )
-                    })}
-                </div>
-                <div className="CodeCell-actions-container">
-                    {this.renderActions()}
-                </div>
-            </div>
-        );
+    protected renderEditor() {
+        return <MonacoCellEditor
+            blockProps={this.monacoCellProps.blockProps}
+            block={this.monacoCellProps.block} />
     }
 }
