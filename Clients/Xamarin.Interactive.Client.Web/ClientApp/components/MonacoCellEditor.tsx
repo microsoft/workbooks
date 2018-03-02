@@ -13,6 +13,8 @@ import { SelectionState } from 'draft-js'
 import { EditorMessage, EditorMessageType, EditorKeys } from '../utils/EditorMessages'
 import { CodeCellUpdateResponse } from '../WorkbookSession'
 
+import './MonacoCellEditor.scss'
+
 export interface MonacoCellEditorProps {
     blockProps: {
         editorReadOnly: (readOnly: boolean) => void,

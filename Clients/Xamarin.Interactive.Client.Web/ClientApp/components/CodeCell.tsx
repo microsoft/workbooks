@@ -18,6 +18,8 @@ import { MonacoCellMapper } from '../utils/MonacoUtils'
 import { DropDownMenu } from './DropDownMenu';
 import { AbortEvaluationButton } from './AbortEvaluationButton';
 
+import './CodeCell.scss'
+
 interface CodeCellProps {
     blockProps: {
         shellContext: WorkbookShellContext,

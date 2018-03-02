@@ -9,7 +9,7 @@ import * as React from 'react'
 
 import { Clickable } from './Clickable'
 
-import '../css/AbortEvaluationButton.scss'
+import './AbortEvaluationButton.scss'
 
 export class AbortEvaluationButton extends Clickable<HTMLButtonElement> {
     render() {
