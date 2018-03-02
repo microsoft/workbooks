@@ -14,6 +14,7 @@ import { ResultRendererRegistry } from '../ResultRendererRegistry'
 import { PackageSearch } from './PackageSearch';
 import './WorkbookShell.scss'
 import { saveAs } from 'file-saver'
+import * as matter from 'gray-matter';
 
 export interface WorkbookShellContext {
     session: WorkbookSession
@@ -89,7 +90,8 @@ export class WorkbookShell extends React.Component<any, WorkbookShellState> {
     saveWorkbook() {
         if (this.workbookEditor != null) {
             const contentToSave = this.workbookEditor.getContentToSave();
-            var blob = new Blob([contentToSave], { type: "text/markdown;charset=utf-8" })
+            const workbook = matter.stringify(contentToSave, this.workbookMetadata);
+            var blob = new Blob([workbook], { type: "text/markdown;charset=utf-8" })
             const title = (this.workbookMetadata && this.workbookMetadata.title)
                 ? this.workbookMetadata.title
                 : `workbook-${new Date().toISOString().replace(/[:\.]/g, '-')}`
