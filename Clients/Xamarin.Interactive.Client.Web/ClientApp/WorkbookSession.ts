@@ -21,22 +21,62 @@ export interface StatusMessage {
     text: string | null
 }
 
-export interface CodeCellUpdateResponse
-{
+export interface CodeCellUpdateResponse {
     isSubmissionComplete: boolean
     diagnostics: monaco.editor.IModelDecoration[]
 }
 
+export interface DotNetSdk {
+    name: string
+    profile: string
+    targetFramework: string
+    version: string
+}
+
+export interface WorkbookTarget {
+    id: string
+    flavor: string
+    icon: string
+    optionalFeatures: string[]
+    sdk: DotNetSdk
+}
+
 export class WorkbookSession {
     private hubConnection = new HubConnection('/session')
-    evaluationEvent: Event<WorkbookSession, CodeCellResult>
+
+    private _availableWorkbookTargets: WorkbookTarget[] = []
+    get availableWorkbookTargets() {
+        return this._availableWorkbookTargets
+    }
+
+    private _evaluationEvent: Event<WorkbookSession, CodeCellResult>
+    get evaluationEvent() {
+        return this._evaluationEvent
+    }
 
     constructor(statusUIActionHandler: (action: StatusUIAction, message: StatusMessage | null) => void) {
-        this.evaluationEvent = new Event(<WorkbookSession>this)
+        this._evaluationEvent = new Event(<WorkbookSession>this)
         this.hubConnection.on('StatusUIAction', statusUIActionHandler)
         this.hubConnection.on(
             'EvaluationEvent',
             (e: any) => this.evaluationEvent.dispatch(<CodeCellResult>e));
+    }
+
+    async connect(): Promise<void> {
+        await this.hubConnection.start()
+
+        this._availableWorkbookTargets = <WorkbookTarget[]>await this.hubConnection.invoke(
+            'GetAvailableWorkbookTargets')
+
+        console.log('GetAvailableWorkbookTargets: %O', this.availableWorkbookTargets)
+
+        await this.hubConnection.invoke(
+            'OpenSession',
+            'xamarin-interactive:///v1?agentType=DotNetCore&sessionKind=Workbook')
+    }
+
+    disconnect(): Promise<void> {
+        return this.hubConnection.stop()
     }
 
     insertCodeCell(buffer: string, relativeToCodeCellId: string | null): Promise<string> {
@@ -61,17 +101,5 @@ export class WorkbookSession {
 
     provideSignatureHelp(codeCellId: string, lineNumber: number, column: number): Promise<monaco.languages.SignatureHelp> {
         return this.hubConnection.invoke("ProvideSignatureHelp", codeCellId, lineNumber, column)
-    }
-
-    connect() {
-        this.hubConnection
-            .start()
-            .then(() => this.hubConnection.invoke(
-                'OpenSession',
-                'xamarin-interactive:///v1?agentType=DotNetCore&sessionKind=Workbook'))
-    }
-
-    disconnect() {
-        this.hubConnection.stop()
     }
 }

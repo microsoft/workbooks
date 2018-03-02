@@ -50,6 +50,9 @@ namespace Xamarin.Interactive.Client.Web
             return base.OnDisconnectedAsync (exception);
         }
 
+        public IEnumerable<WorkbookAppInstallation> GetAvailableWorkbookTargets ()
+            => WorkbookAppInstallation.All;
+
         public Task OpenSession (string sessionUri)
         {
             if (!ClientSessionUri.TryParse (sessionUri, out var uri))
