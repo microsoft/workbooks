@@ -21,6 +21,7 @@
   font-weight: bold;
   color: #888;
 
+  $spinnerSize: 16px;
   $spinnerThickness: 2px;
   $abortColor: rgb(204, 0, 0);
 
@@ -28,9 +29,9 @@
     border: $spinnerThickness solid rgba(0, 0, 0, 0.15);
     border-left: $spinnerThickness solid rgba(0, 0, 0, 0.75);
     border-radius: 50%;
-    width: 1.1em;
-    height: 1.1em;
-    margin-right: 0.55em;
+    width: $spinnerSize;
+    height: $spinnerSize;
+    margin-right: $spinnerSize / 2;
     animation: spin 1s linear infinite;
     @keyframes spin {
       0% { transform: rotate(0deg); }
