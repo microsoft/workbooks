@@ -20,7 +20,7 @@
       "integrity": "sha512-2fa1kkJYHG1Xq5eid8jocmhB5WbNjWY4NH8FKRQMIQVaQPfZzzAshalbBn0/ZYRsYl5nMv6UTjV3jhn4u+nKIg==",
       "dev": true,
       "requires": {
-        "@types/react": "15.0.35",
+        "@types/react": "15.6.14",
         "immutable": "3.8.2"
       },
       "dependencies": {
@@ -56,9 +56,9 @@
       "integrity": "sha512-pQRkAVoxiuUrLq8+CDwiQX4pTCep/PmmNgBbjIwnnsd/HoYjGpR81+FFPE030lvNXgR0haaAU6eoRtztWDE4Xw=="
     },
     "@types/react": {
-      "version": "15.0.35",
-      "resolved": "https://registry.npmjs.org/@types/react/-/react-15.0.35.tgz",
-      "integrity": "sha512-SDvfa+9dIq7RBTBiPhV0V+NeLT16RSFjcsjcyIJUBLlHpOatja1mHuOlI+P7tJ7fZZeBd8CV5pHxmFt4MdpyGQ==",
+      "version": "15.6.14",
+      "resolved": "https://registry.npmjs.org/@types/react/-/react-15.6.14.tgz",
+      "integrity": "sha512-k6YJBmHfzkCtk3iT6aN2hclkPYL2fxlSc3dW//G2kENlmMJ/V+pKhqsHdJJeVluIi1bA296cCLLGATLm7WXToQ==",
       "dev": true
     },
     "@types/react-dom": {
@@ -67,7 +67,7 @@
       "integrity": "sha512-4c+e/QPfvSa48YhgGOcQWoHishTo6BuJqka0Bh8qeLdnK1jS+1Nz8W/w1G17AIjtLxONYFUqmi8qyt+8p/yMFA==",
       "dev": true,
       "requires": {
-        "@types/react": "15.0.35"
+        "@types/react": "15.6.14"
       }
     },
     "@types/react-hot-loader": {
@@ -76,7 +76,7 @@
       "integrity": "sha512-XW+Vx6tVWVpO7+CHk7ebtWSBglSwXNsEKwm+60Ge4dbtSQZ8sK93wZsPnl/CQKt5tfqNNIs3TpyaRVjHe+BOgw==",
       "dev": true,
       "requires": {
-        "@types/react": "15.0.35"
+        "@types/react": "15.6.14"
       }
     },
     "@types/react-router": {
@@ -86,7 +86,7 @@
       "dev": true,
       "requires": {
         "@types/history": "4.6.0",
-        "@types/react": "15.0.35"
+        "@types/react": "15.6.14"
       }
     },
     "@types/react-router-dom": {
@@ -96,7 +96,7 @@
       "dev": true,
       "requires": {
         "@types/history": "4.6.0",
-        "@types/react": "15.0.35",
+        "@types/react": "15.6.14",
         "@types/react-router": "4.0.12"
       }
     },
