@@ -18,7 +18,7 @@ export default function ToStringRendererFactory(result: CodeCellResult) {
 
 interface ToStringValue {
     $type: string
-    $toString: {
+    $toString: string | {
         culture: {
             name: string,
             lcid: number
@@ -40,11 +40,25 @@ class ToStringRenderer implements ResultRenderer {
             if (!value.$toString)
                 continue
 
+            const toStringValue = (value as ToStringValue).$toString
+
+            if (typeof toStringValue === 'string') {
+                reps.push({
+                    displayName: 'String',
+                    component: ToStringRepresentation,
+                    componentProps: {
+                        value: toStringValue
+                    }
+                })
+
+                continue
+            }
+
             // TODO: some way to toggle between current culture (what we're using now,
             // index 0), and invariant culture (completely ignoring it, index 1). We
             // have never exposed the invariant culture, so this is not a regression
             // over the XCB UI.
-            for (const format of (value as ToStringValue).$toString[0].formats) {
+            for (const format of toStringValue[0].formats) {
                 const formatKey = Object.keys(format)[0] as string
                 reps.push({
                     displayName: formatKey,
