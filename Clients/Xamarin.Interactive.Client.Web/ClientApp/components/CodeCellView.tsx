@@ -142,26 +142,14 @@ export abstract class CodeCellView<
                             })
                             : null
 
-                        let resultElement: any = undefined
-
-                        if (resultState.selectedRepresentation) {
-                            resultElement = React.createElement(
-                                resultState.selectedRepresentation.component,
-                                resultState.selectedRepresentation.componentProps);
-
-                            console.log(
-                                '%O: React.createElement(%O, %O)',
-                                resultState.selectedRepresentation.displayName,
-                                resultState.selectedRepresentation.component,
-                                resultState.selectedRepresentation)
-                        }
-
                         return (
                             <div
                                 key={i}
                                 className="CodeCell-result">
                                 <div className="CodeCell-result-renderer-container">
-                                    {resultElement}
+                                    {resultState.selectedRepresentation && React.createElement(
+                                        resultState.selectedRepresentation.component,
+                                        resultState.selectedRepresentation.componentProps)}
                                 </div>
                                 {dropdownOptions && <Dropdown
                                     options={dropdownOptions}
