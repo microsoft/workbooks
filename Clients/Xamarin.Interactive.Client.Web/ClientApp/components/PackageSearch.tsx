@@ -73,7 +73,9 @@ export class PackageSearch extends React.Component<PackageSearchProps, PackageSe
                     /> */}
                     {
                         this.state.results.map(item => (
-                            <div className="packageListItemContainer">
+                            <div
+                                className="packageListItemContainer"
+                                key={item.id}>
                             <div className="packageListItem">
                                 <Image
                                     className="packageListItemIcon"
