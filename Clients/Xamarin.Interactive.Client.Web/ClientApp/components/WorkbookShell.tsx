@@ -26,7 +26,7 @@ export class WorkbookShell extends React.Component {
         super()
         this.shellContext = {
             session: new WorkbookSession(this.statusUIAction),
-            rendererRegistry: new ResultRendererRegistry
+            rendererRegistry: ResultRendererRegistry.createDefault()
         }
     }
 
