@@ -102,4 +102,8 @@ export class WorkbookSession {
     provideSignatureHelp(codeCellId: string, lineNumber: number, column: number): Promise<monaco.languages.SignatureHelp> {
         return this.hubConnection.invoke("ProvideSignatureHelp", codeCellId, lineNumber, column)
     }
+
+    installPackage(packageId: string, version: string): Promise<string[]> {
+        return this.hubConnection.invoke("InstallPackage", packageId, version)
+    }
 }
