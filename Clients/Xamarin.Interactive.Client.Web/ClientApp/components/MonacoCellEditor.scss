@@ -2,11 +2,10 @@
 .monaco-editor .margin,
 .monaco-editor.mac.vs,
 .monaco-editor-background {
-  background: #FAFAFA !important;
+  background: transparent !important;
 }
 
 .monaco-editor {
-  border: 1px solid #ddd;
   padding: 0;
 
   .line-numbers {
