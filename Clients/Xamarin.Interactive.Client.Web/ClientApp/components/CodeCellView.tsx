@@ -147,7 +147,7 @@ export abstract class CodeCellView<
                         if (resultState.selectedRepresentation) {
                             resultElement = React.createElement(
                                 resultState.selectedRepresentation.component,
-                                resultState.selectedRepresentation);
+                                resultState.selectedRepresentation.componentProps);
 
                             console.log(
                                 '%O: React.createElement(%O, %O)',

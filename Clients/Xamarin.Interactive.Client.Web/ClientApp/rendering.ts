@@ -47,7 +47,7 @@ export type ResultRendererFactory = (result: CodeCellResult) => ResultRenderer |
 export interface ResultRendererRepresentation {
     displayName: string
     component: any
-    value?: any
+    componentProps?: {}
     order?: number
     options?: ResultRendererRepresentationOptions,
 }

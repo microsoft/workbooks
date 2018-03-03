@@ -8,38 +8,57 @@
 import * as React from 'react'
 import { PrimaryButton } from 'office-ui-fabric-react/lib/Button';
 import { CodeCellResult } from '../evaluation';
-import { ResultRenderer } from '../rendering'
+import { ResultRenderer, ResultRendererRepresentation } from '../rendering'
 
 export default function ToStringRendererFactory(result: CodeCellResult) {
     return result.valueRepresentations &&
-        result.valueRepresentations.some(r => r.hasOwnProperty('$toString'))
+        result.valueRepresentations.some(r => r.$toString)
         ? new ToStringRenderer
         : null
 }
 
+interface ToStringValue {
+    $type: string
+    $toString: {
+        culture: {
+            name: string,
+            lcid: number
+        },
+        formats: {
+            [key: string]: string
+        }[]
+    }[]
+}
+
 class ToStringRenderer implements ResultRenderer {
     getRepresentations(result: CodeCellResult) {
-        return [{
-            component: ToStringRepresentation,
-            displayName: 'NUMBER1',
-        }, {
-            component: ToStringRepresentation,
-            displayName: 'NUMBER2',
-        }]
+        const reps: ResultRendererRepresentation[] = []
+
+        if (!result.valueRepresentations)
+            return reps
+
+        for (const value of result.valueRepresentations) {
+            if (value.$toString) {
+                for (const format of (value as ToStringValue).$toString[0].formats) {
+                    const formatKey = Object.keys(format)[0] as string
+                    reps.push({
+                        displayName: formatKey,
+                        component: ToStringRepresentation,
+                        componentProps: {
+                            value: format[formatKey]
+                        }
+                    })
+                }
+            }
+        }
+
+        return reps
     }
 }
 
-class ToStringRepresentation extends React.Component<{}, { x: number }> {
-    constructor(props: any) {
-        super(props)
-        this.state = { x: 0 }
-        console.log('new ToStringRepresentation(%O)', props)
-    }
-
+class ToStringRepresentation extends React.Component<{ value: string }> {
     render() {
-        return <PrimaryButton
-            onClick={e => this.setState({ x: this.state.x + 1 })}>
-            {this.state.x || 'click me'}
-        </PrimaryButton>
+        console.log(this.props)
+        return <code>{this.props.value}</code>
     }
 }

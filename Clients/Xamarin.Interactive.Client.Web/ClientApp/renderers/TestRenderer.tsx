@@ -20,12 +20,16 @@ class TestRenderer implements ResultRenderer {
         return [
             {
                 component: TestRepresentation,
-                id: 1,
+                componentProps: {
+                    id: 1
+                },
                 displayName: 'Test Representation 1'
             },
             {
                 component: TestRepresentation,
-                id: 2,
+                componentProps: {
+                    id: 2
+                },
                 displayName: 'Test Representation 2'
             }
         ]
