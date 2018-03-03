@@ -9,7 +9,7 @@ import * as React from 'react';
 import { CommandBar } from 'office-ui-fabric-react/lib/CommandBar';
 import { IContextualMenuItem } from 'office-ui-fabric-react/lib/ContextualMenu';
 
-const addPackageItem: IContextualMenuItem = {
+const addPackagesItem: IContextualMenuItem = {
     key: 'addPackage',
     name: 'Add NuGet Package',
     icon: 'Search',
@@ -31,7 +31,7 @@ const saveWorkbookItem: IContextualMenuItem = {
 }
 
 const items: IContextualMenuItem[] = [
-    addPackageItem,
+    addPackagesItem,
     {
         key: 'workbookTarget',
         name: 'Workbook Target',
@@ -81,7 +81,7 @@ export class WorkbookCommandBar extends React.Component<WorkbookCommandBarProps,
     constructor(props: WorkbookCommandBarProps) {
         super(props)
 
-        saveWorkbookItem.onClick = props.saveWorkbook
+        addPackagesItem.onClick = props.addPackages
         saveWorkbookItem.onClick = props.saveWorkbook
         openWorkbookItem.onClick = props.loadWorkbook
         dumpDraftState.onClick = props.dumpDraftState
