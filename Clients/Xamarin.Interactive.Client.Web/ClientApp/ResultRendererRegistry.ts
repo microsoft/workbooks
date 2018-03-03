@@ -29,6 +29,11 @@ export class ResultRendererRegistry {
         const registry = new ResultRendererRegistry
         registry.register(NullRendererFactory)
         registry.register(ToStringRendererFactory)
+        return registry
+    }
+
+    static createForDesign(): ResultRendererRegistry {
+        const registry = ResultRendererRegistry.createDefault()
         registry.register(TestRendererFactory)
         return registry
     }

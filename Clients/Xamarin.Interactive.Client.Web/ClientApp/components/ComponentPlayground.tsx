@@ -71,7 +71,7 @@ export class ComponentPlayground extends React.Component<RouteComponentProps<{}>
 
                 <h2>Code Cell with Multiple Results</h2>
                 <MockedCodeCellView
-                    rendererRegistry={ResultRendererRegistry.createDefault()}
+                    rendererRegistry={ResultRendererRegistry.createForDesign()}
                     results={[this.nullResult, this.nullResult]}
                     resultHandling={CodeCellResultHandling.Append}/>
             </article>
