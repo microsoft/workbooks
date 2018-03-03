@@ -11,6 +11,7 @@ import { WorkbookCommandBar } from './WorkbookCommandBar'
 import { WorkbookEditor } from './WorkbookEditor'
 import { StatusBar } from './StatusBar'
 import { ResultRendererRegistry } from '../ResultRendererRegistry'
+import { PackageSearch } from './PackageSearch';
 import './WorkbookShell.scss'
 
 export interface WorkbookShellContext {
@@ -18,7 +19,11 @@ export interface WorkbookShellContext {
     rendererRegistry: ResultRendererRegistry
 }
 
-export class WorkbookShell extends React.Component {
+interface WorkbookShellState {
+    isPackageDialogHidden: boolean
+}
+
+export class WorkbookShell extends React.Component<any, WorkbookShellState> {
     private shellContext: WorkbookShellContext
     private statusBar: StatusBar | null = null
 
@@ -27,6 +32,9 @@ export class WorkbookShell extends React.Component {
         this.shellContext = {
             session: new WorkbookSession(this.statusUIAction),
             rendererRegistry: ResultRendererRegistry.createDefault()
+        }
+        this.state = {
+            isPackageDialogHidden: true
         }
     }
 
@@ -43,13 +51,28 @@ export class WorkbookShell extends React.Component {
         this.shellContext.session.disconnect()
     }
 
+    showPackageDialog() {
+        this.setState({ isPackageDialogHidden: false })
+    }
+
+    hidePackageDialog() {
+        this.setState({ isPackageDialogHidden: true })
+    }
+
     render() {
         return (
             <div className='WorkbookShell-container'>
-                <WorkbookCommandBar />
+                <WorkbookCommandBar
+                    addPackages={() => this.showPackageDialog()}
+                />
+                <PackageSearch
+                    session={this.shellContext.session}
+                    notifyDismiss={() => this.hidePackageDialog()}
+                    getIsHidden={() => this.state.isPackageDialogHidden}
+                />
                 <WorkbookEditor
                     shellContext={this.shellContext}
-                    content=''/>
+                    content='' />
                 <StatusBar
                     ref={(statusBar: StatusBar | null) => this.statusBar = statusBar} />
                 {/* <div style={{ display: "none" }}>

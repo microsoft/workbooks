@@ -17,6 +17,8 @@ namespace Xamarin.Interactive.Workbook.Models
         public Cell PreviousCell { get; internal set; }
         public Cell NextCell { get; internal set; }
 
+        public bool ShouldSerialize { get; protected set; } = true;
+
         public abstract ICellBuffer Buffer { get; }
         public ICellView View { get; set; }
 

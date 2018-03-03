@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -54,6 +55,8 @@ namespace Xamarin.Interactive.CodeAnalysis
         readonly Dictionary<CodeCellId, CodeCellState> cellStates
             = new Dictionary<CodeCellId, CodeCellState> ();
 
+        CodeCellState nugetReferenceCellState;
+
         public EvaluationContextId Id => workspace.EvaluationContextId;
 
         readonly Observable<ICodeCellEvent> events = new Observable<ICodeCellEvent> ();
@@ -96,7 +99,43 @@ namespace Xamarin.Interactive.CodeAnalysis
             => throw new NotImplementedException ();
 
         public Task EvaluateAllAsync (CancellationToken cancellationToken = default)
-            => throw new NotImplementedException ();
+            => EvaluateAsync (evaluateAll: true, cancellationToken: cancellationToken);
+
+        public async Task<bool> AddTopLevelReferencesAsync (
+            IReadOnlyList<string> references,
+            CancellationToken cancellationToken = default)
+        {
+            if (references == null || references.Count == 0)
+                return false;
+
+            if (nugetReferenceCellState == null) {
+                var firstCodeCellId = workspace
+                    .GetTopologicallySortedSubmissionIds ()
+                    .Select (CodeCellIdExtensions.ToCodeCellId)
+                    .FirstOrDefault ();
+
+                nugetReferenceCellState = await InsertCodeCellAsync (
+                    string.Empty,
+                    firstCodeCellId,
+                    true,
+                    cancellationToken);
+            }
+
+            // TODO: Prevent dupes. Return false if no changes made
+            var builder = new StringBuilder (nugetReferenceCellState.Buffer.Value);
+            foreach (var reference in references) {
+                if (builder.Length > 0)
+                    //builder.AppendLine ();
+                    builder.Append ("\n");
+                builder
+                    .Append ("#r \"")
+                    .Append (reference)
+                    .Append ("\"");
+            }
+
+            nugetReferenceCellState.Buffer.Value = builder.ToString ();
+            return true;
+        }
 
         #endregion
 

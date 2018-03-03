@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Globalization;
 using System.Linq;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -19,6 +20,7 @@ using Xamarin.Interactive.Client;
 using Xamarin.Interactive.CodeAnalysis;
 using Xamarin.Interactive.Compilation.Roslyn;
 using Xamarin.Interactive.Editor;
+using Xamarin.Interactive.Editor.Events;
 using Xamarin.Interactive.I18N;
 using Xamarin.Interactive.Logging;
 using Xamarin.Interactive.Protocol;
@@ -173,7 +175,94 @@ namespace Xamarin.Interactive.Workbook.Models
         protected CodeCellState InsertCodeCell (Cell previousCell)
             => InsertCodeCell (new CodeCell ("csharp"), previousCell);
 
-        CodeCellState InsertCodeCell (CodeCell newCell, Cell previousCell)
+        class HiddenCodeCellView : ICodeCellView
+        {
+            public IEditor Editor { get; set; }
+            public bool IsOutdated { get; set; }
+            public bool IsDirty { get; set; }
+            public bool IsEvaluating { get; set; }
+
+            public bool IsFrozen { get; private set; }
+
+            public bool HasErrorDiagnostics { get; set; }
+            public TimeSpan EvaluationDuration { get; set; }
+
+            public void Focus (bool scrollIntoView = true)
+            {
+            }
+
+            public void Freeze ()
+                => IsFrozen = true;
+
+            public void RenderCapturedOutputSegment (CapturedOutputSegment segment)
+            {
+            }
+
+            public void RenderDiagnostic (InteractiveDiagnostic diagnostic)
+            {
+            }
+
+            public void RenderResult (CultureInfo cultureInfo, object result, EvaluationResultHandling resultHandling)
+            {
+            }
+
+            public void Reset ()
+            {
+            }
+        }
+
+        class HiddenCodeCellEditor : IEditor
+        {
+            public IObservable<EditorEvent> Events => throw new NotImplementedException ();
+
+            public bool IsDisposed { get; private set; }
+
+            public void Dispose ()
+                => IsDisposed = true;
+
+            public void ExecuteCommand (EditorCommand command)
+            {
+                throw new NotImplementedException ();
+            }
+
+            public void Focus ()
+            {
+                throw new NotImplementedException ();
+            }
+
+            public IEnumerable<EditorCommand> GetCommands ()
+            {
+                throw new NotImplementedException ();
+            }
+
+            public EditorCommandStatus GetCommandStatus (EditorCommand command)
+            {
+                throw new NotImplementedException ();
+            }
+
+            public void OnBlur ()
+            {
+                throw new NotImplementedException ();
+            }
+
+            public void SetCursorPosition (AbstractCursorPosition cursorPosition)
+            {
+                throw new NotImplementedException ();
+            }
+
+            public bool TryGetCommand (string commandId, out EditorCommand command)
+            {
+                throw new NotImplementedException ();
+            }
+        }
+
+        CodeCellState InsertHiddenCell ()
+            => InsertCodeCell (
+                new CodeCell ("csharp", shouldSerialize: false),
+                WorkbookPage.Contents.FirstCell.GetSelfOrNextCell<CodeCell> ()?.PreviousCell,
+                isHidden: true);
+
+        CodeCellState InsertCodeCell (CodeCell newCell, Cell previousCell, bool isHidden = false)
         {
             if (newCell == null)
                 throw new ArgumentNullException (nameof (newCell));
@@ -185,7 +274,13 @@ namespace Xamarin.Interactive.Workbook.Models
 
             var codeCellState = new CodeCellState (newCell);
 
-            BindCodeCellToView (newCell, codeCellState);
+            if (isHidden) {
+                // Set up editor, required as dictionary key
+                codeCellState.Editor = new HiddenCodeCellEditor ();
+                codeCellState.View = new HiddenCodeCellView { Editor = codeCellState.Editor };
+                newCell.View = codeCellState.View;
+            } else
+                BindCodeCellToView (newCell, codeCellState);
 
             if (ClientSession.CompilationWorkspace != null) {
                 codeCellState.CompilationWorkspace = ClientSession.CompilationWorkspace;
@@ -195,7 +290,8 @@ namespace Xamarin.Interactive.Workbook.Models
                     GetDocumentId (nextCodeCell));
             }
 
-            InsertCellInViewModel (newCell, previousCell);
+            if (!isHidden)
+                InsertCellInViewModel (newCell, previousCell);
 
             OutdateAllCodeCells (newCell);
 
@@ -343,6 +439,39 @@ namespace Xamarin.Interactive.Workbook.Models
 
             await ClientSession.Agent.Api.AbortEvaluationAsync (
                 ClientSession.CompilationWorkspace.EvaluationContextId);
+        }
+
+        public Task<bool> AddTopLevelReferencesAsync (
+            IReadOnlyList<string> references,
+            CancellationToken cancellationToken = default)
+        {
+            // TODO: soo.....why are new #r's added after there are other cells not bringing in the reference right?
+            if (references == null || references.Count == 0)
+                return Task.FromResult (false);
+
+            // TODO: Should we be saving a quick reference to the hidden cell/editor?
+            var hiddenCellState = CodeCells
+                .Where (p => p.Key is HiddenCodeCellEditor)
+                .Select (p => p.Value)
+                .FirstOrDefault ();
+
+            if (hiddenCellState == null)
+                hiddenCellState = InsertHiddenCell ();
+
+            // TODO: Prevent dupes. Return false if no changes made
+            var builder = new StringBuilder (hiddenCellState.Cell.Buffer.Value);
+            foreach (var reference in references) {
+                if (builder.Length > 0)
+                    //builder.AppendLine ();
+                    builder.Append ("\n");
+                builder
+                    .Append ("#r \"")
+                    .Append (reference)
+                    .Append ("\"");
+            }
+
+            hiddenCellState.Cell.Buffer.Value = builder.ToString ();
+            return Task.FromResult (true);
         }
 
         public async Task EvaluateAllAsync (CancellationToken cancellationToken = default)

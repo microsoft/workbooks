@@ -14,12 +14,16 @@ using Microsoft.AspNetCore.SignalR;
 
 using Microsoft.CodeAnalysis;
 
+using NuGet.Packaging.Core;
+using NuGet.Versioning;
+
 using Xamarin.Interactive.Client.Monaco;
 using Xamarin.Interactive.Client.Web.Hosting;
 using Xamarin.Interactive.CodeAnalysis;
 using Xamarin.Interactive.CodeAnalysis.Completion;
 using Xamarin.Interactive.CodeAnalysis.Hover;
 using Xamarin.Interactive.CodeAnalysis.SignatureHelp;
+using Xamarin.Interactive.NuGet;
 
 namespace Xamarin.Interactive.Client.Web
 {
@@ -141,6 +145,29 @@ namespace Xamarin.Interactive.Client.Web
                 targetCodeCellId,
                 evaluateAll,
                 Context.Connection.ConnectionAbortedToken);
+        }
+
+        // TODO: Probably want package source URL, too
+        public async Task<List<string>> InstallPackage (string id, string version)
+        {
+            var sessionState = serviceProvider
+                .GetInteractiveSessionHubManager ()
+                .GetSession (Context.ConnectionId);
+
+            await sessionState.ClientSession.InstallPackageAsync (
+                new PackageViewModel (new PackageIdentity (
+                    id,
+                    new NuGetVersion (version))),
+                Context.Connection.ConnectionAbortedToken);
+
+            // TODO: Probably want to return a more detailed VM, not just IDs
+            return sessionState
+                .ClientSession
+                .Workbook
+                .Packages
+                .InstalledPackages
+                .Select (p => p.Identity.Id)
+                .ToList ();
         }
 
         public async Task<List<MonacoCompletionItem>> ProvideCompletions (

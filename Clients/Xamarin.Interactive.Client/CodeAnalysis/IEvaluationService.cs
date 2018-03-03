@@ -6,6 +6,7 @@
 // Licensed under the MIT License.
 
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -19,5 +20,8 @@ namespace Xamarin.Interactive.CodeAnalysis
         Task EvaluateAsync (string input, CancellationToken cancellationToken = default);
         Task EvaluateAllAsync (CancellationToken cancellationToken = default);
         Task LoadWorkbookDependencyAsync (string dependency, CancellationToken cancellationToken = default);
+        Task<bool> AddTopLevelReferencesAsync (
+            IReadOnlyList<string> references,
+            CancellationToken cancellationToken = default);
     }
 }

@@ -1,0 +1,69 @@
+.packageListItem {
+  display: flex;
+  flex-direction: row;
+}
+
+.packageListItemIcon {
+  margin: 10px;
+  margin-top: 20px;
+}
+
+.packageListInfoContainer {
+  display: flex;
+  flex-direction: column;
+  margin: 10px;
+  max-width: 450px;
+}
+
+.packageListInfoContainer > * {
+  flex: 1 1 auto;
+}
+
+.packageListItemName {
+  font-size: 2vw; // TODO: Why does this overflow sometimes?
+}
+
+.packageListItemVersion {
+  font-size: 75%;
+  color: gray;
+}
+
+.packageListItemDescription {
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+
+// TODO: Should we switch to a non-dialog modal so we have more control over width?
+.ms-Dialog-main {
+  min-width: 600px !important;
+}
+
+.packageListContainer {
+  max-height: 500px;
+  min-height: 500px;
+  overflow-y: auto;
+  overflow-x: hidden; // TODO: Improve this
+}
+
+.packageAlreadyInstalled {
+  width: min-content;
+  background-color: gray;
+}
+
+.packageListItemContainer hr {
+  margin: 0;
+}
+
+.packageListActionContainer {
+  display: flex;
+  flex-direction: row;
+}
+
+.packageInstallSpinner {
+  // TODO: Make this align with middle of button
+  margin-left: 20px;
+}
+
+.packageInstallButton {
+  width: min-content;
+}
