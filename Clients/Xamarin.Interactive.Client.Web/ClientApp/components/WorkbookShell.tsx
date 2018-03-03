@@ -11,7 +11,6 @@ import { WorkbookCommandBar } from './WorkbookCommandBar'
 import { WorkbookEditor } from './WorkbookEditor'
 import { StatusBar } from './StatusBar'
 import { ResultRendererRegistry } from '../ResultRendererRegistry'
-import { NullRenderer } from '../renderers/NullRenderer'
 import './WorkbookShell.scss'
 
 export interface WorkbookShellContext {
@@ -29,8 +28,6 @@ export class WorkbookShell extends React.Component {
             session: new WorkbookSession(this.statusUIAction),
             rendererRegistry: new ResultRendererRegistry
         }
-
-        this.shellContext.rendererRegistry.register(NullRenderer.factory)
     }
 
     private statusUIAction(action: StatusUIAction, message: StatusMessage | null) {

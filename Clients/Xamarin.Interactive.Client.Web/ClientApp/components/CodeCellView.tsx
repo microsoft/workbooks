@@ -134,25 +134,42 @@ export abstract class CodeCellView<
                             return
 
                         const dropdownOptions = resultState.representations.length > 1
-                            ? resultState.representations.map((item, index) => item.dropdownOption)
+                            ? resultState.representations.map((item, index) => {
+                                return {
+                                    key: index,
+                                    text: item.displayName
+                                }
+                            })
                             : null
+
+                        let resultElement: any = undefined
+
+                        if (resultState.selectedRepresentation) {
+                            resultElement = React.createElement(
+                                resultState.selectedRepresentation.component,
+                                resultState.selectedRepresentation);
+
+                            console.log(
+                                '%O: React.createElement(%O, %O)',
+                                resultState.selectedRepresentation.displayName,
+                                resultState.selectedRepresentation.component,
+                                resultState.selectedRepresentation)
+                        }
 
                         return (
                             <div
                                 key={i}
                                 className="CodeCell-result">
                                 <div className="CodeCell-result-renderer-container">
-                                    {resultState.selectedRepresentation &&
-                                        resultState.selectedRepresentation.render()}
+                                    {resultElement}
                                 </div>
                                 {dropdownOptions && <Dropdown
                                     options={dropdownOptions}
                                     defaultSelectedKey={dropdownOptions[0].key}
                                     onChanged={item => {
-                                        resultState.selectedRepresentation = item.data
+                                        resultState.selectedRepresentation = resultState.representations[item.key as number]
                                         this.setState(this.state)
-                                    }}/>
-                                }
+                                    }}/>}
                             </div>
                         )
                     })}

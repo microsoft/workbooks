@@ -6,38 +6,34 @@
 // Licensed under the MIT License.
 
 import * as React from 'react'
-
 import { CodeCellResult } from '../evaluation';
-import {
-    ResultRenderer,
-    ResultRendererRepresentation
-} from '../rendering'
+import { ResultRenderer } from '../rendering'
 
-class TestRepresentation extends ResultRendererRepresentation {
-    static lastId: number = 0
-    id: number = TestRepresentation.lastId++
+export default function TestRendererFactory(result: CodeCellResult) {
+    if (!result.valueRepresentations || result.valueRepresentations.length === 0)
+        return new TestRenderer
+    return null
+}
 
-    constructor(representationName: string) {
-        super({
-            shortDisplayName: representationName,
-            value: null
-        })
-    }
-
-    render() {
-        return <pre>Bogus Rendering: {this.id}</pre>
+class TestRenderer implements ResultRenderer {
+    getRepresentations(result: CodeCellResult) {
+        return [
+            {
+                component: TestRepresentation,
+                id: 1,
+                displayName: 'Test Representation 1'
+            },
+            {
+                component: TestRepresentation,
+                id: 2,
+                displayName: 'Test Representation 2'
+            }
+        ]
     }
 }
 
-export class TestRenderer implements ResultRenderer {
-    static factory(result: CodeCellResult) {
-        return new TestRenderer
-    }
-
-    getRepresentations(result: CodeCellResult) {
-        return [
-            new TestRepresentation('Test Rep A'),
-            new TestRepresentation('Test Rep B')
-        ]
+class TestRepresentation extends React.Component<{ id: number }> {
+    render() {
+        return <pre>Test Rendering: {this.props.id}</pre>
     }
 }

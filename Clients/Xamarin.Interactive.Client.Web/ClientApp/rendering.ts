@@ -8,7 +8,6 @@
 import * as React from 'react'
 
 import { CodeCellResult } from './evaluation'
-import { IDropdownOption } from 'office-ui-fabric-react/lib/Dropdown';
 
 export const enum ResultRendererRepresentationOptions {
     None = 0,
@@ -39,31 +38,16 @@ export const enum ResultRendererRepresentationOptions {
     SuppressDisplayNameHint = 8
 }
 
-export interface ResultRendererRepresentationProps {
-    shortDisplayName: string
-    value: any
-    order?: number
-    options?: ResultRendererRepresentationOptions
-}
-
-export abstract class ResultRendererRepresentation<TState = {}>
-    extends React.Component<ResultRendererRepresentationProps, TState> {
-    private static lastDropdownOptionKey = 0
-
-    readonly dropdownOption: IDropdownOption
-
-    constructor(props: ResultRendererRepresentationProps) {
-        super(props)
-        this.dropdownOption = {
-            key: (ResultRendererRepresentation.lastDropdownOptionKey++).toString(),
-            text: this.props.shortDisplayName,
-            data: this
-        }
-    }
-}
-
 export interface ResultRenderer {
     getRepresentations(result: CodeCellResult): ResultRendererRepresentation[]
 }
 
 export type ResultRendererFactory = (result: CodeCellResult) => ResultRenderer | null
+
+export interface ResultRendererRepresentation {
+    displayName: string
+    component: any
+    value?: any
+    order?: number
+    options?: ResultRendererRepresentationOptions,
+}

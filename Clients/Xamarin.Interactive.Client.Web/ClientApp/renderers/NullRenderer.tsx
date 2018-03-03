@@ -6,34 +6,26 @@
 // Licensed under the MIT License.
 
 import * as React from 'react'
-
 import { CodeCellResult } from '../evaluation';
-import {
-    ResultRenderer,
-    ResultRendererRepresentation
-} from '../rendering'
+import { ResultRenderer } from '../rendering'
 
-class NullRepresentation extends ResultRendererRepresentation {
-    constructor() {
-        super({
-            shortDisplayName: 'null',
-            value: null
-        })
-    }
+export default function NullRendererFactory(result: CodeCellResult) {
+    if (!result.valueRepresentations || result.valueRepresentations.length === 0)
+        return new NullRenderer
+    return null
+}
 
-    render() {
-        return <pre>null</pre>
+class NullRenderer implements ResultRenderer {
+    getRepresentations(result: CodeCellResult) {
+        return [{
+            component: NullRepresentation,
+            displayName: 'null'
+        }]
     }
 }
 
-export class NullRenderer implements ResultRenderer {
-    static factory(result: CodeCellResult) {
-        if (!result.valueRepresentations || result.valueRepresentations.length === 0)
-            return new NullRenderer
-        return null
-    }
-
-    getRepresentations(result: CodeCellResult) {
-        return [ new NullRepresentation ]
+class NullRepresentation extends React.Component {
+    render() {
+        return <pre>null</pre>
     }
 }
