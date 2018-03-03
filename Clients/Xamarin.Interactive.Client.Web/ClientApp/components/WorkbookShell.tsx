@@ -13,6 +13,7 @@ import { StatusBar } from './StatusBar'
 import { ResultRendererRegistry } from '../ResultRendererRegistry'
 import { PackageSearch } from './PackageSearch';
 import './WorkbookShell.scss'
+import { saveAs } from 'file-saver'
 
 export interface WorkbookShellContext {
     session: WorkbookSession
@@ -26,6 +27,9 @@ interface WorkbookShellState {
 export class WorkbookShell extends React.Component<any, WorkbookShellState> {
     private shellContext: WorkbookShellContext
     private statusBar: StatusBar | null = null
+    private workbookEditor: WorkbookEditor | null = null
+    private fileButton: HTMLInputElement | null = null
+    private workbookMetadata: any
 
     constructor() {
         super()
@@ -59,11 +63,54 @@ export class WorkbookShell extends React.Component<any, WorkbookShellState> {
         this.setState({ isPackageDialogHidden: true })
     }
 
+    triggerFilePicker() {
+        if (this.fileButton == null)
+            return;
+        this.fileButton.click();
+    }
+
+    loadWorkbook(event: React.ChangeEvent<HTMLInputElement>) {
+        if (event.target.files == null) {
+            alert("No files.");
+            return;
+        }
+
+        const file = event.target.files[0];
+        const reader = new FileReader();
+        reader.addEventListener("load", () => {
+            if (this.workbookEditor != null)
+                this.workbookEditor.loadNewContent(reader.result).then(workbookMetadata => {
+                    this.workbookMetadata = workbookMetadata;
+                });
+        });
+        reader.readAsText(file);
+    }
+
+    saveWorkbook() {
+        if (this.workbookEditor != null) {
+            const contentToSave = this.workbookEditor.getContentToSave();
+            var blob = new Blob([contentToSave], { type: "text/markdown;charset=utf-8" })
+            const title = (this.workbookMetadata && this.workbookMetadata.title)
+                ? this.workbookMetadata.title
+                : `workbook-${new Date().toISOString().replace(/[:\.]/g, '-')}`
+            saveAs(blob, `${title}.workbook`);
+        }
+    }
+
+    dumpDraftState() {
+        if (this.workbookEditor != null) {
+            this.workbookEditor.logContent();
+        }
+    }
+
     render() {
         return (
             <div className='WorkbookShell-container'>
                 <WorkbookCommandBar
-                    addPackages={() => this.showPackageDialog()}
+                    addPackages={this.showPackageDialog.bind(this)}
+                    loadWorkbook={this.triggerFilePicker.bind(this)}
+                    saveWorkbook={this.saveWorkbook.bind(this)}
+                    dumpDraftState={this.dumpDraftState.bind(this)}
                 />
                 <PackageSearch
                     session={this.shellContext.session}
@@ -72,15 +119,16 @@ export class WorkbookShell extends React.Component<any, WorkbookShellState> {
                 />
                 <WorkbookEditor
                     shellContext={this.shellContext}
-                    content='' />
+                    ref={(editor) => this.workbookEditor = editor }
+                    content=''/>
                 <StatusBar
                     ref={(statusBar: StatusBar | null) => this.statusBar = statusBar} />
-                {/* <div style={{ display: "none" }}>
+                <div style={{ display: "none" }}>
                     <input
                         type="file"
                         ref={(input) => { this.fileButton = input; }}
-                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => this.loadMarkdown(e)} />
-                </div> */}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => this.loadWorkbook(e)} />
+                </div>
             </div>
         )
     }
