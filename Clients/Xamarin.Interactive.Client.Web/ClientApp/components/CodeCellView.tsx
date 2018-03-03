@@ -30,7 +30,7 @@ import './CodeCellView.scss'
 export interface CodeCellResultRendererState {
     result: CodeCellResult
     representations: ResultRendererRepresentation[]
-    selectedRepresentation: ResultRendererRepresentation | null
+    selectedRepresentationIndex: number
 }
 
 export const enum CodeCellViewStatus {
@@ -72,7 +72,7 @@ export abstract class CodeCellView<
         const rendererState = {
             result: result,
             representations: flatReps,
-            selectedRepresentation: flatReps.length > 0 ? flatReps [0] : null
+            selectedRepresentationIndex: 0
         }
 
         if (!resultHandling)
@@ -132,7 +132,6 @@ export abstract class CodeCellView<
                     {this.state.results.map((resultState, i) => {
                         if (resultState.representations.length === 0)
                             return
-
                         const dropdownOptions = resultState.representations.length > 1
                             ? resultState.representations.map((item, index) => {
                                 return {
@@ -142,20 +141,26 @@ export abstract class CodeCellView<
                             })
                             : null
 
+                        let repElem = null
+                        if (resultState.selectedRepresentationIndex >= 0) {
+                            const repKey = resultState.selectedRepresentationIndex
+                            const rep = resultState.representations[repKey]
+                            const repProps = Object.assign({key: repKey}, rep.componentProps)
+                            repElem = React.createElement(rep.component, repProps)
+                        }
+
                         return (
                             <div
                                 key={i}
                                 className="CodeCell-result">
                                 <div className="CodeCell-result-renderer-container">
-                                    {resultState.selectedRepresentation && React.createElement(
-                                        resultState.selectedRepresentation.component,
-                                        resultState.selectedRepresentation.componentProps)}
+                                    {repElem}
                                 </div>
                                 {dropdownOptions && <Dropdown
                                     options={dropdownOptions}
                                     defaultSelectedKey={dropdownOptions[0].key}
                                     onChanged={item => {
-                                        resultState.selectedRepresentation = resultState.representations[item.key as number]
+                                        resultState.selectedRepresentationIndex = item.key as number
                                         this.setState(this.state)
                                     }}/>}
                             </div>

@@ -6,7 +6,6 @@
 // Licensed under the MIT License.
 
 import * as React from 'react'
-import { PrimaryButton } from 'office-ui-fabric-react/lib/Button';
 import { CodeCellResult } from '../evaluation';
 import { ResultRenderer, ResultRendererRepresentation } from '../rendering'
 
@@ -61,33 +60,8 @@ class ToStringRenderer implements ResultRenderer {
     }
 }
 
-class ToStringRepresentation extends React.Component<{ value: string }, { x: number }> {
-    constructor(props: any) {
-        super(props)
-        this.state = { x: 0 }
-        console.log('new ToStringRepresentation(%O)', props.value)
-    }
-
-    componentDidMount() {
-        console.log('ToStringRepresentation::componentDidMount(%O): x=%O', this.props.value, this.state.x)
-    }
-
-    componentWillReceiveProps() {
-        console.log('ToStringRepresentation::componentWillReceiveProps(%O): x=%O', this.props.value, this.state.x)
-        this.setState({x: 0})
-    }
-
-    componentWillUnmount() {
-        console.log('ToStringRepresentation::componentWillUnmount(%O): x=%O', this.props.value, this.state.x)
-    }
-
+class ToStringRepresentation extends React.Component<{ value: string }> {
     render() {
-        console.log(this.props)
-        return (
-            <ul>
-                <li><code>{this.props.value}</code></li>
-                <li><PrimaryButton onClick={e => this.setState({ x: this.state.x + 1 })}>{this.state.x}</PrimaryButton></li>
-            </ul>
-        )
+        return <code>{this.props.value}</code>
     }
 }
