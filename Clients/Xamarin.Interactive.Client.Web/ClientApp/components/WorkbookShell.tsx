@@ -120,15 +120,25 @@ export class WorkbookShell extends React.Component<any, WorkbookShellState> {
         reader.readAsText(file);
     }
 
+    generateUuid() {
+        return "10000000-1000-4000-8000-100000000000".replace(/[018]/g, c =>
+            (+c ^ (crypto.getRandomValues(new Uint8Array(1)) as Uint8Array)[0] & 15 >> +c / 4).toString(16)
+        )
+    }
+
+
     saveWorkbook() {
         if (this.workbookEditor != null) {
             const contentToSave = this.workbookEditor.getContentToSave();
+            this.workbookMetadata = this.workbookMetadata || {
+                title: "Untitled",
+                uti: "com.xamarin.workbook",
+                id: this.generateUuid(),
+                platforms: this.shellContext.session.availableWorkbookTargets.map(wt => wt.id)
+            };
             const workbook = matter.stringify(contentToSave, this.workbookMetadata);
             var blob = new Blob([workbook], { type: "text/markdown;charset=utf-8" })
-            const title = (this.workbookMetadata && this.workbookMetadata.title)
-                ? this.workbookMetadata.title
-                : `workbook-${new Date().toISOString().replace(/[:\.]/g, '-')}`
-            saveAs(blob, `${title}.workbook`);
+            saveAs(blob, `${this.workbookMetadata.title}.workbook`);
         }
     }
 
