@@ -1,4 +1,4 @@
-import * as toMarkdown from 'to-markdown'
+import * as TurndownService from 'turndown'
 import * as MarkdownIt from 'markdown-it'
 import { stateToHTML } from 'draft-js-export-html'
 import { ContentState, convertFromHTML, ContentBlock } from 'draft-js';
@@ -7,15 +7,12 @@ import { WorkbookSession } from '../WorkbookSession';
 
 export function convertToMarkdown(contentState: Draft.ContentState): string {
     const htmlContent = stateToHTML(contentState);
-    const options: toMarkdown.Options = {
-        converters: [
-            {
-                filter: 'pre',
-                replacement: codeBlocksSerializer
-            }
-        ]
-    };
-    return toMarkdown(htmlContent, options);
+    const td = new TurndownService.default();
+    td.addRule("codeblocks", {
+        filter: ["pre"],
+        replacement: codeBlocksSerializer
+    });
+    return td.turndown(htmlContent);
 }
 
 function codeBlocksSerializer(content: string): string {
