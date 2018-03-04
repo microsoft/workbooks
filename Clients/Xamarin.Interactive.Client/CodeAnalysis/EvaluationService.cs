@@ -236,7 +236,7 @@ namespace Xamarin.Interactive.CodeAnalysis
             workspace.RemoveSubmission (
                 codeCellId.ToDocumentId (),
                 nextCodeCellId.ToDocumentId ());
-            
+
             cellStates.Remove (codeCellId);
 
             return Task.CompletedTask;
@@ -292,12 +292,6 @@ namespace Xamarin.Interactive.CodeAnalysis
             var haveSeenTargetCell = false;
             var skipRemainingCells = false;
 
-            void MarkCellForEvaluation (CodeCellState cell)
-            {
-                model.CellsToEvaluate.Add (cell);
-                model.ShouldMaybeStartNewCodeCell = cells [cells.Count - 1] == cell;
-            }
-
             for (int i = 0; i < cells.Count; i++) {
                 var cell = cells [i];
                 var isTargetCell = cell.Id == targetCodeCellId;
@@ -313,15 +307,18 @@ namespace Xamarin.Interactive.CodeAnalysis
                     if (i == 0)
                         model.ShouldResetAgentState = true;
 
-                    MarkCellForEvaluation (cell);
+                    model.CellsToEvaluate.Add (cell);
                 }
 
                 if (skipRemainingCells || cell.AgentTerminatedWhileEvaluating)
                     skipRemainingCells = true;
                 else if (evaluateAll || cell.EvaluationCount > 0)
-                    MarkCellForEvaluation (cell);
+                    model.CellsToEvaluate.Add (cell);
 
                 cell.IsOutdated = true;
+
+                // Should only be true if target cell is last cell
+                model.ShouldMaybeStartNewCodeCell = isTargetCell;
             }
 
             return model;
