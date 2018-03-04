@@ -6,6 +6,8 @@
     <TypeScriptCompileBlocked>true</TypeScriptCompileBlocked>
     <TypeScriptToolsVersion>Latest</TypeScriptToolsVersion>
     <IsPackable>false</IsPackable>
+    <RuntimeIdentifiers>osx-x64</RuntimeIdentifiers>
+    <AssemblyName>workbooks-server</AssemblyName>
   </PropertyGroup>
 
   <ItemGroup>

@@ -6,6 +6,9 @@
 // Licensed under the MIT License.
 
 using System;
+using System.IO;
+using System.Reflection;
+
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -31,6 +34,12 @@ namespace Xamarin.Interactive.Client.Web
 
         public void ConfigureServices (IServiceCollection services)
         {
+            var searchPath = Path.Combine (
+                Path.GetDirectoryName (Assembly.GetEntryAssembly ().Location),
+                "WorkbookApps");
+            if (Directory.Exists (searchPath))
+                WorkbookAppInstallation.RegisterSearchPath (searchPath);
+
             SingleThreadSynchronizationContext.StartRunLoopAsBackgroundThread ();
             services.AddSingleton (new WebClientAppContainer ());
 
