@@ -9,7 +9,8 @@ import * as React from 'react';
 import { CommandBar } from 'office-ui-fabric-react/lib/CommandBar';
 import { IContextualMenuItem } from 'office-ui-fabric-react/lib/ContextualMenu';
 
-import { WorkbookTarget, DotNetSdk } from '../WorkbookSession'
+import { WorkbookTarget, DotNetSdk, WorkbookSession, ClientSessionEvent, ClientSessionEventKind } from '../WorkbookSession'
+import { WorkbookShellContext } from './WorkbookShell';
 
 const addPackagesItem: IContextualMenuItem = {
     key: 'addPackage',
@@ -22,7 +23,8 @@ const openWorkbookItem: IContextualMenuItem = {
     key: 'openWorkbook',
     name: 'Open',
     icon: 'OpenFile',
-    onClick: () => { }
+    onClick: () => { },
+    disabled: true,
 }
 
 const saveWorkbookItem: IContextualMenuItem = {
@@ -52,10 +54,12 @@ interface WorkbookCommandBarProps {
     loadWorkbook: () => void
     saveWorkbook: () => void
     dumpDraftState: () => void
+    shellContext: WorkbookShellContext
 }
 
 interface WorkbookCommandBarState {
     items: IContextualMenuItem[]
+    overflowItems: IContextualMenuItem[]
 }
 
 export class WorkbookCommandBar extends React.Component<WorkbookCommandBarProps, WorkbookCommandBarState> {
@@ -65,13 +69,33 @@ export class WorkbookCommandBar extends React.Component<WorkbookCommandBarProps,
         this.state = {
             items: [
                 addPackagesItem
-            ]
+            ],
+            overflowItems
         }
 
         addPackagesItem.onClick = props.addPackages
         saveWorkbookItem.onClick = props.saveWorkbook
         openWorkbookItem.onClick = props.loadWorkbook
         dumpDraftState.onClick = props.dumpDraftState
+    }
+
+    private onClientSessionEvent(session: WorkbookSession, clientSessionEvent: ClientSessionEvent) {
+        if (clientSessionEvent.kind === ClientSessionEventKind.CompilationWorkspaceAvailable) {
+            const overflowItems = this.state.overflowItems;
+            const openWorkbookItem = overflowItems.find(mi => mi.key === "openWorkbook");
+            if (!openWorkbookItem)
+                return
+            openWorkbookItem.disabled = false;
+            this.setState({ overflowItems })
+        }
+    }
+
+    componentDidMount() {
+        this.props.shellContext.session.clientSessionEvent.addListener(this.onClientSessionEvent.bind(this))
+    }
+
+    componentWillUnmount() {
+        this.props.shellContext.session.clientSessionEvent.removeListener(this.onClientSessionEvent)
     }
 
     setWorkbookTargets(targets: WorkbookTarget[]) {
@@ -101,7 +125,7 @@ export class WorkbookCommandBar extends React.Component<WorkbookCommandBarProps,
             <CommandBar
                 elipisisAriaLabel='More options'
                 items={this.state.items}
-                overflowItems={overflowItems}
+                overflowItems={this.state.overflowItems}
                 farItems={farItems}
             />
         );

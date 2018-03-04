@@ -126,7 +126,6 @@ export class WorkbookShell extends React.Component<any, WorkbookShellState> {
         )
     }
 
-
     saveWorkbook() {
         if (this.workbookEditor != null) {
             const contentToSave = this.workbookEditor.getContentToSave();
@@ -157,6 +156,7 @@ export class WorkbookShell extends React.Component<any, WorkbookShellState> {
                     loadWorkbook={this.triggerFilePicker.bind(this)}
                     saveWorkbook={this.saveWorkbook.bind(this)}
                     dumpDraftState={this.dumpDraftState.bind(this)}
+                    shellContext={this.shellContext}
                 />
                 <StatusMessageBar
                     ref={component => this.statusMessageBarComponent = component}

@@ -15,7 +15,7 @@ import {
 import createMarkdownPlugin from 'draft-js-markdown-plugin'
 import { List, Map } from 'immutable'
 import { CodeCell } from './CodeCell'
-import { WorkbookSession } from '../WorkbookSession'
+import { WorkbookSession, ClientSessionEvent, ClientSessionEventKind } from '../WorkbookSession'
 import { MonacoCellMapper, WorkbookCompletionItemProvider, WorkbookHoverProvider, WorkbookSignatureHelpProvider } from '../utils/MonacoUtils'
 import { EditorMessage, EditorMessageType, EditorKeys } from '../utils/EditorMessages'
 import { getNextBlockFor, getPrevBlockFor, isBlockBackwards } from '../utils/DraftStateUtils'
@@ -63,7 +63,7 @@ export class WorkbookEditor extends React.Component<WorkbooksEditorProps, Workbo
         this.state = {
             editorState: editorState,
             plugins: [createMarkdownPlugin()],
-            readOnly: false
+            readOnly: true
         }
 
         // Monaco intellisense providers must be registered globally, not on a
@@ -83,11 +83,18 @@ export class WorkbookEditor extends React.Component<WorkbooksEditorProps, Workbo
                 new WorkbookSignatureHelpProvider(this.props.shellContext, this)))
     }
 
+    private onClientSessionEvent(session: WorkbookSession, clientSessionEvent: ClientSessionEvent): void {
+        if (clientSessionEvent.kind === ClientSessionEventKind.CompilationWorkspaceAvailable)
+            this.setState({ readOnly: false });
+    }
+
     componentDidMount() {
+        this.props.shellContext.session.clientSessionEvent.addListener(this.onClientSessionEvent.bind(this));
         this.focus()
     }
 
     componentWillUnmount() {
+        this.props.shellContext.session.clientSessionEvent.removeListener(this.onClientSessionEvent);
         for (let ticket of this.monacoProviderTickets)
             ticket.dispose()
     }
