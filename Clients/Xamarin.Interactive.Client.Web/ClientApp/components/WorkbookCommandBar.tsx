@@ -9,6 +9,8 @@ import * as React from 'react';
 import { CommandBar } from 'office-ui-fabric-react/lib/CommandBar';
 import { IContextualMenuItem } from 'office-ui-fabric-react/lib/ContextualMenu';
 
+import { WorkbookTarget, DotNetSdk } from '../WorkbookSession'
+
 const addPackagesItem: IContextualMenuItem = {
     key: 'addPackage',
     name: 'NuGet',
@@ -29,34 +31,6 @@ const saveWorkbookItem: IContextualMenuItem = {
     icon: 'DownloadDocument',
     onClick: () => { }
 }
-
-const items: IContextualMenuItem[] = [
-    {
-        key: 'workbookTarget',
-        name: 'Workbook Target',
-        subMenuProps: {
-            items: [
-                {
-                    key: 'workbookTarget-Console',
-                    name: 'Console',
-                    subMenuProps: {
-                        items: [
-                            {
-                                key: 'workbookTarget-DotNetCore',
-                                name: '.NET Core'
-                            },
-                            {
-                                key: 'workbookTarget-Console',
-                                name: '.NET Framework'
-                            }
-                        ]
-                    }
-                }
-            ]
-        }
-    },
-    addPackagesItem
-]
 
 const overflowItems: IContextualMenuItem[] = [
     openWorkbookItem,
@@ -80,9 +54,19 @@ interface WorkbookCommandBarProps {
     dumpDraftState: () => void
 }
 
-export class WorkbookCommandBar extends React.Component<WorkbookCommandBarProps, any> {
+interface WorkbookCommandBarState {
+    items: IContextualMenuItem[]
+}
+
+export class WorkbookCommandBar extends React.Component<WorkbookCommandBarProps, WorkbookCommandBarState> {
     constructor(props: WorkbookCommandBarProps) {
         super(props)
+
+        this.state = {
+            items: [
+                addPackagesItem
+            ]
+        }
 
         addPackagesItem.onClick = props.addPackages
         saveWorkbookItem.onClick = props.saveWorkbook
@@ -90,11 +74,33 @@ export class WorkbookCommandBar extends React.Component<WorkbookCommandBarProps,
         dumpDraftState.onClick = props.dumpDraftState
     }
 
-    public render() {
+    setWorkbookTargets(targets: WorkbookTarget[]) {
+        let targetItems: IContextualMenuItem[] = []
+        for (const target of targets)
+            targetItems.push({
+                key: target.id,
+                name: `${target.flavor} (${(target.sdk as any).Name})`
+            })
+
+        this.setState({
+            items: [
+                {
+                    key: 'workbookTarget',
+                    name: 'Workbook Target',
+                    subMenuProps: {
+                        items: targetItems
+                    }
+                },
+                addPackagesItem
+            ]
+        })
+    }
+
+    render() {
         return (
             <CommandBar
                 elipisisAriaLabel='More options'
-                items={items}
+                items={this.state.items}
                 overflowItems={overflowItems}
                 farItems={farItems}
             />

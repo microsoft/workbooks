@@ -30,6 +30,7 @@ interface WorkbookShellState {
 
 export class WorkbookShell extends React.Component<any, WorkbookShellState> {
     private shellContext: WorkbookShellContext
+    private commandBar: WorkbookCommandBar | null = null
     private workbookEditor: WorkbookEditor | null = null
     private fileButton: HTMLInputElement | null = null
     private workbookMetadata: any
@@ -57,16 +58,18 @@ export class WorkbookShell extends React.Component<any, WorkbookShellState> {
         }
     }
 
-    componentDidMount() {
-        this.shellContext.session.connect()
+    async componentDidMount() {
+        await this.shellContext.session.connect()
+        if (this.commandBar)
+            this.commandBar.setWorkbookTargets(this.shellContext.session.availableWorkbookTargets)
     }
 
     componentWillUnmount() {
         this.shellContext.session.disconnect()
 
+        this.commandBar = null
         this.workbookEditor = null
         this.fileButton = null
-        console.log('wtf')
         this.statusMessageBarComponent = null
     }
 
@@ -123,6 +126,7 @@ export class WorkbookShell extends React.Component<any, WorkbookShellState> {
         return (
             <div className='WorkbookShell-container'>
                 <WorkbookCommandBar
+                    ref={component => this.commandBar = component}
                     addPackages={this.showPackageDialog.bind(this)}
                     loadWorkbook={this.triggerFilePicker.bind(this)}
                     saveWorkbook={this.saveWorkbook.bind(this)}
