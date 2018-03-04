@@ -242,7 +242,7 @@ namespace Xamarin.Interactive.CodeAnalysis
             return Task.CompletedTask;
         }
 
-        public async Task EvaluateAsync (
+        public async Task<EvaluationResult> EvaluateAsync (
             CodeCellId targetCodeCellId = default,
             bool evaluateAll = false,
             CancellationToken cancellationToken = default)
@@ -262,14 +262,23 @@ namespace Xamarin.Interactive.CodeAnalysis
                 switch (await CoreEvaluateCodeCellAsync (evaluatableCodeCell)) {
                     case CodeCellEvaluationStatus.ErrorDiagnostic:
                     case CodeCellEvaluationStatus.Disconnected:
-                        return;
+                    return new EvaluationResult (
+                        success: false,
+                        shouldStartNewCell: false,
+                        codeCellStates: evaluationModel.CellsToEvaluate);
                 }
             }
+
+            return new EvaluationResult (
+                success: true,
+                shouldStartNewCell: !evaluateAll && evaluationModel.ShouldMaybeStartNewCodeCell,
+                codeCellStates: evaluationModel.CellsToEvaluate);
         }
 
         internal sealed class EvaluationModel
         {
             public bool ShouldResetAgentState { get; set; }
+            public bool ShouldMaybeStartNewCodeCell { get; set; }
             public List<CodeCellState> CellsToEvaluate { get; } = new List<CodeCellState> ();
         }
 
@@ -282,6 +291,12 @@ namespace Xamarin.Interactive.CodeAnalysis
             var cells = await GetAllCodeCellsAsync ();
             var haveSeenTargetCell = false;
             var skipRemainingCells = false;
+
+            void MarkCellForEvaluation (CodeCellState cell)
+            {
+                model.CellsToEvaluate.Add (cell);
+                model.ShouldMaybeStartNewCodeCell = cells [cells.Count - 1] == cell;
+            }
 
             for (int i = 0; i < cells.Count; i++) {
                 var cell = cells [i];
@@ -298,14 +313,14 @@ namespace Xamarin.Interactive.CodeAnalysis
                     if (i == 0)
                         model.ShouldResetAgentState = true;
 
-                    model.CellsToEvaluate.Add (cell);
+                    MarkCellForEvaluation (cell);
                 }
 
                 if (skipRemainingCells || cell.AgentTerminatedWhileEvaluating)
                     skipRemainingCells = true;
                 else if (evaluateAll || cell.EvaluationCount > 0)
-                    model.CellsToEvaluate.Add (cell);
-                
+                    MarkCellForEvaluation (cell);
+
                 cell.IsOutdated = true;
             }
 

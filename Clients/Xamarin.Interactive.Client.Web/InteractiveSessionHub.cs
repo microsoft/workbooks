@@ -135,7 +135,7 @@ namespace Xamarin.Interactive.Client.Web
             };
         }
 
-        public Task Evaluate (string targetCodeCellId, bool evaluateAll)
+        public Task<EvaluationResult> Evaluate (string targetCodeCellId, bool evaluateAll)
         {
             var sessionState = serviceProvider
                 .GetInteractiveSessionHubManager ()

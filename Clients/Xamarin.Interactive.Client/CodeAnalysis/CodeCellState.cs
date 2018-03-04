@@ -8,23 +8,35 @@
 using System;
 using System.Collections.Generic;
 
+using Newtonsoft.Json;
+
 namespace Xamarin.Interactive.CodeAnalysis
 {
     sealed class CodeCellState
     {
         public CodeCellId Id { get; }
+
+        [JsonIgnore]
         public CodeCellBuffer Buffer { get; }
 
         readonly List<InteractiveDiagnostic> diagnostics = new List<InteractiveDiagnostic> ();
         public IReadOnlyList<InteractiveDiagnostic> Diagnostics => diagnostics;
 
+        [JsonIgnore]
         public bool IsOutdated { get; set; }
+
+        [JsonIgnore]
         public bool IsDirty { get; set; }
 
+        [JsonIgnore]
         public bool IsEvaluating { get; set; }
+
         public bool AgentTerminatedWhileEvaluating { get; private set; }
         public int EvaluationCount { get; private set; }
+
+        [JsonIgnore]
         public Guid LastEvaluationRequestId { get; set; }
+
         public bool IsResultAnExpression { get; set; }
 
         public CodeCellState (

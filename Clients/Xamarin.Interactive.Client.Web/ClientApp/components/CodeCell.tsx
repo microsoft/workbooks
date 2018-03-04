@@ -137,7 +137,11 @@ export class CodeCell extends CodeCellView<CodeCellProps, CodeCellState> {
     protected async startEvaluation(): Promise<void> {
         if (this.state.codeCellId && this.state.status === CodeCellViewStatus.Ready) {
             this.setState({ status: CodeCellViewStatus.Evaluating })
-            await this.shellContext.session.evaluate(this.state.codeCellId)
+
+            const result = await this.shellContext.session.evaluate(this.state.codeCellId)
+            if (result.shouldStartNewCell)
+                console.log('APPEND CODE CELL!')
+
             this.setState({ status: CodeCellViewStatus.Ready })
         }
     }

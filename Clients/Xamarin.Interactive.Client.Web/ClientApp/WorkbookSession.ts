@@ -7,7 +7,7 @@
 
 import { HubConnection } from '@aspnet/signalr'
 import { Event } from './utils/Events'
-import { CodeCellResult } from './evaluation'
+import { CodeCellResult, EvaluationResult } from './evaluation'
 
 export const enum StatusUIAction {
     None,
@@ -87,7 +87,7 @@ export class WorkbookSession {
         return this.hubConnection.invoke('UpdateCodeCell', codeCellId, buffer)
     }
 
-    evaluate(codeCellId: string, evaluateAll: boolean = false) {
+    evaluate(codeCellId: string, evaluateAll: boolean = false): Promise<EvaluationResult> {
         return this.hubConnection.invoke('Evaluate', codeCellId, evaluateAll)
     }
 
