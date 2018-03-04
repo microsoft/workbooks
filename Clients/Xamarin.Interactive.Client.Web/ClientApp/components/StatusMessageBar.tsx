@@ -7,10 +7,11 @@
 
 import * as React from 'react';
 import { Stack } from 'immutable'
+
 import {
-    MessageBar,
-    MessageBarType
-} from 'office-ui-fabric-react/lib/MessageBar';
+    Spinner,
+    SpinnerSize
+} from 'office-ui-fabric-react/lib/Spinner'
 
 import {
     Message,
@@ -20,6 +21,8 @@ import {
     StatusUIActionWithMessage,
     IStatusUIActionHandler,
 } from '../messages'
+
+import './StatusMessageBar.scss'
 
 interface StatusMessageBarProps {
     initialActionMessages: StatusUIActionWithMessage[]
@@ -58,26 +61,22 @@ export class StatusMessageBar
     }
 
     render() {
-        if (this.state.messageStack.size <= 0) {
-            return false
-        }
+        let message = this.state.messageStack.peek()
+        const className = message ? 'visible' : 'hidden'
 
-        const message = this.state.messageStack.peek()
-        let messageBarType: MessageBarType
-
-        switch (message.severity) {
-            case MessageSeverity.Error:
-                messageBarType = MessageBarType.error
-                break
-            default:
-                messageBarType = MessageBarType.info
-                break
-        }
+        if (!message)
+            message = {
+                text: '',
+                severity: MessageSeverity.Info
+            } as Message
 
         return (
-            <MessageBar messageBarType={messageBarType}>
-                <span>{message.text}</span>
-            </MessageBar>
+            <div className={'StatusMessageBar-container ' + className}>
+                <div className='StatusMessageBar-contents'>
+                    <Spinner size={SpinnerSize.small}/>
+                    <div>{message.text}</div>
+                </div>
+            </div>
         )
     }
 }
