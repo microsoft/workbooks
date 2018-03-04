@@ -11,27 +11,26 @@ import { IContextualMenuItem } from 'office-ui-fabric-react/lib/ContextualMenu';
 
 const addPackagesItem: IContextualMenuItem = {
     key: 'addPackage',
-    name: 'Add NuGet Package',
-    icon: 'Search',
+    name: 'NuGet',
+    icon: 'Add',
     onClick: () => { }
 }
 
 const openWorkbookItem: IContextualMenuItem = {
     key: 'openWorkbook',
     name: 'Open',
-    icon: 'Upload',
+    icon: 'OpenFile',
     onClick: () => { }
 }
 
 const saveWorkbookItem: IContextualMenuItem = {
     key: 'saveWorkbook',
     name: 'Save',
-    icon: 'Download',
+    icon: 'DownloadDocument',
     onClick: () => { }
 }
 
 const items: IContextualMenuItem[] = [
-    addPackagesItem,
     {
         key: 'workbookTarget',
         name: 'Workbook Target',
@@ -56,6 +55,10 @@ const items: IContextualMenuItem[] = [
             ]
         }
     },
+    addPackagesItem
+]
+
+const overflowItems: IContextualMenuItem[] = [
     openWorkbookItem,
     saveWorkbookItem
 ]
@@ -67,7 +70,7 @@ const dumpDraftState: IContextualMenuItem = {
 }
 
 const farItems: IContextualMenuItem[] = [
-    dumpDraftState
+    // dumpDraftState
 ]
 
 interface WorkbookCommandBarProps {
@@ -92,6 +95,7 @@ export class WorkbookCommandBar extends React.Component<WorkbookCommandBarProps,
             <CommandBar
                 elipisisAriaLabel='More options'
                 items={items}
+                overflowItems={overflowItems}
                 farItems={farItems}
             />
         );
