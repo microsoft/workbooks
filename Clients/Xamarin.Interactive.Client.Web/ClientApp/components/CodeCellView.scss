@@ -15,6 +15,17 @@
     margin-bottom: 5px;
   }
 
+  .CodeCell-results-container {
+    .CodeCell-result {
+      display: flex;
+      align-items: center;
+
+      .CodeCell-result-renderer-container {
+        padding-right: 1em;
+      }
+    }
+  }
+
   .CodeCell-actions-container {
     .actions {
       display: flex;
