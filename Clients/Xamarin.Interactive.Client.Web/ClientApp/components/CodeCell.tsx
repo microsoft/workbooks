@@ -38,6 +38,7 @@ interface CodeCellProps extends CodeCellViewProps {
         setSelection: (anchorKey: string, offset: number) => void
         getPreviousCodeBlock: (currentBlock: string) => ContentBlock
         updateBlockCodeCellId: (currentBlock: string, codeCellId: string) => void
+        appendNewCodeCell: () => void // TODO: Eventually need support for inserting arbitrarily
     }
     block: {
         key: string
@@ -140,7 +141,7 @@ export class CodeCell extends CodeCellView<CodeCellProps, CodeCellState> {
 
             const result = await this.shellContext.session.evaluate(this.state.codeCellId)
             if (result.shouldStartNewCell)
-                console.log('APPEND CODE CELL!')
+                this.props.blockProps.appendNewCodeCell()
 
             this.setState({ status: CodeCellViewStatus.Ready })
         }

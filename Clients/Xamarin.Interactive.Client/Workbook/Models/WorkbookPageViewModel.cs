@@ -20,7 +20,6 @@ using Xamarin.Interactive.Client;
 using Xamarin.Interactive.CodeAnalysis;
 using Xamarin.Interactive.Compilation.Roslyn;
 using Xamarin.Interactive.Editor;
-using Xamarin.Interactive.Editor.Events;
 using Xamarin.Interactive.I18N;
 using Xamarin.Interactive.Logging;
 using Xamarin.Interactive.Protocol;
@@ -175,87 +174,6 @@ namespace Xamarin.Interactive.Workbook.Models
         protected CodeCellState InsertCodeCell (Cell previousCell)
             => InsertCodeCell (new CodeCell ("csharp"), previousCell);
 
-        class HiddenCodeCellView : ICodeCellView
-        {
-            public IEditor Editor { get; set; }
-            public bool IsOutdated { get; set; }
-            public bool IsDirty { get; set; }
-            public bool IsEvaluating { get; set; }
-
-            public bool IsFrozen { get; private set; }
-
-            public bool HasErrorDiagnostics { get; set; }
-            public TimeSpan EvaluationDuration { get; set; }
-
-            public void Focus (bool scrollIntoView = true)
-            {
-            }
-
-            public void Freeze ()
-                => IsFrozen = true;
-
-            public void RenderCapturedOutputSegment (CapturedOutputSegment segment)
-            {
-            }
-
-            public void RenderDiagnostic (InteractiveDiagnostic diagnostic)
-            {
-            }
-
-            public void RenderResult (CultureInfo cultureInfo, object result, EvaluationResultHandling resultHandling)
-            {
-            }
-
-            public void Reset ()
-            {
-            }
-        }
-
-        class HiddenCodeCellEditor : IEditor
-        {
-            public IObservable<EditorEvent> Events => throw new NotImplementedException ();
-
-            public bool IsDisposed { get; private set; }
-
-            public void Dispose ()
-                => IsDisposed = true;
-
-            public void ExecuteCommand (EditorCommand command)
-            {
-                throw new NotImplementedException ();
-            }
-
-            public void Focus ()
-            {
-                throw new NotImplementedException ();
-            }
-
-            public IEnumerable<EditorCommand> GetCommands ()
-            {
-                throw new NotImplementedException ();
-            }
-
-            public EditorCommandStatus GetCommandStatus (EditorCommand command)
-            {
-                throw new NotImplementedException ();
-            }
-
-            public void OnBlur ()
-            {
-                throw new NotImplementedException ();
-            }
-
-            public void SetCursorPosition (AbstractCursorPosition cursorPosition)
-            {
-                throw new NotImplementedException ();
-            }
-
-            public bool TryGetCommand (string commandId, out EditorCommand command)
-            {
-                throw new NotImplementedException ();
-            }
-        }
-
         CodeCellState InsertHiddenCell ()
             => InsertCodeCell (
                 new CodeCell ("csharp", shouldSerialize: false),
@@ -329,7 +247,7 @@ namespace Xamarin.Interactive.Workbook.Models
                 WorkbookPage.Contents.AppendCell (newCell);
             else if (previousCell == null)
                 WorkbookPage.Contents.InsertCellBefore (
-                    WorkbookPage.Contents.FirstCell,
+                    WorkbookPage.Contents.FirstOrDefault (c => c.ShouldSerialize),
                     newCell);
             else
                 WorkbookPage.Contents.InsertCellAfter (previousCell, newCell);

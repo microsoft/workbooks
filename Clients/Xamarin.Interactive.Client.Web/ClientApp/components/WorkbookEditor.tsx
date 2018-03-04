@@ -124,6 +124,7 @@ export class WorkbookEditor extends React.Component<WorkbooksEditorProps, Workbo
                     setSelection: (anchorKey: string, offset: number) => this.setSelection(anchorKey, offset),
                     getPreviousCodeBlock: (currentBlock: string) => this.getPreviousCodeBlock(currentBlock),
                     updateBlockCodeCellId: (currentBlock: string, codeCellId: string) => this.updateBlockCodeCellId(currentBlock, codeCellId),
+                    appendNewCodeCell: () => this.appendNewCodeCell(),
                 }
             }
         }
@@ -164,6 +165,34 @@ export class WorkbookEditor extends React.Component<WorkbooksEditorProps, Workbo
         });
         const currentBlockIndex = codeBlocks.findIndex((block: ContentBlock) => block.getKey() == currentBlock);
         return codeBlocks[currentBlockIndex - 1];
+    }
+
+    // TODO: This should just be a special case of createNewEmptyBlock. Clean up ASAP
+    appendNewCodeCell() {
+        let currentContent = this.state.editorState.getCurrentContent()
+
+        // Empty block in between cells looks nicer
+        this.createNewEmptyBlock(currentContent, false)
+
+        currentContent = this.state.editorState.getCurrentContent()
+
+        const newBlock = new ContentBlock({
+            key: genKey(),
+            type: "code-block",
+            text: "",
+            characterList: List()
+        })
+
+        const newBlockMap = currentContent.getBlockMap().set(newBlock.getKey(), newBlock)
+        const blockArray = newBlockMap.toArray()
+
+        const contentState = ContentState.createFromBlockArray(blockArray)
+
+        this.onChange(EditorState.push(
+            this.state.editorState,
+            contentState,
+            "insert-fragment"
+        ))
     }
 
     createNewEmptyBlock(currentContent: ContentState, insertBefore: boolean): ContentBlock {
