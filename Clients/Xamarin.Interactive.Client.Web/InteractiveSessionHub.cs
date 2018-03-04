@@ -71,13 +71,14 @@ namespace Xamarin.Interactive.Client.Web
 
         async Task InitializeClientSessionAsync (string connectionId, ClientSession session)
         {
-            session.InitializeViewControllers (new WebClientSessionViewControllers (connectionId, serviceProvider));
-            await session.InitializeAsync ();
-            await session.EnsureAgentConnectionAsync ();
-
             serviceProvider
                 .GetInteractiveSessionHubManager ()
                 .BindClientSession (connectionId, session);
+
+            session.InitializeViewControllers (new WebClientSessionViewControllers (connectionId, serviceProvider));
+
+            await session.InitializeAsync ();
+            await session.EnsureAgentConnectionAsync ();
         }
 
         public async Task<string> InsertCodeCell (

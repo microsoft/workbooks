@@ -79,7 +79,7 @@ namespace Xamarin.Interactive.Client.Web
             Message message = null)
             => SendConnectionAsync (
                 connectionId,
-                "statusUIAction",
+                "StatusUIAction",
                 new object [] { action, message }).Forget ();
 
         internal SessionState GetSession (ClientConnectionId connectionId)

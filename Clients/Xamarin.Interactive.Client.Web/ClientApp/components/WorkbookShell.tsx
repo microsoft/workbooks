@@ -6,15 +6,18 @@
 // Licensed under the MIT License.
 
 import * as React from 'react'
-import { WorkbookSession, StatusUIAction, StatusMessage } from '../WorkbookSession'
+import * as matter from 'gray-matter';
+import { saveAs } from 'file-saver'
+
+import { WorkbookSession } from '../WorkbookSession'
 import { WorkbookCommandBar } from './WorkbookCommandBar'
 import { WorkbookEditor } from './WorkbookEditor'
-import { StatusBar } from './StatusBar'
 import { ResultRendererRegistry } from '../ResultRendererRegistry'
 import { PackageSearch } from './PackageSearch';
+import { StatusMessageBar } from './StatusMessageBar';
+import { StatusUIActionWithMessage } from '../messages'
+
 import './WorkbookShell.scss'
-import { saveAs } from 'file-saver'
-import * as matter from 'gray-matter';
 
 export interface WorkbookShellContext {
     session: WorkbookSession
@@ -27,15 +30,17 @@ interface WorkbookShellState {
 
 export class WorkbookShell extends React.Component<any, WorkbookShellState> {
     private shellContext: WorkbookShellContext
-    private statusBar: StatusBar | null = null
     private workbookEditor: WorkbookEditor | null = null
     private fileButton: HTMLInputElement | null = null
     private workbookMetadata: any
 
+    private initialStatusMessageBarActionMessages: StatusUIActionWithMessage[] = []
+    private statusMessageBarComponent: StatusMessageBar | null = null
+
     constructor() {
         super()
         this.shellContext = {
-            session: new WorkbookSession(this.statusUIAction),
+            session: new WorkbookSession(this.statusUIAction.bind(this)),
             rendererRegistry: ResultRendererRegistry.createDefault()
         }
         this.state = {
@@ -43,9 +48,13 @@ export class WorkbookShell extends React.Component<any, WorkbookShellState> {
         }
     }
 
-    private statusUIAction(action: StatusUIAction, message: StatusMessage | null) {
-        if (this.statusBar)
-            this.statusBar.update(action, message)
+    private statusUIAction(actionMessage: StatusUIActionWithMessage) {
+        if (this.statusMessageBarComponent) {
+            this.initialStatusMessageBarActionMessages = []
+            this.statusMessageBarComponent.onStatusUIAction(actionMessage)
+        } else {
+            this.initialStatusMessageBarActionMessages.push(actionMessage)
+        }
     }
 
     componentDidMount() {
@@ -54,6 +63,11 @@ export class WorkbookShell extends React.Component<any, WorkbookShellState> {
 
     componentWillUnmount() {
         this.shellContext.session.disconnect()
+
+        this.workbookEditor = null
+        this.fileButton = null
+        console.log('wtf')
+        this.statusMessageBarComponent = null
     }
 
     showPackageDialog() {
@@ -114,6 +128,9 @@ export class WorkbookShell extends React.Component<any, WorkbookShellState> {
                     saveWorkbook={this.saveWorkbook.bind(this)}
                     dumpDraftState={this.dumpDraftState.bind(this)}
                 />
+                <StatusMessageBar
+                    ref={component => this.statusMessageBarComponent = component}
+                    initialActionMessages={this.initialStatusMessageBarActionMessages} />
                 <PackageSearch
                     session={this.shellContext.session}
                     notifyDismiss={() => this.hidePackageDialog()}
@@ -123,8 +140,6 @@ export class WorkbookShell extends React.Component<any, WorkbookShellState> {
                     shellContext={this.shellContext}
                     ref={(editor) => this.workbookEditor = editor }
                     content=''/>
-                <StatusBar
-                    ref={(statusBar: StatusBar | null) => this.statusBar = statusBar} />
                 <div style={{ display: "none" }}>
                     <input
                         type="file"

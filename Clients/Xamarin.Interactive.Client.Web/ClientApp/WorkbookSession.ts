@@ -8,18 +8,7 @@
 import { HubConnection } from '@aspnet/signalr'
 import { Event } from './utils/Events'
 import { CodeCellResult, EvaluationResult } from './evaluation'
-
-export const enum StatusUIAction {
-    None,
-    DisplayIdle,
-    DisplayMessage,
-    StartSpinner,
-    StopSpinner
-}
-
-export interface StatusMessage {
-    text: string | null
-}
+import { Message, StatusUIAction, StatusUIActionHandler } from './messages'
 
 export interface CodeCellUpdateResponse {
     isSubmissionComplete: boolean
@@ -54,12 +43,25 @@ export class WorkbookSession {
         return this._evaluationEvent
     }
 
-    constructor(statusUIActionHandler: (action: StatusUIAction, message: StatusMessage | null) => void) {
+    constructor(statusUIActionHandler: StatusUIActionHandler) {
         this._evaluationEvent = new Event(<WorkbookSession>this)
-        this.hubConnection.on('StatusUIAction', statusUIActionHandler)
+
+        this.hubConnection.on(
+            'StatusUIAction',
+            (action: StatusUIAction, message: Message) => {
+                console.debug('Hub: StatusUIAction: action: %O, message: %O', action, message)
+                statusUIActionHandler({
+                    action: action,
+                    message: message
+                })
+            })
+
         this.hubConnection.on(
             'EvaluationEvent',
-            (e: any) => this.evaluationEvent.dispatch(<CodeCellResult>e));
+            (e: any) => {
+                this.evaluationEvent.dispatch(<CodeCellResult>e)
+                console.debug('Hub: EvaluationEvent: %O', e)
+            })
     }
 
     async connect(): Promise<void> {
