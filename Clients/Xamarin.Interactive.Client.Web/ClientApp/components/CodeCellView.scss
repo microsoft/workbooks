@@ -18,7 +18,8 @@
   .CodeCell-results-container {
     .CodeCell-result {
       display: flex;
-      align-items: center;
+      align-items: flex-end;
+      flex-wrap: wrap-reverse;
 
       .CodeCell-result-renderer-container {
         padding-right: 1em;

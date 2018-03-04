@@ -56,6 +56,19 @@ export class ComponentPlayground extends React.Component<RouteComponentProps<{}>
         ]
     }
 
+    private readonly dateTimeResult: CodeCellResult = {
+        codeCellId: 'dca76582-6c22-4c64-9893-2270a67552ce/e9234d19-89a4-4e43-a7cd-780f3fd04541',
+        resultHandling: CodeCellResultHandling.Replace,
+        type: 'System.DateTime',
+        valueRepresentations: [
+            '2018-03-03T23:22:00.102405',
+            {
+                $type: 'System.DateTime',
+                $toString: '03/03/2018 23:22:00'
+            }
+        ]
+    }
+
     public render() {
         return (
             <article style={{ margin: '1em 2em' }}>
@@ -67,7 +80,12 @@ export class ComponentPlayground extends React.Component<RouteComponentProps<{}>
                 <h2>Code Cell with Number Result</h2>
                 <MockedCodeCellView
                     rendererRegistry={ResultRendererRegistry.createDefault()}
-                    results={[this.numberResult]}/>
+                    results={[this.numberResult]} />
+
+                <h2>Code Cell with DateTime Result</h2>
+                <MockedCodeCellView
+                    rendererRegistry={ResultRendererRegistry.createForDesign()}
+                    results={[this.dateTimeResult]}/>
 
                 <h2>Code Cell with Multiple Results</h2>
                 <MockedCodeCellView
