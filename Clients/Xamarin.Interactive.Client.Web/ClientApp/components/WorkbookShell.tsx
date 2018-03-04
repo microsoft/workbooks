@@ -9,7 +9,7 @@ import * as React from 'react'
 import * as matter from 'gray-matter';
 import { saveAs } from 'file-saver'
 
-import { WorkbookSession } from '../WorkbookSession'
+import { WorkbookSession, ClientSessionEvent, ClientSessionEventKind } from '../WorkbookSession'
 import { WorkbookCommandBar } from './WorkbookCommandBar'
 import { WorkbookEditor } from './WorkbookEditor'
 import { ResultRendererRegistry } from '../ResultRendererRegistry'
@@ -40,16 +40,18 @@ export class WorkbookShell extends React.Component<any, WorkbookShellState> {
 
     constructor() {
         super()
+
         this.shellContext = {
-            session: new WorkbookSession(this.statusUIAction.bind(this)),
+            session: new WorkbookSession,
             rendererRegistry: ResultRendererRegistry.createDefault()
         }
+
         this.state = {
             isPackageDialogHidden: true
         }
     }
 
-    private statusUIAction(actionMessage: StatusUIActionWithMessage) {
+    private onStatusUIAction(session: WorkbookSession, actionMessage: StatusUIActionWithMessage) {
         if (this.statusMessageBarComponent) {
             this.initialStatusMessageBarActionMessages = []
             this.statusMessageBarComponent.onStatusUIAction(actionMessage)
@@ -58,13 +60,27 @@ export class WorkbookShell extends React.Component<any, WorkbookShellState> {
         }
     }
 
+    private onClientSessionEvent(session: WorkbookSession, clientSessionEvent: ClientSessionEvent) {
+        if (clientSessionEvent.kind === ClientSessionEventKind.CompilationWorkspaceAvailable) {
+            if (this.workbookEditor)
+                this.workbookEditor.appendNewCodeCell()
+        }
+    }
+
     async componentDidMount() {
+        this.shellContext.session.statusUIActionEvent.addListener(this.onStatusUIAction.bind(this))
+        this.shellContext.session.clientSessionEvent.addListener(this.onClientSessionEvent.bind(this))
+
         await this.shellContext.session.connect()
+
         if (this.commandBar)
             this.commandBar.setWorkbookTargets(this.shellContext.session.availableWorkbookTargets)
     }
 
     componentWillUnmount() {
+        this.shellContext.session.statusUIActionEvent.removeListener(this.onStatusUIAction)
+        this.shellContext.session.clientSessionEvent.removeListener(this.onClientSessionEvent)
+
         this.shellContext.session.disconnect()
 
         this.commandBar = null

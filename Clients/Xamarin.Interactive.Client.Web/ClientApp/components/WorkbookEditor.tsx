@@ -473,7 +473,7 @@ export class WorkbookEditor extends React.Component<WorkbooksEditorProps, Workbo
             <div className='WorkbookEditor-container' onClick={(e) => this.focus(e)}>
                 <Editor
                     ref="editor"
-                    placeholder=""
+                    placeholder="Author content in markdown and use ``` to insert a new code cell"
                     spellCheck={false}
                     readOnly={this.state.readOnly}
                     blockRenderMap={blockRenderMap}

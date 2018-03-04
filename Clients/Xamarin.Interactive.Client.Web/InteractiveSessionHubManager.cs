@@ -62,9 +62,20 @@ namespace Xamarin.Interactive.Client.Web
             if (sessions.TryGetValue (connectionId, out var sessionState)) {
                 sessionState.ClientSession = clientSession;
 
-                sessionState.EvaluationEventObserver = new Observer<ICodeCellEvent> (evnt => {
-                    SendConnectionAsync (connectionId, "EvaluationEvent", new [] { evnt }).Forget ();
-                });
+                clientSession.Subscribe (new Observer<ClientSessionEvent> (evnt =>
+                    SendConnectionAsync (
+                        connectionId,
+                        "ClientSessionEvent", new [] {
+                            new {
+                                kind = evnt.Kind
+                            }
+                    }).Forget ()));
+
+                sessionState.EvaluationEventObserver = new Observer<ICodeCellEvent> (evnt =>
+                    SendConnectionAsync (
+                        connectionId,
+                        "EvaluationEvent",
+                        new [] { evnt }).Forget ());
 
                 if (sessionState.ClientSession.EvaluationService is EvaluationService evaluationService) {
                     sessionState.EvaluationService = evaluationService;

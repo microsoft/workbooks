@@ -60,7 +60,7 @@ namespace Xamarin.Interactive.Client.Web
         public Task OpenSession (string sessionUri)
         {
             if (!ClientSessionUri.TryParse (sessionUri, out var uri))
-                throw new Exception ("Invalid client session URI");
+                throw new Exception ($"Invalid client session URI: {sessionUri}");
 
             var connectionId = Context.ConnectionId;
 

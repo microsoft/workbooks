@@ -8,7 +8,7 @@
 import { HubConnection } from '@aspnet/signalr'
 import { Event } from './utils/Events'
 import { CodeCellResult, EvaluationResult } from './evaluation'
-import { Message, StatusUIAction, StatusUIActionHandler } from './messages'
+import { Message, StatusUIAction, StatusUIActionHandler, StatusUIActionWithMessage } from './messages'
 
 export interface CodeCellUpdateResponse {
     isSubmissionComplete: boolean
@@ -30,27 +30,77 @@ export interface WorkbookTarget {
     sdk: DotNetSdk
 }
 
+export const enum ClientSessionEventKind {
+    /**
+     * Will be raised once per subscription indicating that the session is available for use.
+    */
+    SessionAvailable = 'SessionAvailable',
+
+    /**
+     * Will be raised when the session title has changed, such as when a workbook is saved.
+     */
+    SessionTitleUpdated = 'SessionTitleUpdated',
+
+    /**
+     * Can be raised any number of times per subscription, indicating that a connection
+     * to the agent associated with the session has been made and that ClientSession.Agent.Api
+     * is usable.
+     */
+    AgentConnected = 'AgentConnected',
+
+    /**
+     * Can raised any number of times per subscription, indicating that agent-side features
+     * may have changed, such as new available view hierarchies.
+     */
+    AgentFeaturesUpdated = 'AgentFeaturesUpdated',
+
+    /**
+     * Can be raised any number of times per subscription, indicating that a connection
+     * to the agent associated with the session has been lost and that ClientSession.Agent.Api
+     * is not available.
+     */
+    AgentDisconnected = 'AgentDisconnected',
+
+    /**
+     * Can be raised any number of times per subscription, indicating that the compilation
+     * workspace is ready for use. Will always be invoked after <see cref="AgentConnected"/>.
+     */
+    CompilationWorkspaceAvailable = 'CompilationWorkspaceAvailable'
+}
+
+export interface ClientSessionEvent {
+    kind: ClientSessionEventKind
+}
+
 export class WorkbookSession {
     private hubConnection = new HubConnection('/session')
+
+    readonly clientSessionEvent: Event<WorkbookSession, ClientSessionEvent>
+    readonly statusUIActionEvent: Event<WorkbookSession, StatusUIActionWithMessage>
+    readonly evaluationEvent: Event<WorkbookSession, CodeCellResult>
 
     private _availableWorkbookTargets: WorkbookTarget[] = []
     get availableWorkbookTargets() {
         return this._availableWorkbookTargets
     }
 
-    private _evaluationEvent: Event<WorkbookSession, CodeCellResult>
-    get evaluationEvent() {
-        return this._evaluationEvent
-    }
+    constructor() {
+        this.clientSessionEvent = new Event(<WorkbookSession>this)
+        this.statusUIActionEvent = new Event(<WorkbookSession>this)
+        this.evaluationEvent = new Event(<WorkbookSession>this)
 
-    constructor(statusUIActionHandler: StatusUIActionHandler) {
-        this._evaluationEvent = new Event(<WorkbookSession>this)
+        this.hubConnection.on(
+            'ClientSessionEvent',
+            (e: ClientSessionEvent) => {
+                this.clientSessionEvent.dispatch(e)
+                console.debug('Hub: ClientSessionEvent: %O', e)
+            })
 
         this.hubConnection.on(
             'StatusUIAction',
             (action: StatusUIAction, message: Message) => {
                 console.debug('Hub: StatusUIAction: action: %O, message: %O', action, message)
-                statusUIActionHandler({
+                this.statusUIActionEvent.dispatch({
                     action: action,
                     message: message
                 })
@@ -58,9 +108,9 @@ export class WorkbookSession {
 
         this.hubConnection.on(
             'EvaluationEvent',
-            (e: any) => {
-                this.evaluationEvent.dispatch(<CodeCellResult>e)
-                console.debug('Hub: EvaluationEvent: %O', e)
+            (codeCellResult: CodeCellResult) => {
+                this.evaluationEvent.dispatch(codeCellResult)
+                console.debug('Hub: EvaluationEvent: %O', codeCellResult)
             })
     }
 
