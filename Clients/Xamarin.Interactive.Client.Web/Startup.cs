@@ -6,7 +6,7 @@
 // Licensed under the MIT License.
 
 using System;
-
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.SpaServices.Webpack;
@@ -15,6 +15,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 using Xamarin.Interactive.Client.Web.Hosting;
+using Xamarin.Interactive.Client.Web.Middleware;
 using Xamarin.Interactive.Serialization;
 
 namespace Xamarin.Interactive.Client.Web
@@ -32,6 +33,9 @@ namespace Xamarin.Interactive.Client.Web
         {
             SingleThreadSynchronizationContext.StartRunLoopAsBackgroundThread ();
             services.AddSingleton (new WebClientAppContainer ());
+
+            services.AddAuthentication (CookieAuthenticationDefaults.AuthenticationScheme)
+                .AddCookie ();
 
             services.AddMvc ();
 
@@ -57,6 +61,12 @@ namespace Xamarin.Interactive.Client.Web
                 });
             } else {
                 app.UseExceptionHandler ("/Home/Error");
+            }
+
+            if (!string.IsNullOrEmpty(Environment.GetEnvironmentVariable("WORKBOOKS_WEB_USER"))) {
+                app.UseAuthentication();
+                app.UseCookiePolicy();
+                app.UseMiddleware<WorkbooksAuthMiddleware>();
             }
 
             app.UseMonacoMuting ();
