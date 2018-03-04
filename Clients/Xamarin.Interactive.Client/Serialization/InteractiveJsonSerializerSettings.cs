@@ -32,6 +32,7 @@ namespace Xamarin.Interactive.Serialization
 
             Converters.Add (new CodeCellIdConverter ());
             Converters.Add (new StringEnumConverter ());
+            Converters.Add (new IsoDateTimeConverter ());
             Converters.Add (new ISerializableObjectConverter ());
             Converters.Add (new RepresentedReflectionConverter ());
 
