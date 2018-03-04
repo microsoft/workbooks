@@ -9,9 +9,11 @@ import { CodeCellResult } from './evaluation'
 import { ResultRendererFactory, ResultRenderer } from './rendering'
 
 import NullRendererFactory from './renderers/NullRenderer'
-import CalendarRendererFactory from './renderers/CalendarRenderer';
+import CalendarRendererFactory from './renderers/CalendarRenderer'
 import ToStringRendererFactory from './renderers/ToStringRenderer'
+import ImageRendererFactory from './renderers/ImageRenderer'
 import TestRendererFactory from './renderers/TestRenderer'
+import InteractiveObjectRendererFactory from './renderers/InteractiveObjectRenderer';
 
 export class ResultRendererRegistry {
     private rendererFactories: ResultRendererFactory[] = []
@@ -31,6 +33,8 @@ export class ResultRendererRegistry {
         registry.register(NullRendererFactory)
         registry.register(CalendarRendererFactory)
         registry.register(ToStringRendererFactory)
+        registry.register(InteractiveObjectRendererFactory)
+        registry.register(ImageRendererFactory)
         return registry
     }
 

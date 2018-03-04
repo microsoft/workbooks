@@ -39,6 +39,40 @@ namespace Xamarin.Interactive.Representations
             var formattableValue = Value;
 
             var word = Value as WordSizedNumber;
+
+            if (Value is Image) {
+                var image = Value as Image;
+                serializer.Property ("data", image.Data);
+                serializer.Property ("width", image.Width);
+                serializer.Property ("height", image.Height);
+                serializer.Property ("scale", image.Scale);
+                switch (image.Format) {
+                case ImageFormat.Jpeg:
+                    serializer.Property ("format","image/jpeg");
+                    break;
+                case ImageFormat.Png:
+                    serializer.Property ("format", "image/png");
+                    break;
+                case ImageFormat.Gif:
+                    serializer.Property ("format", "image/gif");
+                    break;
+                case ImageFormat.Uri:
+                    serializer.Property ("format", "uri");
+                    break;
+                case ImageFormat.Svg:
+                    serializer.Property ("format", "image/svg");
+                    break;
+                case ImageFormat.Unknown:
+                    serializer.Property ("format", "image");
+                    break;
+                }
+            }
+
+            if (Value is ReflectionInteractiveObject) {
+                var reflectedObject = Value as ReflectionInteractiveObject;
+                serializer.Property ("handle", reflectedObject.RepresentedObjectHandle.ToString());
+            }
+
             if (word != null) {
                 serializer.Property ("$type", word.RepresentedType);
                 formattableValue = word.Value;
