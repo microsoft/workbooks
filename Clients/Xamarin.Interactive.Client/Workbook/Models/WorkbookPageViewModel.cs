@@ -247,7 +247,7 @@ namespace Xamarin.Interactive.Workbook.Models
                 WorkbookPage.Contents.AppendCell (newCell);
             else if (previousCell == null)
                 WorkbookPage.Contents.InsertCellBefore (
-                    WorkbookPage.Contents.FirstCell,
+                    WorkbookPage.Contents.FirstOrDefault (c => c.ShouldSerialize),
                     newCell);
             else
                 WorkbookPage.Contents.InsertCellAfter (previousCell, newCell);
