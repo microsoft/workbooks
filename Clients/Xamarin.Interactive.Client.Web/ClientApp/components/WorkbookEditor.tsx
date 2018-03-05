@@ -43,7 +43,7 @@ interface WorkbookCellIdMapping {
 
 const blockRenderMap = DefaultDraftBlockRenderMap.merge(Map({
     'code-block': {
-        element: 'p'
+        element: 'div'
     }
 }));
 
