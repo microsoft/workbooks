@@ -23,7 +23,7 @@ import {
 
 import { randomReactKey } from '../utils'
 import { EditorMessage, EditorMessageType } from '../utils/EditorMessages'
-import { CodeCellResult, CodeCellResultHandling, Diagnostic } from '../evaluation'
+import { CodeCellResult, CodeCellResultHandling, Diagnostic, CapturedOutputSegment } from '../evaluation'
 import { ResultRendererRepresentation } from '../rendering'
 import { ResultRendererRegistry } from '../ResultRendererRegistry'
 
@@ -51,6 +51,7 @@ export interface CodeCellViewState {
     results: CodeCellResultRendererState[]
     diagnostics: Diagnostic[]
     isResultAnExpression?: boolean
+    capturedOutput?: string
 }
 
 export abstract class CodeCellView<
@@ -62,6 +63,10 @@ export abstract class CodeCellView<
     protected abstract abortEvaluation(): Promise<void>
     protected abstract startEvaluation(): Promise<void>
     protected abstract renderEditor(): any
+
+    protected setStateFromCapturedOutput(capturedOutputSegment: CapturedOutputSegment) {
+        this.setState({capturedOutput: (this.state.capturedOutput ? this.state.capturedOutput : "") + capturedOutputSegment.value})
+    }
 
     protected setStateFromResult(result: CodeCellResult, resultHandling?: CodeCellResultHandling) {
         const reps = this
@@ -131,6 +136,9 @@ export abstract class CodeCellView<
             <div className="CodeCell-container">
                 <div className="CodeCell-editor-container">
                     {this.renderEditor()}
+                </div>
+                <div className="CodeCell-captured-output-container">
+                    <code>{this.state.capturedOutput}</code>
                 </div>
                 <div className="CodeCell-diagnostics-container">
                     <ul>
@@ -228,7 +236,8 @@ export class MockedCodeCellView extends CodeCellView<MockedCodeCellProps> {
             status: CodeCellViewStatus.Ready,
             results: [],
             diagnostics: [],
-            isResultAnExpression: true
+            isResultAnExpression: true,
+            capturedOutput: undefined
         }
     }
 

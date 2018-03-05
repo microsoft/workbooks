@@ -60,3 +60,8 @@ export interface CodeCellResult {
     type: string | null
     valueRepresentations: any[] | null
 }
+
+export interface CapturedOutputSegment {
+    codeCellId: string
+    value: string
+}

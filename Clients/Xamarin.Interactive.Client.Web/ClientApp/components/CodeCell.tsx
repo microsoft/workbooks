@@ -8,7 +8,7 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import { WorkbookSession, CodeCellUpdateResponse } from '../WorkbookSession'
-import { CodeCellResult, CodeCellResultHandling } from '../evaluation'
+import { CodeCellResult, CodeCellResultHandling, CapturedOutputSegment } from '../evaluation'
 import { MonacoCellEditor, MonacoCellEditorProps } from './MonacoCellEditor'
 import { ContentBlock } from 'draft-js';
 import { EditorMessage } from '../utils/EditorMessages'
@@ -104,6 +104,10 @@ export class CodeCell extends CodeCellView<CodeCellProps, CodeCellState> {
             .session
             .evaluationEvent
             .addListener(this.evaluationEventHandler.bind(this))
+        this.shellContext
+            .session
+            .capturedOutputSegmentEvent
+            .addListener(this.capturedOutputSegmentEventHandler.bind(this))
 
         let codeCellId: string;
 
@@ -180,6 +184,15 @@ export class CodeCell extends CodeCellView<CodeCellProps, CodeCellState> {
         console.log("evaluationEventHandler: %O", result)
 
         this.setStateFromResult(result)
+    }
+
+    private capturedOutputSegmentEventHandler(session: WorkbookSession, segment: CapturedOutputSegment) {
+        if (segment.codeCellId !== this.state.codeCellId)
+            return
+
+        console.log("capturedOutputSegmentEventHandler: %O", segment)
+
+        this.setStateFromCapturedOutput(segment)
     }
 
     protected renderEditor() {

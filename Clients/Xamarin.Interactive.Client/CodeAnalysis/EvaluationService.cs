@@ -148,6 +148,10 @@ namespace Xamarin.Interactive.CodeAnalysis
                     evaluation.CodeCellId,
                     evaluation.ResultHandling,
                     (RepresentedObject)evaluation.Result));
+            else if (message is CapturedOutputSegment segment)
+                events.Observers.OnNext (new CapturedOutputSegmentEvent (
+                    segment.Context,
+                    segment.Value));
         }
 
         #endregion

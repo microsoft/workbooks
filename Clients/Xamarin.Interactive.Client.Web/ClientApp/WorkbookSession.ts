@@ -7,7 +7,7 @@
 
 import { HubConnection } from '@aspnet/signalr'
 import { Event } from './utils/Events'
-import { CodeCellResult, EvaluationResult } from './evaluation'
+import { CodeCellResult, EvaluationResult, CapturedOutputSegment } from './evaluation'
 import { Message, StatusUIAction, StatusUIActionHandler, StatusUIActionWithMessage } from './messages'
 
 export interface CodeCellUpdateResponse {
@@ -78,6 +78,7 @@ export class WorkbookSession {
     readonly clientSessionEvent: Event<WorkbookSession, ClientSessionEvent>
     readonly statusUIActionEvent: Event<WorkbookSession, StatusUIActionWithMessage>
     readonly evaluationEvent: Event<WorkbookSession, CodeCellResult>
+    readonly capturedOutputSegmentEvent: Event<WorkbookSession, CapturedOutputSegment>
 
     private _availableWorkbookTargets: WorkbookTarget[] = []
     get availableWorkbookTargets() {
@@ -88,6 +89,7 @@ export class WorkbookSession {
         this.clientSessionEvent = new Event(<WorkbookSession>this)
         this.statusUIActionEvent = new Event(<WorkbookSession>this)
         this.evaluationEvent = new Event(<WorkbookSession>this)
+        this.capturedOutputSegmentEvent = new Event(<WorkbookSession>this)
 
         this.hubConnection.on(
             'ClientSessionEvent',
@@ -111,6 +113,13 @@ export class WorkbookSession {
             (codeCellResult: CodeCellResult) => {
                 this.evaluationEvent.dispatch(codeCellResult)
                 console.debug('Hub: EvaluationEvent: %O', codeCellResult)
+            })
+
+        this.hubConnection.on(
+            'CapturedOutputSegmentEvent',
+            (capturedOutputSegment: CapturedOutputSegment) => {
+                this.capturedOutputSegmentEvent.dispatch(capturedOutputSegment)
+                console.debug('Hub: CapturedOutputSegmentEvent: %O', capturedOutputSegment)
             })
     }
 
