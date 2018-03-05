@@ -53,6 +53,7 @@ export class WorkbookEditor extends React.Component<WorkbooksEditorProps, Workbo
     monacoProviderTickets: monaco.IDisposable[] = [];
     cellIdMappings: WorkbookCellIdMapping[] = [];
     focusedCodeEditors: Set<string> = Set()
+    editorContainer: HTMLDivElement | null = null
 
     constructor(props: WorkbooksEditorProps) {
         super(props);
@@ -101,13 +102,25 @@ export class WorkbookEditor extends React.Component<WorkbooksEditorProps, Workbo
             ticket.dispose()
     }
 
-    focus(e?: any) {
+    focus(e?: React.MouseEvent<{}>) {
         const focusThresholdToBlur = this.lastFocus && (+Date.now() - +this.lastFocus) > 1000
         if (focusThresholdToBlur)
             (document.activeElement as any).blur();
 
         this.lastFocus = new Date();
         (this.refs.editor as any).focus();
+
+        // Only do this if the editor container was clicked.
+        if (e && this.editorContainer && e.target === this.editorContainer) {
+            // Select the last block
+            const lastBlock = this.state.editorState.getCurrentContent().getBlocksAsArray().slice(-1)[0];
+            const nextSelection = (SelectionState.createEmpty(lastBlock.getKey())
+                .set('anchorOffset', lastBlock.getText().length)
+                .set('focusOffset', lastBlock.getText().length) as SelectionState);
+
+            const editorState = EditorState.forceSelection(this.state.editorState, nextSelection);
+            this.setState({ editorState });
+        }
     }
 
     onChange(editorState: EditorState) {
@@ -510,7 +523,7 @@ export class WorkbookEditor extends React.Component<WorkbooksEditorProps, Workbo
 
     render() {
         return (
-            <div className='WorkbookEditor-container' onClick={(e) => this.focus(e)}>
+            <div className='WorkbookEditor-container' ref={div => this.editorContainer = div} onClick={(e) => this.focus(e)}>
                 <Editor
                     ref="editor"
                     placeholder="Author content in markdown and use ``` to insert a new code cell"
