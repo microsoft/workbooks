@@ -167,7 +167,7 @@ export abstract class CodeCellView<
                         const dropdownOptions = resultState.representations.length > 1
                             ? resultState.representations.map((item, index) => {
                                 return {
-                                    key: randomReactKey(),
+                                    key: index,
                                     text: item.displayName
                                 }
                             })
@@ -182,7 +182,7 @@ export abstract class CodeCellView<
 
                         return (
                             <div
-                                key={randomReactKey()}
+                                key={i}
                                 className="CodeCell-result">
                                 <div className="CodeCell-result-renderer-container">
                                     {repElem}
