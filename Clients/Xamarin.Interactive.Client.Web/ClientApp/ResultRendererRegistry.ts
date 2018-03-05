@@ -13,7 +13,7 @@ import CalendarRendererFactory from './renderers/CalendarRenderer'
 import ToStringRendererFactory from './renderers/ToStringRenderer'
 import ImageRendererFactory from './renderers/ImageRenderer'
 import TestRendererFactory from './renderers/TestRenderer'
-import InteractiveObjectRendererFactory from './renderers/InteractiveObjectRenderer';
+import InteractiveObjectRendererFactory from './renderers/InteractiveObjectRenderer'
 
 export class ResultRendererRegistry {
     private rendererFactories: ResultRendererFactory[] = []
@@ -30,11 +30,14 @@ export class ResultRendererRegistry {
 
     static createDefault(): ResultRendererRegistry {
         const registry = new ResultRendererRegistry
-        registry.register(NullRendererFactory)
+        // More exciting and specific renderers should be first
         registry.register(CalendarRendererFactory)
-        registry.register(ToStringRendererFactory)
-        registry.register(InteractiveObjectRendererFactory)
         registry.register(ImageRendererFactory)
+
+        // These are 'catch all' and should always be last
+        // registry.register(InteractiveObjectRendererFactory)
+        registry.register(ToStringRendererFactory)
+        registry.register(NullRendererFactory)
         return registry
     }
 
