@@ -37,7 +37,7 @@ export class ResultRendererRegistry {
         registry.register(VerbatimHtmlRendererFactory)
 
         // These are 'catch all' and should always be last
-        // registry.register(InteractiveObjectRendererFactory)
+        registry.register(InteractiveObjectRendererFactory)
         registry.register(ToStringRendererFactory)
         registry.register(NullRendererFactory)
         return registry

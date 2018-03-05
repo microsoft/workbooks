@@ -78,7 +78,7 @@ export class CodeCell extends CodeCellView<CodeCellProps, CodeCellState> {
         }
 
         this.shellContext = props.blockProps.shellContext
-
+        this.interact = this.interact.bind(this);
         this.monacoModelId = ''
         this.monacoCellProps = {
             block: props.block,
@@ -164,6 +164,10 @@ export class CodeCell extends CodeCellView<CodeCellProps, CodeCellState> {
         }
     }
 
+    interact (handle: string): Promise<any> {
+        return this.shellContext.session.interact(handle);
+    }
+
     protected async startEvaluation(): Promise<void> {
         if (this.state.codeCellId && this.state.status === CodeCellViewStatus.Ready) {
             this.setState({ status: CodeCellViewStatus.Evaluating })
@@ -172,7 +176,6 @@ export class CodeCell extends CodeCellView<CodeCellProps, CodeCellState> {
             //       higher level. The result has state info for potentially all
             //       cells.
             const result = await this.shellContext.session.evaluate(this.state.codeCellId)
-
             if (result.shouldStartNewCell)
                 this.props.blockProps.appendNewCodeCell()
 

@@ -195,7 +195,7 @@ export abstract class CodeCellView<
                                 </div>
                                 {dropdownOptions && <Dropdown
                                     options={dropdownOptions}
-                                    defaultSelectedKey={dropdownOptions[0].key}
+                                    defaultSelectedKey={dropdownOptions[resultState.selectedRepresentationIndex].key}
                                     onChanged={item => {
                                         resultState.selectedRepresentationIndex = item.key as number
                                         this.setState(this.state)

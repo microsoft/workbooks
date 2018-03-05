@@ -24,6 +24,7 @@ using Xamarin.Interactive.CodeAnalysis.Completion;
 using Xamarin.Interactive.CodeAnalysis.Hover;
 using Xamarin.Interactive.CodeAnalysis.SignatureHelp;
 using Xamarin.Interactive.NuGet;
+using Xamarin.Interactive.Representations;
 
 namespace Xamarin.Interactive.Client.Web
 {
@@ -246,6 +247,19 @@ namespace Xamarin.Interactive.Client.Web
                 Context.Connection.ConnectionAbortedToken);
 
             return signatureHelp;
+        }
+
+        public async Task<IInteractiveObject> Interact (string handle)
+        {
+            var sessionState = serviceProvider
+                .GetInteractiveSessionHubManager ()
+                .GetSession (Context.ConnectionId);
+
+            var interactiveObject = await sessionState
+                .ClientSession.Agent.Api.InteractAsync (long.Parse (handle),
+                new InteractiveObject.ReadAllMembersInteractMessage ());
+
+            return interactiveObject;
         }
     }
 }

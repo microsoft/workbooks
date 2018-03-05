@@ -193,13 +193,16 @@ namespace Xamarin.Interactive.Client
             return result;
         }
 
-        public async Task<IInteractiveObject> InteractAsync (IInteractiveObject obj, object message)
+        public async Task<IInteractiveObject> InteractAsync (long objHandle, object message)
             => (await SendAsync<InteractResponse> (
                 new InteractRequest {
-                    InteractiveObjectHandle = obj.Handle,
+                    InteractiveObjectHandle = objHandle,
                     Message = message
                 },
                 SessionCancellationToken))?.Result;
+
+        public Task<IInteractiveObject> InteractAsync(IInteractiveObject obj, object message)
+            => InteractAsync (obj.Handle, message);
 
         public async Task SetLogLevelAsync (LogLevel newLogLevel)
             => await SendAsync<SuccessResponse> (
