@@ -113,12 +113,21 @@ export class WorkbookEditor extends React.Component<WorkbooksEditorProps, Workbo
         // Only do this if the editor container was clicked.
         if (e && this.editorContainer && e.target === this.editorContainer) {
             // Select the last block
-            const lastBlock = this.state.editorState.getCurrentContent().getBlocksAsArray().slice(-1)[0];
+            let editorState = this.state.editorState;
+            const currentContent = editorState.getCurrentContent();
+            let lastBlock = currentContent.getBlocksAsArray().slice(-1)[0];
+
+            if (lastBlock.getType() === "code-block") {
+                lastBlock = this.createNewEmptyBlock(currentContent, false, false);
+                const contentState = ContentState.createFromBlockArray(currentContent.getBlocksAsArray().concat([lastBlock]), undefined);
+                editorState = EditorState.push(editorState, contentState, "insert-fragment");
+            }
+
             const nextSelection = (SelectionState.createEmpty(lastBlock.getKey())
                 .set('anchorOffset', lastBlock.getText().length)
                 .set('focusOffset', lastBlock.getText().length) as SelectionState);
 
-            const editorState = EditorState.forceSelection(this.state.editorState, nextSelection);
+            editorState = EditorState.forceSelection(editorState, nextSelection);
             this.setState({ editorState });
         }
     }
@@ -248,7 +257,7 @@ export class WorkbookEditor extends React.Component<WorkbooksEditorProps, Workbo
         ))
     }
 
-    createNewEmptyBlock(currentContent: ContentState, insertBefore: boolean): ContentBlock {
+    createNewEmptyBlock(currentContent: ContentState, insertBefore: boolean, updateEditorState: boolean = true): ContentBlock {
         // If this is a code block, we should insert a new block immediately after
         const newBlock = new ContentBlock({
             key: genKey(),
@@ -270,11 +279,12 @@ export class WorkbookEditor extends React.Component<WorkbooksEditorProps, Workbo
             blockArray.splice(0, 0, newBlock);
         }
 
-        const contentState = ContentState.createFromBlockArray(blockArray, undefined);
-
-        this.setState({
-            editorState: EditorState.push(this.state.editorState, contentState, "insert-fragment"),
-        });
+        if (updateEditorState) {
+            const contentState = ContentState.createFromBlockArray(blockArray, undefined);
+            this.setState({
+                editorState: EditorState.push(this.state.editorState, contentState, "insert-fragment"),
+            });
+        }
         return newBlock;
     }
 
