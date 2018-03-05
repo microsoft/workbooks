@@ -36,6 +36,7 @@ export class WorkbookShell extends React.Component<any, WorkbookShellState> {
     private fileButton: HTMLInputElement | null = null
     private packageSearchDialog: PackageSearch | null = null
     private workbookMetadata: any
+    private workspaceAvailable: boolean = false
 
     private initialStatusMessageBarActionMessages: StatusUIActionWithMessage[] = []
     private statusMessageBarComponent: StatusMessageBar | null = null
@@ -64,6 +65,7 @@ export class WorkbookShell extends React.Component<any, WorkbookShellState> {
 
     private onClientSessionEvent(session: WorkbookSession, clientSessionEvent: ClientSessionEvent) {
         if (clientSessionEvent.kind === ClientSessionEventKind.CompilationWorkspaceAvailable) {
+            this.workspaceAvailable = true
             if (this.workbookEditor)
                 this.workbookEditor.setUpInitialState()
         }
@@ -77,6 +79,23 @@ export class WorkbookShell extends React.Component<any, WorkbookShellState> {
 
         if (this.commandBar)
             this.commandBar.setWorkbookTargets(this.shellContext.session.availableWorkbookTargets)
+
+        window.onkeydown = this.handleWindowKeyDown(window.onkeydown);
+    }
+
+    handleWindowKeyDown(oldHandler: (ev: KeyboardEvent) => void): (ev: KeyboardEvent) => void {
+        return (ev: KeyboardEvent) => {
+            if ((ev.keyCode === 83 && ev.metaKey) && this.workspaceAvailable) {
+                ev.preventDefault();
+                this.saveWorkbook();
+            } else if ((ev.keyCode === 79 && ev.metaKey) && this.workspaceAvailable) {
+                ev.preventDefault();
+                this.triggerFilePicker();
+            } else {
+                if (oldHandler)
+                    return oldHandler(ev);
+            }
+        }
     }
 
     componentWillUnmount() {
