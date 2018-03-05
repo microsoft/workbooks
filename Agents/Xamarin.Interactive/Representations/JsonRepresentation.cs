@@ -60,7 +60,7 @@ namespace Xamarin.Interactive.Representations
                     serializer.Property ("format", "uri");
                     break;
                 case ImageFormat.Svg:
-                    serializer.Property ("format", "image/svg");
+                    serializer.Property ("format", "image/svg+xml");
                     break;
                 case ImageFormat.Unknown:
                     serializer.Property ("format", "image");
