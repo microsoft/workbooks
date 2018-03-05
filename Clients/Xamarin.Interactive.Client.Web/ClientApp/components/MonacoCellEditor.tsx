@@ -119,6 +119,7 @@ export class MonacoCellEditor extends React.Component<MonacoCellEditorProps, Mon
         editor.onKeyDown(e => this.onKeyDown(e))
         editor.onDidBlurEditor(() => {
             this.props.blockProps.codeCellBlurred(this.getKey());
+            this.dismissParameterHintsWindow()
         })
         editor.onDidFocusEditor(() => {
             this.props.blockProps.codeCellFocused(this.getKey());
