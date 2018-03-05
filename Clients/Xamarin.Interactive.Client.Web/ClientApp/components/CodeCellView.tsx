@@ -21,6 +21,7 @@ import {
     IDropdownOption
 } from 'office-ui-fabric-react/lib/Dropdown';
 
+import { EditorMessage, EditorMessageType } from '../utils/EditorMessages'
 import { CodeCellResult, CodeCellResultHandling, Diagnostic } from '../evaluation'
 import { ResultRendererRepresentation } from '../rendering'
 import { ResultRendererRegistry } from '../ResultRendererRegistry'
@@ -133,12 +134,26 @@ export abstract class CodeCellView<
                 <div className="CodeCell-diagnostics-container">
                     <ul>
                         {this.state.diagnostics.map((diag, i) => {
-                            let spanText =
-                                "(" + (diag.span.span.start.line + 1) +
-                                "," + (diag.span.span.start.character + 1) + ")"
-                            let key = diag.id + spanText
+                            const startPosition = diag.span.span.start
+                            const spanText =
+                                "(" + (startPosition.line + 1) +
+                                "," + (startPosition.character + 1) + ")"
+                            const key = diag.id + spanText
                             return (
-                                <li className={"CodeCell-diagnostic-" + diag.severity} key={key}>
+                                <li
+                                    key={key}
+                                    className={"CodeCell-diagnostic-" + diag.severity}
+                                    onClick={(e) => {
+                                        e.stopPropagation()
+                                        this.sendEditorMessage({
+                                            target: this.getBlockKey(),
+                                            type: EditorMessageType.setCursor,
+                                            data: {
+                                                lineNumber: startPosition.line + 1,
+                                                column: startPosition.character + 1
+                                            }
+                                        })
+                                    }}>
                                     ({spanText}): {diag.severity} {diag.id}: {diag.message}
                                 </li>
                             )
@@ -189,6 +204,15 @@ export abstract class CodeCellView<
                 </div>
             </div>
         );
+    }
+
+    protected sendEditorMessage(message: EditorMessage) {
+        // no-op here
+    }
+
+    protected getBlockKey(): string {
+        // should be overridden
+        return ""
     }
 }
 

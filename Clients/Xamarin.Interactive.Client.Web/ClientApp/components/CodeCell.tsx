@@ -28,6 +28,7 @@ interface CodeCellProps extends CodeCellViewProps {
     blockProps: {
         shellContext: WorkbookShellContext
         rendererRegistry: ResultRendererRegistry
+        sendEditorMessage: (message: EditorMessage) => void
         cellMapper: MonacoCellMapper
         codeCellId: string
         codeCellFocused: (codeCellId: string) => void
@@ -88,6 +89,14 @@ export class CodeCell extends CodeCellView<CodeCellProps, CodeCellState> {
 
     protected getRendererRegistry(): ResultRendererRegistry {
         return this.props.blockProps.rendererRegistry
+    }
+
+    protected sendEditorMessage(message: EditorMessage) {
+        this.props.blockProps.sendEditorMessage(message)
+    }
+
+    protected getBlockKey(): string {
+        return this.props.block.key
     }
 
     async componentDidMount() {

@@ -1,5 +1,6 @@
 export const EditorMessageType = {
-  setSelection: 'setSelection',
+    setSelection: 'setSelection',
+    setCursor: 'setCursor'
 }
 
 export interface EditorMessage {

@@ -122,6 +122,7 @@ export class WorkbookEditor extends React.Component<WorkbooksEditorProps, Workbo
                 props: {
                     shellContext: this.props.shellContext,
                     rendererRegistry: this.props.shellContext.rendererRegistry,
+                    sendEditorMessage: (message: EditorMessage) => this.sendMessage(message),
                     cellMapper: this,
                     codeCellId,
                     codeCellBlurred: (currentKey: string) => this.codeCellBlurred(currentKey),

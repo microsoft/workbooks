@@ -181,6 +181,11 @@ export class MonacoCellEditor extends React.Component<MonacoCellEditorProps, Mon
             this.moveSelection(!isBackwards, startColumn)
             this.focus()
         }
+
+        if (message.type == EditorMessageType.setCursor) {
+            this.editor!.setPosition(message.data)
+            this.focus()
+        }
     }
 
     onKeyDown(e: monaco.IKeyboardEvent) {
