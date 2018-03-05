@@ -13,7 +13,7 @@ import {
     DefaultDraftBlockRenderMap
 } from 'draft-js'
 import createMarkdownPlugin from 'draft-js-markdown-plugin'
-import { List, Map } from 'immutable'
+import { List, Map, Set } from 'immutable'
 import { CodeCell } from './CodeCell'
 import { WorkbookSession, ClientSessionEvent, ClientSessionEventKind } from '../WorkbookSession'
 import { MonacoCellMapper, WorkbookCompletionItemProvider, WorkbookHoverProvider, WorkbookSignatureHelpProvider } from '../utils/MonacoUtils'
@@ -51,6 +51,7 @@ export class WorkbookEditor extends React.Component<WorkbooksEditorProps, Workbo
     subscriptors: ((m: EditorMessage) => void)[];
     monacoProviderTickets: monaco.IDisposable[] = [];
     cellIdMappings: WorkbookCellIdMapping[] = [];
+    focusedCodeEditors: Set<string> = Set()
 
     constructor(props: WorkbooksEditorProps) {
         super(props);
@@ -123,7 +124,8 @@ export class WorkbookEditor extends React.Component<WorkbooksEditorProps, Workbo
                     rendererRegistry: this.props.shellContext.rendererRegistry,
                     cellMapper: this,
                     codeCellId,
-                    editorReadOnly: (readOnly: boolean) => this.editorReadOnly(readOnly),
+                    codeCellBlurred: (currentKey: string) => this.codeCellBlurred(currentKey),
+                    codeCellFocused: (currentKey: string) => this.codeCellFocused(currentKey),
                     subscribeToEditor: (callback: () => void) => this.addMessageSubscriber(callback),
                     selectNext: (currentKey: string) => this.selectNext(currentKey),
                     selectPrevious: (currentKey: string) => this.selectPrevious(currentKey),
@@ -136,6 +138,20 @@ export class WorkbookEditor extends React.Component<WorkbooksEditorProps, Workbo
             }
         }
         return null
+    }
+
+    // Blur event for old cell may come in after focus event for new cell, so
+    // we need to actually track the collection of code cells that claim to be
+    // focused. Markdown content needs to be in read-only mode whenever a code
+    // cell has focus.
+    codeCellBlurred(currentKey: string) {
+        this.focusedCodeEditors = this.focusedCodeEditors.remove(currentKey)
+        this.editorReadOnly(!this.focusedCodeEditors.isEmpty())
+    }
+
+    codeCellFocused(currentKey: string) {
+        this.focusedCodeEditors = this.focusedCodeEditors.add(currentKey)
+        this.editorReadOnly(!this.focusedCodeEditors.isEmpty())
     }
 
     registerCellInfo(codeCellId: string, monacoModelId: string) {

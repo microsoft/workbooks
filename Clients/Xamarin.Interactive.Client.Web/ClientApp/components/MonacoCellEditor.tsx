@@ -17,7 +17,8 @@ import './MonacoCellEditor.scss'
 
 export interface MonacoCellEditorProps {
     blockProps: {
-        editorReadOnly: (readOnly: boolean) => void,
+        codeCellFocused: (currentKey: string) => void,
+        codeCellBlurred: (currentKey: string) => void,
         subscribeToEditor: (callback: (message: EditorMessage) => void) => void,
         selectNext: (currentKey: string) => boolean,
         selectPrevious: (currentKey: string) => boolean,
@@ -70,7 +71,7 @@ export class MonacoCellEditor extends React.Component<MonacoCellEditorProps, Mon
     }
 
     componentWillUnmount() {
-        this.props.blockProps.editorReadOnly(false)
+        this.props.blockProps.codeCellBlurred(this.getKey())
         window.removeEventListener("resize", this.windowResizeHandler)
         this.editor!.dispose()
     }
@@ -117,10 +118,12 @@ export class MonacoCellEditor extends React.Component<MonacoCellEditorProps, Mon
         })
         editor.onKeyDown(e => this.onKeyDown(e))
         editor.onDidBlurEditor(() => {
-            this.props.blockProps.editorReadOnly(false);
+            console.log(this.editor!.getModel().id + " blurred");
+            this.props.blockProps.codeCellBlurred(this.getKey());
         })
         editor.onDidFocusEditor(() => {
-            this.props.blockProps.editorReadOnly(true);
+            console.log(this.editor!.getModel().id + " focused");
+            this.props.blockProps.codeCellFocused(this.getKey());
         })
 
         const internalViewEventsHandler = {

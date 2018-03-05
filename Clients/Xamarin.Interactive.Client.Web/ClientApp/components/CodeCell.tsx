@@ -30,7 +30,8 @@ interface CodeCellProps extends CodeCellViewProps {
         rendererRegistry: ResultRendererRegistry
         cellMapper: MonacoCellMapper
         codeCellId: string
-        editorReadOnly: (readOnly: boolean) => void
+        codeCellFocused: (codeCellId: string) => void
+        codeCellBlurred: (codeCellId: string) => void
         subscribeToEditor: (callback: (message: EditorMessage) => void) => void
         selectNext: (currentKey: string) => boolean
         selectPrevious: (currentKey: string) => boolean
@@ -70,7 +71,8 @@ export class CodeCell extends CodeCellView<CodeCellProps, CodeCellState> {
         this.monacoCellProps = {
             block: props.block,
             blockProps: {
-                editorReadOnly: props.blockProps.editorReadOnly,
+                codeCellBlurred: props.blockProps.codeCellBlurred,
+                codeCellFocused: props.blockProps.codeCellFocused,
                 subscribeToEditor: props.blockProps.subscribeToEditor,
                 selectNext: props.blockProps.selectNext,
                 selectPrevious: props.blockProps.selectPrevious,
