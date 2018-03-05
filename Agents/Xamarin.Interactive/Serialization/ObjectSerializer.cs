@@ -8,6 +8,7 @@
 using System;
 using System.IO;
 using System.Collections.Generic;
+using Xamarin.Interactive.Representations;
 
 namespace Xamarin.Interactive.Serialization
 {
@@ -216,7 +217,36 @@ namespace Xamarin.Interactive.Serialization
         public void Property (string name, IEnumerable<string> value)
             => Property (name, value, writer.WriteJson);
 
-        public void Property (string name, IEnumerable<byte[]> value)
+        public void Property (string name, IEnumerable<byte []> value)
             => Property (name, value, writer.WriteJson);
+
+        public void Property (string name, object value)
+        {
+            switch (value) {
+            case InteractiveObjectBase obj:
+            case RepresentedObject rep:
+                Property (name, new Representations.JsonRepresentation (value));
+                break;
+            case ISerializableObject json:
+                Property (name, json);
+                break;
+            case int _:
+            case short _:
+            case SByte _:
+            case uint _:
+            case ushort _:
+            case byte _:
+            case double _:
+            case float _:
+            case Enum _:
+                Property (name, (double)value);
+                break;
+            case long _:
+            default:
+                Property (name, value?.ToString ());
+                break;
+
+            }
+        }
     }
 }

@@ -65,10 +65,14 @@ export interface CodeCellUpdate extends ICodeCellEvent {
     diagnostics: Diagnostic[]
 }
 
-export interface CodeCellResult extends ICodeCellEvent  {
+export interface CodeCellResult extends ICodeCellEvent, RepresentedResult  {
     resultHandling: CodeCellResultHandling
+}
+
+export interface RepresentedResult {
     type: string | null
     valueRepresentations: any[] | null
+    interact?: ((handle: string) => Promise<any>)
 }
 
 export interface CapturedOutputSegment extends ICodeCellEvent {

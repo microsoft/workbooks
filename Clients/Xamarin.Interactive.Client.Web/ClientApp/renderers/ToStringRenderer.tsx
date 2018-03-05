@@ -6,10 +6,11 @@
 // Licensed under the MIT License.
 
 import * as React from 'react'
-import { CodeCellResult } from '../evaluation';
+import { RepresentedResult } from '../evaluation';
 import { ResultRenderer, ResultRendererRepresentation } from '../rendering'
+import { randomReactKey } from '../utils';
 
-export default function ToStringRendererFactory(result: CodeCellResult) {
+export default function ToStringRendererFactory(result: RepresentedResult) {
     return result.valueRepresentations &&
         result.valueRepresentations.some(r => r.$toString)
         ? new ToStringRenderer
@@ -30,7 +31,7 @@ interface ToStringValue {
 }
 
 class ToStringRenderer implements ResultRenderer {
-    getRepresentations(result: CodeCellResult) {
+    getRepresentations(result: RepresentedResult) {
         const reps: ResultRendererRepresentation[] = []
 
         if (!result.valueRepresentations)
@@ -45,6 +46,7 @@ class ToStringRenderer implements ResultRenderer {
             if (typeof toStringValue === 'string') {
                 reps.push({
                     displayName: 'String',
+                    key: randomReactKey (),
                     component: ToStringRepresentation,
                     componentProps: {
                         value: toStringValue
@@ -62,6 +64,7 @@ class ToStringRenderer implements ResultRenderer {
                 const formatKey = Object.keys(format)[0] as string
                 reps.push({
                     displayName: formatKey,
+                    key: randomReactKey(),
                     component: ToStringRepresentation,
                     componentProps: {
                         value: format[formatKey]

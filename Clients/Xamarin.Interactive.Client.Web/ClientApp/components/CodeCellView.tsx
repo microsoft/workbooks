@@ -24,16 +24,15 @@ import {
 import { randomReactKey } from '../utils'
 import { EditorMessage, EditorMessageType } from '../utils/EditorMessages'
 import { CodeCellResult, CodeCellResultHandling, Diagnostic, CapturedOutputSegment } from '../evaluation'
-import { ResultRendererRepresentation } from '../rendering'
+import { ResultRendererRepresentation, ResultRendererRepresentationOptions, RepresentedObjectState, RepresentationMap } from '../rendering'
 import { ResultRendererRegistry } from '../ResultRendererRegistry'
 import { CapturedOutputView } from './CapturedOutputView'
 
 import './CodeCellView.scss'
+import { WorkbookShellContext } from './WorkbookShell';
 
-export interface CodeCellResultRendererState {
+export interface CodeCellResultRendererState extends RepresentedObjectState {
     result: CodeCellResult
-    representations: ResultRendererRepresentation[]
-    selectedRepresentationIndex: number
 }
 
 export const enum CodeCellViewStatus {
@@ -64,20 +63,57 @@ export abstract class CodeCellView<
     protected abstract startEvaluation(): Promise<void>
     protected abstract renderEditor(): any
 
+    constructor(props: TCodeCellViewProps) {
+        super(props)
+        this.interact = this.interact.bind(this);
+    }
+
+    protected async interact(key: string)
+    {
+        const state = this.state
+        let index = -1
+        const result = this.state.results.find((res, i) => {
+            if (res.representations[key].interact) {
+                index = i
+                return true
+            }
+            return false
+        })
+
+        if (!result)
+            return
+
+        var rep = result.representations[key]
+        if (rep && rep.interact) {
+            var newRep = await rep.interact (rep)
+            if (rep !== newRep) {
+                this.state.results[index].representations[key] = newRep
+                this.setState(this.state)
+            }
+        }
+    }
+
     protected setStateFromResult(result: CodeCellResult, resultHandling?: CodeCellResultHandling) {
+        const block = this.props as any;
+        const state = this.state;
         const reps = this
             .getRendererRegistry()
             .getRenderers(result)
-            .map(r => r.getRepresentations(result))
+            .map(r => r.getRepresentations(result, block.blockProps.shellContext as WorkbookShellContext))
 
         const flatReps = reps.length === 0
             ? []
             : reps.reduce((a, b) => a.concat(b))
 
+        const mapReps: RepresentationMap<string, ResultRendererRepresentation> = {}
+        flatReps.map((r, i) => {
+            mapReps[r.key] = r
+        })
+
         const rendererState = {
             result: result,
-            representations: flatReps,
-            selectedRepresentationIndex: 0
+            representations: mapReps,
+            selectedRepresentation: flatReps[0].key
         }
 
         if (!resultHandling)
@@ -90,6 +126,22 @@ export abstract class CodeCellView<
                 })
                 break
             case CodeCellResultHandling.Replace:
+                if (this.state.results[0]) {
+                    const oldReps = this.state.results[0].representations;
+                    const oldKey = this.state.results[0].selectedRepresentation;
+
+                    if (rendererState.representations[oldKey])
+                        rendererState.selectedRepresentation = oldKey;
+                    else {
+                        const prevKeys = Object.keys(oldReps);
+                        if (prevKeys.length == flatReps.length &&
+                            Object.keys(oldReps)
+                                .map((key, index) => typeof oldReps[key] === typeof flatReps[index])
+                                .reduce((a, b) => a && b)) {
+                            rendererState.selectedRepresentation = flatReps[prevKeys.indexOf(oldKey)].key
+                        }
+                    }
+                }
                 this.setState({
                     results: [rendererState]
                 })
@@ -164,22 +216,23 @@ export abstract class CodeCellView<
                     </div>}
                 <div className="CodeCell-results-container">
                     {this.state.results.map((resultState, i) => {
-                        if (resultState.representations.length === 0)
+                        if (Object.keys (resultState.representations).length === 0)
                             return
-                        const dropdownOptions = resultState.representations.length > 1
-                            ? resultState.representations.map((item, index) => {
+                        const dropdownOptions = Object.keys (resultState.representations).length > 1
+                            ? Object.keys (resultState.representations).map (key => {
                                 return {
-                                    key: index,
-                                    text: item.displayName
+                                    key: key,
+                                    text: resultState.representations[key].displayName
                                 }
                             })
                             : null
 
                         let repElem = null
-                        if (resultState.selectedRepresentationIndex >= 0) {
-                            const rep = resultState.representations[resultState.selectedRepresentationIndex]
-                            const repProps = Object.assign({key: randomReactKey()}, rep.componentProps)
-                            repElem = React.createElement(rep.component, repProps)
+                        if (resultState.selectedRepresentation) {
+                            const rep = resultState.representations[resultState.selectedRepresentation]
+                            rep.interact && this.interact(resultState.selectedRepresentation).then(r => console.log("updated"))
+
+                            repElem = <rep.component key={"codeCellView:"+rep.key} {...rep.componentProps} />
                         }
 
                         return (
@@ -191,9 +244,9 @@ export abstract class CodeCellView<
                                 </div>
                                 {dropdownOptions && <Dropdown
                                     options={dropdownOptions}
-                                    defaultSelectedKey={dropdownOptions[0].key}
+                                    defaultSelectedKey={resultState.selectedRepresentation}
                                     onChanged={item => {
-                                        resultState.selectedRepresentationIndex = item.key as number
+                                        this.state.results[i].selectedRepresentation = item.key as string
                                         this.setState(this.state)
                                     }}/>}
                             </div>

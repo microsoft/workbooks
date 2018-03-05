@@ -7,7 +7,7 @@
 
 namespace Xamarin.Interactive.Representations
 {
-    interface IInteractiveObject : IRepresentationObject
+    public interface IInteractiveObject : IRepresentationObject
     {
         long RepresentedObjectHandle { get; }
         long Handle { get; set; }

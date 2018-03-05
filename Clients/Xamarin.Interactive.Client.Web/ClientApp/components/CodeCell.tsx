@@ -20,11 +20,12 @@ import {
     ICodeCellEvent,
     CodeCellEventType,
     CodeCellUpdate,
-    CodeCellResult,
+    RepresentedResult,
     CodeCellResultHandling,
     CapturedOutputSegment,
     CodeCellEvaluationStatus,
-    CodeCellEvaluationFinished
+    CodeCellEvaluationFinished,
+    CodeCellResult
 } from '../evaluation'
 
 import {
@@ -81,7 +82,6 @@ export class CodeCell extends CodeCellView<CodeCellProps, CodeCellState> {
         }
 
         this.shellContext = props.blockProps.shellContext
-
         this.monacoModelId = ''
         this.monacoCellProps = {
             block: props.block,
