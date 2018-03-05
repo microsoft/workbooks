@@ -51,7 +51,10 @@ export class PackageSearch extends React.Component<PackageSearchProps, PackageSe
                 <SearchBox
                     className='PackageSearch-search'
                     placeholder='Search for packages…'
-                    value={this.state.query}
+                    // TODO: Figure out why setting this makes typing so finicky.
+                    //       Once this works right, we can consider not clearing
+                    //       query/results on dismiss. --sandy 2018-03-05
+                    // value={this.state.query}
                     onChange={event => this.onSearchFieldChanged(event)} />
             </div>
         )
@@ -65,6 +68,8 @@ export class PackageSearch extends React.Component<PackageSearchProps, PackageSe
                 isLightDismiss={true}
                 isOpen={!this.props.getIsHidden()}
                 onRenderHeader={() => this.renderListHeader()}
+                // TODO: File bug...pretty sure this prop is backwards --sandy 2018-03-05
+                isBlocking={!this.state.inProgress}
                 onDismiss={() => this.notifyDismiss()}
                 focusTrapZoneProps={{
                     firstFocusableSelector: 'PackageSearch-search'
@@ -186,8 +191,8 @@ export class PackageSearch extends React.Component<PackageSearchProps, PackageSe
         this.setState({
             inProgress: false,
             selectedPackage: undefined,
-            // results: [],
-            // query: ""
+            results: [],
+            query: ""
         })
         this.props.notifyDismiss()
     }
