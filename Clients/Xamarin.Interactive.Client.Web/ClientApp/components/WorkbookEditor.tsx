@@ -48,7 +48,6 @@ const blockRenderMap = DefaultDraftBlockRenderMap.merge(Map({
 }));
 
 export class WorkbookEditor extends React.Component<WorkbooksEditorProps, WorkbooksEditorState> implements MonacoCellMapper {
-    lastFocus?: Date;
     subscriptors: ((m: EditorMessage) => void)[];
     monacoProviderTickets: monaco.IDisposable[] = [];
     cellIdMappings: WorkbookCellIdMapping[] = [];
@@ -59,7 +58,6 @@ export class WorkbookEditor extends React.Component<WorkbooksEditorProps, Workbo
         super(props);
 
         this.subscriptors = []
-        this.lastFocus = undefined
 
         const editorState = EditorState.createEmpty()
 
@@ -103,11 +101,6 @@ export class WorkbookEditor extends React.Component<WorkbooksEditorProps, Workbo
     }
 
     focus(e?: React.MouseEvent<{}>) {
-        const focusThresholdToBlur = this.lastFocus && (+Date.now() - +this.lastFocus) > 1000
-        if (focusThresholdToBlur)
-            (document.activeElement as any).blur();
-
-        this.lastFocus = new Date();
         (this.refs.editor as any).focus();
 
         // Only do this if the editor container was clicked.
