@@ -6,13 +6,12 @@
 // Licensed under the MIT License.
 
 import * as React from 'react'
+import * as ReactDOM from 'react-dom'
 import { CodeCellResult } from '../evaluation'
 import {
     ResultRenderer,
     ResultRendererRepresentation
 } from '../rendering'
-
-// import './VerbatimHtmlRenderer.scss'
 
 const xirType = 'Xamarin.Interactive.Representations.VerbatimHtml'
 
@@ -49,10 +48,37 @@ class VerbatimHtmlRenderer implements ResultRenderer {
     }
 }
 
-class VerbatimHtmlRepresentation extends React.Component<{ value: VerbatimHtmlValue }> {
+class VerbatimHtmlRepresentation extends React.Component<
+    { value: VerbatimHtmlValue },
+    { width: number, height: number }> {
+    constructor(props: any) {
+        super(props)
+        this.state = {
+            width: 0,
+            height: 0
+        }
+    }
+
     render() {
         return (
-            <div dangerouslySetInnerHTML={{ __html: this.props.value.$toString }} />
+            <iframe
+                className='renderer-VerbatimHtmlRepresentation-container'
+                seamless={true}
+                sandbox='allow-scripts allow-same-origin'
+                srcDoc={this.props.value.$toString}
+                style={{
+                    border: 'none',
+                    width: `${this.state.width}px`,
+                    height: `${this.state.height}px`
+                }}
+                onLoad={e => {
+                    const iframe = ReactDOM.findDOMNode(this) as any
+                    const iframeDoc = iframe.contentWindow.document.documentElement
+                    this.setState({
+                        width: iframeDoc.scrollWidth,
+                        height: iframeDoc.scrollHeight,
+                    })
+                }}/>
         )
     }
 }
