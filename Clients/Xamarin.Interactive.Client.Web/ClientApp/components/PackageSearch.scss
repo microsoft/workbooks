@@ -1,69 +1,85 @@
-.packageListItem {
-  display: flex;
-  flex-direction: row;
-}
+$iconSize: 48px;
+$descriptionSpacing: 0.85em;
 
-.packageListItemIcon {
-  margin: 10px;
-  margin-top: 20px;
-}
-
-.packageListInfoContainer {
-  display: flex;
-  flex-direction: column;
-  margin: 10px;
-  max-width: 450px;
-}
-
-.packageListInfoContainer > * {
-  flex: 1 1 auto;
-}
-
-.packageListItemName {
-  font-size: 2vw; // TODO: Why does this overflow sometimes?
-}
-
-.packageListItemVersion {
-  font-size: 75%;
-  color: gray;
-}
-
-.packageListItemDescription {
-  margin-top: 5px;
-  margin-bottom: 5px;
-}
-
-// TODO: Should we switch to a non-dialog modal so we have more control over width?
-.ms-Dialog-main {
-  min-width: 600px !important;
-}
-
-.packageListContainer {
-  max-height: 500px;
-  min-height: 500px;
-  overflow-y: auto;
-  overflow-x: hidden; // TODO: Improve this
-}
-
-.packageAlreadyInstalled {
-  width: min-content;
-  background-color: gray;
-}
-
-.packageListItemContainer hr {
+@mixin reset() {
   margin: 0;
+  padding: 0;
 }
 
-.packageListActionContainer {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-}
+.PackageSearch-panel {
+  .PackageSearch-header {
+    @include reset;
+    margin: 0 32px 16px 32px;
 
-.packageInstallSpinner {
-  margin-left: 16px;
-}
+    .PackageSearch-header-text {
+      @include reset;
+      margin-bottom: 24px;
+      font-size: 28px;
+      font-weight: lighter;
+    }
+  }
 
-.packageInstallButton {
-  width: min-content;
+  .PackageSearch-list {
+    .PackageSearch-item {
+      display: flex;
+      flex-direction: row;
+
+      margin-bottom: 1em;
+      padding-bottom: 1em;
+      border-bottom: 1px solid #ddd;
+
+      &:last-child {
+        margin-bottom: none;
+        padding-bottom: none;
+        border: none;
+      }
+
+      .PackageSearch-item-icon {
+        @include reset;
+        flex: 0 1 auto;
+        margin-right: 16px;
+        background-repeat: no-repeat;
+        background-size: cover;
+        min-width: $iconSize;
+        min-height: $iconSize;
+        width: $iconSize;
+        height: $iconSize;
+      }
+
+      .PackageSearch-item-details {
+        h1 {
+          @include reset;
+          font-size: 1.25em;
+        }
+
+        .PackageSearch-item-details-summary {
+          font-size: 0.85em;
+          opacity: 0.85;
+          margin: 0.25em 0 $descriptionSpacing 0;
+
+          .PackageSearch-item-details-version {
+            font-weight: bold;
+            padding-right: 0.7em;
+            margin-right: 0.7em;
+            border-right: 1px solid #ddd;
+          }
+
+          .PackageSearch-item-details-downloads {
+            color: #666;
+          }
+        }
+
+        .PackageSearch-item-details-actions {
+          margin-top: $descriptionSpacing;
+          display: flex;
+          flex-direction: row;
+          align-items: center;
+
+          > button {
+            margin-right: 1em;
+          }
+        }
+      }
+    }
+  }
 }

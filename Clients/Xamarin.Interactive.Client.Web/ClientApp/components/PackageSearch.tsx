@@ -3,9 +3,9 @@ import { RouteComponentProps } from 'react-router'
 import { WorkbookSession } from '../WorkbookSession'
 import { Spinner, SpinnerSize } from 'office-ui-fabric-react/lib/Spinner'
 import { PrimaryButton } from 'office-ui-fabric-react/lib/Button'
-import { Dialog, DialogType } from 'office-ui-fabric-react/lib/Dialog'
+import { Panel, PanelType } from 'office-ui-fabric-react/lib/Panel'
 import { SearchBox } from 'office-ui-fabric-react/lib/SearchBox'
-import { Image, ImageFit } from 'office-ui-fabric-react/lib/Image'
+import { Icon } from 'office-ui-fabric-react/lib/Icon'
 
 import './PackageSearch.scss'
 
@@ -28,6 +28,7 @@ interface PackageViewModel {
     version: string
     iconUrl: string
     description: string
+    totalDownloads: number
 }
 
 export class PackageSearch extends React.Component<PackageSearchProps, PackageSearchState> {
@@ -41,27 +42,34 @@ export class PackageSearch extends React.Component<PackageSearchProps, PackageSe
         }
     }
 
-    public render() {
-        return <div>
-            <Dialog
-                hidden={this.props.getIsHidden()}
-                dialogContentProps={{
-                    type: DialogType.largeHeader,
-                    title: "Add NuGet Packages",
-                    subText: "NuGet is the package manager for .NET. Find the library you need from millions of popular packages.",
-                    className: "packageManagerDialog",
-                    showCloseButton: true
-                }}
-                modalProps={{
-                    isBlocking: this.state.inProgress,
-                    onDismiss: () => this.notifyDismiss()
-                }}>
-
+    private renderListHeader() {
+        return (
+            <div className='PackageSearch-header'>
+                <p className='PackageSearch-header-text' role='heading'>
+                    Add NuGet Packages
+                </p>
                 <SearchBox
-                    placeholder="Search NuGet"
+                    className='PackageSearch-search'
+                    placeholder='Search for packages…'
+                    value={this.state.query}
                     onChange={event => this.onSearchFieldChanged(event)} />
+            </div>
+        )
+    }
 
-                <div className="packageListContainer">
+    render() {
+        return (
+            <Panel
+                className='PackageSearch-panel'
+                type={PanelType.medium}
+                isLightDismiss={true}
+                isOpen={!this.props.getIsHidden()}
+                onRenderHeader={() => this.renderListHeader()}
+                onDismiss={() => this.notifyDismiss()}
+                focusTrapZoneProps={{
+                    firstFocusableSelector: 'PackageSearch-search'
+                }}>
+                <div className="PackageSearch-list">
                     {/*
                     I wanted to use Fabric List but individual cells weren't rerendering on state changes
                     <List
@@ -72,48 +80,60 @@ export class PackageSearch extends React.Component<PackageSearchProps, PackageSe
                         onRenderCell={(item, index, isScrolling) => this._onRenderCell(item, index, isScrolling)}
                     /> */}
                     {
-                        this.state.results.map(item => (
-                            <div
-                                className="packageListItemContainer"
-                                key={item.id}>
-                            <div className="packageListItem">
-                                <Image
-                                    className="packageListItemIcon"
-                                    width={ 50 }
-                                    // imageFit={ImageFit.contain}
-                                    src={item.iconUrl} />
-                                <div className="packageListInfoContainer">
-                                    <div className="packageListItemName">
-                                        {item.id}
-                                    </div>
-                                    <div className="packageListItemVersion">
-                                        {item.version}
-                                    </div>
-                                    <div className="packageListItemDescription">
-                                        {item.description}
+                        this.state.results.map(item => {
+                            const defaultIconUrl = 'https://nuget.org/Content/gallery/img/default-package-icon.svg'
+                            let buttonLabel: string = 'Install'
+                            let buttonDisabled: boolean = false
+                            let spinnerVisible: boolean = false
+
+                            if (this.isPackageInstalled(item)) {
+                                buttonDisabled = true
+                                buttonLabel = 'Installed'
+                            } else if (this.state.inProgress) {
+                                buttonDisabled = true
+                                if (this.state.selectedPackage === item) {
+                                    spinnerVisible = true
+                                    buttonLabel = 'Installing…'
+                                }
+                            }
+
+                            return (
+                                <div
+                                    key={item.id}
+                                    className='PackageSearch-item'>
+                                    <div
+                                        className='PackageSearch-item-icon'
+                                        style={{ backgroundImage: `url(${item.iconUrl || defaultIconUrl}` }}/>
+                                    <div className='PackageSearch-item-details'>
+                                        <h1>
+                                            {item.id}
+                                        </h1>
+                                        <div className="PackageSearch-item-details-summary">
+                                            <span className='PackageSearch-item-details-version'>
+                                                v{item.version}
+                                            </span>
+                                            <span className='PackageSearch-item-details-downloads'>
+                                                {item.totalDownloads.toLocaleString()} total downloads
+                                            </span>
                                         </div>
-                                    <div className="packageListActionContainer">
+                                        <div className="PackageSearch-item-details-description">
+                                            {item.description}
+                                        </div>
+                                        <div className="PackageSearch-item-details-actions">
                                             <PrimaryButton
-                                                className="packageInstallButton"
-                                                text={this.isPackageInstalled(item) ? "Installed" : "Install"}
-                                                disabled={this.state.inProgress || this.isPackageInstalled(item)}
-                                                onClick={() => this.installPackage(item)}
-                                            />
-                                            {
-                                                this.state.inProgress && this.state.selectedPackage === item ?
-                                                    <Spinner className="packageInstallSpinner" size={SpinnerSize.medium} /> :
-                                                    null
-                                            }
+                                                text={buttonLabel}
+                                                disabled={buttonDisabled}
+                                                onClick={() => this.installPackage(item)}/>
+                                            {spinnerVisible && <Spinner size={SpinnerSize.medium}/>}
+                                        </div>
                                     </div>
                                 </div>
-                                </div>
-                            <hr />
-                            </div>
-                        ))
+                            )
+                        })
                     }
                 </div>
-            </Dialog>
-        </div>
+            </Panel>
+        )
     }
 
     isPackageInstalled(pkg: PackageViewModel): boolean {
@@ -166,8 +186,8 @@ export class PackageSearch extends React.Component<PackageSearchProps, PackageSe
         this.setState({
             inProgress: false,
             selectedPackage: undefined,
-            results: [],
-            query: ""
+            // results: [],
+            // query: ""
         })
         this.props.notifyDismiss()
     }
