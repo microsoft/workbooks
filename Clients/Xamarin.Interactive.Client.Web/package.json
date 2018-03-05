@@ -13,6 +13,7 @@
     "@types/react-router": "4.0.12",
     "@types/react-router-dom": "4.0.5",
     "@types/to-markdown": "^3.0.0",
+    "@types/uuid": "^3.4.3",
     "@types/webpack-env": "1.13.0",
     "aspnet-webpack": "^2.0.1",
     "aspnet-webpack-react": "^3.0.0",
@@ -49,6 +50,7 @@
     "markdown-it": "^8.4.1",
     "monaco-editor": "^0.10.1",
     "office-ui-fabric-react": "^5.58.0",
-    "turndown": "^4.0.1"
+    "turndown": "^4.0.1",
+    "uuid": "^3.2.1"
   }
 }

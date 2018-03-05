@@ -6,7 +6,8 @@
 // Licensed under the MIT License.
 
 import * as React from 'react'
-import * as matter from 'gray-matter';
+import * as matter from 'gray-matter'
+import * as uuidv4 from 'uuid/v4'
 import { saveAs } from 'file-saver'
 
 import { WorkbookSession, ClientSessionEvent, ClientSessionEventKind } from '../WorkbookSession'
@@ -182,19 +183,13 @@ export class WorkbookShell extends React.Component<any, WorkbookShellState> {
         reader.readAsText(file);
     }
 
-    generateUuid() {
-        return "10000000-1000-4000-8000-100000000000".replace(/[018]/g, c =>
-            (+c ^ (crypto.getRandomValues(new Uint8Array(1)) as Uint8Array)[0] & 15 >> +c / 4).toString(16)
-        )
-    }
-
     saveWorkbook() {
         if (this.workbookEditor != null) {
             const contentToSave = this.workbookEditor.getContentToSave();
             this.workbookMetadata = this.workbookMetadata || {
                 title: "Untitled",
                 uti: "com.xamarin.workbook",
-                id: this.generateUuid(),
+                id: uuidv4(),
                 platforms: this.shellContext.session.availableWorkbookTargets.map(wt => wt.id)
             };
             const workbook = matter.stringify(contentToSave, this.workbookMetadata);

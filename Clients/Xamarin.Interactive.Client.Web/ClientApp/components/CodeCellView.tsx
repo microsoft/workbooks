@@ -21,6 +21,7 @@ import {
     IDropdownOption
 } from 'office-ui-fabric-react/lib/Dropdown';
 
+import { randomReactKey } from '../utils'
 import { EditorMessage, EditorMessageType } from '../utils/EditorMessages'
 import { CodeCellResult, CodeCellResultHandling, Diagnostic } from '../evaluation'
 import { ResultRendererRepresentation } from '../rendering'
@@ -138,10 +139,9 @@ export abstract class CodeCellView<
                             const spanText =
                                 "(" + (startPosition.line + 1) +
                                 "," + (startPosition.character + 1) + ")"
-                            const key = diag.id + spanText
                             return (
                                 <li
-                                    key={key}
+                                    key={randomReactKey()}
                                     className={"CodeCell-diagnostic-" + diag.severity}
                                     onClick={(e) => {
                                         e.stopPropagation()
@@ -167,7 +167,7 @@ export abstract class CodeCellView<
                         const dropdownOptions = resultState.representations.length > 1
                             ? resultState.representations.map((item, index) => {
                                 return {
-                                    key: index,
+                                    key: randomReactKey(),
                                     text: item.displayName
                                 }
                             })
@@ -175,15 +175,14 @@ export abstract class CodeCellView<
 
                         let repElem = null
                         if (resultState.selectedRepresentationIndex >= 0) {
-                            const repKey = resultState.selectedRepresentationIndex
-                            const rep = resultState.representations[repKey]
-                            const repProps = Object.assign({key: repKey}, rep.componentProps)
+                            const rep = resultState.representations[resultState.selectedRepresentationIndex]
+                            const repProps = Object.assign({key: randomReactKey()}, rep.componentProps)
                             repElem = React.createElement(rep.component, repProps)
                         }
 
                         return (
                             <div
-                                key={i}
+                                key={randomReactKey()}
                                 className="CodeCell-result">
                                 <div className="CodeCell-result-renderer-container">
                                     {repElem}
