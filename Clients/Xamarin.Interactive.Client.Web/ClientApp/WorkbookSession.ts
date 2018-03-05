@@ -124,7 +124,7 @@ export class WorkbookSession {
 
         await this.hubConnection.invoke(
             'OpenSession',
-            'xamarin-interactive:///v1?agentType=DotNetCore&sessionKind=Workbook')
+            'xamarin-interactive:///v1?agentType=Console&sessionKind=Workbook')
     }
 
     disconnect(): Promise<void> {
