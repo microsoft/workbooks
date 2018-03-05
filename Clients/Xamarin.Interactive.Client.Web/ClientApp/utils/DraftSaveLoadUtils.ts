@@ -7,7 +7,11 @@ import { WorkbookSession } from '../WorkbookSession';
 
 export function convertToMarkdown(contentState: Draft.ContentState): string {
     const htmlContent = stateToHTML(contentState);
-    const td = new TurndownService.default();
+    const td = new TurndownService.default({
+        headingStyle: "atx",
+        hr: "***",
+        codeBlockStyle: "fenced"
+    });
     td.addRule("codeblocks", {
         filter: ["pre"],
         replacement: codeBlocksSerializer

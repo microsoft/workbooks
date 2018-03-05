@@ -192,7 +192,9 @@ export class WorkbookShell extends React.Component<any, WorkbookShellState> {
                 id: uuidv4(),
                 platforms: this.shellContext.session.availableWorkbookTargets.map(wt => wt.id)
             };
-            const workbook = matter.stringify(contentToSave, this.workbookMetadata);
+            const workbook = matter.stringify(contentToSave, this.workbookMetadata, {
+                delims: ["---", "---\n"]
+            });
             var blob = new Blob([workbook], { type: "text/markdown;charset=utf-8" })
             saveAs(blob, `${this.workbookMetadata.title}.workbook`);
         }
