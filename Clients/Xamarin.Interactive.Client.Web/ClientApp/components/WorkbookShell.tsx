@@ -65,7 +65,7 @@ export class WorkbookShell extends React.Component<any, WorkbookShellState> {
     private onClientSessionEvent(session: WorkbookSession, clientSessionEvent: ClientSessionEvent) {
         if (clientSessionEvent.kind === ClientSessionEventKind.CompilationWorkspaceAvailable) {
             if (this.workbookEditor)
-                this.workbookEditor.appendNewCodeCell()
+                this.workbookEditor.setUpInitialState()
         }
     }
 

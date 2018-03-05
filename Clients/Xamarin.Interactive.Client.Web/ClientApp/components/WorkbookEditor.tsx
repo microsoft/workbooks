@@ -10,7 +10,8 @@ import {
     Modifier,
     genKey,
     ContentBlock,
-    DefaultDraftBlockRenderMap
+    DefaultDraftBlockRenderMap,
+    convertFromHTML
 } from 'draft-js'
 import createMarkdownPlugin from 'draft-js-markdown-plugin'
 import { List, Map, Set } from 'immutable'
@@ -189,6 +190,21 @@ export class WorkbookEditor extends React.Component<WorkbooksEditorProps, Workbo
         });
         const currentBlockIndex = codeBlocks.findIndex((block: ContentBlock) => block.getKey() == currentBlock);
         return codeBlocks[currentBlockIndex - 1];
+    }
+
+    setUpInitialState(): any {
+        const newBlocks = convertFromHTML("<h1>Welcome to Workbooks!</h1>").contentBlocks.concat([
+            new ContentBlock({
+                key: genKey(),
+                type: "code-block",
+                text: "",
+                characterList: List()
+            })
+        ])
+
+        const newContentState = ContentState.createFromBlockArray(newBlocks);
+        const newEditorState = EditorState.createWithContent(newContentState);
+        this.onChange(newEditorState);
     }
 
     // TODO: This should just be a special case of createNewEmptyBlock. Clean up ASAP
