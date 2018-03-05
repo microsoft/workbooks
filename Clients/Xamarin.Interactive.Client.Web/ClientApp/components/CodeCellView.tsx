@@ -133,10 +133,13 @@ export abstract class CodeCellView<
                 <div className="CodeCell-diagnostics-container">
                     <ul>
                         {this.state.diagnostics.map((diag, i) => {
+                            let spanText =
+                                "(" + (diag.span.span.start.line + 1) +
+                                "," + (diag.span.span.start.character + 1) + ")"
+                            let key = diag.id + spanText
                             return (
-                                <li className={"CodeCell-diagnostic-" + diag.severity} key={i}>
-                                    ({diag.span.span.start.line + 1},{diag.span.span.start.character + 1}):
-                                        {diag.severity} {diag.id}: {diag.message}
+                                <li className={"CodeCell-diagnostic-" + diag.severity} key={key}>
+                                    ({spanText}): {diag.severity} {diag.id}: {diag.message}
                                 </li>
                             )
                         })}
