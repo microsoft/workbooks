@@ -227,7 +227,9 @@ export class WorkbookEditor extends React.Component<WorkbooksEditorProps, Workbo
         let currentContent = this.state.editorState.getCurrentContent()
 
         // Empty block in between cells looks nicer
-        this.createNewEmptyBlock(currentContent, false)
+        const lastBlock = currentContent.getBlocksAsArray().slice(-1)[0];
+        if (lastBlock.getType() === "code-block")
+            this.createNewEmptyBlock(currentContent, false)
 
         currentContent = this.state.editorState.getCurrentContent()
 
