@@ -110,7 +110,8 @@ export class WorkbookCommandBar extends React.Component<WorkbookCommandBarProps,
             items: [
                 {
                     key: 'workbookTarget',
-                    name: 'Workbook Target',
+                    name: 'Mono: .NET Framework',
+                    icon: 'CSharpLanguage',
                     subMenuProps: {
                         items: targetItems
                     }
