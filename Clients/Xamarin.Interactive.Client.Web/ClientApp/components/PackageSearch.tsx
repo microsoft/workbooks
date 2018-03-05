@@ -151,8 +151,9 @@ export class PackageSearch extends React.Component<PackageSearchProps, PackageSe
 
         let results = []
         if (query) {
+            const pageSize = 100 // Totally abritrary. "json" search has about 1500 results
             // TODO: Add supportedFramework to query? Seems like a good idea but it doesn't seem to change results
-            let result = await fetch("https://api-v2v3search-0.nuget.org/query?prerelease=false&q=" + query)
+            let result = await fetch(`https://api-v2v3search-0.nuget.org/query?prerelease=false&q=${query}&take=${pageSize}`)
             var json = await result.json()
             results = json.data
         }
