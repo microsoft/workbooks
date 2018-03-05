@@ -16,8 +16,24 @@
   }
 
   .CodeCell-diagnostics-container {
-    .CodeCell-diagnostic {
-      display: block;
+    font-family: monospace;
+
+    ul {
+      border: 1px solid #f56d4f;
+      list-style-type: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    ul:empty {
+      border: none;
+    }
+
+    .CodeCell-diagnostic-Error {
+      color: #f56d4f;
+    }
+    .CodeCell-diagnostic-Warning {
+      color: #f38f00;
     }
   }
 

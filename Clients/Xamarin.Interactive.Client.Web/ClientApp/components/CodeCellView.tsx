@@ -130,10 +130,11 @@ export abstract class CodeCellView<
                     {this.renderEditor()}
                 </div>
                 <div className="CodeCell-diagnostics-container">
-                    {this.state.diagnostics.map((diag, i) => {
-                        // TODO: Make key cell-specific too?
-                        return <code className="CodeCell-diagnostic" key={"cell-diag-" + i}>({diag.span.span.start.line + 1},{diag.span.span.start.character + 1}): {diag.severity} {diag.id}: {diag.message}</code>
-                    })}
+                    <ul>
+                        {this.state.diagnostics.map((diag, i) => {
+                            return <li className={"CodeCell-diagnostic-" + diag.severity} key={i}>({diag.span.span.start.line + 1},{diag.span.span.start.character + 1}): {diag.severity} {diag.id}: {diag.message}</li>
+                        })}
+                    </ul>
                 </div>
                 <div className="CodeCell-results-container">
                     {this.state.results.map((resultState, i) => {
