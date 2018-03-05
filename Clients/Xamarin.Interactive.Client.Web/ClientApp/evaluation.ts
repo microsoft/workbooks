@@ -40,6 +40,7 @@ export interface CodeCellState {
     agentTerminatedWhileEvaluating: boolean
     evaluationCount: number
     isResultAnExpression: boolean
+    diagnostics: Diagnostic[]
 }
 
 export interface EvaluationResult {

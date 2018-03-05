@@ -62,7 +62,8 @@ export class CodeCell extends CodeCellView<CodeCellProps, CodeCellState> {
         this.state = {
             codeCellId: this.props.blockProps.codeCellId,
             results: [],
-            status: CodeCellViewStatus.Unbound
+            status: CodeCellViewStatus.Unbound,
+            diagnostics: []
         }
 
         this.shellContext = props.blockProps.shellContext
@@ -141,11 +142,21 @@ export class CodeCell extends CodeCellView<CodeCellProps, CodeCellState> {
         if (this.state.codeCellId && this.state.status === CodeCellViewStatus.Ready) {
             this.setState({ status: CodeCellViewStatus.Evaluating })
 
+            // TODO: I can't help but feel that this should be handled at a
+            //       higher level. The result has state info for potentially all
+            //       cells.
             const result = await this.shellContext.session.evaluate(this.state.codeCellId)
+
             if (result.shouldStartNewCell)
                 this.props.blockProps.appendNewCodeCell()
 
-            this.setState({ status: CodeCellViewStatus.Ready })
+            let codeCellState = result.codeCellStates.filter(s => s.id == this.state.codeCellId)[0]
+
+            // TODO: What about diags/etc for other cell states?
+            this.setState({
+                status: CodeCellViewStatus.Ready,
+                diagnostics: codeCellState.diagnostics
+            })
         }
     }
 

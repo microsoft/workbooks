@@ -21,7 +21,7 @@ import {
     IDropdownOption
 } from 'office-ui-fabric-react/lib/Dropdown';
 
-import { CodeCellResult, CodeCellResultHandling } from '../evaluation'
+import { CodeCellResult, CodeCellResultHandling, Diagnostic } from '../evaluation'
 import { ResultRendererRepresentation } from '../rendering'
 import { ResultRendererRegistry } from '../ResultRendererRegistry'
 
@@ -47,6 +47,7 @@ export interface CodeCellViewProps {
 export interface CodeCellViewState {
     status: CodeCellViewStatus
     results: CodeCellResultRendererState[]
+    diagnostics: Diagnostic[]
 }
 
 export abstract class CodeCellView<
@@ -128,6 +129,12 @@ export abstract class CodeCellView<
                 <div className="CodeCell-editor-container">
                     {this.renderEditor()}
                 </div>
+                <div className="CodeCell-diagnostics-container">
+                    {this.state.diagnostics.map((diag, i) => {
+                        // TODO: Make key cell-specific too?
+                        return <code className="CodeCell-diagnostic" key={"cell-diag-" + i}>({diag.span.span.start.line + 1},{diag.span.span.start.character + 1}): {diag.severity} {diag.id}: {diag.message}</code>
+                    })}
+                </div>
                 <div className="CodeCell-results-container">
                     {this.state.results.map((resultState, i) => {
                         if (resultState.representations.length === 0)
@@ -186,7 +193,8 @@ export class MockedCodeCellView extends CodeCellView<MockedCodeCellProps> {
 
         this.state = {
             status: CodeCellViewStatus.Ready,
-            results: []
+            results: [],
+            diagnostics: []
         }
     }
 
