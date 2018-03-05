@@ -48,6 +48,7 @@ export interface CodeCellViewState {
     status: CodeCellViewStatus
     results: CodeCellResultRendererState[]
     diagnostics: Diagnostic[]
+    isResultAnExpression?: boolean
 }
 
 export abstract class CodeCellView<
@@ -132,12 +133,17 @@ export abstract class CodeCellView<
                 <div className="CodeCell-diagnostics-container">
                     <ul>
                         {this.state.diagnostics.map((diag, i) => {
-                            return <li className={"CodeCell-diagnostic-" + diag.severity} key={i}>({diag.span.span.start.line + 1},{diag.span.span.start.character + 1}): {diag.severity} {diag.id}: {diag.message}</li>
+                            return (
+                                <li className={"CodeCell-diagnostic-" + diag.severity} key={i}>
+                                    ({diag.span.span.start.line + 1},{diag.span.span.start.character + 1}):
+                                        {diag.severity} {diag.id}: {diag.message}
+                                </li>
+                            )
                         })}
                     </ul>
                 </div>
                 <div className="CodeCell-results-container">
-                    {this.state.results.map((resultState, i) => {
+                    {this.state.isResultAnExpression && this.state.results.map((resultState, i) => {
                         if (resultState.representations.length === 0)
                             return
                         const dropdownOptions = resultState.representations.length > 1
@@ -195,7 +201,8 @@ export class MockedCodeCellView extends CodeCellView<MockedCodeCellProps> {
         this.state = {
             status: CodeCellViewStatus.Ready,
             results: [],
-            diagnostics: []
+            diagnostics: [],
+            isResultAnExpression: true
         }
     }
 

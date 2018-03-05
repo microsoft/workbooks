@@ -150,12 +150,13 @@ export class CodeCell extends CodeCellView<CodeCellProps, CodeCellState> {
             if (result.shouldStartNewCell)
                 this.props.blockProps.appendNewCodeCell()
 
-            let codeCellState = result.codeCellStates.filter(s => s.id == this.state.codeCellId)[0]
+            const codeCellState = result.codeCellStates.filter(s => s.id == this.state.codeCellId)[0]
 
             // TODO: What about diags/etc for other cell states?
             this.setState({
                 status: CodeCellViewStatus.Ready,
-                diagnostics: codeCellState.diagnostics
+                diagnostics: codeCellState.diagnostics,
+                isResultAnExpression: codeCellState.isResultAnExpression
             })
         }
     }
