@@ -80,7 +80,7 @@ namespace Xamarin.Interactive.Client
                     SendAsync (request, message => {
                         switch (message) {
                         case LogEntry logEntry:
-                            Log.Commit (logEntry);
+                            Log.Commit ((LogEntry)message);
                             break;
                         case MessageChannel.Ping ping:
                             break;
