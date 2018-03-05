@@ -76,3 +76,4 @@ echo Zipping...
 )
 
 echo Done
+echo "🎉 ${outdir}${bundlename}.zip"
