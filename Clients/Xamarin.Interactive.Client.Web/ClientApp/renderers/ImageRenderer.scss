@@ -1,0 +1,14 @@
+//
+// Author:
+//   Aaron Bockover <abock@microsoft.com>
+//
+// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License.
+
+.renderer-ImageRepresentation-container {
+  > img {
+    max-width: 100vw;
+    height: auto;
+    width: auto;
+  }
+}

@@ -4,8 +4,9 @@
 //
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
+
 import * as React from 'react'
-import { CodeCellResult } from '../evaluation';
+import { CodeCellResult } from '../evaluation'
 import {
     ResultRenderer,
     ResultRendererRepresentation
@@ -14,7 +15,9 @@ import {
     Image,
     IImageProps,
     ImageFit
-  } from 'office-ui-fabric-react/lib/Image';
+} from 'office-ui-fabric-react/lib/Image'
+
+import './ImageRenderer.scss'
 
 export default function ImageRendererFactory(result: CodeCellResult) {
     return result.valueRepresentations &&
@@ -71,6 +74,8 @@ class ImageRepresentation extends React.Component<{ value: string, image: ImageV
         }
         const src = image.format === "uri" ? atob(image.data) : `data:${image.format};base64,${image.data}`
 
-        return <Image src={src} {...imageProps} {...size} />
+        // FIXME: Fabric's <Image> is causing some strange clipping with at least SVG
+        // return <Image src={src} {...imageProps} {...size} />
+        return <img className='renderer-ImageRepresentation-container' src={src} />
     }
 }
