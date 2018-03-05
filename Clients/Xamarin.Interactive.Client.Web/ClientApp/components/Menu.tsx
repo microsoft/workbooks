@@ -5,10 +5,10 @@ import { hasSelectionInCodeBlock } from '../utils/DraftStateUtils'
 export const styleMap = {
     CODE: {
         backgroundColor: 'rgba(0, 0, 0, 0.05)',
-        fontFamily: '"Inconsolata", "Menlo", "Consolas", monospace',
-        fontSize: 16,
+        fontFamily: 'Menlo, Consolas, monospace',
+        fontSize: '0.9em',
         padding: 2,
-        borderRadius: 2
+        border: '1px solid #ddd'
     },
 };
 

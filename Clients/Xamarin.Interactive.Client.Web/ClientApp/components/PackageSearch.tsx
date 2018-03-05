@@ -95,7 +95,7 @@ export class PackageSearch extends React.Component<PackageSearchProps, PackageSe
                                     <div className="packageListActionContainer">
                                             <PrimaryButton
                                                 className="packageInstallButton"
-                                                text={this.isPackageInstalled(item) ? "installed" : "Install"}
+                                                text={this.isPackageInstalled(item) ? "Installed" : "Install"}
                                                 disabled={this.state.inProgress || this.isPackageInstalled(item)}
                                                 onClick={() => this.installPackage(item)}
                                             />

@@ -5,20 +5,26 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
+$margin: 8px;
+$padding: $margin / 2;
+
 .CodeCell-container {
   border: 1px solid #ccc;
   padding: 0.5em;
 
   .CodeCell-editor-container {
+    margin-bottom: $margin;
+    padding: $padding;
     border: 1px solid #ddd;
+
     background: #FAFAFA;
-    margin-bottom: 5px;
   }
 
   .CodeCell-diagnostics-container {
-    font-family: monospace;
+    font-family:  Menlo, Monaco, "Courier New", monospace;
 
     ul {
+      margin-bottom: $margin;
       border: 1px solid #f56d4f;
       list-style-type: none;
       margin: 0;
@@ -27,6 +33,12 @@
 
     ul:empty {
       border: none;
+      padding: none;
+      margin: none;
+    }
+
+    li {
+      padding: $padding;
     }
 
     .CodeCell-diagnostic-Error {
@@ -38,6 +50,8 @@
   }
 
   .CodeCell-results-container {
+    margin-bottom: $margin;
+
     .CodeCell-result {
       display: flex;
       align-items: flex-end;
