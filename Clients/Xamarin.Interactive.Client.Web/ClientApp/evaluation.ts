@@ -63,5 +63,6 @@ export interface CodeCellResult {
 
 export interface CapturedOutputSegment {
     codeCellId: string
+    fileDescriptor: number
     value: string
 }

@@ -62,6 +62,7 @@ export class CodeCell extends CodeCellView<CodeCellProps, CodeCellState> {
 
         this.state = {
             codeCellId: this.props.blockProps.codeCellId,
+            capturedOutput: [],
             results: [],
             status: CodeCellViewStatus.Unbound,
             diagnostics: []
@@ -104,6 +105,7 @@ export class CodeCell extends CodeCellView<CodeCellProps, CodeCellState> {
             .session
             .evaluationEvent
             .addListener(this.evaluationEventHandler.bind(this))
+
         this.shellContext
             .session
             .capturedOutputSegmentEvent

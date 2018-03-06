@@ -1,0 +1,18 @@
+// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License.
+
+@import '../css/theme.scss';
+
+.CapturedOutputView-container {
+  @include codeFont;
+
+  white-space: pre;
+  overflow-x: scroll;
+
+  border: 1px dotted $cellEditorBorderColor;
+  padding: 0.5em;
+
+  .stderr {
+    color: $fgColorError;
+  }
+}

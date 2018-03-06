@@ -26,6 +26,7 @@ import { EditorMessage, EditorMessageType } from '../utils/EditorMessages'
 import { CodeCellResult, CodeCellResultHandling, Diagnostic, CapturedOutputSegment } from '../evaluation'
 import { ResultRendererRepresentation } from '../rendering'
 import { ResultRendererRegistry } from '../ResultRendererRegistry'
+import { CapturedOutputView } from './CapturedOutputView'
 
 import './CodeCellView.scss'
 
@@ -48,10 +49,10 @@ export interface CodeCellViewProps {
 
 export interface CodeCellViewState {
     status: CodeCellViewStatus
+    capturedOutput: CapturedOutputSegment[]
     results: CodeCellResultRendererState[]
     diagnostics: Diagnostic[]
     isResultAnExpression?: boolean
-    capturedOutput?: string
 }
 
 export abstract class CodeCellView<
@@ -65,7 +66,11 @@ export abstract class CodeCellView<
     protected abstract renderEditor(): any
 
     protected setStateFromCapturedOutput(capturedOutputSegment: CapturedOutputSegment) {
-        this.setState({capturedOutput: (this.state.capturedOutput ? this.state.capturedOutput : "") + capturedOutputSegment.value})
+        this.setState({
+            capturedOutput: this.state.capturedOutput
+                ? this.state.capturedOutput.concat(capturedOutputSegment)
+                : [capturedOutputSegment]
+        })
     }
 
     protected setStateFromResult(result: CodeCellResult, resultHandling?: CodeCellResultHandling) {
@@ -138,7 +143,7 @@ export abstract class CodeCellView<
                     {this.renderEditor()}
                 </div>
                 <div className="CodeCell-captured-output-container">
-                    <code>{this.state.capturedOutput}</code>
+                    <CapturedOutputView segments={this.state.capturedOutput}/>
                 </div>
                 <div className="CodeCell-diagnostics-container">
                     <ul>
@@ -234,10 +239,10 @@ export class MockedCodeCellView extends CodeCellView<MockedCodeCellProps> {
 
         this.state = {
             status: CodeCellViewStatus.Ready,
+            capturedOutput: [],
             results: [],
             diagnostics: [],
-            isResultAnExpression: true,
-            capturedOutput: undefined
+            isResultAnExpression: true
         }
     }
 
