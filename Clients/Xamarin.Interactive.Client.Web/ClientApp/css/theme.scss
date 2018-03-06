@@ -1,0 +1,20 @@
+// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License.
+
+$fgColorError: #f56d4f;
+$fgColorWarning: #f38f00;
+
+$codeFontFamily: Menlo, Monaco, "Courier New", monospace;
+$codeFontSize: 12px;
+
+@mixin codeFont() {
+  font-family: $codeFontFamily;
+  font-size: $codeFontSize;
+}
+
+$cellBorderColor: #ccc;
+
+$cellEditorBorderColor: #ddd;
+$cellEditorBackground: #fafafa;
+
+$cellCancelButtonTextColor: #c00;

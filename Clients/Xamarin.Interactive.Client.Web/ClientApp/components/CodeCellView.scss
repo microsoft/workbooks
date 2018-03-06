@@ -5,11 +5,13 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
+@import '../css/theme.scss';
+
 $margin: 8px;
 $padding: $margin / 2;
 
 .CodeCell-container {
-  border: 1px solid #ccc;
+  border: 1px solid $cellBorderColor;
   padding: 0.5em;
   cursor: default;
   margin: 1em 0;
@@ -21,17 +23,16 @@ $padding: $margin / 2;
   .CodeCell-editor-container {
     margin-bottom: $margin;
     padding: $padding;
-    border: 1px solid #ddd;
-
-    background: #FAFAFA;
+    border: 1px solid $cellEditorBorderColor;
+    background: $cellEditorBackground;
   }
 
   .CodeCell-diagnostics-container {
-    font-family:  Menlo, Monaco, "Courier New", monospace;
+    @include codeFont;
 
     ul {
       margin-bottom: $margin;
-      border: 1px solid #f56d4f;
+      border: 1px solid $fgColorError;
       list-style-type: none;
       margin: 0;
       padding: 0;
@@ -48,10 +49,10 @@ $padding: $margin / 2;
     }
 
     .CodeCell-diagnostic-Error {
-      color: #f56d4f;
+      color: $fgColorError;
     }
     .CodeCell-diagnostic-Warning {
-      color: #f38f00;
+      color: $fgColorWarning;
     }
   }
 
@@ -85,7 +86,7 @@ $padding: $margin / 2;
 
     .CancelButton:hover,
     .CancelButton:hover * {
-      color: #c00;
+      color: $cellCancelButtonTextColor;
     }
 
     .ms-Button {
