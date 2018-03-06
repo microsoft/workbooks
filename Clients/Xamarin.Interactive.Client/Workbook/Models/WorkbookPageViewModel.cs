@@ -682,7 +682,7 @@ namespace Xamarin.Interactive.Workbook.Models
         }
 
         void RenderCapturedOutputSegment (CapturedOutputSegment segment)
-            => GetCodeCellStateById (segment.Context)?.View?.RenderCapturedOutputSegment (segment);
+            => GetCodeCellStateById (segment.CodeCellId)?.View?.RenderCapturedOutputSegment (segment);
 
         #endregion
     }
