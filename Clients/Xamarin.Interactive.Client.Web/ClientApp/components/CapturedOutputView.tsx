@@ -13,16 +13,18 @@ interface CapturedOutputViewState {
 
 export class CapturedOutputView extends React.Component<{ segments: CapturedOutputSegment[] }> {
     render() {
-        if (!this.props.segments || this.props.segments.length === 0)
-            return false
-
         return (
-            <div className='CapturedOutputView-container'>
+            <div
+                className='CapturedOutputView-container'>
                 {this.props.segments.map((segment, key) => {
                     if (segment.value)
                         return <span
                             key={key}
-                            className={segment.fileDescriptor === 2 ? 'stderr' : 'stdout'}>
+                            className={segment.fileDescriptor === 2 ? 'stderr' : 'stdout'}
+                            ref={span => {
+                                if (span)
+                                    span.scrollIntoView({ behavior: 'smooth' })
+                            }}>
                             {segment.value}
                         </span>
                 })}

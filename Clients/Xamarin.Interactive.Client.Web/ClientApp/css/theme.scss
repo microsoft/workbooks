@@ -6,10 +6,17 @@ $fgColorWarning: #f38f00;
 
 $codeFontFamily: Menlo, Monaco, "Courier New", monospace;
 $codeFontSize: 12px;
+$codeLineHeight: $codeFontSize + 2 * 2px;
 
 @mixin codeFont() {
   font-family: $codeFontFamily;
   font-size: $codeFontSize;
+  line-height: $codeLineHeight;
+}
+
+@mixin maxCodeLineCount($maxLineCount) {
+  @include codeFont;
+  max-height: calc(#{$codeLineHeight} * #{$maxLineCount} + (#{$codeLineHeight} - #{$codeFontSize}) / 2);
 }
 
 $cellBorderColor: #ccc;

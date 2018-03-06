@@ -56,6 +56,11 @@ $padding: $margin / 2;
     }
   }
 
+  .CodeCell-captured-output-container {
+    border: 1px dotted $cellEditorBorderColor;
+    padding: $padding;
+  }
+
   .CodeCell-results-container {
     margin-bottom: $margin;
 

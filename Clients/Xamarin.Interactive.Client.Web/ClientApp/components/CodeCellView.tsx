@@ -142,9 +142,6 @@ export abstract class CodeCellView<
                 <div className="CodeCell-editor-container">
                     {this.renderEditor()}
                 </div>
-                <div className="CodeCell-captured-output-container">
-                    <CapturedOutputView segments={this.state.capturedOutput}/>
-                </div>
                 <div className="CodeCell-diagnostics-container">
                     <ul>
                         {this.state.diagnostics.map((diag, i) => {
@@ -173,6 +170,10 @@ export abstract class CodeCellView<
                         })}
                     </ul>
                 </div>
+                {this.state.capturedOutput.length > 0 &&
+                    <div className="CodeCell-captured-output-container">
+                        <CapturedOutputView segments={this.state.capturedOutput} />
+                    </div>}
                 <div className="CodeCell-results-container">
                     {this.state.isResultAnExpression && this.state.results.map((resultState, i) => {
                         if (resultState.representations.length === 0)

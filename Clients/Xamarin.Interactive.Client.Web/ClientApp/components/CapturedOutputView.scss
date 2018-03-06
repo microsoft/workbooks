@@ -4,13 +4,10 @@
 @import '../css/theme.scss';
 
 .CapturedOutputView-container {
-  @include codeFont;
+  @include maxCodeLineCount(10);
 
   white-space: pre;
-  overflow-x: scroll;
-
-  border: 1px dotted $cellEditorBorderColor;
-  padding: 0.5em;
+  overflow: scroll;
 
   .stderr {
     color: $fgColorError;
