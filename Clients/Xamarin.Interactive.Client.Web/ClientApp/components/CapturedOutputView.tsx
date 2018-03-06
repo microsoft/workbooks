@@ -13,6 +13,9 @@ interface CapturedOutputViewState {
 
 export class CapturedOutputView extends React.Component<{ segments: CapturedOutputSegment[] }> {
     render() {
+        if (!this.props.segments || this.props.segments.length === 0)
+            return false
+
         return (
             <div className='CapturedOutputView-container'>
                 {this.props.segments.map((segment, key) => {
