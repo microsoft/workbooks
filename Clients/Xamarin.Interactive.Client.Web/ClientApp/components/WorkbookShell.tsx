@@ -10,6 +10,7 @@ import * as matter from 'gray-matter'
 import * as uuidv4 from 'uuid/v4'
 import { saveAs } from 'file-saver'
 
+import { osMac } from '../utils'
 import { WorkbookSession, ClientSessionEvent, ClientSessionEventKind } from '../WorkbookSession'
 import { WorkbookCommandBar } from './WorkbookCommandBar'
 import { WorkbookEditor } from './WorkbookEditor'
@@ -44,6 +45,10 @@ export class WorkbookShell extends React.Component<any, WorkbookShellState> {
     constructor() {
         super()
 
+        this.onDocumentKeyDown = this.onDocumentKeyDown.bind(this),
+        this.onStatusUIAction = this.onStatusUIAction.bind(this),
+        this.onClientSessionEvent = this.onClientSessionEvent.bind(this)
+
         this.shellContext = {
             session: new WorkbookSession,
             rendererRegistry: ResultRendererRegistry.createDefault()
@@ -72,35 +77,22 @@ export class WorkbookShell extends React.Component<any, WorkbookShellState> {
     }
 
     async componentDidMount() {
-        this.shellContext.session.statusUIActionEvent.addListener(this.onStatusUIAction.bind(this))
-        this.shellContext.session.clientSessionEvent.addListener(this.onClientSessionEvent.bind(this))
+        this.shellContext.session.statusUIActionEvent.addListener(this.onStatusUIAction)
+        this.shellContext.session.clientSessionEvent.addListener(this.onClientSessionEvent)
 
         await this.shellContext.session.connect()
 
         if (this.commandBar)
             this.commandBar.setWorkbookTargets(this.shellContext.session.availableWorkbookTargets)
 
-        window.onkeydown = this.handleWindowKeyDown(window.onkeydown);
-    }
-
-    handleWindowKeyDown(oldHandler: (ev: KeyboardEvent) => void): (ev: KeyboardEvent) => void {
-        return (ev: KeyboardEvent) => {
-            if ((ev.keyCode === 83 && ev.metaKey) && this.workspaceAvailable) {
-                ev.preventDefault();
-                this.saveWorkbook();
-            } else if ((ev.keyCode === 79 && ev.metaKey) && this.workspaceAvailable) {
-                ev.preventDefault();
-                this.triggerFilePicker();
-            } else {
-                if (oldHandler)
-                    return oldHandler(ev);
-            }
-        }
+        document.addEventListener('keydown', this.onDocumentKeyDown)
     }
 
     componentWillUnmount() {
         this.shellContext.session.statusUIActionEvent.removeListener(this.onStatusUIAction)
         this.shellContext.session.clientSessionEvent.removeListener(this.onClientSessionEvent)
+
+        document.addEventListener('keydown', this.onDocumentKeyDown)
 
         this.shellContext.session.disconnect()
 
@@ -108,6 +100,24 @@ export class WorkbookShell extends React.Component<any, WorkbookShellState> {
         this.workbookEditor = null
         this.fileButton = null
         this.statusMessageBarComponent = null
+    }
+
+    private onDocumentKeyDown(e: KeyboardEvent): void {
+        if (!(osMac() ? e.metaKey : e.ctrlKey))
+            return
+
+        switch (e.key) {
+            case 'o':
+                e.preventDefault()
+                if (this.workspaceAvailable)
+                    this.triggerFilePicker()
+                break;
+            case 's':
+                e.preventDefault()
+                if (this.workspaceAvailable)
+                    this.saveWorkbook()
+                break;
+        }
     }
 
     showPackageDialog() {
