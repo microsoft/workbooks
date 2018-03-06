@@ -6,6 +6,7 @@ export function randomReactKey() {
 
 let _osMac: boolean | undefined
 export function osMac() {
+    if (_osMac === undefined)
         _osMac = /^mac/i.test(navigator.platform)
     return _osMac
 }

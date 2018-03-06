@@ -111,12 +111,12 @@ export class WorkbookShell extends React.Component<any, WorkbookShellState> {
                 e.preventDefault()
                 if (this.workspaceAvailable)
                     this.triggerFilePicker()
-                break;
+                break
             case 's':
                 e.preventDefault()
                 if (this.workspaceAvailable)
                     this.saveWorkbook()
-                break;
+                break
         }
     }
 
