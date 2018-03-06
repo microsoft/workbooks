@@ -9,6 +9,7 @@
 
 import * as React from 'react'
 import * as ReactDOM from 'react-dom'
+import { osMac } from '../utils'
 import { SelectionState } from 'draft-js'
 import { EditorMessage, EditorMessageType, EditorKeys } from '../utils/EditorMessages'
 import { CodeCellUpdateResponse } from '../WorkbookSession'
@@ -212,7 +213,7 @@ export class MonacoCellEditor extends React.Component<MonacoCellEditorProps, Mon
     }
 
     onEnter(e: monaco.IKeyboardEvent): boolean {
-        let isMod = window.navigator.platform == "MacIntel" ? e.metaKey : e.ctrlKey
+        const isMod = osMac ? e.metaKey : e.ctrlKey
 
         // Shift+Mod+Enter: new markdown cell (do we need this now?)
         if (e.shiftKey && isMod) {
