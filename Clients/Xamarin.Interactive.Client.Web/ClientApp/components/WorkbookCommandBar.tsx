@@ -66,6 +66,8 @@ export class WorkbookCommandBar extends React.Component<WorkbookCommandBarProps,
     constructor(props: WorkbookCommandBarProps) {
         super(props)
 
+        this.onClientSessionEvent = this.onClientSessionEvent.bind(this)
+
         this.state = {
             items: [
                 addPackagesItem
@@ -91,7 +93,7 @@ export class WorkbookCommandBar extends React.Component<WorkbookCommandBarProps,
     }
 
     componentDidMount() {
-        this.props.shellContext.session.clientSessionEvent.addListener(this.onClientSessionEvent.bind(this))
+        this.props.shellContext.session.clientSessionEvent.addListener(this.onClientSessionEvent)
     }
 
     componentWillUnmount() {

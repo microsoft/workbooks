@@ -60,6 +60,9 @@ export class CodeCell extends CodeCellView<CodeCellProps, CodeCellState> {
     constructor(props: CodeCellProps) {
         super(props)
 
+        this.evaluationEventHandler = this.evaluationEventHandler.bind(this)
+        this.capturedOutputSegmentEventHandler = this.capturedOutputSegmentEventHandler.bind(this)
+
         this.state = {
             codeCellId: this.props.blockProps.codeCellId,
             capturedOutput: [],
@@ -104,12 +107,12 @@ export class CodeCell extends CodeCellView<CodeCellProps, CodeCellState> {
         this.shellContext
             .session
             .evaluationEvent
-            .addListener(this.evaluationEventHandler.bind(this))
+            .addListener(this.evaluationEventHandler)
 
         this.shellContext
             .session
             .capturedOutputSegmentEvent
-            .addListener(this.capturedOutputSegmentEventHandler.bind(this))
+            .addListener(this.capturedOutputSegmentEventHandler)
 
         let codeCellId: string;
 
@@ -139,6 +142,18 @@ export class CodeCell extends CodeCellView<CodeCellProps, CodeCellState> {
         }
 
         this.props.blockProps.cellMapper.registerCellInfo(codeCellId, this.monacoModelId)
+    }
+
+    componentWillUnmount() {
+        this.shellContext
+            .session
+            .evaluationEvent
+            .removeListener(this.evaluationEventHandler)
+
+        this.shellContext
+            .session
+            .capturedOutputSegmentEvent
+            .removeListener(this.capturedOutputSegmentEventHandler)
     }
 
     async updateCodeCell(buffer: string): Promise<CodeCellUpdateResponse> {

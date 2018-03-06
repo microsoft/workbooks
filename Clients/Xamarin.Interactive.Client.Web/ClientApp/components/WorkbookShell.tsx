@@ -49,6 +49,11 @@ export class WorkbookShell extends React.Component<any, WorkbookShellState> {
         this.onStatusUIAction = this.onStatusUIAction.bind(this),
         this.onClientSessionEvent = this.onClientSessionEvent.bind(this)
 
+        this.showPackageDialog = this.showPackageDialog.bind(this)
+        this.triggerFilePicker = this.triggerFilePicker.bind(this)
+        this.saveWorkbook = this.saveWorkbook.bind(this)
+        this.dumpDraftState = this.dumpDraftState.bind(this)
+
         this.shellContext = {
             session: new WorkbookSession,
             rendererRegistry: ResultRendererRegistry.createDefault()
@@ -240,10 +245,10 @@ export class WorkbookShell extends React.Component<any, WorkbookShellState> {
             <div className='WorkbookShell-container'>
                 <WorkbookCommandBar
                     ref={component => this.commandBar = component}
-                    addPackages={this.showPackageDialog.bind(this)}
-                    loadWorkbook={this.triggerFilePicker.bind(this)}
-                    saveWorkbook={this.saveWorkbook.bind(this)}
-                    dumpDraftState={this.dumpDraftState.bind(this)}
+                    addPackages={this.showPackageDialog}
+                    loadWorkbook={this.triggerFilePicker}
+                    saveWorkbook={this.saveWorkbook}
+                    dumpDraftState={this.dumpDraftState}
                     shellContext={this.shellContext}
                 />
                 <StatusMessageBar
