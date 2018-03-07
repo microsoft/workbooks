@@ -7,10 +7,6 @@ import { CapturedOutputSegment } from '../evaluation'
 
 import './CapturedOutputView.scss'
 
-interface CapturedOutputViewState {
-    segments: CapturedOutputSegment[]
-}
-
 export class CapturedOutputView extends React.Component<{ segments: CapturedOutputSegment[] }> {
     render() {
         return (
