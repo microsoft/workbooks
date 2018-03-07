@@ -12,6 +12,7 @@ import {
 } from 'office-ui-fabric-react/lib/Calendar';
 import { CodeCellResult } from '../evaluation';
 import { ResultRenderer, ResultRendererRepresentation } from '../rendering'
+import { randomReactKey } from '../utils';
 
 export default function CalendarRendererFactory(result: CodeCellResult) {
     return result.valueRepresentations &&
@@ -26,6 +27,7 @@ class CalendarRenderer implements ResultRenderer {
     getRepresentations(result: CodeCellResult) {
         return [{
             displayName: 'Calendar',
+            key: randomReactKey(),
             component: CalendarRepresentation,
             componentProps: {
                 value: new Date((result.valueRepresentations as any[])[0] as string)

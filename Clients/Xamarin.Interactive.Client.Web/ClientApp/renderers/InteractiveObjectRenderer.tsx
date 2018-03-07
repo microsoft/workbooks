@@ -7,7 +7,6 @@
 import * as React from 'react'
 import { CodeCellResult } from '../evaluation';
 import { ResultRenderer, ResultRendererRepresentation } from '../rendering'
-import { WorkbookShellContext, WorkbookShell } from '../components/WorkbookShell';
 import {
     GroupedList,
     IGroup
@@ -22,6 +21,8 @@ import {
     SelectionMode,
     SelectionZone
   } from 'office-ui-fabric-react/lib/utilities/selection/index';
+import { randomReactKey } from '../utils';
+import { WorkbookSession } from '../WorkbookSession';
 
 export default function InteractiveObjectRendererFactory(result: CodeCellResult) {
     return result.valueRepresentations &&
@@ -42,7 +43,7 @@ interface InteractiveObjectValue {
 }
 
 class InteractiveObjectRenderer implements ResultRenderer {
-    getRepresentations(result: CodeCellResult) {
+    getRepresentations(result: CodeCellResult, session: WorkbookSession) {
         const reps: ResultRendererRepresentation[] = []
 
         if (!result.valueRepresentations)
@@ -55,38 +56,50 @@ class InteractiveObjectRenderer implements ResultRenderer {
             const interactiveObject = value as InteractiveObjectValue
             reps.push({
                 displayName: 'Object Properties',
+                key: randomReactKey(),
                 component: InteractiveObjectRepresentation,
                 componentProps: {
                     object: interactiveObject,
-                    interact: result.interact,
-                }
+                    session: session,
+                },
+                interact: this.interact
             })
         }
         return reps
     }
+    async interact(rep: ResultRendererRepresentation):
+        Promise<ResultRendererRepresentation>
+    {
+        const props = rep.componentProps as {
+            object: InteractiveObjectValue,
+            session: WorkbookSession
+        }
+
+        if (!props.session)
+            return rep;
+
+        if (props.object.isExpanded)
+            return rep;
+
+        const obj = await props.session.interact(props.object.handle)
+        return ({
+            ...rep,
+            componentProps: {
+                object: obj,
+                session: props.session
+            },
+            interact: undefined
+        })
+    }
 }
 
-class InteractiveObjectRepresentation extends React.Component<InteractiveObjectProps, InteractiveObjectValue> {
+class InteractiveObjectRepresentation extends React.Component<InteractiveObjectProps, {}> {
     constructor(props: InteractiveObjectProps) {
         super(props);
-        this.updateObject = this.updateObject.bind(this);
-        const state = { ...props.object }
-        this.state = state
-    }
-
-    updateObject(updated: any) {
-        this.setState(updated)
     }
 
     render() {
-        if (!this.state.isExpanded)
-            this.props.interact(this.props.object.handle).then(this.updateObject);
-
-        if (!this.state) {
-            return <code>{this.props.object.handle}</code>
-        }
-
-        const obj = this.state as any
+        const obj = this.props.object as any
         return (
             <ul>
                 {Object.keys(obj).map(key => {

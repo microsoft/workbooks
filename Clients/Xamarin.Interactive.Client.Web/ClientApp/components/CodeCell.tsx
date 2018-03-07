@@ -78,7 +78,6 @@ export class CodeCell extends CodeCellView<CodeCellProps, CodeCellState> {
         }
 
         this.shellContext = props.blockProps.shellContext
-        this.interact = this.interact.bind(this);
         this.monacoModelId = ''
         this.monacoCellProps = {
             block: props.block,
@@ -162,10 +161,6 @@ export class CodeCell extends CodeCellView<CodeCellProps, CodeCellState> {
             isSubmissionComplete: false,
             diagnostics: []
         }
-    }
-
-    interact (handle: string): Promise<any> {
-        return this.shellContext.session.interact(handle);
     }
 
     protected async startEvaluation(): Promise<void> {

@@ -74,7 +74,7 @@ export interface CodeCellResult extends ICodeCellEvent  {
     resultHandling: CodeCellResultHandling
     type: string | null
     valueRepresentations: any[] | null
-    interact: ((handle: string) => Promise<any>) | undefined
+    interact?: ((handle: string) => Promise<any>)
 }
 
 export interface CapturedOutputSegment extends ICodeCellEvent {

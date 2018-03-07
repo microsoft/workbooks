@@ -8,6 +8,7 @@
 import * as React from 'react'
 import { CodeCellResult } from '../evaluation';
 import { ResultRenderer } from '../rendering'
+import { randomReactKey } from '../utils';
 
 export default function TestRendererFactory(result: CodeCellResult) {
     if (!result.valueRepresentations || result.valueRepresentations.length === 0)
@@ -19,6 +20,7 @@ class TestRenderer implements ResultRenderer {
     getRepresentations(result: CodeCellResult) {
         return [
             {
+                key: randomReactKey(),
                 component: TestRepresentation,
                 componentProps: {
                     id: 1
@@ -26,6 +28,7 @@ class TestRenderer implements ResultRenderer {
                 displayName: 'Test Representation 1'
             },
             {
+                key: randomReactKey(),
                 component: TestRepresentation,
                 componentProps: {
                     id: 2

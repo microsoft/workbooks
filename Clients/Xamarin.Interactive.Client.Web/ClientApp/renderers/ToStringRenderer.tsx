@@ -8,6 +8,7 @@
 import * as React from 'react'
 import { CodeCellResult } from '../evaluation';
 import { ResultRenderer, ResultRendererRepresentation } from '../rendering'
+import { randomReactKey } from '../utils';
 
 export default function ToStringRendererFactory(result: CodeCellResult) {
     return result.valueRepresentations &&
@@ -45,10 +46,11 @@ class ToStringRenderer implements ResultRenderer {
             if (typeof toStringValue === 'string') {
                 reps.push({
                     displayName: 'String',
+                    key: randomReactKey (),
                     component: ToStringRepresentation,
                     componentProps: {
                         value: toStringValue
-                    }
+                    },
                 })
 
                 continue
@@ -62,6 +64,7 @@ class ToStringRenderer implements ResultRenderer {
                 const formatKey = Object.keys(format)[0] as string
                 reps.push({
                     displayName: formatKey,
+                    key: randomReactKey(),
                     component: ToStringRepresentation,
                     componentProps: {
                         value: format[formatKey]

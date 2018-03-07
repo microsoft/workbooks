@@ -12,6 +12,7 @@ import {
     ResultRenderer,
     ResultRendererRepresentation
 } from '../rendering'
+import { randomReactKey } from '../utils';
 
 const xirType = 'Xamarin.Interactive.Representations.VerbatimHtml'
 
@@ -37,6 +38,7 @@ class VerbatimHtmlRenderer implements ResultRenderer {
             if (value.$type === xirType)
                 reps.push({
                     displayName: 'HTML',
+                    key: randomReactKey(),
                     component: VerbatimHtmlRepresentation,
                     componentProps: {
                         value: value as VerbatimHtmlValue

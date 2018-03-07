@@ -18,6 +18,7 @@ import {
 } from 'office-ui-fabric-react/lib/Image'
 
 import './ImageRenderer.scss'
+import { randomReactKey } from '../utils';
 
 export default function ImageRendererFactory(result: CodeCellResult) {
     return result.valueRepresentations &&
@@ -52,6 +53,7 @@ class ImageRenderer implements ResultRenderer {
 
             reps.push({
                 displayName: 'Image',
+                key: randomReactKey(),
                 component: ImageRepresentation,
                 componentProps: {
                     value: "Image",
