@@ -160,12 +160,12 @@ namespace Xamarin.Interactive.CodeAnalysis
                 .Select (CodeCellIdExtensions.ToCodeCellId)
                 .ToImmutableList ();
 
-        public Task<IReadOnlyList<CodeCellState>> GetAllCodeCellsAsync (
+        public Task<ImmutableList<CodeCellState>> GetAllCodeCellsAsync (
             CancellationToken cancellationToken = default)
-            => Task.FromResult<IReadOnlyList<CodeCellState>> (
+            => Task.FromResult (
                 GetTopologicallySortedCodeCellIds ()
                 .Select (id => cellStates [id])
-                .ToList ());
+                .ToImmutableList ());
 
         public Task<CodeCellState> InsertCodeCellAsync (
             string initialBuffer = null,
@@ -273,7 +273,7 @@ namespace Xamarin.Interactive.CodeAnalysis
 
             return new EvaluationResult (
                 success: true,
-                shouldStartNewCell: !evaluateAll && evaluationModel.ShouldMaybeStartNewCodeCell,
+                shouldStartNewCell: evaluationModel.ShouldMaybeStartNewCodeCell,
                 codeCellStates: evaluationModel.CellsToEvaluate);
         }
 
@@ -291,37 +291,69 @@ namespace Xamarin.Interactive.CodeAnalysis
         {
             var model = new EvaluationModel ();
             var cells = await GetAllCodeCellsAsync ();
-            var haveSeenTargetCell = false;
-            var skipRemainingCells = false;
 
-            for (int i = 0; i < cells.Count; i++) {
+            var targetCellIndex = evaluateAll
+                ? -1
+                : cells.FindIndex (cell => cell.Id == targetCodeCellId);
+
+            // we're either evaluating all cells head to tail or we failed to
+            // find the target cell in the list; either way we're bailing early
+            if (targetCellIndex < 0) {
+                if (!evaluateAll && targetCodeCellId != default)
+                    throw new KeyNotFoundException (
+                        $"{nameof (targetCodeCellId)} '{targetCodeCellId}' not found");
+
+                model.ShouldResetAgentState = true;
+                model.CellsToEvaluate.AddRange (cells);
+                return model;
+            }
+
+            // otherwise, starting with our target cell and working backwards to the,
+            // head of the cell list figure out cells that need to be evaluated.
+            for (var i = targetCellIndex; i >= 0; i--) {
                 var cell = cells [i];
-                var isTargetCell = cell.Id == targetCodeCellId;
-                var shouldEvaluate = isTargetCell || cell.IsEvaluationCandidate;
-                haveSeenTargetCell |= isTargetCell;
 
-                if (!shouldEvaluate && workspace.HaveAnyLoadDirectiveFilesChanged (cell.Id.ToDocumentId ())) {
+                var isTargetCell = targetCellIndex == i;
+                var shouldEvaluate = isTargetCell || cell.IsEvaluationCandidate;
+
+                if (!shouldEvaluate &&
+                    workspace.HaveAnyLoadDirectiveFilesChanged (cell.Id.ToDocumentId ())) {
+                    // a trick to force Roslyn into invalidating the tree it's holding on
+                    // to representing code pulled in via any #load directives in the cell.
                     cell.Buffer.Invalidate ();
                     shouldEvaluate = true;
                 }
 
                 if (shouldEvaluate) {
-                    if (i == 0)
-                        model.ShouldResetAgentState = true;
-
-                    model.CellsToEvaluate.Add (cell);
+                    model.ShouldResetAgentState |= i == 0;
+                    model.CellsToEvaluate.Insert (0, cell);
                 }
+            }
 
-                if (skipRemainingCells || cell.AgentTerminatedWhileEvaluating)
-                    skipRemainingCells = true;
-                else if (evaluateAll || cell.EvaluationCount > 0)
+            // now look at all cells after our target cell; if any of them have been
+            // evaluated before, we also want to re-evaluate those since they may
+            // depend on state in previous cells which will become invalidated.
+            for (var i = targetCellIndex + 1; i < cells.Count; i++) {
+                var cell = cells [i];
+
+
+                // if a cell was previously run but resulted in an agent termination,
+                // we do not want to automatically re-run that cell; the user must
+                // explicitly re-run terminated cells (which would be handled in the
+                // target->head walk above).
+                if (cell.AgentTerminatedWhileEvaluating)
+                    break;
+
+                // otherwise if we've evaluated this cell before, we should do so again
+                if (cell.EvaluationCount > 0)
                     model.CellsToEvaluate.Add (cell);
 
-                cell.IsOutdated = true;
-
-                // Should only be true if target cell is last cell
-                model.ShouldMaybeStartNewCodeCell = isTargetCell;
+                // FIXME: this is where we did codeCellState.View.IsOutdated = true;
+                // but I do not know why we did that yet. Let this be a clue to future
+                // self. -abock, 2018-03-07
             }
+
+            model.ShouldMaybeStartNewCodeCell = targetCellIndex == cells.Count - 1;
 
             return model;
         }
