@@ -7,8 +7,11 @@
 
 namespace Xamarin.Interactive.CodeAnalysis.Events
 {
-    interface IEvaluationEvent
+    struct CodeCellEvaluationStartedEvent : ICodeCellEvent
     {
-        CodeCellId CodeCellId { get; }
+        public CodeCellId CodeCellId { get; }
+
+        public CodeCellEvaluationStartedEvent (CodeCellId codeCellId)
+            => CodeCellId = codeCellId;
     }
 }

@@ -8,7 +8,6 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import { WorkbookSession, CodeCellUpdateResponse } from '../WorkbookSession'
-import { CodeCellResult, CodeCellResultHandling, CapturedOutputSegment } from '../evaluation'
 import { MonacoCellEditor, MonacoCellEditorProps } from './MonacoCellEditor'
 import { ContentBlock } from 'draft-js';
 import { EditorMessage } from '../utils/EditorMessages'
@@ -16,6 +15,14 @@ import { WorkbookShellContext } from './WorkbookShell'
 import { ResultRendererRepresentation } from '../rendering';
 import { ResultRendererRegistry } from '../ResultRendererRegistry'
 import { MonacoCellMapper } from '../utils/MonacoUtils'
+
+import {
+    ICodeCellEvent,
+    CodeCellEventType,
+    CodeCellResult,
+    CodeCellResultHandling,
+    CapturedOutputSegment
+} from '../evaluation'
 
 import {
     CodeCellViewStatus,
@@ -60,8 +67,7 @@ export class CodeCell extends CodeCellView<CodeCellProps, CodeCellState> {
     constructor(props: CodeCellProps) {
         super(props)
 
-        this.evaluationEventHandler = this.evaluationEventHandler.bind(this)
-        this.capturedOutputSegmentEventHandler = this.capturedOutputSegmentEventHandler.bind(this)
+        this.onCodeCellEvent = this.onCodeCellEvent.bind(this)
 
         this.state = {
             codeCellId: this.props.blockProps.codeCellId,
@@ -106,13 +112,8 @@ export class CodeCell extends CodeCellView<CodeCellProps, CodeCellState> {
     async componentDidMount() {
         this.shellContext
             .session
-            .evaluationEvent
-            .addListener(this.evaluationEventHandler)
-
-        this.shellContext
-            .session
-            .capturedOutputSegmentEvent
-            .addListener(this.capturedOutputSegmentEventHandler)
+            .codeCellEvent
+            .addListener(this.onCodeCellEvent)
 
         let codeCellId: string;
 
@@ -147,13 +148,8 @@ export class CodeCell extends CodeCellView<CodeCellProps, CodeCellState> {
     componentWillUnmount() {
         this.shellContext
             .session
-            .evaluationEvent
-            .removeListener(this.evaluationEventHandler)
-
-        this.shellContext
-            .session
-            .capturedOutputSegmentEvent
-            .removeListener(this.capturedOutputSegmentEventHandler)
+            .codeCellEvent
+            .removeListener(this.onCodeCellEvent)
     }
 
     async updateCodeCell(buffer: string): Promise<CodeCellUpdateResponse> {
@@ -194,22 +190,28 @@ export class CodeCell extends CodeCellView<CodeCellProps, CodeCellState> {
     protected async abortEvaluation(): Promise<void> {
     }
 
-    private evaluationEventHandler(session: WorkbookSession, result: CodeCellResult) {
-        if (result.codeCellId !== this.state.codeCellId)
+    private onCodeCellEvent(session: WorkbookSession, event: ICodeCellEvent) {
+        if (event.codeCellId !== this.state.codeCellId)
             return
 
-        console.log("evaluationEventHandler: %O", result)
-
-        this.setStateFromResult(result)
-    }
-
-    private capturedOutputSegmentEventHandler(session: WorkbookSession, segment: CapturedOutputSegment) {
-        if (segment.codeCellId !== this.state.codeCellId)
-            return
-
-        console.log("capturedOutputSegmentEventHandler: %O", segment)
-
-        this.setStateFromCapturedOutput(segment)
+        switch (event.$type) {
+            case CodeCellEventType.EvaluationStarted:
+                this.setState({
+                    capturedOutput: []
+                })
+                break
+            case CodeCellEventType.Result:
+                this.setStateFromResult(event as CodeCellResult)
+                break
+            case CodeCellEventType.CapturedOutputSegment:
+                const capturedOutputSegment = event as CapturedOutputSegment
+                this.setState({
+                    capturedOutput: this.state.capturedOutput
+                        ? this.state.capturedOutput.concat(capturedOutputSegment)
+                        : [capturedOutputSegment]
+                })
+                break
+        }
     }
 
     protected renderEditor() {

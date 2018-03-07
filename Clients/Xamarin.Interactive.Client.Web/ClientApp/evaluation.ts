@@ -1,3 +1,5 @@
+import { CodeCellView } from "./components/CodeCellView";
+
 //
 // Author:
 //   Aaron Bockover <abock@microsoft.com>
@@ -49,19 +51,32 @@ export interface EvaluationResult {
     codeCellStates: CodeCellState[]
 }
 
+// Events
+
+export const enum CodeCellEventType {
+    EvaluationStarted = 'CodeCellEvaluationStartedEvent',
+    Result = 'CodeCellResultEvent',
+    CapturedOutputSegment = 'CapturedOutputSegment'
+}
+
+export interface ICodeCellEvent {
+    $type: CodeCellEventType
+    codeCellId: string
+}
+
 export const enum CodeCellResultHandling {
     Replace = 'Replace',
     Append = 'Append'
 }
 
-export interface CodeCellResult {
+export interface CodeCellResult extends ICodeCellEvent  {
     codeCellId: string
     resultHandling: CodeCellResultHandling
     type: string | null
     valueRepresentations: any[] | null
 }
 
-export interface CapturedOutputSegment {
+export interface CapturedOutputSegment extends ICodeCellEvent {
     codeCellId: string
     fileDescriptor: number
     value: string

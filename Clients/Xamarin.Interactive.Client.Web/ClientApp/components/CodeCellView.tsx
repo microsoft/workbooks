@@ -65,14 +65,6 @@ export abstract class CodeCellView<
     protected abstract startEvaluation(): Promise<void>
     protected abstract renderEditor(): any
 
-    protected setStateFromCapturedOutput(capturedOutputSegment: CapturedOutputSegment) {
-        this.setState({
-            capturedOutput: this.state.capturedOutput
-                ? this.state.capturedOutput.concat(capturedOutputSegment)
-                : [capturedOutputSegment]
-        })
-    }
-
     protected setStateFromResult(result: CodeCellResult, resultHandling?: CodeCellResultHandling) {
         const reps = this
             .getRendererRegistry()

@@ -5,6 +5,8 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
+using System;
+
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Serialization;
@@ -26,9 +28,22 @@ namespace Xamarin.Interactive.Serialization
             }
         }
 
+        sealed class InteractiveJsonBinder : ISerializationBinder
+        {
+            public void BindToName (Type serializedType, out string assemblyName, out string typeName)
+            {
+                assemblyName = null;
+                typeName = serializedType.Name;
+            }
+
+            public Type BindToType (string assemblyName, string typeName)
+                => throw new NotImplementedException ();
+        }
+
         public InteractiveJsonSerializerSettings ()
         {
             ContractResolver = new InteractiveJsonContractResolver ();
+            SerializationBinder = new InteractiveJsonBinder ();
 
             Converters.Add (new CodeCellIdConverter ());
             Converters.Add (new StringEnumConverter ());
@@ -37,6 +52,7 @@ namespace Xamarin.Interactive.Serialization
             Converters.Add (new RepresentedReflectionConverter ());
 
             Formatting = Formatting.Indented;
+            TypeNameHandling = TypeNameHandling.Objects;
         }
     }
 }

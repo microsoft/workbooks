@@ -261,6 +261,9 @@ namespace Xamarin.Interactive.CodeAnalysis
                 evaluatableCodeCell.Reset ();
                 evaluatableCodeCell.IsEvaluating = true;
 
+                events.Observers.OnNext (
+                    new CodeCellEvaluationStartedEvent (evaluatableCodeCell.Id));
+
                 switch (await CoreEvaluateCodeCellAsync (evaluatableCodeCell)) {
                     case CodeCellEvaluationStatus.ErrorDiagnostic:
                     case CodeCellEvaluationStatus.Disconnected:

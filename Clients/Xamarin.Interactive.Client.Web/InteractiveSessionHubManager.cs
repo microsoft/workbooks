@@ -74,7 +74,7 @@ namespace Xamarin.Interactive.Client.Web
                 sessionState.EvaluationEventObserver = new Observer<ICodeCellEvent> (evnt =>
                     SendConnectionAsync (
                         connectionId,
-                        (evnt is CodeCellResultEvent) ? "EvaluationEvent" : "CapturedOutputSegmentEvent", // TODO
+                        "CodeCellEvent",
                         new [] { evnt }).Forget ());
 
                 if (sessionState.ClientSession.EvaluationService is EvaluationService evaluationService) {
