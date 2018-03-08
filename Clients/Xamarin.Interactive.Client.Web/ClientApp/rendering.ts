@@ -8,7 +8,7 @@
 import * as React from 'react'
 
 import { CodeCellResult } from './evaluation'
-import { WorkbookSession } from './WorkbookSession';
+import { WorkbookShellContext } from './components/WorkbookShell';
 
 export const enum ResultRendererRepresentationOptions {
     None = 0,
@@ -40,7 +40,7 @@ export const enum ResultRendererRepresentationOptions {
 }
 
 export interface ResultRenderer {
-    getRepresentations(result: CodeCellResult, session?: WorkbookSession): ResultRendererRepresentation[]
+    getRepresentations(result: CodeCellResult, context?: WorkbookShellContext): ResultRendererRepresentation[]
 }
 
 export type ResultRendererFactory = (result: CodeCellResult) => ResultRenderer | null

@@ -22,7 +22,7 @@ import {
     SelectionZone
   } from 'office-ui-fabric-react/lib/utilities/selection/index';
 import { randomReactKey } from '../utils';
-import { WorkbookSession } from '../WorkbookSession';
+import { WorkbookShellContext } from '../components/WorkbookShell';
 
 export default function InteractiveObjectRendererFactory(result: CodeCellResult) {
     return result.valueRepresentations &&
@@ -33,7 +33,6 @@ export default function InteractiveObjectRendererFactory(result: CodeCellResult)
 
 interface InteractiveObjectProps {
     object: InteractiveObjectValue
-    interact: (handle: string) => Promise<any>
 }
 
 interface InteractiveObjectValue {
@@ -43,7 +42,7 @@ interface InteractiveObjectValue {
 }
 
 class InteractiveObjectRenderer implements ResultRenderer {
-    getRepresentations(result: CodeCellResult, session: WorkbookSession) {
+    getRepresentations(result: CodeCellResult, context: WorkbookShellContext) {
         const reps: ResultRendererRepresentation[] = []
 
         if (!result.valueRepresentations)
@@ -60,7 +59,7 @@ class InteractiveObjectRenderer implements ResultRenderer {
                 component: InteractiveObjectRepresentation,
                 componentProps: {
                     object: interactiveObject,
-                    session: session,
+                    context: context,
                 },
                 interact: this.interact
             })
@@ -72,21 +71,21 @@ class InteractiveObjectRenderer implements ResultRenderer {
     {
         const props = rep.componentProps as {
             object: InteractiveObjectValue,
-            session: WorkbookSession
+            context: WorkbookShellContext
         }
 
-        if (!props.session)
+        if (!props.context)
             return rep;
 
         if (props.object.isExpanded)
             return rep;
 
-        const obj = await props.session.interact(props.object.handle)
+        const obj = await props.context.session.interact(props.object.handle)
         return ({
             ...rep,
             componentProps: {
                 object: obj,
-                session: props.session
+                context: props.context
             },
             interact: undefined
         })
@@ -104,10 +103,8 @@ class InteractiveObjectRepresentation extends React.Component<InteractiveObjectP
             <ul>
                 {Object.keys(obj).map(key => {
                     return <li key={key}><b>"{key}":</b> {obj[key].toString()}</li>
-                }
-                )}
+                })}
             </ul>
         )
     }
 }
-

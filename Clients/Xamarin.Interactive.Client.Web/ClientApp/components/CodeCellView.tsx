@@ -29,7 +29,7 @@ import { ResultRendererRegistry } from '../ResultRendererRegistry'
 import { CapturedOutputView } from './CapturedOutputView'
 
 import './CodeCellView.scss'
-import { WorkbookSession } from '../WorkbookSession';
+import { WorkbookShellContext } from './WorkbookShell';
 
 export interface CodeCellResultRendererState {
     result: CodeCellResult
@@ -92,8 +92,11 @@ export abstract class CodeCellView<
 
         var rep = result.representations[key]
         if (rep && rep.interact) {
-            this.state.results[index].representations[key] = await rep.interact(rep)
-            this.setState (this.state)
+            var newRep = await rep.interact (rep)
+            if (rep !== newRep) {
+                this.state.results[index].representations[key] = newRep
+                this.setState(this.state)
+            }
         }
     }
 
@@ -103,7 +106,7 @@ export abstract class CodeCellView<
         const reps = this
             .getRendererRegistry()
             .getRenderers(result)
-            .map(r => r.getRepresentations(result, block.blockProps.shellContext.session as WorkbookSession))
+            .map(r => r.getRepresentations(result, block.blockProps.shellContext as WorkbookShellContext))
 
         const flatReps = reps.length === 0
             ? []
@@ -111,7 +114,7 @@ export abstract class CodeCellView<
 
         const mapReps: Map<string, ResultRendererRepresentation> = {}
         flatReps.map((r, i) => {
-            mapReps[r.key] = r;
+            mapReps[r.key] = r
         })
 
         const rendererState = {
@@ -132,20 +135,17 @@ export abstract class CodeCellView<
             case CodeCellResultHandling.Replace:
                 if (this.state.results[0]) {
                     const oldReps = this.state.results[0].representations;
-                    var oldKey = this.state.results[0].selectedRepresentationIndex;
+                    const oldKey = this.state.results[0].selectedRepresentationIndex;
+
                     if (rendererState.representations[oldKey])
                         rendererState.selectedRepresentationIndex = oldKey;
                     else {
-                        const oldKeys = Object.keys(oldReps);
-                        if (oldKeys.length == flatReps.length &&
-                            Object.keys(oldReps).map((k, i) => {
-                                if (oldReps[k].displayName === flatReps[i].displayName)
-                                    return true
-
-                                return false
-                            }).reduce((a, b) => a && b)
-                        ) {
-                            rendererState.selectedRepresentationIndex = flatReps[oldKeys.indexOf(oldKey)].key
+                        const prevKeys = Object.keys(oldReps);
+                        if (prevKeys.length == flatReps.length &&
+                            Object.keys(oldReps)
+                                .map((key, index) => typeof oldReps[key] === typeof flatReps[index])
+                                .reduce((a, b) => a && b)) {
+                            rendererState.selectedRepresentationIndex = flatReps[prevKeys.indexOf(oldKey)].key
                         }
                     }
                 }

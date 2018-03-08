@@ -49,7 +49,7 @@ class ImageRenderer implements ResultRenderer {
 
             const image = (value as ImageValue)
             if (!image.format)
-                continue;
+                continue
 
             reps.push({
                 displayName: 'Image',
