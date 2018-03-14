@@ -1,0 +1,15 @@
+// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License.
+
+@import '../css/theme.scss';
+
+.CapturedOutputView-container {
+  @include maxCodeLineCount(10);
+
+  white-space: pre;
+  overflow: auto;
+
+  .stderr {
+    color: $fgColorError;
+  }
+}

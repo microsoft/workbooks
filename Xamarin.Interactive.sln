@@ -113,6 +113,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xamarin.Interactive.Client.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xamarin.Interactive.Tests.Core", "Tests\Xamarin.Interactive.Tests.Core\Xamarin.Interactive.Tests.Core.csproj", "{0DF83DC6-314B-45A9-B085-AE9A11F522B2}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xamarin.Interactive.Client.Web", "Clients\Xamarin.Interactive.Client.Web\Xamarin.Interactive.Client.Web.csproj", "{8320E953-4133-4DD0-BBD1-103E8A64C18F}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		Agents\Xamarin.Interactive.Mac\Xamarin.Interactive.Mac.projitems*{0be4e82e-2409-4425-811d-bc7c8b134320}*SharedItemsImports = 13
@@ -493,6 +495,16 @@ Global
 		{0DF83DC6-314B-45A9-B085-AE9A11F522B2}.Release|macOS.Build.0 = Release|Any CPU
 		{0DF83DC6-314B-45A9-B085-AE9A11F522B2}.Release|Windows.ActiveCfg = Release|Any CPU
 		{0DF83DC6-314B-45A9-B085-AE9A11F522B2}.Release|Windows.Build.0 = Release|Any CPU
+		{8320E953-4133-4DD0-BBD1-103E8A64C18F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8320E953-4133-4DD0-BBD1-103E8A64C18F}.Debug|macOS.ActiveCfg = Debug|Any CPU
+		{8320E953-4133-4DD0-BBD1-103E8A64C18F}.Debug|macOS.Build.0 = Debug|Any CPU
+		{8320E953-4133-4DD0-BBD1-103E8A64C18F}.Debug|Windows.ActiveCfg = Debug|Any CPU
+		{8320E953-4133-4DD0-BBD1-103E8A64C18F}.Debug|Windows.Build.0 = Debug|Any CPU
+		{8320E953-4133-4DD0-BBD1-103E8A64C18F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8320E953-4133-4DD0-BBD1-103E8A64C18F}.Release|macOS.ActiveCfg = Release|Any CPU
+		{8320E953-4133-4DD0-BBD1-103E8A64C18F}.Release|macOS.Build.0 = Release|Any CPU
+		{8320E953-4133-4DD0-BBD1-103E8A64C18F}.Release|Windows.ActiveCfg = Release|Any CPU
+		{8320E953-4133-4DD0-BBD1-103E8A64C18F}.Release|Windows.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -544,6 +556,7 @@ Global
 		{F6BFEAE8-F71D-4D1A-AC04-07ABB4FBF9A7} = {E3972EA9-3073-4251-AD90-87B4C90147FC}
 		{060F0356-3E5C-41CD-B2BD-4C15C99BEBC2} = {1918A3C3-EAE4-4F9F-BF6B-83CB94AAF7E9}
 		{0DF83DC6-314B-45A9-B085-AE9A11F522B2} = {CA7D68B0-F4A3-4679-96C0-7F967056F1FC}
+		{8320E953-4133-4DD0-BBD1-103E8A64C18F} = {1918A3C3-EAE4-4F9F-BF6B-83CB94AAF7E9}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D588CD6A-A8A7-4CCE-A894-95F307675CBF}

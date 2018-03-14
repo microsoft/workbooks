@@ -21,8 +21,12 @@ indent_size = 2
 indent_size = 2
 
 # Web files
-[*.{json,ts,js,html}]
+[*.{json,html,css,scss}]
 indent_size = 2
+
+# TypeScript
+[*.{ts,js,tsx,jsx}]
+indent_size = 4
 
 # Dotnet code style settings:
 [*.{cs,vb}]

@@ -1,0 +1,75 @@
+<Project>
+  <Import Project="..\..\Build\Metadata.targets" />
+  <Import Project="..\..\Build\Common.targets" />
+
+  <PropertyGroup>
+    <Node Condition="'$(Node)' == ''">node</Node>
+    <Npm Condition="'$(Npm)' == ''">npm</Npm>
+  </PropertyGroup>
+
+  <Target
+    Name="DebugNpmInstall"
+    Condition="'$(Configuration)' == 'Debug' And !Exists('node_modules')">
+    <Message Importance="high" Text="Performing first-run npm install..."/>
+    <Exec Command="&quot;$(Npm)&quot; install --save-dev"/>
+  </Target>
+
+  <Target
+    Name="DebugRunWebpack"
+    BeforeTargets="Build"
+    DependsOnTargets="DebugNpmInstall"
+    Condition="'$(Configuration)' == 'Debug' And !Exists('wwwroot\dist')">
+    <Message Importance="high" Text="Performing first-run Webpack build..."/>
+    <Exec Command="&quot;$(Node)&quot; node_modules/webpack/bin/webpack.js --config webpack.config.vendor.js"/>
+    <Exec Command="&quot;$(Node)&quot; node_modules/webpack/bin/webpack.js"/>
+  </Target>
+
+  <Target
+    Name="PublishRunWebpack"
+    AfterTargets="ComputeFilesToPublish">
+    <Exec Command="&quot;$(Npm)&quot; install"/>
+    <Exec Command="&quot;$(Node)&quot; node_modules/webpack/bin/webpack.js --config webpack.config.vendor.js --env.prod"/>
+    <Exec Command="&quot;$(Node)&quot; node_modules/webpack/bin/webpack.js --env.prod"/>
+
+    <ItemGroup>
+      <DistFiles Include="wwwroot\dist\**; wwwroot\vs\**; ClientApp\dist\**"/>
+      <ResolvedFileToPublish Include="@(DistFiles-&gt;'%(FullPath)')" Exclude="@(ResolvedFileToPublish)">
+        <RelativePath>%(DistFiles.Identity)</RelativePath>
+        <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      </ResolvedFileToPublish>
+    </ItemGroup>
+
+    <ItemGroup>
+      <WorkbookAppFiles Include="$(BuiltWorkbookAppsBasePath)..\**\*"/>
+      <ResolvedFileToPublish Include="@(WorkbookAppFiles)">
+        <RelativePath>%(RecursiveDir)%(Filename)%(Extension)</RelativePath>
+        <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      </ResolvedFileToPublish>
+    </ItemGroup>
+  </Target>
+
+  <Target
+    Name="PackageArchive"
+    AfterTargets="AfterPublish"
+    DependsOnTargets="Xamarin_Build_ReadAllProperties">
+    <PropertyGroup>
+      <ArchiveName>workbooks-server-$(ReleaseVersion_SemVer).$(RuntimeIdentifier)</ArchiveName>
+    </PropertyGroup>
+    <ZipArchive
+      SourceDirectoryName="$(PublishDir)"
+      RenameBaseDirectoryTo="$(ArchiveName)"
+      DestinationArchiveFileName="$(ArtifactsBasePath)$(ArchiveName).zip"/>
+  </Target>
+
+  <Target
+    Name="Package">
+    <ItemGroup>
+      <RuntimeIdentifier Include="$(RuntimeIdentifiers)"/>
+    </ItemGroup>
+    <MSBuild
+      Projects="$(MSBuildProjectFile)"
+      Targets="Publish"
+      Properties="Configuration=$(Configuration);RuntimeIdentifier=%(RuntimeIdentifier.Identity);PackageAsSingleFile=true"/>
+  </Target>
+
+</Project>

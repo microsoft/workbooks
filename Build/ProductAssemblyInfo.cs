@@ -37,6 +37,7 @@ using System.Runtime.CompilerServices;
 
 // clients
 [assembly: InternalsVisibleTo ("workbook")]
+[assembly: InternalsVisibleTo ("workbooks-server")]
 [assembly: InternalsVisibleTo ("Xamarin Workbooks")]
 [assembly: InternalsVisibleTo ("Xamarin Inspector")]
 [assembly: InternalsVisibleTo ("Xamarin.Interactive.Client")]

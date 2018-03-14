@@ -38,6 +38,16 @@
   </Target>
 
   <Target
+    Name="WebProfile"
+    DependsOnTargets="CoreProfile;CoreWorkbookAppsProfile">
+    <ItemGroup>
+      <ProjectsToBuild Include="Clients\Xamarin.Interactive.Client.Web\*.csproj">
+        <HasPackageTarget>true</HasPackageTarget>
+      </ProjectsToBuild>
+    </ItemGroup>
+  </Target>
+
+  <Target
     Name="DesktopProfile"
     DependsOnTargets="CoreProfile;CoreWorkbookAppsProfile">
     <ItemGroup Condition="$(IsMac)">
@@ -51,7 +61,7 @@
 
   <Target
     Name="FullProfile"
-    DependsOnTargets="DesktopProfile"/>
+    DependsOnTargets="WebProfile;DesktopProfile"/>
 
   <!-- Targets -->
 
@@ -91,7 +101,7 @@
     Name="Configure"
     DependsOnTargets="Xamarin_Build_ReadAllProperties">
     <PropertyGroup>
-      <Profile Condition="'$(Profile)' == ''">Desktop</Profile>
+      <Profile Condition="'$(Profile)' == ''">Web</Profile>
       <Profile Condition="!$(Profile.EndsWith('Profile'))">$(Profile)Profile</Profile>
     </PropertyGroup>
   </Target>

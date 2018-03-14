@@ -1,0 +1,50 @@
+//
+// Author:
+//   Aaron Bockover <abock@microsoft.com>
+//
+// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License.
+
+$baseSpacing: 16px;
+
+.StatusMessageBar-container {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  z-index: 50000;
+
+  & * {
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+  }
+
+  .StatusMessageBar-contents {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    padding: 0 $baseSpacing 1px $baseSpacing;
+
+    .ms-Spinner {
+      padding-right: $baseSpacing / 2;
+    }
+
+    .StatusMessageBar-text {
+      flex: 1;
+      min-width: 0;
+      padding-bottom: 1px;
+    }
+  }
+
+  &.visible {
+    visibility: visible;
+    opacity: 1;
+    transition: visibility 0s linear 0s, opacity 300ms;
+  }
+
+  &.hidden {
+    visibility: hidden;
+    opacity: 0;
+    transition: visibility 0s linear 1s, opacity 1s;
+  }
+}
