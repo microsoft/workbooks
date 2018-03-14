@@ -7,35 +7,33 @@
 
 using Microsoft.CodeAnalysis;
 
+using Newtonsoft.Json;
+
 namespace Xamarin.Interactive.CodeAnalysis
 {
-    struct InteractiveDiagnostic
+    public struct InteractiveDiagnostic
     {
-        public FileLinePositionSpan Span { get; }
+        public PositionSpan Span { get; }
         public DiagnosticSeverity Severity { get; }
         public string Message { get; }
         public string Id { get; }
 
-        public InteractiveDiagnostic (DiagnosticSeverity severity, string message)
+        [JsonConstructor]
+        public InteractiveDiagnostic (
+            PositionSpan span,
+            DiagnosticSeverity severity,
+            string message,
+            string id)
         {
-            Span = default (FileLinePositionSpan);
+            Span = span;
             Severity = severity;
             Message = message;
-            Id = null;
+            Id = id;
         }
 
-        public InteractiveDiagnostic (Diagnostic diagnostic)
+        public InteractiveDiagnostic (DiagnosticSeverity severity, string message)
+            : this (default, severity, message, null)
         {
-            Span = diagnostic.Location.GetMappedLineSpan ();
-            if (!Span.IsValid)
-                Span = diagnostic.Location.GetLineSpan ();
-
-            Severity = diagnostic.Severity;
-            Message = diagnostic.GetMessage ();
-            Id = diagnostic.Id;
         }
-
-        public static explicit operator InteractiveDiagnostic (Diagnostic diagnostic) =>
-            new InteractiveDiagnostic (diagnostic);
     }
 }

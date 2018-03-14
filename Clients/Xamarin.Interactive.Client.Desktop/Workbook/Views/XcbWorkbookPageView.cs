@@ -8,16 +8,12 @@
 
 using System;
 using System.Linq;
-using System.Globalization;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 
-using Microsoft.CodeAnalysis;
-
 using Xamarin.CrossBrowser;
 
-using Xamarin.Interactive.CodeAnalysis;
 using Xamarin.Interactive.CodeAnalysis.Monaco;
 using Xamarin.Interactive.Core;
 using Xamarin.Interactive.Client;

@@ -14,7 +14,7 @@ using System.IO.Compression;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
-
+using Xamarin.Interactive.CodeAnalysis;
 using Xamarin.Interactive.Core;
 using Xamarin.Interactive.Editor;
 using Xamarin.Interactive.IO;
@@ -180,6 +180,15 @@ namespace Xamarin.Interactive.Workbook.Models
             if (e.PropertyName == nameof (InteractivePackageManager.InstalledPackages))
                 nugetPackagesNode.UpdateChildren (Packages.InstalledPackages.Where (p => p.IsExplicit));
         }
+
+        public IReadOnlyList<LanguageDescription> GetLanguageDescriptions ()
+            => Pages
+                .SelectMany (p => p.Contents)
+                .OfType<CodeCell> ()
+                .Select (cell => cell.LanguageName.ToLowerInvariant ())
+                .Distinct ()
+                .Select (name => new LanguageDescription (name))
+                .ToList ();
 
         public void AddPage (WorkbookPage workbookPage)
         {

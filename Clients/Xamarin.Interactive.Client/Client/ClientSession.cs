@@ -511,7 +511,12 @@ namespace Xamarin.Interactive.Client
                 await Agent.Api.AssociateClientSession (
                     ClientSessionAssociationKind.Initial,
                     WorkingDirectory);
-                CompilationWorkspace = await CompilationWorkspaceFactory.CreateWorkspaceAsync (this);
+
+                CompilationWorkspace = new RoslynCompilationWorkspace (
+                    await WorkspaceConfiguration.CreateAsync (
+                        Agent,
+                        SessionKind,
+                        cancellationToken));
             }
 
             await RefreshForAgentIntegration ();

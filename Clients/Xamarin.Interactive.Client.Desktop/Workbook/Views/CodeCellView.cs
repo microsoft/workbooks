@@ -197,7 +197,7 @@ namespace Xamarin.Interactive.Workbook.Views
             }
 
             var displayMessage = new StringBuilder ();
-            var position = diagnostic.Span.StartLinePosition;
+            var position = diagnostic.Span.ToRoslyn ().Start;
             var severity = diagnostic.Severity.ToString ().ToLowerInvariant ();
 
             var listElem = diagnosticsElem.FirstElementChild;
@@ -206,15 +206,13 @@ namespace Xamarin.Interactive.Workbook.Views
 
             var itemElement = Document.CreateElement ("li", @class: severity);
 
-            if (diagnostic.Span.IsValid) {
-                displayMessage.Append ($"({position.Line + 1},{position.Character + 1}): ");
-                itemElement.AddEventListener ("click", evnt => {
-                    if (!WindowHasSelection) {
-                        editor.Focus ();
-                        editor.CursorPosition = position;
-                    }
-                });
-            }
+            displayMessage.Append ($"({position.Line + 1},{position.Character + 1}): ");
+            itemElement.AddEventListener ("click", evnt => {
+                if (!WindowHasSelection) {
+                    editor.Focus ();
+                    editor.CursorPosition = position;
+                }
+            });
 
             displayMessage.Append (severity);
 
