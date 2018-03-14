@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Globalization;
 using System.Linq;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -28,7 +29,7 @@ using Xamarin.Interactive.Workbook.Views;
 
 namespace Xamarin.Interactive.Workbook.Models
 {
-    abstract class WorkbookPageViewModel : IObserver<ClientSessionEvent>, IDisposable
+    abstract class WorkbookPageViewModel : IObserver<ClientSessionEvent>, IEvaluationService
     {
         const string TAG = nameof (WorkbookPageViewModel);
 
@@ -99,7 +100,9 @@ namespace Xamarin.Interactive.Workbook.Models
 
         public bool CanEvaluate => !evaluationInhibitor.IsInhibited;
 
-        public virtual Task LoadWorkbookDependencyAsync (string dependency)
+        public virtual Task LoadWorkbookDependencyAsync (
+            string dependency,
+            CancellationToken cancellationToken = default)
             => Task.CompletedTask;
 
         #endregion
@@ -347,14 +350,8 @@ namespace Xamarin.Interactive.Workbook.Models
 
         #region Evaluation
 
-        enum CodeCellEvaluationStatus
-        {
-            Success,
-            Disconnected,
-            Interrupted,
-            ErrorDiagnostic,
-            EvaluationException
-        }
+        public EvaluationContextId Id
+            => ClientSession.CompilationWorkspace.EvaluationContextId;
 
         protected async Task AbortEvaluationAsync ()
         {
@@ -600,7 +597,7 @@ namespace Xamarin.Interactive.Workbook.Models
             if (exception != null) {
                 codeCellState.View.RenderResult (
                     CultureInfo.CurrentCulture,
-                    FilterException (exception),
+                    EvaluationService.FilterException (exception),
                     EvaluationResultHandling.Replace);
                 evaluationStatus = CodeCellEvaluationStatus.EvaluationException;
             } else if (hasErrorDiagnostics) {
@@ -654,7 +651,7 @@ namespace Xamarin.Interactive.Workbook.Models
             if (result.Exception != null)
                 codeCellState.View.RenderResult (
                     cultureInfo,
-                    FilterException (result.Exception),
+                    EvaluationService.FilterException (result.Exception),
                     result.ResultHandling);
             else if (!result.Interrupted && result.Result != null || isResultAnExpression)
                 codeCellState.View.RenderResult (
@@ -688,33 +685,7 @@ namespace Xamarin.Interactive.Workbook.Models
         }
 
         void RenderCapturedOutputSegment (CapturedOutputSegment segment)
-            => GetCodeCellStateById (segment.Context)?.View?.RenderCapturedOutputSegment (segment);
-
-        #endregion
-
-        /// <summary>
-        /// Dicards the captured traces and frames that are a result of compiler-generated
-        /// code to host the submission so we only render frames the user might actually expect.
-        /// </summary>
-        static ExceptionNode FilterException (ExceptionNode exception)
-        {
-            try {
-                var capturedTraces = exception?.StackTrace?.CapturedTraces;
-                if (capturedTraces == null || capturedTraces.Count != 2)
-                    return exception;
-
-                var submissionTrace = capturedTraces [0];
-                exception.StackTrace = exception.StackTrace.WithCapturedTraces (new [] {
-                    submissionTrace.WithFrames (
-                        submissionTrace.Frames.Take (submissionTrace.Frames.Count - 1))
-                });
-
-                return exception;
-            } catch (Exception e) {
-                Log.Error (TAG, $"error filtering ExceptionNode [[{exception}]]", e);
-                return exception;
-            }
-        }
+            => GetCodeCellStateById (segment.CodeCellId)?.View?.RenderCapturedOutputSegment (segment);
 
         #endregion
     }

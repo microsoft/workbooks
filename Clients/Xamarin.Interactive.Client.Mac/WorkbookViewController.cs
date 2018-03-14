@@ -66,7 +66,7 @@ namespace Xamarin.Interactive.Client.Mac
 
         [Export ("runAllSubmissions:")]
         void RunAllSubmissions (NSObject sender)
-            => Session.WorkbookPageViewModel.EvaluateAllAsync ().Forget ();
+            => Session.EvaluationService.EvaluateAllAsync ().Forget ();
 
         [Export ("addPackage:")]
         void AddPackage (NSObject sender)

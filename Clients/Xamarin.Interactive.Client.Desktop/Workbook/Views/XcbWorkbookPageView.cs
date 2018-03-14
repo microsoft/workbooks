@@ -27,6 +27,7 @@ using Xamarin.Interactive.Rendering;
 using Xamarin.Interactive.Representations.Reflection;
 using Xamarin.Interactive.Workbook.Events;
 using Xamarin.Interactive.Workbook.Models;
+using Xamarin.Interactive.Workbook.Structure;
 
 namespace Xamarin.Interactive.Workbook.Views
 {
@@ -42,7 +43,7 @@ namespace Xamarin.Interactive.Workbook.Views
         #pragma warning restore 0414
 
         Cell focusedWorkbookCell;
-        CodeCellState focusedCellState;
+        Models.CodeCellState focusedCellState;
 
         CompletionProvider completionProvider;
         SignatureHelpProvider signatureHelpProvider;
@@ -166,7 +167,9 @@ namespace Xamarin.Interactive.Workbook.Views
                 getSourceTextByModelId);
         }
 
-        public override Task LoadWorkbookDependencyAsync (string dependency)
+        public override Task LoadWorkbookDependencyAsync (
+            string dependency,
+            CancellationToken cancellationToken)
         {
             var tcs = new TaskCompletionSource ();
             try {
@@ -179,7 +182,7 @@ namespace Xamarin.Interactive.Workbook.Views
             return tcs.Task;
         }
 
-        protected override CodeCellState StartNewCodeCell ()
+        protected override Xamarin.Interactive.Workbook.Models.CodeCellState StartNewCodeCell ()
             => focusedCellState = base.StartNewCodeCell ();
 
         protected override void BindMarkdownCellToView (MarkdownCell cell)
@@ -192,7 +195,7 @@ namespace Xamarin.Interactive.Workbook.Views
             cell.View = view;
         }
 
-        protected override void BindCodeCellToView (CodeCell cell, CodeCellState codeCellState)
+        protected override void BindCodeCellToView (CodeCell cell, Models.CodeCellState codeCellState)
         {
             var codeCellView = new CodeCellView (
                 codeCellState,
@@ -288,7 +291,7 @@ namespace Xamarin.Interactive.Workbook.Views
             }
         }
 
-        void HandleFocusEvent (EditorEvent evnt, CodeCellState sourceCodeCellState)
+        void HandleFocusEvent (EditorEvent evnt, Models.CodeCellState sourceCodeCellState)
         {
             var sourceCell = ((CellEditorView)evnt.Source).Cell;
 

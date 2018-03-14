@@ -53,7 +53,7 @@ namespace Xamarin.Interactive.Client.Console
             var session = new ClientSession (uri);
             session.InitializeViewControllers (new ConsoleClientSessionViewControllers ());
             await session.InitializeAsync (new ConsoleWorkbookPageHost ());
-            await session.WorkbookPageViewModel.EvaluateAllAsync ();
+            await session.EvaluationService.EvaluateAllAsync ();
 
             return 0;
         }

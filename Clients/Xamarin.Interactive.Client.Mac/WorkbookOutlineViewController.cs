@@ -46,7 +46,7 @@ namespace Xamarin.Interactive.Client.Mac
 
             outlineViewDelegate = new WorkbookOutlineViewDelegate (outlineView);
             outlineViewDelegate.NavigateTableOfContents += toc =>
-                ((XcbWorkbookPageView)Session.WorkbookPageViewModel).ScrollToElementWithId (toc.Id);
+                ((XcbWorkbookPageView)Session.EvaluationService).ScrollToElementWithId (toc.Id);
             outlineView.Delegate = outlineViewDelegate;
         }
 

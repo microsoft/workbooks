@@ -142,13 +142,13 @@ namespace Xamarin.Interactive.Client.Mac
                     RemoveItem (Identifiers.Refresh);
                     if (clientSession.SessionKind != ClientSessionKind.LiveInspection)
                         toolbar.InsertItem (Identifiers.RunAll, 0);
-                    ((XcbWorkbookPageView)clientSession.WorkbookPageViewModel).DelayNewCodeCellFocus = false;
+                    ((XcbWorkbookPageView)clientSession.EvaluationService).DelayNewCodeCellFocus = false;
                     break;
                 case 1:
                     RemoveItem (Identifiers.RunAll);
                     toolbar.InsertItem (Identifiers.Inspect, 0);
                     toolbar.InsertItem (Identifiers.Refresh, 0);
-                    ((XcbWorkbookPageView)clientSession.WorkbookPageViewModel).DelayNewCodeCellFocus = true;
+                    ((XcbWorkbookPageView)clientSession.EvaluationService).DelayNewCodeCellFocus = true;
                     break;
                 }
 

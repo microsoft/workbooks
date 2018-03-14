@@ -250,7 +250,7 @@ namespace Xamarin.Interactive.Client.Mac
                         ?.Window
                         ?.WindowController as SessionWindowController)
                         ?.Session
-                        ?.WorkbookPageViewModel as XcbWorkbookPageView)
+                        ?.EvaluationService as XcbWorkbookPageView)
                         ?.ScrollToElementWithId (fragment);
                     return true;
                 }

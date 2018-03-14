@@ -47,6 +47,14 @@
   },
   {
     "Kind": "NuGet",
+    "Name": "Microsoft.NET.Test.Sdk",
+    "Version": "15.5.0",
+    "DependentProjects": [
+      "Xamarin.Interactive.Tests.Core"
+    ]
+  },
+  {
+    "Kind": "NuGet",
     "Name": "Mono.Cecil",
     "Version": "0.10.0-beta6",
     "DependentProjects": [
@@ -145,6 +153,22 @@
       "Xamarin.Interactive.Forms.iOS",
       "Xamarin.Interactive.Forms",
       "Xamarin.Workbooks.Android"
+    ]
+  },
+  {
+    "Kind": "NuGet",
+    "Name": "xunit",
+    "Version": "2.3.1",
+    "DependentProjects": [
+      "Xamarin.Interactive.Tests.Core"
+    ]
+  },
+  {
+    "Kind": "NuGet",
+    "Name": "xunit.runner.visualstudio",
+    "Version": "2.3.1",
+    "DependentProjects": [
+      "Xamarin.Interactive.Tests.Core"
     ]
   },
   {
