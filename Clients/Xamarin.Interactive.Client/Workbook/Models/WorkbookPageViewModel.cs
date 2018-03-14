@@ -171,7 +171,13 @@ namespace Xamarin.Interactive.Workbook.Models
         protected CodeCellState InsertCodeCell (Cell previousCell)
             => InsertCodeCell (new CodeCell ("csharp"), previousCell);
 
-        CodeCellState InsertCodeCell (CodeCell newCell, Cell previousCell)
+        CodeCellState InsertHiddenCell ()
+            => InsertCodeCell (
+                new CodeCell ("csharp", shouldSerialize: false),
+                WorkbookPage.Contents.FirstCell.GetSelfOrNextCell<CodeCell> ()?.PreviousCell,
+                isHidden: true);
+
+        CodeCellState InsertCodeCell (CodeCell newCell, Cell previousCell, bool isHidden = false)
         {
             if (newCell == null)
                 throw new ArgumentNullException (nameof (newCell));
@@ -183,7 +189,13 @@ namespace Xamarin.Interactive.Workbook.Models
 
             var codeCellState = new CodeCellState (newCell);
 
-            BindCodeCellToView (newCell, codeCellState);
+            if (isHidden) {
+                // Set up editor, required as dictionary key
+                codeCellState.Editor = new HiddenCodeCellEditor ();
+                codeCellState.View = new HiddenCodeCellView { Editor = codeCellState.Editor };
+                newCell.View = codeCellState.View;
+            } else
+                BindCodeCellToView (newCell, codeCellState);
 
             if (ClientSession.CompilationWorkspace != null) {
                 codeCellState.CompilationWorkspace = ClientSession.CompilationWorkspace;
@@ -193,7 +205,8 @@ namespace Xamarin.Interactive.Workbook.Models
                     GetDocumentId (nextCodeCell));
             }
 
-            InsertCellInViewModel (newCell, previousCell);
+            if (!isHidden)
+                InsertCellInViewModel (newCell, previousCell);
 
             OutdateAllCodeCells (newCell);
 
@@ -231,7 +244,7 @@ namespace Xamarin.Interactive.Workbook.Models
                 WorkbookPage.Contents.AppendCell (newCell);
             else if (previousCell == null)
                 WorkbookPage.Contents.InsertCellBefore (
-                    WorkbookPage.Contents.FirstCell,
+                    WorkbookPage.Contents.FirstOrDefault (c => c.ShouldSerialize),
                     newCell);
             else
                 WorkbookPage.Contents.InsertCellAfter (previousCell, newCell);
@@ -352,7 +365,40 @@ namespace Xamarin.Interactive.Workbook.Models
                 ClientSession.CompilationWorkspace.EvaluationContextId);
         }
 
-        public async Task EvaluateAllAsync ()
+        public Task<bool> AddTopLevelReferencesAsync (
+            IReadOnlyList<string> references,
+            CancellationToken cancellationToken = default)
+        {
+            // TODO: soo.....why are new #r's added after there are other cells not bringing in the reference right?
+            if (references == null || references.Count == 0)
+                return Task.FromResult (false);
+
+            // TODO: Should we be saving a quick reference to the hidden cell/editor?
+            var hiddenCellState = CodeCells
+                .Where (p => p.Key is HiddenCodeCellEditor)
+                .Select (p => p.Value)
+                .FirstOrDefault ();
+
+            if (hiddenCellState == null)
+                hiddenCellState = InsertHiddenCell ();
+
+            // TODO: Prevent dupes. Return false if no changes made
+            var builder = new StringBuilder (hiddenCellState.Cell.Buffer.Value);
+            foreach (var reference in references) {
+                if (builder.Length > 0)
+                    //builder.AppendLine ();
+                    builder.Append ("\n");
+                builder
+                    .Append ("#r \"")
+                    .Append (reference)
+                    .Append ("\"");
+            }
+
+            hiddenCellState.Cell.Buffer.Value = builder.ToString ();
+            return Task.FromResult (true);
+        }
+
+        public async Task EvaluateAllAsync (CancellationToken cancellationToken = default)
         {
             var firstCell = WorkbookPage.Contents.GetFirstCell<CodeCell> ();
             if (firstCell?.View?.Editor == null)

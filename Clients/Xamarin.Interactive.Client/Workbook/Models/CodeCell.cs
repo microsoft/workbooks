@@ -9,6 +9,8 @@ using System;
 
 using CommonMark.Syntax;
 
+using Xamarin.Interactive.CodeAnalysis;
+
 namespace Xamarin.Interactive.Workbook.Models
 {
     sealed class CodeCell : Cell
@@ -33,7 +35,8 @@ namespace Xamarin.Interactive.Workbook.Models
             string languageName,
             string bufferContents = null,
             char fenceChar = '`',
-            string extraInfo = null)
+            string extraInfo = null,
+            bool shouldSerialize = true)
         {
             LanguageName = languageName ?? throw new ArgumentNullException (nameof (languageName));
             ExtraInfo = extraInfo;
@@ -42,6 +45,7 @@ namespace Xamarin.Interactive.Workbook.Models
                 Buffer.Value = bufferContents;
 
             this.fenceChar = fenceChar;
+            ShouldSerialize = shouldSerialize;
         }
 
         string GetFenceInfo ()
