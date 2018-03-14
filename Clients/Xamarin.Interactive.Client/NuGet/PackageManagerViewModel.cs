@@ -120,8 +120,8 @@ namespace Xamarin.Interactive.NuGet
             if (packageViewModel == null)
                 throw new ArgumentNullException (nameof (packageViewModel));
 
-            await clientSession.InstallPackageAsync (
-                packageViewModel,
+            await clientSession.PackageManager.InstallAsync (
+                InteractivePackageDescription.FromPackageViewModel (packageViewModel),
                 cancellationToken);
         }
     }

@@ -28,7 +28,6 @@ using NuGet.ProjectModel;
 using NuGet.Protocol;
 using NuGet.Protocol.Core.Types;
 using NuGet.Resolver;
-using NuGet.Versioning;
 
 using Xamarin.Interactive.Core;
 using Xamarin.Interactive.Logging;
@@ -39,9 +38,11 @@ namespace Xamarin.Interactive.NuGet
     {
         const string TAG = nameof (InteractivePackageManager);
 
-        internal static readonly PackageIdentity FixedXamarinFormsPackageIdentity = new PackageIdentity (
-            "Xamarin.Forms",
-            new NuGetVersion (2, 5, 0, 121934));
+        internal static readonly InteractivePackageDescription FixedXamarinFormsPackageDescription
+            = new InteractivePackageDescription ("Xamarin.Forms", "2.5.0.121934");
+
+        internal static readonly PackageIdentity FixedXamarinFormsPackageIdentity
+            = FixedXamarinFormsPackageDescription.ToPackageIdentity ();
 
         readonly NuGetPackageManager packageManager;
         readonly InteractivePackageProjectContext projectContext;
