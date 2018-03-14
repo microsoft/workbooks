@@ -83,7 +83,7 @@ namespace Xamarin.Interactive.Workbook.Views
                 ?? throw new ArgumentNullException (nameof (webView));
 
             void ObserveWorkbookMutationModelChanges (dynamic self, dynamic args)
-                => workbookPage.TableOfContents.RebuildFromJavaScript (args [0]);
+                => TableOfContentsNodeExtensions.RebuildFromJavaScript (workbookPage.TableOfContents, args [0]);
 
             webView.Document.Context.GlobalObject.xiexports.WorkbookMutationObserver.observeModelChanges (
                 (ScriptAction)ObserveWorkbookMutationModelChanges);
