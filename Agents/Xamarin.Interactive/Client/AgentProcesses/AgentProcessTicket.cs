@@ -22,7 +22,6 @@ namespace Xamarin.Interactive.Client.AgentProcesses
         readonly Action disconnectedHandler;
 
         public IAgentProcessManager AgentProcessManager { get; }
-        public ClientSessionUri ClientSessionUri { get; }
         public IMessageService MessageService { get; }
 
         public int Id { get; }
@@ -34,22 +33,14 @@ namespace Xamarin.Interactive.Client.AgentProcesses
 
         public AgentProcessTicket (
             IAgentProcessManager agentProcessManager,
-            ClientSessionUri clientSessionUri,
             IMessageService messageService,
             Action disconnectedHandler)
         {
-            if (agentProcessManager == null)
-                throw new ArgumentNullException (nameof (agentProcessManager));
+            AgentProcessManager = agentProcessManager
+                ?? throw new ArgumentNullException (nameof (agentProcessManager));
 
-            if (clientSessionUri == null)
-                throw new ArgumentNullException (nameof (clientSessionUri));
-
-            if (disconnectedHandler == null)
-                throw new ArgumentNullException (nameof (disconnectedHandler));
-
-            AgentProcessManager = agentProcessManager;
-            ClientSessionUri = clientSessionUri;
-            MessageService = messageService;
+            MessageService = messageService
+                ?? throw new ArgumentNullException (nameof (disconnectedHandler));
 
             this.disconnectedHandler = disconnectedHandler;
 

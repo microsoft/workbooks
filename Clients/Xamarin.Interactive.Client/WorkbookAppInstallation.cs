@@ -186,7 +186,6 @@ namespace Xamarin.Interactive
 
             var ticket = new AgentProcessTicket (
                 processManager,
-                clientSessionUri,
                 messageService,
                 disconnectedHandler);
 

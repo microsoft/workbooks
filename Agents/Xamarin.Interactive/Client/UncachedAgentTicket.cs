@@ -24,7 +24,6 @@ namespace Xamarin.Interactive.Client
 
         AgentIdentity agentIdentity;
 
-        public ClientSessionUri ClientSessionUri { get; }
         public IReadOnlyList<string> AssemblySearchPaths { get; }
         public IMessageService MessageService { get; }
         public bool IsDisposed { get; private set; }
@@ -46,7 +45,6 @@ namespace Xamarin.Interactive.Client
                 clientSessionUri.Host,
                 clientSessionUri.Port);
 
-            ClientSessionUri = clientSessionUri;
             AssemblySearchPaths = clientSessionUri.AssemblySearchPaths;
             MessageService = messageService;
 

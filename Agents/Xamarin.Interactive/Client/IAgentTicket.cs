@@ -17,7 +17,6 @@ namespace Xamarin.Interactive.Client
 {
     interface IAgentTicket : INotifyDisposed
     {
-        ClientSessionUri ClientSessionUri { get; }
         IReadOnlyList<string> AssemblySearchPaths { get; }
 
         IMessageService MessageService { get; }
