@@ -21,16 +21,16 @@ namespace Xamarin.Interactive.CodeAnalysis
         internal const int StandardErrorFd = 2;
 
         readonly object mutex = new object ();
-        readonly CodeCellId context;
+        readonly CodeCellId codeCellId;
 
         public TextWriter StandardOutput { get; }
         public TextWriter StandardError { get; }
 
         public event Action<CapturedOutputSegment> SegmentCaptured;
 
-        public CapturedOutputWriter (CodeCellId context)
+        public CapturedOutputWriter (CodeCellId codeCellId)
         {
-            this.context = context;
+            this.codeCellId = codeCellId;
             StandardOutput = new Writer (StandardOutputFd, this);
             StandardError = new Writer (StandardErrorFd, this);
         }
@@ -56,7 +56,7 @@ namespace Xamarin.Interactive.CodeAnalysis
         {
             readonly int fileDescriptor;
             readonly CapturedOutputWriter monitor;
-            readonly CodeCellId context;
+            readonly CodeCellId codeCellId;
 
             public override Encoding Encoding => Utf8.Encoding;
 
@@ -64,16 +64,16 @@ namespace Xamarin.Interactive.CodeAnalysis
             {
                 this.fileDescriptor = fileDescriptor;
                 this.monitor = monitor;
-                this.context = monitor.context;
+                this.codeCellId = monitor.codeCellId;
             }
 
             public override void Write (char value)
                 => monitor.NotifySegmentCaptured (
-                    new CapturedOutputSegment (fileDescriptor, value, context));
+                    new CapturedOutputSegment (codeCellId, fileDescriptor, value));
 
             public override void Write (char [] buffer, int index, int count)
                 => monitor.NotifySegmentCaptured (
-                    new CapturedOutputSegment (fileDescriptor, buffer, index, count, context));
+                    new CapturedOutputSegment (codeCellId, fileDescriptor, buffer, index, count));
         }
     }
 }
