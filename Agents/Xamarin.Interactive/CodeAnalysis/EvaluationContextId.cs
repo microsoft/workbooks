@@ -13,6 +13,7 @@ namespace Xamarin.Interactive.CodeAnalysis
     /// <summary>
     /// An opaque identifier for <see cref="IEvaluationContext"/>.
     /// </summary>
+    [Serializable]
     public struct EvaluationContextId : IEquatable<EvaluationContextId>
     {
         readonly int id;

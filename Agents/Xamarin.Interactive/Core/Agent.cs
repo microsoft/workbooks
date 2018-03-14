@@ -66,8 +66,8 @@ namespace Xamarin.Interactive.Core
 
         readonly IList<Action> resetStateHandlers = new List<Action> ();
 
-        readonly Dictionary<int, EvaluationContext> evaluationContexts =
-            new Dictionary<int, EvaluationContext> ();
+        readonly Dictionary<EvaluationContextId, EvaluationContext> evaluationContexts =
+            new Dictionary<EvaluationContextId, EvaluationContext> ();
 
         public EvaluationContext CreateEvaluationContext ()
         {
@@ -78,7 +78,7 @@ namespace Xamarin.Interactive.Core
             return context;
         }
 
-        public EvaluationContext GetEvaluationContext (int contextId)
+        public EvaluationContext GetEvaluationContext (EvaluationContextId contextId)
         {
             if (evaluationContexts.TryGetValue (contextId, out var context))
                 return context;

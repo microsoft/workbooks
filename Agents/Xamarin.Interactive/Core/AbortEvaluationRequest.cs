@@ -7,6 +7,7 @@
 
 using System;
 
+using Xamarin.Interactive.CodeAnalysis;
 using Xamarin.Interactive.Protocol;
 using Xamarin.Interactive.Representations.Reflection;
 
@@ -17,16 +18,16 @@ namespace Xamarin.Interactive.Core
     {
         public Guid MessageId { get; } = Guid.NewGuid ();
 
-        public int ExecutionSessionId { get; }
+        public EvaluationContextId EvaluationContextId { get; }
 
-        public AbortEvaluationRequest (int executionSessionId)
-            => ExecutionSessionId = executionSessionId;
+        public AbortEvaluationRequest (EvaluationContextId evaluationContextId)
+            => EvaluationContextId = evaluationContextId;
 
         public void Handle (Agent agent, Action<object> responseWriter)
         {
             try {
                 var thread = agent
-                    .GetEvaluationContext (ExecutionSessionId)
+                    .GetEvaluationContext (EvaluationContextId)
                     .CurrentRunThread;
                 if (thread != null)
                     thread.Abort ();

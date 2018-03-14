@@ -26,9 +26,7 @@ namespace Xamarin.Interactive.CodeAnalysis
         readonly Agent agent;
 
         public object GlobalState { get; }
-        public int Id { get; }
-
-        EvaluationContextId IEvaluationContext.Id => Id;
+        public EvaluationContextId Id { get; }
 
         object [] submissionStates;
 
@@ -101,6 +99,7 @@ namespace Xamarin.Interactive.CodeAnalysis
         }
 
         public async Task RunAsync (
+            Guid evaluationRequestId,
             Compilation compilation,
             CancellationToken cancellationToken = default (CancellationToken))
         {
@@ -110,7 +109,7 @@ namespace Xamarin.Interactive.CodeAnalysis
 
             Exception evaluationException = null;
             var result = new Evaluation {
-                RequestId = compilation.MessageId,
+                RequestId = evaluationRequestId,
                 CodeCellId = compilation.CodeCellId,
                 Phase = EvaluationPhase.Compiled
             };

@@ -332,7 +332,7 @@ namespace Xamarin.Interactive.Compilation.Roslyn
 
         readonly bool includePeImagesInResolution;
 
-        public int EvaluationContextId { get; }
+        public EvaluationContextId EvaluationContextId { get; }
         public InteractiveDependencyResolver DependencyResolver { get; }
         public CompletionService CompletionService { get; }
         public OptionSet Options => workspace.Options;

@@ -80,7 +80,7 @@ namespace Xamarin.Interactive.Client
                     SendAsync (request, message => {
                         switch (message) {
                         case LogEntry logEntry:
-                            Log.Commit ((LogEntry)message);
+                            Log.Commit (logEntry);
                             break;
                         case MessageChannel.Ping ping:
                             break;
@@ -119,22 +119,22 @@ namespace Xamarin.Interactive.Client
                 SessionCancellationToken);
 
         public Task<AssemblyLoadResponse> LoadAssembliesAsync (
-            int evaluationContextId,
+            EvaluationContextId evaluationContextId,
             AssemblyDefinition [] assemblies)
             => SendAsync<AssemblyLoadResponse> (
                 new AssemblyLoadRequest (evaluationContextId, assemblies),
                 SessionCancellationToken);
 
         public Task EvaluateAsync (
-            CodeAnalysis.Compilation compilation,
+            Compilation compilation,
             CancellationToken cancellationToken = default (CancellationToken))
             => SendAsync<Evaluation> (
-                compilation,
+                new EvaluationRequest (compilation),
                 GetCancellationToken (cancellationToken));
 
-        public Task AbortEvaluationAsync (int executionSessionId)
+        public Task AbortEvaluationAsync (EvaluationContextId evaluationContextId)
             => SendAsync<bool> (
-                new AbortEvaluationRequest (executionSessionId),
+                new AbortEvaluationRequest (evaluationContextId),
                 SessionCancellationToken);
 
         public Task<AgentFeatures> GetAgentFeaturesAsync (
