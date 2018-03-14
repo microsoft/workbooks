@@ -27,8 +27,11 @@ namespace Xamarin.Interactive
                 return;
 
             mainThreadId = Thread.CurrentThread.ManagedThreadId;
+
             SynchronizationContext = SynchronizationContext.Current;
-            TaskScheduler = TaskScheduler.FromCurrentSynchronizationContext ();
+            TaskScheduler = SynchronizationContext == null
+                ? null
+                : TaskScheduler.FromCurrentSynchronizationContext ();
 
             initialized = true;
         }
@@ -44,15 +47,20 @@ namespace Xamarin.Interactive
 
         public static void Ensure ([CallerMemberName] string caller = null)
         {
-            if (Thread.CurrentThread.ManagedThreadId != mainThreadId) {
-                Log.Error (TAG, $"Ensure failed in {caller}");
+            if (SynchronizationContext == null) {
+                Log.Warning (
+                    TAG,
+                    $"MainThread.Ensure desired in {caller} but MainThread " +
+                    "has no associated SynchronizationContext");
+            } else if (Thread.CurrentThread.ManagedThreadId != mainThreadId) {
+                Log.Error (TAG, $"MainThread.Ensure failed in {caller}");
                 throw new Exception ($"{caller} must be invoked on main thread");
             }
         }
 
         public static void Post (Action handler)
         {
-            if (Thread.CurrentThread.ManagedThreadId == mainThreadId)
+            if (SynchronizationContext == null || Thread.CurrentThread.ManagedThreadId == mainThreadId)
                 handler ();
             else
                 SynchronizationContext.Post (state => ((Action)state) (), handler);
@@ -60,7 +68,7 @@ namespace Xamarin.Interactive
 
         public static void Send (Action handler)
         {
-            if (Thread.CurrentThread.ManagedThreadId == mainThreadId)
+            if (SynchronizationContext == null || Thread.CurrentThread.ManagedThreadId == mainThreadId)
                 handler ();
             else
                 SynchronizationContext.Send (state => ((Action)state) (), handler);
@@ -75,7 +83,7 @@ namespace Xamarin.Interactive
                 continuationAction,
                 cancellationToken,
                 continuationOptions,
-                TaskScheduler);
+                TaskScheduler ?? TaskScheduler.Current);
 
         public static Task SendAsync (
             Action<CancellationToken> handler,
