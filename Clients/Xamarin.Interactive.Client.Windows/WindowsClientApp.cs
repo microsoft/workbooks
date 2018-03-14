@@ -29,7 +29,7 @@ namespace Xamarin.Interactive.Client
     {
         const string TAG = nameof (WindowsClientApp);
 
-        sealed class WindowsHostEnvironment : HostEnvironment
+        sealed class WindowsHostEnvironment : ClientAppHostEnvironment
         {
             public override HostOS OSName { get; } = HostOS.Windows;
 
@@ -107,7 +107,7 @@ namespace Xamarin.Interactive.Client
                 localAppData.Combine ("Xamarin", flavor, "Cache"));
         }
 
-        protected override HostEnvironment CreateHostEnvironment ()
+        protected override ClientAppHostEnvironment CreateHostEnvironment ()
             => new WindowsHostEnvironment ();
 
         protected override IPreferenceStore CreatePreferenceStore ()

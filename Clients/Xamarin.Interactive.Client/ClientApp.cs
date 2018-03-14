@@ -56,7 +56,7 @@ namespace Xamarin.Interactive
         public ClientAppPaths Paths { get; private set; }
         public Telemetry.Client Telemetry { get; private set; }
         public IPreferenceStore Preferences { get; private set; }
-        public HostEnvironment Host { get; private set; }
+        public ClientAppHostEnvironment Host { get; private set; }
         public IssueReport IssueReport { get; private set; }
         public IFileSystem FileSystem { get; private set; }
         public ClientWebServer WebServer { get; private set; }
@@ -64,7 +64,7 @@ namespace Xamarin.Interactive
 
         protected abstract ClientAppPaths CreateClientAppPaths ();
         protected abstract IPreferenceStore CreatePreferenceStore ();
-        protected abstract HostEnvironment CreateHostEnvironment ();
+        protected abstract ClientAppHostEnvironment CreateHostEnvironment ();
         protected abstract IFileSystem CreateFileSystem ();
         protected abstract ClientWebServer CreateClientWebServer ();
         protected abstract UpdaterService CreateUpdaterService ();
@@ -122,7 +122,7 @@ namespace Xamarin.Interactive
             Telemetry = new Telemetry.Client ();
 
             Host = CreateHostEnvironment ()
-                ?? throw new InitializeException<HostEnvironment> (
+                ?? throw new InitializeException<ClientAppHostEnvironment> (
                     nameof (CreateHostEnvironment));
 
             IssueReport = new IssueReport (Host);
@@ -146,8 +146,6 @@ namespace Xamarin.Interactive
             // so that ConsoleClientApp does not need to be built differently on
             // different platforms.
             InteractiveInstallation.InitializeDefault (
-                Host.IsMac,
-                DevEnvironment.RepositoryRootDirectory,
                 Host.IsMac
                     ? GetMacInstallationPaths ()
                     : GetWindowsInstallationPaths ());

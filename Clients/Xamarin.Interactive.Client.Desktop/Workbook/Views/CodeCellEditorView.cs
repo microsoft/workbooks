@@ -157,7 +157,7 @@ namespace Xamarin.Interactive.Workbook.Views
             var isMeta = (bool)args [1];
             var isCtrl = (bool)args [2];
 
-            var isMod = InteractiveInstallation.Default.IsMac ? isMeta : isCtrl;
+            var isMod = HostEnvironment.OS == HostOS.macOS ? isMeta : isCtrl;
 
             // Shift+Mod+Enter: new markdown cell
             if (isShift && isMod) {

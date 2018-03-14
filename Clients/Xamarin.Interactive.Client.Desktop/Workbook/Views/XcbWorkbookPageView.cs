@@ -107,7 +107,7 @@ namespace Xamarin.Interactive.Workbook.Views
 
             outputElement = document.CreateElement ("main");
             outputElement.AddCssClass ("interactive-workspace");
-            outputElement.AddCssClass (InteractiveInstallation.Default.IsMac ? "is-mac" : "is-windows");
+            outputElement.AddCssClass (HostEnvironment.OS == HostOS.macOS ? "is-mac" : "is-windows");
             outputElement.AddCssClass (
                 $"session-kind-{clientSession.SessionKind.ToString ().ToLowerInvariant ()}");
 
@@ -399,7 +399,7 @@ namespace Xamarin.Interactive.Workbook.Views
                     cellHoverClass: null,
                     clickHandler: editor.EvaluateViaKeyPress));
 
-                var kbd = InteractiveInstallation.Default.IsMac
+                var kbd = HostEnvironment.OS == HostOS.macOS
                     ? "<span class='kbd'>\u2318\u21A9</span>"
                     : "<span class='kbd'>Control<span class='plus'>+</span>Return</span>";
 

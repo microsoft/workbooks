@@ -5,11 +5,12 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
-namespace Xamarin.Interactive.SystemInformation
+namespace Xamarin.Interactive
 {
     enum HostOS
     {
         macOS,
-        Windows
+        Windows,
+        Linux
     }
 }

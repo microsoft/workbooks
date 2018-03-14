@@ -15,7 +15,7 @@ using Newtonsoft.Json;
 
 namespace Xamarin.Interactive.SystemInformation
 {
-    abstract class HostEnvironment
+    abstract class ClientAppHostEnvironment
     {
         readonly TaskCompletionSource<IReadOnlyList<ISoftwareEnvironment>> loadSoftwareEnvironmentsTcs
             = new TaskCompletionSource<IReadOnlyList<ISoftwareEnvironment>> ();
@@ -30,7 +30,7 @@ namespace Xamarin.Interactive.SystemInformation
         public virtual int? ProcessorCount => null;
         public virtual int? ActiveProcessorCount => null;
 
-        protected HostEnvironment (
+        protected ClientAppHostEnvironment (
             Func<Task<IReadOnlyList<ISoftwareEnvironment>>> loadSoftwareEnvironmentsAsync = null)
         {
             if (loadSoftwareEnvironmentsAsync == null) {

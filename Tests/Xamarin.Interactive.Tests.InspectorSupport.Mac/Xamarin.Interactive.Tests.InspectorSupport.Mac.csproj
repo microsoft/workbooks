@@ -84,6 +84,9 @@
     <Compile Include="..\..\Agents\Xamarin.Interactive\AgentType.cs">
       <Link>AgentType.cs</Link>
     </Compile>
+    <Compile Include="..\..\Agents\Xamarin.Interactive\DevEnvironment.cs">
+      <Link>DevEnvironment.cs</Link>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Main.storyboard" />

@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 
 using Xamarin.Interactive.Core;
 using Xamarin.Interactive.Messages;
+using Xamarin.Interactive.SystemInformation;
 
 namespace Xamarin.Interactive.Client
 {
@@ -36,9 +37,11 @@ namespace Xamarin.Interactive.Client
         public ImmutableArray<string> AssemblySearchPaths { get; }
         public AgentFeatures Features { get; }
 
-        public bool IncludePeImage => (!InteractiveInstallation.Default.IsMac && Type == AgentType.iOS) ||
-                Type == AgentType.Android;
-        public bool IsConnected => ticket != null && !ticket.IsDisposed && Api != null;
+        public bool IncludePeImage
+            => (HostEnvironment.OS != HostOS.macOS && Type == AgentType.iOS) || Type == AgentType.Android;
+
+        public bool IsConnected
+            => ticket != null && !ticket.IsDisposed && Api != null;
 
         public AgentConnection (AgentType agentType)
         {

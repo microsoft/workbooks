@@ -19,11 +19,14 @@ using System.Threading.Tasks;
 using Xamarin.Interactive.Compilation;
 using Xamarin.Interactive.Core;
 using Xamarin.Interactive.Logging;
+using Xamarin.Interactive.SystemInformation;
 
 namespace Xamarin.Interactive.Reflection
 {
     static class GacCache
     {
+        const string TAG = nameof (GacCache);
+
         public static Task InitializingTask { get; private set; } = Task.CompletedTask;
 
         static readonly IDictionary<FilePath, ImmutableArray<FilePath>> CachedPaths
@@ -40,19 +43,25 @@ namespace Xamarin.Interactive.Reflection
             "Microsoft.NET",
             "assembly");
 
-        static readonly string [] WindowsGacPaths = {
-            Path.Combine (Dotnet4GacPath, "GAC_MSIL"),
-            Path.Combine (Dotnet4GacPath, "GAC_32"),
-            Path.Combine (Dotnet4GacPath, "GAC_64")
-        };
+        static string [] GetGacPaths ()
+        {
+            switch (HostEnvironment.OS) {
+            case HostOS.Windows:
+                return new [] {
+                    Path.Combine (Dotnet4GacPath, "GAC_MSIL"),
+                    Path.Combine (Dotnet4GacPath, "GAC_32"),
+                    Path.Combine (Dotnet4GacPath, "GAC_64")
+                };
+            case HostOS.macOS:
+                return new [] {
+                    "/Library/Frameworks/Mono.framework/Versions/Current/lib/mono/4.5/",
+                };
+            default:
+                throw new NotImplementedException ();
+            }
+        }
 
-        static readonly string[] MacGacPaths = {
-            "/Library/Frameworks/Mono.framework/Versions/Current/lib/mono/4.5/",
-        };
-
-        public static IReadOnlyList<string> GacPaths => InteractiveInstallation.Default.IsMac
-            ? MacGacPaths
-            : WindowsGacPaths;
+        public static readonly IReadOnlyList<string> GacPaths = GetGacPaths ();
 
         public static bool TryGetCachedFilePaths (FilePath key, out ImmutableArray<FilePath> files)
             => CachedPaths.TryGetValue (key, out files);
