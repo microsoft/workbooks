@@ -14,6 +14,7 @@ using System.Net.Http.Headers;
 using System.Threading.Tasks;
 
 using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 
 using Xamarin.Interactive.Logging;
 using Xamarin.Interactive.Preferences;
@@ -157,20 +158,20 @@ namespace Xamarin.Interactive.Telemetry
 
         sealed class EventObjectStreamContent : HttpContent
         {
-            sealed class ModelBinder : SerializationBinder
+            sealed class ModelBinder : ISerializationBinder
             {
-                public override void BindToName (Type serializedType, out string assemblyName, out string typeName)
+                public void BindToName (Type serializedType, out string assemblyName, out string typeName)
                 {
                     assemblyName = null;
                     typeName = serializedType.Name;
                 }
 
-                public override Type BindToType (string assemblyName, string typeName)
+                public Type BindToType (string assemblyName, string typeName)
                     => throw new NotImplementedException ();
             }
 
             static readonly JsonSerializer serializer = new JsonSerializer {
-                Binder = new ModelBinder (),
+                SerializationBinder = new ModelBinder (),
                 TypeNameHandling = TypeNameHandling.Objects,
                 NullValueHandling = NullValueHandling.Ignore,
                 DefaultValueHandling = DefaultValueHandling.Ignore,

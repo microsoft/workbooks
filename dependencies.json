@@ -72,9 +72,10 @@
   {
     "Kind": "NuGet",
     "Name": "Newtonsoft.Json",
-    "Version": "9.0.1",
+    "Version": "11.0.1",
     "DependentProjects": [
       "Xamarin.Workbooks.Client.iOS",
+      "Xamarin.Interactive.Client",
       "InstallerVerifier"
     ]
   },
