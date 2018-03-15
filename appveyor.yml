@@ -1,5 +1,5 @@
 version: '{branch}-{build}-no-release'
-image: Visual Studio 2017 Preview
+image: Visual Studio 2017
 install:
 - cmd: >-
     git submodule sync
@@ -9,9 +9,9 @@ cache:
 - node_modules
 - '%USERPROFILE%\.nuget\packages'
 build_script:
-- cmd: msbuild Build.proj /p:Configuration=Release /t:UpdateBuildInfo,Build,Package
+- cmd: msbuild Build.proj /p:Configuration=Release /t:UpdateBuildInfo,Build,Package /v:m
 test_script:
-- cmd: msbuild Build.proj /t:TestRegressions /p:Configuration=Release
+- cmd: msbuild Build.proj /t:TestRegressions /p:Configuration=Release /v:m
 artifacts:
 - path: _artifacts\*.msi
   name: Installer
