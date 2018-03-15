@@ -1,4 +1,7 @@
 {
+  "app": {
+    "version": "1.5.0-dev"
+  },
   "sdk": {
     "version": "2.1.4"
   }

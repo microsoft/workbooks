@@ -67,7 +67,7 @@
     <Compile Include="MSBuild\ReleaseVersion.cs" />
     <Compile Include="MSBuild\FindReplaceInFiles.cs" />
     <Compile Include="MSBuild\MonoRuntimeVersion.cs" />
-    <Compile Include="MSBuild\PackageDotJson.cs" />
+    <Compile Include="MSBuild\GlobalDotJson.cs" />
     <Compile Include="MSBuild\TypeScriptConfig.cs" />
     <Compile Include="PlistBuddy.cs" />
     <Compile Include="MSBuild\MergePlist.cs" />

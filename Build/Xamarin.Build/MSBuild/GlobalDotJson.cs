@@ -14,29 +14,35 @@ using Newtonsoft.Json;
 
 namespace Xamarin.MSBuild
 {
-    public sealed class PackageDotJson : Task
+    public sealed class GlobalDotJson : Task
     {
         [Required]
         public string FileName { get; set; }
 
         [Output]
-        public string Version { get; private set; }
+        public string AppVersion { get; private set; }
 
         public override bool Execute ()
         {
-            Version = PackageDotJsonData.ReadFromFile (FileName).Version;
+            AppVersion = GlobalDotJsonData.ReadFromFile (FileName).App?.Version;
             return true;
         }
 
-        public sealed class PackageDotJsonData
+        public sealed class GlobalDotJsonData
         {
-            [JsonProperty ("version")]
-            public string Version { get; set; }
+            public sealed class AppData
+            {
+                [JsonProperty ("version")]
+                public string Version { get; set; }
+            }
 
-            public static PackageDotJsonData ReadFromFile (string path)
+            [JsonProperty ("app")]
+            public AppData App { get; set; }
+
+            public static GlobalDotJsonData ReadFromFile (string path)
             {
                 using (var reader = new StreamReader (path))
-                    return new JsonSerializer ().Deserialize<PackageDotJsonData> (
+                    return new JsonSerializer ().Deserialize<GlobalDotJsonData> (
                         new JsonTextReader (reader));
             }
         }

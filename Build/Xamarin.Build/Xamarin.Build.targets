@@ -169,18 +169,18 @@ Copyright 2017 Microsoft. All rights reserved.
   </Target>
 
   <UsingTask
-    TaskName="Xamarin.MSBuild.PackageDotJson"
+    TaskName="Xamarin.MSBuild.GlobalDotJson"
     AssemblyFile="$(Xamarin_Build_AssemblyFile)"/>
 
   <Target
-    Name="Xamarin_Build_ReadPackageDotJson"
+    Name="Xamarin_Build_ReadGlobalDotJson"
     DependsOnTargets="Xamarin_Build_Tasks">
-    <PackageDotJson FileName="$(MSBuildProjectDirectory)\package.json">
+    <GlobalDotJson FileName="$(MSBuildThisFileDirectory)..\..\global.json">
       <Output
-        TaskParameter="Version"
-        PropertyName="PackageDotJson_Version"/>
-    </PackageDotJson>
-    <Message Text="PackageDotJson_Version: $(PackageDotJson_Version)" Importance="high"/>
+        TaskParameter="AppVersion"
+        PropertyName="GlobalDotJson_AppVersion"/>
+    </GlobalDotJson>
+    <Message Text="GlobalDotJson_AppVersion: $(GlobalDotJson_AppVersion)" Importance="high"/>
   </Target>
 
   <UsingTask

@@ -30,9 +30,9 @@ Copyright 2017 Microsoft. All rights reserved.
     Name="Xamarin_Build_GenerateReleaseVersions"
     DependsOnTargets="
     Xamarin_Build_SetCommitMaxRevision;
-    Xamarin_Build_ReadPackageDotJson;
+    Xamarin_Build_ReadGlobalDotJson;
     Xamarin_Build_ReadCommonGitInfo">
-    <CreateProperty Value="$(PackageDotJson_Version)+$(CommonGitInfo_MinMaxCommitDistance)">
+    <CreateProperty Value="$(GlobalDotJson_AppVersion)+$(CommonGitInfo_MinMaxCommitDistance)">
       <Output
         TaskParameter="Value"
         PropertyName="ReleaseVersion_SemVer"/>
