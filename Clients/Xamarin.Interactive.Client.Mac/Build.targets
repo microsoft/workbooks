@@ -9,7 +9,7 @@
     TaskName="Xamarin.MSBuild.DeletePlistEntries"
     AssemblyFile="$(MSBuildThisFileDirectory)..\..\Build\Xamarin.Build\Xamarin.Build.dll" />
 
-  <Import Project="$(MSBuildThisFileDirectory)..\WebApp.targets" />
+  <Import Project="$(MSBuildThisFileDirectory)..\Xamarin.Interactive.Client\ClientApp\WebApp.targets" />
   <Import Project="$(MSBuildThisFileDirectory)..\SharedClientResources.targets" />
 
   <PropertyGroup>
