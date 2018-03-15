@@ -18,6 +18,10 @@ Copyright 2017 Microsoft. All rights reserved.
       <Solution Include="$(MSBuildThisFileDirectory)..\*.sln"/>
     </ItemGroup>
     <ItemGroup>
+      <NpmPackageJson Include="$(MSBuildThisFileDirectory)..\Clients\Xamarin.Interactive.Client\ClientApp\package.json"/>
+      <NpmPackageJson Include="$(MSBuildThisFileDirectory)..\Clients\Xamarin.Interactive.Client.Web\package.json"/>
+    </ItemGroup>
+    <ItemGroup>
       <ExcludeProjectName Include="ApiDump"/>
       <ExcludeProjectName Include="ILFixer"/>
       <ExcludeProjectName Include="Xamarin.Build"/>
@@ -32,7 +36,7 @@ Copyright 2017 Microsoft. All rights reserved.
     <UpdateInvertedDependencies
       Solutions="@(Solution)"
       ExcludeProjectNames="@(ExcludeProjectName)"
-      NpmPackageJson="$(MSBuildThisFileDirectory)..\Clients\Xamarin.Interactive.Client\ClientApp\package.json"
+      NpmPackageJson="@(NpmPackageJson)"
       OutputFile="$(MSBuildThisFileDirectory)..\dependencies.json"/>
   </Target>
 
