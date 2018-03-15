@@ -26,6 +26,10 @@ Copyright 2017 Microsoft. All rights reserved.
     TaskName="Xamarin.XamPub.MSBuild.GeneratePublicationManifest"
     AssemblyFile="$(Xamarin_Build_AssemblyFile)"/>
 
+  <UsingTask
+    TaskName="Xamarin.MSBuild.GenerateSolution"
+    AssemblyFile="$(Xamarin_Build_AssemblyFile)"/>
+
   <Target Name="_Xamarin_Build_RestorePackages">
     <MSBuild
       BuildInParallel="true"

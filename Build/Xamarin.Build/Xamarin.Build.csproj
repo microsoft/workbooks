@@ -25,9 +25,6 @@
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq" />
-    <Reference Include="Microsoft.Build.Tasks.v4.0" />
-    <Reference Include="Microsoft.Build.Framework" />
-    <Reference Include="Microsoft.Build.Utilities.v4.0" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json">
@@ -41,6 +38,12 @@
     </PackageReference>
     <PackageReference Include="CommonMark.NET">
       <Version>0.15.1</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Build">
+      <Version>15.6.82</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Build.Tasks.Core">
+      <Version>15.6.82</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
@@ -89,6 +92,7 @@
     <Compile Include="XamPub\Models\UploadEnvironments.cs" />
     <Compile Include="XamPub\Models\XamarinUpdaterChannels.cs" />
     <Compile Include="XamPub\Models\XamarinUpdaterProduct.cs" />
+    <Compile Include="MSBuild\GenerateSolution.cs" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
