@@ -137,6 +137,11 @@
       RunEachTargetSeparately="true"
       Properties="InteractiveBuildTarget=Build"
       Condition="'$(SolutionPlatform)' == 'Windows'"/>
+    <MSBuild
+      Condition="'$(SolutionPlatform)' == 'macOS'"
+      Projects="CoreBuild.proj"
+      Targets="Package"
+      Properties="Configuration=$(Configuration)"/>
   </Target>
 
   <Target Name="Clean">

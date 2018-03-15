@@ -1,0 +1,28 @@
+<Project>
+  <Import Project="Xamarin.Build\Xamarin.Build.targets"/>
+  <Import Project="Environment.props"/>
+
+  <Target Name="ResolveNodeCli">
+    <Which
+      Condition="!Exists('$(Npm)')"
+      Program="npm"
+      PreferPaths="@(WhichSearchPath)">
+      <Output TaskParameter="FullPath" PropertyName="Npm"/>
+    </Which>
+    <Which
+      Condition="!Exists('$(Node)')"
+      Program="node"
+      PreferPaths="@(WhichSearchPath)">
+      <Output TaskParameter="FullPath" PropertyName="Node"/>
+    </Which>
+  </Target>
+
+  <Target Name="ResolveNuGetCli">
+    <Which
+      Condition="!Exists('$(NuGet)')"
+      Program="nuget"
+      PreferPaths="@(WhichSearchPath)">
+      <Output TaskParameter="FullPath" PropertyName="NuGet"/>
+    </Which>
+  </Target>
+</Project>
