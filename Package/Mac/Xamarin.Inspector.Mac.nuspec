@@ -10,11 +10,32 @@
     <description>Xamarin Inspector client and support files for IDE extensions.</description>
     <copyright>Copyright 2017 Microsoft. All rights reserved.</copyright>
     <tags>xamarin inspector</tags>
+    <!-- This section is ignored during packaging due to the presence of a files
+         element further down (necessary for assembly references, apparently).
+         So, we have to specify content files twice: once below for packing, and
+         once here to get the consumption behavior correct. -->
     <contentFiles>
         <files
-            include="any/**"
-            buildAction="None"
-            copyToOutput="true" />
+          include="any\any\Xamarin Inspector.app\**"
+          buildAction="None"
+          copyToOutput="true" />
     </contentFiles>
   </metadata>
+  <files>
+    <file
+      src="contentFiles\any\any\Xamarin Inspector.app\Contents\MonoBundle\Xamarin.Interactive.dll"
+      target="lib\net461\Xamarin.Interactive.dll" />
+    <file
+      src="contentFiles\any\any\Xamarin Inspector.app\Contents\MonoBundle\Xamarin.Interactive.Client.dll"
+      target="lib\net461\Xamarin.Interactive.Client.dll" />
+    <file
+      src="contentFiles\any\any\Xamarin Inspector.app\Contents\MonoBundle\System.Windows.Input.dll"
+      target="lib\net461\System.Windows.Input.dll" />
+    <file
+      src="contentFiles\any\any\Xamarin Inspector.app\Contents\MonoBundle\CommonMark.dll"
+      target="lib\net461\CommonMark.dll" />
+    <file
+      src="contentFiles\any\any\Xamarin Inspector.app\**"
+      target="contentFiles\any\any\Xamarin Inspector.app"/>
+  </files>
 </package>
