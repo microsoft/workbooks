@@ -19,7 +19,7 @@ using Xamarin.Interactive.Workbook.Models;
 
 namespace Xamarin.Interactive.Workbook.Views
 {
-    sealed class MarkdownCellView : CellView
+    sealed class MarkdownCellView : CellView, IMarkdownCellView
     {
         readonly HtmlElement editorElem;
         readonly ProseMirrorEditor editor;
