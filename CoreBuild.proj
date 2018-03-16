@@ -65,8 +65,7 @@
     Name="FullProfile"
     DependsOnTargets="WebProfile;DesktopProfile"/>
 
-  <!-- Targets -->
-
+  <!-- Solution Targets -->
   <Target
     Name="Build"
     DependsOnTargets="$(Profile)">
@@ -79,11 +78,23 @@
   <Target
     Name="Restore"
     DependsOnTargets="$(Profile)">
+    <Message Importance="High" Text="Restoring NuGet packages for $(SolutionFileRelative)..."/>
     <MSBuild
       Projects="$(SolutionFile)"
       Properties="$(ProfileProperties)"
       Targets="Restore"/>
   </Target>
+
+  <Target
+    Name="Clean"
+    DependsOnTargets="$(Profile)">
+    <MSBuild
+      Projects="@(ProjectsToBuild)"
+      Properties="$(ProfileProperties)"
+      Targets="Clean"/>
+  </Target>
+
+  <!-- Profile Projects -->
 
   <Target
     Name="Package"
@@ -99,14 +110,7 @@
       Targets="Package"/>
   </Target>
 
-  <Target
-    Name="Clean"
-    DependsOnTargets="$(Profile)">
-    <MSBuild
-      Projects="@(ProjectsToBuild)"
-      Properties="$(ProfileProperties)"
-      Targets="Clean"/>
-  </Target>
+  <!-- Configuration / Solution Generation -->
 
   <Target
     Name="Configure"
@@ -119,20 +123,28 @@
 
   <Target
     Name="ConfigurationSummary"
-    BeforeTargets="Build">
+    AfterTargets="ComputeSolution">
     <Message Importance="High" Text="Projects To Build:"/>
-    <Message Importance="High" Text="  %(ProjectsToBuild.Filename)"/>
+    <Message Importance="High" Text="  $(SolutionFileRelative):"/>
+    <Message Importance="High" Text="    %(ProjectsToBuild.Filename)"/>
+  </Target>
+
+  <Target
+    Name="ComputeSolution">
+    <PropertyGroup>
+      <SolutionFileName>$([System.Text.RegularExpressions.Regex]::Replace($(Profile), 'Profile$', ''))</SolutionFileName>
+      <SolutionFile>$(MSBuildThisFileDirectory)solutions\Xamarin.Interactive.$(SolutionFileName).sln</SolutionFile>
+      <SolutionFileRelative>$([MSBuild]::MakeRelative($(MSBuildThisFileDirectory), $(SolutionFile)))</SolutionFileRelative>
+      <SolutionBasePath>$([System.IO.Path]::GetDirectoryName($(SolutionFile)))\</SolutionBasePath>
+    </PropertyGroup>
   </Target>
 
   <Target
     Name="GenerateSolution"
-    BeforeTargets="Build">
-    <PropertyGroup>
-      <SolutionFileName>$([System.Text.RegularExpressions.Regex]::Replace($(Profile), 'Profile$', ''))</SolutionFileName>
-      <SolutionFile>$(MSBuildThisFileDirectory)solutions\Xamarin.Interactive.$(SolutionFileName).sln</SolutionFile>
-      <SolutionBasePath>$([System.IO.Path]::GetDirectoryName($(SolutionFile)))\</SolutionBasePath>
-    </PropertyGroup>
-
+    DependsOnTargets="ComputeSolution"
+    BeforeTargets="Restore;Build"
+    Inputs="$(MSBuildThisFileFullPath)"
+    Outputs="$(SolutionFile)">
     <ItemGroup>
       <SolutionProjects Include="@(ProjectsToBuild -> '$(MSBuildThisFileDirectory)%(Identity)')">
         <RelativePath>$([MSBuild]::MakeRelative($(SolutionBasePath), $(MSBuildThisFileDirectory)%(Identity)))</RelativePath>
@@ -140,6 +152,7 @@
       </SolutionProjects>
     </ItemGroup>
 
+    <Message Importance="High" Text="Generating $(SolutionFileRelative)..."/>
     <GenerateSolution
       Projects="@(SolutionProjects)"
       GlobalSectionsFiles="$(SolutionBasePath)GlobalSections"
