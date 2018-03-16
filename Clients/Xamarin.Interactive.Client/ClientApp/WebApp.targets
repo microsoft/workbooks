@@ -1,7 +1,7 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <UsingTask
     TaskName="Xamarin.MSBuild.TypeScriptConfig"
-    AssemblyFile="..\..\..\Build\Xamarin.Build\Xamarin.Build.dll" />
+    AssemblyFile="$(Xamarin_Build_AssemblyFile)" />
 
   <PropertyGroup>
     <NodeBinDirectory>$(MSBuildThisFileDirectory)node_modules\.bin\</NodeBinDirectory>

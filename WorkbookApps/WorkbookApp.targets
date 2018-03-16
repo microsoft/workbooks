@@ -1,6 +1,6 @@
 <Project>
   <PropertyGroup>
-    <Xamarin_Build_AssemblyFile>$(MSBuildThisFileDirectory)..\Build\Xamarin.Build\Xamarin.Build.dll</Xamarin_Build_AssemblyFile>
+    <Xamarin_Build_AssemblyFile>$(MSBuildThisFileDirectory)..\Build\Xamarin.Build\bin\Xamarin.Build.dll</Xamarin_Build_AssemblyFile>
     <InstallDir>$(MSBuildThisFileDirectory)..\_build\$(Configuration)\WorkbookApps\</InstallDir>
   </PropertyGroup>
 
@@ -11,15 +11,15 @@
   <UsingTask
     TaskName="Xamarin.MSBuild.UpdateWixManifest"
     AssemblyFile="$(Xamarin_Build_AssemblyFile)"/>
-  
+
   <ItemGroup>
     <BundleFxAssemblies Include="$(MonoFrameworkPath)/*.dll" />
   </ItemGroup>
-  
+
   <ItemGroup>
     <BundleFxFacades Include="$(MonoFrameworkPath)/Facades/*.dll" />
   </ItemGroup>
-  
+
   <PropertyGroup>
     <IsAndroidBuild>False</IsAndroidBuild>
     <IsAndroidBuild Condition=" '$(AndroidManifest)' != '' ">True</IsAndroidBuild>
@@ -36,7 +36,7 @@
       _BundleWorkbookFrameworkAssemblies;
     </BuildDependsOn>
   </PropertyGroup>
-  
+
   <Target Name="_BundleWorkbookFrameworkAssemblies">
     <!--
       This ItemGroup is inside the target because to actually compute the correct set of DLLs to copy,

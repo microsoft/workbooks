@@ -11,7 +11,7 @@ Copyright 2017 Microsoft. All rights reserved.
   DefaultTargets="Build"
   ToolsVersion="12.0">
   <PropertyGroup>
-    <Xamarin_Build_AssemblyFile>$(MSBuildThisFileDirectory)Xamarin.Build.dll</Xamarin_Build_AssemblyFile>
+    <Xamarin_Build_AssemblyFile>$(MSBuildThisFileDirectory)bin\Xamarin.Build.dll</Xamarin_Build_AssemblyFile>
   </PropertyGroup>
 
   <UsingTask
@@ -45,6 +45,11 @@ Copyright 2017 Microsoft. All rights reserved.
   <Target
     Name="Xamarin_Build_Tasks"
     DependsOnTargets="_Xamarin_Build_RestorePackages">
+    <MSBuild
+      Condition="!Exists('$(MSBuildThisFileDirectory)obj\Xamarin.Build.csproj.nuget.cache')"
+      Projects="$(MSBuildThisFileDirectory)Xamarin.Build.csproj"
+      Targets="Restore"
+      Properties="Configuration=Debug"/>
     <MSBuild
       Projects="$(MSBuildThisFileDirectory)Xamarin.Build.csproj"
       Targets="Build"
