@@ -80,7 +80,7 @@
 
     <ItemGroup>
       <MiscResources Include="$(MSBuildThisFileDirectory)..\ThirdPartyNotices.txt"/>
-      <MiscResources Include="$(MSBuildThisFileDirectory)..\Package\Mac\Resources\en.lproj\License.rtf"/>
+      <MiscResources Include="$(MSBuildThisFileDirectory)Xamarin.Interactive.Client.Mac\PackageAssets\Resources\en.lproj\License.rtf"/>
     </ItemGroup>
     <Copy
       SkipUnchangedFiles="true"

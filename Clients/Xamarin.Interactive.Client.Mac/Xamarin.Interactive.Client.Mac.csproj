@@ -413,6 +413,7 @@
   <Import Project="..\Xamarin.Interactive.MTouch\Xamarin.Interactive.MTouch.projitems" Label="Shared" Condition="Exists('..\Xamarin.Interactive.MTouch\Xamarin.Interactive.MTouch.projitems')" />
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Mac\Xamarin.Mac.CSharp.targets" />
   <Import Project="Build.targets" />
+  <Import Project="Package.targets" />
   <Import Project="..\..\Build\Common.targets" />
   <ItemGroup>
     <ProjectReference Include="..\CrossBrowser\Xamarin.CrossBrowser.Mac\Xamarin.CrossBrowser.Mac.csproj">

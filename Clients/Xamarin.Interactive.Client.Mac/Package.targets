@@ -1,0 +1,264 @@
+<Project>
+  <PropertyGroup>
+    <TopDirectory>..\..\</TopDirectory>
+    <AbsoluteTopDirectory>$(MSBuildThisFileDirectory)$(TopDirectory)</AbsoluteTopDirectory>
+
+    <PackageAssetsDirectory>PackageAssets\</PackageAssetsDirectory>
+
+    <InstallDestDir Condition="'$(InstallDestDir)' == ''">_install\</InstallDestDir>
+    <FrameworkInstallDir>$(InstallDestDir)Library\Frameworks\Xamarin.Interactive.framework\Versions\Current\</FrameworkInstallDir>
+
+    <InspectorClientInstallPath>$(FrameworkInstallDir)InspectorClient\</InspectorClientInstallPath>
+
+    <WorkbooksAppBundleName>Xamarin Workbooks.app</WorkbooksAppBundleName>
+    <InspectorAppBundleName>Xamarin Inspector.app</InspectorAppBundleName>
+
+    <WorkbooksAppBundlePath>bin\$(Configuration)\$(WorkbooksAppBundleName)</WorkbooksAppBundlePath>
+    <InspectorAppBundlePath>bin\$(Configuration)\$(InspectorAppBundleName)</InspectorAppBundlePath>
+
+    <WorkbooksAppSharedSupportPath>$(InstallDestDir)Applications\$(WorkbooksAppBundleName)\Contents\SharedSupport\</WorkbooksAppSharedSupportPath>
+    <InspectorAppSharedSupportPath>$(InspectorClientInstallPath)$(InspectorAppBundleName)\Contents\SharedSupport\</InspectorAppSharedSupportPath>
+
+    <InspectorNuGetPackageBuildDir>_inspectorPackage</InspectorNuGetPackageBuildDir>
+    <InspectorNuGetPackageContentDir>$(InspectorNuGetPackageBuildDir)\contentFiles\any\any\</InspectorNuGetPackageContentDir>
+  </PropertyGroup>
+
+  <Import Project="$(TopDirectory)Build\Metadata.targets"/>
+
+  <Target
+    Name="Package"
+    DependsOnTargets="Xamarin_Build_ReadAllProperties;Install">
+    <PropertyGroup>
+      <PackageFile>$(ArtifactsBasePath)XamarinInteractive-$(ReleaseVersion_SemVer).pkg</PackageFile>
+    </PropertyGroup>
+
+    <Exec
+      Condition="'$(ProductsignIdentity)' != '' Or '$(CodesignIdentity)' != ''"
+      Command="security -v find-identity"/>
+
+    <Exec
+      Condition="'$(LoginKeychainPassword)' != ''"
+      Command="security unlock-keychain -p &quot;$(LoginKeychainPassword)&quot;"/>
+
+    <ItemGroup>
+      <CodesignItems Include="$(InstallDestDir)Applications/Xamarin Workbooks.app"/>
+      <CodesignItems Include="$(InstallDestDir)Library/Frameworks/Xamarin.Interactive.framework/Versions/Current/InspectorClient/Xamarin Inspector.app"/>
+    </ItemGroup>
+
+    <Exec
+      Condition="'$(CodesignIdentity)' != ''"
+      Command="codesign --deep --force --sign &quot;$(CodesignIdentity)&quot; &quot;%(CodesignItems.Identity)&quot;"/>
+
+    <ItemGroup>
+      <Replacement Include="@VERSION@">
+        <Value>$(ReleaseVersion_AppleCFBundleVersion)</Value>
+      </Replacement>
+      <Replacement Include="@FRIENDLY_VERSION@">
+        <Value>$(ReleaseVersion_FriendlyLong)</Value>
+      </Replacement>
+    </ItemGroup>
+    <Copy
+      SourceFiles="$(PackageAssetsDirectory)Distribution.xml.in"
+      DestinationFiles="$(PackageAssetsDirectory)Distribution.xml"/>
+    <FindReplaceInFiles
+      Files="$(PackageAssetsDirectory)Distribution.xml"
+      Replacements="@(Replacement)"/>
+
+    <ItemGroup>
+      <PkgBuild Include="pkgbuild"/>
+      <PkgBuild Include="--root $(InstallDestDir)"/>
+      <PkgBuild Include="--component-plist $(PackageAssetsDirectory)Components.plist"/>
+      <PkgBuild Include="--install-location \"/>
+      <PkgBuild Include="--scripts $(PackageAssetsDirectory)Scripts"/>
+      <PkgBuild Include="--identifier com.xamarin.Inspector"/>
+      <PkgBuild Include="--version $(ReleaseVersion_AppleCFBundleVersion)"/>
+      <PkgBuild Include="$(PackageAssetsDirectory)Framework.pkg"/>
+    </ItemGroup>
+    <Exec Command="@(PkgBuild, ' ')"/>
+
+    <ItemGroup>
+      <ProductBuild Include="productbuild"/>
+      <ProductBuild Include="--distribution $(PackageAssetsDirectory)Distribution.xml"/>
+      <ProductBuild Include="--package-path $(PackageAssetsDirectory)"/>
+      <ProductBuild Include="--resources $(PackageAssetsDirectory)Resources"/>
+      <ProductBuild Include="$(PackageFile)"/>
+      <ProductBuild
+        Condition="'$(ProductsignIdentity)' != ''"
+        Include="--sign &quot;$(ProductsignIdentity)&quot;"/>
+    </ItemGroup>
+    <Exec Command="@(ProductBuild, ' ')"/>
+
+    <Delete Files="$(PackageAssetsDirectory)Framework.pkg;$(PackageAssetsDirectory)Distribution.xml"/>
+
+    <Message Text="Generated $(PackageFile)" Importance="high"/>
+  </Target>
+
+  <PropertyGroup>
+    <InstallDependsOnMac>
+      Uninstall;
+      _InstallUninstallerMac;
+      _InstallBuildInfoMac;
+      _InstallUpdateInfoMac;
+      _InstallSDKMac;
+      _InstallAgentsMac;
+      _InstallClientAppMac
+    </InstallDependsOnMac>
+  </PropertyGroup>
+
+  <Target Name="Install" DependsOnTargets="$(InstallDependsOnMac)"/>
+
+  <Target Name="Uninstall">
+    <Exec Command="DSTROOT=&quot;$(InstallDestDir)&quot; $(PackageAssetsDirectory)uninstall -f"/>
+  </Target>
+
+  <Target Name="_InstallUninstallerMac">
+    <Copy
+      SkipUnchangedFiles="true"
+      SourceFiles="$(PackageAssetsDirectory)uninstall"
+      DestinationFolder="$(FrameworkInstallDir)"/>
+  </Target>
+
+  <Target Name="_InstallBuildInfoMac">
+    <Copy
+      SkipUnchangedFiles="true"
+      SourceFiles="$(TopDirectory)Package\buildinfo"
+      DestinationFolder="$(FrameworkInstallDir)"/>
+  </Target>
+
+  <Target Name="_InstallUpdateInfoMac">
+    <Copy
+      SkipUnchangedFiles="true"
+      SourceFiles="$(UpdateInfoFile)"
+      DestinationFolder="$(FrameworkInstallDir)"/>
+  </Target>
+
+  <Target Name="_InstallSDKMac">
+    <ItemGroup>
+      <SDKFiles Include="$(TopDirectory)Agents\Xamarin.Interactive\bin\$(Configuration)\netstandard2.0\Xamarin.Interactive.dll" />
+      <SDKFiles Include="$(TopDirectory)Agents\Xamarin.Interactive\bin\$(Configuration)\netstandard2.0\Xamarin.Interactive.pdb" />
+      <SDKFiles Include="$(TopDirectory)Clients\Xamarin.Interactive.Client\ClientApp\typings\xamarin-interactive.d.ts"/>
+    </ItemGroup>
+    <Copy
+      SkipUnchangedFiles="true"
+      SourceFiles="@(SDKFiles)"
+      DestinationFolder="$(FrameworkInstallDir)SDK"/>
+  </Target>
+
+  <ItemGroup>
+    <AndroidAgentFiles Include="$(TopDirectory)Agents\Xamarin.Interactive.Android\bin\$(Configuration)\monoandroid\*"/>
+    <AndroidAgentFiles Include="$(TopDirectory)_build\$(Configuration)\WorkbookApps\Console\netstandard.dll"/>
+    <AndroidFormsAgentFiles Include="$(TopDirectory)Agents\Xamarin.Interactive.Forms.Android\bin\$(Configuration)\monoandroid\*"/>
+    <AndroidFormsAgentFiles Include="$(TopDirectory)_build\$(Configuration)\WorkbookApps\Console\netstandard.dll"/>
+    <iOSAgentFiles Include="$(TopDirectory)Agents\Xamarin.Interactive.iOS\bin\$(Configuration)\Xamarin.iOS10\*"/>
+    <iOSAgentFiles Include="$(TopDirectory)_build\$(Configuration)\WorkbookApps\Console\netstandard.dll"/>
+    <iOSFormsAgentFiles Include="$(TopDirectory)Agents\Xamarin.Interactive.Forms.iOS\bin\$(Configuration)\Xamarin.iOS10\*"/>
+    <iOSFormsAgentFiles Include="$(TopDirectory)_build\$(Configuration)\WorkbookApps\Console\netstandard.dll"/>
+    <MacMobileAgentFiles Include="$(TopDirectory)Agents\Xamarin.Interactive.Mac.Mobile\bin\$(Configuration)\Net45\*"/>
+    <MacMobileAgentFiles Include="$(TopDirectory)_build\$(Configuration)\WorkbookApps\Console\netstandard.dll"/>
+    <MacDesktopAgentFiles Include="$(TopDirectory)Agents\Xamarin.Interactive.Mac.Desktop\bin\$(Configuration)\Net45\*"/>
+    <MacDesktopAgentFiles Include="$(TopDirectory)_build\$(Configuration)\WorkbookApps\Console\netstandard.dll"/>
+    <ConsoleAgentFiles Include="$(TopDirectory)Agents\Xamarin.Interactive.Console\bin\$(Configuration)\*"/>
+    <DotNetCoreAgentFiles Include="$(TopDirectory)Agents\Xamarin.Interactive.DotNetCore\bin\$(Configuration)\netstandard2.0\*"/>
+    <WpfAgentFiles Include="$(TopDirectory)Agents\Xamarin.Interactive.Wpf\bin\$(Configuration)\Net45\*"/>
+  </ItemGroup>
+
+  <Target Name="_InstallAgentsMac">
+    <Copy
+      SkipUnchangedFiles="true"
+      SourceFiles="@(AndroidAgentFiles)"
+      DestinationFolder="$(FrameworkInstallDir)Agents\Android"/>
+    <Copy
+      SkipUnchangedFiles="true"
+      SourceFiles="@(iOSAgentFiles)"
+      DestinationFolder="$(FrameworkInstallDir)Agents\iOS"/>
+    <Copy
+      SkipUnchangedFiles="true"
+      SourceFiles="@(MacMobileAgentFiles)"
+      DestinationFolder="$(FrameworkInstallDir)Agents\Mac\Mobile"/>
+    <Copy
+      SkipUnchangedFiles="true"
+      SourceFiles="@(MacDesktopAgentFiles)"
+      DestinationFolder="$(FrameworkInstallDir)Agents\Mac\Desktop"/>
+    <Copy
+      SkipUnchangedFiles="true"
+      SourceFiles="@(ConsoleAgentFiles)"
+      DestinationFolder="$(FrameworkInstallDir)Agents\Console"/>
+    <Copy
+      SkipUnchangedFiles="true"
+      SourceFiles="@(AndroidFormsAgentFiles)"
+      DestinationFolder="$(FrameworkInstallDir)Agents\Forms\Android"/>
+    <Copy
+      SkipUnchangedFiles="true"
+      SourceFiles="@(iOSFormsAgentFiles)"
+      DestinationFolder="$(FrameworkInstallDir)Agents\Forms\iOS"/>
+    <Copy
+      SkipUnchangedFiles="true"
+      SourceFiles="@(DotNetCoreAgentFiles)"
+      DestinationFolder="$(FrameworkInstallDir)Agents\DotNetCore"/>
+  </Target>
+
+  <Target Name="_InstallClientAppMac">
+    <!-- Install Workbooks.app -->
+    <MakeDir Directories="$(InstallDestDir)Applications"/>
+    <Exec Command="cp -a &quot;$(WorkbooksAppBundlePath)&quot; &quot;$(InstallDestDir)Applications&quot;"/>
+    <MakeDir Directories="$(InstallDestDir)Applications\$(WorkbooksAppBundleName)\Contents\SharedSupport"/>
+    <Exec Command="cp -a &quot;$(TopDirectory)_build\$(Configuration)\WorkbookApps&quot; &quot;$(WorkbooksAppSharedSupportPath)&quot;"/>
+    <Copy
+      SkipUnchangedFiles="true"
+      SourceFiles="$(PackageAssetsDirectory)workbook"
+      DestinationFolder="$(WorkbooksAppSharedSupportPath)path-bin" />
+    <Copy
+      SkipUnchangedFiles="true"
+      SourceFiles="@(AndroidFormsAgentFiles)"
+      DestinationFolder="$(WorkbooksAppSharedSupportPath)Agents\Forms\Android"/>
+    <Copy
+      SkipUnchangedFiles="true"
+      SourceFiles="@(iOSFormsAgentFiles)"
+      DestinationFolder="$(WorkbooksAppSharedSupportPath)Agents\Forms\iOS"/>
+    <Copy
+      SkipUnchangedFiles="true"
+      SourceFiles="$(UpdateInfoFile)"
+      DestinationFolder="$(WorkbooksAppSharedSupportPath)"/>
+    <Copy
+      SkipUnchangedFiles="true"
+      SourceFiles="$(BuildInfoDistFile)"
+      DestinationFolder="$(WorkbooksAppSharedSupportPath)"/>
+
+    <!-- Install Inspector.app in old location -->
+    <MakeDir Directories="$(InspectorClientInstallPath)"/>
+    <Exec Command="cp -a &quot;$(InspectorAppBundlePath)&quot; &quot;$(InspectorClientInstallPath)&quot;"/>
+
+    <Copy
+      SkipUnchangedFiles="true"
+      SourceFiles="@(AndroidAgentFiles)"
+      DestinationFolder="$(InspectorAppSharedSupportPath)Agents\Android"/>
+    <Copy
+      SkipUnchangedFiles="true"
+      SourceFiles="@(iOSAgentFiles)"
+      DestinationFolder="$(InspectorAppSharedSupportPath)Agents\iOS"/>
+    <Copy
+      SkipUnchangedFiles="true"
+      SourceFiles="@(MacMobileAgentFiles)"
+      DestinationFolder="$(InspectorAppSharedSupportPath)Agents\Mac\Mobile"/>
+    <Copy
+      SkipUnchangedFiles="true"
+      SourceFiles="@(MacDesktopAgentFiles)"
+      DestinationFolder="$(InspectorAppSharedSupportPath)Agents\Mac\Desktop"/>
+    <Copy
+      SkipUnchangedFiles="true"
+      SourceFiles="@(AndroidFormsAgentFiles)"
+      DestinationFolder="$(InspectorAppSharedSupportPath)Agents\Forms\Android"/>
+    <Copy
+      SkipUnchangedFiles="true"
+      SourceFiles="@(iOSFormsAgentFiles)"
+      DestinationFolder="$(InspectorAppSharedSupportPath)Agents\Forms\iOS"/>
+    <Copy
+      SkipUnchangedFiles="true"
+      SourceFiles="$(UpdateInfoFile)"
+      DestinationFolder="$(InspectorAppSharedSupportPath)"/>
+    <Copy
+      SkipUnchangedFiles="true"
+      SourceFiles="$(BuildInfoDistFile)"
+      DestinationFolder="$(InspectorAppSharedSupportPath)"/>
+  </Target>
+</Project>
