@@ -48,6 +48,14 @@
   </Target>
 
   <Target
+    Name="ConsoleProfile"
+    DependsOnTargets="CoreProfile;CoreWorkbookAppsProfile">
+    <ItemGroup>
+      <ProjectsToBuild Include="Clients\Xamarin.Interactive.Client.Console\*.csproj"/>
+    </ItemGroup>
+  </Target>
+
+  <Target
     Name="DesktopProfile"
     DependsOnTargets="CoreProfile;CoreWorkbookAppsProfile">
     <ItemGroup Condition="$(IsMac)">
@@ -63,7 +71,7 @@
 
   <Target
     Name="FullProfile"
-    DependsOnTargets="WebProfile;DesktopProfile"/>
+    DependsOnTargets="WebProfile;ConsoleProfile;DesktopProfile"/>
 
   <!-- Solution Targets -->
   <Target
