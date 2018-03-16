@@ -73,7 +73,9 @@ namespace Xamarin.Interactive.CodeAnalysis
                 },
                 stopTokenSource.Token,
                 TaskContinuationOptions.None,
-                TaskScheduler.FromCurrentSynchronizationContext ());
+                SynchronizationContext.Current == null
+                    ? TaskScheduler.Current
+                    : TaskScheduler.FromCurrentSynchronizationContext ());
         }
     }
 }

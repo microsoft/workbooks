@@ -1,0 +1,23 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "module": "es2015",
+    "moduleResolution": "node",
+    "target": "es5",
+    "jsx": "react",
+    "sourceMap": true,
+    "skipDefaultLibCheck": true,
+    "strict": true,
+    "types": ["webpack-env"],
+    "lib": ["es2015", "dom"]
+  },
+  "exclude": [
+      "bin",
+      "node_modules"
+  ],
+  "include": [
+    "./ClientApp/typings/draft-js-plugins-editor.d.ts",
+    "**/*.ts",
+    "**/*.tsx"
+  ]
+}

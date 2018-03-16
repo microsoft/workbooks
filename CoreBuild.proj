@@ -1,0 +1,137 @@
+<Project InitialTargets="Configure" DefaultTargets="Build">
+  <Import Project="Build\Top.targets"/>
+
+  <PropertyGroup>
+    <Configuration Condition="'$(Configuration)' == ''">Debug</Configuration>
+    <BuiltWorkbookAppsBasePath>$(MSBuildThisFileDirectory)_build\$(Configuration)\WorkbookApps\</BuiltWorkbookAppsBasePath>
+    <ArtifactsBasePath>$(MSBuildThisFileDirectory)_artifacts\</ArtifactsBasePath>
+    <ProfileProperties>
+      Configuration=$(Configuration);
+      BuiltWorkbookAppsBasePath=$(BuiltWorkbookAppsBasePath);
+      ArtifactsBasePath=$(ArtifactsBasePath);
+    </ProfileProperties>
+  </PropertyGroup>
+
+  <!-- Profiles -->
+
+  <Target
+    Name="CoreProfile">
+    <ItemGroup>
+      <ProjectsToBuild Include="Agents\Xamarin.Interactive\*.csproj"/>
+      <ProjectsToBuild Include="Clients\Xamarin.Interactive.Client\*.csproj"/>
+    </ItemGroup>
+  </Target>
+
+  <Target
+    Name="CoreWorkbookAppsProfile">
+    <ItemGroup>
+      <ProjectsToBuild Include="Agents\Xamarin.Interactive.Console\*.csproj"/>
+      <ProjectsToBuild Include="WorkbookApps\Xamarin.Workbooks.DotNetCore\*.csproj"/>
+    </ItemGroup>
+  </Target>
+
+  <Target
+    Name="DesktopWorkbookAppsProfile">
+    <ItemGroup>
+      <ProjectsToBuild Include="WorkbookApps\Xamarin.Workbooks.Wpf" Condition="$(IsWindows)"/>
+    </ItemGroup>
+  </Target>
+
+  <Target
+    Name="WebProfile"
+    DependsOnTargets="CoreProfile;CoreWorkbookAppsProfile">
+    <ItemGroup>
+      <ProjectsToBuild Include="Clients\Xamarin.Interactive.Client.Web\*.csproj">
+        <HasPackageTarget>true</HasPackageTarget>
+      </ProjectsToBuild>
+    </ItemGroup>
+  </Target>
+
+  <Target
+    Name="DesktopProfile"
+    DependsOnTargets="CoreProfile;CoreWorkbookAppsProfile">
+    <ItemGroup Condition="$(IsMac)">
+      <ProjectsToBuild Include="Clients\Xamarin.Interactive.Client.Mac\*.csproj"/>
+    </ItemGroup>
+
+    <ItemGroup Condition="$(IsWindows)">
+      <ProjectsToBuild Include="Clients\Xamarin.Interactive.Client.Windows\*.csproj"/>
+    </ItemGroup>
+  </Target>
+
+  <Target
+    Name="FullProfile"
+    DependsOnTargets="WebProfile;DesktopProfile"/>
+
+  <!-- Targets -->
+
+  <Target
+    Name="Build"
+    DependsOnTargets="$(Profile)">
+    <MSBuild
+      Projects="@(ProjectsToBuild)"
+      Properties="$(ProfileProperties)"
+      Targets="Restore;Build"/>
+  </Target>
+
+  <Target
+    Name="Package"
+    DependsOnTargets="$(Profile)">
+    <ItemGroup>
+      <PackageProjectsToBuild
+        Include="@(ProjectsToBuild)"
+        Condition="'%(ProjectsToBuild.HasPackageTarget)' != ''"/>
+    </ItemGroup>
+    <MSBuild
+      Projects="@(PackageProjectsToBuild)"
+      Properties="$(ProfileProperties);WorkbookAppsBasePath="
+      Targets="Package"/>
+  </Target>
+
+  <Target
+    Name="Clean"
+    DependsOnTargets="$(Profile)">
+    <MSBuild
+      Projects="@(ProjectsToBuild)"
+      Properties="$(ProfileProperties)"
+      Targets="Clean"/>
+  </Target>
+
+  <Target
+    Name="Configure"
+    DependsOnTargets="Xamarin_Build_ReadAllProperties">
+    <PropertyGroup>
+      <Profile Condition="'$(Profile)' == ''">Web</Profile>
+      <Profile Condition="!$(Profile.EndsWith('Profile'))">$(Profile)Profile</Profile>
+    </PropertyGroup>
+  </Target>
+
+  <Target
+    Name="ConfigurationSummary"
+    BeforeTargets="Build">
+    <Message Importance="High" Text="Projects To Build:"/>
+    <Message Importance="High" Text="  %(ProjectsToBuild.Filename)"/>
+  </Target>
+
+  <Target
+    Name="GenerateSolution"
+    BeforeTargets="Build">
+    <PropertyGroup>
+      <SolutionFileName>$([System.Text.RegularExpressions.Regex]::Replace($(Profile), 'Profile$', ''))</SolutionFileName>
+      <SolutionFile>$(MSBuildThisFileDirectory)solutions\Xamarin.Interactive.$(SolutionFileName).sln</SolutionFile>
+      <SolutionBasePath>$([System.IO.Path]::GetDirectoryName($(SolutionFile)))\</SolutionBasePath>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <SolutionProjects Include="@(ProjectsToBuild -> '$(MSBuildThisFileDirectory)%(Identity)')">
+        <RelativePath>$([MSBuild]::MakeRelative($(SolutionBasePath), $(MSBuildThisFileDirectory)%(Identity)))</RelativePath>
+        <SolutionFolder>$([System.IO.Path]::GetDirectoryName($([System.IO.Path]::GetDirectoryName(%(Identity)))))</SolutionFolder>
+      </SolutionProjects>
+    </ItemGroup>
+
+    <GenerateSolution
+      Projects="@(SolutionProjects)"
+      GlobalSectionsFiles="$(SolutionBasePath)GlobalSections"
+      OutputFile="$(SolutionFile)"/>
+  </Target>
+</Project>

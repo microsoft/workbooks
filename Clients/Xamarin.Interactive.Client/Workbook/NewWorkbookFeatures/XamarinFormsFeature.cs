@@ -32,9 +32,9 @@ namespace Xamarin.Interactive.Workbook.NewWorkbookFeatures
 
         public override Task ConfigureClientSession (
             ClientSession clientSession,
-            CancellationToken cancellationToken = default (CancellationToken))
-            => clientSession.InstallPackageAsync (
-                new PackageViewModel (
-                    InteractivePackageManager.FixedXamarinFormsPackageIdentity));
+            CancellationToken cancellationToken = default)
+            => clientSession.PackageManager.InstallAsync (
+                InteractivePackageManager.FixedXamarinFormsPackageDescription,
+                cancellationToken);
     }
 }

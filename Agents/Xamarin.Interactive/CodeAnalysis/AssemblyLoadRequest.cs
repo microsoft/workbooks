@@ -19,18 +19,13 @@ namespace Xamarin.Interactive.CodeAnalysis
     {
         const string TAG = nameof (AssemblyLoadRequest);
 
-        public int EvaluationContextId { get; }
+        public EvaluationContextId EvaluationContextId { get; }
         public AssemblyDefinition [] Assemblies { get; }
 
         public AssemblyLoadRequest (
-            int evaluationContextId,
+            EvaluationContextId evaluationContextId,
             AssemblyDefinition [] assemblies)
         {
-            if (evaluationContextId < 0)
-                throw new ArgumentOutOfRangeException (
-                    nameof (evaluationContextId),
-                    "must be >= 0");
-
             EvaluationContextId = evaluationContextId;
             Assemblies = assemblies;
         }

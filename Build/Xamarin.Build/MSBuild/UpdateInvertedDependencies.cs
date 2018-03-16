@@ -24,7 +24,7 @@ namespace Xamarin.MSBuild
     {
         public string [] Solutions { get; set; }
 
-        public string NpmPackageJson { get; set; }
+        public string [] NpmPackageJson { get; set; }
 
         public string [] ExcludeProjectNames { get; set; } = Array.Empty<string> ();
 
@@ -74,11 +74,11 @@ namespace Xamarin.MSBuild
 
         IEnumerable<InvertedDependency> GetNpmDependencies ()
         {
-            if (string.IsNullOrEmpty (NpmPackageJson))
+            if (NpmPackageJson == null)
                 return Array.Empty<InvertedDependency> ();
 
-            return JsonConvert
-                .DeserializeXNode (File.ReadAllText (NpmPackageJson), "_")
+            return NpmPackageJson.SelectMany (path => JsonConvert
+                .DeserializeXNode (File.ReadAllText (path), "_")
                 .Root
                 .Element ("dependencies")
                 .Descendants ()
@@ -86,8 +86,7 @@ namespace Xamarin.MSBuild
                     Kind = DependencyKind.Npm,
                     Name = e.Name.ToString (),
                     Version = e.Value
-                })
-                .OrderBy (e => e.Name);
+            })).OrderBy (e => e.Name).ThenBy (e => e.Version);
         }
 
         IEnumerable<InvertedDependency> GetGitSubmoduleDependencies ()

@@ -13,12 +13,14 @@
 [assembly: InternalsVisibleTo ("Xamarin.Interactive.Forms.iOS")]
 [assembly: InternalsVisibleTo ("Xamarin.Interactive.Forms.Android")]
 [assembly: InternalsVisibleTo ("workbook")]
+[assembly: InternalsVisibleTo ("workbooks-server")]
 [assembly: InternalsVisibleTo ("Xamarin Workbooks")]
 [assembly: InternalsVisibleTo ("Xamarin Inspector")]
 [assembly: InternalsVisibleTo ("Xamarin.Interactive.Client")]
 [assembly: InternalsVisibleTo ("Xamarin.Interactive.Client.Console")]
 [assembly: InternalsVisibleTo ("Xamarin.Interactive.Client.Desktop")]
 [assembly: InternalsVisibleTo ("Xamarin.Interactive.Tests")]
+[assembly: InternalsVisibleTo ("Xamarin.Interactive.Tests.Core")]
 [assembly: InternalsVisibleTo ("Xamarin.Interactive.Tests.Mac")]
 [assembly: InternalsVisibleTo ("Xamarin.Interactive.Tests.Windows")]
 [assembly: InternalsVisibleTo ("Xamarin.Interactive.Tests.Android")]
@@ -100,6 +102,10 @@ namespace Xamarin.Interactive.CodeAnalysis
     {
         public static bool operator == (CodeCellId a, CodeCellId b);
 
+        public static implicit operator CodeCellId (string id);
+
+        public static implicit operator string (CodeCellId id);
+
         public static bool operator != (CodeCellId a, CodeCellId b);
 
         public bool Equals (CodeCellId id);
@@ -160,6 +166,7 @@ namespace Xamarin.Interactive.CodeAnalysis
         [EvaluationContextGlobalObject.InteractiveHelpAttribute (Description = "Uses a Stopwatch to time the specified action delegate")]
         public static TimeSpan Time (Action action);
     }
+    [Serializable]
     public struct EvaluationContextId : IEquatable<EvaluationContextId>
     {
         public static bool operator == (EvaluationContextId a, EvaluationContextId b);
@@ -175,6 +182,15 @@ namespace Xamarin.Interactive.CodeAnalysis
         public override int GetHashCode ();
 
         public override string ToString ();
+    }
+    [Serializable]
+    public struct EvaluationEnvironment : IEvaluationEnvironment
+    {
+        public string WorkingDirectory {
+            get;
+        }
+
+        public EvaluationEnvironment (string workingDirectory);
     }
     public enum EvaluationPhase
     {
@@ -268,6 +284,12 @@ namespace Xamarin.Interactive.CodeAnalysis
     public interface IEvaluationContextIntegration
     {
         void IntegrateWith (IEvaluationContext evaluationContext);
+    }
+    public interface IEvaluationEnvironment
+    {
+        string WorkingDirectory {
+            get;
+        }
     }
 }
 namespace Xamarin.Interactive.CodeAnalysis.Workbooks

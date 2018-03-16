@@ -8,6 +8,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text.RegularExpressions;
 using System.Xml.Linq;
 
@@ -28,7 +29,7 @@ namespace Xamarin.MSBuild
         /// From from MSBuild's SolutionFile:
         /// https://github.com/Microsoft/msbuild/blob/master/src/Build/Construction/Solution/SolutionFile.cs
         /// </summary>
-        static readonly Regex projectLineRegex = new Regex(
+        static readonly Regex projectLineRegex = new Regex (
             "^" // Beginning of line
             + "Project\\(\"(?<PROJECTTYPEGUID>.*)\"\\)"
             + "\\s*=\\s*" // Any amount of whitespace plus "=" plus any amount of whitespace
@@ -42,58 +43,90 @@ namespace Xamarin.MSBuild
 
         static readonly Regex normalizePathRegex = new Regex (@"[\\\/]+");
 
+        public static string NormalizePath (string path)
+            => normalizePathRegex.Replace (path, Path.DirectorySeparatorChar.ToString ());
+
         public static IEnumerable<MSBuildProjectFile> ParseProjectsInSolution (string solutionPath)
         {
+            if (!File.Exists (solutionPath))
+                yield break;
+
             var solutionDir = Path.GetDirectoryName (solutionPath);
 
             // yes, this is actually how MSBuild parses solution files: line-by-line matching some regex
             foreach (var line in File.ReadLines (solutionPath)) {
                 var projectLine = projectLineRegex.Match (line);
-                if (projectLine.Success)
+                if (projectLine.Success) {
+                    var relativePath = NormalizePath (projectLine.Groups ["RELATIVEPATH"].Value);
                     yield return new MSBuildProjectFile (
-                        Path.GetFullPath (normalizePathRegex.Replace (
-                            Path.Combine (
-                                solutionDir,
-                                projectLine.Groups["RELATIVEPATH"].Value),
-                            Path.DirectorySeparatorChar.ToString ())),
+                        Path.GetFullPath (Path.Combine (solutionDir, relativePath)),
+                        relativePath,
                         projectLine.Groups ["PROJECTNAME"].Value,
                         new Guid (projectLine.Groups ["PROJECTGUID"].Value),
                         new Guid (projectLine.Groups ["PROJECTTYPEGUID"].Value));
+                }
             }
         }
 
-        static readonly Guid solutionFolderProjectType = new Guid ("{2150E333-8FDC-42A3-9474-1A3956D46DE8}");
+        public static readonly Guid SolutionFolderProjectType = new Guid ("{2150E333-8FDC-42A3-9474-1A3956D46DE8}");
+        public static readonly Guid CsprojProjectType = new Guid ("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}");
 
         static readonly XNamespace legacyXmlns = "http://schemas.microsoft.com/developer/msbuild/2003";
 
         public string FullPath { get; }
+        public string SolutionRelativePath { get; }
         public string Name { get; }
-        public Guid ProjectGuid { get; }
-        public Guid ProjectTypeGuid { get; }
+        public Guid ProjectGuid { get; private set; }
+        public Guid ProjectTypeGuid { get; private set; }
 
         readonly List<PackageReference> packageReferences = new List<PackageReference> ();
         public IReadOnlyList<PackageReference> PackageReferences => packageReferences;
 
         public MSBuildProjectFile (
             string fullPath,
+            string solutionRelativePath,
             string name,
             Guid projectGuid = default (Guid),
             Guid projectTypeGuid = default (Guid))
         {
             FullPath = fullPath;
+            SolutionRelativePath = solutionRelativePath;
             Name = name;
             ProjectGuid = projectGuid;
             ProjectTypeGuid = projectTypeGuid;
         }
 
-        public bool IsSolutionFolder => ProjectTypeGuid == solutionFolderProjectType;
+        public bool IsSolutionFolder => ProjectTypeGuid == SolutionFolderProjectType;
 
-        public void Load ()
+        public void Load (
+            bool loadPackageReferences = true,
+            bool generateProjectGuidIfMissing = false)
         {
             packageReferences.Clear ();
 
             var doc = XDocument.Load (FullPath);
             var ns = doc.Root.GetDefaultNamespace ();
+
+            if (generateProjectGuidIfMissing) {
+                if (ProjectGuid == Guid.Empty) {
+                    var guidString = doc.Descendants (ns + "ProjectGuid").FirstOrDefault ()?.Value;
+                    if (guidString != null)
+                        ProjectGuid = Guid.Parse (guidString);
+                    else
+                        ProjectGuid = Guid.NewGuid ();
+                }
+
+                if (ProjectTypeGuid == Guid.Empty) {
+                    switch (Path.GetExtension (FullPath).ToLowerInvariant ()) {
+                    case ".csproj":
+                        ProjectTypeGuid = CsprojProjectType;
+                        break;
+                    }
+                }
+            }
+
+            if (!loadPackageReferences)
+                return;
 
             foreach (var pr in doc.Descendants (ns + "PackageReference")) {
                 var version = pr.Attribute ("Version")?.Value;

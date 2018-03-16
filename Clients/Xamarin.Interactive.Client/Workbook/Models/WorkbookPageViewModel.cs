@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Globalization;
 using System.Linq;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -28,7 +29,7 @@ using Xamarin.Interactive.Workbook.Views;
 
 namespace Xamarin.Interactive.Workbook.Models
 {
-    abstract class WorkbookPageViewModel : IObserver<ClientSessionEvent>, IDisposable
+    abstract class WorkbookPageViewModel : IObserver<ClientSessionEvent>, IEvaluationService
     {
         const string TAG = nameof (WorkbookPageViewModel);
 
@@ -99,7 +100,9 @@ namespace Xamarin.Interactive.Workbook.Models
 
         public bool CanEvaluate => !evaluationInhibitor.IsInhibited;
 
-        public virtual Task LoadWorkbookDependencyAsync (string dependency)
+        public virtual Task LoadWorkbookDependencyAsync (
+            string dependency,
+            CancellationToken cancellationToken = default)
             => Task.CompletedTask;
 
         #endregion
@@ -171,7 +174,13 @@ namespace Xamarin.Interactive.Workbook.Models
         protected CodeCellState InsertCodeCell (Cell previousCell)
             => InsertCodeCell (new CodeCell ("csharp"), previousCell);
 
-        CodeCellState InsertCodeCell (CodeCell newCell, Cell previousCell)
+        CodeCellState InsertHiddenCell ()
+            => InsertCodeCell (
+                new CodeCell ("csharp", shouldSerialize: false),
+                WorkbookPage.Contents.FirstCell.GetSelfOrNextCell<CodeCell> ()?.PreviousCell,
+                isHidden: true);
+
+        CodeCellState InsertCodeCell (CodeCell newCell, Cell previousCell, bool isHidden = false)
         {
             if (newCell == null)
                 throw new ArgumentNullException (nameof (newCell));
@@ -183,7 +192,13 @@ namespace Xamarin.Interactive.Workbook.Models
 
             var codeCellState = new CodeCellState (newCell);
 
-            BindCodeCellToView (newCell, codeCellState);
+            if (isHidden) {
+                // Set up editor, required as dictionary key
+                codeCellState.Editor = new HiddenCodeCellEditor ();
+                codeCellState.View = new HiddenCodeCellView { Editor = codeCellState.Editor };
+                newCell.View = codeCellState.View;
+            } else
+                BindCodeCellToView (newCell, codeCellState);
 
             if (ClientSession.CompilationWorkspace != null) {
                 codeCellState.CompilationWorkspace = ClientSession.CompilationWorkspace;
@@ -193,7 +208,8 @@ namespace Xamarin.Interactive.Workbook.Models
                     GetDocumentId (nextCodeCell));
             }
 
-            InsertCellInViewModel (newCell, previousCell);
+            if (!isHidden)
+                InsertCellInViewModel (newCell, previousCell);
 
             OutdateAllCodeCells (newCell);
 
@@ -231,7 +247,7 @@ namespace Xamarin.Interactive.Workbook.Models
                 WorkbookPage.Contents.AppendCell (newCell);
             else if (previousCell == null)
                 WorkbookPage.Contents.InsertCellBefore (
-                    WorkbookPage.Contents.FirstCell,
+                    WorkbookPage.Contents.FirstOrDefault (c => c.ShouldSerialize),
                     newCell);
             else
                 WorkbookPage.Contents.InsertCellAfter (previousCell, newCell);
@@ -334,14 +350,8 @@ namespace Xamarin.Interactive.Workbook.Models
 
         #region Evaluation
 
-        enum CodeCellEvaluationStatus
-        {
-            Success,
-            Disconnected,
-            Interrupted,
-            ErrorDiagnostic,
-            EvaluationException
-        }
+        public EvaluationContextId Id
+            => ClientSession.CompilationWorkspace.EvaluationContextId;
 
         protected async Task AbortEvaluationAsync ()
         {
@@ -352,7 +362,40 @@ namespace Xamarin.Interactive.Workbook.Models
                 ClientSession.CompilationWorkspace.EvaluationContextId);
         }
 
-        public async Task EvaluateAllAsync ()
+        public Task<bool> AddTopLevelReferencesAsync (
+            IReadOnlyList<string> references,
+            CancellationToken cancellationToken = default)
+        {
+            // TODO: soo.....why are new #r's added after there are other cells not bringing in the reference right?
+            if (references == null || references.Count == 0)
+                return Task.FromResult (false);
+
+            // TODO: Should we be saving a quick reference to the hidden cell/editor?
+            var hiddenCellState = CodeCells
+                .Where (p => p.Key is HiddenCodeCellEditor)
+                .Select (p => p.Value)
+                .FirstOrDefault ();
+
+            if (hiddenCellState == null)
+                hiddenCellState = InsertHiddenCell ();
+
+            // TODO: Prevent dupes. Return false if no changes made
+            var builder = new StringBuilder (hiddenCellState.Cell.Buffer.Value);
+            foreach (var reference in references) {
+                if (builder.Length > 0)
+                    //builder.AppendLine ();
+                    builder.Append ("\n");
+                builder
+                    .Append ("#r \"")
+                    .Append (reference)
+                    .Append ("\"");
+            }
+
+            hiddenCellState.Cell.Buffer.Value = builder.ToString ();
+            return Task.FromResult (true);
+        }
+
+        public async Task EvaluateAllAsync (CancellationToken cancellationToken = default)
         {
             var firstCell = WorkbookPage.Contents.GetFirstCell<CodeCell> ();
             if (firstCell?.View?.Editor == null)
@@ -493,11 +536,12 @@ namespace Xamarin.Interactive.Workbook.Models
             }
 
             CodeAnalysis.Compilation compilation = null;
+            ImmutableList<InteractiveDiagnostic> diagnostics = null;
             ExceptionNode exception = null;
             bool agentTerminatedWhileEvaluating = false;
 
             try {
-                compilation = await ClientSession.CompilationWorkspace.GetSubmissionCompilationAsync (
+                (compilation, diagnostics) = await ClientSession.CompilationWorkspace.GetSubmissionCompilationAsync (
                     codeCellState.DocumentId,
                     new EvaluationEnvironment (ClientSession.WorkingDirectory),
                     cancellationToken);
@@ -519,15 +563,14 @@ namespace Xamarin.Interactive.Workbook.Models
                 exception = ExceptionNode.Create (e);
             }
 
-            var diagnostics = ClientSession.CompilationWorkspace.CurrentSubmissionDiagnostics.Filter ();
-            codeCellState.View.HasErrorDiagnostics = diagnostics.HasErrors;
+            var hasErrorDiagnostics = codeCellState.View.HasErrorDiagnostics = diagnostics
+                .Any (d => d.Severity == DiagnosticSeverity.Error);
 
             foreach (var diagnostic in diagnostics)
-                codeCellState.View.RenderDiagnostic ((InteractiveDiagnostic)diagnostic);
+                codeCellState.View.RenderDiagnostic (diagnostic);
 
             try {
                 if (compilation != null) {
-                    codeCellState.LastEvaluationRequestId = compilation.MessageId;
                     codeCellState.IsResultAnExpression = compilation.IsResultAnExpression;
 
                     await ClientSession.Agent.Api.EvaluateAsync (
@@ -554,10 +597,10 @@ namespace Xamarin.Interactive.Workbook.Models
             if (exception != null) {
                 codeCellState.View.RenderResult (
                     CultureInfo.CurrentCulture,
-                    FilterException (exception),
+                    EvaluationService.FilterException (exception),
                     EvaluationResultHandling.Replace);
                 evaluationStatus = CodeCellEvaluationStatus.EvaluationException;
-            } else if (diagnostics.HasErrors) {
+            } else if (hasErrorDiagnostics) {
                 return CodeCellEvaluationStatus.ErrorDiagnostic;
             } else if (agentTerminatedWhileEvaluating) {
                 evaluationStatus = CodeCellEvaluationStatus.Disconnected;
@@ -571,6 +614,8 @@ namespace Xamarin.Interactive.Workbook.Models
             codeCellState.NotifyEvaluated (agentTerminatedWhileEvaluating);
             return evaluationStatus;
         }
+
+        #endregion
 
         #region Evaluation Result Handling
 
@@ -606,7 +651,7 @@ namespace Xamarin.Interactive.Workbook.Models
             if (result.Exception != null)
                 codeCellState.View.RenderResult (
                     cultureInfo,
-                    FilterException (result.Exception),
+                    EvaluationService.FilterException (result.Exception),
                     result.ResultHandling);
             else if (!result.Interrupted && result.Result != null || isResultAnExpression)
                 codeCellState.View.RenderResult (
@@ -640,33 +685,7 @@ namespace Xamarin.Interactive.Workbook.Models
         }
 
         void RenderCapturedOutputSegment (CapturedOutputSegment segment)
-            => GetCodeCellStateById (segment.Context)?.View?.RenderCapturedOutputSegment (segment);
-
-        #endregion
-
-        /// <summary>
-        /// Dicards the captured traces and frames that are a result of compiler-generated
-        /// code to host the submission so we only render frames the user might actually expect.
-        /// </summary>
-        static ExceptionNode FilterException (ExceptionNode exception)
-        {
-            try {
-                var capturedTraces = exception?.StackTrace?.CapturedTraces;
-                if (capturedTraces == null || capturedTraces.Count != 2)
-                    return exception;
-
-                var submissionTrace = capturedTraces [0];
-                exception.StackTrace = exception.StackTrace.WithCapturedTraces (new [] {
-                    submissionTrace.WithFrames (
-                        submissionTrace.Frames.Take (submissionTrace.Frames.Count - 1))
-                });
-
-                return exception;
-            } catch (Exception e) {
-                Log.Error (TAG, $"error filtering ExceptionNode [[{exception}]]", e);
-                return exception;
-            }
-        }
+            => GetCodeCellStateById (segment.CodeCellId)?.View?.RenderCapturedOutputSegment (segment);
 
         #endregion
     }

@@ -23,7 +23,6 @@ namespace Xamarin.Interactive.Workbook.Models
         public ICodeCellView View { get; set; }
         public RoslynCompilationWorkspace CompilationWorkspace { get; set; }
         public DocumentId DocumentId { get; set; }
-        public Guid LastEvaluationRequestId { get; set; }
         public bool IsResultAnExpression { get; set; }
 
         public int EvaluationCount { get; private set; }

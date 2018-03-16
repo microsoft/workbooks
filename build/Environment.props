@@ -1,0 +1,12 @@
+<Project>
+  <PropertyGroup>
+    <IsWindows>false</IsWindows>
+    <IsWindows Condition="$([MSBuild]::IsOSPlatform('Windows'))">true</IsWindows>
+
+    <IsMac>false</IsMac>
+    <IsMac Condition="$([MSBuild]::IsOSPlatform('OSX'))">true</IsMac>
+
+    <IsLinux>false</IsLinux>
+    <IsLinux Condition="$([MSBuild]::IsOSPlatform('Linux'))">true</IsLinux>
+  </PropertyGroup>
+</Project>

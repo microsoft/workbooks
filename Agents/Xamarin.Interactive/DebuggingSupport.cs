@@ -32,21 +32,9 @@ namespace Xamarin.Interactive
 
             var clientAssemblyLocation = Assembly.GetExecutingAssembly ().Location;
 
-            var buildDepth = 5;
             var agentType = agent.ClientSessionUri.AgentType;
 
-            // The Mac executable is more deeply nested, so we need to go up a little further
-            // to get the base build path.
-            if (agentType == AgentType.MacMobile || agentType == AgentType.MacNet45)
-                buildDepth = 7;
-
-            var buildDir = clientAssemblyLocation;
-            for (var i = 0; i < buildDepth; i++)
-                buildDir = Path.GetDirectoryName (buildDir);
-
-            InteractiveInstallation.InitializeDefault (
-                isMac: Environment.OSVersion.Platform == PlatformID.Unix,
-                buildPath: buildDir);
+            InteractiveInstallation.InitializeDefault (null);
 
             var clientPath = InteractiveInstallation
                 .Default
@@ -61,7 +49,7 @@ namespace Xamarin.Interactive
                 agent.Identity.Host,
                 agent.Identity.Port);
 
-            if (InteractiveInstallation.Default.IsMac) {
+            if (HostEnvironment.OS == HostOS.macOS) {
                 var executableName = Directory.GetFiles (
                     Path.Combine (clientPath, "Contents", "MacOS")) [0];
                 clientPath = Path.Combine (clientPath, "Contents", "MacOS", executableName);

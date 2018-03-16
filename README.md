@@ -33,7 +33,18 @@ the vast NuGet package ecosystem to make learning new APIs a breeze.
 | ------------------- | ------------------- |
 | ![][macbuildstatus] | ![][winbuildstatus] [![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/9v2ljdvcyjocpfvo/branch/master?svg=true)](https://ci.appveyor.com/project/abock/workbooks/branch/master) |
 
-### External Build Dependencies & Development Environment
+### External Build Dependencies for Web UX (Preview) Development Environment
+
+The Web UX for Workbooks is in preview, but is a great place to get started
+for new contributors since it does not require nearly as many dependencies.
+
+| Component                       | Version   | Download                                                                                                                               |
+| :------------------------------ | :-------- | :------------------------------------------------------------------------------------------------------------------------------------  |
+| Mono (macOS)                    | ≥ 5.8     | [Download Mono](http://www.mono-project.com/download/stable/) ❘ [Download Visual Studio for Mac](https://www.visualstudio.com/vs/mac/) |
+| .NET Core                       | ≥ 2.1     | [Download](https://www.microsoft.com/net/learn/get-started)                                                                            |
+| Node.js                         | ≥ 8.10    | [Download](https://nodejs.org/)                                                                                                        |
+
+### External Build Dependencies for Desktop UX Development Environment
 
 We generally track the latest (usually stable, but sometimes preview) releases
 of the Visual Studio / Xamarin release cycles. Below are complete sets of
@@ -75,6 +86,23 @@ Ensure git submodules are up-do-date:
 git submodule sync
 git submodule update --recursive --init
 ```
+
+#### Web UX (Preview)
+
+If you intend to focus on working on the Web UX for Workbooks, there are
+a number of build options:
+
+* Open and build `solutions/Xamarin.Interactive.Web.sln` in Visual Studio
+  2017 or Visual Studio for Mac to build, run, and debug.
+* Use the `dotnet` CLI in `Clients/Xamarin.Interactive.Client.Web` as usual:
+  - `dotnet build`
+  - `dotnet run`
+* Use Visual Studio Code against the `Clients/Xamarin.Interactive.Client.Web`
+  directory to build, run and, debug.
+* Use the lighter-weight `CoreBuild.proj` top-level build:
+  - `msbuild CoreBuild.proj`
+
+#### Desktop UX
 
 Any edition of Visual Studio or Visual Studio for Mac can be used to develop,
 build, and run Xamarin Workbooks by opening the top-level

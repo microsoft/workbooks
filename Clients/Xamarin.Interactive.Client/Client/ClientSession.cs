@@ -7,17 +7,13 @@
 
 using System;
 using System.Collections.Generic;
-using System.Collections.Immutable;
 using System.ComponentModel;
 using System.Linq;
-using System.Reflection;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
 using Xamarin.Interactive.Client.ViewControllers;
 using Xamarin.Interactive.CodeAnalysis;
-using Xamarin.Interactive.Compilation;
 using Xamarin.Interactive.Compilation.Roslyn;
 using Xamarin.Interactive.Core;
 using Xamarin.Interactive.I18N;
@@ -29,8 +25,6 @@ using Xamarin.Interactive.Workbook.LoadAndSave;
 using Xamarin.Interactive.Workbook.Models;
 using Xamarin.Interactive.Workbook.NewWorkbookFeatures;
 using Xamarin.Interactive.Workbook.Views;
-
-using static Xamarin.Interactive.Compilation.InteractiveDependencyResolver;
 
 namespace Xamarin.Interactive.Client
 {
@@ -49,14 +43,6 @@ namespace Xamarin.Interactive.Client
 
         readonly Observable<ClientSessionEvent> observable = new Observable<ClientSessionEvent> ();
 
-        // There are certain assemblies that we want to ban from being referenced because the explicit
-        // references are not needed, and they make for Workbooks that aren't cross-platform in the
-        // case of Xamarin.Forms.
-        readonly IEnumerable<string> BannedReferencePrefixes = new [] {
-            "Xamarin.Forms.Platform.",
-            "FormsViewGroup",
-        };
-
         bool isDisposed;
 
         public IClientSessionViewControllers ViewControllers { get; private set; }
@@ -68,16 +54,19 @@ namespace Xamarin.Interactive.Client
         AgentConnection agent;
         public IAgentConnection Agent => agent;
 
-        public WorkbookPageViewModel WorkbookPageViewModel { get; private set; }
+        public IEvaluationService EvaluationService { get; private set; }
+        public PackageManagerService PackageManager { get; private set; }
         public WorkbookPackage Workbook { get; }
         public WorkbookAppInstallation WorkbookApp { get; private set; }
         public RoslynCompilationWorkspace CompilationWorkspace { get; private set; }
         public FilePath WorkingDirectory { get; private set; }
 
+        public bool CanAddPackages => SessionKind == ClientSessionKind.Workbook && PackageManager != null;
+
         public bool CanEvaluate
             => CompilationWorkspace != null &&
-               WorkbookPageViewModel != null &&
-               WorkbookPageViewModel.CanEvaluate;
+               EvaluationService != null &&
+               EvaluationService.CanEvaluate;
 
         sealed class ViewControllersProxy : IClientSessionViewControllers
         {
@@ -132,7 +121,7 @@ namespace Xamarin.Interactive.Client
             ResetAgentConnection ();
             cancellationTokenSource.Cancel ();
             observable.Observers.OnCompleted ();
-            WorkbookPageViewModel?.Dispose ();
+            EvaluationService?.Dispose ();
         }
 
         public void InitializeViewControllers (IClientSessionViewControllers viewControllers)
@@ -161,7 +150,7 @@ namespace Xamarin.Interactive.Client
 
         void WorkbookTargets_PropertyChanged (object sender, PropertyChangedEventArgs e)
         {
-            WorkbookPageViewModel.OutdateAllCodeCells ();
+            EvaluationService.OutdateAllCodeCells ();
 
             var selectedTarget = ViewControllers.WorkbookTargets.SelectedTarget;
             if (selectedTarget == null)
@@ -237,11 +226,8 @@ namespace Xamarin.Interactive.Client
                 throw new InvalidOperationException ("not a workbook session");
         }
 
-        public async Task InitializeAsync (IWorkbookPageHost workbookPageViewHost)
+        public async Task InitializeAsync (IWorkbookPageHost workbookPageViewHost = null)
         {
-            if (workbookPageViewHost == null)
-                throw new ArgumentNullException (nameof (workbookPageViewHost));
-
             var genericLoadingMessage = SessionKind == ClientSessionKind.Workbook
                 ? Catalog.GetString ("Loading workbook…")
                 : Catalog.GetString ("Loading session…");
@@ -250,20 +236,27 @@ namespace Xamarin.Interactive.Client
                 ClientSessionTask.CreateRequired (genericLoadingMessage, LoadWorkbookAsync)
             };
 
-            initializers.AddRange (
-                workbookPageViewHost
-                    .GetClientSessionInitializationTasks (clientWebServerUri)
-                    .Select (t => ClientSessionTask.CreateRequired (genericLoadingMessage, t)));
+            if (workbookPageViewHost != null) {
+                initializers.AddRange (
+                    workbookPageViewHost
+                        .GetClientSessionInitializationTasks (clientWebServerUri)
+                        .Select (t => ClientSessionTask.CreateRequired (genericLoadingMessage, t)));
 
-            Task LoadWorkbookPageViewAsync (CancellationToken cancellationToken)
-            {
-                WorkbookPageViewModel = workbookPageViewHost.CreatePageViewModel (this, Workbook.IndexPage);
-                WorkbookPageViewModel.LoadWorkbookPage ();
-                Subscribe (WorkbookPageViewModel);
-                return Task.CompletedTask;
+                Task LoadWorkbookPageViewAsync (CancellationToken cancellationToken)
+                {
+                    var pageViewModel = workbookPageViewHost.CreatePageViewModel (this, Workbook.IndexPage);
+                    EvaluationService = pageViewModel;
+
+                    pageViewModel.LoadWorkbookPage ();
+
+                    if (pageViewModel is IObserver<ClientSessionEvent> observer)
+                        Subscribe (observer);
+
+                    return Task.CompletedTask;
+                }
+
+                initializers.Add (ClientSessionTask.CreateRequired (genericLoadingMessage, LoadWorkbookPageViewAsync));
             }
-
-            initializers.Add (ClientSessionTask.CreateRequired (genericLoadingMessage, LoadWorkbookPageViewAsync));
 
             var initializeException = await RunInitializers (initializers);
 
@@ -313,8 +306,12 @@ namespace Xamarin.Interactive.Client
 
         async Task InitializeAgentConnectionAsync ()
         {
-            using (WorkbookPageViewModel.InhibitEvaluate ())
+            if (EvaluationService != null) {
+                using (EvaluationService.InhibitEvaluate ())
+                    await DoInitalizeAgentConnectionAsync ();
+            } else {
                 await DoInitalizeAgentConnectionAsync ();
+            }
         }
 
         // Only call from InitializeAgentConnectionAsync
@@ -330,8 +327,29 @@ namespace Xamarin.Interactive.Client
 
                 using (ViewControllers.Messages.PushMessage (
                     Message.CreateInfoStatus (
-                        Catalog.GetString ("Preparing workspace…"), showSpinner: true)))
+                        Catalog.GetString ("Preparing workspace…"), showSpinner: true))) {
                     await InitializeCompilationWorkspaceAsync (CancellationToken);
+
+                    if (EvaluationService == null) {
+                        var evaluationService = new EvaluationService (
+                            CompilationWorkspace,
+                            new EvaluationEnvironment (WorkingDirectory));
+                        evaluationService.NotifyAgentConnected (Agent);
+                        EvaluationService = evaluationService;
+                    }
+
+                    if (SessionKind == ClientSessionKind.Workbook)
+                        PackageManager = new PackageManagerService (
+                            CompilationWorkspace.DependencyResolver,
+                            EvaluationService,
+                            async (refreshForAgentIntegration, cancellationToken) => {
+                                if (refreshForAgentIntegration)
+                                    await RefreshForAgentIntegration ();
+                                return Agent;
+                            });
+                    else
+                        PackageManager = null;
+                }
             } catch (Exception e) {
                 Log.Error (TAG, e);
                 ViewControllers.Messages.PushMessage (WithReconnectSessionAction (e
@@ -344,7 +362,12 @@ namespace Xamarin.Interactive.Client
                 using (ViewControllers.Messages.PushMessage (
                     Message.CreateInfoStatus (
                         Catalog.GetString ("Restoring packages…"), showSpinner: true)))
-                    await InitializePackagesAsync (CancellationToken);
+                    await PackageManager?.InitializeAsync (
+                        WorkbookApp.Sdk,
+                        Workbook
+                            .Pages
+                            .SelectMany (page => page.Packages),
+                        CancellationToken);
             } catch (Exception e) {
                 Log.Error (TAG, e);
                 ViewControllers.Messages.PushMessage (e
@@ -465,7 +488,7 @@ namespace Xamarin.Interactive.Client
             var disconnectedAgent = agent;
 
             ResetAgentConnection ();
-            WorkbookPageViewModel.OutdateAllCodeCells ();
+            EvaluationService.OutdateAllCodeCells ();
 
             PostEvent (ClientSessionEventKind.AgentDisconnected);
 
@@ -511,7 +534,12 @@ namespace Xamarin.Interactive.Client
                 await Agent.Api.AssociateClientSession (
                     ClientSessionAssociationKind.Initial,
                     WorkingDirectory);
-                CompilationWorkspace = await CompilationWorkspaceFactory.CreateWorkspaceAsync (this);
+
+                CompilationWorkspace = new RoslynCompilationWorkspace (
+                    await WorkspaceConfiguration.CreateAsync (
+                        Agent,
+                        SessionKind,
+                        cancellationToken));
             }
 
             await RefreshForAgentIntegration ();
@@ -596,253 +624,10 @@ namespace Xamarin.Interactive.Client
             PostEvent (ClientSessionEventKind.AgentFeaturesUpdated);
         }
 
-        #region NuGet Package Management
-
-        public bool CanAddPackages => SessionKind == ClientSessionKind.Workbook && Workbook.Packages != null;
-
-        async Task InitializePackagesAsync (CancellationToken cancellationToken)
-        {
-            if (SessionKind != ClientSessionKind.Workbook)
-                return;
-
-            var alreadyInstalledPackages = Workbook.Packages == null
-                ? ImmutableArray<InteractivePackage>.Empty
-                : Workbook.Packages.InstalledPackages;
-
-            Workbook.Packages = new InteractivePackageManager (
-                WorkbookApp.Sdk.TargetFramework,
-                ClientApp
-                    .SharedInstance
-                    .Paths
-                    .CacheDirectory
-                    .Combine ("package-manager"));
-
-            var packages = Workbook
-                .Pages
-                .SelectMany (page => page.Packages)
-                .Concat (alreadyInstalledPackages)
-                .Where (p => p.IsExplicit)
-                .Distinct (PackageIdComparer.Default)
-                .ToArray ();
-
-            if (packages.Length == 0)
-                return;
-
-            await RestorePackagesAsync (packages, cancellationToken);
-
-            foreach (var package in Workbook.Packages.InstalledPackages)
-                await LoadPackageIntegrationsAsync (package, cancellationToken);
-        }
-
-        public async Task InstallPackageAsync (
-            PackageViewModel packageViewModel,
-            CancellationToken cancellationToken = default (CancellationToken))
-        {
-            var package = new InteractivePackage (packageViewModel.Package);
-
-            var installedPackages = await Workbook.Packages.InstallPackageAsync (
-                package,
-                packageViewModel.SourceRepository,
-                cancellationToken);
-            // TODO: Should probably alert user that the package is already installed.
-            //       Should we add a fresh #r for the package in case that's what they're trying to get?
-            //       A feel good thing?
-            if (installedPackages.Count == 0)
-                return;
-
-            foreach (var installedPackage in installedPackages) {
-                ReferencePackageInWorkspace (installedPackage);
-                await LoadPackageIntegrationsAsync (installedPackage, cancellationToken);
-            }
-
-            // TODO: Figure out metapackages. Install Microsoft.AspNet.SignalR, for example,
-            //       and no #r submission gets generated, so all the workspace reference stuff
-            //       above fails to bring in references to dependnet assemblies automatically.
-            //       User must type them out themselves.
-            //
-            //       This was busted in our NuGet 2.x code as well.
-            package = installedPackages.FirstOrDefault (
-                p => PackageIdComparer.Equals (p, package));
-
-            // TODO: Same issue as installedPackages.Count == 0. What do we want to tell user?
-            //       probably they tried to install a package they already had installed, and
-            //       maybe it bumped a shared dep (which is why installedPackages is non-empty).
-            if (package == null)
-                return;
-
-            await ReferenceTopLevelPackageAsync (
-                package,
-                cancellationToken);
-        }
-
-        async Task LoadPackageIntegrationsAsync (
-            InteractivePackage package,
-            CancellationToken cancellationToken)
-        {
-            // Forms is special-cased because we own it and load the extension from our framework.
-            if (PackageIdComparer.Equals (package.Identity.Id, "Xamarin.Forms")) {
-                await CompilationWorkspaceFactory.LoadFormsAgentExtensions (
-                    package.Identity.Version.Version,
-                    this,
-                    CompilationWorkspace.DependencyResolver,
-                    CompilationWorkspace.EvaluationContextId,
-                    Agent.IncludePeImage);
-            }
-
-            var assembliesToLoadOnAgent = new List<ResolvedAssembly> ();
-
-            // Integration assemblies are not expected to be in a TFM directory—we look for them in
-            // the `xamarin.interactive` folder inside the NuGet package.
-            var packagePath = Workbook
-                .Packages
-                .GetPackageInstallPath (package);
-
-            var interactivePath = packagePath.Combine ("xamarin.interactive");
-
-            if (interactivePath.DirectoryExists) {
-                var interactiveAssemblies = interactivePath.EnumerateFiles ("*.dll");
-                foreach (var interactiveReference in interactiveAssemblies) {
-                    var resolvedAssembly = CompilationWorkspace
-                        .DependencyResolver
-                        .ResolveWithoutReferences (interactiveReference);
-
-                    if (HasIntegration (resolvedAssembly)) {
-                        assembliesToLoadOnAgent.Add (resolvedAssembly);
-
-                        foreach (var dependency in resolvedAssembly.ExternalDependencies) {
-                            if (!(dependency is WebDependency))
-                                continue;
-
-                            if (AddNuGetWebResource (dependency.Location, out var id))
-                                await WorkbookPageViewModel.LoadWorkbookDependencyAsync ($"/static/{id}");
-                        }
-                    }
-                }
-            }
-
-            if (assembliesToLoadOnAgent.Count > 0) {
-                var assembliesToLoad = assembliesToLoadOnAgent.Select (dep => {
-                    var peImage = Agent.IncludePeImage
-                        ? GetFileBytes (dep.Path)
-                        : null;
-                    var syms = Agent.IncludePeImage
-                        ? GetDebugSymbolsFromAssemblyPath (dep.Path)
-                        : null;
-                    return new AssemblyDefinition (
-                        dep.AssemblyName,
-                        dep.Path,
-                        peImage: peImage,
-                        debugSymbols: syms
-                    );
-                }).ToArray ();
-
-                await Agent.Api.LoadAssembliesAsync (
-                    CompilationWorkspace.EvaluationContextId,
-                    assembliesToLoad);
-            }
-
-            await RefreshForAgentIntegration ();
-        }
-
-        void ReferencePackageInWorkspace (InteractivePackage package)
-        {
-            foreach (var packageAssemblyReference in package.AssemblyReferences)
-                CompilationWorkspace.DependencyResolver.AddAssemblySearchPath (
-                    packageAssemblyReference.ParentDirectory);
-        }
-
-        async Task ReferenceTopLevelPackageAsync (
-            InteractivePackage package,
-            CancellationToken cancellationToken)
-        {
-            if (package.AssemblyReferences.Count == 0)
-                return;
-
-            var referenceBuffer = new StringBuilder ();
-
-            foreach (var packageAssemblyReference in package.AssemblyReferences) {
-                var resolvedAssembly = CompilationWorkspace
-                    .DependencyResolver
-                    .ResolveWithoutReferences (packageAssemblyReference);
-                if (resolvedAssembly == null)
-                    continue;
-
-                if (BannedReferencePrefixes.Any (resolvedAssembly.AssemblyName.Name.StartsWith))
-                    continue;
-
-                // Don't add #r for integration assemblies.
-                if (HasIntegration (resolvedAssembly))
-                    continue;
-
-                if (referenceBuffer.Length > 0)
-                    referenceBuffer.AppendLine ();
-
-                referenceBuffer
-                    .Append ("#r \"")
-                    .Append (resolvedAssembly.AssemblyName.Name)
-                    .Append ("\"");
-            }
-
-            if (referenceBuffer.Length > 0)
-                await WorkbookPageViewModel.EvaluateAsync (referenceBuffer.ToString (), cancellationToken);
-        }
-
-        async Task RestorePackagesAsync (
-            IEnumerable<InteractivePackage> packages,
-            CancellationToken cancellationToken)
-        {
-            await Workbook.Packages.RestorePackagesAsync (packages, cancellationToken);
-
-            Workbook.Packages
-                .InstalledPackages
-                .ForEach (ReferencePackageInWorkspace);
-        }
-
-        bool HasIntegration (ResolvedAssembly resolvedAssembly)
-        {
-            try {
-                var refAsm = Assembly.LoadFrom (resolvedAssembly.Path);
-
-                if (refAsm == null)
-                    return false;
-
-                if (refAsm.GetReferencedAssemblies ().Any (r => r.Name == "Xamarin.Interactive")) {
-                    var integrationType = refAsm
-                        .GetCustomAttribute<AgentIntegrationAttribute> ()
-                        ?.AgentIntegrationType;
-
-                    if (integrationType != null)
-                        return true;
-                }
-
-                return false;
-            } catch (Exception e) {
-                Log.Warning (TAG,
-                    $"Couldn't load assembly {resolvedAssembly.AssemblyName.Name} for " +
-                    $"agent integration loading",
-                    e);
-                return false;
-            }
-        }
-
-        #endregion
-
         #region Web Resources
 
         ImmutableBidirectionalDictionary<Guid, FilePath> webResources
             = ImmutableBidirectionalDictionary<Guid, FilePath>.Empty;
-
-        public bool AddNuGetWebResource (FilePath path, out string id)
-        {
-            ClientApp
-                .SharedInstance
-                .WebServer
-                .AddStaticResource (id = Guid.NewGuid () + path.Extension, path);
-
-            Log.Debug (TAG, $"NuGet path {path} as {id}");
-
-            return true;
-        }
 
         public bool AddWebResource (FilePath path, out Guid guid)
         {

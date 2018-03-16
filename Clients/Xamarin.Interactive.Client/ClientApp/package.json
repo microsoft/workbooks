@@ -1,0 +1,19 @@
+{
+  "name": "xamarin-interactive",
+  "version": "1.0.0",
+  "license": "SEE LICENSE IN LICENSE.md",
+  "description": "Xamarin Interactive",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Microsoft/workbooks"
+  },
+  "dependencies": {
+    "prosemirror": "=0.8.1",
+    "monaco-editor": "=0.10.1"
+  },
+  "devDependencies": {
+    "typescript": "=2.2.1",
+    "tsify": "=3.0.1",
+    "browserify": "=14.1.0"
+  }
+}

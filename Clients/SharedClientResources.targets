@@ -2,7 +2,7 @@
   <Target Name="CopySharedClientResources">
     <PropertyGroup>
       <SharedClientProjectPath>$(MSBuildThisFileDirectory)Xamarin.Interactive.Client\</SharedClientProjectPath>
-      <MonacoPath>$(MSBuildThisFileDirectory)..\node_modules\monaco-editor\</MonacoPath>
+      <MonacoPath>$(SharedClientProjectPath)ClientApp\node_modules\monaco-editor\</MonacoPath>
     </PropertyGroup>
 
     <Error
@@ -55,7 +55,7 @@
       <ClientAppResources Include="$(SharedClientProjectPath)ClientApp\**\*.svg"/>
       <ClientAppResources Include="$(SharedClientProjectPath)ClientApp\**\*.css"/>
       <ClientAppResources Include="$(SharedClientProjectPath)ClientApp\app.html"/>
-      <ClientAppResources Include="$(MSBuildThisFileDirectory)obj\app.js"/>
+      <ClientAppResources Include="$(SharedClientProjectPath)ClientApp\obj\app.js"/>
     </ItemGroup>
     <Copy
       SkipUnchangedFiles="true"

@@ -340,6 +340,9 @@ namespace Xamarin.Interactive.Workbook.Models
             var wrotePrevious = false;
 
             foreach (var cell in this) {
+                if (!cell.ShouldSerialize)
+                    continue;
+
                 var codeCell = cell as CodeCell;
                 if (codeCell != null && string.IsNullOrWhiteSpace (codeCell.Buffer.Value))
                     continue;

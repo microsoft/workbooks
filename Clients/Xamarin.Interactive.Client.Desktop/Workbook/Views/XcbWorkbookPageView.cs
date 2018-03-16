@@ -8,16 +8,12 @@
 
 using System;
 using System.Linq;
-using System.Globalization;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 
-using Microsoft.CodeAnalysis;
-
 using Xamarin.CrossBrowser;
 
-using Xamarin.Interactive.CodeAnalysis;
 using Xamarin.Interactive.CodeAnalysis.Monaco;
 using Xamarin.Interactive.Core;
 using Xamarin.Interactive.Client;
@@ -31,6 +27,7 @@ using Xamarin.Interactive.Rendering;
 using Xamarin.Interactive.Representations.Reflection;
 using Xamarin.Interactive.Workbook.Events;
 using Xamarin.Interactive.Workbook.Models;
+using Xamarin.Interactive.Workbook.Structure;
 
 namespace Xamarin.Interactive.Workbook.Views
 {
@@ -46,7 +43,7 @@ namespace Xamarin.Interactive.Workbook.Views
         #pragma warning restore 0414
 
         Cell focusedWorkbookCell;
-        CodeCellState focusedCellState;
+        Models.CodeCellState focusedCellState;
 
         CompletionProvider completionProvider;
         SignatureHelpProvider signatureHelpProvider;
@@ -83,7 +80,7 @@ namespace Xamarin.Interactive.Workbook.Views
                 ?? throw new ArgumentNullException (nameof (webView));
 
             void ObserveWorkbookMutationModelChanges (dynamic self, dynamic args)
-                => workbookPage.TableOfContents.RebuildFromJavaScript (args [0]);
+                => TableOfContentsNodeExtensions.RebuildFromJavaScript (workbookPage.TableOfContents, args [0]);
 
             webView.Document.Context.GlobalObject.xiexports.WorkbookMutationObserver.observeModelChanges (
                 (ScriptAction)ObserveWorkbookMutationModelChanges);
@@ -107,7 +104,7 @@ namespace Xamarin.Interactive.Workbook.Views
 
             outputElement = document.CreateElement ("main");
             outputElement.AddCssClass ("interactive-workspace");
-            outputElement.AddCssClass (InteractiveInstallation.Default.IsMac ? "is-mac" : "is-windows");
+            outputElement.AddCssClass (HostEnvironment.OS == HostOS.macOS ? "is-mac" : "is-windows");
             outputElement.AddCssClass (
                 $"session-kind-{clientSession.SessionKind.ToString ().ToLowerInvariant ()}");
 
@@ -170,7 +167,9 @@ namespace Xamarin.Interactive.Workbook.Views
                 getSourceTextByModelId);
         }
 
-        public override Task LoadWorkbookDependencyAsync (string dependency)
+        public override Task LoadWorkbookDependencyAsync (
+            string dependency,
+            CancellationToken cancellationToken)
         {
             var tcs = new TaskCompletionSource ();
             try {
@@ -183,7 +182,7 @@ namespace Xamarin.Interactive.Workbook.Views
             return tcs.Task;
         }
 
-        protected override CodeCellState StartNewCodeCell ()
+        protected override Xamarin.Interactive.Workbook.Models.CodeCellState StartNewCodeCell ()
             => focusedCellState = base.StartNewCodeCell ();
 
         protected override void BindMarkdownCellToView (MarkdownCell cell)
@@ -196,7 +195,7 @@ namespace Xamarin.Interactive.Workbook.Views
             cell.View = view;
         }
 
-        protected override void BindCodeCellToView (CodeCell cell, CodeCellState codeCellState)
+        protected override void BindCodeCellToView (CodeCell cell, Models.CodeCellState codeCellState)
         {
             var codeCellView = new CodeCellView (
                 codeCellState,
@@ -292,7 +291,7 @@ namespace Xamarin.Interactive.Workbook.Views
             }
         }
 
-        void HandleFocusEvent (EditorEvent evnt, CodeCellState sourceCodeCellState)
+        void HandleFocusEvent (EditorEvent evnt, Models.CodeCellState sourceCodeCellState)
         {
             var sourceCell = ((CellEditorView)evnt.Source).Cell;
 
@@ -399,7 +398,7 @@ namespace Xamarin.Interactive.Workbook.Views
                     cellHoverClass: null,
                     clickHandler: editor.EvaluateViaKeyPress));
 
-                var kbd = InteractiveInstallation.Default.IsMac
+                var kbd = HostEnvironment.OS == HostOS.macOS
                     ? "<span class='kbd'>\u2318\u21A9</span>"
                     : "<span class='kbd'>Control<span class='plus'>+</span>Return</span>";
 

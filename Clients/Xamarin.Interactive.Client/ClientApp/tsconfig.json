@@ -19,7 +19,7 @@
     "typings/markdown-it.d.ts",
     "typings/prosemirror.d.ts",
     "typings/xamarin-interactive.d.ts",
-    "../../../node_modules/monaco-editor/monaco.d.ts",
+    "node_modules/monaco-editor/monaco.d.ts",
     "app.ts",
     "node-app.ts",
     "css-monitor.ts",

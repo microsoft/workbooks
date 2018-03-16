@@ -9,6 +9,7 @@ using System;
 using System.Collections.Immutable;
 using System.ComponentModel;
 using System.IO;
+using System.Linq;
 using System.Runtime.CompilerServices;
 
 using Xamarin.Interactive.Core;
@@ -30,7 +31,7 @@ namespace Xamarin.Interactive.Workbook.Models
 
         public Guid Guid => Manifest.Guid;
         public ImmutableArray<AgentType> PlatformTargets => Manifest.PlatformTargets;
-        public ImmutableArray<InteractivePackage> Packages => Manifest.Packages;
+        public ImmutableArray<InteractivePackageDescription> Packages => Manifest.Packages;
 
         public FileNode TreeNode { get; }
         public TableOfContentsNode TableOfContents { get; }
@@ -103,7 +104,10 @@ namespace Xamarin.Interactive.Workbook.Models
             Manifest.Title = title;
 
             if (packageManager?.InstalledPackages != null)
-                Manifest.Packages = packageManager.InstalledPackages.ToImmutableArray ();
+                Manifest.Packages = packageManager
+                    .InstalledPackages
+                    .Select (InteractivePackageDescription.FromInteractivePackage)
+                    .ToImmutableArray ();
 
             manifestCell.Buffer.Value = Manifest.ToString ();
 

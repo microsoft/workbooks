@@ -8,6 +8,8 @@
 using System;
 using System.Linq;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
+
 #if HAVE_SYSTEM_COLLECTIONS_IMMUTABLE
 using System.Collections.Immutable;
 #else
@@ -17,6 +19,7 @@ using System.Threading;
 
 namespace Xamarin.Interactive.Messages
 {
+    [DataContract]
     sealed class Message : IDisposable
     {
         static int lastId;
@@ -26,14 +29,24 @@ namespace Xamarin.Interactive.Messages
 
         public IMessageService MessageService { get; }
 
+        [DataMember]
         public MessageKind Kind { get; }
+
+        [DataMember]
         public MessageSeverity Severity { get; }
 
+        [DataMember]
         public string Text { get; }
+
+        [DataMember]
         public string DetailedText { get; }
+
+        [DataMember]
         public bool ShowSpinner { get; }
 
         readonly ImmutableList<MessageAction> actions;
+
+        [DataMember]
         public IReadOnlyList<MessageAction> Actions => actions;
 
         public Action<Message, MessageAction> ActionResponseHandler { get; }

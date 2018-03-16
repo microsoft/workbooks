@@ -17,7 +17,7 @@ namespace Xamarin.Interactive.Client.Console
 {
     sealed class ConsoleClientApp : ClientApp
     {
-        sealed class ConsoleHostEnvironment : HostEnvironment
+        sealed class ConsoleHostEnvironment : ClientAppHostEnvironment
         {
             public override HostOS OSName { get; }
                 = Environment.OSVersion.Platform == PlatformID.Unix
@@ -53,7 +53,7 @@ namespace Xamarin.Interactive.Client.Console
         protected override IPreferenceStore CreatePreferenceStore ()
             => new MemoryOnlyPreferenceStore ();
 
-        protected override HostEnvironment CreateHostEnvironment ()
+        protected override ClientAppHostEnvironment CreateHostEnvironment ()
             => new ConsoleHostEnvironment ();
 
         protected override IFileSystem CreateFileSystem ()

@@ -32,7 +32,7 @@ namespace Xamarin.Interactive.Workbook.Models
         public Guid Guid { get; set; }
         public string Title { get; set; }
         public ImmutableArray<AgentType> PlatformTargets { get; set; }
-        public ImmutableArray<InteractivePackage> Packages { get; set; }
+        public ImmutableArray<InteractivePackageDescription> Packages { get; set; }
 
         public WorkbookDocumentManifest ()
         {
@@ -44,11 +44,10 @@ namespace Xamarin.Interactive.Workbook.Models
             if (Packages.Length > 0)
                 Properties.InsertOrUpdate (0, "packages", new List<object> (
                     Packages
-                        .Where (package => package.IsExplicit)
+                        .Where (package => package.IsExplicitlySelected)
                         .Select (package => new OrderedDictionary {
-                            ["id"] = package.Identity.Id,
-                            // Prefer OriginalString...often reads much better.
-                            ["version"] = package.SupportedVersionRange.OriginalString ?? package.SupportedVersionRange.ToNormalizedString (),
+                            ["id"] = package.PackageId,
+                            ["version"] = package.VersionRange
                         })));
             else
                 Properties.Remove ("packages");
@@ -194,7 +193,7 @@ namespace Xamarin.Interactive.Workbook.Models
             }
         }
 
-        IEnumerable<InteractivePackage> ReadPackages ()
+        IEnumerable<InteractivePackageDescription> ReadPackages ()
         {
             IList list;
             if (!Properties.TryGetValueAs ("packages", out list) || list == null)
@@ -209,7 +208,6 @@ namespace Xamarin.Interactive.Workbook.Models
                 if (!package.TryGetValueAs ("id", out id))
                     continue;
 
-                string version;
                 // A few VersionRange examples:
                 //   1.2.3.4
                 //   [1.2.3.4]
@@ -217,11 +215,9 @@ namespace Xamarin.Interactive.Workbook.Models
                 //   *
                 //   [1.2, 1.3)
                 // Read more at https://docs.microsoft.com/en-us/nuget/create-packages/dependency-versions#version-ranges
-                VersionRange nugetVersion = null;
-                if (package.TryGetValueAs ("version", out version))
-                    VersionRange.TryParse (version, out nugetVersion);
+                package.TryGetValueAs ("version", out string versionRange);
 
-                yield return new InteractivePackage (id, nugetVersion);
+                yield return new InteractivePackageDescription (id, versionRange: versionRange);
             }
         }
 

@@ -86,7 +86,7 @@ namespace Xamarin.Interactive.Rendering.Renderers
             // Right now we only care about image load completion to refocus the input, which is only
             // necessary if the image is the root item, and if we are on Mac, where image loading
             // is fully asynchronous.
-            if (RenderState.ParentState == null && InteractiveInstallation.Default.IsMac) {
+            if (RenderState.ParentState == null && HostEnvironment.OS != HostOS.Windows) {
                 EventListener onLoadListener = null;
                 onLoadListener = imageElem.AddEventListener ("load", evnt => {
                     evnt.Target.RemoveEventListener ("load", onLoadListener);

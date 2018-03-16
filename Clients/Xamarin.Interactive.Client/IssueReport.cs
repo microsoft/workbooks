@@ -21,9 +21,9 @@ namespace Xamarin.Interactive.Client
 {
     sealed class IssueReport
     {
-        readonly HostEnvironment host;
+        readonly ClientAppHostEnvironment host;
 
-        public IssueReport (HostEnvironment host)
+        public IssueReport (ClientAppHostEnvironment host)
             => this.host = host ?? throw new ArgumentNullException (nameof (host));
 
         public string GetIssueReportUrlForGitHub (bool includeReport = true)

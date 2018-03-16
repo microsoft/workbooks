@@ -1,0 +1,110 @@
+//
+// Author:
+//   Aaron Bockover <abock@microsoft.com>
+//
+// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License.
+
+@import '../css/theme.scss';
+
+$margin: 8px;
+$padding: $margin / 2;
+
+.CodeCell-container {
+  border: 1px solid $cellBorderColor;
+  padding: 0.5em;
+  cursor: default;
+  margin: 1em 0;
+
+  .ms-Dropdown-container {
+    cursor: pointer;
+  }
+
+  .CodeCell-editor-container {
+    margin-bottom: $margin;
+    padding: $padding;
+    border: 1px solid $cellEditorBorderColor;
+    background: $cellEditorBackground;
+  }
+
+  .CodeCell-diagnostics-container {
+    @include codeFont;
+
+    ul {
+      margin-bottom: $margin;
+      border: 1px solid $fgColorError;
+      list-style-type: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    ul:empty {
+      border: none;
+      padding: none;
+      margin: none;
+    }
+
+    li {
+      padding: $padding;
+    }
+
+    .CodeCell-diagnostic-Error {
+      color: $fgColorError;
+    }
+    .CodeCell-diagnostic-Warning {
+      color: $fgColorWarning;
+    }
+  }
+
+  .CodeCell-captured-output-container {
+    border: 1px dotted $cellEditorBorderColor;
+    padding: $padding;
+  }
+
+  .CodeCell-results-container {
+    margin-bottom: $margin;
+
+    .CodeCell-result {
+      display: flex;
+      align-items: flex-end;
+      flex-wrap: wrap-reverse;
+
+      .CodeCell-result-renderer-container {
+        padding-right: 1em;
+      }
+    }
+  }
+
+  .CodeCell-actions-container {
+    .actions {
+      display: flex;
+      flex-direction: row;
+      align-items: stretch;
+    }
+
+    .ms-Button,
+    .ms-Button-label,
+    .ms-Button-icon {
+      padding: 0;
+      margin: 0;
+    }
+
+    .CancelButton:hover,
+    .CancelButton:hover * {
+      color: $cellCancelButtonTextColor;
+    }
+
+    .ms-Button {
+      height: 22px;
+    }
+
+    .ms-Button-label {
+      padding-left: 4px;
+    }
+
+    .ms-ProgressIndicator {
+      padding-left: 8px;
+      flex-grow: 1;
+    }
+  }
+}

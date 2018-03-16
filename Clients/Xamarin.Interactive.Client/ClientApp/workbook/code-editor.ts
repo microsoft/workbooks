@@ -320,7 +320,8 @@ class WorkbookCodeEditor {
 
   setWordWrap(wrapLongLines: boolean) {
     this.monacoEditorOptions.wordWrap = wrapLongLines ? "on" : "off"
-    this.monacoEditorOptions.scrollbar.horizontal = wrapLongLines ? "hidden" : "auto"
+    if (this.monacoEditorOptions.scrollbar)
+      this.monacoEditorOptions.scrollbar.horizontal = wrapLongLines ? "hidden" : "auto"
     this.updateOptions()
   }
 

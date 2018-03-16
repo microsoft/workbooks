@@ -1,12 +1,6 @@
 <!-- These targets should be included in all of our .csproj projects -->
 <Project>
-  <PropertyGroup>
-    <Xamarin_Build_AssemblyFile>$(MSBuildThisFileDirectory)Xamarin.Build\Xamarin.Build.dll</Xamarin_Build_AssemblyFile>
-  </PropertyGroup>
-
-  <UsingTask
-    TaskName="Xamarin.MSBuild.UpdateWixManifest"
-    AssemblyFile="$(Xamarin_Build_AssemblyFile)"/>
+  <Import Project="Environment.targets"/>
 
   <PropertyGroup>
     <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>

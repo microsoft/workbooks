@@ -44,7 +44,9 @@ namespace Xamarin.Interactive.Client.AgentProcesses
             IMessageService messageService,
             CancellationToken cancellationToken)
         {
-            if (InteractiveInstallation.Default.IsMac && !File.Exists (monoPath))
+            var useMono = HostEnvironment.OS != HostOS.Windows;
+
+            if (useMono && !File.Exists (monoPath))
                 throw new UserPresentableException (
                     Catalog.GetString ("Xamarin install missing."));
 
@@ -53,7 +55,7 @@ namespace Xamarin.Interactive.Client.AgentProcesses
             var processArgs = ProcessArguments.Create (
                 identifyAgentRequest.ToCommandLineArguments ());
 
-            if (InteractiveInstallation.Default.IsMac) {
+            if (useMono) {
                 processName = monoPath;
                 processArgs = processArgs.Insert (0, WorkbookApp.AppPath);
             } else {

@@ -12,6 +12,7 @@ using System.IO.Compression;
 using System.Linq;
 using System.Reflection.Metadata;
 using System.Reflection.PortableExecutable;
+using System.Runtime.InteropServices;
 
 using NuGet.Packaging;
 using NuGet.Versioning;
@@ -26,11 +27,18 @@ namespace Xamarin.Interactive.Reflection
     {
         const string TAG = nameof (NativeDependencyResolver);
 
+        readonly Architecture agentArchitecture;
+
         protected AgentType AgentType { get; }
 
         public NativeDependencyResolver (AgentType agentType)
         {
             AgentType = agentType;
+
+            agentArchitecture = Environment.Is64BitProcess &&
+                (HostEnvironment.OS != HostOS.Windows || AgentType != AgentType.DotNetCore)
+                ? Architecture.X64
+                : Architecture.X86;
         }
 
         protected override ResolvedAssembly ParseAssembly (
@@ -89,10 +97,18 @@ namespace Xamarin.Interactive.Reflection
 
             var libuvPackagePath = libuvPackagesPath.Combine (libuvDependencyVersion.ToString ());
 
-            var isMac = InteractiveInstallation.Default.IsMac;
-            var architecture = Environment.Is64BitProcess && (isMac || AgentType != AgentType.DotNetCore)
-                ? "x64"
-                : "x86";
+            var architecture = agentArchitecture.ToString ().ToLowerInvariant ();
+            var isMac = false;
+
+            switch (HostEnvironment.OS) {
+            case HostOS.Windows:
+                break;
+            case HostOS.macOS:
+                isMac = true;
+                break;
+            default:
+                yield break;
+            }
 
             string runtimeName, nativeLibName;
             switch (AgentType) {
@@ -127,10 +143,18 @@ namespace Xamarin.Interactive.Reflection
         {
             var packageDirectoryPath = path.ParentDirectory.ParentDirectory.ParentDirectory;
 
-            var isMac = InteractiveInstallation.Default.IsMac;
-            var architecture = Environment.Is64BitProcess && (isMac || AgentType != AgentType.DotNetCore)
-                ? "x64"
-                : "x86";
+            var architecture = agentArchitecture.ToString ().ToLowerInvariant ();
+            var isMac = false;
+
+            switch (HostEnvironment.OS) {
+            case HostOS.Windows:
+                break;
+            case HostOS.macOS:
+                isMac = true;
+                break;
+            default:
+                yield break;
+            }
 
             string runtimeName, nativeLibName;
             switch (AgentType) {
@@ -165,10 +189,19 @@ namespace Xamarin.Interactive.Reflection
         {
             var packageDirectoryPath = path.ParentDirectory.ParentDirectory.ParentDirectory;
 
-            var isMac = InteractiveInstallation.Default.IsMac;
-            var architecture = Environment.Is64BitProcess && (isMac || AgentType != AgentType.DotNetCore)
-                ? "64"
-                : "32";
+            var architecture = agentArchitecture == Architecture.X64 ? "64" : "32";
+            var isMac = false;
+
+            switch (HostEnvironment.OS) {
+            case HostOS.Windows:
+                break;
+            case HostOS.macOS:
+                isMac = true;
+                break;
+            default:
+                yield break;
+            }
+
             var nativeLibName = isMac ? "libmono-urho.dylib" : "mono-urho.dll";
 
             string runtimeName;

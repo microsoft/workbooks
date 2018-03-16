@@ -7,14 +7,12 @@
 
 using System;
 using System.Threading;
-using System.Threading.Tasks;
 
-using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
 
 using Xamarin.CrossBrowser;
 
+using Xamarin.Interactive.CodeAnalysis.Hover;
 using Xamarin.Interactive.Compilation.Roslyn;
 
 namespace Xamarin.Interactive.CodeAnalysis.Monaco
@@ -23,9 +21,9 @@ namespace Xamarin.Interactive.CodeAnalysis.Monaco
     {
         const string TAG = nameof (HoverProvider);
 
-        readonly RoslynCompilationWorkspace compilationWorkspace;
         readonly ScriptContext context;
         readonly Func<string, SourceText> getSourceTextByModelId;
+        readonly HoverController controller;
 
         #pragma warning disable 0414
         readonly dynamic providerTicket;
@@ -36,14 +34,13 @@ namespace Xamarin.Interactive.CodeAnalysis.Monaco
             ScriptContext context,
             Func<string, SourceText> getSourceTextByModelId)
         {
-            this.compilationWorkspace = compilationWorkspace
-                ?? throw new ArgumentNullException (nameof (compilationWorkspace));
-
             this.context = context
                 ?? throw new ArgumentNullException (nameof (context));
 
             this.getSourceTextByModelId = getSourceTextByModelId
                 ?? throw new ArgumentNullException (nameof (getSourceTextByModelId));
+
+            controller = new HoverController (compilationWorkspace);
 
             providerTicket = context.GlobalObject.xiexports.monaco.RegisterWorkbookHoverProvider (
                 "csharp",
@@ -66,9 +63,9 @@ namespace Xamarin.Interactive.CodeAnalysis.Monaco
         {
             var sourceTextContent = getSourceTextByModelId (modelId);
 
-            var computeTask = ComputeHoverAsync (
-                sourceTextContent.Lines.GetPosition (linePosition),
+            var computeTask = controller.ProvideHoverAsync (
                 sourceTextContent,
+                linePosition,
                 cancellationToken);
 
             return context.ToMonacoPromise (
@@ -78,35 +75,7 @@ namespace Xamarin.Interactive.CodeAnalysis.Monaco
                 raiseErrors: false);
         }
 
-        async Task<Hover> ComputeHoverAsync (
-            int position,
-            SourceText sourceText,
-            CancellationToken cancellationToken)
-        {
-            var hover = new Hover ();
-            if (position <= 0)
-                return hover;
-
-            var document = compilationWorkspace.GetSubmissionDocument (sourceText.Container);
-            var root = await document.GetSyntaxRootAsync (cancellationToken);
-            var syntaxToken = root.FindToken (position);
-
-            var expression = syntaxToken.Parent as ExpressionSyntax;
-            if (expression == null)
-                return hover;
-
-            var semanticModel = await document.GetSemanticModelAsync (cancellationToken);
-            var symbolInfo = semanticModel.GetSymbolInfo (expression);
-            if (symbolInfo.Symbol == null)
-                return hover;
-
-            hover.Contents = new [] { symbolInfo.Symbol.ToMonacoSignatureString () };
-            hover.Range = syntaxToken.GetLocation ().GetLineSpan ().Span;
-
-            return hover;
-        }
-
-        static dynamic ToMonacoHover (ScriptContext context, Hover hover)
+        static dynamic ToMonacoHover (ScriptContext context, HoverViewModel hover)
         {
             if (!(hover.Contents?.Length > 0))
                 return null;
@@ -120,12 +89,6 @@ namespace Xamarin.Interactive.CodeAnalysis.Monaco
                 o.contents = contents;
                 o.range = context?.ToMonacoRange (hover.Range);
             });
-        }
-
-        struct Hover
-        {
-            public string [] Contents { get; set; }
-            public LinePositionSpan Range { get; set; }
         }
     }
 }

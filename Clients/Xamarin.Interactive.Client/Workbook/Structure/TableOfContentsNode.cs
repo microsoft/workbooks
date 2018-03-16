@@ -6,7 +6,6 @@
 // Licensed under the MIT License.
 
 using System.Collections.Generic;
-using System.Linq;
 
 using Xamarin.Interactive.Collections;
 using Xamarin.Interactive.TreeModel;
@@ -33,45 +32,13 @@ namespace Xamarin.Interactive.Workbook.Structure
         {
         }
 
-        TableOfContentsNode (bool withChildren)
+        internal TableOfContentsNode (bool withChildren)
         {
             IconName = "highlight";
             IsSelectable = true;
 
             if (withChildren)
                 base.Children = new ObservableCollection<TableOfContentsNode> (EqualityComparer);
-        }
-
-        public void RebuildFromJavaScript (dynamic headings)
-        {
-            var headingsCount = headings.length;
-            if (headingsCount <= 0) {
-                Children.Clear ();
-                return;
-            }
-
-            // Build a complete list of the new headings, reusing nodes from
-            // the existing headings model where possible (same old IDs).
-            // This will ensure the "Become" call does as little work as
-            // possible, simply diffing the two models and applying relevant
-            // changes. In turn this allows the views to react nicely (e.g.
-            // by preserving selections and expansion state).
-
-            var updatedList = new List<TableOfContentsNode> (headingsCount);
-
-            for (int i = 0; i < headingsCount; i++) {
-                var heading = headings [i];
-                var oldId = heading.oldId;
-
-                var node = Children.FirstOrDefault (n => n.Id == oldId)
-                    ?? new TableOfContentsNode (false);
-                node.Id = heading.newId;
-                node.Name = heading.text;
-
-                updatedList.Add (node);
-            }
-
-            Children.UpdateTo (updatedList);
         }
     }
 }

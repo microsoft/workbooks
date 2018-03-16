@@ -7,13 +7,10 @@
 
 using System.IO;
 using System.Linq;
-using System.Reflection;
 
 using NUnit.Framework;
 
 using Should;
-
-using NuGet.Versioning;
 
 using Xamarin.Interactive.NuGet;
 using Xamarin.Interactive.Workbook.Models;
@@ -44,24 +41,28 @@ namespace Xamarin.Interactive.Tests
         public void TestLegacyManifest (string docFile)
         {
             var page = ReadWorkbookPage (docFile).Page;
+            var packages = page
+                .Packages
+                .Select (p => p.ToInteractivePackage ())
+                .ToArray ();
 
             page.PlatformTargets.Single ().ShouldEqual (AgentType.iOS);
 
-            page.Packages.Length.ShouldEqual (4);
+            packages.Length.ShouldEqual (4);
 
-            page.Packages
+            packages
                 .Any (p => p.Identity.Id == "Newtonsoft.Json" && p.SupportedVersionRange.OriginalString == "8.0.3")
                 .ShouldBeTrue ();
 
-            page.Packages
+            packages
                 .Any (p => p.Identity.Id == "Microsoft.Net.Http" && p.SupportedVersionRange.OriginalString == "2.2.29")
                 .ShouldBeTrue ();
 
-            page.Packages
+            packages
                 .Any (p => p.Identity.Id == "Microsoft.Azure.Mobile.Client" && p.SupportedVersionRange.OriginalString == "2.0.1")
                 .ShouldBeTrue ();
 
-            page.Packages
+            packages
                 .Any (p => p.Identity.Id == "Microsoft.Bcl" && p.SupportedVersionRange.OriginalString == "1.1.10")
                 .ShouldBeTrue ();
         }
@@ -73,7 +74,11 @@ namespace Xamarin.Interactive.Tests
         [Test]
         public void TestPackageVersionRanges ()
         {
-            var packages = ReadWorkbookPage ("ArbitraryYAMLManifest.workbook").Page.Packages;
+            var packages = ReadWorkbookPage ("ArbitraryYAMLManifest.workbook")
+                .Page
+                .Packages
+                .Select (p => p.ToInteractivePackage ())
+                .ToArray ();
 
             packages.Length.ShouldEqual (4);
 
@@ -96,7 +101,7 @@ namespace Xamarin.Interactive.Tests
         {
             var page = new WorkbookPage (new WorkbookPackage ());
             var packageVersion = "9.0.1";
-            var package = new InteractivePackage ("Fake.Package1", VersionRange.Parse (packageVersion));
+            var package = new InteractivePackageDescription ("Fake.Package1", versionRange: packageVersion);
             page.Manifest.Packages = page.Manifest.Packages.Add (package);
 
             var writer = new StringWriter ();
@@ -109,9 +114,9 @@ namespace Xamarin.Interactive.Tests
             deserializedPage.Packages.Length.ShouldEqual (1);
 
             var deserializedPackage = deserializedPage.Packages [0];
-            deserializedPackage.Identity.Id.ShouldEqual (package.Identity.Id);
+            deserializedPackage.PackageId.ShouldEqual (package.PackageId);
             // Make sure this doesn't serialize as [9.0.1, )
-            deserializedPackage.SupportedVersionRange.OriginalString.ShouldEqual (packageVersion);
+            deserializedPackage.VersionRange.ShouldEqual (packageVersion);
         }
 
         [Test]

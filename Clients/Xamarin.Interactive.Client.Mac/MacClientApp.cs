@@ -27,7 +27,7 @@ namespace Xamarin.Interactive.Client
     {
         const string TAG = nameof (MacClientApp);
 
-        sealed class MacHostEnvironment : HostEnvironment
+        sealed class MacHostEnvironment : ClientAppHostEnvironment
         {
             public override HostOS OSName { get; } = HostOS.macOS;
             public override string OSVersionString { get; }
@@ -139,7 +139,7 @@ namespace Xamarin.Interactive.Client
             return preferenceStore;
         }
 
-        protected override HostEnvironment CreateHostEnvironment ()
+        protected override ClientAppHostEnvironment CreateHostEnvironment ()
             => new MacHostEnvironment ();
 
         protected override IFileSystem CreateFileSystem ()
