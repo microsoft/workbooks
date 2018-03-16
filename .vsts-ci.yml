@@ -1,0 +1,16 @@
+steps:
+- task: CmdLine@1
+  inputs:
+    filename: /usr/bin/env
+  condition: and(succeeded(), in(variables['agent.os'], 'darwin', 'linux'))
+  displayName: Dump Environment
+- task: CmdLine@1
+  inputs:
+    filename: /usr/bin/env
+  condition: and(succeeded(), eq(variables['agent.os'], 'windows_nt'))
+  displayName: Dump Environment (Windows)
+- task: MSBuild@1
+  inputs:
+    solution: CoreBuild.proj
+    configuration: '$(msbuild.configuration)'
+  displayName: Build
