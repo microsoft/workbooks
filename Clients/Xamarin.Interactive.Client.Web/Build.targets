@@ -55,6 +55,7 @@
     <PropertyGroup>
       <ArchiveName>workbooks-server-$(ReleaseVersion_SemVer).$(RuntimeIdentifier)</ArchiveName>
     </PropertyGroup>
+    <RemoveDir Directories="$(ArtifactsBasePath)$(ArchiveName)"/>
     <ZipArchive
       SourceDirectoryName="$(PublishDir)"
       RenameBaseDirectoryTo="$(ArchiveName)"
