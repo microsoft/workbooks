@@ -11,7 +11,7 @@
     Name="DebugNpmInstall"
     Condition="'$(Configuration)' == 'Debug' And !Exists('node_modules')">
     <Message Importance="high" Text="Performing first-run npm install..."/>
-    <Exec Command="&quot;$(Npm)&quot; install --save-dev"/>
+    <Exec Command="$(Npm) install --save-dev"/>
   </Target>
 
   <Target
@@ -20,16 +20,16 @@
     DependsOnTargets="DebugNpmInstall"
     Condition="'$(Configuration)' == 'Debug' And !Exists('wwwroot\dist')">
     <Message Importance="high" Text="Performing first-run Webpack build..."/>
-    <Exec Command="&quot;$(Node)&quot; node_modules/webpack/bin/webpack.js --config webpack.config.vendor.js"/>
-    <Exec Command="&quot;$(Node)&quot; node_modules/webpack/bin/webpack.js"/>
+    <Exec Command="$(Node) node_modules/webpack/bin/webpack.js --config webpack.config.vendor.js"/>
+    <Exec Command="$(Node) node_modules/webpack/bin/webpack.js"/>
   </Target>
 
   <Target
     Name="PublishRunWebpack"
     AfterTargets="ComputeFilesToPublish">
-    <Exec Command="&quot;$(Npm)&quot; install"/>
-    <Exec Command="&quot;$(Node)&quot; node_modules/webpack/bin/webpack.js --config webpack.config.vendor.js --env.prod"/>
-    <Exec Command="&quot;$(Node)&quot; node_modules/webpack/bin/webpack.js --env.prod"/>
+    <Exec Command="$(Npm) install"/>
+    <Exec Command="$(Node) node_modules/webpack/bin/webpack.js --config webpack.config.vendor.js --env.prod"/>
+    <Exec Command="$(Node) node_modules/webpack/bin/webpack.js --env.prod"/>
 
     <ItemGroup>
       <DistFiles Include="wwwroot\dist\**; wwwroot\vs\**; ClientApp\dist\**"/>
