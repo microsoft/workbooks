@@ -1,8 +1,14 @@
 <Project InitialTargets="Configure" DefaultTargets="Restore;Build">
   <Import Project="Build\Top.targets"/>
 
+  <Import
+    Project="build.local.props"
+    Condition="Exists('build.local.props')"/>
+
   <PropertyGroup>
     <Configuration Condition="'$(Configuration)' == ''">Debug</Configuration>
+    <DefaultProfile Condition="'$(DefaultProfile)' == ''">Full</DefaultProfile>
+
     <BuiltWorkbookAppsBasePath>$(MSBuildThisFileDirectory)_build\$(Configuration)\WorkbookApps\</BuiltWorkbookAppsBasePath>
     <ArtifactsBasePath>$(MSBuildThisFileDirectory)_artifacts\</ArtifactsBasePath>
     <ProfileProperties>
@@ -124,7 +130,7 @@
     Name="Configure"
     DependsOnTargets="Xamarin_Build_ReadAllProperties">
     <PropertyGroup>
-      <Profile Condition="'$(Profile)' == ''">Web</Profile>
+      <Profile Condition="'$(Profile)' == ''">$(DefaultProfile)</Profile>
       <Profile Condition="!$(Profile.EndsWith('Profile'))">$(Profile)Profile</Profile>
     </PropertyGroup>
   </Target>
