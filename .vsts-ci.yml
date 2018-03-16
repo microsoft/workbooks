@@ -1,16 +1,44 @@
 steps:
-- task: CmdLine@1
+
+# Keep in sync with global.json 🙄
+- task: DotNetCoreInstaller@0
   inputs:
-    filename: /usr/bin/env
-  condition: and(succeeded(), in(variables['agent.os'], 'darwin', 'linux'))
+    version: 2.1.4
+  displayName: Install .NET Core
+
+# This script runs both via bash (macOS/Linux) and cmd (Windows).
+# Keep it both valid bash and batch or break it out conditionally.
+- script: |
+    echo System Environment
+    set
+    echo .NET Core Info
+    dotnet --info
   displayName: Dump Environment
-- task: CmdLine@1
-  inputs:
-    filename: /usr/bin/env
-  condition: and(succeeded(), eq(variables['agent.os'], 'windows_nt'))
-  displayName: Dump Environment (Windows)
+
 - task: MSBuild@1
   inputs:
     solution: CoreBuild.proj
     configuration: '$(msbuild.configuration)'
+    msbuildArguments: '/t:Restore /p:Profile=$(msbuild.buildProfile)'
+  displayName: Restore
+
+- task: MSBuild@1
+  inputs:
+    solution: CoreBuild.proj
+    configuration: '$(msbuild.configuration)'
+    msbuildArguments: '/t:Build /p:Profile=$(msbuild.buildProfile)'
   displayName: Build
+
+- task: MSBuild@1
+  inputs:
+    solution: CoreBuild.proj
+    configuration: '$(msbuild.configuration)'
+    msbuildArguments: '/t:Package /p:Profile=$(msbuild.buildProfile)'
+  displayName: Package
+
+- task: PublishBuildArtifacts@1
+  inputs:
+    PathtoPublish: '_artifacts'
+    ArtifactName: Artifacts
+    publishLocation: Container
+    displayName: Publish Artifacts
