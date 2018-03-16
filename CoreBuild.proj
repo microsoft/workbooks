@@ -1,4 +1,4 @@
-<Project InitialTargets="Configure" DefaultTargets="Build">
+<Project InitialTargets="Configure" DefaultTargets="Restore;Build">
   <Import Project="Build\Top.targets"/>
 
   <PropertyGroup>
@@ -73,7 +73,16 @@
     <MSBuild
       Projects="$(SolutionFile)"
       Properties="$(ProfileProperties)"
-      Targets="Restore;Build"/>
+      Targets="Build"/>
+  </Target>
+
+  <Target
+    Name="Restore"
+    DependsOnTargets="$(Profile)">
+    <MSBuild
+      Projects="$(SolutionFile)"
+      Properties="$(ProfileProperties)"
+      Targets="Restore"/>
   </Target>
 
   <Target
