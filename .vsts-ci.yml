@@ -17,6 +17,25 @@ steps:
 
 - task: MSBuild@1
   inputs:
+    solution: Build.proj
+    msbuildArguments: '/t:GeneratePolicheckInputFile'
+    logProjectEvents: true
+  continueOnError: true
+  displayName: Generate PoliCheck Input
+
+- task: securedevelopmentteam.vss-secure-development-tools.build-task-policheck.PoliCheck@1
+  inputs:
+    targetType: FL
+    targetArgument: '$(Build.SourcesDirectory)\PolicheckInput.txt'
+    result: '..\..\..\s\_artifacts\PoliCheck.xml'
+    optionsFC: 1
+    optionsXS: 0
+    optionsHMENABLE: 0
+  continueOnError: true
+  displayName: Run PoliCheck
+
+- task: MSBuild@1
+  inputs:
     solution: CoreBuild.proj
     configuration: '$(msbuild.configuration)'
     msbuildArguments: '/t:Restore /p:Profile=$(msbuild.buildProfile)'
