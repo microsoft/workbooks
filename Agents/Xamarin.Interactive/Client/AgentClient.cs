@@ -55,7 +55,7 @@ namespace Xamarin.Interactive.Client
         /// <summary>
         /// Requests the agent's identity. Should only be called from implementors
         /// or managers of <see cref="IAgentTicket"/>, and as such, does not make
-        /// use of the session cancellation token. 
+        /// use of the session cancellation token.
         /// </summary>
         public Task<AgentIdentity> GetAgentIdentityAsync (
             CancellationToken cancellationToken = default (CancellationToken))
@@ -85,7 +85,11 @@ namespace Xamarin.Interactive.Client
                         case MessageChannel.Ping ping:
                             break;
                         default:
-                            messages.Observers.OnNext (message);
+                            try {
+                                messages.Observers.OnNext (message);
+                            } catch (Exception e) {
+                                Log.Error (TAG, "Exception in message channel observer", e);
+                            }
                             break;
                         }
                     }, cancellationToken).GetAwaiter ().GetResult ();
