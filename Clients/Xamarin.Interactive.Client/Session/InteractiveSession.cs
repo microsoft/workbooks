@@ -18,18 +18,8 @@ namespace Xamarin.Interactive.Session
 
     public sealed class InteractiveSession : IMessageService, IDisposable
     {
-        public static InteractiveSession CreateWorkbookSession ()
-            => new InteractiveSession (ClientSessionKind.Workbook, null);
-
-        internal static InteractiveSession CreateLiveInspectionSession (
-            ClientSessionUri liveInspectAgentUri)
-            => new InteractiveSession (
-                ClientSessionKind.LiveInspection,
-                liveInspectAgentUri
-                    ?? throw new ArgumentNullException (nameof (liveInspectAgentUri)));
-
         readonly ClientSessionKind sessionKind;
-        readonly ClientSessionUri liveInspectAgentUri;
+        readonly ClientSessionUri agentUri;
         readonly CancellationTokenSource cancellationTokenSource = new CancellationTokenSource ();
 
         readonly Observable<InteractiveSessionEvent> events = new Observable<InteractiveSessionEvent> ();
@@ -51,12 +41,12 @@ namespace Xamarin.Interactive.Session
         internal IWorkspaceService WorkspaceService => State.WorkspaceService;
         internal PackageManagerService PackageManagerService => State.PackageManagerService;
 
-        InteractiveSession (
-            ClientSessionKind sessionKind,
-            ClientSessionUri liveInspectAgentUri)
+        internal InteractiveSession (
+            ClientSessionKind sessionKind = ClientSessionKind.Workbook,
+            ClientSessionUri agentUri = null)
         {
             this.sessionKind = sessionKind;
-            this.liveInspectAgentUri = liveInspectAgentUri;
+            this.agentUri = agentUri;
         }
 
         void CheckDisposed ()
@@ -197,7 +187,7 @@ namespace Xamarin.Interactive.Session
 
             var agentConnection = await State.AgentConnection.ConnectAsync (
                 workbookApp,
-                liveInspectAgentUri,
+                agentUri,
                 this,
                 HandleAgentDisconnected,
                 GetCancellationToken (cancellationToken)).ConfigureAwait (false);
