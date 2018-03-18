@@ -51,6 +51,8 @@ namespace Xamarin.Interactive.CodeAnalysis
             public CodeCellBuffer Buffer { get; }
 
             public ImmutableList<InteractiveDiagnostic> Diagnostics { get; set; }
+                = ImmutableList<InteractiveDiagnostic>.Empty;
+
             public bool IsDirty { get; set; }
             public bool AgentTerminatedWhileEvaluating { get; set; }
             public int EvaluationCount { get; set; }
