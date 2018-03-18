@@ -368,7 +368,7 @@ namespace Xamarin.Interactive.CodeAnalysis
             return model;
         }
 
-        public async Task EvaluateAsync (
+        public async Task<CodeCellEvaluationFinishedEvent> EvaluateAsync (
             CodeCellId targetCodeCellId = default,
             bool evaluateAll = false,
             CancellationToken cancellationToken = default)
@@ -381,6 +381,8 @@ namespace Xamarin.Interactive.CodeAnalysis
             if (evaluationModel.ShouldResetAgentState)
                 await agentConnection.Api.ResetStateAsync ();
 
+            CodeCellEvaluationFinishedEvent lastCellFinishedEvent = default;
+
             foreach (var evaluatableCodeCell in evaluationModel.CellsToEvaluate) {
                 events.Observers.OnNext (
                     new CodeCellEvaluationStartedEvent (
@@ -388,19 +390,23 @@ namespace Xamarin.Interactive.CodeAnalysis
 
                 var status = await CoreEvaluateCodeCellAsync (evaluatableCodeCell);
 
-                events.Observers.OnNext (new CodeCellEvaluationFinishedEvent (
+                lastCellFinishedEvent = new CodeCellEvaluationFinishedEvent (
                     evaluatableCodeCell.CodeCellId,
                     status,
                     evaluationModel.ShouldMaybeStartNewCodeCell &&
                     evaluatableCodeCell.CodeCellId == targetCodeCellId,
-                    evaluatableCodeCell.Diagnostics));
+                    evaluatableCodeCell.Diagnostics);
+
+                events.Observers.OnNext (lastCellFinishedEvent);
 
                 switch (status) {
                 case CodeCellEvaluationStatus.ErrorDiagnostic:
                 case CodeCellEvaluationStatus.Disconnected:
-                    return;
+                    return lastCellFinishedEvent;
                 }
             }
+
+            return lastCellFinishedEvent;
         }
 
         async Task<CodeCellEvaluationStatus> CoreEvaluateCodeCellAsync (
