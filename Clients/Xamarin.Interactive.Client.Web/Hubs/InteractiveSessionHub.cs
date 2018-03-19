@@ -39,7 +39,7 @@ namespace Xamarin.Interactive.Client.Web.Hubs
         {
             memoryCache.GetOrCreate (
                 Context.ConnectionId,
-                e => InteractiveSession.CreateWorkbookSession ());
+                e => new InteractiveSession ());
 
             return Task.CompletedTask;
         }

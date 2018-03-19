@@ -8,6 +8,7 @@
 // Licensed under the MIT License.
 
 using System;
+using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.Net;
 using System.Net.Http;
@@ -33,6 +34,14 @@ namespace Xamarin.Interactive.Client
 
         readonly HttpClient httpClient;
 
+        /// <summary>
+        /// Any request that should await a response delivered through the out-of-band
+        /// message channel should register an awaiter and await the request task and
+        /// the registered awaiter task (e.g. <see cref="EvaluateAsync"/>).
+        /// </summary>
+        readonly ConcurrentDictionary<Guid, TaskCompletionSource> messageChannelAwaiters
+            = new ConcurrentDictionary<Guid, TaskCompletionSource> ();
+
         readonly Observable<object> messages = new Observable<object> ();
         public IObservable<object> Messages => messages;
 
@@ -55,7 +64,7 @@ namespace Xamarin.Interactive.Client
         /// <summary>
         /// Requests the agent's identity. Should only be called from implementors
         /// or managers of <see cref="IAgentTicket"/>, and as such, does not make
-        /// use of the session cancellation token. 
+        /// use of the session cancellation token.
         /// </summary>
         public Task<AgentIdentity> GetAgentIdentityAsync (
             CancellationToken cancellationToken = default (CancellationToken))
@@ -85,12 +94,30 @@ namespace Xamarin.Interactive.Client
                         case MessageChannel.Ping ping:
                             break;
                         default:
-                            messages.Observers.OnNext (message);
+                            try {
+                                messages.Observers.OnNext (message);
+                            } catch (Exception e) {
+                                Log.Error (TAG, "Exception in message channel observer", e);
+                            }
                             break;
                         }
+
+                        if (message is IXipResponseMessage responseMessage &&
+                            messageChannelAwaiters.TryRemove (responseMessage.RequestId, out var awaiter))
+                            awaiter.SetResult ();
                     }, cancellationToken).GetAwaiter ().GetResult ();
                 }, cancellationToken);
             } catch {
+            }
+
+            foreach (var entry in messageChannelAwaiters) {
+                if (messageChannelAwaiters.TryRemove (entry.Key, out var awaiter)) {
+                    try {
+                        throw new Exception ("message channel has terminated");
+                    } catch (Exception e) {
+                        awaiter.SetException (e);
+                    }
+                }
             }
 
             messages.Observers.OnCompleted ();
@@ -128,9 +155,20 @@ namespace Xamarin.Interactive.Client
         public Task EvaluateAsync (
             Compilation compilation,
             CancellationToken cancellationToken = default (CancellationToken))
-            => SendAsync<Evaluation> (
-                new EvaluationRequest (compilation),
+        {
+            var request = new EvaluationRequest (compilation);
+
+            var resultTask = new TaskCompletionSource ();
+            var evalTask = SendAsync<Evaluation> (
+                request,
                 GetCancellationToken (cancellationToken));
+
+            // TryAdd will only fail for duplicate keys, which is not
+            // practically possible (see MainThreadRequest.MessageId).
+            messageChannelAwaiters.TryAdd (request.MessageId, resultTask);
+
+            return Task.WhenAll (resultTask.Task, evalTask);
+        }
 
         public Task AbortEvaluationAsync (EvaluationContextId evaluationContextId)
             => SendAsync<bool> (

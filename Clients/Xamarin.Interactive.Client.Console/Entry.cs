@@ -6,9 +6,13 @@
 // Licensed under the MIT License.
 
 using System;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+
+using Mono.Options;
+using Mono.Terminal;
 
 using Xamarin.Interactive.CodeAnalysis;
 using Xamarin.Interactive.CodeAnalysis.Events;
@@ -27,12 +31,69 @@ namespace Xamarin.Interactive.Client.Console
         static LanguageDescription language;
         static CodeCellId lastCodeCellId;
         static CodeCellEvaluationStatus lastCellEvaluationStatus;
+        static Spinner evalSpinner;
+
+        static async Task<int> MainAsync (string [] args)
+        {
+            ClientSessionUri sessionUri = null;
+            TextWriter logWriter = null;
+            var showHelp = false;
+
+            var options = new OptionSet {
+                { "usage: xic [OPTIONS]+ [URI]"},
+                { "" },
+                { "Options:" },
+                { "" },
+                { "l|log=", "Write debugging log to file",
+                    v => logWriter = new StreamWriter (v) },
+                { "h|help", "Show this help",
+                    v => showHelp = true }
+            };
+
+            try {
+                args = options.Parse (args).ToArray ();
+            } catch (Exception e) {
+                Error.WriteLine ($"Invalid option: {e.Message}");
+                showHelp = true;
+            }
+
+            if (showHelp) {
+                options.WriteOptionDescriptions (Out);
+                return 1;
+            }
+
+            if (args.Length > 0) {
+                if (!ClientSessionUri.TryParse (args [0], out sessionUri)) {
+                    Error.WriteLine ($"Invalid URI: {args [0]}");
+                    return 1;
+                }
+            }
+
+            // set up the very basic global services/environment
+            var clientApp = new ConsoleClientApp ();
+            clientApp.Initialize (
+                logProvider: new LogProvider (LogLevel.Info, logWriter));
+
+            // Now create and get ready to deal with the session; a more complete
+            // client should handle more than just OnNext from the observer.
+            var session = new InteractiveSession (agentUri: sessionUri);
+            session.Events.Subscribe (new Observer<InteractiveSessionEvent> (OnSessionEvent));
+
+            if (sessionUri?.WorkbookPath != null)
+                await WorkbookPlayerMain (session, sessionUri);
+            else
+                await ReplPlayerMain (session);
+
+            // Nevermind this... it'll get fixed!
+            await Task.Delay (Timeout.Infinite);
+            return 0;
+        }
 
         /// <summary>
         /// Hosts an interactive REPL against a supported Workbooks target platform.
         /// This is analogous to 'csharp' or 'csi' or any other REPL on the planet.
         /// </summary>
-        static async Task<int> ReplPlayerMain ()
+        static async Task<int> ReplPlayerMain (InteractiveSession session)
         {
             // As an exercise to the reader, this puppy should take an optional
             // workbook flavor ID to know what platform you want to REPL and find
@@ -56,15 +117,16 @@ namespace Xamarin.Interactive.Client.Console
                 workbookTarget.Id,
                 new EvaluationEnvironment (Environment.CurrentDirectory));
 
-            // Now create and get ready to deal with the session; a more complete
-            // client should handle more than just OnNext from the observer.
-            var session = InteractiveSession.CreateWorkbookSession ();
-            session.Events.Subscribe (new Observer<InteractiveSessionEvent> (OnSessionEvent));
-
             // And initialize it with all of our prerequisites...
             // Status events raised within this method will be posted to the
             // observable above ("starting agent", "initializing workspace", etc).
             await session.InitializeAsync (sessionDescription);
+
+            CodeCellId cellId = default;
+
+            var editor = new LineEditor ("xic");
+            editor.BeforeRenderPrompt = () => ForegroundColor = ConsoleColor.Yellow;
+            editor.AfterRenderPrompt = () => ResetColor ();
 
             // At this point we have the following in order, ready to serve:
             //
@@ -78,13 +140,13 @@ namespace Xamarin.Interactive.Client.Console
             // This is the REPL you're looking for...
             while (true) {
                 // append a new cell (no arguments here imply append)
-                var cellId = await session.EvaluationService.InsertCodeCellAsync ();
+                cellId = await session.EvaluationService.InsertCodeCellAsync ();
 
-                // render the initial/top-level prompt
-                WriteReplPrompt ();
+                for (int i = 0; true; i++) {
+                    var deltaBuffer = editor.Edit (
+                        GetPrompt (i > 0),
+                        null);
 
-                while (true) {
-                    var deltaBuffer = ReadLine ();
                     var existingBuffer = await session.EvaluationService.GetCodeCellBufferAsync (cellId);
 
                     await session.EvaluationService.UpdateCodeCellAsync (
@@ -93,12 +155,14 @@ namespace Xamarin.Interactive.Client.Console
 
                     if (session.WorkspaceService.IsCellComplete (cellId))
                         break;
-
-                    WriteReplPrompt (secondaryPrompt: true);
                 }
 
-                await session.EvaluationService.EvaluateAsync (cellId);
-                await EvaluationServiceRaceBug ();
+                var finishedEvent = await session.EvaluationService.EvaluateAsync (cellId);
+
+                // if the evaluation was not successful, remove the cell so it's not internally
+                // re-evaluated (which would continue to yield the same failures)
+                if (finishedEvent.Status != CodeCellEvaluationStatus.Success)
+                    await session.EvaluationService.RemoveCodeCellAsync (finishedEvent.CodeCellId);
             }
         }
 
@@ -108,9 +172,9 @@ namespace Xamarin.Interactive.Client.Console
         /// but does evaluate a workbook from top-to-bottom. Restores nuget
         /// packages from the workbook's manifest.
         /// </summary>
-        static async Task<int> WorkbookPlayerMain (string workbookPath)
+        static async Task<int> WorkbookPlayerMain (InteractiveSession session, ClientSessionUri sessionUri)
         {
-            var path = new FilePath (workbookPath);
+            var path = new FilePath (sessionUri.WorkbookPath);
             if (!path.FileExists) {
                 Error.WriteLine ($"File does not exist: {path}");
                 return 1;
@@ -121,11 +185,6 @@ namespace Xamarin.Interactive.Client.Console
             await workbook.Open (
                 quarantineInfo => Task.FromResult (true),
                 path);
-
-            // create and get ready to deal with the session; a more complete
-            // client should handle more than just OnNext from the observer.
-            var session = InteractiveSession.CreateWorkbookSession ();
-            session.Events.Subscribe (new Observer<InteractiveSessionEvent> (OnSessionEvent));
 
             #pragma warning disable 0618
             // TODO: WorkbookDocumentManifest needs to eliminate AgentType like we've done on web
@@ -152,11 +211,13 @@ namespace Xamarin.Interactive.Client.Console
                     buffer,
                     lastCodeCellId);
 
-                WriteReplPrompt ();
+                ForegroundColor = ConsoleColor.DarkYellow;
+                Write (GetPrompt ());
+                ResetColor ();
+
                 WriteLine (buffer);
 
                 await session.EvaluationService.EvaluateAsync (lastCodeCellId);
-                await EvaluationServiceRaceBug ();
 
                 if (lastCellEvaluationStatus != CodeCellEvaluationStatus.Success)
                     break;
@@ -169,16 +230,27 @@ namespace Xamarin.Interactive.Client.Console
 
         static void OnSessionEvent (InteractiveSessionEvent evnt)
         {
+            string status;
+
             switch (evnt.Kind) {
             case InteractiveSessionEventKind.Evaluation:
                 OnCodeCellEvent ((ICodeCellEvent)evnt.Data);
+                return;
+            case InteractiveSessionEventKind.ConnectingToAgent:
+                status = "Connecting to agent…";
+                break;
+            case InteractiveSessionEventKind.InitializingWorkspace:
+                status = "Initializing workspace…";
+                break;
+            case InteractiveSessionEventKind.Ready:
+                status = string.Empty.PadLeft (BufferWidth);
                 break;
             default:
-                ForegroundColor = ConsoleColor.Cyan;
-                WriteLine (evnt.Kind);
-                ResetColor ();
-                break;
+                return;
             }
+
+            ForegroundColor = ConsoleColor.Cyan;
+            Write ($"{status}\r");
         }
 
         static void OnCodeCellEvent (ICodeCellEvent codeCellEvent)
@@ -191,12 +263,17 @@ namespace Xamarin.Interactive.Client.Console
             if (lastCodeCellId != default && codeCellEvent.CodeCellId != lastCodeCellId)
                 return;
 
+            if (codeCellEvent is CodeCellEvaluationStartedEvent)
+                StartSpinner ();
+            else
+                StopSpinner ();
+
             switch (codeCellEvent) {
             // a full UI would set cell state to show a spinner and
             // enable a button to abort the running evaluation here
             case CodeCellEvaluationStartedEvent _:
                 break;
-                // and would then hide the spinner and button here
+            // and would then hide the spinner and button here
             case CodeCellEvaluationFinishedEvent finishedEvent:
                 lastCellEvaluationStatus = finishedEvent.Status;
 
@@ -231,14 +308,24 @@ namespace Xamarin.Interactive.Client.Console
 
         #region Amazing UI
 
-        static void WriteReplPrompt (bool secondaryPrompt = false)
+        static void StartSpinner ()
         {
-            ForegroundColor = ConsoleColor.DarkYellow;
+            StopSpinner ();
+            evalSpinner = Spinner.Start (Spinner.Kind.Dots, ConsoleColor.Green);
+        }
+
+        static void StopSpinner ()
+        {
+            evalSpinner?.Dispose ();
+            evalSpinner = null;
+        }
+
+        static string GetPrompt (bool secondaryPrompt = false)
+        {
             var prompt = language.Name;
             if (secondaryPrompt)
                 prompt = string.Empty.PadLeft (prompt.Length);
-            Write ($"{prompt}> ");
-            ResetColor ();
+            return prompt + "> ";
         }
 
         static void RenderOutput (CapturedOutputSegment output)
@@ -311,8 +398,6 @@ namespace Xamarin.Interactive.Client.Console
 
         #endregion
 
-        #region Boring Entry/Hosting
-
         static int Main (string [] args)
         {
             var runContext = new SingleThreadSynchronizationContext ();
@@ -328,36 +413,5 @@ namespace Xamarin.Interactive.Client.Console
 
             return mainTask.GetAwaiter ().GetResult ();
         }
-
-        static async Task<int> MainAsync (string [] args)
-        {
-            // set up the very basic global services/environment
-            var clientApp = new ConsoleClientApp ();
-            clientApp.Initialize (
-                logProvider: new LogProvider (LogLevel.Info, null));
-
-            if (args.Length > 0)
-                await WorkbookPlayerMain (args [0]);
-            else
-                await ReplPlayerMain ();
-
-            // Nevermind this... it'll get fixed!
-            await Task.Delay (Timeout.Infinite);
-            return 0;
-        }
-
-        /// <summary>
-        /// There is clearly an issue in EvaluationService where the events
-        /// observable will post evaluation results _after_ the evalaution
-        /// has happened. This is in theory _correct_ behavior, since evaluation
-        /// results may be posted at any time, regardless of whether or not
-        /// a cell is evaluating. However, for the first result of a cell,
-        /// the call should await it. This is not an issue in the other
-        /// UX scenarios (desktop and web). Need to look into this...
-        /// </summary>
-        static Task EvaluationServiceRaceBug ()
-         => Task.Delay (250);
-
-        #endregion
     }
 }
