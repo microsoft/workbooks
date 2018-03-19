@@ -12,6 +12,7 @@ using System.Threading;
 using System.Threading.Tasks;
 
 using Mono.Options;
+using Mono.Terminal;
 
 using Xamarin.Interactive.CodeAnalysis;
 using Xamarin.Interactive.CodeAnalysis.Events;
@@ -120,6 +121,12 @@ namespace Xamarin.Interactive.Client.Console
             // observable above ("starting agent", "initializing workspace", etc).
             await session.InitializeAsync (sessionDescription);
 
+            CodeCellId cellId = default;
+
+            var editor = new LineEditor ("xic");
+            editor.BeforeRenderPrompt = () => ForegroundColor = ConsoleColor.Yellow;
+            editor.AfterRenderPrompt = () => ResetColor ();
+
             // At this point we have the following in order, ready to serve:
             //
             //   1. a connected agent ready to execute code
@@ -132,13 +139,13 @@ namespace Xamarin.Interactive.Client.Console
             // This is the REPL you're looking for...
             while (true) {
                 // append a new cell (no arguments here imply append)
-                var cellId = await session.EvaluationService.InsertCodeCellAsync ();
+                cellId = await session.EvaluationService.InsertCodeCellAsync ();
 
-                // render the initial/top-level prompt
-                WriteReplPrompt ();
+                for (int i = 0; true; i++) {
+                    var deltaBuffer = editor.Edit (
+                        GetPrompt (i > 0),
+                        null);
 
-                while (true) {
-                    var deltaBuffer = ReadLine ();
                     var existingBuffer = await session.EvaluationService.GetCodeCellBufferAsync (cellId);
 
                     await session.EvaluationService.UpdateCodeCellAsync (
@@ -147,11 +154,12 @@ namespace Xamarin.Interactive.Client.Console
 
                     if (session.WorkspaceService.IsCellComplete (cellId))
                         break;
-
-                    WriteReplPrompt (secondaryPrompt: true);
                 }
 
                 var finishedEvent = await session.EvaluationService.EvaluateAsync (cellId);
+
+                // if the evaluation was not successful, remove the cell so it's not internally
+                // re-evaluated (which would continue to yield the same failures)
                 if (finishedEvent.Status != CodeCellEvaluationStatus.Success)
                     await session.EvaluationService.RemoveCodeCellAsync (finishedEvent.CodeCellId);
             }
@@ -202,7 +210,10 @@ namespace Xamarin.Interactive.Client.Console
                     buffer,
                     lastCodeCellId);
 
-                WriteReplPrompt ();
+                ForegroundColor = ConsoleColor.DarkYellow;
+                Write (GetPrompt ());
+                ResetColor ();
+
                 WriteLine (buffer);
 
                 await session.EvaluationService.EvaluateAsync (lastCodeCellId);
@@ -280,14 +291,12 @@ namespace Xamarin.Interactive.Client.Console
 
         #region Amazing UI
 
-        static void WriteReplPrompt (bool secondaryPrompt = false)
+        static string GetPrompt (bool secondaryPrompt = false)
         {
-            ForegroundColor = ConsoleColor.DarkYellow;
             var prompt = language.Name;
             if (secondaryPrompt)
                 prompt = string.Empty.PadLeft (prompt.Length);
-            Write ($"{prompt}> ");
-            ResetColor ();
+            return prompt + "> ";
         }
 
         static void RenderOutput (CapturedOutputSegment output)
