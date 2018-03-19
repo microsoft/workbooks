@@ -106,6 +106,7 @@
     "Name": "Mono.Options",
     "Version": "5.3.0.1",
     "DependentProjects": [
+      "Xamarin.Interactive.Client.Console",
       "Xamarin.Interactive.Client.Web",
       "InstallerVerifier"
     ]

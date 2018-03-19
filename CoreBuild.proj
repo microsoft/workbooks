@@ -64,14 +64,16 @@
   <Target
     Name="DesktopProfile"
     DependsOnTargets="CoreProfile;CoreWorkbookAppsProfile">
-    <ItemGroup Condition="$(IsMac)">
-      <ProjectsToBuild Include="Clients\Xamarin.Interactive.Client.Mac\*.csproj">
+    <ItemGroup>
+      <ProjectsToBuild Include="Clients\Xamarin.Interactive.Client.Desktop\*.csproj"/>
+      <ProjectsToBuild
+        Condition="$(IsMac)"
+        Include="Clients\Xamarin.Interactive.Client.Mac\*.csproj">
         <HasPackageTarget>true</HasPackageTarget>
       </ProjectsToBuild>
-    </ItemGroup>
-
-    <ItemGroup Condition="$(IsWindows)">
-      <ProjectsToBuild Include="Clients\Xamarin.Interactive.Client.Windows\*.csproj"/>
+      <ProjectsToBuild
+        Condition="$(IsWindows)"
+        Include="Clients\Xamarin.Interactive.Client.Windows\*.csproj"/>
     </ItemGroup>
   </Target>
 

@@ -84,6 +84,7 @@ Global
 		$3.SpaceAfterMethodCallName = True
 		$3.SpaceBeforeOpenSquareBracket = True
 		$0.StandardHeader = $4
-		$4.Text = @\nAuthor:\n  ${AuthorName} <${AuthorEmail}>\n\nCopyright (c) Microsoft Corporation. All rights reserved.\nLicensed under the MIT License.
+		$4.Text = @Copyright (c) Microsoft Corporation. All rights reserved.\nLicensed under the MIT License.
 	EndGlobalSection
+
 EndGlobal
