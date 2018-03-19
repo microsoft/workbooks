@@ -36,7 +36,7 @@ namespace Xamarin.Interactive.Compilation.Roslyn
         public static InteractiveDiagnostic ToInteractiveDiagnostic (this Diagnostic diagnostic)
             => new InteractiveDiagnostic (
                 PositionSpan.FromRoslyn (diagnostic.Location),
-                diagnostic.Severity,
+                (InteractiveDiagnosticSeverity)(int)diagnostic.Severity,
                 diagnostic.GetMessage (),
                 diagnostic.Id);
     }

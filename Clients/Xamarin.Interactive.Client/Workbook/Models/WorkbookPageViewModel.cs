@@ -530,7 +530,7 @@ namespace Xamarin.Interactive.Workbook.Models
                 codeCellState.View.IsEvaluating = false;
                 codeCellState.View.HasErrorDiagnostics = true;
                 codeCellState.View.RenderDiagnostic (new InteractiveDiagnostic (
-                    DiagnosticSeverity.Error,
+                    InteractiveDiagnosticSeverity.Error,
                     "Cannot evaluate: not connected to agent."));
                 return CodeCellEvaluationStatus.Disconnected;
             }
@@ -564,7 +564,7 @@ namespace Xamarin.Interactive.Workbook.Models
             }
 
             var hasErrorDiagnostics = codeCellState.View.HasErrorDiagnostics = diagnostics
-                .Any (d => d.Severity == DiagnosticSeverity.Error);
+                .Any (d => d.Severity == InteractiveDiagnosticSeverity.Error);
 
             foreach (var diagnostic in diagnostics)
                 codeCellState.View.RenderDiagnostic (diagnostic);
@@ -584,7 +584,7 @@ namespace Xamarin.Interactive.Workbook.Models
                 agentTerminatedWhileEvaluating = true;
                 codeCellState.View.HasErrorDiagnostics = true;
                 codeCellState.View.RenderDiagnostic (new InteractiveDiagnostic (
-                    DiagnosticSeverity.Error,
+                    InteractiveDiagnosticSeverity.Error,
                     Catalog.GetString (
                         "The application terminated during evaluation of this cell. " +
                         "Run this cell manually to try again.")));
@@ -673,7 +673,7 @@ namespace Xamarin.Interactive.Workbook.Models
                 ro.Any (r => r is Guid guid && guid == EvaluationContextGlobalObject.clear)) {
                 if (ClientSession.SessionKind == ClientSessionKind.Workbook)
                     codeCellState.View.RenderDiagnostic (new InteractiveDiagnostic (
-                        DiagnosticSeverity.Error,
+                        InteractiveDiagnosticSeverity.Error,
                         "'clear' is not supported for Workbooks"));
                 else
                     ClearAllCellViews ();

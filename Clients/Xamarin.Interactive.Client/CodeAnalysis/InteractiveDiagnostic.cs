@@ -5,8 +5,6 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
-using Microsoft.CodeAnalysis;
-
 using Newtonsoft.Json;
 
 namespace Xamarin.Interactive.CodeAnalysis
@@ -14,14 +12,14 @@ namespace Xamarin.Interactive.CodeAnalysis
     public struct InteractiveDiagnostic
     {
         public PositionSpan Span { get; }
-        public DiagnosticSeverity Severity { get; }
+        public InteractiveDiagnosticSeverity Severity { get; }
         public string Message { get; }
         public string Id { get; }
 
         [JsonConstructor]
         public InteractiveDiagnostic (
             PositionSpan span,
-            DiagnosticSeverity severity,
+            InteractiveDiagnosticSeverity severity,
             string message,
             string id)
         {
@@ -31,7 +29,7 @@ namespace Xamarin.Interactive.CodeAnalysis
             Id = id;
         }
 
-        public InteractiveDiagnostic (DiagnosticSeverity severity, string message)
+        public InteractiveDiagnostic (InteractiveDiagnosticSeverity severity, string message)
             : this (default, severity, message, null)
         {
         }

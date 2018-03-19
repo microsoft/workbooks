@@ -13,8 +13,6 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-using Microsoft.CodeAnalysis;
-
 using Xamarin.Interactive.Client;
 using Xamarin.Interactive.CodeAnalysis.Events;
 using Xamarin.Interactive.I18N;
@@ -417,7 +415,7 @@ namespace Xamarin.Interactive.CodeAnalysis
         {
             if (!agentConnection.IsConnected) {
                 codeCellState.Diagnostics.Add (new InteractiveDiagnostic (
-                    DiagnosticSeverity.Error,
+                    InteractiveDiagnosticSeverity.Error,
                     "Cannot evaluate: not connected to agent."));
                 return CodeCellEvaluationStatus.Disconnected;
             }
@@ -463,7 +461,7 @@ namespace Xamarin.Interactive.CodeAnalysis
                 Log.Error (TAG, "marking agent as terminated", e);
                 codeCellState.AgentTerminatedWhileEvaluating = true;
                 codeCellState.Diagnostics.Add (new InteractiveDiagnostic (
-                    DiagnosticSeverity.Error,
+                    InteractiveDiagnosticSeverity.Error,
                     Catalog.GetString (
                         "The application terminated during evaluation of this cell. " +
                         "Run this cell manually to try again.")));
@@ -477,7 +475,7 @@ namespace Xamarin.Interactive.CodeAnalysis
                     EvaluationResultHandling.Replace,
                     FilterException (exception)));
                 evaluationStatus = CodeCellEvaluationStatus.EvaluationException;
-            } else if (diagnostics.Any (d => d.Severity == DiagnosticSeverity.Error)) {
+            } else if (diagnostics.Any (d => d.Severity == InteractiveDiagnosticSeverity.Error)) {
                 return CodeCellEvaluationStatus.ErrorDiagnostic;
             } else if (codeCellState.AgentTerminatedWhileEvaluating) {
                 evaluationStatus = CodeCellEvaluationStatus.Disconnected;
