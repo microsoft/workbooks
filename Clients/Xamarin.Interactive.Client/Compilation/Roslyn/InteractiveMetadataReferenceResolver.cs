@@ -22,9 +22,6 @@ namespace Xamarin.Interactive.Compilation.Roslyn
         ImmutableDictionary<string, PortableExecutableReference> resolvedReferences
             = ImmutableDictionary<string, PortableExecutableReference>.Empty;
 
-        public ImmutableArray<WebDependency> WebDependencies { get; private set; }
-            = ImmutableArray<WebDependency>.Empty;
-
         public InteractiveMetadataReferenceResolver (DependencyResolver dependencyResolver)
         {
             if (dependencyResolver == null)
@@ -81,12 +78,6 @@ namespace Xamarin.Interactive.Compilation.Roslyn
 
             if (resolvedReference == null)
                 return result;
-
-            foreach (var dep in resolvedAssembly.ExternalDependencies) {
-                var webDep = dep as WebDependency;
-                if (webDep != null)
-                    WebDependencies = WebDependencies.Add (webDep);
-            }
 
             return result.Add (resolvedReference);
         }

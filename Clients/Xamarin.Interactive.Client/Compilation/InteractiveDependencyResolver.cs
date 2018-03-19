@@ -59,17 +59,6 @@ namespace Xamarin.Interactive.Compilation
         {
             var resolvedAssembly = base.ParseAssembly (resolveOperation, path, peReader, metadataReader);
 
-            var jsPath = path.ParentDirectory.Combine (path.NameWithoutExtension + ".js");
-            var cssPath = path.ParentDirectory.Combine (path.NameWithoutExtension + ".css");
-
-            var deps = resolvedAssembly.ExternalDependencies;
-
-            if (jsPath.FileExists)
-                deps = deps.Add (new WebDependency (jsPath));
-
-            if (cssPath.FileExists)
-                deps = deps.Add (new WebDependency (cssPath));
-
             foreach (var attrHandle in metadataReader.GetAssemblyDefinition ().GetCustomAttributes ()) {
                 var attr = metadataReader.GetCustomAttribute (attrHandle);
                 if (attr.Constructor.Kind != HandleKind.MemberReference)
@@ -83,7 +72,7 @@ namespace Xamarin.Interactive.Compilation
                     metadataReader.GetString (typeReference.Name) == integrationType.Name)
                     return resolvedAssembly.With (
                         hasIntegration: true,
-                        externalDependencies: deps);
+                        externalDependencies: resolvedAssembly.ExternalDependencies);
             }
 
             return resolvedAssembly;
