@@ -14,11 +14,8 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-using Microsoft.CodeAnalysis;
-
 using Xamarin.Interactive.Client;
 using Xamarin.Interactive.CodeAnalysis;
-using Xamarin.Interactive.Compilation.Roslyn;
 using Xamarin.Interactive.Editor;
 using Xamarin.Interactive.I18N;
 using Xamarin.Interactive.Logging;
@@ -130,17 +127,17 @@ namespace Xamarin.Interactive.Workbook.Models
                 .Select (codeCell => codeCell.View)
                 .ForEach (UnbindCellFromView);
 
-        DocumentId GetDocumentId (CodeCell codeCell)
+        CodeCellId GetCodeCellId (CodeCell codeCell)
         {
             if (codeCell?.View?.Editor != null &&
                 CodeCells.TryGetValue (codeCell.View.Editor, out CodeCellState codeCellState))
-                return codeCellState.DocumentId;
+                return codeCellState.CodeCellId;
             return null;
         }
 
         void PopulateCompilationWorkspace ()
         {
-            DocumentId previousDocumentId = null;
+            CodeCellId previousDocumentId = null;
 
             foreach (var codeCell in WorkbookPage.Contents.OfType<CodeCell> ()) {
                 var editor = codeCell?.View?.Editor;
@@ -148,12 +145,12 @@ namespace Xamarin.Interactive.Workbook.Models
                     continue;
 
                 codeCellState.CompilationWorkspace = ClientSession.CompilationWorkspace;
-                codeCellState.DocumentId = ClientSession.CompilationWorkspace.AddSubmission (
-                    codeCell.CodeAnalysisBuffer.CurrentText,
+                codeCellState.CodeCellId = ClientSession.CompilationWorkspace.InsertCell (
+                    codeCell.CodeAnalysisBuffer,
                     previousDocumentId,
                     null);
 
-                previousDocumentId = codeCellState.DocumentId;
+                previousDocumentId = codeCellState.CodeCellId;
             }
         }
 
@@ -202,10 +199,10 @@ namespace Xamarin.Interactive.Workbook.Models
 
             if (ClientSession.CompilationWorkspace != null) {
                 codeCellState.CompilationWorkspace = ClientSession.CompilationWorkspace;
-                codeCellState.DocumentId = ClientSession.CompilationWorkspace.AddSubmission (
-                    newCell.CodeAnalysisBuffer.CurrentText,
-                    GetDocumentId (previousCodeCell),
-                    GetDocumentId (nextCodeCell));
+                codeCellState.CodeCellId = ClientSession.CompilationWorkspace.InsertCell (
+                    newCell.CodeAnalysisBuffer,
+                    GetCodeCellId (previousCodeCell),
+                    GetCodeCellId (nextCodeCell));
             }
 
             if (!isHidden)
@@ -262,9 +259,9 @@ namespace Xamarin.Interactive.Workbook.Models
                 OutdateAllCodeCells (codeCell);
 
                 if (ClientSession.CompilationWorkspace != null)
-                    ClientSession.CompilationWorkspace.RemoveSubmission (
-                        GetDocumentId (codeCell),
-                        GetDocumentId (codeCell.GetNextCell<CodeCell> ()));
+                    ClientSession.CompilationWorkspace.RemoveCell (
+                        GetCodeCellId (codeCell),
+                        GetCodeCellId (codeCell.GetNextCell<CodeCell> ()));
 
                 RemoveCodeCell (cell.View.Editor);
             }
@@ -469,8 +466,8 @@ namespace Xamarin.Interactive.Workbook.Models
                                      codeCellState.View.IsDirty ||
                                      codeCellState.View.IsOutdated;
 
-                    if (ClientSession.CompilationWorkspace.HaveAnyLoadDirectiveFilesChanged (
-                        codeCellState.DocumentId)) {
+                    if (ClientSession.CompilationWorkspace.ShouldInvalidateCellBuffer (
+                        codeCellState.CodeCellId)) {
                         codeCellState.Cell.CodeAnalysisBuffer.Invalidate ();
                         evaluateCodeCell = true;
                     }
@@ -541,8 +538,8 @@ namespace Xamarin.Interactive.Workbook.Models
             bool agentTerminatedWhileEvaluating = false;
 
             try {
-                (compilation, diagnostics) = await ClientSession.CompilationWorkspace.GetSubmissionCompilationAsync (
-                    codeCellState.DocumentId,
+                (compilation, diagnostics) = await ClientSession.CompilationWorkspace.GetCellCompilationAsync (
+                    codeCellState.CodeCellId,
                     new EvaluationEnvironment (ClientSession.WorkingDirectory),
                     cancellationToken);
 
@@ -554,11 +551,6 @@ namespace Xamarin.Interactive.Workbook.Models
                     await ClientSession.Agent.Api.LoadAssembliesAsync (
                         ClientSession.CompilationWorkspace.EvaluationContextId,
                         integrationAssemblies);
-
-                foreach (var dependency in ClientSession.CompilationWorkspace.WebDependencies) {
-                    if (ClientSession.AddWebResource (dependency.Location, out var guid))
-                        await LoadWorkbookDependencyAsync (guid + dependency.Location.Extension);
-                }
             } catch (Exception e) {
                 exception = ExceptionNode.Create (e);
             }
@@ -621,9 +613,8 @@ namespace Xamarin.Interactive.Workbook.Models
 
         CodeCellState GetCodeCellStateById (CodeCellId codeCellId)
         {
-            var documentId = codeCellId.ToDocumentId ();
             return CodeCells.Values.FirstOrDefault (
-                codeCell => codeCell.DocumentId == documentId);
+                codeCell => codeCell.CodeCellId == codeCellId);
         }
 
         static void RenderResult (

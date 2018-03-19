@@ -7,9 +7,7 @@
 
 using System;
 
-using Microsoft.CodeAnalysis;
-
-using Xamarin.Interactive.Compilation.Roslyn;
+using Xamarin.Interactive.CodeAnalysis;
 using Xamarin.Interactive.Editor;
 using Xamarin.Interactive.Workbook.Views;
 
@@ -21,8 +19,8 @@ namespace Xamarin.Interactive.Workbook.Models
 
         public IEditor Editor { get; set; }
         public ICodeCellView View { get; set; }
-        public RoslynCompilationWorkspace CompilationWorkspace { get; set; }
-        public DocumentId DocumentId { get; set; }
+        public IWorkspaceService CompilationWorkspace { get; set; }
+        public CodeCellId CodeCellId { get; set; }
         public bool IsResultAnExpression { get; set; }
 
         public int EvaluationCount { get; private set; }
