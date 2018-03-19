@@ -9,9 +9,6 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.Text;
-
 using Xamarin.CrossBrowser;
 
 using Xamarin.Interactive.CodeAnalysis.Models;
@@ -34,17 +31,12 @@ namespace Xamarin.Interactive.Workbook.Views
         readonly dynamic codeEditor;
         #pragma warning restore 0414
 
-        bool settingBufferValue;
-
         public bool IsReadOnly {
             get { return codeEditor.isReadOnly (); }
             set {
                 codeEditor.setReadOnly (value);
             }
         }
-
-        public SourceText SourceTextContent
-            => ((CodeCell)Cell).CodeAnalysisBuffer.CurrentText;
 
         public override Cell Cell { get; }
 
@@ -80,8 +72,6 @@ namespace Xamarin.Interactive.Workbook.Views
                 o.wrapLongLines = Prefs.Submissions.WrapLongLinesInEditor.GetValue ();
             }));
 
-            codeCell.CodeAnalysisBuffer.TextChanged += HandleBufferTextChanged;
-
             codeEditor.setText (codeCell.Buffer.Value);
 
             preferenceSubscription = PreferenceStore.Default.Subscribe (change => {
@@ -112,12 +102,6 @@ namespace Xamarin.Interactive.Workbook.Views
             default:
                 return "vs";
             }
-        }
-
-        void HandleBufferTextChanged (object sender, TextChangeEventArgs e)
-        {
-            if (!settingBufferValue)
-                codeEditor.setText (Cell.Buffer.Value);
         }
 
         public string GetMonacoModelId () => codeEditor.getModelId ().ToString ();
@@ -232,9 +216,7 @@ namespace Xamarin.Interactive.Workbook.Views
 
         void HandleChange (dynamic self, dynamic args)
         {
-            settingBufferValue = true;
             Cell.Buffer.Value = codeEditor.getText ();
-            settingBufferValue = false;
 
             // WorkbookCodeEditorChangeEvent
             var changeEvent = args [0];
@@ -247,7 +229,6 @@ namespace Xamarin.Interactive.Workbook.Views
 
         protected override void Dispose (bool disposing)
         {
-            ((CodeCell)Cell).CodeAnalysisBuffer.TextChanged -= HandleBufferTextChanged;
             EventsObserver.OnNext (new DeleteCellEvent<CodeCell> ((CodeCell) Cell));
             preferenceSubscription.Dispose ();
             codeEditor.dispose ();

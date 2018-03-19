@@ -47,7 +47,6 @@ namespace Xamarin.Interactive.CodeAnalysis
         internal sealed class CodeCellState
         {
             public CodeCellId CodeCellId { get; }
-            public CodeCellBuffer Buffer { get; }
 
             public ImmutableList<InteractiveDiagnostic> Diagnostics { get; set; }
                 = ImmutableList<InteractiveDiagnostic>.Empty;
@@ -57,13 +56,8 @@ namespace Xamarin.Interactive.CodeAnalysis
             public int EvaluationCount { get; set; }
             public bool IsResultAnExpression { get; set; }
 
-            public CodeCellState (
-                CodeCellId codeCellId,
-                CodeCellBuffer buffer)
-            {
-                CodeCellId = codeCellId;
-                Buffer = buffer;
-            }
+            public CodeCellState (CodeCellId codeCellId)
+                => CodeCellId = codeCellId;
 
             public bool IsEvaluationCandidate => IsDirty || EvaluationCount == 0;
         }
@@ -86,7 +80,7 @@ namespace Xamarin.Interactive.CodeAnalysis
         readonly Dictionary<CodeCellId, CodeCellState> cellStates
             = new Dictionary<CodeCellId, CodeCellState> ();
 
-        CodeCellState nugetReferenceCellState;
+        CodeCellId nugetReferenceCellId;
 
         public EvaluationContextId Id => workspace.EvaluationContextId;
 
@@ -153,33 +147,35 @@ namespace Xamarin.Interactive.CodeAnalysis
             if (references == null || references.Count == 0)
                 return false;
 
-            if (nugetReferenceCellState == null) {
+            var buffer = new StringBuilder ();
+
+            if (nugetReferenceCellId == default) {
                 var firstCodeCellId = workspace
                     .GetTopologicallySortedCellIds ()
                     .FirstOrDefault ();
 
-                var nugetReferenceCellId = await InsertCodeCellAsync (
+                nugetReferenceCellId = await InsertCodeCellAsync (
                     string.Empty,
                     firstCodeCellId,
                     true,
                     cancellationToken);
-
-                nugetReferenceCellState = cellStates [nugetReferenceCellId];
+            } else {
+                buffer.Append (workspace.GetCellBuffer (nugetReferenceCellId));
             }
 
             // TODO: Prevent dupes. Return false if no changes made
-            var builder = new StringBuilder (nugetReferenceCellState.Buffer.Value);
             foreach (var reference in references) {
-                if (builder.Length > 0)
-                    //builder.AppendLine ();
-                    builder.Append ("\n");
-                builder
+                if (buffer.Length > 0)
+                    buffer.Append ("\n");
+
+                buffer
                     .Append ("#r \"")
                     .Append (reference)
                     .Append ("\"");
             }
 
-            nugetReferenceCellState.Buffer.Value = builder.ToString ();
+            workspace.SetCellBuffer (nugetReferenceCellId, buffer.ToString ());
+
             return true;
         }
 
@@ -215,10 +211,6 @@ namespace Xamarin.Interactive.CodeAnalysis
             bool insertBefore = false,
             CancellationToken cancellationToken = default)
         {
-            var buffer = new CodeCellBuffer ();
-            if (!string.IsNullOrEmpty (initialBuffer))
-                buffer.Value = initialBuffer;
-
             var cells = workspace.GetTopologicallySortedCellIds ();
             var insertionIndex = cells.Count;
 
@@ -243,13 +235,12 @@ namespace Xamarin.Interactive.CodeAnalysis
                 nextCodeCellId = cells [insertionIndex];
 
             var codeCellId = workspace.InsertCell (
-                buffer,
+                initialBuffer,
                 previousCodeCellId,
                 nextCodeCellId);
 
             var codeCellState = new CodeCellState (
-                codeCellId,
-                buffer);
+                codeCellId);
 
             cellStates.Add (codeCellId, codeCellState);
 
@@ -261,9 +252,10 @@ namespace Xamarin.Interactive.CodeAnalysis
             string buffer,
             CancellationToken cancellationToken = default)
         {
+            workspace.SetCellBuffer (codeCellId, buffer);
+
             var cell = cellStates [codeCellId];
             cell.IsDirty = true;
-            cell.Buffer.Value = buffer;
 
             return new CodeCellUpdatedEvent (
                 cell.CodeCellId,
@@ -273,10 +265,10 @@ namespace Xamarin.Interactive.CodeAnalysis
                     cancellationToken));
         }
 
-        public Task<CodeCellBuffer> GetCodeCellBufferAsync (
-            CodeCellId codeCellId,
-            CancellationToken cancellationToken = default)
-            => Task.FromResult (cellStates [codeCellId].Buffer);
+        //public Task<string> GetCodeCellBufferAsync (
+            //CodeCellId codeCellId,
+            //CancellationToken cancellationToken = default)
+            //=> Task.FromResult (workspace.GetCellBuffer (codeCellId));
 
         public Task RemoveCodeCellAsync (
             CodeCellId codeCellId,
@@ -329,12 +321,8 @@ namespace Xamarin.Interactive.CodeAnalysis
                 var isTargetCell = targetCellIndex == i;
                 var shouldEvaluate = isTargetCell || cell.IsEvaluationCandidate;
 
-                if (!shouldEvaluate && workspace.ShouldInvalidateCellBuffer (cell.CodeCellId)) {
-                    // a trick to force Roslyn into invalidating the tree it's holding on
-                    // to representing code pulled in via any #load directives in the cell.
-                    cell.Buffer.Invalidate ();
+                if (!shouldEvaluate && workspace.IsCellOutdated (cell.CodeCellId))
                     shouldEvaluate = true;
-                }
 
                 if (shouldEvaluate) {
                     model.ShouldResetAgentState |= i == 0;

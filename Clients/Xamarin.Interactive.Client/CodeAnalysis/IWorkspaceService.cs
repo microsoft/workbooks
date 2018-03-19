@@ -23,7 +23,7 @@ namespace Xamarin.Interactive.CodeAnalysis
         ImmutableList<CodeCellId> GetTopologicallySortedCellIds ();
 
         CodeCellId InsertCell (
-            CodeCellBuffer buffer,
+            string initialBuffer,
             CodeCellId previousCellId,
             CodeCellId nextCellId);
 
@@ -31,7 +31,11 @@ namespace Xamarin.Interactive.CodeAnalysis
 
         bool IsCellComplete (CodeCellId cellId);
 
-        bool ShouldInvalidateCellBuffer (CodeCellId cellId);
+        void SetCellBuffer (CodeCellId cellId, string buffer);
+
+        string GetCellBuffer (CodeCellId cellId);
+
+        bool IsCellOutdated (CodeCellId cellId);
 
         Task<ImmutableList<InteractiveDiagnostic>> GetCellDiagnosticsAsync (
             CodeCellId cellId,

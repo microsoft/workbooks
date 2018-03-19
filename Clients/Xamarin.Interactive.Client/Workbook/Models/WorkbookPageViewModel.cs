@@ -119,7 +119,12 @@ namespace Xamarin.Interactive.Workbook.Models
             => codeCells = codeCells.Add (editor, codeCellState);
 
         void RemoveCodeCell (IEditor editor)
-            => codeCells = codeCells.Remove (editor);
+        {
+            if (codeCells.TryGetValue (editor, out var codeCellState)) {
+                codeCellState.Dispose ();
+                codeCells = codeCells.Remove (editor);
+            }
+        }
 
         void ClearAllCellViews ()
             => WorkbookPage
@@ -145,11 +150,12 @@ namespace Xamarin.Interactive.Workbook.Models
                 if (editor == null || !CodeCells.TryGetValue (editor, out var codeCellState))
                     continue;
 
-                codeCellState.CompilationWorkspace = ClientSession.CompilationWorkspace;
-                codeCellState.CodeCellId = ClientSession.CompilationWorkspace.InsertCell (
-                    codeCell.CodeAnalysisBuffer,
-                    previousDocumentId,
-                    null);
+                codeCellState.BindToWorkspace (
+                    ClientSession.CompilationWorkspace,
+                    ClientSession.CompilationWorkspace.InsertCell (
+                        codeCell.Buffer.Value,
+                        previousDocumentId,
+                        null));
 
                 previousDocumentId = codeCellState.CodeCellId;
             }
@@ -198,13 +204,13 @@ namespace Xamarin.Interactive.Workbook.Models
             } else
                 BindCodeCellToView (newCell, codeCellState);
 
-            if (ClientSession.CompilationWorkspace != null) {
-                codeCellState.CompilationWorkspace = ClientSession.CompilationWorkspace;
-                codeCellState.CodeCellId = ClientSession.CompilationWorkspace.InsertCell (
-                    newCell.CodeAnalysisBuffer,
-                    GetCodeCellId (previousCodeCell),
-                    GetCodeCellId (nextCodeCell));
-            }
+            if (ClientSession.CompilationWorkspace != null)
+                codeCellState.BindToWorkspace (
+                    ClientSession.CompilationWorkspace,
+                    ClientSession.CompilationWorkspace.InsertCell (
+                        newCell.Buffer.Value,
+                        GetCodeCellId (previousCodeCell),
+                        GetCodeCellId (nextCodeCell)));
 
             if (!isHidden)
                 InsertCellInViewModel (newCell, previousCell);
@@ -464,14 +470,11 @@ namespace Xamarin.Interactive.Workbook.Models
                     var evaluateCodeCell =
                         codeCellState == originalCodeCellState ||
                         codeCellState.EvaluationCount == 0 ||
-                                     codeCellState.View.IsDirty ||
-                                     codeCellState.View.IsOutdated;
+                        codeCellState.View.IsDirty ||
+                        codeCellState.View.IsOutdated;
 
-                    if (ClientSession.CompilationWorkspace.ShouldInvalidateCellBuffer (
-                        codeCellState.CodeCellId)) {
-                        codeCellState.Cell.CodeAnalysisBuffer.Invalidate ();
+                    if (ClientSession.CompilationWorkspace.IsCellOutdated (codeCellState.CodeCellId))
                         evaluateCodeCell = true;
-                    }
 
                     if (evaluateCodeCell)
                         codeCellsToEvaluate = codeCellsToEvaluate.Insert (0, codeCellState);

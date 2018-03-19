@@ -741,6 +741,16 @@ namespace Xamarin.Interactive.Compilation.Roslyn
 
         #endregion
 
+        bool TryGetSourceText (CodeCellId codeCellId, out SourceText sourceText)
+            => TryGetSourceText (codeCellId.ToDocumentId (), out sourceText);
+
+        bool TryGetSourceText (DocumentId documentId, out SourceText sourceText)
+        {
+            sourceText = default;
+            var document = workspace.CurrentSolution?.GetDocument (documentId);
+            return document != null && document.TryGetText (out sourceText);
+        }
+
         #region IWorkspaceService
 
         public ImmutableList<CodeCellId> GetTopologicallySortedCellIds ()
@@ -754,11 +764,11 @@ namespace Xamarin.Interactive.Compilation.Roslyn
                 .ToImmutableList ();
 
         public CodeCellId InsertCell (
-            CodeCellBuffer buffer,
+            string initialBuffer,
             CodeCellId previousCellId,
             CodeCellId nextCellId)
             => AddSubmission (
-                buffer.CurrentText,
+                new CodeCellBuffer (initialBuffer).CurrentText,
                 previousCellId.ToDocumentId (),
                 nextCellId.ToDocumentId ()).ToCodeCellId ();
 
@@ -770,8 +780,34 @@ namespace Xamarin.Interactive.Compilation.Roslyn
         public bool IsCellComplete (CodeCellId cellId)
             => IsDocumentSubmissionComplete (cellId.ToDocumentId ());
 
-        public bool ShouldInvalidateCellBuffer (CodeCellId cellId)
-            => HaveAnyLoadDirectiveFilesChanged (cellId.ToDocumentId ());
+        public bool IsCellOutdated (CodeCellId cellId)
+        {
+            if (HaveAnyLoadDirectiveFilesChanged (cellId.ToDocumentId ()) &&
+                TryGetSourceText (cellId, out var sourceText)) {
+                // a trick to force Roslyn into invalidating the tree it's holding on
+                // to representing code pulled in via any #load directives in the cell.
+                ((CodeCellBuffer)sourceText.Container).Invalidate ();
+                return true;
+            }
+
+            return false;
+        }
+
+        public void SetCellBuffer (CodeCellId cellId, string buffer)
+        {
+            if (!TryGetSourceText (cellId, out var sourceText))
+                throw new ArgumentException ("cell does not exist in workspace", nameof (cellId));
+
+            ((CodeCellBuffer)sourceText.Container).Value = buffer;
+        }
+
+        public string GetCellBuffer (CodeCellId cellId)
+        {
+            if (!TryGetSourceText (cellId, out var sourceText))
+                throw new ArgumentException ("cell does not exist in workspace", nameof (cellId));
+
+            return sourceText.ToString ();
+        }
 
         public async Task<ImmutableList<InteractiveDiagnostic>> GetCellDiagnosticsAsync (
             CodeCellId cellId,
@@ -792,18 +828,6 @@ namespace Xamarin.Interactive.Compilation.Roslyn
                     cellId.ToDocumentId (),
                     evaluationEnvironment,
                     cancellationToken);
-
-        #endregion
-
-
-        #region Hover/Completions/Signature Help
-
-        bool TryGetSourceText (CodeCellId codeCellId, out SourceText sourceText)
-        {
-            sourceText = default;
-            var document = workspace.CurrentSolution?.GetDocument (codeCellId.ToDocumentId ());
-            return document != null && document.TryGetText (out sourceText);
-        }
 
         HoverController hoverController;
         CompletionController completionController;
@@ -831,7 +855,7 @@ namespace Xamarin.Interactive.Compilation.Roslyn
             Position position,
             CancellationToken cancellationToken = default)
         {
-            if (!TryGetSourceText (codeCellId, out var sourceText))
+            if (!TryGetSourceText (codeCellId.ToDocumentId (), out var sourceText))
                 return null;
 
             if (completionController == null)

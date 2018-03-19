@@ -12,9 +12,9 @@ using Microsoft.CodeAnalysis.Text;
 
 using Xamarin.Interactive.Workbook.Models;
 
-namespace Xamarin.Interactive.CodeAnalysis
+namespace Xamarin.Interactive.CodeAnalysis.Roslyn
 {
-    public sealed class CodeCellBuffer : SourceTextContainer, ICellBuffer
+    sealed class CodeCellBuffer : SourceTextContainer
     {
         sealed class CodeCellBufferSourceText : SourceText
         {
@@ -42,9 +42,9 @@ namespace Xamarin.Interactive.CodeAnalysis
 
         SourceText currentText;
 
-        internal CodeCellBuffer ()
+        internal CodeCellBuffer (string initialText = null)
         {
-            currentText = new CodeCellBufferSourceText (this);
+            currentText = new CodeCellBufferSourceText (this, initialText);
         }
 
         public override event EventHandler<TextChangeEventArgs> TextChanged;

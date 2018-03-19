@@ -148,11 +148,11 @@ namespace Xamarin.Interactive.Client.Console
                         GetPrompt (i > 0),
                         null);
 
-                    var existingBuffer = await session.EvaluationService.GetCodeCellBufferAsync (cellId);
+                    var existingBuffer = session.WorkspaceService.GetCellBuffer (cellId);
 
                     await session.EvaluationService.UpdateCodeCellAsync (
                         cellId,
-                        existingBuffer.Value + deltaBuffer);
+                        existingBuffer + deltaBuffer);
 
                     if (session.WorkspaceService.IsCellComplete (cellId))
                         break;
@@ -206,7 +206,7 @@ namespace Xamarin.Interactive.Client.Console
 
             // insert and evaluate cells in the workbook
             foreach (var cell in workbook.IndexPage.Contents.OfType<CodeCell> ()) {
-                var buffer = cell.CodeAnalysisBuffer.Value;
+                var buffer = cell.Buffer.Value;
 
                 lastCodeCellId = await session.EvaluationService.InsertCodeCellAsync (
                     buffer,
