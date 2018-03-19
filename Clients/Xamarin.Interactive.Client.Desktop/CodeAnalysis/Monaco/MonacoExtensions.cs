@@ -9,29 +9,14 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.Text;
-
 using Xamarin.CrossBrowser;
+using Xamarin.Interactive.CodeAnalysis.Models;
 
 namespace Xamarin.Interactive.CodeAnalysis.Monaco
 {
     static class MonacoExtensions
     {
         const string TAG = nameof (MonacoExtensions);
-
-        static readonly SymbolDisplayFormat symbolDisplayFormat = SymbolDisplayFormat.CSharpErrorMessageFormat
-            .WithParameterOptions (
-                SymbolDisplayParameterOptions.IncludeName |
-                SymbolDisplayParameterOptions.IncludeType |
-                SymbolDisplayParameterOptions.IncludeDefaultValue |
-                SymbolDisplayParameterOptions.IncludeParamsRefOut)
-            .WithMemberOptions (
-                SymbolDisplayMemberOptions.IncludeParameters |
-                SymbolDisplayMemberOptions.IncludeContainingType |
-                SymbolDisplayMemberOptions.IncludeType |
-                SymbolDisplayMemberOptions.IncludeRef |
-                SymbolDisplayMemberOptions.IncludeExplicitInterface);
 
         public static CancellationToken FromMonacoCancellationToken (dynamic token)
         {
@@ -82,24 +67,21 @@ namespace Xamarin.Interactive.CodeAnalysis.Monaco
             }));
         }
 
-        public static dynamic ToMonacoRange (this ScriptContext context, LinePositionSpan span) =>
-            context.CreateObject (o => {
-                o.startLineNumber = span.Start.Line + 1;
-                o.startColumn = span.Start.Character + 1;
-                o.endLineNumber = span.End.Line + 1;
-                o.endColumn = span.End.Character + 1;
+        public static dynamic ToMonacoRange (this ScriptContext context, PositionSpan span)
+            => context.CreateObject (o => {
+                o.startLineNumber = span.StartLineNumber;
+                o.startColumn = span.StartColumn;
+                o.endLineNumber = span.EndLineNumber;
+                o.endColumn = span.EndColumn;
             });
 
-        public static dynamic ToMonacoPosition (this ScriptContext context, LinePosition position) =>
-            context.CreateObject (o => {
-                o.lineNumber = position.Line + 1;
-                o.column = position.Character + 1;
+        public static dynamic ToMonacoPosition (this ScriptContext context, Position position)
+            => context.CreateObject (o => {
+                o.lineNumber = position.LineNumber;
+                o.column = position.Column;
             });
 
-        public static LinePosition FromMonacoPosition (dynamic position) =>
-            new LinePosition ((int)position.lineNumber - 1, (int)position.column - 1);
-
-        public static string ToMonacoSignatureString (this ISymbol symbol) =>
-            symbol.ToDisplayString (symbolDisplayFormat);
+        public static Position FromMonacoPosition (dynamic position)
+            => new Position ((int)position.lineNumber, (int)position.column);
     }
 }

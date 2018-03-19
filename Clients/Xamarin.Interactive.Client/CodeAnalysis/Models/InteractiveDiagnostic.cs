@@ -1,14 +1,11 @@
-//
-// Author:
-//   Aaron Bockover <abock@xamarin.com>
-//
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
 using Newtonsoft.Json;
 
-namespace Xamarin.Interactive.CodeAnalysis
+namespace Xamarin.Interactive.CodeAnalysis.Models
 {
+    [InteractiveSerializable ("evaluation.Diagnostic")]
     public struct InteractiveDiagnostic
     {
         public PositionSpan Span { get; }

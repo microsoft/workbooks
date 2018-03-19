@@ -12,7 +12,8 @@ using Microsoft.CodeAnalysis.Text;
 
 using Xamarin.CrossBrowser;
 
-using Xamarin.Interactive.CodeAnalysis.SignatureHelp;
+using Xamarin.Interactive.CodeAnalysis.Models;
+using Xamarin.Interactive.CodeAnalysis.Roslyn;
 using Xamarin.Interactive.Compilation.Roslyn;
 
 namespace Xamarin.Interactive.CodeAnalysis.Monaco
@@ -30,7 +31,7 @@ namespace Xamarin.Interactive.CodeAnalysis.Monaco
         #pragma warning restore 0414
 
         public SignatureHelpProvider (
-            RoslynCompilationWorkspace compilationWorkspace,
+            IWorkspaceService compilationWorkspace,
             ScriptContext context,
             Func<string, SourceText> getSourceTextByModelId)
         {
@@ -40,7 +41,7 @@ namespace Xamarin.Interactive.CodeAnalysis.Monaco
             this.getSourceTextByModelId = getSourceTextByModelId
                 ?? throw new ArgumentNullException (nameof (getSourceTextByModelId));
 
-            controller = new SignatureHelpController (compilationWorkspace);
+            controller = new SignatureHelpController ((RoslynCompilationWorkspace)compilationWorkspace);
 
             providerTicket = context.GlobalObject.xiexports.monaco.RegisterWorkbookSignatureHelpProvider (
                 "csharp",
@@ -58,14 +59,14 @@ namespace Xamarin.Interactive.CodeAnalysis.Monaco
 
         object ProvideSignatureHelp (
             string modelId,
-            LinePosition linePosition,
+            Position position,
             CancellationToken cancellationToken)
         {
             var sourceTextContent = getSourceTextByModelId (modelId);
 
             var computeTask = controller.ComputeSignatureHelpAsync (
                 sourceTextContent,
-                linePosition,
+                position,
                 cancellationToken);
 
             return context.ToMonacoPromise (
@@ -75,9 +76,9 @@ namespace Xamarin.Interactive.CodeAnalysis.Monaco
                 raiseErrors: false);
         }
 
-        static dynamic ToMonacoSignatureHelp (ScriptContext context, SignatureHelpViewModel signatureHelp)
+        static dynamic ToMonacoSignatureHelp (ScriptContext context, SignatureHelp signatureHelp)
         {
-            if (!(signatureHelp.Signatures?.Length > 0))
+            if (!(signatureHelp.Signatures?.Count > 0))
                 return null;
 
             dynamic signatures = context.CreateArray ();
@@ -85,7 +86,7 @@ namespace Xamarin.Interactive.CodeAnalysis.Monaco
             foreach (var sig in signatureHelp.Signatures) {
                 dynamic parameters = context.CreateArray ();
 
-                if (sig.Parameters?.Length > 0)
+                if (sig.Parameters?.Count > 0)
                     foreach (var param in sig.Parameters)
                         parameters.push (context.CreateObject (o => {
                             o.label = param.Label;

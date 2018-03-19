@@ -16,10 +16,11 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
 
+using Xamarin.Interactive.CodeAnalysis.Models;
 using Xamarin.Interactive.Compilation.Roslyn;
 using Xamarin.Interactive.RoslynInternals;
 
-namespace Xamarin.Interactive.CodeAnalysis.SignatureHelp
+namespace Xamarin.Interactive.CodeAnalysis.Roslyn
 {
     sealed class SignatureHelpController
     {
@@ -34,62 +35,56 @@ namespace Xamarin.Interactive.CodeAnalysis.SignatureHelp
                 ?? throw new ArgumentNullException (nameof (compilationWorkspace));
         }
 
-        public async Task<SignatureHelpViewModel> ComputeSignatureHelpAsync (
+        public async Task<SignatureHelp> ComputeSignatureHelpAsync (
             SourceText sourceText,
-            LinePosition linePosition,
+            Position position,
             CancellationToken cancellationToken)
         {
-            var signatureHelp = new SignatureHelpViewModel ();
-            var position = sourceText.Lines.GetPosition (linePosition);
-
-            if (position <= 0)
-                return signatureHelp;
+            var sourcePosition = sourceText.Lines.GetPosition (position.ToRoslyn ());
+            if (sourcePosition <= 0)
+                return default;
 
             var document = compilationWorkspace.GetSubmissionDocument (sourceText.Container);
             var root = await document.GetSyntaxRootAsync (cancellationToken);
-            var syntaxToken = root.FindToken (position);
+            var syntaxToken = root.FindToken (sourcePosition);
 
             var semanticModel = await document.GetSemanticModelAsync (cancellationToken);
 
             var currentNode = syntaxToken.Parent;
             do {
                 var creationExpression = currentNode as ObjectCreationExpressionSyntax;
-                if (creationExpression != null && creationExpression.ArgumentList.Span.Contains (position))
+                if (creationExpression != null && creationExpression.ArgumentList.Span.Contains (sourcePosition))
                     return CreateMethodGroupSignatureHelp (
                         creationExpression,
                         creationExpression.ArgumentList,
-                        position,
+                        sourcePosition,
                         semanticModel);
 
                 var invocationExpression = currentNode as InvocationExpressionSyntax;
-                if (invocationExpression != null && invocationExpression.ArgumentList.Span.Contains (position))
+                if (invocationExpression != null && invocationExpression.ArgumentList.Span.Contains (sourcePosition))
                     return CreateMethodGroupSignatureHelp (
                         invocationExpression.Expression,
                         invocationExpression.ArgumentList,
-                        position,
+                        sourcePosition,
                         semanticModel);
 
                 currentNode = currentNode.Parent;
             } while (currentNode != null);
 
-            return signatureHelp;
+            return default;
         }
 
-        static SignatureHelpViewModel CreateMethodGroupSignatureHelp (
+        static SignatureHelp CreateMethodGroupSignatureHelp (
             ExpressionSyntax expression,
             ArgumentListSyntax argumentList,
             int position,
             SemanticModel semanticModel)
         {
-            var signatureHelp = new SignatureHelpViewModel ();
-
             // Happens for object initializers with no preceding parens, as soon as user types comma
             if (argumentList == null)
-                return signatureHelp;
+                return default;
 
-            int currentArg;
-            if (TryGetCurrentArgumentIndex (argumentList, position, out currentArg))
-                signatureHelp.ActiveParameter = currentArg;
+            TryGetCurrentArgumentIndex (argumentList, position, out var activeParameterIndex);
 
             var symbolInfo = semanticModel.GetSymbolInfo (expression);
             var bestGuessMethod = symbolInfo.Symbol as IMethodSymbol;
@@ -127,20 +122,29 @@ namespace Xamarin.Interactive.CodeAnalysis.SignatureHelp
                 .Where (m => m.IsAccessibleWithin (within, throughTypeOpt: throughType))
                 .ToArray ();
 
-            var signatures = new List<SignatureViewModel> ();
+            var activeSignatureIndex = 0;
+            var signatures = new List<SignatureInformation> ();
 
             for (var i = 0; i < methods.Length; i++) {
-                if (methods [i] == bestGuessMethod)
-                    signatureHelp.ActiveSignature = i;
+                var method = methods [i];
 
-                var signatureInfo = new SignatureViewModel (methods [i]);
+                if (method == bestGuessMethod)
+                    activeSignatureIndex = i;
 
-                signatures.Add (signatureInfo);
+                var parameters = method
+                    .Parameters
+                    .Select (p => new ParameterInformation (p.ToDisplayString (Constants.SymbolDisplayFormat)))
+                    .ToList ();
+
+                signatures.Add (new SignatureInformation (
+                    method.ToDisplayString (Constants.SymbolDisplayFormat),
+                    parameters));
             }
 
-            signatureHelp.Signatures = signatures.ToArray ();
-
-            return signatureHelp;
+            return new SignatureHelp (
+                signatures,
+                activeSignatureIndex,
+                activeParameterIndex);
         }
 
         // Pared down from Roslyn's internal CommonSignatureHelpUtilities (which covers more types of argument

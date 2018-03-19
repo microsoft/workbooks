@@ -10,8 +10,7 @@ using System.Collections.Immutable;
 using System.Threading;
 using System.Threading.Tasks;
 
-using Xamarin.Interactive.Client.Monaco;
-using Xamarin.Interactive.CodeAnalysis.SignatureHelp;
+using Xamarin.Interactive.CodeAnalysis.Models;
 
 namespace Xamarin.Interactive.CodeAnalysis
 {
@@ -46,17 +45,17 @@ namespace Xamarin.Interactive.CodeAnalysis
             IEvaluationEnvironment evaluationEnvironment,
             CancellationToken cancellationToken = default);
 
-        Task<MonacoHover> GetHoverAsync (
+        Task<Hover> GetHoverAsync (
             CodeCellId codeCellId,
             Position position,
             CancellationToken cancellationToken = default);
 
-        Task<IEnumerable<MonacoCompletionItem>> GetCompletionsAsync (
+        Task<IEnumerable<CompletionItem>> GetCompletionsAsync (
             CodeCellId codeCellId,
             Position position,
             CancellationToken cancellationToken = default);
 
-        Task<SignatureHelpViewModel> GetSignatureHelpAsync (
+        Task<SignatureHelp> GetSignatureHelpAsync (
             CodeCellId codeCellId,
             Position position,
             CancellationToken cancellationToken = default);

@@ -1,15 +1,12 @@
-//
-// Author:
-//   Aaron Bockover <abock@xamarin.com>
-//
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
-namespace Xamarin.Interactive.CodeAnalysis
+namespace Xamarin.Interactive.CodeAnalysis.Models
 {
     /// <summary>
     /// Describes how severe a diagnostic is.
     /// </summary>
+    [InteractiveSerializable ("evaluation.DiagnosticSeverity")]
     public enum InteractiveDiagnosticSeverity
     {
         /// <summary>

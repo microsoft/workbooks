@@ -16,10 +16,8 @@ using System.Threading;
 using System.Threading.Tasks;
 
 using Xamarin.Interactive.CodeAnalysis;
-using Xamarin.Interactive.Client.Monaco;
-using Xamarin.Interactive.CodeAnalysis.Completion;
-using Xamarin.Interactive.CodeAnalysis.Hover;
-using Xamarin.Interactive.CodeAnalysis.SignatureHelp;
+using Xamarin.Interactive.CodeAnalysis.Models;
+using Xamarin.Interactive.CodeAnalysis.Roslyn;
 
 namespace Xamarin.Interactive.Compilation.Roslyn
 {
@@ -811,7 +809,7 @@ namespace Xamarin.Interactive.Compilation.Roslyn
         CompletionController completionController;
         SignatureHelpController signatureHelpController;
 
-        public async Task<MonacoHover> GetHoverAsync (
+        public async Task<Hover> GetHoverAsync (
             CodeCellId codeCellId,
             Position position,
             CancellationToken cancellationToken = default)
@@ -822,13 +820,13 @@ namespace Xamarin.Interactive.Compilation.Roslyn
             if (hoverController == null)
                 hoverController = new HoverController (this);
 
-            return new MonacoHover (await hoverController.ProvideHoverAsync (
+            return await hoverController.ProvideHoverAsync (
                 sourceText,
-                position.ToRoslyn (),
-                cancellationToken));
+                position,
+                cancellationToken);
         }
 
-        public async Task<IEnumerable<MonacoCompletionItem>> GetCompletionsAsync (
+        public async Task<IEnumerable<Xamarin.Interactive.CodeAnalysis.Models.CompletionItem>> GetCompletionsAsync (
             CodeCellId codeCellId,
             Position position,
             CancellationToken cancellationToken = default)
@@ -839,15 +837,13 @@ namespace Xamarin.Interactive.Compilation.Roslyn
             if (completionController == null)
                 completionController = new CompletionController (this);
 
-            return (await completionController
-                .ProvideFilteredCompletionItemsAsync (
-                    sourceText,
-                    position.ToRoslyn (),
-                    cancellationToken))
-                .Select (i => new MonacoCompletionItem (i));
+            return await completionController.ProvideFilteredCompletionItemsAsync (
+                sourceText,
+                position,
+                cancellationToken);
         }
 
-        public Task<SignatureHelpViewModel> GetSignatureHelpAsync (
+        public Task<SignatureHelp> GetSignatureHelpAsync (
             CodeCellId codeCellId,
             Position position,
             CancellationToken cancellationToken = default)
@@ -860,7 +856,7 @@ namespace Xamarin.Interactive.Compilation.Roslyn
 
             return signatureHelpController.ComputeSignatureHelpAsync (
                 sourceText,
-                position.ToRoslyn (),
+                position,
                 cancellationToken);
         }
 

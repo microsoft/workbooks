@@ -12,7 +12,8 @@ using Microsoft.CodeAnalysis.Text;
 
 using Xamarin.CrossBrowser;
 
-using Xamarin.Interactive.CodeAnalysis.Hover;
+using Xamarin.Interactive.CodeAnalysis.Models;
+using Xamarin.Interactive.CodeAnalysis.Roslyn;
 using Xamarin.Interactive.Compilation.Roslyn;
 
 namespace Xamarin.Interactive.CodeAnalysis.Monaco
@@ -30,7 +31,7 @@ namespace Xamarin.Interactive.CodeAnalysis.Monaco
         #pragma warning restore 0414
 
         public HoverProvider (
-            RoslynCompilationWorkspace compilationWorkspace,
+            IWorkspaceService compilationWorkspace,
             ScriptContext context,
             Func<string, SourceText> getSourceTextByModelId)
         {
@@ -40,7 +41,7 @@ namespace Xamarin.Interactive.CodeAnalysis.Monaco
             this.getSourceTextByModelId = getSourceTextByModelId
                 ?? throw new ArgumentNullException (nameof (getSourceTextByModelId));
 
-            controller = new HoverController (compilationWorkspace);
+            controller = new HoverController ((RoslynCompilationWorkspace)compilationWorkspace);
 
             providerTicket = context.GlobalObject.xiexports.monaco.RegisterWorkbookHoverProvider (
                 "csharp",
@@ -58,14 +59,14 @@ namespace Xamarin.Interactive.CodeAnalysis.Monaco
 
         object ProvideHover (
             string modelId,
-            LinePosition linePosition,
+            Position position,
             CancellationToken cancellationToken)
         {
             var sourceTextContent = getSourceTextByModelId (modelId);
 
             var computeTask = controller.ProvideHoverAsync (
                 sourceTextContent,
-                linePosition,
+                position,
                 cancellationToken);
 
             return context.ToMonacoPromise (
@@ -75,7 +76,7 @@ namespace Xamarin.Interactive.CodeAnalysis.Monaco
                 raiseErrors: false);
         }
 
-        static dynamic ToMonacoHover (ScriptContext context, HoverViewModel hover)
+        static dynamic ToMonacoHover (ScriptContext context, Hover hover)
         {
             if (!(hover.Contents?.Length > 0))
                 return null;

@@ -13,7 +13,8 @@ using Microsoft.CodeAnalysis.Text;
 
 using XCB = Xamarin.CrossBrowser;
 
-using Xamarin.Interactive.CodeAnalysis.Completion;
+using Xamarin.Interactive.CodeAnalysis.Models;
+using Xamarin.Interactive.CodeAnalysis.Roslyn;
 using Xamarin.Interactive.Compilation.Roslyn;
 
 namespace Xamarin.Interactive.CodeAnalysis.Monaco
@@ -31,7 +32,7 @@ namespace Xamarin.Interactive.CodeAnalysis.Monaco
         #pragma warning restore 0414
 
         public CompletionProvider (
-            RoslynCompilationWorkspace compilationWorkspace,
+            IWorkspaceService compilationWorkspace,
             XCB.ScriptContext context,
             Func<string, SourceText> getSourceTextByModelId)
         {
@@ -41,7 +42,7 @@ namespace Xamarin.Interactive.CodeAnalysis.Monaco
             this.getSourceTextByModelId = getSourceTextByModelId
                 ?? throw new ArgumentNullException (nameof (getSourceTextByModelId));
 
-            controller = new CompletionController (compilationWorkspace);
+            controller = new CompletionController ((RoslynCompilationWorkspace)compilationWorkspace);
 
             providerTicket = context.GlobalObject.xiexports.monaco.RegisterWorkbookCompletionItemProvider (
                 "csharp",
@@ -61,13 +62,13 @@ namespace Xamarin.Interactive.CodeAnalysis.Monaco
 
         object ProvideCompletionItems (
             string modelId,
-            LinePosition linePosition,
+            Position position,
             CancellationToken cancellationToken)
         {
             var sourceTextContent = getSourceTextByModelId (modelId);
             var completionTask = controller.ProvideFilteredCompletionItemsAsync (
                 sourceTextContent,
-                linePosition,
+                position,
                 cancellationToken);
 
             return context.ToMonacoPromise (
@@ -77,18 +78,18 @@ namespace Xamarin.Interactive.CodeAnalysis.Monaco
                 raiseErrors: false);
         }
 
-        static dynamic ToMonacoCompletionItems (XCB.ScriptContext context, IEnumerable<CompletionItemViewModel> items)
+        static dynamic ToMonacoCompletionItems (XCB.ScriptContext context, IEnumerable<CompletionItem> items)
         {
             dynamic arr = context.CreateArray ();
 
             foreach (var item in items) {
                 arr.push (context.CreateObject (o => {
-                    o.label = item.DisplayText;
-                    if (item.ItemDetail != null)
-                        o.detail = item.ItemDetail;
-                    if (item.InsertionText != null)
-                        o.insertText = item.InsertionText;
-                    o.kind = Client.Monaco.MonacoExtensions.ToMonacoCompletionItemKind (item.CompletionItem.Tags);
+                    o.label = item.Label;
+                    if (item.Detail != null)
+                        o.detail = item.Detail;
+                    if (item.InsertText != null)
+                        o.insertText = item.InsertText;
+                    o.kind = (int)item.Kind;
                 }));
             }
 

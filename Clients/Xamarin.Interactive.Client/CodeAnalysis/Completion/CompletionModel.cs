@@ -11,7 +11,7 @@ using System.Linq;
 using Microsoft.CodeAnalysis.Completion;
 using Microsoft.CodeAnalysis.Text;
 
-namespace Xamarin.Interactive.CodeAnalysis.Completion
+namespace Xamarin.Interactive.CodeAnalysis.Roslyn
 {
     sealed class CompletionModel
     {

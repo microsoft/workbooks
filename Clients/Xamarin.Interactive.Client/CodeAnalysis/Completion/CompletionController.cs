@@ -16,11 +16,17 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Completion;
 using Microsoft.CodeAnalysis.Text;
 
+using Xamarin.Interactive.CodeAnalysis.Models;
 using Xamarin.Interactive.Compilation.Roslyn;
 using Xamarin.Interactive.Logging;
 using Xamarin.Interactive.RoslynInternals;
 
-namespace Xamarin.Interactive.CodeAnalysis.Completion
+using CompletionItem = Xamarin.Interactive.CodeAnalysis.Models.CompletionItem;
+using CompletionItemKind = Xamarin.Interactive.CodeAnalysis.Models.CompletionItemKind;
+
+using RoslynCompletionItem = Microsoft.CodeAnalysis.Completion.CompletionItem;
+
+namespace Xamarin.Interactive.CodeAnalysis.Roslyn
 {
     sealed class CompletionController
     {
@@ -42,12 +48,12 @@ namespace Xamarin.Interactive.CodeAnalysis.Completion
 
         public Task<CompletionModel> ProvideCompletionItemsAsync (
             SourceText sourceText,
-            LinePosition linePosition,
+            Position position,
             CancellationToken cancellationToken)
         {
             this.sourceTextContent = sourceText;
 
-            var sourcePosition = sourceTextContent.Lines.GetPosition (linePosition);
+            var sourcePosition = sourceTextContent.Lines.GetPosition (position.ToRoslyn ());
             var rules = compilationWorkspace.CompletionService.GetRules ();
 
             StopComputation ();
@@ -59,20 +65,28 @@ namespace Xamarin.Interactive.CodeAnalysis.Completion
             return computation.ModelTask;
         }
 
-        public async Task<IEnumerable<CompletionItemViewModel>> ProvideFilteredCompletionItemsAsync (
+        public async Task<IEnumerable<CompletionItem>> ProvideFilteredCompletionItemsAsync (
             SourceText sourceText,
-            LinePosition linePosition,
+            Position position,
             CancellationToken cancellationToken)
         {
-            var model = await ProvideCompletionItemsAsync (sourceText, linePosition, cancellationToken);
+            var model = await ProvideCompletionItemsAsync (sourceText, position, cancellationToken);
 
             if (model?.FilteredItems == null)
-                return Enumerable.Empty<CompletionItemViewModel> ();
+                return Enumerable.Empty<CompletionItem> ();
 
             return model
                 .FilteredItems
                 .Where (i => i.Span.End <= model.Text.Length)
-                .Select (i => new CompletionItemViewModel (i));
+                .Select (i => {
+                    i.Properties.TryGetValue ("InsertionText", out var insertionText);
+                    i.Properties.TryGetValue (CompletionController.ItemDetailPropertyName, out var itemDetail);
+                    return new CompletionItem (
+                        ConversionExtensions.ToCompletionItemKind (i.Tags),
+                        i.DisplayText,
+                        insertionText,
+                        itemDetail);
+                });
         }
 
         void OnCompletionModelUpdated (CompletionModel model)
@@ -195,11 +209,11 @@ namespace Xamarin.Interactive.CodeAnalysis.Completion
             if (model == null)
                 return null;
 
-            CompletionItem bestFilterMatch = null;
+            RoslynCompletionItem bestFilterMatch = null;
             var bestFilterMatchIndex = 0;
 
             var document = compilationWorkspace.GetSubmissionDocument (sourceText.Container);
-            var newFilteredCompletions = new List<CompletionItem> ();
+            var newFilteredCompletions = new List<RoslynCompletionItem> ();
 
             foreach (var item in model.TotalItems) {
                 var completion = item;
@@ -258,7 +272,7 @@ namespace Xamarin.Interactive.CodeAnalysis.Completion
         /// If currentCompletionList hasn't been updated (due to typing a single extra character), the
         /// CompletionItem.FilterSpan will be off by the amount of new characters. Adjust as necessary
         /// </summary>
-        static string GetFilterText (SourceText sourceText, CompletionItem completion)
+        static string GetFilterText (SourceText sourceText, RoslynCompletionItem completion)
         {
             var filterSpan = completion.Span;
             var filterText = sourceText.GetSubText (filterSpan.Start).ToString ();

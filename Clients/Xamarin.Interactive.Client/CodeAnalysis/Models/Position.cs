@@ -1,17 +1,14 @@
-﻿//
-// Author:
-//   Aaron Bockover <abock@microsoft.com>
-//
-// Copyright (c) Microsoft Corporation. All rights reserved.
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
 using Newtonsoft.Json;
 
-namespace Xamarin.Interactive.CodeAnalysis
+namespace Xamarin.Interactive.CodeAnalysis.Models
 {
     /// <summary>
     /// Represents a 1-based position in a buffer.
     /// </summary>
+    [MonacoSerializable ("monaco.IPosition")]
     public struct Position
     {
         public int LineNumber { get; }

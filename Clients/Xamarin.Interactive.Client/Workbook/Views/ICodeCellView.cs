@@ -7,7 +7,9 @@
 
 using System;
 using System.Globalization;
+
 using Xamarin.Interactive.CodeAnalysis;
+using Xamarin.Interactive.CodeAnalysis.Models;
 
 namespace Xamarin.Interactive.Workbook.Views
 {

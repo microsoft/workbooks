@@ -15,6 +15,7 @@ using System.Threading.Tasks;
 
 using Xamarin.Interactive.Client;
 using Xamarin.Interactive.CodeAnalysis.Events;
+using Xamarin.Interactive.CodeAnalysis.Models;
 using Xamarin.Interactive.I18N;
 using Xamarin.Interactive.Logging;
 using Xamarin.Interactive.Protocol;

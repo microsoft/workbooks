@@ -1,8 +1,4 @@
-﻿//
-// Author:
-//   Aaron Bockover <abock@microsoft.com>
-//
-// Copyright (c) Microsoft Corporation. All rights reserved.
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
 using Microsoft.CodeAnalysis;
@@ -10,12 +6,12 @@ using Microsoft.CodeAnalysis.Text;
 
 using Newtonsoft.Json;
 
-namespace Xamarin.Interactive.CodeAnalysis
+namespace Xamarin.Interactive.CodeAnalysis.Models
 {
     /// <summary>
-    /// Represents a 1-based span in a buffer with an optional file path and
-    /// is blittably compatible with Monaco's <code>monaco.IRange</code>.
+    /// Represents a 1-based span in a buffer with an optional file path.
     /// </summary>
+    [MonacoSerializable ("monaco.IRange")]
     public struct PositionSpan
     {
         public int StartLineNumber { get; }

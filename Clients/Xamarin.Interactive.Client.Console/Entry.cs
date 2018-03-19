@@ -16,6 +16,7 @@ using Mono.Terminal;
 
 using Xamarin.Interactive.CodeAnalysis;
 using Xamarin.Interactive.CodeAnalysis.Events;
+using Xamarin.Interactive.CodeAnalysis.Models;
 using Xamarin.Interactive.Core;
 using Xamarin.Interactive.Logging;
 using Xamarin.Interactive.Session;
@@ -378,11 +379,11 @@ namespace Xamarin.Interactive.Client.Console
         static void RenderDiagnostic (InteractiveDiagnostic diagnostic)
         {
             switch (diagnostic.Severity) {
-            case Microsoft.CodeAnalysis.DiagnosticSeverity.Warning:
+            case InteractiveDiagnosticSeverity.Warning:
                 ForegroundColor = ConsoleColor.DarkYellow;
                 Write ($"warning ({diagnostic.Id}): ");
                 break;
-            case Microsoft.CodeAnalysis.DiagnosticSeverity.Error:
+            case InteractiveDiagnosticSeverity.Error:
                 ForegroundColor = ConsoleColor.Red;
                 Write ($"error ({diagnostic.Id}): ");
                 break;

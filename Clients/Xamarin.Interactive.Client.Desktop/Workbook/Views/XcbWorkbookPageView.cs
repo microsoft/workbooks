@@ -546,8 +546,8 @@ namespace Xamarin.Interactive.Workbook.Views
 
         void HandleNavigateReplHistoryEvent (NavigateReplHistoryEvent evnt)
             => evnt.Handled =
-                evnt.Cursor.Line == 0 &&
-                evnt.Cursor.Character == 0 &&
+                evnt.Cursor.LineNumber <= 1 &&
+                evnt.Cursor.Column <= 1 &&
                 ClientSession.ViewControllers.ReplHistory != null &&
                 (evnt.NavigatePrevious ? ReplHistoryPrevious () : ReplHistoryNext ());
 

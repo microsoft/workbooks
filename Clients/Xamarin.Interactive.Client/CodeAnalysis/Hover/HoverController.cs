@@ -13,9 +13,10 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
 
+using Xamarin.Interactive.CodeAnalysis.Models;
 using Xamarin.Interactive.Compilation.Roslyn;
 
-namespace Xamarin.Interactive.CodeAnalysis.Hover
+namespace Xamarin.Interactive.CodeAnalysis.Roslyn
 {
     sealed class HoverController
     {
@@ -30,34 +31,36 @@ namespace Xamarin.Interactive.CodeAnalysis.Hover
                 ?? throw new ArgumentNullException (nameof (compilationWorkspace));
         }
 
-        public async Task<HoverViewModel> ProvideHoverAsync (
+        public async Task<Hover> ProvideHoverAsync (
             SourceText sourceText,
-            LinePosition linePosition,
+            Position position,
             CancellationToken cancellationToken)
         {
-            var hover = new HoverViewModel ();
-            var position = sourceText.Lines.GetPosition (linePosition);
-
-            if (position <= 0)
-                return hover;
+            var sourcePosition = sourceText.Lines.GetPosition (position.ToRoslyn ());
+            if (sourcePosition <= 0)
+                return default;
 
             var document = compilationWorkspace.GetSubmissionDocument (sourceText.Container);
             var root = await document.GetSyntaxRootAsync (cancellationToken);
-            var syntaxToken = root.FindToken (position);
+            var syntaxToken = root.FindToken (sourcePosition);
 
             var expression = syntaxToken.Parent as ExpressionSyntax;
             if (expression == null)
-                return hover;
+                return default;
 
             var semanticModel = await document.GetSemanticModelAsync (cancellationToken);
             var symbolInfo = semanticModel.GetSymbolInfo (expression);
             if (symbolInfo.Symbol == null)
-                return hover;
+                return default;
 
-            hover.Contents = new [] { symbolInfo.Symbol.ToDisplayString (Constants.SymbolDisplayFormat) };
-            hover.Range = syntaxToken.GetLocation ().GetLineSpan ().Span;
-
-            return hover;
+            return new Hover (
+                syntaxToken
+                    .GetLocation ()
+                    .GetLineSpan ()
+                    .Span
+                    .FromRoslyn (),
+                new [] { symbolInfo.Symbol.ToDisplayString (Constants.SymbolDisplayFormat) }
+            );
         }
     }
 }

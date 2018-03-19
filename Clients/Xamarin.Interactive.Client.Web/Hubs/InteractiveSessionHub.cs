@@ -9,10 +9,9 @@ using Microsoft.AspNetCore.SignalR;
 
 using Microsoft.Extensions.Caching.Memory;
 
-using Xamarin.Interactive.Client.Monaco;
 using Xamarin.Interactive.CodeAnalysis;
 using Xamarin.Interactive.CodeAnalysis.Events;
-using Xamarin.Interactive.CodeAnalysis.SignatureHelp;
+using Xamarin.Interactive.CodeAnalysis.Models;
 using Xamarin.Interactive.NuGet;
 using Xamarin.Interactive.Session;
 
@@ -94,7 +93,7 @@ namespace Xamarin.Interactive.Client.Web.Hubs
                 evaluateAll,
                 Context.Connection.ConnectionAbortedToken);
 
-        public Task<MonacoHover> GetHover (
+        public Task<Hover> GetHover (
             string codeCellId,
             Position position)
             => GetSession ().WorkspaceService.GetHoverAsync (
@@ -102,7 +101,7 @@ namespace Xamarin.Interactive.Client.Web.Hubs
                 position,
                 Context.Connection.ConnectionAbortedToken);
 
-        public Task<IEnumerable<MonacoCompletionItem>> GetCompletions (
+        public Task<IEnumerable<CompletionItem>> GetCompletions (
             CodeCellId codeCellId,
             Position position)
             => GetSession ().WorkspaceService.GetCompletionsAsync (
@@ -110,7 +109,7 @@ namespace Xamarin.Interactive.Client.Web.Hubs
                 position,
                 Context.Connection.ConnectionAbortedToken);
 
-        public Task<SignatureHelpViewModel> GetSignatureHelp (
+        public Task<SignatureHelp> GetSignatureHelp (
             CodeCellId codeCellId,
             Position position)
             => GetSession ().WorkspaceService.GetSignatureHelpAsync (
