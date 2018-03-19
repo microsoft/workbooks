@@ -240,9 +240,6 @@ namespace Xamarin.Interactive.Workbook.Views
             // WorkbookCodeEditorChangeEvent
             var changeEvent = args [0];
             var text = changeEvent.text?.ToString () ?? "";
-            dynamic newCursorPosition = changeEvent.newCursorPosition;
-
-            var linePosition = MonacoExtensions.FromMonacoPosition (newCursorPosition);
 
             EventsObserver.OnNext (new ChangeEvent (this, linePosition, text));
 

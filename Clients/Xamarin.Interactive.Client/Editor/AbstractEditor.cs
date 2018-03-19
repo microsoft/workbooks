@@ -8,8 +8,6 @@
 using System;
 using System.Collections.Generic;
 
-using Microsoft.CodeAnalysis.Text;
-
 using Xamarin.Interactive.Editor.Events;
 
 namespace Xamarin.Interactive.Editor
