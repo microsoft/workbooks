@@ -31,6 +31,7 @@ namespace Xamarin.Interactive.Client.Console
         static LanguageDescription language;
         static CodeCellId lastCodeCellId;
         static CodeCellEvaluationStatus lastCellEvaluationStatus;
+        static Spinner evalSpinner;
 
         static async Task<int> MainAsync (string [] args)
         {
@@ -229,16 +230,27 @@ namespace Xamarin.Interactive.Client.Console
 
         static void OnSessionEvent (InteractiveSessionEvent evnt)
         {
+            string status;
+
             switch (evnt.Kind) {
             case InteractiveSessionEventKind.Evaluation:
                 OnCodeCellEvent ((ICodeCellEvent)evnt.Data);
+                return;
+            case InteractiveSessionEventKind.ConnectingToAgent:
+                status = "Connecting to agent…";
+                break;
+            case InteractiveSessionEventKind.InitializingWorkspace:
+                status = "Initializing workspace…";
+                break;
+            case InteractiveSessionEventKind.Ready:
+                status = string.Empty.PadLeft (BufferWidth);
                 break;
             default:
-                ForegroundColor = ConsoleColor.Cyan;
-                WriteLine (evnt.Kind);
-                ResetColor ();
-                break;
+                return;
             }
+
+            ForegroundColor = ConsoleColor.Cyan;
+            Write ($"{status}\r");
         }
 
         static void OnCodeCellEvent (ICodeCellEvent codeCellEvent)
@@ -251,12 +263,17 @@ namespace Xamarin.Interactive.Client.Console
             if (lastCodeCellId != default && codeCellEvent.CodeCellId != lastCodeCellId)
                 return;
 
+            if (codeCellEvent is CodeCellEvaluationStartedEvent)
+                StartSpinner ();
+            else
+                StopSpinner ();
+
             switch (codeCellEvent) {
             // a full UI would set cell state to show a spinner and
             // enable a button to abort the running evaluation here
             case CodeCellEvaluationStartedEvent _:
                 break;
-                // and would then hide the spinner and button here
+            // and would then hide the spinner and button here
             case CodeCellEvaluationFinishedEvent finishedEvent:
                 lastCellEvaluationStatus = finishedEvent.Status;
 
@@ -290,6 +307,18 @@ namespace Xamarin.Interactive.Client.Console
         #endregion
 
         #region Amazing UI
+
+        static void StartSpinner ()
+        {
+            StopSpinner ();
+            evalSpinner = Spinner.Start (Spinner.Kind.Dots, ConsoleColor.Green);
+        }
+
+        static void StopSpinner ()
+        {
+            evalSpinner?.Dispose ();
+            evalSpinner = null;
+        }
 
         static string GetPrompt (bool secondaryPrompt = false)
         {
