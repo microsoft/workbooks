@@ -9,13 +9,9 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 
-using Microsoft.CodeAnalysis.Text;
-
-using XCB = Xamarin.CrossBrowser;
+using Xamarin.CrossBrowser;
 
 using Xamarin.Interactive.CodeAnalysis.Models;
-using Xamarin.Interactive.CodeAnalysis.Roslyn;
-using Xamarin.Interactive.Compilation.Roslyn;
 
 namespace Xamarin.Interactive.CodeAnalysis.Monaco
 {
@@ -23,36 +19,35 @@ namespace Xamarin.Interactive.CodeAnalysis.Monaco
     {
         const string TAG = nameof (CompletionProvider);
 
-        readonly XCB.ScriptContext context;
-        readonly Func<string, SourceText> getSourceTextByModelId;
-        readonly CompletionController controller;
+        readonly IWorkspaceService workspace;
+        readonly ScriptContext context;
+        readonly Func<string, CodeCellId> monacoModelIdToCodeCellIdMapper;
 
         #pragma warning disable 0414
         readonly dynamic providerTicket;
         #pragma warning restore 0414
 
         public CompletionProvider (
-            IWorkspaceService compilationWorkspace,
-            XCB.ScriptContext context,
-            Func<string, SourceText> getSourceTextByModelId)
+            IWorkspaceService workspace,
+            ScriptContext context,
+            Func<string, CodeCellId> monacoModelIdToCodeCellIdMapper)
         {
+            this.workspace = workspace
+                ?? throw new ArgumentNullException (nameof (workspace));
+
             this.context = context
                 ?? throw new ArgumentNullException (nameof (context));
 
-            this.getSourceTextByModelId = getSourceTextByModelId
-                ?? throw new ArgumentNullException (nameof (getSourceTextByModelId));
-
-            controller = new CompletionController ((RoslynCompilationWorkspace)compilationWorkspace);
+            this.monacoModelIdToCodeCellIdMapper = monacoModelIdToCodeCellIdMapper
+                ?? throw new ArgumentNullException (nameof (monacoModelIdToCodeCellIdMapper));
 
             providerTicket = context.GlobalObject.xiexports.monaco.RegisterWorkbookCompletionItemProvider (
                 "csharp",
-                (XCB.ScriptFunc)ProvideCompletionItems);
+                (ScriptFunc)ProvideCompletionItems);
         }
 
         public void Dispose ()
-        {
-            providerTicket.dispose ();
-        }
+            => providerTicket.dispose ();
 
         dynamic ProvideCompletionItems (dynamic self, dynamic args)
             => ProvideCompletionItems (
@@ -61,24 +56,19 @@ namespace Xamarin.Interactive.CodeAnalysis.Monaco
                 MonacoExtensions.FromMonacoCancellationToken (args [2]));
 
         object ProvideCompletionItems (
-            string modelId,
+            string monacoModelId,
             Position position,
             CancellationToken cancellationToken)
-        {
-            var sourceTextContent = getSourceTextByModelId (modelId);
-            var completionTask = controller.ProvideFilteredCompletionItemsAsync (
-                sourceTextContent,
-                position,
-                cancellationToken);
-
-            return context.ToMonacoPromise (
-                completionTask,
+            => context.ToMonacoPromise (
+                workspace.GetCompletionsAsync (
+                    monacoModelIdToCodeCellIdMapper (monacoModelId),
+                    position,
+                    cancellationToken),
                 ToMonacoCompletionItems,
                 MainThread.TaskScheduler,
                 raiseErrors: false);
-        }
 
-        static dynamic ToMonacoCompletionItems (XCB.ScriptContext context, IEnumerable<CompletionItem> items)
+        static dynamic ToMonacoCompletionItems (ScriptContext context, IEnumerable<CompletionItem> items)
         {
             dynamic arr = context.CreateArray ();
 

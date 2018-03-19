@@ -14,6 +14,7 @@ using System.Threading.Tasks;
 
 using Xamarin.CrossBrowser;
 
+using Xamarin.Interactive.CodeAnalysis;
 using Xamarin.Interactive.CodeAnalysis.Monaco;
 using Xamarin.Interactive.Core;
 using Xamarin.Interactive.Client;
@@ -139,13 +140,16 @@ namespace Xamarin.Interactive.Workbook.Views
 
         protected override void OnCompilationWorkspaceAvailable ()
         {
-            Func<string, Microsoft.CodeAnalysis.Text.SourceText> getSourceTextByModelId = modelId
-                => CodeCells
-                    .Values
-                    .Select (s => s.Editor)
-                    .OfType<CodeCellEditorView> ()
-                    .FirstOrDefault (e => !e.IsDisposed && e.GetMonacoModelId () == modelId)
-                    ?.SourceTextContent;
+            CodeCellId GetCodeCellId (string monacoModelId)
+            {
+                foreach (var codeCell in CodeCells.Values) {
+                    if (codeCell.Editor is CodeCellEditorView editor &&
+                        !editor.IsDisposed && editor.GetMonacoModelId () == monacoModelId)
+                        return codeCell.CodeCellId;
+                }
+
+                return default (CodeCellId);
+            }
 
             completionProvider?.Dispose ();
             signatureHelpProvider?.Dispose ();
@@ -154,17 +158,17 @@ namespace Xamarin.Interactive.Workbook.Views
             completionProvider = new CompletionProvider (
                 ClientSession.CompilationWorkspace,
                 webView.Document.Context,
-                getSourceTextByModelId);
+                GetCodeCellId);
 
             signatureHelpProvider = new SignatureHelpProvider (
                 ClientSession.CompilationWorkspace,
                 webView.Document.Context,
-                getSourceTextByModelId);
+                GetCodeCellId);
 
             hoverProvider = new HoverProvider (
                 ClientSession.CompilationWorkspace,
                 webView.Document.Context,
-                getSourceTextByModelId);
+                GetCodeCellId);
         }
 
         public override Task LoadWorkbookDependencyAsync (
