@@ -15,6 +15,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xamarin.Interactive.Client"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xamarin.Interactive.Client.Console", "..\Clients\Xamarin.Interactive.Client.Console\Xamarin.Interactive.Client.Console.csproj", "{B7BDE8A7-57D0-48C3-9D67-1223B316BB43}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CodeAnalysis", "CodeAnalysis", "{C9D31472-6211-4D63-909C-D76AE114AFC8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xamarin.Interactive.CodeAnalysis", "..\CodeAnalysis\Xamarin.Interactive.CodeAnalysis\Xamarin.Interactive.CodeAnalysis.csproj", "{C6B99320-3824-4482-9AA7-2C9008F5C253}"
+EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "WorkbookApps", "WorkbookApps", "{28239FCE-ADB4-4721-B671-4396134A9E2A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xamarin.Workbooks.DotNetCore", "..\WorkbookApps\Xamarin.Workbooks.DotNetCore\Xamarin.Workbooks.DotNetCore.csproj", "{C5FB48F1-B7CA-463C-B759-467F4333DDBD}"
@@ -32,6 +36,7 @@ Global
 		{7A522415-E2F7-4E4B-8E11-3D7CF9A854A8} = {941CDBC8-FB3F-42AC-BBCE-203AF51EF643}
 		{60E790E6-CF1F-44C9-8726-FBF0946BFBE0} = {CAF2D599-CDED-47EE-98BC-BF25716E679A}
 		{B7BDE8A7-57D0-48C3-9D67-1223B316BB43} = {CAF2D599-CDED-47EE-98BC-BF25716E679A}
+		{C6B99320-3824-4482-9AA7-2C9008F5C253} = {C9D31472-6211-4D63-909C-D76AE114AFC8}
 		{C5FB48F1-B7CA-463C-B759-467F4333DDBD} = {28239FCE-ADB4-4721-B671-4396134A9E2A}
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
@@ -51,6 +56,10 @@ Global
 		{B7BDE8A7-57D0-48C3-9D67-1223B316BB43}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B7BDE8A7-57D0-48C3-9D67-1223B316BB43}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B7BDE8A7-57D0-48C3-9D67-1223B316BB43}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C6B99320-3824-4482-9AA7-2C9008F5C253}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C6B99320-3824-4482-9AA7-2C9008F5C253}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C6B99320-3824-4482-9AA7-2C9008F5C253}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C6B99320-3824-4482-9AA7-2C9008F5C253}.Release|Any CPU.Build.0 = Release|Any CPU
 		{C5FB48F1-B7CA-463C-B759-467F4333DDBD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{C5FB48F1-B7CA-463C-B759-467F4333DDBD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C5FB48F1-B7CA-463C-B759-467F4333DDBD}.Release|Any CPU.ActiveCfg = Release|Any CPU

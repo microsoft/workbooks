@@ -19,6 +19,10 @@ using Xamarin.Interactive.CodeAnalysis;
 using Xamarin.Interactive.CodeAnalysis.Models;
 using Xamarin.Interactive.CodeAnalysis.Roslyn;
 
+[assembly: Xamarin.Interactive.CodeAnalysis.WorkspaceService (
+    "csharp",
+    typeof (Xamarin.Interactive.Compilation.Roslyn.RoslynCompilationWorkspace.Activator))]
+
 namespace Xamarin.Interactive.Compilation.Roslyn
 {
     using Microsoft.CodeAnalysis;
@@ -32,6 +36,16 @@ namespace Xamarin.Interactive.Compilation.Roslyn
 
     sealed class RoslynCompilationWorkspace : CodeAnalysis.IWorkspaceService, IDisposable
     {
+        public sealed class Activator : IWorkspaceServiceActivator
+        {
+            public Task<CodeAnalysis.IWorkspaceService> CreateNew (
+                LanguageDescription languageDescription,
+                WorkspaceConfiguration workspaceConfiguration,
+                CancellationToken cancellationToken)
+                => Task.FromResult<CodeAnalysis.IWorkspaceService> (
+                    new RoslynCompilationWorkspace (workspaceConfiguration));
+        }
+
         static class HostServicesFactory
         {
             public static readonly Assembly CodeAnalysisFeaturesAssembly
@@ -405,8 +419,6 @@ namespace Xamarin.Interactive.Compilation.Roslyn
             workspace.Dispose ();
             GC.SuppressFinalize (this);
         }
-
-        public ImmutableArray<WebDependency> WebDependencies => metadataReferenceResolver.WebDependencies;
 
         #region Submission Management
 

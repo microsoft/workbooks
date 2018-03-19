@@ -7,43 +7,51 @@
 
 using System;
 using System.Collections.Immutable;
+using System.IO;
+using System.Linq;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 
-using Xamarin.Interactive.Compilation.Roslyn;
+using Xamarin.Interactive.Core;
+using Xamarin.Interactive.Reflection;
 
 namespace Xamarin.Interactive.CodeAnalysis
 {
     public static class WorkspaceServiceFactory
     {
-        static WorkspaceServiceFactory ()
-        {
-            RegisterProvider ("csharp", (language, configuration, cancellationToken)
-                => Task.FromResult<IWorkspaceService> (new RoslynCompilationWorkspace (configuration)));
-        }
-
-        internal delegate Task<IWorkspaceService> ServiceProvider (
-            LanguageDescription languageDescription,
-            WorkspaceConfiguration configuration,
-            CancellationToken cancellationToken);
-
-        static ImmutableDictionary<string, ServiceProvider> providers
-            = ImmutableDictionary<string, ServiceProvider>.Empty;
-
-        internal static void RegisterProvider (string languageName, ServiceProvider provider)
-            => providers = providers.Add (
-                languageName ?? throw new ArgumentNullException (nameof (provider)),
-                provider ?? throw new ArgumentNullException (nameof (provider)));
+        static ImmutableDictionary<string, IWorkspaceServiceActivator> activators
+            = Directory
+                .EnumerateFiles (
+                    Path.GetDirectoryName (typeof (WorkspaceServiceFactory).Assembly.Location),
+                    "Xamarin.Interactive.CodeAnalysis.*.dll",
+                    SearchOption.TopDirectoryOnly)
+                .Select (Assembly.LoadFrom)
+                .SelectMany (assembly => assembly.GetCustomAttributes<WorkspaceServiceAttribute> ())
+                .ToImmutableDictionary (
+                    attribute => attribute.LanguageName,
+                    attribute => {
+                        if (!typeof (IWorkspaceServiceActivator)
+                            .IsAssignableFrom (attribute.WorkspaceServiceActivatorType))
+                            throw new Exception (
+                                $"{attribute.WorkspaceServiceActivatorType.FullName} must implement " +
+                                $"{typeof (IWorkspaceServiceActivator).FullName} in order to provide " +
+                                $"support for language '{attribute.LanguageName}'");
+                        return (IWorkspaceServiceActivator)Activator.CreateInstance (
+                            attribute.WorkspaceServiceActivatorType);
+                    });
 
         internal static async Task<IWorkspaceService> CreateWorkspaceServiceAsync (
             LanguageDescription languageDescription,
             WorkspaceConfiguration configuration,
             CancellationToken cancellationToken)
         {
-            if (!providers.TryGetValue (languageDescription.Name, out var provider))
-                throw new Exception ($"Unable to resolve a workspace service for language '{languageDescription.Name}'");
+            if (!activators.TryGetValue (languageDescription.Name, out var activator))
+                throw new Exception (
+                    $"Unable to resolve a workspace service activator " +
+                    $"for language '{languageDescription.Name}'");
 
-            return await provider (
+            return await activator.CreateNew (
                 languageDescription,
                 configuration,
                 cancellationToken).ConfigureAwait (false);

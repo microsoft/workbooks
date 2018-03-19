@@ -25,6 +25,7 @@
     <ItemGroup>
       <ProjectsToBuild Include="Agents\Xamarin.Interactive\*.csproj"/>
       <ProjectsToBuild Include="Clients\Xamarin.Interactive.Client\*.csproj"/>
+      <ProjectsToBuild Include="CodeAnalysis\*\*.csproj"/>
     </ItemGroup>
   </Target>
 

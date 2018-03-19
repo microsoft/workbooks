@@ -15,6 +15,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xamarin.Interactive.Client"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xamarin.Interactive.Client.Web", "..\Clients\Xamarin.Interactive.Client.Web\Xamarin.Interactive.Client.Web.csproj", "{486EEAAD-E800-455D-BE35-882B4FA8780A}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CodeAnalysis", "CodeAnalysis", "{0D7D8F33-5DF5-44D4-80F7-DA4D744B4874}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xamarin.Interactive.CodeAnalysis.Roslyn", "..\CodeAnalysis\Xamarin.Interactive.CodeAnalysis.Roslyn\Xamarin.Interactive.CodeAnalysis.Roslyn.csproj", "{F3910640-FCB2-479B-94B6-40455B79EFA4}"
+EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "WorkbookApps", "WorkbookApps", "{686B899C-6091-4391-8E19-26C4384EE47F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xamarin.Workbooks.DotNetCore", "..\WorkbookApps\Xamarin.Workbooks.DotNetCore\Xamarin.Workbooks.DotNetCore.csproj", "{A8CEA4B1-0CB8-48AA-87C6-D58C7EBDCA69}"
@@ -32,6 +36,7 @@ Global
 		{7A522415-E2F7-4E4B-8E11-3D7CF9A854A8} = {AD069E18-E62D-4FCC-8D50-4051D8A55A3E}
 		{AFA4F7A7-9A09-4538-AE52-77C628C5DCF3} = {82EF0AC8-63A8-4009-A469-ED1E7E577BAB}
 		{486EEAAD-E800-455D-BE35-882B4FA8780A} = {82EF0AC8-63A8-4009-A469-ED1E7E577BAB}
+		{F3910640-FCB2-479B-94B6-40455B79EFA4} = {0D7D8F33-5DF5-44D4-80F7-DA4D744B4874}
 		{A8CEA4B1-0CB8-48AA-87C6-D58C7EBDCA69} = {686B899C-6091-4391-8E19-26C4384EE47F}
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
@@ -51,6 +56,10 @@ Global
 		{486EEAAD-E800-455D-BE35-882B4FA8780A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{486EEAAD-E800-455D-BE35-882B4FA8780A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{486EEAAD-E800-455D-BE35-882B4FA8780A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F3910640-FCB2-479B-94B6-40455B79EFA4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F3910640-FCB2-479B-94B6-40455B79EFA4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F3910640-FCB2-479B-94B6-40455B79EFA4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F3910640-FCB2-479B-94B6-40455B79EFA4}.Release|Any CPU.Build.0 = Release|Any CPU
 		{A8CEA4B1-0CB8-48AA-87C6-D58C7EBDCA69}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{A8CEA4B1-0CB8-48AA-87C6-D58C7EBDCA69}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A8CEA4B1-0CB8-48AA-87C6-D58C7EBDCA69}.Release|Any CPU.ActiveCfg = Release|Any CPU

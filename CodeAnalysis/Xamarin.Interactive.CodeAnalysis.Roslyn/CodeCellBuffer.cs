@@ -10,8 +10,6 @@ using System.Text;
 
 using Microsoft.CodeAnalysis.Text;
 
-using Xamarin.Interactive.Workbook.Models;
-
 namespace Xamarin.Interactive.CodeAnalysis.Roslyn
 {
     sealed class CodeCellBuffer : SourceTextContainer

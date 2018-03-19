@@ -19,10 +19,6 @@ namespace Xamarin.Interactive.Client.Mac.Roslyn
 
     sealed partial class RoslynWorkspaceExplorerWindowController : NSWindowController
     {
-        static readonly FieldInfo workspaceField = typeof (RoslynCompilationWorkspace).GetField (
-            "workspace",
-            BindingFlags.Instance | BindingFlags.NonPublic);
-
         SessionWindowController sessionWindowController;
         RoslynWorkspaceOutlineViewDataSource outlineViewDataSource;
 
@@ -71,7 +67,16 @@ namespace Xamarin.Interactive.Client.Mac.Roslyn
             sessionWindowController = controller;
 
             var compilationWorkspace = SessionDocumentController.SharedDocumentController.DocumentForWindow (
-                sessionWindowController?.Window)?.Session?.CompilationWorkspace;
+                sessionWindowController?.Window)
+                ?.Session
+                ?.CompilationWorkspace;
+
+            var workspaceField = compilationWorkspace
+                ?.GetType ()
+                .GetField (
+                    "workspace",
+                    BindingFlags.Instance | BindingFlags.NonPublic);
+
             if (workspaceField != null && compilationWorkspace != null)
                 Workspace = (Workspace)workspaceField.GetValue (compilationWorkspace);
 

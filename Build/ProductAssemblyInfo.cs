@@ -35,6 +35,10 @@ using System.Runtime.CompilerServices;
 [assembly: InternalsVisibleTo ("Xamarin.Interactive.Forms.iOS")]
 [assembly: InternalsVisibleTo ("Xamarin.Interactive.Forms.Android")]
 
+// code analysis
+[assembly: InternalsVisibleTo ("Xamarin.Interactive.CodeAnalysis")]
+[assembly: InternalsVisibleTo ("Xamarin.Interactive.CodeAnalysis.Roslyn")]
+
 // clients
 [assembly: InternalsVisibleTo ("workbook")]
 [assembly: InternalsVisibleTo ("workbooks-server")]

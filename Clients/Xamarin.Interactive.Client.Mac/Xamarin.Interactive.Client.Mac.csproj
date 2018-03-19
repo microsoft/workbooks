@@ -440,6 +440,10 @@
       <Project>{060F0356-3E5C-41CD-B2BD-4C15C99BEBC2}</Project>
       <Name>Xamarin.Interactive.Client.Desktop</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\CodeAnalysis\Xamarin.Interactive.CodeAnalysis.Roslyn\Xamarin.Interactive.CodeAnalysis.Roslyn.csproj">
+      <Project>{E2D65824-E20F-4011-825A-FAEC2347F521}</Project>
+      <Name>Xamarin.Interactive.CodeAnalysis.Roslyn</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <NativeReference Include="libMonoPosixHelper.dylib">
