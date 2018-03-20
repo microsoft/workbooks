@@ -1,0 +1,40 @@
+---
+uti: com.xamarin.workbook
+id: 9c8aa361-7498-4c2e-9a0e-066a13658be4
+title: wpf-transforms
+platforms:
+- WPF
+---
+
+```csharp
+var hstack = new StackPanel () { Orientation = Orientation.Horizontal };
+var stack = new StackPanel ();
+var grid = new Grid ();
+hstack.Children.Add (stack);
+hstack.Children.Add (new ScrollViewer () {
+    Content = new Border () { 
+    Width = 300,
+    Height = 500, 
+    Background = new SolidColorBrush () { Color = Color.FromRgb (20, 100, 200) },
+    Child = grid
+    }});
+stack.Children.Add (new Button { Content = "one", MinWidth = 100, });
+stack.Children.Add (new Button { Content = "two", RenderTransform = new RotateTransform (10)});
+stack.Children.Add (new Button { Content = "three", RenderTransform = new RotateTransform (20)});
+stack.Children.Add (new Button { Content = new TextBlock { Text = "Four", RenderTransform = new RotateTransform (30)}});
+Application.Current.MainWindow.Content = hstack;
+```
+
+```csharp
+
+for (var i = 0; i < 36; i++) {
+    var ele = new Button {
+        Content = i.ToString(),
+        Width = 50, 
+        Height = 50,
+        Background = new SolidColorBrush {Color = Color.FromArgb (100, (byte) (i*5), 100, 50) },
+        RenderTransform = new RotateTransform (i * 10),
+    };
+    grid.Children.Add (ele);
+}
+```
