@@ -386,10 +386,8 @@
 
   <Target Name="UpdatePublicApiDefinitions">
     <MSBuild
-      Projects="Tools\ApiDump\ApiDump.csproj;Agents\Xamarin.Interactive\Xamarin.Interactive.csproj"
-      Properties="Configuration=Release"
-      Targets="Build"/>
-    <Exec Command="Tools\ApiDump\ApiDump.exe Agents\Xamarin.Interactive\bin\Release\netstandard2.0\Xamarin.Interactive.dll -o Agents\Xamarin.Interactive\API\Xamarin.Interactive.api.cs"/>
+      Projects="CoreBuild.proj"
+      Targets="UpdatePublicApiDefinitions"/>
   </Target>
 
   <Target

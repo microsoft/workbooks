@@ -23,9 +23,16 @@
   <Target
     Name="CoreProfile">
     <ItemGroup>
-      <ProjectsToBuild Include="Agents\Xamarin.Interactive\*.csproj"/>
-      <ProjectsToBuild Include="Clients\Xamarin.Interactive.Client\*.csproj"/>
-      <ProjectsToBuild Include="CodeAnalysis\*\*.csproj"/>
+      <ProjectsToBuild Include="Agents\Xamarin.Interactive\*.csproj">
+        <HasPublicApi>true</HasPublicApi>
+      </ProjectsToBuild>
+      <ProjectsToBuild Include="CodeAnalysis\Xamarin.Interactive.CodeAnalysis\*.csproj">
+        <HasPublicApi>true</HasPublicApi>
+      </ProjectsToBuild>
+      <ProjectsToBuild Include="Clients\Xamarin.Interactive.Client\*.csproj">
+        <HasPublicApi>true</HasPublicApi>
+      </ProjectsToBuild>
+      <ProjectsToBuild Include="CodeAnalysis\Xamarin.Interactive.CodeAnalysis.Roslyn\*.csproj"/>
     </ItemGroup>
   </Target>
 
@@ -35,6 +42,7 @@
     <ItemGroup>
       <ProjectsToBuild Include="Tests\Xamarin.Interactive.Tests\*.csproj" />
       <ProjectsToBuild Include="Tests\Xamarin.Interactive.Tests.Core\*.csproj" />
+      <ProjectsToBuild Include="Tools\ApiDump\*.csproj" />
     </ItemGroup>
   </Target>
 
@@ -92,6 +100,7 @@
     DependsOnTargets="WebProfile;ConsoleProfile;DesktopProfile"/>
 
   <!-- Solution Targets -->
+
   <Target
     Name="Build"
     DependsOnTargets="$(Profile)">
@@ -183,5 +192,50 @@
       Projects="@(SolutionProjects)"
       GlobalSectionsFiles="$(SolutionBasePath)GlobalSections"
       OutputFile="$(SolutionFile)"/>
+  </Target>
+
+  <!-- Utility Targets -->
+
+  <Target
+    Name="UpdatePublicApiDefinitions"
+    DependsOnTargets="$(Profile)">
+    <PropertyGroup>
+      <ApiConfiguration>Release</ApiConfiguration>
+    </PropertyGroup>
+    <ItemGroup>
+      <PublicApiProjectsToBuild
+        Include="@(ProjectsToBuild)"
+        Condition="'%(ProjectsToBuild.HasPublicApi)' != ''"/>
+    </ItemGroup>
+    <MakeDir Directories="docs"/>
+    <MSBuild
+      Projects="Tools\ApiDump\ApiDump.csproj;@(PublicApiProjectsToBuild)"
+      Properties="Configuration=$(ApiConfiguration)"
+      Targets="Build"/>
+    <Message Importance="High" Text="Tools\ApiDump\ApiDump.csproj;@(PublicApiProjectsToBuild)"/>
+    <ItemGroup>
+      <PublicApiAssembly Include="%(PublicApiProjectsToBuild.RelativeDir)bin\$(ApiConfiguration)\*\%(Filename).dll">
+        <ApiFile>docs\%(Filename).api.cs</ApiFile>
+      </PublicApiAssembly>
+    </ItemGroup>
+    <Exec Command="Tools\ApiDump\ApiDump.exe %(PublicApiAssembly.FullPath) -o %(PublicApiAssembly.ApiFile)"/>
+  </Target>
+
+  <Target
+    Name="_ConfigureUnitTests">
+    <PropertyGroup>
+      <Profile>DesktopProfile</Profile>
+    </PropertyGroup>
+  </Target>
+
+  <Target
+    Name="RunUnitTests"
+    DependsOnTargets="_ConfigureUnitTests;Build">
+    <PropertyGroup>
+      <TestDriver Condition="$(IsMac)">Clients\Xamarin.Interactive.Client.Mac\bin\$(Configuration)\Xamarin Workbooks.app\Contents\MacOS\Xamarin Workbooks</TestDriver>
+      <TestDriver Condition="$(IsWindows)">Clients\Xamarin.Interactive.Client.Windows\bin\$(Configuration)\Xamarin Workbooks.exe</TestDriver>
+      <TestCommand Condition="'$(TestToRun)' != ''">-test:$(TestToRun)</TestCommand>
+    </PropertyGroup>
+    <Exec Command="&quot;$(TestDriver)&quot; cli test Tests\Xamarin.Interactive.Tests\bin\$(Configuration)\net461\Xamarin.Interactive.Tests.dll &quot;-result:$(MSBuildThisFileDirectory)Tests/Regressions.$(Configuration).xml&quot; $(TestCommand)"/>
   </Target>
 </Project>

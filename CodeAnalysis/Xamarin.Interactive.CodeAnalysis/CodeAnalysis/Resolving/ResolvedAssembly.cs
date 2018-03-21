@@ -17,7 +17,7 @@ namespace Xamarin.Interactive.CodeAnalysis.Resolving
 {
     public sealed class ResolvedAssembly : IEquatable<ResolvedAssembly>
     {
-        public class NameEqualityComparer : IEqualityComparer<ResolvedAssembly>, IEqualityComparer<AssemblyName>
+        public sealed class NameEqualityComparer : IEqualityComparer<ResolvedAssembly>, IEqualityComparer<AssemblyName>
         {
             public static readonly NameEqualityComparer Default = new NameEqualityComparer ();
 

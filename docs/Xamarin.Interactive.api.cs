@@ -12,8 +12,10 @@
 [assembly: InternalsVisibleTo ("Xamarin.Interactive.Forms")]
 [assembly: InternalsVisibleTo ("Xamarin.Interactive.Forms.iOS")]
 [assembly: InternalsVisibleTo ("Xamarin.Interactive.Forms.Android")]
+[assembly: InternalsVisibleTo ("Xamarin.Interactive.CodeAnalysis")]
 [assembly: InternalsVisibleTo ("workbook")]
 [assembly: InternalsVisibleTo ("workbooks-server")]
+[assembly: InternalsVisibleTo ("xic")]
 [assembly: InternalsVisibleTo ("Xamarin Workbooks")]
 [assembly: InternalsVisibleTo ("Xamarin Inspector")]
 [assembly: InternalsVisibleTo ("Xamarin.Interactive.Client")]
@@ -94,6 +96,20 @@ namespace Xamarin.Interactive
 
         SynchronizationContext PushContext (SynchronizationContext context);
     }
+    public static class Utf8
+    {
+        public static UTF8Encoding Encoding {
+            get;
+        }
+
+        public static byte[] GetBytes (string value);
+
+        public static string GetString (byte[] bytes);
+
+        public static string GetString (byte[] bytes, int count);
+
+        public static string GetString (byte[] bytes, int index, int count);
+    }
 }
 namespace Xamarin.Interactive.CodeAnalysis
 {
@@ -108,13 +124,58 @@ namespace Xamarin.Interactive.CodeAnalysis
 
         public static bool operator != (CodeCellId a, CodeCellId b);
 
+        public Guid Id {
+            get;
+        }
+
+        public Guid ProjectId {
+            get;
+        }
+
+        public CodeCellId (Guid projectId, Guid id);
+
         public bool Equals (CodeCellId id);
 
         public override bool Equals (object obj);
 
         public override int GetHashCode ();
 
+        public static CodeCellId Parse (string id);
+
         public override string ToString ();
+    }
+    [Serializable]
+    public sealed class Compilation : ICompilation
+    {
+        public CodeCellId CodeCellId {
+            get;
+        }
+
+        public EvaluationContextId EvaluationContextId {
+            get;
+        }
+
+        public IEvaluationEnvironment EvaluationEnvironment {
+            get;
+        }
+
+        public AssemblyDefinition ExecutableAssembly {
+            get;
+        }
+
+        public bool IsResultAnExpression {
+            get;
+        }
+
+        public IReadOnlyList<AssemblyDefinition> References {
+            get;
+        }
+
+        public int SubmissionNumber {
+            get;
+        }
+
+        public Compilation (CodeCellId codeCellId, int submissionNumber, EvaluationContextId evaluationContextId, IEvaluationEnvironment evaluationEnvironment, bool isResultAnExpression, AssemblyDefinition executableAssembly, IReadOnlyList<AssemblyDefinition> references);
     }
     public class EvaluationContextGlobalObject
     {
@@ -205,51 +266,9 @@ namespace Xamarin.Interactive.CodeAnalysis
         Replace,
         Append
     }
-    public interface IAssemblyContent
-    {
-        Stream OpenPEImage ();
-    }
-    public interface IAssemblyDefinition
-    {
-        IAssemblyContent Content {
-            get;
-        }
-
-        IAssemblyEntryPoint EntryPoint {
-            get;
-        }
-
-        IAssemblyIdentity Identity {
-            get;
-        }
-    }
-    public interface IAssemblyEntryPoint
-    {
-        string MethodName {
-            get;
-        }
-
-        string TypeName {
-            get;
-        }
-    }
-    public interface IAssemblyIdentity : IEquatable<IAssemblyIdentity>
-    {
-        string FullName {
-            get;
-        }
-
-        string Name {
-            get;
-        }
-
-        Version Version {
-            get;
-        }
-    }
     public interface ICompilation
     {
-        IAssemblyDefinition Assembly {
+        AssemblyDefinition Assembly {
             get;
         }
 
@@ -291,12 +310,242 @@ namespace Xamarin.Interactive.CodeAnalysis
             get;
         }
     }
+    [Serializable]
+    public sealed class TargetCompilationConfiguration
+    {
+        public string[] DefaultUsings {
+            get;
+            set;
+        }
+
+        public string[] DefaultWarningSuppressions {
+            get;
+            set;
+        }
+
+        public EvaluationContextId EvaluationContextId {
+            get;
+            set;
+        }
+
+        public AssemblyDefinition GlobalStateAssembly {
+            get;
+            set;
+        }
+
+        public string GlobalStateTypeName {
+            get;
+            set;
+        }
+
+        public TargetCompilationConfiguration ();
+    }
+}
+namespace Xamarin.Interactive.CodeAnalysis.Events
+{
+    public interface ICodeCellEvent
+    {
+        CodeCellId CodeCellId {
+            get;
+        }
+    }
+}
+namespace Xamarin.Interactive.CodeAnalysis.Resolving
+{
+    [Serializable]
+    public sealed class AssemblyContent
+    {
+        public byte[] DebugSymbols {
+            get;
+        }
+
+        public FilePath Location {
+            get;
+        }
+
+        public byte[] PEImage {
+            get;
+        }
+
+        public Stream OpenPEImage ();
+    }
+    [Serializable]
+    public sealed class AssemblyDefinition
+    {
+        public AssemblyContent Content {
+            get;
+        }
+
+        public AssemblyEntryPoint EntryPoint {
+            get;
+        }
+
+        public AssemblyDependency[] ExternalDependencies {
+            get;
+        }
+
+        public bool HasIntegration {
+            get;
+        }
+
+        public AssemblyIdentity Name {
+            get;
+        }
+
+        public AssemblyDefinition (AssemblyIdentity name, FilePath location, string entryPointType = null, string entryPointMethod = null, byte[] peImage = null, byte[] debugSymbols = null, AssemblyDependency[] externalDependencies = null, bool hasIntegration = false);
+
+        public AssemblyDefinition (AssemblyName name, FilePath location, string entryPointType = null, string entryPointMethod = null, byte[] peImage = null, byte[] debugSymbols = null, AssemblyDependency[] externalDependencies = null, bool hasIntegration = false);
+    }
+    [Serializable]
+    public struct AssemblyDependency
+    {
+        public byte[] Data {
+            get;
+        }
+
+        public FilePath Location {
+            get;
+        }
+    }
+    [Serializable]
+    public struct AssemblyEntryPoint
+    {
+        public string MethodName {
+            get;
+        }
+
+        public string TypeName {
+            get;
+        }
+    }
+    [Serializable]
+    public sealed class AssemblyIdentity
+    {
+        public static implicit operator AssemblyName (AssemblyIdentity assemblyIdentity);
+
+        public string FullName {
+            get;
+        }
+
+        public string Name {
+            get;
+        }
+
+        public Version Version {
+            get;
+        }
+
+        public bool Equals (AssemblyIdentity other);
+
+        public override bool Equals (object obj);
+
+        public override int GetHashCode ();
+
+        public override string ToString ();
+    }
 }
 namespace Xamarin.Interactive.CodeAnalysis.Workbooks
 {
     public static class EvaluationContextGlobalsExtensions
     {
         public static VerbatimHtml AsHtml (this string str);
+    }
+}
+namespace Xamarin.Interactive.Core
+{
+    [TypeConverter (typeof(FilePath.FilePathTypeConverter))]
+    [Serializable]
+    public struct FilePath : IComparable<FilePath>, IComparable, IEquatable<FilePath>
+    {
+        public static bool operator == (FilePath a, FilePath b);
+
+        public static implicit operator FilePath (string path);
+
+        public static implicit operator string (FilePath path);
+
+        public static bool operator != (FilePath a, FilePath b);
+
+        public bool DirectoryExists {
+            get;
+        }
+
+        public bool Exists {
+            get;
+        }
+
+        public string Extension {
+            get;
+        }
+
+        public bool FileExists {
+            get;
+        }
+
+        public long FileSize {
+            get;
+        }
+
+        public string FullPath {
+            get;
+        }
+
+        public bool IsNull {
+            get;
+        }
+
+        public bool IsRooted {
+            get;
+        }
+
+        public string Name {
+            get;
+        }
+
+        public string NameWithoutExtension {
+            get;
+        }
+
+        public FilePath ParentDirectory {
+            get;
+        }
+
+        public FilePath (string path);
+
+        public static FilePath Build (params string[] paths);
+
+        public FilePath ChangeExtension (string extension);
+
+        public string Checksum ();
+
+        public FilePath Combine (params string[] paths);
+
+        public int CompareTo (FilePath other);
+
+        public int CompareTo (object obj);
+
+        public DirectoryInfo CreateDirectory ();
+
+        [IteratorStateMachine (typeof(FilePath.<EnumerateDirectories>d__28))]
+        public IEnumerable<FilePath> EnumerateDirectories (string searchPattern = "*", SearchOption searchOption = SearchOption.TopDirectoryOnly);
+
+        [IteratorStateMachine (typeof(FilePath.<EnumerateFiles>d__29))]
+        public IEnumerable<FilePath> EnumerateFiles (string searchPattern = "*", SearchOption searchOption = SearchOption.TopDirectoryOnly);
+
+        public bool Equals (FilePath other);
+
+        public override bool Equals (object obj);
+
+        public override int GetHashCode ();
+
+        public FilePath GetRelativePath (FilePath relativeToPath);
+
+        public static FilePath GetTempPath ();
+
+        public bool IsChildOfDirectory (FilePath parentDirectory);
+
+        public FileStream OpenRead ();
+
+        public override string ToString ();
     }
 }
 namespace Xamarin.Interactive.Logging
