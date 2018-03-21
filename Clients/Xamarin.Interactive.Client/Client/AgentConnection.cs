@@ -6,6 +6,7 @@
 // Licensed under the MIT License.
 
 using System;
+using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Threading;
 using System.Threading.Tasks;
@@ -16,20 +17,11 @@ using Xamarin.Interactive.SystemInformation;
 
 namespace Xamarin.Interactive.Client
 {
-    interface IAgentConnection
-    {
-        AgentType Type { get; }
-        AgentIdentity Identity { get; }
-        AgentClient Api { get; }
-        ImmutableArray<string> AssemblySearchPaths { get; }
-        AgentFeatures Features { get; }
-        bool IsConnected { get; }
-        bool IncludePeImage { get; }
-    }
-
     sealed class AgentConnection : IAgentConnection, IDisposable
     {
         readonly IAgentTicket ticket;
+
+        IReadOnlyList<string> IAgentConnection.AssemblySearchPaths => AssemblySearchPaths;
 
         public AgentType Type { get; }
         public AgentIdentity Identity { get; }
