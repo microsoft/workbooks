@@ -17,7 +17,7 @@ namespace Xamarin.Interactive.CodeAnalysis
     {
         internal static readonly CodeCellId Empty;
 
-        internal static CodeCellId Parse (string id)
+        public static CodeCellId Parse (string id)
         {
             if (string.IsNullOrEmpty (id))
                 return Empty;
@@ -26,10 +26,10 @@ namespace Xamarin.Interactive.CodeAnalysis
             return new CodeCellId (Guid.Parse (parts [0]), Guid.Parse (parts [1]));
         }
 
-        internal Guid ProjectId { get; }
-        internal Guid Id { get; }
+        public Guid ProjectId { get; }
+        public Guid Id { get; }
 
-        internal CodeCellId (Guid projectId, Guid id)
+        public CodeCellId (Guid projectId, Guid id)
         {
             ProjectId = projectId;
             Id = id;

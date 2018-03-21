@@ -10,6 +10,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\Agents\Xamarin.Interactive\Xamarin.Interactive.csproj" />
     <ProjectReference Include="..\Xamarin.Interactive.Client\Xamarin.Interactive.Client.csproj" />
+    <ProjectReference Include="..\..\CodeAnalysis\Xamarin.Interactive.CodeAnalysis\Xamarin.Interactive.CodeAnalysis.csproj" />
     <ProjectReference Include="..\..\CodeAnalysis\Xamarin.Interactive.CodeAnalysis.Roslyn\Xamarin.Interactive.CodeAnalysis.Roslyn.csproj" />
   </ItemGroup>
   <ItemGroup>

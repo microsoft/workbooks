@@ -7,7 +7,7 @@
 
 namespace Xamarin.Interactive.CodeAnalysis
 {
-    enum CodeCellEvaluationStatus
+    public enum CodeCellEvaluationStatus
     {
         Success,
         Disconnected,

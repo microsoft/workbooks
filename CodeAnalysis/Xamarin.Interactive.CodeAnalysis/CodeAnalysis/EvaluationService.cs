@@ -24,7 +24,7 @@ using Xamarin.Interactive.Representations.Reflection;
 
 namespace Xamarin.Interactive.CodeAnalysis
 {
-    sealed class EvaluationService : IEvaluationService
+    public sealed class EvaluationService : IEvaluationService
     {
         const string TAG = nameof (EvaluationService);
 
@@ -99,7 +99,7 @@ namespace Xamarin.Interactive.CodeAnalysis
             this.evaluationEnvironment = evaluationEnvironment;
         }
 
-        public void NotifyAgentConnected (IAgentConnection agentConnection)
+        internal void NotifyAgentConnected (IAgentConnection agentConnection)
         {
             lock (this) {
                 if (this.agentConnection != null)
@@ -111,7 +111,7 @@ namespace Xamarin.Interactive.CodeAnalysis
             }
         }
 
-        public void NotifyAgentDisconnected ()
+        internal void NotifyAgentDisconnected ()
         {
             lock (this)
                 agentConnectionMessagesSubscription?.Dispose ();

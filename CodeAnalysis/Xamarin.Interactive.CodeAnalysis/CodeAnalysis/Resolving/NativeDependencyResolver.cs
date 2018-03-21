@@ -14,24 +14,20 @@ using System.Reflection.Metadata;
 using System.Reflection.PortableExecutable;
 using System.Runtime.InteropServices;
 
-using NuGet.Packaging;
-using NuGet.Versioning;
-
 using Xamarin.Interactive.Core;
 using Xamarin.Interactive.Logging;
-using Xamarin.Interactive.NuGet;
 
-namespace Xamarin.Interactive.Reflection
+namespace Xamarin.Interactive.CodeAnalysis.Resolving
 {
-    class NativeDependencyResolver : DependencyResolver
+    public class NativeDependencyResolver : DependencyResolver
     {
         const string TAG = nameof (NativeDependencyResolver);
 
         readonly Architecture agentArchitecture;
 
-        protected AgentType AgentType { get; }
+        internal AgentType AgentType { get; }
 
-        public NativeDependencyResolver (AgentType agentType)
+        internal NativeDependencyResolver (AgentType agentType)
         {
             AgentType = agentType;
 
@@ -58,6 +54,8 @@ namespace Xamarin.Interactive.Reflection
                         peReader,
                         metadataReader));
 
+#if false
+
             // HACK: Hard-code hacks for SkiaSharp.
             if (path.Name == "SkiaSharp.dll")
                 nativeDependencies.AddRange (GetSkiaSharpDependencies (path));
@@ -69,8 +67,12 @@ namespace Xamarin.Interactive.Reflection
             if (path.Name == "Microsoft.AspNetCore.Server.Kestrel.Transport.Libuv.dll")
                 nativeDependencies.AddRange (GetKestrelLibuvDependencies (path));
 
+#endif
+
             return resolvedAssembly.WithExternalDependencies (nativeDependencies);
         }
+
+#if false
 
         IEnumerable<ExternalDependency> GetKestrelLibuvDependencies (FilePath path)
         {
@@ -231,6 +233,8 @@ namespace Xamarin.Interactive.Reflection
             if (nativeLibraryPath.FileExists)
                 yield return new NativeDependency (nativeLibraryPath.Name, nativeLibraryPath);
         }
+
+#endif
 
         IEnumerable<ExternalDependency> GetEmbeddedFrameworks (
             ResolveOperation resolveOperation,

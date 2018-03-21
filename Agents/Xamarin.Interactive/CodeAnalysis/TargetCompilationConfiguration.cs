@@ -12,7 +12,7 @@ using Xamarin.Interactive.CodeAnalysis.Resolving;
 namespace Xamarin.Interactive.CodeAnalysis
 {
     [Serializable]
-    sealed class TargetCompilationConfiguration
+    public sealed class TargetCompilationConfiguration
     {
         public string GlobalStateTypeName { get; set; }
         public AssemblyDefinition GlobalStateAssembly { get; set; }

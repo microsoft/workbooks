@@ -13,9 +13,9 @@ using System.Reflection;
 
 using Xamarin.Interactive.Core;
 
-namespace Xamarin.Interactive.Reflection
+namespace Xamarin.Interactive.CodeAnalysis.Resolving
 {
-    sealed class ResolvedAssembly : IEquatable<ResolvedAssembly>
+    public sealed class ResolvedAssembly : IEquatable<ResolvedAssembly>
     {
         public class NameEqualityComparer : IEqualityComparer<ResolvedAssembly>, IEqualityComparer<AssemblyName>
         {

@@ -17,7 +17,7 @@ namespace Xamarin.Interactive.CodeAnalysis.Resolving
         public AssemblyDependency [] ExternalDependencies { get; }
         public bool HasIntegration { get; }
 
-        internal AssemblyDefinition (
+        public AssemblyDefinition (
             AssemblyName name,
             FilePath location,
             string entryPointType = null,
@@ -38,7 +38,7 @@ namespace Xamarin.Interactive.CodeAnalysis.Resolving
         {
         }
 
-        internal AssemblyDefinition (
+        public AssemblyDefinition (
             AssemblyIdentity name,
             FilePath location,
             string entryPointType = null,

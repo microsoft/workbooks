@@ -13,7 +13,7 @@ using Xamarin.Interactive.CodeAnalysis.Resolving;
 namespace Xamarin.Interactive.CodeAnalysis
 {
     [Serializable]
-    sealed class Compilation : ICompilation
+    public sealed class Compilation : ICompilation
     {
         AssemblyDefinition ICompilation.Assembly => ExecutableAssembly;
 

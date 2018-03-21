@@ -12,11 +12,11 @@ using Xamarin.Interactive.Representations.Reflection;
 
 namespace Xamarin.Interactive.CodeAnalysis.Events
 {
-    sealed class CodeCellResultEvent : ICodeCellEvent
+    public sealed class CodeCellResultEvent : ICodeCellEvent
     {
         public CodeCellId CodeCellId { get; }
         public EvaluationResultHandling ResultHandling { get; }
-        public RepresentedType Type { get; }
+        public IRepresentedType Type { get; }
         public IReadOnlyList<object> ValueRepresentations { get; }
 
         public CodeCellResultEvent (

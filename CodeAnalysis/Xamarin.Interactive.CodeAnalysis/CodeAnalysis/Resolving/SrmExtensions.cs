@@ -14,7 +14,9 @@ using System.Reflection.Metadata;
 using System.Reflection.PortableExecutable;
 using System.Runtime.InteropServices;
 
-namespace Xamarin.Interactive.Reflection
+using SrmAssemblyDefinition = System.Reflection.Metadata.AssemblyDefinition;
+
+namespace Xamarin.Interactive.CodeAnalysis.Resolving
 {
     static class SrmExtensions
     {
@@ -34,7 +36,7 @@ namespace Xamarin.Interactive.Reflection
             return asmName;
         }
 
-        public static AssemblyName ReadAssemblyName (this AssemblyDefinition assemblyDefinition,
+        public static AssemblyName ReadAssemblyName (this SrmAssemblyDefinition assemblyDefinition,
             MetadataReader reader)
         {
             var asmName = ReadAssemblyName (

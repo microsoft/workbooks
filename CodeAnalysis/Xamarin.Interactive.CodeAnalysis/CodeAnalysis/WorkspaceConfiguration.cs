@@ -14,16 +14,14 @@ using System.Threading.Tasks;
 
 using Xamarin.Interactive.Client;
 using Xamarin.Interactive.CodeAnalysis.Resolving;
-using Xamarin.Interactive.Compilation;
 using Xamarin.Interactive.Core;
 using Xamarin.Interactive.Logging;
-using Xamarin.Interactive.Reflection;
 
-using static Xamarin.Interactive.Compilation.InteractiveDependencyResolver;
+using static Xamarin.Interactive.CodeAnalysis.Resolving.InteractiveDependencyResolver;
 
 namespace Xamarin.Interactive.CodeAnalysis
 {
-    sealed class WorkspaceConfiguration
+    public sealed class WorkspaceConfiguration
     {
         const string TAG = nameof (WorkspaceConfiguration);
 
@@ -48,7 +46,7 @@ namespace Xamarin.Interactive.CodeAnalysis
             HostObjectType = hostObjectType;
         }
 
-        public static async Task<WorkspaceConfiguration> CreateAsync (
+        internal static async Task<WorkspaceConfiguration> CreateAsync (
             IAgentConnection agent,
             ClientSessionKind sessionKind,
             CancellationToken cancellationToken = default)

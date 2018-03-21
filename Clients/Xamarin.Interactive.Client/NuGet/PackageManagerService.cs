@@ -14,9 +14,8 @@ using Xamarin.Interactive.CodeAnalysis;
 using Xamarin.Interactive.CodeAnalysis.Resolving;
 using Xamarin.Interactive.Core;
 using Xamarin.Interactive.Logging;
-using Xamarin.Interactive.Reflection;
 
-using static Xamarin.Interactive.Compilation.InteractiveDependencyResolver;
+using static Xamarin.Interactive.CodeAnalysis.Resolving.InteractiveDependencyResolver;
 
 namespace Xamarin.Interactive.NuGet
 {

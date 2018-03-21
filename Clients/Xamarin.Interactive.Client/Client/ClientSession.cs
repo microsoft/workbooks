@@ -14,12 +14,12 @@ using System.Threading.Tasks;
 
 using Xamarin.Interactive.Client.ViewControllers;
 using Xamarin.Interactive.CodeAnalysis;
+using Xamarin.Interactive.CodeAnalysis.Resolving;
 using Xamarin.Interactive.Core;
 using Xamarin.Interactive.I18N;
 using Xamarin.Interactive.Logging;
 using Xamarin.Interactive.Messages;
 using Xamarin.Interactive.NuGet;
-using Xamarin.Interactive.Reflection;
 using Xamarin.Interactive.Workbook.LoadAndSave;
 using Xamarin.Interactive.Workbook.Models;
 using Xamarin.Interactive.Workbook.NewWorkbookFeatures;

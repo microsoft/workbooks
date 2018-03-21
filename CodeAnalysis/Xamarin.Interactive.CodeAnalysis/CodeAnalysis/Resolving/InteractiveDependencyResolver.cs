@@ -19,17 +19,15 @@ using System.Reflection.PortableExecutable;
 using Microsoft.CodeAnalysis;
 
 using Xamarin.Interactive.CodeAnalysis;
-using Xamarin.Interactive.CodeAnalysis.Resolving;
 using Xamarin.Interactive.Core;
 using Xamarin.Interactive.Logging;
-using Xamarin.Interactive.Reflection;
 
 using AssemblyIdentity = Xamarin.Interactive.CodeAnalysis.Resolving.AssemblyIdentity;
 using AssemblyDefinition = Xamarin.Interactive.CodeAnalysis.Resolving.AssemblyDefinition;
 
-namespace Xamarin.Interactive.Compilation
+namespace Xamarin.Interactive.CodeAnalysis.Resolving
 {
-    class InteractiveDependencyResolver : NativeDependencyResolver
+    public class InteractiveDependencyResolver : NativeDependencyResolver
     {
         const string TAG = nameof (InteractiveDependencyResolver);
 
@@ -43,7 +41,7 @@ namespace Xamarin.Interactive.Compilation
             "Inspector",
             "Remote Assembly Temp");
 
-        public InteractiveDependencyResolver (AgentType agentType) : base (agentType)
+        internal InteractiveDependencyResolver (AgentType agentType) : base (agentType)
         {
             var consoleOrWpf = AgentType == AgentType.WPF || AgentType == AgentType.Console;;
             UseGacCache = consoleOrWpf || AgentType == AgentType.MacNet45;
@@ -85,7 +83,7 @@ namespace Xamarin.Interactive.Compilation
         public void AddDefaultReferences (IEnumerable<AssemblyDefinition> defaultReferences)
             => this.defaultReferences = defaultReferences.ToImmutableArray ();
 
-        public ImmutableArray<PortableExecutableReference> ResolveDefaultReferences ()
+        public ImmutableArray<ResolvedAssembly> ResolveDefaultReferences ()
         {
             foreach (var defaultReference in defaultReferences) {
                 if (defaultReference.Content.PEImage == null)
@@ -94,9 +92,7 @@ namespace Xamarin.Interactive.Compilation
                 CacheRemoteAssembly (defaultReference);
             }
 
-            return Resolve (defaultReferences)
-                .Select (r => MetadataReference.CreateFromFile (r.Path))
-                .ToImmutableArray ();
+            return Resolve (defaultReferences);
         }
 
         public string CacheRemoteAssembly (AssemblyDefinition remoteAssembly)
@@ -180,14 +176,5 @@ namespace Xamarin.Interactive.Compilation
                 return null;
             }
         }
-
-        public Task<AssemblyDefinition []> ResolveReferencesAsync (IEnumerable<MetadataReference> references,
-            bool includePeImages, CancellationToken cancellationToken)
-            => ResolveReferencesAsync (
-                references
-                    .OfType<PortableExecutableReference> ()
-                    .Select (r => new FilePath (r.FilePath)),
-                includePeImages,
-                cancellationToken);
     }
 }

@@ -7,13 +7,13 @@
 
 using Xamarin.Interactive.Core;
 
-namespace Xamarin.Interactive.Reflection
+namespace Xamarin.Interactive.CodeAnalysis.Resolving
 {
-    class NativeDependency : ExternalDependency
+    public class NativeDependency : ExternalDependency
     {
         public string Name { get; }
 
-        public NativeDependency (string name, FilePath location) : base (location)
+        internal NativeDependency (string name, FilePath location) : base (location)
         {
             Name = name;
         }

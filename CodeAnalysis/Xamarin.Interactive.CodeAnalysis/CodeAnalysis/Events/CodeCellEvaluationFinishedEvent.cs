@@ -12,7 +12,7 @@ using Xamarin.Interactive.CodeAnalysis.Models;
 
 namespace Xamarin.Interactive.CodeAnalysis.Events
 {
-    struct CodeCellEvaluationFinishedEvent : ICodeCellEvent
+    public struct CodeCellEvaluationFinishedEvent : ICodeCellEvent
     {
         public CodeCellId CodeCellId { get; }
         public CodeCellEvaluationStatus Status { get; }

@@ -16,14 +16,12 @@ using System.Reflection.PortableExecutable;
 using System.Threading;
 using System.Threading.Tasks;
 
-using Xamarin.Interactive.Compilation;
 using Xamarin.Interactive.Core;
 using Xamarin.Interactive.Logging;
-using Xamarin.Interactive.SystemInformation;
 
-namespace Xamarin.Interactive.Reflection
+namespace Xamarin.Interactive.CodeAnalysis.Resolving
 {
-    static class GacCache
+    public static class GacCache
     {
         const string TAG = nameof (GacCache);
 
@@ -61,7 +59,7 @@ namespace Xamarin.Interactive.Reflection
             }
         }
 
-        public static readonly IReadOnlyList<string> GacPaths = GetGacPaths ();
+        public static IReadOnlyList<string> GacPaths { get; } = GetGacPaths ();
 
         public static bool TryGetCachedFilePaths (FilePath key, out ImmutableArray<FilePath> files)
             => CachedPaths.TryGetValue (key, out files);
@@ -73,7 +71,7 @@ namespace Xamarin.Interactive.Reflection
             out ResolvedAssembly resolvedAssembly)
             => CachedResolvedAssemblies.TryGetValue (assemblyName, out resolvedAssembly);
 
-        public static void Initialize ()
+        internal static void Initialize ()
         {
             InitializingTask = Task.Run (() => {
                 var gacPaths = GacPaths;

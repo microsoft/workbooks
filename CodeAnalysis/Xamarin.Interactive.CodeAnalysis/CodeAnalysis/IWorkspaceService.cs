@@ -14,7 +14,7 @@ using Xamarin.Interactive.CodeAnalysis.Models;
 
 namespace Xamarin.Interactive.CodeAnalysis
 {
-    interface IWorkspaceService
+    public interface IWorkspaceService
     {
         EvaluationContextId EvaluationContextId { get; }
 

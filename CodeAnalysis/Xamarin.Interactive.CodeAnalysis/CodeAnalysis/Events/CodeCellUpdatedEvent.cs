@@ -11,7 +11,7 @@ using Xamarin.Interactive.CodeAnalysis.Models;
 
 namespace Xamarin.Interactive.CodeAnalysis.Events
 {
-    struct CodeCellUpdatedEvent : ICodeCellEvent
+    public struct CodeCellUpdatedEvent : ICodeCellEvent
     {
         public CodeCellId CodeCellId { get; }
         public bool IsSubmissionComplete { get; }

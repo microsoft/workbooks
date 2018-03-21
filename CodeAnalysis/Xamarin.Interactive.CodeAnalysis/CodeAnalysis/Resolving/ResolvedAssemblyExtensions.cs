@@ -9,7 +9,7 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Threading;
 
-namespace Xamarin.Interactive.Reflection
+namespace Xamarin.Interactive.CodeAnalysis.Resolving
 {
     static class ResolvedAssemblyExtensions
     {

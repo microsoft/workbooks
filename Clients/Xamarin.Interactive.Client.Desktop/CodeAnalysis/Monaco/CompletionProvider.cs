@@ -11,6 +11,7 @@ using System.Threading;
 
 using Xamarin.CrossBrowser;
 
+using Xamarin.Interactive.CodeAnalysis;
 using Xamarin.Interactive.CodeAnalysis.Models;
 
 namespace Xamarin.Interactive.CodeAnalysis.Monaco

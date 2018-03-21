@@ -30,6 +30,15 @@
   </Target>
 
   <Target
+    Name="TestsProfile"
+    AfterTargets="CoreProfile">
+    <ItemGroup>
+      <ProjectsToBuild Include="Tests\Xamarin.Interactive.Tests\*.csproj" />
+      <ProjectsToBuild Include="Tests\Xamarin.Interactive.Tests.Core\*.csproj" />
+    </ItemGroup>
+  </Target>
+
+  <Target
     Name="CoreWorkbookAppsProfile">
     <ItemGroup>
       <ProjectsToBuild Include="Agents\Xamarin.Interactive.Console\*.csproj"/>

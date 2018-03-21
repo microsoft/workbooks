@@ -16,16 +16,14 @@ using System.Reflection.Metadata;
 using System.Reflection.PortableExecutable;
 using System.Threading;
 
-using Xamarin.Interactive.CodeAnalysis;
-using Xamarin.Interactive.CodeAnalysis.Resolving;
 using Xamarin.Interactive.Core;
 using Xamarin.Interactive.Logging;
 
 using AssemblyDefinition = Xamarin.Interactive.CodeAnalysis.Resolving.AssemblyDefinition;
 
-namespace Xamarin.Interactive.Reflection
+namespace Xamarin.Interactive.CodeAnalysis.Resolving
 {
-    class DependencyResolver
+    public class DependencyResolver
     {
         protected struct SearchPath
         {

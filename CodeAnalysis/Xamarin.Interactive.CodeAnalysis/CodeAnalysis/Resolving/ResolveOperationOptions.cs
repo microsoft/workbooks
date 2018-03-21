@@ -7,10 +7,10 @@
 
 using System;
 
-namespace Xamarin.Interactive.Reflection
+namespace Xamarin.Interactive.CodeAnalysis.Resolving
 {
     [Flags]
-    enum ResolveOperationOptions
+    public enum ResolveOperationOptions
     {
         None = 0,
         ResolveReferences = 1 << 0,

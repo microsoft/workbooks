@@ -15,9 +15,7 @@ using NUnit.Framework;
 
 using Should;
 
-using Xamarin.Interactive.Reflection;
-
-namespace Xamarin.Interactive.Tests
+namespace Xamarin.Interactive.CodeAnalysis.Resolving
 {
     [TestFixture]
     public class SrmExtensionsTests

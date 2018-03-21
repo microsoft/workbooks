@@ -14,7 +14,6 @@ using System.Threading;
 using System.Threading.Tasks;
 
 using Xamarin.Interactive.Core;
-using Xamarin.Interactive.Reflection;
 
 namespace Xamarin.Interactive.CodeAnalysis
 {

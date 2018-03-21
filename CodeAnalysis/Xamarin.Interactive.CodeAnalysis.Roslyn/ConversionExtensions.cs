@@ -25,13 +25,23 @@ namespace Xamarin.Interactive.Compilation.Roslyn
                 position.Character + 1);
 
         public static LinePositionSpan ToRoslyn (this PositionSpan span)
-            => new LinePositionSpan (
-                new LinePosition (
-                    span.StartLineNumber - 1,
-                    span.StartColumn - 1),
+        {
+            if (span.StartLineNumber < 1 || span.StartColumn < 1)
+                return default;
+
+            var start = new LinePosition (
+                span.StartLineNumber - 1,
+                span.StartColumn - 1);
+
+            if (span.EndLineNumber < 1 || span.EndColumn < 1)
+                return new LinePositionSpan (start, start);
+
+            return new LinePositionSpan (
+                start,
                 new LinePosition (
                     span.EndLineNumber - 1,
                     span.EndColumn - 1));
+        }
 
         public static PositionSpan FromRoslyn (this LinePositionSpan span)
             => new PositionSpan (
@@ -39,6 +49,20 @@ namespace Xamarin.Interactive.Compilation.Roslyn
                 span.Start.Character + 1,
                 span.End.Line + 1,
                 span.End.Character + 1);
+
+        public static PositionSpan FromRoslyn (this Location location)
+        {
+            var span = location.GetMappedLineSpan ();
+            if (!span.IsValid)
+                span = location.GetLineSpan ();
+
+            return new PositionSpan (
+                span.StartLinePosition.Line + 1,
+                span.StartLinePosition.Character + 1,
+                span.EndLinePosition.Line + 1,
+                span.EndLinePosition.Character + 1,
+                span.Path);
+        }
 
         public static CodeCellId ToCodeCellId (this DocumentId documentId)
             => new CodeCellId (documentId.ProjectId.Id, documentId.Id);
@@ -55,7 +79,7 @@ namespace Xamarin.Interactive.Compilation.Roslyn
 
         public static InteractiveDiagnostic ToInteractiveDiagnostic (this Diagnostic diagnostic)
             => new InteractiveDiagnostic (
-                PositionSpan.FromRoslyn (diagnostic.Location),
+                diagnostic.Location.FromRoslyn (),
                 (InteractiveDiagnosticSeverity)(int)diagnostic.Severity,
                 diagnostic.GetMessage (),
                 diagnostic.Id);

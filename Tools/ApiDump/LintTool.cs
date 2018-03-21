@@ -48,16 +48,26 @@ namespace ApiDump
                     typeDeclaration.Modifiers.HasFlag (Modifiers.Public) &&
                     !typeDeclaration.Modifiers.HasFlag (Modifiers.Sealed) &&
                     !typeDeclaration.Modifiers.HasFlag (Modifiers.Static) &&
-                    !typeDeclaration.Modifiers.HasFlag (Modifiers.Abstract) &&
-                    typeDeclaration.Name != "EvaluationContextGlobalObject") {
+                    !typeDeclaration.Modifiers.HasFlag (Modifiers.Abstract)) {
+                    switch (typeDeclaration.Name) {
+                    case "EvaluationContextGlobalObject":
+                    case "DependencyResolver":
+                    case "NativeDependencyResolver":
+                    case "InteractiveDependencyResolver":
+                    case "ExternalDependency":
+                    case "NativeDependency":
+                        goto visitBase;
+                    }
+
                     var clone = (TypeDeclaration)typeDeclaration.Clone ();
                     clone.Members.Clear ();
                     issues.Add (new Issue (
                         Rule.UnsealedPublicClass,
                         typeDeclaration,
-                        $"public non-static, non-abstract class should likely be sealed: {clone}"));
+                        $"public non-static, non-abstract class should likely be sealed. Fix or ignore in LintTool:\n{clone}"));
                 }
 
+            visitBase:
                 base.VisitTypeDeclaration (typeDeclaration);
             }
         }

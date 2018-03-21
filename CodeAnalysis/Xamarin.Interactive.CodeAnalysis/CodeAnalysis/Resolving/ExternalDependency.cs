@@ -7,13 +7,13 @@
 
 using Xamarin.Interactive.Core;
 
-namespace Xamarin.Interactive.Reflection
+namespace Xamarin.Interactive.CodeAnalysis.Resolving
 {
-    abstract class ExternalDependency
+    public abstract class ExternalDependency
     {
         public FilePath Location { get; }
 
-        protected ExternalDependency (FilePath location)
+        internal ExternalDependency (FilePath location)
         {
             Location = location;
         }

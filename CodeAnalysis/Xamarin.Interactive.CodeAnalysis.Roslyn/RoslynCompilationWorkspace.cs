@@ -396,7 +396,10 @@ namespace Xamarin.Interactive.Compilation.Roslyn
             initialDiagnosticOptions = initialWarningSuppressions.ToImmutableDictionary (
                 warningId => warningId,
                 warningId => ReportDiagnostic.Suppress);
-            initialReferences = dependencyResolver.ResolveDefaultReferences ();
+            initialReferences = dependencyResolver
+                .ResolveDefaultReferences ()
+                .Select (r => PortableExecutableReference.CreateFromFile (r.Path))
+                .ToImmutableArray ();
 
             foreach (var implicitReference in byNameImplicitReferences) {
                 if (implicitReference == null)

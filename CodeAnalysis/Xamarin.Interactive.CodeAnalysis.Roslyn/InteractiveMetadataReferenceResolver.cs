@@ -11,7 +11,9 @@ using System.Reflection;
 
 using Microsoft.CodeAnalysis;
 
-using Xamarin.Interactive.Reflection;
+using Xamarin.Interactive.CodeAnalysis.Resolving;
+
+using AssemblyIdentity = Microsoft.CodeAnalysis.AssemblyIdentity;
 
 namespace Xamarin.Interactive.Compilation.Roslyn
 {

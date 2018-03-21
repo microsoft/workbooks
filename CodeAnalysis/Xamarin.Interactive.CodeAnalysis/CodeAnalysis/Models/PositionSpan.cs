@@ -1,9 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
-using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.Text;
-
 using Newtonsoft.Json;
 
 namespace Xamarin.Interactive.CodeAnalysis.Models
@@ -53,35 +50,6 @@ namespace Xamarin.Interactive.CodeAnalysis.Models
             startColumn = StartColumn;
             endLineNumber = EndLineNumber;
             endColumn = EndColumn;
-        }
-
-        internal static PositionSpan FromRoslyn (Location location)
-        {
-            var span = location.GetMappedLineSpan ();
-            if (!span.IsValid)
-                span = location.GetLineSpan ();
-
-            return new PositionSpan (
-                span.StartLinePosition.Line + 1,
-                span.StartLinePosition.Character + 1,
-                span.EndLinePosition.Line + 1,
-                span.EndLinePosition.Character + 1,
-                span.Path);
-        }
-
-        internal LinePositionSpan ToRoslyn ()
-        {
-            if (StartLineNumber < 1 || StartColumn < 1)
-                return default;
-                
-            var start = new LinePosition (StartLineNumber - 1, StartColumn - 1);
-
-            if (EndLineNumber < 1 || EndColumn < 1)
-                return new LinePositionSpan (start, start);
-
-            var end = new LinePosition (EndLineNumber - 1, EndColumn - 1);
-
-            return new LinePositionSpan (start, end);
         }
     }
 }

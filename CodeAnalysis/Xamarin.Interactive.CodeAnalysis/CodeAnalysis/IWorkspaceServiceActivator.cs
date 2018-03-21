@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Xamarin.Interactive.CodeAnalysis
 {
-    interface IWorkspaceServiceActivator
+    public interface IWorkspaceServiceActivator
     {
         Task<IWorkspaceService> CreateNew (
             LanguageDescription languageDescription,
