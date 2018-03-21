@@ -10,7 +10,7 @@ using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices;
 
-using Xamarin.Interactive.CodeAnalysis;
+using Xamarin.Interactive.CodeAnalysis.Resolving;
 
 namespace Xamarin.Interactive
 {

@@ -7,6 +7,8 @@
 
 using System;
 
+using Xamarin.Interactive.CodeAnalysis.Resolving;
+
 namespace Xamarin.Interactive.CodeAnalysis
 {
     [Serializable]

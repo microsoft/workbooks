@@ -10,6 +10,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
+using Xamarin.Interactive.CodeAnalysis.Resolving;
 using Xamarin.Interactive.Core;
 
 namespace Xamarin.Interactive.CodeAnalysis
@@ -45,7 +46,7 @@ namespace Xamarin.Interactive.CodeAnalysis
                     : null;
 
                 response.GlobalStateAssembly = new AssemblyDefinition (
-                    globalStateType.Assembly.GetName (),
+                    new AssemblyIdentity (globalStateType.Assembly.GetName ()),
                     globalStateType.Assembly.Location,
                     peImage: peImage);
             }

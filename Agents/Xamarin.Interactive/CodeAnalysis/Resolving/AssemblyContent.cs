@@ -1,7 +1,3 @@
-//
-// Author:
-//   Aaron Bockover <abock@xamarin.com>
-//
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
@@ -10,23 +6,23 @@ using System.IO;
 
 using Xamarin.Interactive.Core;
 
-namespace Xamarin.Interactive.CodeAnalysis
+namespace Xamarin.Interactive.CodeAnalysis.Resolving
 {
     [Serializable]
-    sealed class AssemblyContent : IAssemblyContent
+    public sealed class AssemblyContent
     {
         public FilePath Location { get; }
         public byte [] PEImage { get; }
         public byte [] DebugSymbols { get; }
 
-        public AssemblyContent (FilePath location, byte [] peImage, byte [] debugSymbols)
+        internal AssemblyContent (FilePath location, byte [] peImage, byte [] debugSymbols)
         {
             Location = location;
             PEImage = peImage;
             DebugSymbols = debugSymbols;
         }
 
-        Stream IAssemblyContent.OpenPEImage ()
+        public Stream OpenPEImage ()
         {
             if (PEImage != null)
                 return new MemoryStream (

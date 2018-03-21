@@ -9,7 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 
-using Xamarin.Interactive.CodeAnalysis;
+using Xamarin.Interactive.CodeAnalysis.Resolving;
 using Xamarin.Interactive.Protocol;
 
 namespace Xamarin.Interactive.Core
@@ -37,7 +37,7 @@ namespace Xamarin.Interactive.Core
                         : null;
 
                     assemblies.Add (new AssemblyDefinition (
-                        asm.GetName (),
+                        new AssemblyIdentity (asm.GetName ()),
                         asm.Location,
                         peImage: peImage));
                 }

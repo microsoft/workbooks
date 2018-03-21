@@ -1,21 +1,17 @@
-//
-// Author:
-//   Aaron Bockover <abock@xamarin.com>
-//
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
 using System;
 
-namespace Xamarin.Interactive.CodeAnalysis
+namespace Xamarin.Interactive.CodeAnalysis.Resolving
 {
     [Serializable]
-    sealed class AssemblyEntryPoint : IAssemblyEntryPoint
+    public struct AssemblyEntryPoint
     {
         public string TypeName { get; }
         public string MethodName { get; }
 
-        public AssemblyEntryPoint (string typeName, string methodName)
+        internal AssemblyEntryPoint (string typeName, string methodName)
         {
             TypeName = typeName;
             MethodName = methodName;

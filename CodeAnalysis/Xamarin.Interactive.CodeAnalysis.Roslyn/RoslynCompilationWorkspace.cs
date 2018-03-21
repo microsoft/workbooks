@@ -17,6 +17,7 @@ using System.Threading.Tasks;
 
 using Xamarin.Interactive.CodeAnalysis;
 using Xamarin.Interactive.CodeAnalysis.Models;
+using Xamarin.Interactive.CodeAnalysis.Resolving;
 using Xamarin.Interactive.CodeAnalysis.Roslyn;
 
 [assembly: Xamarin.Interactive.CodeAnalysis.WorkspaceService (

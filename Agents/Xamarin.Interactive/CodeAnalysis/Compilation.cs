@@ -8,12 +8,14 @@
 using System;
 using System.Collections.Generic;
 
+using Xamarin.Interactive.CodeAnalysis.Resolving;
+
 namespace Xamarin.Interactive.CodeAnalysis
 {
     [Serializable]
     sealed class Compilation : ICompilation
     {
-        IAssemblyDefinition ICompilation.Assembly => ExecutableAssembly;
+        AssemblyDefinition ICompilation.Assembly => ExecutableAssembly;
 
         public CodeCellId CodeCellId { get; }
         public int SubmissionNumber { get; }

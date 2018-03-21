@@ -17,8 +17,11 @@ using System.Reflection.PortableExecutable;
 using System.Threading;
 
 using Xamarin.Interactive.CodeAnalysis;
+using Xamarin.Interactive.CodeAnalysis.Resolving;
 using Xamarin.Interactive.Core;
 using Xamarin.Interactive.Logging;
+
+using AssemblyDefinition = Xamarin.Interactive.CodeAnalysis.Resolving.AssemblyDefinition;
 
 namespace Xamarin.Interactive.Reflection
 {
@@ -158,7 +161,7 @@ namespace Xamarin.Interactive.Reflection
         }
 
         public ImmutableArray<ResolvedAssembly> Resolve (
-            IEnumerable<CodeAnalysis.AssemblyDefinition> assemblies,
+            IEnumerable<AssemblyDefinition> assemblies,
             ResolveOperationOptions resolveOptions = ResolveOperationOptions.ResolveReferences,
             bool resolveByNameFallback = true,
             CancellationToken cancellationToken = default (CancellationToken))

@@ -14,6 +14,7 @@ using System.Text;
 using Microsoft.CodeAnalysis;
 
 using Xamarin.Interactive.CodeAnalysis;
+using Xamarin.Interactive.CodeAnalysis.Resolving;
 
 namespace Xamarin.Interactive.Compilation.Roslyn
 {
@@ -34,11 +35,11 @@ namespace Xamarin.Interactive.Compilation.Roslyn
     /// last four bytes will be patched/rewritten to be a ToString'd number (0000-9999) representing
     /// the number of times that submission has been re-evaluated, thus making the resulting assembly
     /// for a submission always unique (until the 10000th edit explodes the world).
-    /// 
+    ///
     /// 8 bytes of magic is chosen simply to perform fixed ulong compares by dereferencing a byte
     /// pointer since we have to check every single byte in the image (unless we find a match,
     /// in which case we can skip ahead a little to perform the next check).
-    /// 
+    ///
     /// We need to fix the Mono runtime.
     /// </remarks>
     sealed class MonoScriptCompilationPatcher
@@ -79,7 +80,7 @@ namespace Xamarin.Interactive.Compilation.Roslyn
                     patchVersion = documentVersion;
                     isAssemblyName = true;
                 } else
-                    // otherwise we should have seen this reference from a 
+                    // otherwise we should have seen this reference from a
                     // previous patch, so get the patch number from the map
                     referenceRewrites.TryGetValue (name, out patchVersion);
 

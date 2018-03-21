@@ -14,6 +14,7 @@ using System.Windows;
 using System.Windows.Input;
 
 using Xamarin.Interactive.CodeAnalysis;
+using Xamarin.Interactive.CodeAnalysis.Resolving;
 using Xamarin.Interactive.Core;
 using Xamarin.Interactive.Inspection;
 using Xamarin.Interactive.Logging;

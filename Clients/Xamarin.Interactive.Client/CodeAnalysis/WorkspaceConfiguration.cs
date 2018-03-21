@@ -13,6 +13,7 @@ using System.Threading;
 using System.Threading.Tasks;
 
 using Xamarin.Interactive.Client;
+using Xamarin.Interactive.CodeAnalysis.Resolving;
 using Xamarin.Interactive.Compilation;
 using Xamarin.Interactive.Core;
 using Xamarin.Interactive.Logging;

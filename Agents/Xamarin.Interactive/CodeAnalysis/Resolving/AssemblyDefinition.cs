@@ -1,7 +1,3 @@
-//
-// Author:
-//   Aaron Bockover <abock@xamarin.com>
-//
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
@@ -9,24 +5,19 @@ using System;
 using System.Reflection;
 
 using Xamarin.Interactive.Core;
-using Xamarin.Interactive.Representations.Reflection;
 
-namespace Xamarin.Interactive.CodeAnalysis
+namespace Xamarin.Interactive.CodeAnalysis.Resolving
 {
     [Serializable]
-    sealed class AssemblyDefinition : IAssemblyDefinition
+    public sealed class AssemblyDefinition
     {
-        IAssemblyIdentity IAssemblyDefinition.Identity => Name;
-        IAssemblyContent IAssemblyDefinition.Content => Content;
-        IAssemblyEntryPoint IAssemblyDefinition.EntryPoint => EntryPoint;
-
-        public RepresentedAssemblyName Name { get; }
+        public AssemblyIdentity Name { get; }
         public AssemblyEntryPoint EntryPoint { get; }
         public AssemblyContent Content { get; }
         public AssemblyDependency [] ExternalDependencies { get; }
         public bool HasIntegration { get; }
 
-        public AssemblyDefinition (
+        internal AssemblyDefinition (
             AssemblyName name,
             FilePath location,
             string entryPointType = null,
@@ -35,8 +26,29 @@ namespace Xamarin.Interactive.CodeAnalysis
             byte [] debugSymbols = null,
             AssemblyDependency [] externalDependencies = null,
             bool hasIntegration = false)
+            : this (
+                new AssemblyIdentity (name),
+                location,
+                entryPointType,
+                entryPointMethod,
+                peImage,
+                debugSymbols,
+                externalDependencies,
+                hasIntegration)
         {
-            Name = new RepresentedAssemblyName (name);
+        }
+
+        internal AssemblyDefinition (
+            AssemblyIdentity name,
+            FilePath location,
+            string entryPointType = null,
+            string entryPointMethod = null,
+            byte [] peImage = null,
+            byte [] debugSymbols = null,
+            AssemblyDependency [] externalDependencies = null,
+            bool hasIntegration = false)
+        {
+            Name = name;
             EntryPoint = new AssemblyEntryPoint (entryPointType, entryPointMethod);
             Content = new AssemblyContent (location, peImage, debugSymbols);
             ExternalDependencies = externalDependencies;

@@ -8,7 +8,7 @@
 using System;
 using System.Linq;
 
-using Xamarin.Interactive.Representations.Reflection;
+using Xamarin.Interactive.CodeAnalysis.Resolving;
 
 namespace Xamarin.Interactive.CodeAnalysis
 {
@@ -23,11 +23,11 @@ namespace Xamarin.Interactive.CodeAnalysis
         [Serializable]
         public struct ResultItem
         {
-            public RepresentedAssemblyName AssemblyName { get; }
+            public AssemblyIdentity AssemblyName { get; }
             public bool Success { get; }
             public bool InitializedAgentIntegration { get; }
 
-            public ResultItem (RepresentedAssemblyName assemblyName, bool success, bool initializedAgentIntegration)
+            public ResultItem (AssemblyIdentity assemblyName, bool success, bool initializedAgentIntegration)
             {
                 AssemblyName = assemblyName ?? throw new ArgumentNullException (nameof (assemblyName));
                 Success = success;

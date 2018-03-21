@@ -19,9 +19,13 @@ using System.Reflection.PortableExecutable;
 using Microsoft.CodeAnalysis;
 
 using Xamarin.Interactive.CodeAnalysis;
+using Xamarin.Interactive.CodeAnalysis.Resolving;
 using Xamarin.Interactive.Core;
 using Xamarin.Interactive.Logging;
 using Xamarin.Interactive.Reflection;
+
+using AssemblyIdentity = Xamarin.Interactive.CodeAnalysis.Resolving.AssemblyIdentity;
+using AssemblyDefinition = Xamarin.Interactive.CodeAnalysis.Resolving.AssemblyDefinition;
 
 namespace Xamarin.Interactive.Compilation
 {
@@ -29,7 +33,7 @@ namespace Xamarin.Interactive.Compilation
     {
         const string TAG = nameof (InteractiveDependencyResolver);
 
-        ImmutableArray<CodeAnalysis.AssemblyDefinition> defaultReferences;
+        ImmutableArray<AssemblyDefinition> defaultReferences;
 
         // HACK: This is a temporary fix to get iOS agent/app assemblies sent to the
         //       Windows client when using the remote sim.
@@ -78,7 +82,7 @@ namespace Xamarin.Interactive.Compilation
             return resolvedAssembly;
         }
 
-        public void AddDefaultReferences (IEnumerable<CodeAnalysis.AssemblyDefinition> defaultReferences)
+        public void AddDefaultReferences (IEnumerable<AssemblyDefinition> defaultReferences)
             => this.defaultReferences = defaultReferences.ToImmutableArray ();
 
         public ImmutableArray<PortableExecutableReference> ResolveDefaultReferences ()
@@ -95,7 +99,7 @@ namespace Xamarin.Interactive.Compilation
                 .ToImmutableArray ();
         }
 
-        public string CacheRemoteAssembly (CodeAnalysis.AssemblyDefinition remoteAssembly)
+        public string CacheRemoteAssembly (AssemblyDefinition remoteAssembly)
         {
             if (remoteAssembly.Content.PEImage == null)
                 throw new ArgumentException ("PEImage must not be null", nameof (remoteAssembly));
@@ -112,11 +116,11 @@ namespace Xamarin.Interactive.Compilation
             return path;
         }
 
-        public Task<CodeAnalysis.AssemblyDefinition []> ResolveReferencesAsync (IEnumerable<FilePath> references,
+        public Task<AssemblyDefinition []> ResolveReferencesAsync (IEnumerable<FilePath> references,
             bool includePeImages, CancellationToken cancellationToken)
         {
             if (references == null || !references.Any ())
-                return Task.FromResult (Array.Empty <CodeAnalysis.AssemblyDefinition> ());
+                return Task.FromResult (Array.Empty <AssemblyDefinition> ());
 
             return Task.Run (() => {
                 var stopwatch = new Stopwatch ();
@@ -131,7 +135,7 @@ namespace Xamarin.Interactive.Compilation
                                 d.Location,
                                 includePeImages ? GetFileBytes (d.Location) : null))
                             .ToArray ();
-                        return new CodeAnalysis.AssemblyDefinition (
+                        return new AssemblyDefinition (
                             r.AssemblyName,
                             r.Path,
                             hasIntegration: r.HasIntegration,
@@ -177,7 +181,7 @@ namespace Xamarin.Interactive.Compilation
             }
         }
 
-        public Task<CodeAnalysis.AssemblyDefinition []> ResolveReferencesAsync (IEnumerable<MetadataReference> references,
+        public Task<AssemblyDefinition []> ResolveReferencesAsync (IEnumerable<MetadataReference> references,
             bool includePeImages, CancellationToken cancellationToken)
             => ResolveReferencesAsync (
                 references

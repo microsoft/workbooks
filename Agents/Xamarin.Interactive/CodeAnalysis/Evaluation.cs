@@ -10,6 +10,8 @@ using System;
 using Xamarin.Interactive.Protocol;
 using Xamarin.Interactive.Representations.Reflection;
 
+using Xamarin.Interactive.CodeAnalysis.Resolving;
+
 namespace Xamarin.Interactive.CodeAnalysis
 {
     [Serializable]

@@ -12,6 +12,8 @@ using System.Reflection;
 
 using Xamarin.Interactive.Logging;
 
+using Xamarin.Interactive.CodeAnalysis.Resolving;
+
 namespace Xamarin.Interactive.CodeAnalysis
 {
     sealed class EvaluationAssemblyContext : IDisposable

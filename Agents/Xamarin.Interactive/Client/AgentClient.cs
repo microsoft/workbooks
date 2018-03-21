@@ -18,6 +18,7 @@ using System.Threading;
 using System.Threading.Tasks;
 
 using Xamarin.Interactive.CodeAnalysis;
+using Xamarin.Interactive.CodeAnalysis.Resolving;
 using Xamarin.Interactive.Core;
 using Xamarin.Interactive.Logging;
 using Xamarin.Interactive.Protocol;
