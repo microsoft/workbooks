@@ -38,7 +38,7 @@ namespace Xamarin.Interactive.Workbook.Models
         {
         }
 
-        public void RenderDiagnostic (InteractiveDiagnostic diagnostic)
+        public void RenderDiagnostic (Diagnostic diagnostic)
         {
         }
 

@@ -20,6 +20,9 @@ using Xamarin.Interactive.CodeAnalysis.Models;
 using Xamarin.Interactive.CodeAnalysis.Resolving;
 using Xamarin.Interactive.CodeAnalysis.Roslyn;
 
+using InteractiveDiagnostic = Xamarin.Interactive.CodeAnalysis.Models.Diagnostic;
+using InteractiveDiagnosticSeverity = Xamarin.Interactive.CodeAnalysis.Models.DiagnosticSeverity;
+
 [assembly: Xamarin.Interactive.CodeAnalysis.WorkspaceService (
     "csharp",
     typeof (Xamarin.Interactive.Compilation.Roslyn.RoslynCompilationWorkspace.Activator))]

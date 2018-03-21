@@ -37,14 +37,14 @@ namespace Xamarin.Interactive.CodeAnalysis
 
         bool IsCellOutdated (CodeCellId cellId);
 
-        Task<ImmutableList<InteractiveDiagnostic>> GetCellDiagnosticsAsync (
+        Task<ImmutableList<Diagnostic>> GetCellDiagnosticsAsync (
             CodeCellId cellId,
             CancellationToken cancellationToken = default);
 
         // FIXME: extend Compilation with Diagnostics, but this will
         // require moving more into XI that currently lives in XIC
         // -abock, 2018-03-08
-        Task<(Compilation compilation, ImmutableList<InteractiveDiagnostic> diagnostics)> GetCellCompilationAsync (
+        Task<(Compilation compilation, ImmutableList<Diagnostic> diagnostics)> GetCellCompilationAsync (
             CodeCellId cellId,
             IEvaluationEnvironment evaluationEnvironment,
             CancellationToken cancellationToken = default);

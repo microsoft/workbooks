@@ -6,27 +6,27 @@ using Newtonsoft.Json;
 namespace Xamarin.Interactive.CodeAnalysis.Models
 {
     [InteractiveSerializable ("evaluation.Diagnostic")]
-    public struct InteractiveDiagnostic
+    public struct Diagnostic
     {
-        public PositionSpan Span { get; }
-        public InteractiveDiagnosticSeverity Severity { get; }
+        public Range Range { get; }
+        public DiagnosticSeverity Severity { get; }
         public string Message { get; }
         public string Id { get; }
 
         [JsonConstructor]
-        public InteractiveDiagnostic (
-            PositionSpan span,
-            InteractiveDiagnosticSeverity severity,
+        public Diagnostic (
+            Range range,
+            DiagnosticSeverity severity,
             string message,
             string id)
         {
-            Span = span;
+            Range = range;
             Severity = severity;
             Message = message;
             Id = id;
         }
 
-        public InteractiveDiagnostic (InteractiveDiagnosticSeverity severity, string message)
+        public Diagnostic (DiagnosticSeverity severity, string message)
             : this (default, severity, message, null)
         {
         }

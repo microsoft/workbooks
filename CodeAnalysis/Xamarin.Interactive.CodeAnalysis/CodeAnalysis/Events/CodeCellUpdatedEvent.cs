@@ -15,12 +15,12 @@ namespace Xamarin.Interactive.CodeAnalysis.Events
     {
         public CodeCellId CodeCellId { get; }
         public bool IsSubmissionComplete { get; }
-        public IReadOnlyList<InteractiveDiagnostic> Diagnostics { get; }
+        public IReadOnlyList<Diagnostic> Diagnostics { get; }
 
         public CodeCellUpdatedEvent (
             CodeCellId codeCellId,
             bool isSubmissionComplete,
-            IReadOnlyList<InteractiveDiagnostic> diagnostics)
+            IReadOnlyList<Diagnostic> diagnostics)
         {
             CodeCellId = codeCellId;
             IsSubmissionComplete = isSubmissionComplete;

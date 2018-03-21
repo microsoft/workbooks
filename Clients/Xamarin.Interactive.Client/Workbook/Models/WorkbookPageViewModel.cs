@@ -530,14 +530,14 @@ namespace Xamarin.Interactive.Workbook.Models
             if (!ClientSession.Agent.IsConnected || ClientSession.CompilationWorkspace == null) {
                 codeCellState.View.IsEvaluating = false;
                 codeCellState.View.HasErrorDiagnostics = true;
-                codeCellState.View.RenderDiagnostic (new InteractiveDiagnostic (
-                    InteractiveDiagnosticSeverity.Error,
+                codeCellState.View.RenderDiagnostic (new Diagnostic (
+                    DiagnosticSeverity.Error,
                     "Cannot evaluate: not connected to agent."));
                 return CodeCellEvaluationStatus.Disconnected;
             }
 
             CodeAnalysis.Compilation compilation = null;
-            ImmutableList<InteractiveDiagnostic> diagnostics = null;
+            ImmutableList<Diagnostic> diagnostics = null;
             ExceptionNode exception = null;
             bool agentTerminatedWhileEvaluating = false;
 
@@ -560,7 +560,7 @@ namespace Xamarin.Interactive.Workbook.Models
             }
 
             var hasErrorDiagnostics = codeCellState.View.HasErrorDiagnostics = diagnostics
-                .Any (d => d.Severity == InteractiveDiagnosticSeverity.Error);
+                .Any (d => d.Severity == DiagnosticSeverity.Error);
 
             foreach (var diagnostic in diagnostics)
                 codeCellState.View.RenderDiagnostic (diagnostic);
@@ -579,8 +579,8 @@ namespace Xamarin.Interactive.Workbook.Models
                 Log.Error (TAG, "marking agent as terminated", e);
                 agentTerminatedWhileEvaluating = true;
                 codeCellState.View.HasErrorDiagnostics = true;
-                codeCellState.View.RenderDiagnostic (new InteractiveDiagnostic (
-                    InteractiveDiagnosticSeverity.Error,
+                codeCellState.View.RenderDiagnostic (new Diagnostic (
+                    DiagnosticSeverity.Error,
                     Catalog.GetString (
                         "The application terminated during evaluation of this cell. " +
                         "Run this cell manually to try again.")));
@@ -667,8 +667,8 @@ namespace Xamarin.Interactive.Workbook.Models
             if (result.Result is RepresentedObject ro &&
                 ro.Any (r => r is Guid guid && guid == EvaluationContextGlobalObject.clear)) {
                 if (ClientSession.SessionKind == ClientSessionKind.Workbook)
-                    codeCellState.View.RenderDiagnostic (new InteractiveDiagnostic (
-                        InteractiveDiagnosticSeverity.Error,
+                    codeCellState.View.RenderDiagnostic (new Diagnostic (
+                        DiagnosticSeverity.Error,
                         "'clear' is not supported for Workbooks"));
                 else
                     ClearAllCellViews ();

@@ -131,10 +131,10 @@ namespace Xamarin.Interactive.Workbook.Views
 
         public void ClearMarkedText () => codeEditor.clearMarkedText ();
 
-        void MarkText (PositionSpan span,
+        void MarkText (Xamarin.Interactive.CodeAnalysis.Models.Range range,
             string className = null,
             string title = null)
-            => codeEditor.markText (jsContext.ToMonacoRange (span), className, title);
+            => codeEditor.markText (jsContext.ToMonacoRange (range), className, title);
 
         dynamic HandleEnter (dynamic self, dynamic args)
         {
@@ -249,9 +249,9 @@ namespace Xamarin.Interactive.Workbook.Views
                 cancellationToken);
 
             foreach (var diag in diagnostics) {
-                if (diag.Severity == InteractiveDiagnosticSeverity.Error)
+                if (diag.Severity == DiagnosticSeverity.Error)
                     MarkText (
-                        diag.Span,
+                        diag.Range,
                         "CodeMirror-diagnostic",
                         diag.Message);
             }

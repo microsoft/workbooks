@@ -67,12 +67,12 @@ namespace Xamarin.Interactive.CodeAnalysis.Monaco
             }));
         }
 
-        public static dynamic ToMonacoRange (this ScriptContext context, PositionSpan span)
+        public static dynamic ToMonacoRange (this ScriptContext context, Models.Range range)
             => context.CreateObject (o => {
-                o.startLineNumber = span.StartLineNumber;
-                o.startColumn = span.StartColumn;
-                o.endLineNumber = span.EndLineNumber;
-                o.endColumn = span.EndColumn;
+                o.startLineNumber = range.StartLineNumber;
+                o.startColumn = range.StartColumn;
+                o.endLineNumber = range.EndLineNumber;
+                o.endColumn = range.EndColumn;
             });
 
         public static dynamic ToMonacoPosition (this ScriptContext context, Position position)

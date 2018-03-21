@@ -8,12 +8,12 @@ namespace Xamarin.Interactive.CodeAnalysis.Models
     [MonacoSerializable ("monaco.languages.Hover")]
     public struct Hover
     {
-        public PositionSpan Range { get; }
+        public Range Range { get; }
         public string [] Contents { get; }
 
         [JsonConstructor]
         public Hover (
-            PositionSpan range,
+            Range range,
             string [] contents)
         {
             Range = range;

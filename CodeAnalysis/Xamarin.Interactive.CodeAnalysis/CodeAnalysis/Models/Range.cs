@@ -9,7 +9,7 @@ namespace Xamarin.Interactive.CodeAnalysis.Models
     /// Represents a 1-based span in a buffer with an optional file path.
     /// </summary>
     [MonacoSerializable ("monaco.IRange")]
-    public struct PositionSpan
+    public struct Range
     {
         public int StartLineNumber { get; }
         public int StartColumn { get; }
@@ -18,7 +18,7 @@ namespace Xamarin.Interactive.CodeAnalysis.Models
         public string FilePath { get; }
 
         [JsonConstructor]
-        public PositionSpan (
+        public Range (
             int startLineNumber,
             int startColumn,
             int endLineNumber,

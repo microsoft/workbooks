@@ -188,7 +188,7 @@ namespace Xamarin.Interactive.Workbook.Views
             }
         }
 
-        public void RenderDiagnostic (InteractiveDiagnostic diagnostic)
+        public void RenderDiagnostic (Diagnostic diagnostic)
         {
             if (diagnosticsElem == null) {
                 diagnosticsElem = CreateContentContainer ("diagnostics");
@@ -198,7 +198,7 @@ namespace Xamarin.Interactive.Workbook.Views
             }
 
             var displayMessage = new StringBuilder ();
-            var position = diagnostic.Span;
+            var position = diagnostic.Range;
             var severity = diagnostic.Severity.ToString ().ToLowerInvariant ();
 
             var listElem = diagnosticsElem.FirstElementChild;

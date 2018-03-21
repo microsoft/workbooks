@@ -48,8 +48,8 @@ namespace Xamarin.Interactive.CodeAnalysis
         {
             public CodeCellId CodeCellId { get; }
 
-            public ImmutableList<InteractiveDiagnostic> Diagnostics { get; set; }
-                = ImmutableList<InteractiveDiagnostic>.Empty;
+            public ImmutableList<Diagnostic> Diagnostics { get; set; }
+                = ImmutableList<Diagnostic>.Empty;
 
             public bool IsDirty { get; set; }
             public bool AgentTerminatedWhileEvaluating { get; set; }
@@ -403,14 +403,14 @@ namespace Xamarin.Interactive.CodeAnalysis
             CancellationToken cancellationToken = default)
         {
             if (!agentConnection.IsConnected) {
-                codeCellState.Diagnostics.Add (new InteractiveDiagnostic (
-                    InteractiveDiagnosticSeverity.Error,
+                codeCellState.Diagnostics.Add (new Diagnostic (
+                    DiagnosticSeverity.Error,
                     "Cannot evaluate: not connected to agent."));
                 return CodeCellEvaluationStatus.Disconnected;
             }
 
             Compilation compilation = null;
-            ImmutableList<InteractiveDiagnostic> diagnostics = null;
+            ImmutableList<Diagnostic> diagnostics = null;
             ExceptionNode exception = null;
 
             try {
@@ -449,8 +449,8 @@ namespace Xamarin.Interactive.CodeAnalysis
             } catch (Exception e) {
                 Log.Error (TAG, "marking agent as terminated", e);
                 codeCellState.AgentTerminatedWhileEvaluating = true;
-                codeCellState.Diagnostics.Add (new InteractiveDiagnostic (
-                    InteractiveDiagnosticSeverity.Error,
+                codeCellState.Diagnostics.Add (new Diagnostic (
+                    DiagnosticSeverity.Error,
                     Catalog.GetString (
                         "The application terminated during evaluation of this cell. " +
                         "Run this cell manually to try again.")));
@@ -464,7 +464,7 @@ namespace Xamarin.Interactive.CodeAnalysis
                     EvaluationResultHandling.Replace,
                     FilterException (exception)));
                 evaluationStatus = CodeCellEvaluationStatus.EvaluationException;
-            } else if (diagnostics.Any (d => d.Severity == InteractiveDiagnosticSeverity.Error)) {
+            } else if (diagnostics.Any (d => d.Severity == DiagnosticSeverity.Error)) {
                 return CodeCellEvaluationStatus.ErrorDiagnostic;
             } else if (codeCellState.AgentTerminatedWhileEvaluating) {
                 evaluationStatus = CodeCellEvaluationStatus.Disconnected;

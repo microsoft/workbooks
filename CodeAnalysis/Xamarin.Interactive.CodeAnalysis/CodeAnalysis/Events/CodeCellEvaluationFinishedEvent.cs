@@ -17,13 +17,13 @@ namespace Xamarin.Interactive.CodeAnalysis.Events
         public CodeCellId CodeCellId { get; }
         public CodeCellEvaluationStatus Status { get; }
         public bool ShouldStartNewCell { get; }
-        public IReadOnlyList<InteractiveDiagnostic> Diagnostics { get; }
+        public IReadOnlyList<Diagnostic> Diagnostics { get; }
 
         public CodeCellEvaluationFinishedEvent (
             CodeCellId codeCellId,
             CodeCellEvaluationStatus status,
             bool shouldStartNewCell,
-            IReadOnlyList<InteractiveDiagnostic> diagnostics)
+            IReadOnlyList<Diagnostic> diagnostics)
         {
             CodeCellId = codeCellId;
             Status = status;

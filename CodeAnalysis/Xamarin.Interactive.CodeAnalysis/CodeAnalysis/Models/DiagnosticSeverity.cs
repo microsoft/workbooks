@@ -7,7 +7,7 @@ namespace Xamarin.Interactive.CodeAnalysis.Models
     /// Describes how severe a diagnostic is.
     /// </summary>
     [InteractiveSerializable ("evaluation.DiagnosticSeverity")]
-    public enum InteractiveDiagnosticSeverity
+    public enum DiagnosticSeverity
     {
         /// <summary>
         /// Something that is an issue, as determined by some authority,

@@ -24,7 +24,7 @@ namespace Xamarin.Interactive.Workbook.Views
 
         void Freeze ();
 
-        void RenderDiagnostic (InteractiveDiagnostic diagnostic);
+        void RenderDiagnostic (Diagnostic diagnostic);
 
         void RenderResult (
             CultureInfo cultureInfo,

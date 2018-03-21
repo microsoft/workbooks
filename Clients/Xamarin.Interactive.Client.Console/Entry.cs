@@ -376,14 +376,14 @@ namespace Xamarin.Interactive.Client.Console
             WriteLine (message);
         }
 
-        static void RenderDiagnostic (InteractiveDiagnostic diagnostic)
+        static void RenderDiagnostic (Diagnostic diagnostic)
         {
             switch (diagnostic.Severity) {
-            case InteractiveDiagnosticSeverity.Warning:
+            case DiagnosticSeverity.Warning:
                 ForegroundColor = ConsoleColor.DarkYellow;
                 Write ($"warning ({diagnostic.Id}): ");
                 break;
-            case InteractiveDiagnosticSeverity.Error:
+            case DiagnosticSeverity.Error:
                 ForegroundColor = ConsoleColor.Red;
                 Write ($"error ({diagnostic.Id}): ");
                 break;
@@ -393,7 +393,7 @@ namespace Xamarin.Interactive.Client.Console
 
             ResetColor ();
 
-            var (line, column) = diagnostic.Span;
+            var (line, column) = diagnostic.Range;
             WriteLine ($"({line},{column}): {diagnostic.Message}");
         }
 
