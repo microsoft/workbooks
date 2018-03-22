@@ -11,6 +11,7 @@ using System.Threading;
 using System.Threading.Tasks;
 
 using Xamarin.Interactive.CodeAnalysis.Models;
+using Xamarin.Interactive.CodeAnalysis.Resolving;
 
 namespace Xamarin.Interactive.CodeAnalysis
 {
@@ -50,18 +51,20 @@ namespace Xamarin.Interactive.CodeAnalysis
             CancellationToken cancellationToken = default);
 
         Task<Hover> GetHoverAsync (
-            CodeCellId codeCellId,
+            CodeCellId cellId,
             Position position,
             CancellationToken cancellationToken = default);
 
         Task<IEnumerable<CompletionItem>> GetCompletionsAsync (
-            CodeCellId codeCellId,
+            CodeCellId cellId,
             Position position,
             CancellationToken cancellationToken = default);
 
         Task<SignatureHelp> GetSignatureHelpAsync (
-            CodeCellId codeCellId,
+            CodeCellId cellId,
             Position position,
             CancellationToken cancellationToken = default);
+
+        ImmutableList<ExternalDependency> GetExternalDependencies ();
     }
 }

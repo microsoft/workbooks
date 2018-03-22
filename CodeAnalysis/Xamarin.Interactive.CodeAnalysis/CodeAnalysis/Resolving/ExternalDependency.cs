@@ -9,13 +9,11 @@ using Xamarin.Interactive.Core;
 
 namespace Xamarin.Interactive.CodeAnalysis.Resolving
 {
-    public abstract class ExternalDependency
+    public class ExternalDependency
     {
         public FilePath Location { get; }
 
-        internal ExternalDependency (FilePath location)
-        {
-            Location = location;
-        }
+        public ExternalDependency (FilePath location)
+            => Location = location;
     }
 }

@@ -853,11 +853,11 @@ namespace Xamarin.Interactive.Compilation.Roslyn
         SignatureHelpController signatureHelpController;
 
         public async Task<Hover> GetHoverAsync (
-            CodeCellId codeCellId,
+            CodeCellId cellId,
             Position position,
             CancellationToken cancellationToken = default)
         {
-            if (!TryGetSourceText (codeCellId, out var sourceText))
+            if (!TryGetSourceText (cellId, out var sourceText))
                 return default;
 
             if (hoverController == null)
@@ -870,11 +870,11 @@ namespace Xamarin.Interactive.Compilation.Roslyn
         }
 
         public async Task<IEnumerable<Xamarin.Interactive.CodeAnalysis.Models.CompletionItem>> GetCompletionsAsync (
-            CodeCellId codeCellId,
+            CodeCellId cellId,
             Position position,
             CancellationToken cancellationToken = default)
         {
-            if (!TryGetSourceText (codeCellId.ToDocumentId (), out var sourceText))
+            if (!TryGetSourceText (cellId.ToDocumentId (), out var sourceText))
                 return null;
 
             if (completionController == null)
@@ -887,11 +887,11 @@ namespace Xamarin.Interactive.Compilation.Roslyn
         }
 
         public Task<SignatureHelp> GetSignatureHelpAsync (
-            CodeCellId codeCellId,
+            CodeCellId cellId,
             Position position,
             CancellationToken cancellationToken = default)
         {
-            if (!TryGetSourceText (codeCellId, out var sourceText))
+            if (!TryGetSourceText (cellId, out var sourceText))
                 return null;
 
             if (signatureHelpController == null)
@@ -901,6 +901,33 @@ namespace Xamarin.Interactive.Compilation.Roslyn
                 sourceText,
                 position,
                 cancellationToken);
+        }
+
+        public ImmutableList<ExternalDependency> GetExternalDependencies ()
+        {
+            var dependencies = ImmutableList<ExternalDependency>.Empty;
+
+            var documents = workspace
+                .CurrentSolution
+                .Projects
+                .SelectMany (project => project.Documents);
+
+            foreach (var document in documents) {
+                if (!document.TryGetSyntaxRoot (out var syntaxRoot))
+                    continue;
+
+                dependencies = dependencies.AddRange (syntaxRoot
+                    .DescendantTrivia ()
+                    .Where (trivia => trivia.HasStructure && (
+                        trivia.IsKind (SyntaxKind.LoadDirectiveTrivia) ||
+                        trivia.IsKind (SyntaxKind.ReferenceDirectiveTrivia)))
+                    .Select (trivia => trivia.GetStructure ())
+                    .SelectMany (node => node.ChildTokens ())
+                    .Where (token => token.IsKind (SyntaxKind.StringLiteralToken))
+                    .Select (token => new ExternalDependency (token.ValueText)));
+            }
+
+            return dependencies;
         }
 
         #endregion

@@ -9,9 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp;
-
+using Xamarin.Interactive.CodeAnalysis;
 using Xamarin.Interactive.Core;
 using Xamarin.Interactive.Workbook.Models;
 
@@ -45,10 +43,6 @@ namespace Xamarin.Interactive.Workbook.LoadAndSave
                     foreach (var dependency in Visit (markdownCell))
                         yield return dependency;
                     break;
-                case CodeCell codeCell:
-                    foreach (var dependency in Visit (codeCell))
-                        yield return dependency;
-                    break;
                 }
             }
         }
@@ -77,24 +71,6 @@ namespace Xamarin.Interactive.Workbook.LoadAndSave
                 .AsEnumerable ()
                 .Where (e => e.IsOpening && e.Inline?.TargetUrl != null)
                 .Select (e => GetRelativePath (e.Inline.TargetUrl))
-                .Where (path => !path.IsNull);
-
-        IEnumerable<FilePath> Visit (CodeCell codeCell)
-            => CSharpSyntaxTree
-                .ParseText (
-                    codeCell.Buffer.Value,
-                    CSharpParseOptions.Default
-                        .WithKind (SourceCodeKind.Script)
-                        .WithLanguageVersion (LanguageVersion.CSharp7_1))
-                .GetRoot ()
-                .DescendantTrivia ()
-                .Where (trivia => trivia.HasStructure && (
-                    trivia.IsKind (SyntaxKind.LoadDirectiveTrivia) ||
-                    trivia.IsKind (SyntaxKind.ReferenceDirectiveTrivia)))
-                .Select (trivia => trivia.GetStructure ())
-                .SelectMany (node => node.ChildTokens ())
-                .Where (token => token.IsKind (SyntaxKind.StringLiteralToken))
-                .Select (token => GetRelativePath (token.ValueText))
                 .Where (path => !path.IsNull);
     }
 }

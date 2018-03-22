@@ -602,7 +602,7 @@ namespace Xamarin.Interactive.Client
         public IWorkbookSaveOperation CreateWorkbookSaveOperation ()
         {
             AssertWorkbookSession ();
-            return Workbook.CreateSaveOperation ();
+            return Workbook.CreateSaveOperation (CompilationWorkspace);
         }
 
         public void SaveWorkbook (IWorkbookSaveOperation saveOperation)

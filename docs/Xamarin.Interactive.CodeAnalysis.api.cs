@@ -4,6 +4,7 @@
 [assembly: AssemblyProduct ("Xamarin.Interactive.CodeAnalysis")]
 [assembly: AssemblyTitle ("Xamarin.Interactive.CodeAnalysis")]
 [assembly: InternalsVisibleTo ("Xamarin.Interactive.Client")]
+[assembly: InternalsVisibleTo ("Xamarin.Interactive.Tests")]
 [assembly: InternalsVisibleTo ("Xamarin Workbooks")]
 [assembly: InternalsVisibleTo ("Xamarin Inspector")]
 [assembly: TargetFramework (".NETStandard,Version=v2.0", FrameworkDisplayName = "")]
@@ -78,11 +79,13 @@ namespace Xamarin.Interactive.CodeAnalysis
 
         Task<ImmutableList<Diagnostic>> GetCellDiagnosticsAsync (CodeCellId cellId, CancellationToken cancellationToken = default(CancellationToken));
 
-        Task<IEnumerable<CompletionItem>> GetCompletionsAsync (CodeCellId codeCellId, Position position, CancellationToken cancellationToken = default(CancellationToken));
+        Task<IEnumerable<CompletionItem>> GetCompletionsAsync (CodeCellId cellId, Position position, CancellationToken cancellationToken = default(CancellationToken));
 
-        Task<Hover> GetHoverAsync (CodeCellId codeCellId, Position position, CancellationToken cancellationToken = default(CancellationToken));
+        ImmutableList<ExternalDependency> GetExternalDependencies ();
 
-        Task<SignatureHelp> GetSignatureHelpAsync (CodeCellId codeCellId, Position position, CancellationToken cancellationToken = default(CancellationToken));
+        Task<Hover> GetHoverAsync (CodeCellId cellId, Position position, CancellationToken cancellationToken = default(CancellationToken));
+
+        Task<SignatureHelp> GetSignatureHelpAsync (CodeCellId cellId, Position position, CancellationToken cancellationToken = default(CancellationToken));
 
         ImmutableList<CodeCellId> GetTopologicallySortedCellIds ();
 
@@ -441,11 +444,13 @@ namespace Xamarin.Interactive.CodeAnalysis.Resolving
 
         public ResolvedAssembly ResolveWithoutReferences (FilePath assemblyPath, CancellationToken cancellationToken = default(CancellationToken));
     }
-    public abstract class ExternalDependency
+    public class ExternalDependency
     {
         public FilePath Location {
             get;
         }
+
+        public ExternalDependency (FilePath location);
     }
     public static class GacCache
     {
@@ -483,6 +488,8 @@ namespace Xamarin.Interactive.CodeAnalysis.Resolving
         public string Name {
             get;
         }
+
+        public NativeDependency (string name, FilePath location);
     }
     public class NativeDependencyResolver : DependencyResolver
     {
