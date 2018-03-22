@@ -414,7 +414,7 @@
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Mac\Xamarin.Mac.CSharp.targets" />
   <Import Project="Build.targets" />
   <Import Project="Package.targets" />
-  <Import Project="..\..\Build\Common.targets" />
+  <Import Project="..\..\build\Common.targets" />
   <ItemGroup>
     <ProjectReference Include="..\CrossBrowser\Xamarin.CrossBrowser.Mac\Xamarin.CrossBrowser.Mac.csproj">
       <Project>{68B5F01B-6F1C-49D5-9491-96F826AFE211}</Project>

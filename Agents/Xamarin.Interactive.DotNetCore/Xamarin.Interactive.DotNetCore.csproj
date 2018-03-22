@@ -8,5 +8,5 @@
   <ItemGroup>
     <ProjectReference Include="..\Xamarin.Interactive\Xamarin.Interactive.csproj" />
   </ItemGroup>
-  <Import Project="..\..\Build\Common.targets" />
+  <Import Project="..\..\build\Common.targets" />
 </Project>

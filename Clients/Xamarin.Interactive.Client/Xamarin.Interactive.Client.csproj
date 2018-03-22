@@ -27,5 +27,5 @@
       <LogicalName>ISSUE_TEMPLATE.md</LogicalName>
     </EmbeddedResource>
   </ItemGroup>
-  <Import Project="..\..\Build\Common.targets" />
+  <Import Project="..\..\build\Common.targets" />
 </Project>

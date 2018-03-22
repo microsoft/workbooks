@@ -2,15 +2,15 @@
   xmlns="http://schemas.microsoft.com/developer/msbuild/2003"
   DefaultTargets="Build"
   ToolsVersion="12.0">
-  <Import Project="$(MSBuildThisFileDirectory)Build\Xamarin.Build\Xamarin.Build.targets"/>
-  <Import Project="$(MSBuildThisFileDirectory)Build\Metadata.targets"/>
-  <Import Project="$(MSBuildThisFileDirectory)Build\Utility.targets"/>
+  <Import Project="$(MSBuildThisFileDirectory)build\Xamarin.Build\Xamarin.Build.targets"/>
+  <Import Project="$(MSBuildThisFileDirectory)build\Metadata.targets"/>
+  <Import Project="$(MSBuildThisFileDirectory)build\Utility.targets"/>
   <Import
     Project="$(MSBuildThisFileDirectory)workbooks-proprietary\provisionator.targets"
     Condition="Exists('$(MSBuildThisFileDirectory)workbooks-proprietary\provisionator.targets')"/>
   <Import
-    Project="$(MSBuildThisFileDirectory)Build\Local.props"
-    Condition="Exists('$(MSBuildThisFileDirectory)Build\Local.props')"/>
+    Project="$(MSBuildThisFileDirectory)build\Local.props"
+    Condition="Exists('$(MSBuildThisFileDirectory)build\Local.props')"/>
 
   <PropertyGroup>
     <SolutionPlatform Condition="'$(OS)' == 'Windows_NT'">Windows</SolutionPlatform>

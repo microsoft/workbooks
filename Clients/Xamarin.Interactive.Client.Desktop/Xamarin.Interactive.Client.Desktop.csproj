@@ -19,5 +19,5 @@
     <ProjectReference Condition="'$(OS)' == 'Unix'" Include="..\CrossBrowser\Xamarin.CrossBrowser.Mac\Xamarin.CrossBrowser.Mac.csproj" />
   </ItemGroup>
   <Import Condition="'$(OS)' == 'Windows_NT'" Project="Build.windows.targets" />
-  <Import Project="..\..\Build\Common.targets" />
+  <Import Project="..\..\build\Common.targets" />
 </Project>

@@ -23,7 +23,7 @@
     <InspectorNuGetPackageContentDir>$(InspectorNuGetPackageBuildDir)\contentFiles\any\any\</InspectorNuGetPackageContentDir>
   </PropertyGroup>
 
-  <Import Project="$(TopDirectory)Build\Metadata.targets"/>
+  <Import Project="$(TopDirectory)build\Metadata.targets"/>
 
   <Target
     Name="Package"

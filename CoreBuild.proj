@@ -1,5 +1,5 @@
 <Project InitialTargets="Configure" DefaultTargets="Restore;Build">
-  <Import Project="Build\Top.targets"/>
+  <Import Project="build\Top.targets"/>
 
   <Import
     Project="build.local.props"

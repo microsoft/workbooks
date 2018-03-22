@@ -47,7 +47,7 @@ Copyright 2017 Microsoft. All rights reserved.
       <BuildInfoFile Include="UPDATES.md"/>
       <BuildInfoFile Include="RETHESIS"/>
       <BuildInfoFile Include="Agents\Xamarin.Interactive\BuildInfo.cs"/>
-      <BuildInfoFile Include="Build\ProductAssemblyInfo.cs"/>
+      <BuildInfoFile Include="build\ProductAssemblyInfo.cs"/>
       <BuildInfoFile Include="Clients\Xamarin.Interactive.Client.Mac\Info.plist"/>
       <BuildInfoFile Include="Clients\Xamarin.Interactive.Client.Windows\Properties\AssemblyInfo.cs"/>
       <BuildInfoFile Include="$(BuildInfoDistFile)"/>
@@ -198,7 +198,7 @@ Copyright 2017 Microsoft. All rights reserved.
     <ItemGroup>
       <PolicheckInput Include="Agents\**\*" />
       <PolicheckInput Include="Bootstrap\**\*" />
-      <PolicheckInput Include="Build\**\*" />
+      <PolicheckInput Include="build\**\*" />
       <PolicheckInput Include="Clients\**\*" />
       <PolicheckInput Include="Package\**\*" />
       <PolicheckInput Include="Tests\**\*" />
@@ -207,7 +207,7 @@ Copyright 2017 Microsoft. All rights reserved.
       <PolicheckInput Include="README.md" />
       <PolicheckInput Include="RETHESIS" />
       <PolicheckInput Include="UPDATES.md" />
-      <PolicheckInput Remove="Build\_provisionator\**\*" />
+      <PolicheckInput Remove="build\_provisionator\**\*" />
       <PolicheckInput Remove="**\*.dll" />
       <PolicheckInput Remove="**\*.tlb" />
       <PolicheckInput Remove="**\*.png" />
