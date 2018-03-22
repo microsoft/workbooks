@@ -40,8 +40,8 @@ developers to get involved with the project.
 
 * Signature help now behaves more like Visual Studio.
 
-* Choose the new _Report an Issue_ menu item in the _Help_ menu to easily
-  report issues, and _Reveal Log File_ to quickly find the latest log.
+* Choose the new `Report an Issue` menu item in the `Help` menu to easily
+  report issues, and `Reveal Log File` to quickly find the latest log.
 
 * Xamarin.Forms support has been bumped to 2.5.0.
 
