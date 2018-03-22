@@ -51,7 +51,7 @@ Copyright 2017 Microsoft. All rights reserved.
       <BuildInfoFile Include="Clients\Xamarin.Interactive.Client.Mac\Info.plist"/>
       <BuildInfoFile Include="Clients\Xamarin.Interactive.Client.Windows\Properties\AssemblyInfo.cs"/>
       <BuildInfoFile Include="$(BuildInfoDistFile)"/>
-      <BuildInfoFile Include="Package\Mac\updateinfo"/>
+      <BuildInfoFile Include="Clients\Xamarin.Interactive.Client.Mac\PackageAssets\updateinfo"/>
       <BuildInfoFile Include="Package\Windows\updateinfo"/>
       <BuildInfoFile Include="Agents\Xamarin.Interactive\Xamarin.Interactive.nuspec"/>
       <BuildInfoFile Include="Clients\Xamarin.Interactive.Client\Telemetry\Client.cs"/>
@@ -119,7 +119,7 @@ Copyright 2017 Microsoft. All rights reserved.
     </PropertyGroup>
     <PropertyGroup Condition="'$(OS)' == 'Unix'">
       <ProductName>Xamarin Workbooks &amp; Inspector (Mac)</ProductName>
-      <UpdateInfoFile>..\Package\Mac\updateinfo</UpdateInfoFile>
+      <UpdateInfoFile>..\Clients\Xamarin.Interactive.Client.Mac\PackageAssets\updateinfo</UpdateInfoFile>
     </PropertyGroup>
 
     <ItemGroup>
