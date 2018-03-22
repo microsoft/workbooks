@@ -67,7 +67,7 @@ namespace Xamarin.MSBuild
                 if (SdkVersion.StartsWith ("@", StringComparison.Ordinal)) {
                     var parts = SdkVersion.Substring (1).Split (new [] { ',' }, 2);
                     if (parts [0] == "GlobalJsonSdkVersion")
-                        sdkVersion = ReadGlobalJsonSdkVersion (parts [1]);
+                        sdkVersion = ReadGlobalJsonSdkVersion (Pathify (parts [1]));
                     else
                         sdkVersion = ReadAssemblyAttribute (parts [1], parts [0]);
 

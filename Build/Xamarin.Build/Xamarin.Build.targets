@@ -11,7 +11,7 @@ Copyright 2017 Microsoft. All rights reserved.
   DefaultTargets="Build"
   ToolsVersion="12.0">
   <PropertyGroup>
-    <Xamarin_Build_AssemblyFile>$(MSBuildThisFileDirectory)bin\Xamarin.Build.dll</Xamarin_Build_AssemblyFile>
+    <Xamarin_Build_AssemblyFile>$(MSBuildThisFileDirectory)bin\netstandard2.0\Xamarin.Build.dll</Xamarin_Build_AssemblyFile>
   </PropertyGroup>
 
   <UsingTask
@@ -34,26 +34,9 @@ Copyright 2017 Microsoft. All rights reserved.
     TaskName="Xamarin.MSBuild.ZipArchive"
     AssemblyFile="$(Xamarin_Build_AssemblyFile)"/>
 
-  <Target Name="_Xamarin_Build_RestorePackages">
-    <MSBuild
-      BuildInParallel="true"
-      Projects="$(SolutionToBuild)"
-      Properties="$(SolutionProperties);$(MSBuildCommonProperties)"
-      Targets="Restore"/>
-  </Target>
-
   <Target
-    Name="Xamarin_Build_Tasks"
-    DependsOnTargets="_Xamarin_Build_RestorePackages">
-    <MSBuild
-      Condition="!Exists('$(MSBuildThisFileDirectory)obj\Xamarin.Build.csproj.nuget.cache')"
-      Projects="$(MSBuildThisFileDirectory)Xamarin.Build.csproj"
-      Targets="Restore"
-      Properties="Configuration=Debug"/>
-    <MSBuild
-      Projects="$(MSBuildThisFileDirectory)Xamarin.Build.csproj"
-      Targets="Build"
-      Properties="Configuration=Debug"/>
+    Name="Xamarin_Build_Tasks">
+    <Exec WorkingDirectory="$(MSBuildThisFileDirectory)" Command="dotnet build"/>
   </Target>
 
   <UsingTask
