@@ -57,7 +57,8 @@
   <Target
     Name="DesktopWorkbookAppsProfile">
     <ItemGroup>
-      <ProjectsToBuild Include="WorkbookApps\Xamarin.Workbooks.Wpf" Condition="$(IsWindows)"/>
+      <ProjectsToBuild Include="WorkbookApps\Xamarin.Workbooks.Wpf\*.csproj" Condition="$(IsWindows)"/>
+      <ProjectsToBuild Include="WorkbookApps\Xamarin.Workbooks.Mac\*.csproj" Condition="$(IsMac)"/>
     </ItemGroup>
   </Target>
 
@@ -81,7 +82,7 @@
 
   <Target
     Name="DesktopProfile"
-    DependsOnTargets="CoreProfile;CoreWorkbookAppsProfile">
+    DependsOnTargets="CoreProfile;CoreWorkbookAppsProfile;DesktopWorkbookAppsProfile">
     <ItemGroup>
       <ProjectsToBuild Include="Clients\Xamarin.Interactive.Client.Desktop\*.csproj"/>
       <ProjectsToBuild
