@@ -8,5 +8,8 @@
 
     <IsLinux>false</IsLinux>
     <IsLinux Condition="$([MSBuild]::IsOSPlatform('Linux'))">true</IsLinux>
+
+    <IsDotNetCoreMSBuild>false</IsDotNetCoreMSBuild>
+    <IsDotNetCoreMSBuild Condition="'$(MSBuildRuntimeType)' == 'Core'">true</IsDotNetCoreMSBuild>
   </PropertyGroup>
 </Project>
