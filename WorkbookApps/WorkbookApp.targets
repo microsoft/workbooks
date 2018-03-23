@@ -1,6 +1,6 @@
 <Project>
   <PropertyGroup>
-    <Xamarin_Build_AssemblyFile>$(MSBuildThisFileDirectory)..\build\Xamarin.Build\bin\netstandard2.0\Xamarin.Build.dll</Xamarin_Build_AssemblyFile>
+    <Xamarin_Build_AssemblyFile>$(MSBuildThisFileDirectory)..\build\Xamarin.Build\Xamarin.Build.dll</Xamarin_Build_AssemblyFile>
     <InstallDir>$(MSBuildThisFileDirectory)..\_build\$(Configuration)\WorkbookApps\</InstallDir>
   </PropertyGroup>
 

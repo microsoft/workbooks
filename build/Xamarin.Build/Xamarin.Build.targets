@@ -11,7 +11,7 @@ Copyright 2017 Microsoft. All rights reserved.
   DefaultTargets="Build"
   ToolsVersion="12.0">
   <PropertyGroup>
-    <Xamarin_Build_AssemblyFile>$(MSBuildThisFileDirectory)bin\netstandard2.0\Xamarin.Build.dll</Xamarin_Build_AssemblyFile>
+    <Xamarin_Build_AssemblyFile>$(MSBuildThisFileDirectory)Xamarin.Build.dll</Xamarin_Build_AssemblyFile>
   </PropertyGroup>
 
   <UsingTask
@@ -34,18 +34,12 @@ Copyright 2017 Microsoft. All rights reserved.
     TaskName="Xamarin.MSBuild.ZipArchive"
     AssemblyFile="$(Xamarin_Build_AssemblyFile)"/>
 
-  <Target
-    Name="Xamarin_Build_Tasks">
-    <Exec WorkingDirectory="$(MSBuildThisFileDirectory)" Command="dotnet build"/>
-  </Target>
-
   <UsingTask
     TaskName="Xamarin.MSBuild.ReleaseVersion"
     AssemblyFile="$(Xamarin_Build_AssemblyFile)"/>
 
   <Target
-    Name="Xamarin_Build_ReadReleaseVersions"
-    DependsOnTargets="Xamarin_Build_Tasks">
+    Name="Xamarin_Build_ReadReleaseVersions">
     <ReleaseVersion SemVer="$(ReleaseVersion_SemVer)">
       <Output
         TaskParameter="SemVer"
@@ -91,8 +85,7 @@ Copyright 2017 Microsoft. All rights reserved.
     AssemblyFile="$(Xamarin_Build_AssemblyFile)"/>
 
   <Target
-    Name="Xamarin_Build_ReadCommonGitInfo"
-    DependsOnTargets="Xamarin_Build_Tasks">
+    Name="Xamarin_Build_ReadCommonGitInfo">
     <CommonGitInfo
       MostRecentTagRegex="$(CommonGitInfo_MostRecentTagRegex)"
       SetMinRevisionFromMostRecentTagRegex="$(CommonGitInfo_SetMinRevisionFromMostRecentTagRegex)"
@@ -142,8 +135,7 @@ Copyright 2017 Microsoft. All rights reserved.
     AssemblyFile="$(Xamarin_Build_AssemblyFile)"/>
 
   <Target
-    Name="Xamarin_Build_ReadBuildEnvironment"
-    DependsOnTargets="Xamarin_Build_Tasks">
+    Name="Xamarin_Build_ReadBuildEnvironment">
     <BuildEnvironment>
       <Output
         TaskParameter="DefinitionName"
@@ -165,8 +157,7 @@ Copyright 2017 Microsoft. All rights reserved.
     AssemblyFile="$(Xamarin_Build_AssemblyFile)"/>
 
   <Target
-    Name="Xamarin_Build_ReadGlobalDotJson"
-    DependsOnTargets="Xamarin_Build_Tasks">
+    Name="Xamarin_Build_ReadGlobalDotJson">
     <GlobalDotJson FileName="$(MSBuildThisFileDirectory)..\..\global.json">
       <Output
         TaskParameter="AppVersion"

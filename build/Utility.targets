@@ -12,8 +12,7 @@ Copyright 2017 Microsoft. All rights reserved.
   ToolsVersion="12.0">
 
   <Target
-    Name="UpdateInvertedDependencies"
-    DependsOnTargets="Xamarin_Build_Tasks">
+    Name="UpdateInvertedDependencies">
     <ItemGroup>
       <Solution Include="$(MSBuildThisFileDirectory)..\*.sln"/>
     </ItemGroup>
@@ -225,8 +224,7 @@ Copyright 2017 Microsoft. All rights reserved.
     <WriteLinesTofile Lines="@(PolicheckInput)" File="$(PolicheckInputFile)" Overwrite="true" />
   </Target>
 
-  <Target Name="ProcessPolicheckXml"
-          DependsOnTargets="Xamarin_Build_Tasks">
+  <Target Name="ProcessPolicheckXml">
     <PropertyGroup>
         <PolicheckXml Condition=" '$(PolicheckXml)' == '' ">$(MSBuildThisFileDirectory)..\Policheck.xml</PolicheckXml>
         <PolicheckOutputPath Condition=" '$(PolicheckOutputPath)' == '' ">$(MSBuildThisFileDirectory)..\Policheck.html</PolicheckOutputPath>

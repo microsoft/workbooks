@@ -23,15 +23,7 @@
   <!-- Profiles -->
 
   <Target
-    Name="BootstrapProfile">
-    <ItemGroup>
-      <ProjectsToBuild Include="build\Xamarin.Build\*.csproj"/>
-    </ItemGroup>
-  </Target>
-
-  <Target
-    Name="CoreProfile"
-    DependsOnTargets="BootstrapProfile">
+    Name="CoreProfile">
     <ItemGroup>
       <ProjectsToBuild Include="Agents\Xamarin.Interactive\*.csproj">
         <HasPublicApi>true</HasPublicApi>
@@ -164,8 +156,7 @@
   <!-- Configuration / Solution Generation -->
 
   <Target
-    Name="Configure"
-    DependsOnTargets="Xamarin_Build_ReadAllProperties">
+    Name="Configure">
     <PropertyGroup>
       <Profile Condition="'$(Profile)' == ''">$(DefaultProfile)</Profile>
       <Profile Condition="!$(Profile.EndsWith('Profile'))">$(Profile)Profile</Profile>

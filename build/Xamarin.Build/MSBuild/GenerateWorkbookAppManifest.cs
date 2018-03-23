@@ -7,6 +7,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -14,8 +15,6 @@ using System.Text.RegularExpressions;
 
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
-
-using Mono.Cecil;
 
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -66,10 +65,16 @@ namespace Xamarin.MSBuild
             if (SdkVersion != null) {
                 if (SdkVersion.StartsWith ("@", StringComparison.Ordinal)) {
                     var parts = SdkVersion.Substring (1).Split (new [] { ',' }, 2);
-                    if (parts [0] == "GlobalJsonSdkVersion")
+                    switch (parts [0]) {
+                    case "GlobalJsonSdkVersion":
                         sdkVersion = ReadGlobalJsonSdkVersion (Pathify (parts [1]));
-                    else
-                        sdkVersion = ReadAssemblyAttribute (parts [1], parts [0]);
+                        break;
+                    case "AssemblyInformationalVersion":
+                        sdkVersion = AssemblyInformationalVersion (parts [1]);
+                        break;
+                    default:
+                        throw new NotImplementedException ($"Unable to handle SdkVersion style @{parts [0]}");
+                    }
 
                     if (sdkVersion == null)
                         return false;
@@ -138,48 +143,17 @@ namespace Xamarin.MSBuild
             return true;
         }
 
-        string ReadAssemblyAttribute (string assemblyFile, string attributeTypeName)
+        string AssemblyInformationalVersion (string assemblyFile)
         {
-            if (attributeTypeName.IndexOf ('.') < 0)
-                attributeTypeName = "System.Reflection." + attributeTypeName;
+            var fileVersion = FileVersionInfo.GetVersionInfo (assemblyFile);
+            var version = fileVersion.ProductVersion;
+            if (string.IsNullOrEmpty (version))
+                version = fileVersion.FileVersion;
 
-            var attributeType = Type.GetType (attributeTypeName, false, true)
-                ?? Type.GetType (attributeTypeName + "Attribute", false, true);
-
-            using (var module = ModuleDefinition.ReadModule (assemblyFile)) {
-                var attr = module
-                    .Assembly
-                    .CustomAttributes
-                    .FirstOrDefault (a => {
-                        var attrName = a.AttributeType.FullName;
-                        return string.Equals (
-                            attrName,
-                            attributeTypeName,
-                            StringComparison.OrdinalIgnoreCase) ||
-                            string.Equals (
-                                attrName,
-                                attributeTypeName + "Attribute",
-                                StringComparison.OrdinalIgnoreCase);
-                    });
-
-                if (attr == null) {
-                    Log.LogError ($"Unable to load type: {attributeTypeName}");
-                    return null;
-                }
-
-                if (attr.AttributeType.FullName == typeof (AssemblyInformationalVersionAttribute).FullName)
-                    return ((string)attr.ConstructorArguments [0].Value)
-                        .Split (';')
-                        .Select (p => p.Trim ())
-                        .FirstOrDefault (p => p.Length > 0 && char.IsDigit (p [0]));
-
-                if (attr.AttributeType.FullName == typeof (AssemblyInformationalVersionAttribute).FullName ||
-                    attr.AttributeType.FullName == typeof (AssemblyFileVersionAttribute).FullName)
-                    return (string)attr.ConstructorArguments [0].Value;
-
-                Log.LogError ($"Unable to handle attribute type: {attr.AttributeType.FullName}");
-                return null;
-            }
+            return version
+                ?.Split (';')
+                .Select (v => v.Trim ())
+                .FirstOrDefault (v => v.Length > 0 && char.IsDigit (v [0]));
         }
 
         string ReadGlobalJsonSdkVersion (string globalJsonFile)
