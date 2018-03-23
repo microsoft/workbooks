@@ -23,7 +23,15 @@
   <!-- Profiles -->
 
   <Target
-    Name="CoreProfile">
+    Name="BootstrapProfile">
+    <ItemGroup>
+      <ProjectsToBuild Include="build\Xamarin.Build\*.csproj"/>
+    </ItemGroup>
+  </Target>
+
+  <Target
+    Name="CoreProfile"
+    DependsOnTargets="BootstrapProfile">
     <ItemGroup>
       <ProjectsToBuild Include="Agents\Xamarin.Interactive\*.csproj">
         <HasPublicApi>true</HasPublicApi>
