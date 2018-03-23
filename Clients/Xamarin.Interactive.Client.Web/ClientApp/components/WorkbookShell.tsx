@@ -21,6 +21,7 @@ import { StatusMessageBar } from './StatusMessageBar'
 import { StatusUIAction, MessageKind, MessageSeverity } from '../messages'
 
 import './WorkbookShell.scss'
+import { loadWorkbookFromString, loadWorkbookFromWorkbookPackage, loadWorkbookFromGist, Workbook } from '../Workbook';
 
 export interface WorkbookShellContext {
     session: WorkbookSession
@@ -37,7 +38,7 @@ export class WorkbookShell extends React.Component<any, WorkbookShellState> {
     private workbookEditor: WorkbookEditor | null = null
     private fileButton: HTMLInputElement | null = null
     private packageSearchDialog: PackageSearch | null = null
-    private workbookMetadata: any
+    private workbook: Workbook | null = null
     private workspaceAvailable: boolean = false
 
     constructor() {
@@ -51,6 +52,7 @@ export class WorkbookShell extends React.Component<any, WorkbookShellState> {
         this.triggerFilePicker = this.triggerFilePicker.bind(this)
         this.saveWorkbook = this.saveWorkbook.bind(this)
         this.dumpDraftState = this.dumpDraftState.bind(this)
+        this.triggerGistPicker = this.triggerGistPicker.bind(this)
 
         this.shellContext = {
             session: new WorkbookSession,
@@ -138,7 +140,21 @@ export class WorkbookShell extends React.Component<any, WorkbookShellState> {
         this.fileButton.click();
     }
 
-    loadWorkbook(event: React.ChangeEvent<HTMLInputElement>) {
+    async triggerGistPicker() {
+        if (!this.workbookEditor)
+            return;
+
+        // TODO: Real UI.
+        const gistUrl = prompt("Enter the URL of the Gist you want to load from?");
+        if (!gistUrl)
+            return;
+
+        this.workbook = await loadWorkbookFromGist(this.shellContext.session, gistUrl);
+        await this.workbookEditor.loadNewContent(this.workbook.markdownContent)
+        await this.restoreNuGetPackages()
+    }
+
+    workbookFileChosen(event: React.ChangeEvent<HTMLInputElement>) {
         if (event.target.files == null) {
             alert("No files.");
             return;
@@ -146,18 +162,43 @@ export class WorkbookShell extends React.Component<any, WorkbookShellState> {
 
         const file = event.target.files[0]
         const reader = new FileReader
-        reader.addEventListener('load', () => this.restorePackages (reader))
-        reader.readAsText(file)
+        reader.addEventListener('load', () => this.loadWorkbook(file, reader))
+        reader.readAsArrayBuffer(file)
     }
 
-    private async restorePackages(reader: FileReader) {
+    sniffHeader(file: ArrayBuffer): Boolean {
+        if (file.byteLength < 4)
+            return false;
+
+        const magic = new Uint32Array(file.slice(0, 4))[0]
+
+        switch (magic) {
+            case 0x04034B50:
+            case 0x06054B50:
+            case 0x08074B50:
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    async loadWorkbook(file: File, reader: FileReader) {
         if (!this.workbookEditor)
             return
 
-        const workbookMetadata = await this.workbookEditor.loadNewContent(reader.result);
-        this.workbookMetadata = workbookMetadata;
+        if (file.type === "application/zip" || this.sniffHeader(reader.result)) {
+            this.workbook = await loadWorkbookFromWorkbookPackage(this.shellContext.session, file)
+        } else {
+            const workbookString = new TextDecoder("utf-8").decode(reader.result)
+            this.workbook = await loadWorkbookFromString(this.shellContext.session, file.name, workbookString)
+        }
 
-        if (!workbookMetadata.packages)
+        await this.workbookEditor.loadNewContent(this.workbook.markdownContent)
+        await this.restoreNuGetPackages()
+    }
+
+    async restoreNuGetPackages() {
+        if (!this.workbook || !this.workbook.manifest.packages || this.workbook.manifest.packages.count() == 0)
             return
 
         const statusEvent = this.shellContext.session.statusUIActionEvent
@@ -170,16 +211,7 @@ export class WorkbookShell extends React.Component<any, WorkbookShellState> {
             }
         });
 
-        const packages = workbookMetadata.packages.map((manifestPackage: any) => {
-            return {
-                packageId: manifestPackage.id,
-                versionRange: manifestPackage.version,
-                isExplicitlySelected: true
-            }
-        })
-
-        const restoredPackages = await this.shellContext.session.restorePackages(packages)
-
+        const restoredPackages = await this.shellContext.session.restorePackages(this.workbook.manifest.packages.toArray())
         if (this.packageSearchDialog) {
             this.packageSearchDialog.setState({
                 installedPackagesIds: this.packageSearchDialog.state.installedPackagesIds.concat(
@@ -193,19 +225,14 @@ export class WorkbookShell extends React.Component<any, WorkbookShellState> {
     }
 
     saveWorkbook() {
-        if (this.workbookEditor != null) {
-            const contentToSave = this.workbookEditor.getContentToSave();
-            this.workbookMetadata = this.workbookMetadata || {
-                title: "Untitled",
-                uti: "com.xamarin.workbook",
-                id: uuidv4(),
-                platforms: this.shellContext.session.availableWorkbookTargets.map(wt => wt.id)
-            };
-            const workbook = matter.stringify(contentToSave, this.workbookMetadata, {
+        if (this.workbookEditor != null && this.workbook != null) {
+            const contentToSave = this.workbookEditor.getContentToSave()
+            const saveableManifest = this.workbook.getManifestToSave()
+            const workbook = matter.stringify(contentToSave, saveableManifest, {
                 delims: ["---", "---\n"]
-            });
+            })
             var blob = new Blob([workbook], { type: "text/markdown;charset=utf-8" })
-            saveAs(blob, `${this.workbookMetadata.title}.workbook`);
+            saveAs(blob, `${this.workbook.manifest.title}.workbook`)
         }
     }
 
@@ -225,7 +252,8 @@ export class WorkbookShell extends React.Component<any, WorkbookShellState> {
                     loadWorkbook={this.triggerFilePicker}
                     saveWorkbook={this.saveWorkbook}
                     dumpDraftState={this.dumpDraftState}
-                    shellContext={this.shellContext}/>
+                    shellContext={this.shellContext}
+                    loadGist={this.triggerGistPicker}/>
                 <PackageSearch
                     ref={component => this.packageSearchDialog = component}
                     session={this.shellContext.session}
@@ -240,7 +268,7 @@ export class WorkbookShell extends React.Component<any, WorkbookShellState> {
                     <input
                         type="file"
                         ref={(input) => { this.fileButton = input; }}
-                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => this.loadWorkbook(e)} />
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => this.workbookFileChosen(e)} />
                 </div>
             </div>
         )
