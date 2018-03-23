@@ -19,6 +19,10 @@ Copyright 2017 Microsoft. All rights reserved.
     AssemblyFile="$(Xamarin_Build_AssemblyFile)"/>
 
   <UsingTask
+    TaskName="Xamarin.MSBuild.FindDirectories"
+    AssemblyFile="$(Xamarin_Build_AssemblyFile)"/>
+
+  <UsingTask
     TaskName="Xamarin.MSBuild.Which"
     AssemblyFile="$(Xamarin_Build_AssemblyFile)"/>
 

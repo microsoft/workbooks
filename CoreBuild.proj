@@ -1,5 +1,6 @@
 <Project InitialTargets="Configure" DefaultTargets="Restore;Build">
   <Import Project="build\Top.targets"/>
+  <Import Project="build\Clean.targets"/>
 
   <Import
     Project="build.local.props"
@@ -126,15 +127,6 @@
       Projects="$(SolutionFile)"
       Properties="$(ProfileProperties)"
       Targets="Restore"/>
-  </Target>
-
-  <Target
-    Name="Clean"
-    DependsOnTargets="$(Profile)">
-    <MSBuild
-      Projects="@(ProjectsToBuild)"
-      Properties="$(ProfileProperties)"
-      Targets="Clean"/>
   </Target>
 
   <!-- Profile Projects -->

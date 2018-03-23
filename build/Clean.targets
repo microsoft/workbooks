@@ -1,0 +1,20 @@
+<Project>
+  <Target Name="Clean">
+    <ItemGroup>
+      <DirectoriesToRemove Include="$(TopDirectory)_build"/>
+      <DirectoriesToRemove Include="$(TopDirectory)_install"/>
+      <DirectoriesToRemove Include="$(TopDirectory)_artifacts"/>
+    </ItemGroup>
+
+    <FindDirectories
+      BasePath="$(TopDirectory)"
+      IncludeNames="obj;bin"
+      ExcludeNames="node_modules;Xamarin.Build">
+      <Output
+        TaskParameter="Directories"
+        ItemName="DirectoriesToRemove"/>
+    </FindDirectories>
+
+    <RemoveDir Directories="@(DirectoriesToRemove)"/>
+  </Target>
+</Project>

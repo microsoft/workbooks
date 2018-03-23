@@ -12,4 +12,8 @@
     <IsDotNetCoreMSBuild>false</IsDotNetCoreMSBuild>
     <IsDotNetCoreMSBuild Condition="'$(MSBuildRuntimeType)' == 'Core'">true</IsDotNetCoreMSBuild>
   </PropertyGroup>
+
+  <PropertyGroup>
+    <TopDirectory>$([MSBuild]::NormalizeDirectory($(MSBuildThisFileDirectory)..))</TopDirectory>
+  </PropertyGroup>
 </Project>
