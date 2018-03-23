@@ -142,7 +142,7 @@
       BuildInParallel="true"
       Projects="$(SolutionToBuild)"
       Properties="$(SolutionProperties);$(MSBuildCommonProperties)"
-      Targets="$(InteractiveBuildTarget)"/>
+      Targets="Restore;$(InteractiveBuildTarget)"/>
   </Target>
 
   <Target Name="_BuildWin">
@@ -151,13 +151,13 @@
       BuildInParallel="true"
       Projects="Clients\Xamarin.Interactive.Client.Windows\Xamarin.Interactive.Client.Windows.csproj"
       Properties="$(MSBuildCommonProperties);ClientOutputPathSuffix=$(InspectorOutputPathSuffix);ClientAssemblyName=Xamarin Inspector;ClientDefineConstants=CLIENT_FLAVOR_INSPECTOR"
-      Targets="$(InteractiveBuildTarget)"/>
+      Targets="Restore;$(InteractiveBuildTarget)"/>
     <!-- Build everything else -->
     <MSBuild
       BuildInParallel="true"
       Projects="$(SolutionToBuild)"
       Properties="$(SolutionProperties);$(MSBuildCommonProperties);ServerAddress=$(MacBuildHostAddress);ServerUser=$(MacBuildHostUser)"
-      Targets="$(InteractiveBuildTarget)"/>
+      Targets="Restore;$(InteractiveBuildTarget)"/>
   </Target>
 
   <Target
