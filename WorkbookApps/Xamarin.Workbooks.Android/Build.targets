@@ -35,6 +35,17 @@
       SourceFiles="@(FrameworkFiles)"
       DestinationFolder="$(InstallDir)Android\Framework\%(RecursiveDir)"/>
 
+    <!--
+      The version of VS+XA that is installed in AppVeyor yields this in the
+      copied framework, which results in a WiX manifest update, which fails
+      the build. Just remove it when running on AppVeyor. If the file is
+      introduced in our VSTS environment, we'll dig deeper/add it to the
+      actual installer manifest.
+    -->
+    <Delete
+      Condition="'$(APPVEYOR)' == 'True'"
+      Files="$(InstallDir)Android\Framework\System.Reflection.Primitives.dll"/>
+
     <!-- Android workbook app files -->
     <UpdateWixManifest
       SourceDirectory="$(InstallDir)Android\Framework"
