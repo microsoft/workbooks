@@ -45,7 +45,6 @@
     <ItemGroup>
       <ProjectsToBuild Include="Tests\Xamarin.Interactive.Tests\*.csproj" />
       <ProjectsToBuild Include="Tests\Xamarin.Interactive.Tests.Core\*.csproj" />
-      <ProjectsToBuild Include="Tools\ApiDump\*.csproj" />
     </ItemGroup>
   </Target>
 
@@ -177,18 +176,13 @@
     Name="GenerateSolution"
     DependsOnTargets="ComputeSolution"
     BeforeTargets="Restore;Build"
-    Inputs="$(MSBuildThisFileFullPath)"
+    Inputs="$(MSBuildThisFileFullPath);$(Xamarin_Build_AssemblyFile)"
     Outputs="$(SolutionFile)">
-    <ItemGroup>
-      <SolutionProjects Include="@(ProjectsToBuild -> '$(MSBuildThisFileDirectory)%(Identity)')">
-        <RelativePath>$([MSBuild]::MakeRelative($(SolutionBasePath), $(MSBuildThisFileDirectory)%(Identity)))</RelativePath>
-        <SolutionFolder>$([System.IO.Path]::GetDirectoryName($([System.IO.Path]::GetDirectoryName(%(Identity)))))</SolutionFolder>
-      </SolutionProjects>
-    </ItemGroup>
-
     <Message Importance="High" Text="Generating $(SolutionFileRelative)..."/>
     <GenerateSolution
-      Projects="@(SolutionProjects)"
+      ProjectsRelativeToPath="$(MSBuildThisFile)"
+      Projects="@(ProjectsToBuild)"
+      SolutionConfiguration="$(Configuration)"
       GlobalSectionsFiles="$(SolutionBasePath)GlobalSections"
       OutputFile="$(SolutionFile)"/>
   </Target>
