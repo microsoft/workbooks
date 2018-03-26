@@ -41,4 +41,12 @@ steps:
     PathtoPublish: '_artifacts'
     ArtifactName: Artifacts
     publishLocation: Container
-    displayName: Publish Artifacts
+  displayName: Publish Artifacts
+
+- task: VSTest@2
+  inputs:
+    testAssemblyVer2: |
+     **\*Tests.dll
+     !**\Xamarin.Interactive.Tests.dll
+     !**\obj\**
+  displayName: xUnit Test

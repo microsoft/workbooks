@@ -51,6 +51,8 @@
       <ProjectsToBuild
         Condition="$(IsWindows)"
         Include="Clients\Xamarin.Interactive.Client.Windows\*.csproj"/>
+      <ProjectsToBuild
+        Include="Tests\Xamarin.Interactive.Tests\*.csproj" />
     </ItemGroup>
   </Target>
 
@@ -63,21 +65,13 @@
       <ProjectsToBuild Include="CodeAnalysis\Xamarin.Interactive.CodeAnalysis\*.csproj">
         <HasPublicApi>true</HasPublicApi>
       </ProjectsToBuild>
+      <ProjectsToBuild Include="CodeAnalysis\Xamarin.Interactive.CodeAnalysis.Tests\*.csproj">
+        <HasXunitTests>true</HasXunitTests>
+      </ProjectsToBuild>
       <ProjectsToBuild Include="CodeAnalysis\Xamarin.Interactive.CodeAnalysis.Roslyn\*.csproj"/>
       <ProjectsToBuild Include="Clients\Xamarin.Interactive.Client\*.csproj">
         <HasPublicApi>true</HasPublicApi>
       </ProjectsToBuild>
-    </ItemGroup>
-  </Target>
-
-  <Target
-    Name="TestsProfile"
-    DependsOnTargets="CoreProfile">
-    <ItemGroup>
-      <ProjectsToBuild
-        Condition="!$(IsDotNetCoreMSBuild)"
-        Include="Tests\Xamarin.Interactive.Tests\*.csproj" />
-      <ProjectsToBuild Include="Tests\Xamarin.Interactive.Tests.Core\*.csproj" />
     </ItemGroup>
   </Target>
 
@@ -153,6 +147,20 @@
       Targets="Package"/>
   </Target>
 
+  <Target
+    Name="Test"
+    DependsOnTargets="@(ProfileTargets)">
+    <ItemGroup>
+      <ProjectsToTest
+        Include="@(ProjectsToBuild)"
+        Condition="'%(ProjectsToBuild.HasXunitTests)' != ''"/>
+    </ItemGroup>
+    <Message Importance="High" Text="Selected xUnit Tests:"/>
+    <Message Importance="High" Text="  %(ProjectsToTest.Filename)"/>
+    <Exec
+      Command="dotnet test --no-restore --no-build -c $(Configuration) %(ProjectsToTest.FullPath)"/>
+  </Target>
+
   <!-- Configuration / Solution Generation -->
 
   <Target
@@ -160,7 +168,7 @@
     <PropertyGroup>
       <Profile Condition="'$(Profile.ToLowerInvariant())' == 'full'"></Profile>
       <Profile Condition="'$(Profile.ToLowerInvariant())' == 'fullprofile'"></Profile>
-      <Profile Condition="'$(Profile)' == ''">Desktop+Web+Console+Tests</Profile>
+      <Profile Condition="'$(Profile)' == ''">Desktop+Web+Console</Profile>
     </PropertyGroup>
     <ItemGroup>
       <Profiles Include="$(Profile.Replace('|', '+').Replace(',', '+').Replace(';', '+').Split('+'))"/>
@@ -232,20 +240,16 @@
   </Target>
 
   <Target
-    Name="_ConfigureUnitTests">
-    <PropertyGroup>
-      <Profile>DesktopProfile</Profile>
-    </PropertyGroup>
-  </Target>
-
-  <Target
-    Name="RunUnitTests"
-    DependsOnTargets="_ConfigureUnitTests;Build">
+    Name="TestDesktop"
+    Condition="$(SkipDesktopTests) == ''"
+    AfterTargets="Test">
     <PropertyGroup>
       <TestDriver Condition="$(IsMac)">Clients\Xamarin.Interactive.Client.Mac\bin\$(Configuration)\Xamarin Workbooks.app\Contents\MacOS\Xamarin Workbooks</TestDriver>
       <TestDriver Condition="$(IsWindows)">Clients\Xamarin.Interactive.Client.Windows\bin\$(Configuration)\Xamarin Workbooks.exe</TestDriver>
       <TestCommand Condition="'$(TestToRun)' != ''">-test:$(TestToRun)</TestCommand>
     </PropertyGroup>
-    <Exec Command="&quot;$(TestDriver)&quot; cli test Tests\Xamarin.Interactive.Tests\bin\$(Configuration)\net461\Xamarin.Interactive.Tests.dll &quot;-result:$(MSBuildThisFileDirectory)Tests/Regressions.$(Configuration).xml&quot; $(TestCommand)"/>
+    <Exec
+      Condition="Exists($(TestDriver))"
+      Command="&quot;$(TestDriver)&quot; cli test Tests\Xamarin.Interactive.Tests\bin\$(Configuration)\net461\Xamarin.Interactive.Tests.dll &quot;-result:$(MSBuildThisFileDirectory)Tests/Regressions.$(Configuration).xml&quot; $(TestCommand)"/>
   </Target>
 </Project>
