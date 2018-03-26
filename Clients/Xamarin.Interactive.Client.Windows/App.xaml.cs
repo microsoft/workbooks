@@ -32,7 +32,6 @@ using Xamarin.Interactive.Client.Windows.Views;
 using Xamarin.Interactive.I18N;
 using Xamarin.Interactive.Logging;
 using Xamarin.Interactive.Preferences;
-using Xamarin.Interactive.Reflection;
 using Xamarin.Interactive.SystemInformation;
 
 namespace Xamarin.Interactive.Client.Windows
@@ -108,7 +107,7 @@ namespace Xamarin.Interactive.Client.Windows
 
             ThemeHelper.Initialize (this);
 
-            GacCache.Initialize ();
+            Xamarin.Interactive.CodeAnalysis.Resolving.GacCache.Initialize ();
 
             if (ClientInfo.Flavor == ClientFlavor.Workbooks) {
                 var jumpList = new JumpList (

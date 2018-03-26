@@ -2,15 +2,17 @@
   xmlns="http://schemas.microsoft.com/developer/msbuild/2003"
   DefaultTargets="Build"
   ToolsVersion="12.0">
-  <Import Project="$(MSBuildThisFileDirectory)Build\Xamarin.Build\Xamarin.Build.targets"/>
-  <Import Project="$(MSBuildThisFileDirectory)Build\Metadata.targets"/>
-  <Import Project="$(MSBuildThisFileDirectory)Build\Utility.targets"/>
+  <Import Project="$(MSBuildThisFileDirectory)build\Environment.props"/>
+  <Import Project="$(MSBuildThisFileDirectory)build\Xamarin.Build\Xamarin.Build.targets"/>
+  <Import Project="$(MSBuildThisFileDirectory)build\Metadata.targets"/>
+  <Import Project="$(MSBuildThisFileDirectory)build\Utility.targets"/>
+  <Import Project="$(MSBuildThisFileDirectory)build\Clean.targets"/>
   <Import
     Project="$(MSBuildThisFileDirectory)workbooks-proprietary\provisionator.targets"
     Condition="Exists('$(MSBuildThisFileDirectory)workbooks-proprietary\provisionator.targets')"/>
   <Import
-    Project="$(MSBuildThisFileDirectory)Build\Local.props"
-    Condition="Exists('$(MSBuildThisFileDirectory)Build\Local.props')"/>
+    Project="$(MSBuildThisFileDirectory)build\Local.props"
+    Condition="Exists('$(MSBuildThisFileDirectory)build\Local.props')"/>
 
   <PropertyGroup>
     <SolutionPlatform Condition="'$(OS)' == 'Windows_NT'">Windows</SolutionPlatform>
@@ -125,24 +127,13 @@
       Properties="Configuration=$(Configuration)"/>
   </Target>
 
-  <Target Name="Clean">
-    <MSBuild Condition="'$(SolutionPlatform)' == 'macOS'"
-      Projects="$(MSBuildProjectFile)"
-      Targets="_BuildMac"
-      Properties="InteractiveBuildTarget=Clean"/>
-    <MSBuild Condition="'$(SolutionPlatform)' == 'Windows'"
-      Projects="$(MSBuildProjectFile)"
-      Targets="_BuildWin"
-      Properties="InteractiveBuildTarget=Clean" />
-  </Target>
-
   <Target Name="_BuildMac">
     <Exec Command="xcrun -k"/>
     <MSBuild
       BuildInParallel="true"
       Projects="$(SolutionToBuild)"
       Properties="$(SolutionProperties);$(MSBuildCommonProperties)"
-      Targets="$(InteractiveBuildTarget)"/>
+      Targets="Restore;$(InteractiveBuildTarget)"/>
   </Target>
 
   <Target Name="_BuildWin">
@@ -151,13 +142,13 @@
       BuildInParallel="true"
       Projects="Clients\Xamarin.Interactive.Client.Windows\Xamarin.Interactive.Client.Windows.csproj"
       Properties="$(MSBuildCommonProperties);ClientOutputPathSuffix=$(InspectorOutputPathSuffix);ClientAssemblyName=Xamarin Inspector;ClientDefineConstants=CLIENT_FLAVOR_INSPECTOR"
-      Targets="$(InteractiveBuildTarget)"/>
+      Targets="Restore;$(InteractiveBuildTarget)"/>
     <!-- Build everything else -->
     <MSBuild
       BuildInParallel="true"
       Projects="$(SolutionToBuild)"
       Properties="$(SolutionProperties);$(MSBuildCommonProperties);ServerAddress=$(MacBuildHostAddress);ServerUser=$(MacBuildHostUser)"
-      Targets="$(InteractiveBuildTarget)"/>
+      Targets="Restore;$(InteractiveBuildTarget)"/>
   </Target>
 
   <Target
@@ -386,10 +377,8 @@
 
   <Target Name="UpdatePublicApiDefinitions">
     <MSBuild
-      Projects="Tools\ApiDump\ApiDump.csproj;Agents\Xamarin.Interactive\Xamarin.Interactive.csproj"
-      Properties="Configuration=Release"
-      Targets="Build"/>
-    <Exec Command="Tools\ApiDump\ApiDump.exe Agents\Xamarin.Interactive\bin\Release\netstandard2.0\Xamarin.Interactive.dll -o Agents\Xamarin.Interactive\API\Xamarin.Interactive.api.cs"/>
+      Projects="CoreBuild.proj"
+      Targets="UpdatePublicApiDefinitions"/>
   </Target>
 
   <Target

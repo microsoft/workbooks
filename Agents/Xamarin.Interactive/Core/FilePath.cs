@@ -17,7 +17,7 @@ namespace Xamarin.Interactive.Core
 {
     [TypeConverter (typeof (FilePathTypeConverter))]
     [Serializable]
-    struct FilePath : IComparable<FilePath>, IComparable, IEquatable<FilePath>
+    public struct FilePath : IComparable<FilePath>, IComparable, IEquatable<FilePath>
     {
         class FilePathTypeConverter : TypeConverter
         {
@@ -36,7 +36,7 @@ namespace Xamarin.Interactive.Core
             }
         }
 
-        public static readonly FilePath Empty = new FilePath ();
+        internal static readonly FilePath Empty = new FilePath ();
 
         readonly string path;
 
@@ -167,7 +167,7 @@ namespace Xamarin.Interactive.Core
         public static FilePath GetTempPath ()
             => Path.GetTempPath ();
 
-        public FilePath GetTempFileName (string extension = null)
+        internal FilePath GetTempFileName (string extension = null)
         {
             if (!String.IsNullOrWhiteSpace (extension)) {
                 if (extension [0] == '.')
@@ -180,14 +180,14 @@ namespace Xamarin.Interactive.Core
             return Combine (Guid.NewGuid ().ToString ("N") + "." + extension);
         }
 
-        public TemporaryFileStream GetTempFileStream (string extension = null)
+        internal TemporaryFileStream GetTempFileStream (string extension = null)
         {
             var tempFileName = GetTempFileName (extension);
             tempFileName.ParentDirectory.CreateDirectory ();
             return new TemporaryFileStream (tempFileName);
         }
 
-        public class TemporaryFileStream : FileStream
+        internal class TemporaryFileStream : FileStream
         {
             public FilePath FileName { get; }
 
@@ -215,7 +215,7 @@ namespace Xamarin.Interactive.Core
         /// An exclusive file stream whose access cannot be shared. Dispose the
         /// stream to release exclusivity.
         /// </returns>
-        public FileStream ExclusiveCreateNewWithSimilarName (int maxAttempts, out FilePath acquiredPath)
+        internal FileStream ExclusiveCreateNewWithSimilarName (int maxAttempts, out FilePath acquiredPath)
         {
             if (maxAttempts < 1)
                 throw new ArgumentOutOfRangeException (nameof (maxAttempts), "must be >= 1");

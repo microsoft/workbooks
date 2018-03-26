@@ -14,6 +14,7 @@ using System.IO.Compression;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
+
 using Xamarin.Interactive.CodeAnalysis;
 using Xamarin.Interactive.Core;
 using Xamarin.Interactive.Editor;
@@ -399,10 +400,18 @@ namespace Xamarin.Interactive.Workbook.Models
             public FilePath Destination { get; set; }
         }
 
-        public IWorkbookSaveOperation CreateSaveOperation ()
+        public IWorkbookSaveOperation CreateSaveOperation (
+            IWorkspaceService workspace)
         {
             var dependencies = new WorkbookDependencyCollector ().Visit (this);
             var onlyPage = dependencies.SingleOrDefault ();
+
+            var workspaceDependencies = workspace
+                ?.GetExternalDependencies ()
+                ?.Select (dependency => dependency.Location);
+
+            if (workspaceDependencies != null)
+                onlyPage.Value.AddRange (workspaceDependencies);
 
             return new SaveOperation {
                 Destination = logicalPath,

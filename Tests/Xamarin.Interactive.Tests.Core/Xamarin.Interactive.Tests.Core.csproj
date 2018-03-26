@@ -17,5 +17,5 @@
     <ProjectReference Include="..\..\Clients\Xamarin.Interactive.Client\Xamarin.Interactive.Client.csproj" />
   </ItemGroup>
 
-  <Import Project="..\..\Build\Common.targets" />
+  <Import Project="..\..\build\Common.targets" />
 </Project>

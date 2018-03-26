@@ -9,13 +9,12 @@ using System;
 using System.Reflection;
 using System.Runtime.Serialization;
 
-using Xamarin.Interactive.CodeAnalysis;
 using Xamarin.Interactive.Serialization;
 
 namespace Xamarin.Interactive.Representations.Reflection
 {
     [Serializable]
-    sealed class RepresentedAssemblyName : IAssemblyIdentity, ISerializable
+    sealed class RepresentedAssemblyName : ISerializable
     {
         readonly AssemblyName assemblyName;
 
@@ -33,11 +32,11 @@ namespace Xamarin.Interactive.Representations.Reflection
         void ISerializable.GetObjectData (SerializationInfo info, StreamingContext context)
             => info.AddValue ("AssemblyName", assemblyName.FullName);
 
-        public bool Equals (IAssemblyIdentity other)
+        public bool Equals (RepresentedAssemblyName other)
             => ReferenceEquals (other, this) || FullName.Equals (other.FullName);
 
         public override bool Equals (object obj)
-            => obj is IAssemblyIdentity identity && Equals (identity);
+            => obj is RepresentedAssemblyName other && Equals (other);
 
         public override int GetHashCode ()
             => FullName.GetHashCode ();

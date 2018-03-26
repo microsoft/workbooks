@@ -414,7 +414,7 @@
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Mac\Xamarin.Mac.CSharp.targets" />
   <Import Project="Build.targets" />
   <Import Project="Package.targets" />
-  <Import Project="..\..\Build\Common.targets" />
+  <Import Project="..\..\build\Common.targets" />
   <ItemGroup>
     <ProjectReference Include="..\CrossBrowser\Xamarin.CrossBrowser.Mac\Xamarin.CrossBrowser.Mac.csproj">
       <Project>{68B5F01B-6F1C-49D5-9491-96F826AFE211}</Project>
@@ -439,6 +439,14 @@
     <ProjectReference Include="..\Xamarin.Interactive.Client.Desktop\Xamarin.Interactive.Client.Desktop.csproj">
       <Project>{060F0356-3E5C-41CD-B2BD-4C15C99BEBC2}</Project>
       <Name>Xamarin.Interactive.Client.Desktop</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\CodeAnalysis\Xamarin.Interactive.CodeAnalysis\Xamarin.Interactive.CodeAnalysis.csproj">
+      <Project>{A9F6D23D-68D5-41F6-8C00-DF2895560B74}</Project>
+      <Name>Xamarin.Interactive.CodeAnalysis</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\CodeAnalysis\Xamarin.Interactive.CodeAnalysis.Roslyn\Xamarin.Interactive.CodeAnalysis.Roslyn.csproj">
+      <Project>{E2D65824-E20F-4011-825A-FAEC2347F521}</Project>
+      <Name>Xamarin.Interactive.CodeAnalysis.Roslyn</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

@@ -7,6 +7,7 @@
 
 using System;
 using System.IO;
+using System.Linq;
 
 using NUnit.Framework;
 
@@ -15,23 +16,23 @@ namespace Xamarin.Interactive.Tests
     [TestFixture]
     public class ApiTests
     {
-        [TestCase (
-            "Agents/Xamarin.Interactive",
-            "Xamarin.Interactive.dll",
-            "API/Xamarin.Interactive.api.cs")]
-        public void EnsureNoApiDifferenceAndLint (
-            string basePath,
-            string assemblyFileName,
-            string apiReference)
+        [TestCase ("Agents/Xamarin.Interactive")]
+        [TestCase ("CodeAnalysis/Xamarin.Interactive.CodeAnalysis")]
+        // [TestCase ("Clients/Xamarin.Interactive.Client")]
+        public void EnsureNoApiDifferenceAndLint (string basePath)
         {
             basePath = Path.Combine (TestHelpers.PathToRepoRoot, basePath);
-            assemblyFileName = Path.Combine (
+            var assemblyName = Path.GetFileName (basePath);
+            var assemblyFileName = Path.Combine (
                 basePath,
                 "bin",
                 TestHelpers.Configuration,
                 "netstandard2.0",
-                assemblyFileName);
-            apiReference = Path.Combine (basePath, apiReference);
+                assemblyName + ".dll");
+            var apiReference = Path.Combine (
+                TestHelpers.PathToRepoRoot,
+                "docs",
+                assemblyName + ".api.cs");
 
             var writer = new StringWriter ();
             var linter = new ApiDump.LintTool ();
@@ -43,8 +44,10 @@ namespace Xamarin.Interactive.Tests
                 File.ReadAllText (apiReference),
                 ShouldEqualOptions.LineDiff);
 
-            foreach (var issue in linter.Issues)
-                Assert.Fail (issue.Description);
+            if (linter.Issues.Count > 0)
+                Assert.Fail (string.Join (
+                    "\n\n",
+                    linter.Issues.Select (issue => issue.Description)));
         }
     }
 }

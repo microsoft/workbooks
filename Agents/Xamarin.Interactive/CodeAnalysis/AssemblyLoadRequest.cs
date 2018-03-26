@@ -12,6 +12,8 @@ using System.Threading.Tasks;
 using Xamarin.Interactive.Core;
 using Xamarin.Interactive.Logging;
 
+using Xamarin.Interactive.CodeAnalysis.Resolving;
+
 namespace Xamarin.Interactive.CodeAnalysis
 {
     [Serializable]

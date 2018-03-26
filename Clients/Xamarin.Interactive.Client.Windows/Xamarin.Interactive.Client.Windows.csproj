@@ -285,6 +285,14 @@
       <Project>{ee61a762-761d-46b0-9dfa-1d0fd47f3e85}</Project>
       <Name>Xamarin.Interactive.Client</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\CodeAnalysis\Xamarin.Interactive.CodeAnalysis\Xamarin.Interactive.CodeAnalysis.csproj">
+      <Project>{A9F6D23D-68D5-41F6-8C00-DF2895560B74}</Project>
+      <Name>Xamarin.Interactive.CodeAnalysis</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\CodeAnalysis\Xamarin.Interactive.CodeAnalysis.Roslyn\Xamarin.Interactive.CodeAnalysis.Roslyn.csproj">
+      <Project>{E2D65824-E20F-4011-825A-FAEC2347F521}</Project>
+      <Name>Xamarin.Interactive.CodeAnalysis.Roslyn</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Resource Include="xamarin-inspector.ico" />
@@ -329,5 +337,5 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="Build.targets" />
-  <Import Project="..\..\Build\Common.targets" />
+  <Import Project="..\..\build\Common.targets" />
 </Project>

@@ -7,8 +7,7 @@
 
 using System;
 
-using Microsoft.CodeAnalysis.Text;
-
+using Xamarin.Interactive.CodeAnalysis;
 using Xamarin.Interactive.Events;
 
 namespace Xamarin.Interactive.Editor.Events
@@ -19,15 +18,8 @@ namespace Xamarin.Interactive.Editor.Events
 
         public IEditor Source { get; }
         public DateTime Timestamp { get; } = DateTime.UtcNow;
-        public LinePosition Cursor { get; }
 
-        protected EditorEvent (IEditor source, LinePosition cursor = default(LinePosition))
-        {
-            if (source == null)
-                throw new ArgumentNullException (nameof (source));
-
-            Source = source;
-            Cursor = cursor;
-        }
+        protected EditorEvent (IEditor source)
+            => Source = source ?? throw new ArgumentNullException (nameof (source));
     }
 }

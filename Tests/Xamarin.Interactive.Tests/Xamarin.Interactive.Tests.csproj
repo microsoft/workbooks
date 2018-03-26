@@ -9,6 +9,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Tools\ApiDump\ApiDump.csproj" />
+    <ProjectReference Include="..\..\CodeAnalysis\Xamarin.Interactive.CodeAnalysis\Xamarin.Interactive.CodeAnalysis.csproj" />
     <ProjectReference Include="..\..\Clients\Xamarin.Interactive.Client.Desktop\Xamarin.Interactive.Client.Desktop.csproj" />
   </ItemGroup>
   <ItemGroup>
@@ -79,5 +80,5 @@
       <LogicalName>Xamburger.tif</LogicalName>
     </EmbeddedResource>
   </ItemGroup>
-  <Import Project="..\..\Build\Common.targets" />
+  <Import Project="..\..\build\Common.targets" />
 </Project>

@@ -9,11 +9,9 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.Text;
-
 using Xamarin.CrossBrowser;
 
+using Xamarin.Interactive.CodeAnalysis.Models;
 using Xamarin.Interactive.CodeAnalysis.Monaco;
 using Xamarin.Interactive.Editor;
 using Xamarin.Interactive.Editor.Events;
@@ -33,17 +31,12 @@ namespace Xamarin.Interactive.Workbook.Views
         readonly dynamic codeEditor;
         #pragma warning restore 0414
 
-        bool settingBufferValue;
-
         public bool IsReadOnly {
             get { return codeEditor.isReadOnly (); }
             set {
                 codeEditor.setReadOnly (value);
             }
         }
-
-        public SourceText SourceTextContent
-            => ((CodeCell)Cell).CodeAnalysisBuffer.CurrentText;
 
         public override Cell Cell { get; }
 
@@ -79,8 +72,6 @@ namespace Xamarin.Interactive.Workbook.Views
                 o.wrapLongLines = Prefs.Submissions.WrapLongLinesInEditor.GetValue ();
             }));
 
-            codeCell.CodeAnalysisBuffer.TextChanged += HandleBufferTextChanged;
-
             codeEditor.setText (codeCell.Buffer.Value);
 
             preferenceSubscription = PreferenceStore.Default.Subscribe (change => {
@@ -113,12 +104,6 @@ namespace Xamarin.Interactive.Workbook.Views
             }
         }
 
-        void HandleBufferTextChanged (object sender, TextChangeEventArgs e)
-        {
-            if (!settingBufferValue)
-                codeEditor.setText (Cell.Buffer.Value);
-        }
-
         public string GetMonacoModelId () => codeEditor.getModelId ().ToString ();
 
         public override void Focus () => codeEditor.focus ();
@@ -131,7 +116,7 @@ namespace Xamarin.Interactive.Workbook.Views
             EventsObserver.OnNext (new FocusEvent (this));
         }
 
-        public LinePosition CursorPosition {
+        public Position CursorPosition {
             get {
                 return MonacoExtensions.FromMonacoPosition (codeEditor.mEditor.getPosition ());
             }
@@ -146,10 +131,10 @@ namespace Xamarin.Interactive.Workbook.Views
 
         public void ClearMarkedText () => codeEditor.clearMarkedText ();
 
-        void MarkText (LinePositionSpan span,
+        void MarkText (Xamarin.Interactive.CodeAnalysis.Models.Range range,
             string className = null,
             string title = null)
-            => codeEditor.markText (jsContext.ToMonacoRange (span), className, title);
+            => codeEditor.markText (jsContext.ToMonacoRange (range), className, title);
 
         dynamic HandleEnter (dynamic self, dynamic args)
         {
@@ -183,14 +168,12 @@ namespace Xamarin.Interactive.Workbook.Views
                 codeEditor.isCursorAtEnd ();
 
             var workspace = state.CompilationWorkspace;
-            var documentId = state.DocumentId;
 
             if (shouldSubmit &&
                 !String.IsNullOrWhiteSpace (Cell.Buffer.Value) &&
                   workspace != null &&
-                documentId != null &&
-                workspace.IsDocumentSubmissionComplete (documentId)) {
-                EventsObserver.OnNext (new EvaluateCodeCellEvent (this, CursorPosition));
+                workspace.IsCellComplete (state.CodeCellId)) {
+                EventsObserver.OnNext (new EvaluateCodeCellEvent (this));
                 return true;
             }
 
@@ -200,7 +183,7 @@ namespace Xamarin.Interactive.Workbook.Views
         public void EvaluateViaKeyPress ()
         {
             if (!String.IsNullOrWhiteSpace (Cell.Buffer.Value))
-                EventsObserver.OnNext (new EvaluateCodeCellEvent (this, CursorPosition));
+                EventsObserver.OnNext (new EvaluateCodeCellEvent (this));
         }
 
         dynamic HandleCursorUpDown (dynamic self, dynamic args)
@@ -214,14 +197,14 @@ namespace Xamarin.Interactive.Workbook.Views
             if (historyEvent.Handled)
                 return true;
 
-            if (isUp && pos.Line == 0) {
+            if (isUp && pos.LineNumber == 0) {
                 EventsObserver.OnNext (new FocusSiblingEditorEvent (
                     this,
                     FocusSiblingEditorEvent.WhichEditor.Previous));
                 return true;
             }
 
-            if (!isUp && pos.Line == codeEditor.getLastLineIndex ()) {
+            if (!isUp && pos.LineNumber == codeEditor.getLastLineIndex ()) {
                 EventsObserver.OnNext (new FocusSiblingEditorEvent (
                     this,
                     FocusSiblingEditorEvent.WhichEditor.Next));
@@ -233,25 +216,19 @@ namespace Xamarin.Interactive.Workbook.Views
 
         void HandleChange (dynamic self, dynamic args)
         {
-            settingBufferValue = true;
             Cell.Buffer.Value = codeEditor.getText ();
-            settingBufferValue = false;
 
             // WorkbookCodeEditorChangeEvent
             var changeEvent = args [0];
             var text = changeEvent.text?.ToString () ?? "";
-            dynamic newCursorPosition = changeEvent.newCursorPosition;
 
-            var linePosition = MonacoExtensions.FromMonacoPosition (newCursorPosition);
-
-            EventsObserver.OnNext (new ChangeEvent (this, linePosition, text));
+            EventsObserver.OnNext (new ChangeEvent (this, text));
 
             UpdateDiagnosticsAsync ().Forget ();
         }
 
         protected override void Dispose (bool disposing)
         {
-            ((CodeCell)Cell).CodeAnalysisBuffer.TextChanged -= HandleBufferTextChanged;
             EventsObserver.OnNext (new DeleteCellEvent<CodeCell> ((CodeCell) Cell));
             preferenceSubscription.Dispose ();
             codeEditor.dispose ();
@@ -264,19 +241,19 @@ namespace Xamarin.Interactive.Workbook.Views
             ClearMarkedText ();
 
             var workspace = state.CompilationWorkspace;
-            var documentId = state.DocumentId;
-
-            if (workspace == null || documentId == null)
+            if (workspace == null)
                 return;
 
-            var diagnostics = await workspace.GetSubmissionCompilationDiagnosticsAsync (
-                documentId,
+            var diagnostics = await workspace.GetCellDiagnosticsAsync (
+                state.CodeCellId,
                 cancellationToken);
 
             foreach (var diag in diagnostics) {
                 if (diag.Severity == DiagnosticSeverity.Error)
-                    MarkText (diag.Location.GetLineSpan ().Span,
-                        "CodeMirror-diagnostic", diag.GetMessage ());
+                    MarkText (
+                        diag.Range,
+                        "CodeMirror-diagnostic",
+                        diag.Message);
             }
         }
 

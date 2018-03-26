@@ -8,12 +8,9 @@
 using System;
 using System.Threading;
 
-using Microsoft.CodeAnalysis.Text;
-
 using Xamarin.CrossBrowser;
 
-using Xamarin.Interactive.CodeAnalysis.Hover;
-using Xamarin.Interactive.Compilation.Roslyn;
+using Xamarin.Interactive.CodeAnalysis.Models;
 
 namespace Xamarin.Interactive.CodeAnalysis.Monaco
 {
@@ -21,26 +18,27 @@ namespace Xamarin.Interactive.CodeAnalysis.Monaco
     {
         const string TAG = nameof (HoverProvider);
 
+        readonly IWorkspaceService workspace;
         readonly ScriptContext context;
-        readonly Func<string, SourceText> getSourceTextByModelId;
-        readonly HoverController controller;
+        readonly Func<string, CodeCellId> monacoModelIdToCodeCellIdMapper;
 
         #pragma warning disable 0414
         readonly dynamic providerTicket;
         #pragma warning restore 0414
 
         public HoverProvider (
-            RoslynCompilationWorkspace compilationWorkspace,
+            IWorkspaceService workspace,
             ScriptContext context,
-            Func<string, SourceText> getSourceTextByModelId)
+            Func<string, CodeCellId> monacoModelIdToCodeCellIdMapper)
         {
+            this.workspace = workspace
+                ?? throw new ArgumentNullException (nameof (workspace));
+
             this.context = context
                 ?? throw new ArgumentNullException (nameof (context));
 
-            this.getSourceTextByModelId = getSourceTextByModelId
-                ?? throw new ArgumentNullException (nameof (getSourceTextByModelId));
-
-            controller = new HoverController (compilationWorkspace);
+            this.monacoModelIdToCodeCellIdMapper = monacoModelIdToCodeCellIdMapper
+                ?? throw new ArgumentNullException (nameof (monacoModelIdToCodeCellIdMapper));
 
             providerTicket = context.GlobalObject.xiexports.monaco.RegisterWorkbookHoverProvider (
                 "csharp",
@@ -57,25 +55,19 @@ namespace Xamarin.Interactive.CodeAnalysis.Monaco
                 MonacoExtensions.FromMonacoCancellationToken (args [2]));
 
         object ProvideHover (
-            string modelId,
-            LinePosition linePosition,
+            string monacoModelId,
+            Position position,
             CancellationToken cancellationToken)
-        {
-            var sourceTextContent = getSourceTextByModelId (modelId);
-
-            var computeTask = controller.ProvideHoverAsync (
-                sourceTextContent,
-                linePosition,
-                cancellationToken);
-
-            return context.ToMonacoPromise (
-                computeTask,
+            => context.ToMonacoPromise (
+                workspace.GetHoverAsync (
+                    monacoModelIdToCodeCellIdMapper (monacoModelId),
+                    position,
+                    cancellationToken),
                 ToMonacoHover,
                 MainThread.TaskScheduler,
                 raiseErrors: false);
-        }
 
-        static dynamic ToMonacoHover (ScriptContext context, HoverViewModel hover)
+        static dynamic ToMonacoHover (ScriptContext context, Hover hover)
         {
             if (!(hover.Contents?.Length > 0))
                 return null;

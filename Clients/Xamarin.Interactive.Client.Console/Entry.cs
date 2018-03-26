@@ -16,6 +16,7 @@ using Mono.Terminal;
 
 using Xamarin.Interactive.CodeAnalysis;
 using Xamarin.Interactive.CodeAnalysis.Events;
+using Xamarin.Interactive.CodeAnalysis.Models;
 using Xamarin.Interactive.Core;
 using Xamarin.Interactive.Logging;
 using Xamarin.Interactive.Session;
@@ -147,11 +148,11 @@ namespace Xamarin.Interactive.Client.Console
                         GetPrompt (i > 0),
                         null);
 
-                    var existingBuffer = await session.EvaluationService.GetCodeCellBufferAsync (cellId);
+                    var existingBuffer = session.WorkspaceService.GetCellBuffer (cellId);
 
                     await session.EvaluationService.UpdateCodeCellAsync (
                         cellId,
-                        existingBuffer.Value + deltaBuffer);
+                        existingBuffer + deltaBuffer);
 
                     if (session.WorkspaceService.IsCellComplete (cellId))
                         break;
@@ -205,7 +206,7 @@ namespace Xamarin.Interactive.Client.Console
 
             // insert and evaluate cells in the workbook
             foreach (var cell in workbook.IndexPage.Contents.OfType<CodeCell> ()) {
-                var buffer = cell.CodeAnalysisBuffer.Value;
+                var buffer = cell.Buffer.Value;
 
                 lastCodeCellId = await session.EvaluationService.InsertCodeCellAsync (
                     buffer,
@@ -375,14 +376,14 @@ namespace Xamarin.Interactive.Client.Console
             WriteLine (message);
         }
 
-        static void RenderDiagnostic (InteractiveDiagnostic diagnostic)
+        static void RenderDiagnostic (Diagnostic diagnostic)
         {
             switch (diagnostic.Severity) {
-            case Microsoft.CodeAnalysis.DiagnosticSeverity.Warning:
+            case DiagnosticSeverity.Warning:
                 ForegroundColor = ConsoleColor.DarkYellow;
                 Write ($"warning ({diagnostic.Id}): ");
                 break;
-            case Microsoft.CodeAnalysis.DiagnosticSeverity.Error:
+            case DiagnosticSeverity.Error:
                 ForegroundColor = ConsoleColor.Red;
                 Write ($"error ({diagnostic.Id}): ");
                 break;
@@ -392,7 +393,7 @@ namespace Xamarin.Interactive.Client.Console
 
             ResetColor ();
 
-            var (line, column) = diagnostic.Span;
+            var (line, column) = diagnostic.Range;
             WriteLine ($"({line},{column}): {diagnostic.Message}");
         }
 

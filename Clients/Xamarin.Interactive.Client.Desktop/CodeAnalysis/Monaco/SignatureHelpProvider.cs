@@ -8,12 +8,9 @@
 using System;
 using System.Threading;
 
-using Microsoft.CodeAnalysis.Text;
-
 using Xamarin.CrossBrowser;
 
-using Xamarin.Interactive.CodeAnalysis.SignatureHelp;
-using Xamarin.Interactive.Compilation.Roslyn;
+using Xamarin.Interactive.CodeAnalysis.Models;
 
 namespace Xamarin.Interactive.CodeAnalysis.Monaco
 {
@@ -21,26 +18,27 @@ namespace Xamarin.Interactive.CodeAnalysis.Monaco
     {
         const string TAG = nameof (SignatureHelpProvider);
 
+        readonly IWorkspaceService workspace;
         readonly ScriptContext context;
-        readonly Func<string, SourceText> getSourceTextByModelId;
-        readonly SignatureHelpController controller;
+        readonly Func<string, CodeCellId> monacoModelIdToCodeCellIdMapper;
 
         #pragma warning disable 0414
         readonly dynamic providerTicket;
         #pragma warning restore 0414
 
         public SignatureHelpProvider (
-            RoslynCompilationWorkspace compilationWorkspace,
+            IWorkspaceService workspace,
             ScriptContext context,
-            Func<string, SourceText> getSourceTextByModelId)
+            Func<string, CodeCellId> monacoModelIdToCodeCellIdMapper)
         {
+            this.workspace = workspace
+                ?? throw new ArgumentNullException (nameof (workspace));
+
             this.context = context
                 ?? throw new ArgumentNullException (nameof (context));
 
-            this.getSourceTextByModelId = getSourceTextByModelId
-                ?? throw new ArgumentNullException (nameof (getSourceTextByModelId));
-
-            controller = new SignatureHelpController (compilationWorkspace);
+            this.monacoModelIdToCodeCellIdMapper = monacoModelIdToCodeCellIdMapper
+                ?? throw new ArgumentNullException (nameof (monacoModelIdToCodeCellIdMapper));
 
             providerTicket = context.GlobalObject.xiexports.monaco.RegisterWorkbookSignatureHelpProvider (
                 "csharp",
@@ -57,27 +55,21 @@ namespace Xamarin.Interactive.CodeAnalysis.Monaco
                 MonacoExtensions.FromMonacoCancellationToken (args [2]));
 
         object ProvideSignatureHelp (
-            string modelId,
-            LinePosition linePosition,
+            string monacoModelId,
+            Position position,
             CancellationToken cancellationToken)
-        {
-            var sourceTextContent = getSourceTextByModelId (modelId);
-
-            var computeTask = controller.ComputeSignatureHelpAsync (
-                sourceTextContent,
-                linePosition,
-                cancellationToken);
-
-            return context.ToMonacoPromise (
-                computeTask,
+            => context.ToMonacoPromise (
+                workspace.GetSignatureHelpAsync (
+                    monacoModelIdToCodeCellIdMapper (monacoModelId),
+                    position,
+                    cancellationToken),
                 ToMonacoSignatureHelp,
                 MainThread.TaskScheduler,
                 raiseErrors: false);
-        }
 
-        static dynamic ToMonacoSignatureHelp (ScriptContext context, SignatureHelpViewModel signatureHelp)
+        static dynamic ToMonacoSignatureHelp (ScriptContext context, SignatureHelp signatureHelp)
         {
-            if (!(signatureHelp.Signatures?.Length > 0))
+            if (!(signatureHelp.Signatures?.Count > 0))
                 return null;
 
             dynamic signatures = context.CreateArray ();
@@ -85,7 +77,7 @@ namespace Xamarin.Interactive.CodeAnalysis.Monaco
             foreach (var sig in signatureHelp.Signatures) {
                 dynamic parameters = context.CreateArray ();
 
-                if (sig.Parameters?.Length > 0)
+                if (sig.Parameters?.Count > 0)
                     foreach (var param in sig.Parameters)
                         parameters.push (context.CreateObject (o => {
                             o.label = param.Label;

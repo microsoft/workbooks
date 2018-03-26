@@ -79,14 +79,6 @@
   },
   {
     "Kind": "NuGet",
-    "Name": "Microsoft.CodeAnalysis.CSharp.Features",
-    "Version": "2.6.1",
-    "DependentProjects": [
-      "Xamarin.Interactive.Client"
-    ]
-  },
-  {
-    "Kind": "NuGet",
     "Name": "Microsoft.NET.Test.Sdk",
     "Version": "15.5.0",
     "DependentProjects": [
@@ -106,6 +98,7 @@
     "Name": "Mono.Options",
     "Version": "5.3.0.1",
     "DependentProjects": [
+      "Xamarin.Interactive.Client.Console",
       "Xamarin.Interactive.Client.Web",
       "InstallerVerifier"
     ]

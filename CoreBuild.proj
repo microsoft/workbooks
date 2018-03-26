@@ -1,5 +1,6 @@
 <Project InitialTargets="Configure" DefaultTargets="Restore;Build">
-  <Import Project="Build\Top.targets"/>
+  <Import Project="build\Top.targets"/>
+  <Import Project="build\Clean.targets"/>
 
   <Import
     Project="build.local.props"
@@ -7,7 +8,6 @@
 
   <PropertyGroup>
     <Configuration Condition="'$(Configuration)' == ''">Debug</Configuration>
-    <DefaultProfile Condition="'$(DefaultProfile)' == ''">Full</DefaultProfile>
 
     <BuiltWorkbookAppsBasePath>$(MSBuildThisFileDirectory)_build\$(Configuration)\WorkbookApps\</BuiltWorkbookAppsBasePath>
     <ArtifactsBasePath>$(MSBuildThisFileDirectory)_artifacts\</ArtifactsBasePath>
@@ -21,31 +21,8 @@
   <!-- Profiles -->
 
   <Target
-    Name="CoreProfile">
-    <ItemGroup>
-      <ProjectsToBuild Include="Agents\Xamarin.Interactive\*.csproj"/>
-      <ProjectsToBuild Include="Clients\Xamarin.Interactive.Client\*.csproj"/>
-    </ItemGroup>
-  </Target>
-
-  <Target
-    Name="CoreWorkbookAppsProfile">
-    <ItemGroup>
-      <ProjectsToBuild Include="Agents\Xamarin.Interactive.Console\*.csproj"/>
-      <ProjectsToBuild Include="WorkbookApps\Xamarin.Workbooks.DotNetCore\*.csproj"/>
-    </ItemGroup>
-  </Target>
-
-  <Target
-    Name="DesktopWorkbookAppsProfile">
-    <ItemGroup>
-      <ProjectsToBuild Include="WorkbookApps\Xamarin.Workbooks.Wpf" Condition="$(IsWindows)"/>
-    </ItemGroup>
-  </Target>
-
-  <Target
     Name="WebProfile"
-    DependsOnTargets="CoreProfile;CoreWorkbookAppsProfile">
+    DependsOnTargets="CoreProfile;WorkbookAppsProfile">
     <ItemGroup>
       <ProjectsToBuild Include="Clients\Xamarin.Interactive.Client.Web\*.csproj">
         <HasPackageTarget>true</HasPackageTarget>
@@ -55,7 +32,7 @@
 
   <Target
     Name="ConsoleProfile"
-    DependsOnTargets="CoreProfile;CoreWorkbookAppsProfile">
+    DependsOnTargets="CoreProfile;WorkbookAppsProfile">
     <ItemGroup>
       <ProjectsToBuild Include="Clients\Xamarin.Interactive.Client.Console\*.csproj"/>
     </ItemGroup>
@@ -63,26 +40,87 @@
 
   <Target
     Name="DesktopProfile"
-    DependsOnTargets="CoreProfile;CoreWorkbookAppsProfile">
-    <ItemGroup Condition="$(IsMac)">
-      <ProjectsToBuild Include="Clients\Xamarin.Interactive.Client.Mac\*.csproj">
+    Condition="!$(IsDotNetCoreMSBuild)"
+    DependsOnTargets="CoreProfile;WorkbookAppsProfile">
+    <ItemGroup>
+      <ProjectsToBuild
+        Condition="$(IsMac)"
+        Include="Clients\Xamarin.Interactive.Client.Mac\*.csproj">
         <HasPackageTarget>true</HasPackageTarget>
       </ProjectsToBuild>
-    </ItemGroup>
-
-    <ItemGroup Condition="$(IsWindows)">
-      <ProjectsToBuild Include="Clients\Xamarin.Interactive.Client.Windows\*.csproj"/>
+      <ProjectsToBuild
+        Condition="$(IsWindows)"
+        Include="Clients\Xamarin.Interactive.Client.Windows\*.csproj"/>
     </ItemGroup>
   </Target>
 
   <Target
-    Name="FullProfile"
-    DependsOnTargets="WebProfile;ConsoleProfile;DesktopProfile"/>
+    Name="CoreProfile">
+    <ItemGroup>
+      <ProjectsToBuild Include="Agents\Xamarin.Interactive\*.csproj">
+        <HasPublicApi>true</HasPublicApi>
+      </ProjectsToBuild>
+      <ProjectsToBuild Include="CodeAnalysis\Xamarin.Interactive.CodeAnalysis\*.csproj">
+        <HasPublicApi>true</HasPublicApi>
+      </ProjectsToBuild>
+      <ProjectsToBuild Include="CodeAnalysis\Xamarin.Interactive.CodeAnalysis.Roslyn\*.csproj"/>
+      <ProjectsToBuild Include="Clients\Xamarin.Interactive.Client\*.csproj">
+        <HasPublicApi>true</HasPublicApi>
+      </ProjectsToBuild>
+    </ItemGroup>
+  </Target>
+
+  <Target
+    Name="TestsProfile"
+    DependsOnTargets="CoreProfile">
+    <ItemGroup>
+      <ProjectsToBuild
+        Condition="!$(IsDotNetCoreMSBuild)"
+        Include="Tests\Xamarin.Interactive.Tests\*.csproj" />
+      <ProjectsToBuild Include="Tests\Xamarin.Interactive.Tests.Core\*.csproj" />
+    </ItemGroup>
+  </Target>
+
+  <Target
+    Name="WorkbookAppsProfile"
+    DependsOnTargets="CoreProfile;DotNetCoreWorkbookAppsProfile;DesktopWorkbookAppsProfile"/>
+
+  <Target
+    Name="DotNetCoreWorkbookAppsProfile">
+    <ItemGroup>
+      <ProjectsToBuild Include="WorkbookApps\Xamarin.Workbooks.DotNetCore\*.csproj"/>
+    </ItemGroup>
+  </Target>
+
+  <Target
+    Name="DesktopWorkbookAppsProfile"
+    Condition="!$(IsDotNetCoreMSBuild)">
+    <ItemGroup>
+      <ProjectsToBuild
+        Condition="$(IsWindows) Or $(HaveMono)"
+        Include="Agents\Xamarin.Interactive.Console\*.csproj"/>
+      <ProjectsToBuild
+        Condition="$(IsWindows)"
+        Include="WorkbookApps\Xamarin.Workbooks.Wpf\*.csproj"/>
+      <ProjectsToBuild
+        Condition="$(HaveXamarinMac)"
+        Include="WorkbookApps\Xamarin.Workbooks.Mac\*.csproj"/>
+      <ProjectsToBuild
+        Condition="$(HaveXamarinIos)"
+        Include="WorkbookApps\Xamarin.Workbooks.iOS\*.csproj">
+        <Platform>iPhoneSimulator</Platform>
+      </ProjectsToBuild>
+      <ProjectsToBuild
+        Condition="$(HaveXamarinAndroid)"
+        Include="WorkbookApps\Xamarin.Workbooks.Android\*.csproj"/>
+    </ItemGroup>
+  </Target>
 
   <!-- Solution Targets -->
+
   <Target
     Name="Build"
-    DependsOnTargets="$(Profile)">
+    DependsOnTargets="@(ProfileTargets)">
     <MSBuild
       Projects="$(SolutionFile)"
       Properties="$(ProfileProperties)"
@@ -91,7 +129,7 @@
 
   <Target
     Name="Restore"
-    DependsOnTargets="$(Profile)">
+    DependsOnTargets="@(ProfileTargets)">
     <Message Importance="High" Text="Restoring NuGet packages for $(SolutionFileRelative)..."/>
     <MSBuild
       Projects="$(SolutionFile)"
@@ -99,20 +137,11 @@
       Targets="Restore"/>
   </Target>
 
-  <Target
-    Name="Clean"
-    DependsOnTargets="$(Profile)">
-    <MSBuild
-      Projects="@(ProjectsToBuild)"
-      Properties="$(ProfileProperties)"
-      Targets="Clean"/>
-  </Target>
-
-  <!-- Profile Projects -->
+  <!-- Profile Targets -->
 
   <Target
     Name="Package"
-    DependsOnTargets="$(Profile)">
+    DependsOnTargets="@(ProfileTargets)">
     <ItemGroup>
       <PackageProjectsToBuild
         Include="@(ProjectsToBuild)"
@@ -127,27 +156,36 @@
   <!-- Configuration / Solution Generation -->
 
   <Target
-    Name="Configure"
-    DependsOnTargets="Xamarin_Build_ReadAllProperties">
+    Name="Configure">
     <PropertyGroup>
-      <Profile Condition="'$(Profile)' == ''">$(DefaultProfile)</Profile>
-      <Profile Condition="!$(Profile.EndsWith('Profile'))">$(Profile)Profile</Profile>
+      <Profile Condition="'$(Profile.ToLowerInvariant())' == 'full'"></Profile>
+      <Profile Condition="'$(Profile.ToLowerInvariant())' == 'fullprofile'"></Profile>
+      <Profile Condition="'$(Profile)' == ''">Desktop+Web+Console+Tests</Profile>
     </PropertyGroup>
+    <ItemGroup>
+      <Profiles Include="$(Profile.Replace('|', '+').Replace(',', '+').Replace(';', '+').Split('+'))"/>
+      <Profiles>
+        <ProfileName>$([System.Text.RegularExpressions.Regex]::Replace(
+            %(Identity),
+            'Profile$',
+            '',
+            System.Text.RegularExpressions.RegexOptions.IgnoreCase))</ProfileName>
+      </Profiles>
+      <ProfileTargets Include="@(Profiles -> '%(ProfileName)Profile')"/>
+    </ItemGroup>
   </Target>
 
   <Target
     Name="ConfigurationSummary"
     AfterTargets="ComputeSolution">
     <Message Importance="High" Text="Projects To Build:"/>
-    <Message Importance="High" Text="  $(SolutionFileRelative):"/>
-    <Message Importance="High" Text="    %(ProjectsToBuild.Filename)"/>
+    <Message Importance="High" Text="  %(ProjectsToBuild.Filename)"/>
   </Target>
 
   <Target
     Name="ComputeSolution">
     <PropertyGroup>
-      <SolutionFileName>$([System.Text.RegularExpressions.Regex]::Replace($(Profile), 'Profile$', ''))</SolutionFileName>
-      <SolutionFile>$(MSBuildThisFileDirectory)solutions\Xamarin.Interactive.$(SolutionFileName).sln</SolutionFile>
+      <SolutionFile>$(MSBuildThisFileDirectory)solutions\Xamarin.Interactive.sln</SolutionFile>
       <SolutionFileRelative>$([MSBuild]::MakeRelative($(MSBuildThisFileDirectory), $(SolutionFile)))</SolutionFileRelative>
       <SolutionBasePath>$([System.IO.Path]::GetDirectoryName($(SolutionFile)))\</SolutionBasePath>
     </PropertyGroup>
@@ -156,20 +194,58 @@
   <Target
     Name="GenerateSolution"
     DependsOnTargets="ComputeSolution"
-    BeforeTargets="Restore;Build"
-    Inputs="$(MSBuildThisFileFullPath)"
-    Outputs="$(SolutionFile)">
-    <ItemGroup>
-      <SolutionProjects Include="@(ProjectsToBuild -> '$(MSBuildThisFileDirectory)%(Identity)')">
-        <RelativePath>$([MSBuild]::MakeRelative($(SolutionBasePath), $(MSBuildThisFileDirectory)%(Identity)))</RelativePath>
-        <SolutionFolder>$([System.IO.Path]::GetDirectoryName($([System.IO.Path]::GetDirectoryName(%(Identity)))))</SolutionFolder>
-      </SolutionProjects>
-    </ItemGroup>
-
+    BeforeTargets="Restore;Build">
     <Message Importance="High" Text="Generating $(SolutionFileRelative)..."/>
     <GenerateSolution
-      Projects="@(SolutionProjects)"
+      ProjectsRelativeToPath="$(MSBuildThisFile)"
+      Projects="@(ProjectsToBuild)"
+      SolutionConfiguration="$(Configuration)"
       GlobalSectionsFiles="$(SolutionBasePath)GlobalSections"
       OutputFile="$(SolutionFile)"/>
+  </Target>
+
+  <!-- Utility Targets -->
+
+  <Target
+    Name="UpdatePublicApiDefinitions"
+    DependsOnTargets="@(ProfileTargets)">
+    <PropertyGroup>
+      <ApiConfiguration>Release</ApiConfiguration>
+    </PropertyGroup>
+    <ItemGroup>
+      <PublicApiProjectsToBuild
+        Include="@(ProjectsToBuild)"
+        Condition="'%(ProjectsToBuild.HasPublicApi)' != ''"/>
+    </ItemGroup>
+    <MakeDir Directories="docs"/>
+    <MSBuild
+      Projects="Tools\ApiDump\ApiDump.csproj;@(PublicApiProjectsToBuild)"
+      Properties="Configuration=$(ApiConfiguration)"
+      Targets="Build"/>
+    <Message Importance="High" Text="Tools\ApiDump\ApiDump.csproj;@(PublicApiProjectsToBuild)"/>
+    <ItemGroup>
+      <PublicApiAssembly Include="%(PublicApiProjectsToBuild.RelativeDir)bin\$(ApiConfiguration)\*\%(Filename).dll">
+        <ApiFile>docs\%(Filename).api.cs</ApiFile>
+      </PublicApiAssembly>
+    </ItemGroup>
+    <Exec Command="Tools\ApiDump\ApiDump.exe %(PublicApiAssembly.FullPath) -o %(PublicApiAssembly.ApiFile)"/>
+  </Target>
+
+  <Target
+    Name="_ConfigureUnitTests">
+    <PropertyGroup>
+      <Profile>DesktopProfile</Profile>
+    </PropertyGroup>
+  </Target>
+
+  <Target
+    Name="RunUnitTests"
+    DependsOnTargets="_ConfigureUnitTests;Build">
+    <PropertyGroup>
+      <TestDriver Condition="$(IsMac)">Clients\Xamarin.Interactive.Client.Mac\bin\$(Configuration)\Xamarin Workbooks.app\Contents\MacOS\Xamarin Workbooks</TestDriver>
+      <TestDriver Condition="$(IsWindows)">Clients\Xamarin.Interactive.Client.Windows\bin\$(Configuration)\Xamarin Workbooks.exe</TestDriver>
+      <TestCommand Condition="'$(TestToRun)' != ''">-test:$(TestToRun)</TestCommand>
+    </PropertyGroup>
+    <Exec Command="&quot;$(TestDriver)&quot; cli test Tests\Xamarin.Interactive.Tests\bin\$(Configuration)\net461\Xamarin.Interactive.Tests.dll &quot;-result:$(MSBuildThisFileDirectory)Tests/Regressions.$(Configuration).xml&quot; $(TestCommand)"/>
   </Target>
 </Project>

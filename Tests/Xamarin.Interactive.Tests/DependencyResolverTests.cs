@@ -23,9 +23,8 @@ using Should;
 using Xamarin.Interactive.Core;
 using Xamarin.Interactive.IO;
 using Xamarin.Interactive.NuGet;
-using Xamarin.Interactive.Reflection;
 
-namespace Xamarin.Interactive.Tests
+namespace Xamarin.Interactive.CodeAnalysis.Resolving
 {
     [TestFixture]
     public class DependencyResolverTests

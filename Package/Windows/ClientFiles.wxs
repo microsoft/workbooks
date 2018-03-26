@@ -460,6 +460,12 @@
       <Component Id="Xamarin.Interactive.Client.Desktop.dll" Guid="5F5405B7-53D6-4930-832D-0D9DED3CA7C5">
         <File Id="Xamarin.Interactive.Client.Desktop.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\Xamarin.Interactive.Client.Desktop.dll" />
       </Component>
+      <Component Id="Xamarin.Interactive.CodeAnalysis.dll" Guid="63EC7713-D2DA-4189-9678-8FFDC7825C8E">
+        <File Id="Xamarin.Interactive.CodeAnalysis.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\Xamarin.Interactive.CodeAnalysis.dll" />
+      </Component>
+      <Component Id="Xamarin.Interactive.CodeAnalysis.Roslyn.dll" Guid="CE76C8C5-A843-4091-A0C3-850EF72EDB2E">
+        <File Id="Xamarin.Interactive.CodeAnalysis.Roslyn.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\Xamarin.Interactive.CodeAnalysis.Roslyn.dll" />
+      </Component>
     </ComponentGroup>
     <ComponentGroup Id="ClientReplEditorResources" Directory="InspectorResourcesReplEditorFolder">
       <Component Id="editor.css" Guid="C9070752-B1DA-4918-81BD-3DA8869D9A62">

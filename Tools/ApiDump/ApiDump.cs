@@ -26,6 +26,7 @@ namespace ApiDump
             var corlibPath = Path.GetDirectoryName (typeof (object).Assembly.Location);
 
             var resolver = new DefaultAssemblyResolver ();
+            resolver.AddSearchDirectory (Path.GetDirectoryName (fileName));
             resolver.AddSearchDirectory (corlibPath);
             resolver.AddSearchDirectory (Path.Combine (corlibPath, "Facades"));
 

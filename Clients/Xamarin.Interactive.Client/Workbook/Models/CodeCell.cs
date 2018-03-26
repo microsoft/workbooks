@@ -13,15 +13,27 @@ using Xamarin.Interactive.CodeAnalysis;
 
 namespace Xamarin.Interactive.Workbook.Models
 {
-    sealed class CodeCell : Cell
+    sealed class CodeCell : Cell, ICellBuffer
     {
-        readonly CodeCellBuffer buffer = new CodeCellBuffer ();
         readonly char fenceChar;
 
         public string LanguageName { get; }
         public string ExtraInfo { get; }
-        public override ICellBuffer Buffer => buffer;
-        public CodeCellBuffer CodeAnalysisBuffer => buffer;
+        public override ICellBuffer Buffer => this;
+
+        public event EventHandler BufferChanged;
+
+        string buffer = string.Empty;
+
+        int ICellBuffer.Length => buffer.Length;
+
+        string ICellBuffer.Value {
+            get => buffer;
+            set {
+                buffer = value ?? string.Empty;
+                BufferChanged?.Invoke (this, EventArgs.Empty);
+            }
+        }
 
         public CodeCell (Block block, string languageName, string extraInfo) : this (
             languageName,

@@ -7,7 +7,9 @@
 
 using System;
 using System.Globalization;
+
 using Xamarin.Interactive.CodeAnalysis;
+using Xamarin.Interactive.CodeAnalysis.Models;
 
 namespace Xamarin.Interactive.Workbook.Views
 {
@@ -22,7 +24,7 @@ namespace Xamarin.Interactive.Workbook.Views
 
         void Freeze ();
 
-        void RenderDiagnostic (InteractiveDiagnostic diagnostic);
+        void RenderDiagnostic (Diagnostic diagnostic);
 
         void RenderResult (
             CultureInfo cultureInfo,

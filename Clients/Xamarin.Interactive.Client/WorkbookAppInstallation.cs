@@ -23,7 +23,7 @@ using Xamarin.Interactive.Client.AgentProcesses;
 using Xamarin.Interactive.Core;
 using Xamarin.Interactive.Logging;
 using Xamarin.Interactive.Messages;
-using Xamarin.Interactive.Reflection;
+using Xamarin.Interactive.CodeAnalysis.Resolving;
 
 namespace Xamarin.Interactive
 {

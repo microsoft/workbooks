@@ -1,0 +1,40 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <OutputPath>bin</OutputPath>
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+    <UnpackedAssembly>$([MSBuild]::NormalizePath($(MSBuildThisFileDirectory)$(OutputPath)\$(TargetFramework)\$(AssemblyName).dll))</UnpackedAssembly>
+    <PackedAssembly>$(MSBuildThisFileDirectory)$(AssemblyName).dll</PackedAssembly>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="ILRepack" Version="2.0.15" />
+    <PackageReference Include="Newtonsoft.Json" Version="11.0.1" />
+    <PackageReference Include="CommonMark.NET" Version="0.15.1" />
+    <PackageReference Include="Microsoft.Build" Version="15.6.82" />
+    <PackageReference Include="Microsoft.Build.Tasks.Core" Version="15.6.82" />
+    <PackageReference Include="System.IO.Compression.ZipFile" Version="4.3.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\..\Agents\Xamarin.Interactive\Core\FilePath.cs">
+      <Link>FilePath.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Agents\Xamarin.Interactive\CryptoHelpers.cs">
+      <Link>CryptoHelpers.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Agents\Xamarin.Interactive\Versioning\ReleaseVersion.cs">
+      <Link>ReleaseVersion.cs</Link>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Update="MSBuild\PolicheckHtmlTemplate.cs">
+      <DependentUpon>PolicheckHtmlTemplate.cshtml</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="MSBuild\PolicheckHtmlTemplate.cshtml">
+      <Generator>RazorTemplatePreprocessor</Generator>
+      <LastGenOutput>PolicheckHtmlTemplate.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <Import Project="ILRepack.targets"/>
+</Project>

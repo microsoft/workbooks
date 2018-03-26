@@ -23,7 +23,7 @@
     <InspectorNuGetPackageContentDir>$(InspectorNuGetPackageBuildDir)\contentFiles\any\any\</InspectorNuGetPackageContentDir>
   </PropertyGroup>
 
-  <Import Project="$(TopDirectory)Build\Metadata.targets"/>
+  <Import Project="$(TopDirectory)build\Metadata.targets"/>
 
   <Target
     Name="Package"
@@ -86,6 +86,7 @@
         Condition="'$(ProductsignIdentity)' != ''"
         Include="--sign &quot;$(ProductsignIdentity)&quot;"/>
     </ItemGroup>
+    <MakeDir Directories="$(ArtifactsBasePath)"/>
     <Exec Command="@(ProductBuild, ' ')"/>
 
     <Delete Files="$(PackageAssetsDirectory)Framework.pkg;$(PackageAssetsDirectory)Distribution.xml"/>

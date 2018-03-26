@@ -7,22 +7,22 @@
 
 using System;
 
-using Microsoft.CodeAnalysis;
-
-using Xamarin.Interactive.Compilation.Roslyn;
+using Xamarin.Interactive.CodeAnalysis;
 using Xamarin.Interactive.Editor;
 using Xamarin.Interactive.Workbook.Views;
 
 namespace Xamarin.Interactive.Workbook.Models
 {
-    sealed class CodeCellState
+    sealed class CodeCellState : IDisposable
     {
         public CodeCell Cell { get; }
 
         public IEditor Editor { get; set; }
         public ICodeCellView View { get; set; }
-        public RoslynCompilationWorkspace CompilationWorkspace { get; set; }
-        public DocumentId DocumentId { get; set; }
+
+        public IWorkspaceService CompilationWorkspace { get; private set; }
+        public CodeCellId CodeCellId { get; private set; }
+
         public bool IsResultAnExpression { get; set; }
 
         public int EvaluationCount { get; private set; }
@@ -42,5 +42,19 @@ namespace Xamarin.Interactive.Workbook.Models
             View.IsOutdated = false;
             View.IsEvaluating = false;
         }
+
+        public void BindToWorkspace (IWorkspaceService workspace, CodeCellId codeCellId)
+        {
+            CompilationWorkspace = workspace;
+            CodeCellId = codeCellId;
+
+            Cell.BufferChanged += HandleBufferChanged;
+        }
+
+        public void Dispose ()
+            => Cell.BufferChanged -= HandleBufferChanged;
+
+        void HandleBufferChanged (object sender, EventArgs args)
+            => CompilationWorkspace?.SetCellBuffer (CodeCellId, Cell.Buffer.Value);
     }
 }

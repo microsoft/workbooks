@@ -37,7 +37,7 @@
 
     <Exec
       Condition=" '$(OS)' == 'Unix' And $(RuntimeIdentifier.StartsWith('osx'))"
-      Command="chmod +x &quot;$(InstallDir)DotNetCore\$(AssemblyName)&quot;"
+      Command="chmod +x &quot;$(InstallDir)DotNetCore/$(AssemblyName)&quot;"
       />
 
     <UpdateWixManifest

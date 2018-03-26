@@ -8,5 +8,26 @@
 
     <IsLinux>false</IsLinux>
     <IsLinux Condition="$([MSBuild]::IsOSPlatform('Linux'))">true</IsLinux>
+
+    <IsDotNetCoreMSBuild>false</IsDotNetCoreMSBuild>
+    <IsDotNetCoreMSBuild Condition="'$(MSBuildRuntimeType)' == 'Core'">true</IsDotNetCoreMSBuild>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <TopDirectory>$([MSBuild]::NormalizeDirectory($(MSBuildThisFileDirectory)..))</TopDirectory>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <HaveMono>false</HaveMono>
+    <HaveMono Condition="$(IsMac) And Exists('/Library/Frameworks/Mono.framework/Versions/Current/VERSION')">true</HaveMono>
+
+    <HaveXamarinMac>false</HaveXamarinMac>
+    <HaveXamarinMac Condition="$(IsMac) And Exists('/Library/Frameworks/Xamarin.Mac.framework/Versions/Current/Version')">true</HaveXamarinMac>
+
+    <HaveXamarinIos>false</HaveXamarinIos>
+    <HaveXamarinIos Condition="$(IsMac) And Exists('/Library/Frameworks/Xamarin.iOS.framework/Versions/Current/Version')">true</HaveXamarinIos>
+
+    <HaveXamarinAndroid>false</HaveXamarinAndroid>
+    <HaveXamarinAndroid Condition="$(IsMac) And Exists('/Library/Frameworks/Xamarin.Android.framework/Versions/Current/Version')">true</HaveXamarinAndroid>
   </PropertyGroup>
 </Project>

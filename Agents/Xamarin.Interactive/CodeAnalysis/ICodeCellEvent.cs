@@ -7,7 +7,7 @@
 
 namespace Xamarin.Interactive.CodeAnalysis.Events
 {
-    interface ICodeCellEvent
+    public interface ICodeCellEvent
     {
         CodeCellId CodeCellId { get; }
     }

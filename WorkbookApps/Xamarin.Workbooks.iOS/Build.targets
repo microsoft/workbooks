@@ -1,6 +1,6 @@
 <Project>
   <Import Project="..\WorkbookApp.targets" />
-  <Import Project="..\..\Build\Common.targets"/>
+  <Import Project="..\..\build\Common.targets"/>
 
   <PropertyGroup>
     <AfterTargetForInstall Condition=" '$(OS)' == 'Unix' ">AfterCodesign</AfterTargetForInstall>

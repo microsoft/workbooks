@@ -9,6 +9,7 @@ using System;
 using System.Globalization;
 
 using Xamarin.Interactive.CodeAnalysis;
+using Xamarin.Interactive.CodeAnalysis.Models;
 using Xamarin.Interactive.Editor;
 using Xamarin.Interactive.Workbook.Views;
 
@@ -37,7 +38,7 @@ namespace Xamarin.Interactive.Workbook.Models
         {
         }
 
-        public void RenderDiagnostic (InteractiveDiagnostic diagnostic)
+        public void RenderDiagnostic (Diagnostic diagnostic)
         {
         }
 

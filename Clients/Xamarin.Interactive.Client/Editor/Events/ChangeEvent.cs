@@ -5,8 +5,7 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
-using Microsoft.CodeAnalysis.Text;
-
+using Xamarin.Interactive.CodeAnalysis;
 using Xamarin.Interactive.Events;
 
 namespace Xamarin.Interactive.Editor.Events
@@ -15,19 +14,12 @@ namespace Xamarin.Interactive.Editor.Events
     {
         public string Text { get; }
 
-        public ChangeEvent (IEditor source) : base (source, default (LinePosition))
+        public ChangeEvent (IEditor source) : base (source)
         {
         }
 
-        public ChangeEvent (IEditor source, LinePosition cursor, string text)
-            : base (source, cursor)
-        {
-            Text = text;
-        }
-
-        public override string ToString ()
-        {
-            return $"@ {Cursor}: |{Text}|";
-        }
+        public ChangeEvent (IEditor source, string text)
+            : base (source)
+            => Text = text;
     }
 }

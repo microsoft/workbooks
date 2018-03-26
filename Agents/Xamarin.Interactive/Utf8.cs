@@ -10,7 +10,7 @@ using System.Text;
 
 namespace Xamarin.Interactive
 {
-    static class Utf8
+    public static class Utf8
     {
         public static UTF8Encoding Encoding { get; } = new UTF8Encoding (false, false);
 

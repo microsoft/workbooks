@@ -55,5 +55,5 @@
     <Reference Include="Mono.Android" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
-  <Import Project="..\..\Build\Common.targets" />
+  <Import Project="..\..\build\Common.targets" />
 </Project>

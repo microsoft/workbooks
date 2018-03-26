@@ -14,13 +14,12 @@ using System.Threading.Tasks;
 
 using Xamarin.Interactive.Client.ViewControllers;
 using Xamarin.Interactive.CodeAnalysis;
-using Xamarin.Interactive.Compilation.Roslyn;
+using Xamarin.Interactive.CodeAnalysis.Resolving;
 using Xamarin.Interactive.Core;
 using Xamarin.Interactive.I18N;
 using Xamarin.Interactive.Logging;
 using Xamarin.Interactive.Messages;
 using Xamarin.Interactive.NuGet;
-using Xamarin.Interactive.Reflection;
 using Xamarin.Interactive.Workbook.LoadAndSave;
 using Xamarin.Interactive.Workbook.Models;
 using Xamarin.Interactive.Workbook.NewWorkbookFeatures;
@@ -58,7 +57,7 @@ namespace Xamarin.Interactive.Client
         public PackageManagerService PackageManager { get; private set; }
         public WorkbookPackage Workbook { get; }
         public WorkbookAppInstallation WorkbookApp { get; private set; }
-        public RoslynCompilationWorkspace CompilationWorkspace { get; private set; }
+        public IWorkspaceService CompilationWorkspace { get; private set; }
         public FilePath WorkingDirectory { get; private set; }
 
         public bool CanAddPackages => SessionKind == ClientSessionKind.Workbook && PackageManager != null;
@@ -340,7 +339,7 @@ namespace Xamarin.Interactive.Client
 
                     if (SessionKind == ClientSessionKind.Workbook)
                         PackageManager = new PackageManagerService (
-                            CompilationWorkspace.DependencyResolver,
+                            CompilationWorkspace.Configuration.DependencyResolver,
                             EvaluationService,
                             async (refreshForAgentIntegration, cancellationToken) => {
                                 if (refreshForAgentIntegration)
@@ -535,11 +534,13 @@ namespace Xamarin.Interactive.Client
                     ClientSessionAssociationKind.Initial,
                     WorkingDirectory);
 
-                CompilationWorkspace = new RoslynCompilationWorkspace (
+                CompilationWorkspace = await WorkspaceServiceFactory.CreateWorkspaceServiceAsync (
+                    "csharp",
                     await WorkspaceConfiguration.CreateAsync (
                         Agent,
                         SessionKind,
-                        cancellationToken));
+                        cancellationToken),
+                    cancellationToken);
             }
 
             await RefreshForAgentIntegration ();
@@ -547,7 +548,7 @@ namespace Xamarin.Interactive.Client
             if (CompilationWorkspace == null)
                 throw new Exception ("Unable to get compilation workspace for agent.");
 
-            var dependencyResolver = CompilationWorkspace.DependencyResolver;
+            var dependencyResolver = CompilationWorkspace.Configuration.DependencyResolver;
 
             if (WorkingDirectory.DirectoryExists) {
                 dependencyResolver.BaseDirectory = WorkingDirectory;
@@ -601,7 +602,7 @@ namespace Xamarin.Interactive.Client
         public IWorkbookSaveOperation CreateWorkbookSaveOperation ()
         {
             AssertWorkbookSession ();
-            return Workbook.CreateSaveOperation ();
+            return Workbook.CreateSaveOperation (CompilationWorkspace);
         }
 
         public void SaveWorkbook (IWorkbookSaveOperation saveOperation)
