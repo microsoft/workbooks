@@ -15,7 +15,7 @@ using InteractiveDiagnosticSeverity = Xamarin.Interactive.CodeAnalysis.Models.Di
 
 namespace Xamarin.Interactive.CodeAnalysis.Roslyn
 {
-    static class ConversionExtensions
+    public static class ConversionExtensions
     {
         public static LinePosition ToRoslyn (this Position position)
             => new LinePosition (
