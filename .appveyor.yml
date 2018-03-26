@@ -9,9 +9,12 @@ cache:
 - node_modules
 - '%USERPROFILE%\.nuget\packages'
 build_script:
-- cmd: msbuild Build.proj /p:Configuration=Release /t:UpdateBuildInfo,Build,Package /v:m
+- cmd: msbuild Build.proj /p:Configuration=Release /t:UpdateBuildInfo,Build,Package
 test_script:
-- cmd: msbuild Build.proj /t:TestRegressions /p:Configuration=Release /v:m
+- cmd: >-
+    msbuild Build.proj /t:TestRegressions /p:Configuration=Release
+
+    msbuild CoreBuild.proj /t:Restore,Build,Test /p:Configuration=Release /p:Profile=Core /p:SkipDesktopTests=true
 artifacts:
 - path: _artifacts\*.msi
   name: Installer

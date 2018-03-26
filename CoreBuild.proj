@@ -161,7 +161,8 @@
     <Message Importance="High" Text="Selected xUnit Tests:"/>
     <Message Importance="High" Text="  %(ProjectsToTest.Filename)"/>
     <Exec
-      Command="dotnet test --no-restore --no-build -c $(Configuration) %(ProjectsToTest.FullPath)"/>
+      WorkingDirectory="%(ProjectsToTest.RootDir)%(ProjectsToTest.Directory)"
+      Command="dotnet xunit -nocolor -nobuild -c $(Configuration) -xml %(ProjectsToTest.Filename).xml"/>
   </Target>
 
   <!-- Configuration / Solution Generation -->

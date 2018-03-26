@@ -43,10 +43,15 @@ steps:
     publishLocation: Container
   displayName: Publish Artifacts
 
-- task: VSTest@2
+- task: MSBuild@1
   inputs:
-    testAssemblyVer2: |
-     **\*Tests.dll
-     !**\Xamarin.Interactive.Tests.dll
-     !**\obj\**
-  displayName: xUnit Test
+    solution: CoreBuild.proj
+    configuration: '$(msbuild.configuration)'
+    msbuildArguments: '/t:Test /p:Profile=$(msbuild.buildProfile)'
+  displayName: Run xUnit Tests
+
+- task: PublishTestResults@2
+  inputs:
+    testRunner: XUnit
+    testResultsFiles: '**/*.Tests.xml'
+  displayName: Publish xUnit Test Results
