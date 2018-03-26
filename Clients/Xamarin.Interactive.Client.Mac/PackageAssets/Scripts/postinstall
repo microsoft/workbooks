@@ -8,15 +8,13 @@ rm -rf "$LEGACY_XS_ADDIN_INSTALL/Xamarin.Interactive"
 
 LEGACY_CLI_SCRIPT_PATH="${DSTROOT}usr/local/bin/workbook"
 rm -f "$LEGACY_CLI_SCRIPT_PATH"
-
-PATHS_D_PATH="/etc/paths.d/workbooks"
-rm -f "$PATHS_D_PATH"
-mkdir -p "$(dirname "$PATHS_D_PATH")"
-{ cat <<EOF
-${DSTROOT}Applications/Xamarin Workbooks.app/Contents/SharedSupport/path-bin
-EOF
-} > "$PATHS_D_PATH"
-
+if [ -f ~/.zshrc ]; then
+    echo -n "\nexport PATH="${DSTROOT}Applications/Xamarin Workbooks.app/Contents/SharedSupport/path-bin" >> ~/.zshrc
+elif [ -f ~/.profile ]; then
+        echo -n "\nexport PATH="${DSTROOT}Applications/Xamarin Workbooks.app/Contents/SharedSupport/path-bin" >> ~/.profile
+else; then
+        echo 'Cannot find a shell initialization file! Please add this line to startup script in order to setup the path for Xamarin Workbooks: export PATH="${DSTROOT}Applications/Xamarin Workbooks.app/Contents/SharedSupport/path-bin'
+fi
 # before CodeMirror or Monaco we set these to disable all the magic
 # stuff implied by the keys. CodeMirror, etc, handle preventing
 # undesirable magic edits directly. Therefore, delete these keys
