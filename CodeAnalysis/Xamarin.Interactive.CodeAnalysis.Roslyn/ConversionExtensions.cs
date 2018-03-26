@@ -13,7 +13,7 @@ using Xamarin.Interactive.CodeAnalysis.Models;
 using InteractiveDiagnostic = Xamarin.Interactive.CodeAnalysis.Models.Diagnostic;
 using InteractiveDiagnosticSeverity = Xamarin.Interactive.CodeAnalysis.Models.DiagnosticSeverity;
 
-namespace Xamarin.Interactive.Compilation.Roslyn
+namespace Xamarin.Interactive.CodeAnalysis.Roslyn
 {
     static class ConversionExtensions
     {

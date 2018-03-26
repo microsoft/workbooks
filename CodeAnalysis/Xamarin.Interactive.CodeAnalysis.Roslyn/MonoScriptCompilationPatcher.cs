@@ -16,7 +16,7 @@ using Microsoft.CodeAnalysis;
 using Xamarin.Interactive.CodeAnalysis;
 using Xamarin.Interactive.CodeAnalysis.Resolving;
 
-namespace Xamarin.Interactive.Compilation.Roslyn
+namespace Xamarin.Interactive.CodeAnalysis.Roslyn
 {
     /// <summary>
     /// Patches a ScriptCompilation's metadata and PE image to ensure the assembly name and any

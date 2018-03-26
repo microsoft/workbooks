@@ -11,7 +11,7 @@ using System.IO;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 
-namespace Xamarin.Interactive.Compilation.Roslyn
+namespace Xamarin.Interactive.CodeAnalysis.Roslyn
 {
     static class SyntaxExtensions
     {

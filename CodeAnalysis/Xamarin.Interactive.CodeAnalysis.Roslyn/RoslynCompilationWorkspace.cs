@@ -25,9 +25,9 @@ using InteractiveDiagnosticSeverity = Xamarin.Interactive.CodeAnalysis.Models.Di
 
 [assembly: Xamarin.Interactive.CodeAnalysis.WorkspaceService (
     "csharp",
-    typeof (Xamarin.Interactive.Compilation.Roslyn.RoslynCompilationWorkspace.Activator))]
+    typeof (Xamarin.Interactive.CodeAnalysis.Roslyn.RoslynCompilationWorkspace.Activator))]
 
-namespace Xamarin.Interactive.Compilation.Roslyn
+namespace Xamarin.Interactive.CodeAnalysis.Roslyn
 {
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.Completion;

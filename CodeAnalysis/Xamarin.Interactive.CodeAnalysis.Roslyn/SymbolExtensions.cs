@@ -7,7 +7,7 @@
 
 using Microsoft.CodeAnalysis;
 
-namespace Xamarin.Interactive.Compilation.Roslyn
+namespace Xamarin.Interactive.CodeAnalysis.Roslyn
 {
     static class SymbolExtensions
     {

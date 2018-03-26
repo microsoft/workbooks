@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Completion;
 
-namespace Xamarin.Interactive.RoslynInternals
+namespace Xamarin.Interactive.CodeAnalysis.Roslyn.Internals
 {
     static class SymbolCompletionItem
     {

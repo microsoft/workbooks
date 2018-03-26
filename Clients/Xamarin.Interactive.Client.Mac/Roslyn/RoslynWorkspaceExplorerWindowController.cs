@@ -11,11 +11,11 @@ using System.Reflection;
 using Foundation;
 using AppKit;
 
+using Xamarin.Interactive.CodeAnalysis.Roslyn;
+
 namespace Xamarin.Interactive.Client.Mac.Roslyn
 {
     using Microsoft.CodeAnalysis;
-
-    using Compilation.Roslyn;
 
     sealed partial class RoslynWorkspaceExplorerWindowController : NSWindowController
     {

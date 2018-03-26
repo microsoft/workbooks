@@ -17,9 +17,8 @@ using Microsoft.CodeAnalysis.Completion;
 using Microsoft.CodeAnalysis.Text;
 
 using Xamarin.Interactive.CodeAnalysis.Models;
-using Xamarin.Interactive.Compilation.Roslyn;
+using Xamarin.Interactive.CodeAnalysis.Roslyn.Internals;
 using Xamarin.Interactive.Logging;
-using Xamarin.Interactive.RoslynInternals;
 
 using CompletionItem = Xamarin.Interactive.CodeAnalysis.Models.CompletionItem;
 using CompletionItemKind = Xamarin.Interactive.CodeAnalysis.Models.CompletionItemKind;
@@ -106,10 +105,10 @@ namespace Xamarin.Interactive.CodeAnalysis.Roslyn
         /// Start a new ModelComputation. Completion computations and filtering tasks will be chained to this
         /// ModelComputation, and when the chain is complete the view will be notified via the
         /// OnCompletionModelUpdated handler.
-        /// 
+        ///
         /// The latest immutable CompletionModel can be accessed at any time. Some parts of the code may choose
         /// to wait on it to arrive synchronously.
-        /// 
+        ///
         /// Inspired by similar method in Completion/Controller.cs in Roslyn.
         /// </summary>
         void StartNewComputation (
@@ -268,7 +267,7 @@ namespace Xamarin.Interactive.CodeAnalysis.Roslyn
 
         /// <summary>
         /// Get filterText suitable for being passed into CompletionRules.MatchesFilterText.
-        /// 
+        ///
         /// If currentCompletionList hasn't been updated (due to typing a single extra character), the
         /// CompletionItem.FilterSpan will be off by the amount of new characters. Adjust as necessary
         /// </summary>

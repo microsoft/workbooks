@@ -12,7 +12,7 @@ using System.Reflection;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Completion;
 
-namespace Xamarin.Interactive.RoslynInternals
+namespace Xamarin.Interactive.CodeAnalysis.Roslyn.Internals
 {
     sealed class CompletionHelper
     {

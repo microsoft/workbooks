@@ -15,7 +15,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 using Xamarin.Interactive.Logging;
 
-namespace Xamarin.Interactive.Compilation.Roslyn
+namespace Xamarin.Interactive.CodeAnalysis.Roslyn
 {
     sealed class InteractiveSyntaxRewriter : CSharpSyntaxRewriter
     {

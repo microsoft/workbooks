@@ -17,8 +17,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
 
 using Xamarin.Interactive.CodeAnalysis.Models;
-using Xamarin.Interactive.Compilation.Roslyn;
-using Xamarin.Interactive.RoslynInternals;
+using Xamarin.Interactive.CodeAnalysis.Roslyn.Internals;
 
 namespace Xamarin.Interactive.CodeAnalysis.Roslyn
 {
