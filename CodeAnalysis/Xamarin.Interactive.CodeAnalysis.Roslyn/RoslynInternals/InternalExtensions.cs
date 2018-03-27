@@ -11,7 +11,7 @@ using System.Threading;
 
 using Microsoft.CodeAnalysis;
 
-namespace Xamarin.Interactive.RoslynInternals
+namespace Xamarin.Interactive.CodeAnalysis.Roslyn.Internals
 {
     static class InternalExtensions
     {

@@ -15,7 +15,7 @@ using Xamarin.Interactive.CodeAnalysis.Resolving;
 
 using AssemblyIdentity = Microsoft.CodeAnalysis.AssemblyIdentity;
 
-namespace Xamarin.Interactive.Compilation.Roslyn
+namespace Xamarin.Interactive.CodeAnalysis.Roslyn
 {
     sealed class InteractiveMetadataReferenceResolver : MetadataReferenceResolver
     {

@@ -7,7 +7,7 @@
 
 using Microsoft.CodeAnalysis;
 
-namespace Xamarin.Interactive.CodeAnalysis
+namespace Xamarin.Interactive.CodeAnalysis.Roslyn
 {
     public static class Constants
     {

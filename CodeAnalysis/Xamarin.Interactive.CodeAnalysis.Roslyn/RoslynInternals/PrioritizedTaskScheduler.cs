@@ -46,8 +46,8 @@ namespace Microsoft.CodeAnalysis.Editor.Implementation.IntelliSense.Completion
         // of a task on a thread that initiates a wait on that task object.
         protected override bool TryExecuteTaskInline(Task task, bool taskWasPreviouslyQueued)
         {
-            // NOTE(cyrusn): There is no race condition here.  While our dedicated thread may try to 
-            // call "TryExecuteTask" on this task above *and* we allow another "Wait"ing thread to 
+            // NOTE(cyrusn): There is no race condition here.  While our dedicated thread may try to
+            // call "TryExecuteTask" on this task above *and* we allow another "Wait"ing thread to
             // execute it, the TPL ensures that only one will ever get a go.  And, since we have no
             // ordering guarantees (or other constraints) we're happy to let some other thread try
             // to execute this task.  It means less work for us, and it makes that other thread not

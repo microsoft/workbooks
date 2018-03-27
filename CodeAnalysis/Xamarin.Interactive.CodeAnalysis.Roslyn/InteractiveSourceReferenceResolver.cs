@@ -16,7 +16,7 @@ using Microsoft.CodeAnalysis.Text;
 using Xamarin.Interactive.CodeAnalysis.Resolving;
 using Xamarin.Interactive.Core;
 
-namespace Xamarin.Interactive.Compilation.Roslyn
+namespace Xamarin.Interactive.CodeAnalysis.Roslyn
 {
     sealed class InteractiveSourceReferenceResolver : SourceReferenceResolver
     {
