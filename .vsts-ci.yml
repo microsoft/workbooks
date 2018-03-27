@@ -1,10 +1,23 @@
 steps:
 
-# Keep in sync with global.json 🙄
+# These bits would install via Provisionator normally, so try
+# to keep them in sync. Ideally we'll be able to run Prov in
+# VSTS+YAML like we do for our "big builds".
+
 - task: DotNetCoreInstaller@0
   inputs:
     version: 2.1.4
   displayName: Install .NET Core
+
+- task: NodeTool@0
+  inputs:
+    versionSpec: 8.x
+  displayName: Install Node.js
+
+- task: NuGetToolInstaller@0
+  inputs:
+    versionSpec: 4.6.1
+  displayName: Install NuGet CLI
 
 # This script runs both via bash (macOS/Linux) and cmd (Windows).
 # Keep it both valid bash and batch or break it out conditionally.
