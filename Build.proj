@@ -39,7 +39,14 @@
     <Configuration Condition="'$(Configuration)' == ''">Debug</Configuration>
     <MSBuildCommonProperties>
       $(MSBuildCommonProperties);
-      Configuration=$(Configuration)
+      Configuration=$(Configuration);
+      HaveXamarinIos=true;
+      HaveXamarinAndroid=true;
+    </MSBuildCommonProperties>
+
+    <MSBuildCommonProperties Condition="'$(SolutionPlatform)' == 'macOS'">
+      $(MSBuildCommonProperties);
+      HaveXamarinMac=true;
     </MSBuildCommonProperties>
 
     <PackageOutputDir Condition="'$(PackageOutputDir)' == ''">_artifacts\</PackageOutputDir>
