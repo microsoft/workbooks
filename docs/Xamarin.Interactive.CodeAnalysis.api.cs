@@ -24,11 +24,11 @@ namespace Xamarin.Interactive.CodeAnalysis
             get;
         }
 
-        public IObservable<ICodeCellEvent> Events {
+        public EvaluationContextId EvaluationContextId {
             get;
         }
 
-        public EvaluationContextId Id {
+        public IObservable<ICodeCellEvent> Events {
             get;
         }
 
@@ -65,31 +65,23 @@ namespace Xamarin.Interactive.CodeAnalysis
             get;
         }
 
-        EvaluationContextId EvaluationContextId {
-            get;
-        }
+        Task<Compilation> EmitCellCompilationAsync (CodeCellId cellId, IEvaluationEnvironment evaluationEnvironment, CancellationToken cancellationToken = default(CancellationToken));
 
         string GetCellBuffer (CodeCellId cellId);
 
-        [@return: TupleElementNames (new string[] {
-            "compilation",
-            "diagnostics"
-        })]
-        Task<ValueTuple<Compilation, ImmutableList<Diagnostic>>> GetCellCompilationAsync (CodeCellId cellId, IEvaluationEnvironment evaluationEnvironment, CancellationToken cancellationToken = default(CancellationToken));
-
-        Task<ImmutableList<Diagnostic>> GetCellDiagnosticsAsync (CodeCellId cellId, CancellationToken cancellationToken = default(CancellationToken));
+        Task<IReadOnlyList<Diagnostic>> GetCellDiagnosticsAsync (CodeCellId cellId, CancellationToken cancellationToken = default(CancellationToken));
 
         Task<IEnumerable<CompletionItem>> GetCompletionsAsync (CodeCellId cellId, Position position, CancellationToken cancellationToken = default(CancellationToken));
 
-        ImmutableList<ExternalDependency> GetExternalDependencies ();
+        IEnumerable<ExternalDependency> GetExternalDependencies ();
 
         Task<Hover> GetHoverAsync (CodeCellId cellId, Position position, CancellationToken cancellationToken = default(CancellationToken));
 
         Task<SignatureHelp> GetSignatureHelpAsync (CodeCellId cellId, Position position, CancellationToken cancellationToken = default(CancellationToken));
 
-        ImmutableList<CodeCellId> GetTopologicallySortedCellIds ();
+        IReadOnlyList<CodeCellId> GetTopologicallySortedCellIds ();
 
-        CodeCellId InsertCell (string initialBuffer, CodeCellId previousCellId, CodeCellId nextCellId);
+        CodeCellId InsertCell (CodeCellId previousCellId, CodeCellId nextCellId);
 
         bool IsCellComplete (CodeCellId cellId);
 
@@ -102,6 +94,10 @@ namespace Xamarin.Interactive.CodeAnalysis
     public interface IWorkspaceServiceActivator
     {
         Task<IWorkspaceService> CreateNew (LanguageDescription languageDescription, WorkspaceConfiguration configuration, CancellationToken cancellationToken);
+    }
+    public static class IWorkspaceServiceExtensions
+    {
+        public static CodeCellId InsertCell (this IWorkspaceService workspaceService, string initialBuffer, CodeCellId previousCellId, CodeCellId nextCellId);
     }
     public struct LanguageDescription
     {
@@ -307,7 +303,7 @@ namespace Xamarin.Interactive.CodeAnalysis.Models
     [MonacoSerializable ("monaco.languages.Hover")]
     public struct Hover
     {
-        public string[] Contents {
+        public IReadOnlyList<string> Contents {
             get;
         }
 
@@ -316,7 +312,7 @@ namespace Xamarin.Interactive.CodeAnalysis.Models
         }
 
         [JsonConstructor]
-        public Hover (Range range, string[] contents);
+        public Hover (Range range, IReadOnlyList<string> contents);
     }
     [MonacoSerializable ("monaco.languages.ParameterInformation")]
     public struct ParameterInformation

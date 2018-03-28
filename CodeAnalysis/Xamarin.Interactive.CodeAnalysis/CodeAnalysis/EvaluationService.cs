@@ -48,8 +48,8 @@ namespace Xamarin.Interactive.CodeAnalysis
         {
             public CodeCellId CodeCellId { get; }
 
-            public ImmutableList<Diagnostic> Diagnostics { get; set; }
-                = ImmutableList<Diagnostic>.Empty;
+            public IReadOnlyList<Diagnostic> Diagnostics { get; set; }
+                = Array.Empty<Diagnostic> ();
 
             public bool IsDirty { get; set; }
             public bool AgentTerminatedWhileEvaluating { get; set; }
@@ -82,7 +82,7 @@ namespace Xamarin.Interactive.CodeAnalysis
 
         CodeCellId nugetReferenceCellId;
 
-        public EvaluationContextId Id => workspace.EvaluationContextId;
+        public EvaluationContextId EvaluationContextId => workspace.Configuration.CompilationConfiguration.EvaluationContextId;
 
         readonly Observable<ICodeCellEvent> events = new Observable<ICodeCellEvent> ();
         public IObservable<ICodeCellEvent> Events => events;
@@ -235,9 +235,12 @@ namespace Xamarin.Interactive.CodeAnalysis
                 nextCodeCellId = cells [insertionIndex];
 
             var codeCellId = workspace.InsertCell (
-                initialBuffer,
                 previousCodeCellId,
                 nextCodeCellId);
+
+            workspace.SetCellBuffer (
+                codeCellId,
+                initialBuffer);
 
             var codeCellState = new CodeCellState (
                 codeCellId);
@@ -264,11 +267,6 @@ namespace Xamarin.Interactive.CodeAnalysis
                     cell.CodeCellId,
                     cancellationToken));
         }
-
-        //public Task<string> GetCodeCellBufferAsync (
-            //CodeCellId codeCellId,
-            //CancellationToken cancellationToken = default)
-            //=> Task.FromResult (workspace.GetCellBuffer (codeCellId));
 
         public Task RemoveCodeCellAsync (
             CodeCellId codeCellId,
@@ -403,20 +401,26 @@ namespace Xamarin.Interactive.CodeAnalysis
             CancellationToken cancellationToken = default)
         {
             if (!agentConnection.IsConnected) {
-                codeCellState.Diagnostics.Add (new Diagnostic (
-                    DiagnosticSeverity.Error,
-                    "Cannot evaluate: not connected to agent."));
+                codeCellState.Diagnostics = new [] {
+                    new Diagnostic (
+                        DiagnosticSeverity.Error,
+                        "Cannot evaluate: not connected to agent.")
+                };
                 return CodeCellEvaluationStatus.Disconnected;
             }
 
             Compilation compilation = null;
-            ImmutableList<Diagnostic> diagnostics = null;
+            IReadOnlyList<Diagnostic> diagnostics = null;
             ExceptionNode exception = null;
 
             try {
-                (compilation, diagnostics) = await workspace.GetCellCompilationAsync (
+                compilation = await workspace.EmitCellCompilationAsync (
                     codeCellState.CodeCellId,
                     evaluationEnvironment,
+                    cancellationToken);
+
+                diagnostics = await workspace.GetCellDiagnosticsAsync (
+                    codeCellState.CodeCellId,
                     cancellationToken);
 
                 var integrationAssemblies = compilation
@@ -426,7 +430,7 @@ namespace Xamarin.Interactive.CodeAnalysis
 
                 if (integrationAssemblies.Length > 0)
                     await agentConnection.Api.LoadAssembliesAsync (
-                        workspace.EvaluationContextId,
+                        EvaluationContextId,
                         integrationAssemblies);
 
                 // FIXME: this is where we'd LoadWorkbookDependencyAsync
@@ -449,11 +453,13 @@ namespace Xamarin.Interactive.CodeAnalysis
             } catch (Exception e) {
                 Log.Error (TAG, "marking agent as terminated", e);
                 codeCellState.AgentTerminatedWhileEvaluating = true;
-                codeCellState.Diagnostics.Add (new Diagnostic (
-                    DiagnosticSeverity.Error,
-                    Catalog.GetString (
-                        "The application terminated during evaluation of this cell. " +
-                        "Run this cell manually to try again.")));
+                codeCellState.Diagnostics = new [] {
+                    new Diagnostic (
+                        DiagnosticSeverity.Error,
+                        Catalog.GetString (
+                            "The application terminated during evaluation of this cell. " +
+                            "Run this cell manually to try again."))
+                };
             }
 
             CodeCellEvaluationStatus evaluationStatus;

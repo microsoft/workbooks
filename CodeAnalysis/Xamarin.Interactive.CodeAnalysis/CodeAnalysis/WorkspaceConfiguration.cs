@@ -36,12 +36,8 @@ namespace Xamarin.Interactive.CodeAnalysis
             bool includePEImagesInDependencyResolution,
             Type hostObjectType = null)
         {
-            CompilationConfiguration = compilationConfiguration
-                ?? throw new ArgumentNullException (nameof (compilationConfiguration));
-
-            DependencyResolver = dependencyResolver
-                ?? throw new ArgumentNullException (nameof (dependencyResolver));
-
+            CompilationConfiguration = compilationConfiguration;
+            DependencyResolver = dependencyResolver;
             IncludePEImagesInDependencyResolution = includePEImagesInDependencyResolution;
             HostObjectType = hostObjectType;
         }

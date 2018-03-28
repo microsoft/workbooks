@@ -69,7 +69,7 @@ namespace Xamarin.Interactive.CodeAnalysis.Monaco
 
         static dynamic ToMonacoHover (ScriptContext context, Hover hover)
         {
-            if (!(hover.Contents?.Length > 0))
+            if (hover.Contents?.Count <= 0)
                 return null;
 
             dynamic contents = context.CreateArray ();

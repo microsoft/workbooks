@@ -653,8 +653,10 @@ namespace Xamarin.Interactive.CodeAnalysis.Roslyn
             return Task.FromResult (compilationUnit);
         }
 
-        public async Task<(CodeAnalysis.Compilation compilation, ImmutableList<InteractiveDiagnostic> diagnostics)>
-            GetSubmissionCompilationAsync (
+        ImmutableArray<Diagnostic>? lastEmitDiagnostics;
+
+        public async Task<CodeAnalysis.Compilation>
+            EmitSubmissionCompilationAsync (
                 DocumentId submissionDocumentId,
                 IEvaluationEnvironment evaluationEnvironment,
                 CancellationToken cancellationToken = default)
@@ -700,6 +702,8 @@ namespace Xamarin.Interactive.CodeAnalysis.Roslyn
                     peImage = stream.ToArray ();
                 }
 
+                lastEmitDiagnostics = emitResult.Diagnostics;
+
                 AssemblyDefinition executableAssembly = null;
                 if (peImage != null) {
                     var entryPoint = compilation.GetEntryPoint (cancellationToken);
@@ -716,7 +720,7 @@ namespace Xamarin.Interactive.CodeAnalysis.Roslyn
                         peImage);
                 }
 
-                return (new CodeAnalysis.Compilation (
+                return new CodeAnalysis.Compilation (
                     submissionDocumentId.ToCodeCellId (),
                     submissionCount,
                     EvaluationContextId,
@@ -731,12 +735,7 @@ namespace Xamarin.Interactive.CodeAnalysis.Roslyn
                     await DependencyResolver.ResolveReferencesAsync (
                         compilation.References,
                         includePeImagesInResolution,
-                        cancellationToken).ConfigureAwait (false)),
-                        emitResult
-                            .Diagnostics
-                            .Filter ()
-                            .Select (ConversionExtensions.ToInteractiveDiagnostic)
-                            .ToImmutableList ());
+                        cancellationToken).ConfigureAwait (false));
             }
         }
 
@@ -772,7 +771,7 @@ namespace Xamarin.Interactive.CodeAnalysis.Roslyn
 
         #region IWorkspaceService
 
-        public ImmutableList<CodeCellId> GetTopologicallySortedCellIds ()
+        public IReadOnlyList<CodeCellId> GetTopologicallySortedCellIds ()
             => workspace
                 .CurrentSolution
                 .GetProjectDependencyGraph ()
@@ -783,11 +782,10 @@ namespace Xamarin.Interactive.CodeAnalysis.Roslyn
                 .ToImmutableList ();
 
         public CodeCellId InsertCell (
-            string initialBuffer,
             CodeCellId previousCellId,
             CodeCellId nextCellId)
             => AddSubmission (
-                new CodeCellBuffer (initialBuffer).CurrentText,
+                new CodeCellBuffer (string.Empty).CurrentText,
                 previousCellId.ToDocumentId (),
                 nextCellId.ToDocumentId ()).ToCodeCellId ();
 
@@ -828,25 +826,35 @@ namespace Xamarin.Interactive.CodeAnalysis.Roslyn
             return sourceText.ToString ();
         }
 
-        public async Task<ImmutableList<InteractiveDiagnostic>> GetCellDiagnosticsAsync (
+        public async Task<IReadOnlyList<InteractiveDiagnostic>> GetCellDiagnosticsAsync (
             CodeCellId cellId,
             CancellationToken cancellationToken = default)
-            => (await GetSubmissionCompilationDiagnosticsAsync (
-                cellId.ToDocumentId (),
-                cancellationToken))
+        {
+            ImmutableArray<Diagnostic> diagnostics;
+
+            if (lastEmitDiagnostics != null) {
+                diagnostics = lastEmitDiagnostics.Value;
+                lastEmitDiagnostics = null;
+            } else {
+                diagnostics = await GetSubmissionCompilationDiagnosticsAsync (
+                    cellId.ToDocumentId (),
+                    cancellationToken);
+            }
+
+            return diagnostics
                 .Filter ()
                 .Select (ConversionExtensions.ToInteractiveDiagnostic)
                 .ToImmutableList ();
+        }
 
-        public Task<(CodeAnalysis.Compilation compilation, ImmutableList<InteractiveDiagnostic> diagnostics)>
-            GetCellCompilationAsync (
-                CodeCellId cellId,
-                IEvaluationEnvironment evaluationEnvironment,
-                CancellationToken cancellationToken = default)
-                => GetSubmissionCompilationAsync (
-                    cellId.ToDocumentId (),
-                    evaluationEnvironment,
-                    cancellationToken);
+        public Task<CodeAnalysis.Compilation> EmitCellCompilationAsync (
+            CodeCellId cellId,
+            IEvaluationEnvironment evaluationEnvironment,
+            CancellationToken cancellationToken = default)
+            => EmitSubmissionCompilationAsync (
+                cellId.ToDocumentId (),
+                evaluationEnvironment,
+                cancellationToken);
 
         HoverController hoverController;
         CompletionController completionController;
@@ -903,7 +911,7 @@ namespace Xamarin.Interactive.CodeAnalysis.Roslyn
                 cancellationToken);
         }
 
-        public ImmutableList<ExternalDependency> GetExternalDependencies ()
+        public IEnumerable<ExternalDependency> GetExternalDependencies ()
         {
             var dependencies = ImmutableList<ExternalDependency>.Empty;
 

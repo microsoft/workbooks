@@ -354,16 +354,15 @@ namespace Xamarin.Interactive.Workbook.Models
 
         #region Evaluation
 
-        public EvaluationContextId Id
-            => ClientSession.CompilationWorkspace.EvaluationContextId;
+        public EvaluationContextId EvaluationContextId
+            => ClientSession.CompilationWorkspace.Configuration.CompilationConfiguration.EvaluationContextId;
 
         protected async Task AbortEvaluationAsync ()
         {
             if (!ClientSession.Agent.IsConnected)
                 return;
 
-            await ClientSession.Agent.Api.AbortEvaluationAsync (
-                ClientSession.CompilationWorkspace.EvaluationContextId);
+            await ClientSession.Agent.Api.AbortEvaluationAsync (EvaluationContextId);
         }
 
         public Task<bool> AddTopLevelReferencesAsync (
@@ -537,14 +536,18 @@ namespace Xamarin.Interactive.Workbook.Models
             }
 
             CodeAnalysis.Compilation compilation = null;
-            ImmutableList<Diagnostic> diagnostics = null;
+            IReadOnlyList<Diagnostic> diagnostics = null;
             ExceptionNode exception = null;
             bool agentTerminatedWhileEvaluating = false;
 
             try {
-                (compilation, diagnostics) = await ClientSession.CompilationWorkspace.GetCellCompilationAsync (
+                compilation = await ClientSession.CompilationWorkspace.EmitCellCompilationAsync (
                     codeCellState.CodeCellId,
                     new EvaluationEnvironment (ClientSession.WorkingDirectory),
+                    cancellationToken);
+
+                diagnostics = await ClientSession.CompilationWorkspace.GetCellDiagnosticsAsync (
+                    codeCellState.CodeCellId,
                     cancellationToken);
 
                 var integrationAssemblies = compilation
@@ -553,7 +556,7 @@ namespace Xamarin.Interactive.Workbook.Models
                     .ToArray ();
                 if (integrationAssemblies.Length > 0)
                     await ClientSession.Agent.Api.LoadAssembliesAsync (
-                        ClientSession.CompilationWorkspace.EvaluationContextId,
+                        EvaluationContextId,
                         integrationAssemblies);
             } catch (Exception e) {
                 exception = ExceptionNode.Create (e);
