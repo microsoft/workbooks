@@ -36,8 +36,6 @@
 
   <!-- General Configuration -->
   <PropertyGroup>
-    <SolutionToBuild>Xamarin.Interactive.sln</SolutionToBuild>
-    <SolutionProperties>$(SolutionProperties);Platform=$(SolutionPlatform)</SolutionProperties>
     <Configuration Condition="'$(Configuration)' == ''">Debug</Configuration>
     <MSBuildCommonProperties>
       $(MSBuildCommonProperties);
@@ -111,13 +109,11 @@
     <MSBuild
       Condition="'$(SolutionPlatform)' == 'macOS'"
       Projects="$(MSBuildProjectFile)"
-      Targets="_BuildMac;_BuildProprietary"
-      Properties="InteractiveBuildTarget=Build"/>
+      Targets="_BuildMac;_BuildProprietary"/>
     <MSBuild
       Projects="$(MSBuildProjectFile)"
       Targets="_BuildWin;_BuildProprietary;GenerateSignFiles;_KillWrenchAdbServer"
       RunEachTargetSeparately="true"
-      Properties="InteractiveBuildTarget=Build"
       Condition="'$(SolutionPlatform)' == 'Windows'"/>
     <MSBuild
       Condition="'$(SolutionPlatform)' == 'macOS'"
@@ -130,24 +126,17 @@
     <Exec Command="xcrun -k"/>
     <MSBuild
       BuildInParallel="true"
-      Projects="$(SolutionToBuild)"
-      Properties="$(SolutionProperties);$(MSBuildCommonProperties)"
-      Targets="Restore;$(InteractiveBuildTarget)"/>
+      Projects="CoreBuild.proj"
+      Properties="$(MSBuildCommonProperties)"
+      Targets="Restore;Build"/>
   </Target>
 
   <Target Name="_BuildWin">
-    <!-- Build "Xamarin Inspector.exe" -->
     <MSBuild
       BuildInParallel="true"
-      Projects="Clients\Xamarin.Interactive.Client.Windows\Xamarin.Interactive.Client.Windows.csproj"
-      Properties="$(MSBuildCommonProperties);ClientOutputPathSuffix=$(InspectorOutputPathSuffix);ClientAssemblyName=Xamarin Inspector;ClientDefineConstants=CLIENT_FLAVOR_INSPECTOR"
-      Targets="Restore;$(InteractiveBuildTarget)"/>
-    <!-- Build everything else -->
-    <MSBuild
-      BuildInParallel="true"
-      Projects="$(SolutionToBuild)"
-      Properties="$(SolutionProperties);$(MSBuildCommonProperties);ServerAddress=$(MacBuildHostAddress);ServerUser=$(MacBuildHostUser)"
-      Targets="Restore;$(InteractiveBuildTarget)"/>
+      Projects="CoreBuild.proj"
+      Properties="$(MSBuildCommonProperties);ServerAddress=$(MacBuildHostAddress);ServerUser=$(MacBuildHostUser)"
+      Targets="Restore;Build"/>
   </Target>
 
   <Target
@@ -155,7 +144,7 @@
     Name="_BuildProprietary">
     <MSBuild
       Projects="workbooks-proprietary\Build.proj"
-      Properties="$(SolutionProperties);$(MSBuildCommonProperties)"
+      Properties="$(MSBuildCommonProperties)"
       Targets="Build"/>
   </Target>
 
