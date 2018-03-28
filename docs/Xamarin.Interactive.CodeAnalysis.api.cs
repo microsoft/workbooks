@@ -303,7 +303,7 @@ namespace Xamarin.Interactive.CodeAnalysis.Models
     [MonacoSerializable ("monaco.languages.Hover")]
     public struct Hover
     {
-        public string[] Contents {
+        public IReadOnlyList<string> Contents {
             get;
         }
 
@@ -312,7 +312,7 @@ namespace Xamarin.Interactive.CodeAnalysis.Models
         }
 
         [JsonConstructor]
-        public Hover (Range range, string[] contents);
+        public Hover (Range range, IReadOnlyList<string> contents);
     }
     [MonacoSerializable ("monaco.languages.ParameterInformation")]
     public struct ParameterInformation
