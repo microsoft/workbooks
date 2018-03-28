@@ -17,4 +17,27 @@
       DirectoryVariable="Xamarin.Interactive.Client.Windows.TargetDir"
       ComponentGroupId="ClientComponents"/>
   </Target>
+
+  <Target Name="BuildInspector" AfterTargets="Build">
+    <PropertyGroup>
+      <InspectorOutputPath>bin\$(Configuration)\Inspector\</InspectorOutputPath>
+      <InspectorAssemblyName>Xamarin Inspector</InspectorAssemblyName>
+    </PropertyGroup>
+    <ItemGroup>
+      <InspectorAppFiles
+        Include="$(OutputPath)\$(AssemblyName)*"/>
+      <InspectorSupplementaryFiles
+        Include="$(OutputPath)\**\*"
+        Exclude="@(InspectorAppFiles)"/>
+    </ItemGroup>
+    <Copy
+      SkipUnchangedFiles="true"
+      SourceFiles="@(InspectorSupplementaryFiles)"
+      DestinationFolder="$(InspectorOutputPath)"/>
+
+    <Copy
+      SkipUnchangedFiles="true"
+      SourceFiles="@(InspectorAppFiles)"
+      DestinationFiles="$(InspectorOutputPath)%(RecursiveDir)$([System.String]::new(%(FileName)).Replace($(AssemblyName), $(InspectorAssemblyName)))%(Extension)"/>
+  </Target>
 </Project>

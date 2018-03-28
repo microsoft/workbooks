@@ -54,7 +54,6 @@
   <!-- Platform Specific Configuration -->
   <PropertyGroup Condition="'$(SolutionPlatform)' == 'Windows'">
     <UpdateInfoFile>Package\Windows\updateinfo</UpdateInfoFile>
-    <InspectorOutputPathSuffix>InspectorExe</InspectorOutputPathSuffix>
     <InspectorPackageName>Xamarin.Inspector.Windows</InspectorPackageName>
     <InspectorPackageNuspec>Package\Windows\$(InspectorPackageName).nuspec</InspectorPackageNuspec>
   </PropertyGroup>
@@ -254,7 +253,7 @@
 
   <Target Name="_PackageInspectorNuGetWin" DependsOnTargets="Xamarin_Build_ReadAllProperties">
     <PropertyGroup>
-      <InspectorClientFilesPath>Clients\Xamarin.Interactive.Client.Windows\bin\$(Configuration)$(InspectorOutputPathSuffix)\</InspectorClientFilesPath>
+      <InspectorClientFilesPath>Clients\Xamarin.Interactive.Client.Windows\bin\$(Configuration)\Inspector\</InspectorClientFilesPath>
       <!-- Add a parent folder since there's no app bundle like on Mac -->
       <InspectorNuGetPackageWindowsContentDir>$(InspectorNuGetPackageContentDir)\Xamarin.Inspector.Windows\</InspectorNuGetPackageWindowsContentDir>
     </PropertyGroup>
@@ -316,9 +315,8 @@
   <Target Name="_PackagePdbs" DependsOnTargets="Xamarin_Build_ReadAllProperties">
     <ItemGroup>
       <Pdbs Include="Agents\**\bin\$(Configuration)\**\*.pdb" />
-      <Pdbs Include="Clients\**\bin\$(Configuration)\*.pdb" />
+      <Pdbs Include="Clients\**\bin\$(Configuration)\**\*.pdb" />
       <Pdbs Include="WorkbookApps\**\bin\$(Configuration)\*.pdb" />
-      <Pdbs Include="Clients\Xamarin.Interactive.Client.Windows\bin\$(Configuration)$(InspectorOutputPathSuffix)\Xamarin Inspector.pdb" />
     </ItemGroup>
     <PropertyGroup>
       <PdbArchiveName>XamarinInteractive-$(ReleaseVersion_SemVer).msi.symbols.zip</PdbArchiveName>

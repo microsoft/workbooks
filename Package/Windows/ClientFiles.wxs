@@ -16,15 +16,6 @@
           </Extension>
         </ProgId>
       </Component>
-      <!-- Copy in the Inspector rebuild of the client -->
-      <Component Id="XamarinInspector.exe.ForRealThisTime" Guid="1439FA95-E9A5-4234-896C-469620127693">
-        <!-- Inspector EXE has to build in a separate directory. This assumes it was built with /p:ClientOutputPathSuffix="InspectorExe"
-             which would put it in something like "bin\ReleaseInspectorExe\" -->
-        <File Id="XamarinInspector.exe.ForRealThisTime" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)..\$(var.Configuration)InspectorExe\Xamarin Inspector.exe" />
-      </Component>
-      <Component Id="XamarinInspector.exe.config" Guid="945928ce-39b4-4108-91a1-0a1181c197ad">
-        <File Id="XamarinInspector.exe.config" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)..\$(var.Configuration)InspectorExe\Xamarin Inspector.exe.config" />
-      </Component>
       <Component Id="Xamarin.Interactive.Wpf.dll" Guid="278A9E9A-22AF-4101-BE40-C159D2F811EB">
         <File Id="Xamarin.Interactive.Wpf.dll" Source="$(var.WpfAgentAppDirectory)\Xamarin.Interactive.Wpf.dll" />
       </Component>

@@ -3,7 +3,7 @@
      xmlns:netfx="http://schemas.microsoft.com/wix/NetFxExtension">
 
   <Product Id="*" Name="Xamarin Workbooks and Inspector" Language="1033"
-           Version="!(bind.FileVersion.XamarinInspector.exe.ForRealThisTime)" Manufacturer="Xamarin"
+           Version="!(bind.FileVersion.XamarinInspector.exe)" Manufacturer="Xamarin"
            UpgradeCode="BC6AFE79-8DE6-425C-A3DC-124F065C9BAB">
     <Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
     <Media Id="1" Cabinet ="xamarininspector.cab" EmbedCab="yes" />
