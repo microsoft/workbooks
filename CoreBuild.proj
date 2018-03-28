@@ -78,9 +78,20 @@
     </ItemGroup>
   </Target>
 
+  <PropertyGroup>
+    <WorkbookAppsProfileDependsOnTargets>
+      CoreProfile;
+      DotNetCoreWorkbookAppsProfile;
+      DesktopWorkbookAppsProfile;
+      XamarinAndroidWorkbookAppsProfile;
+      XamarinIosWorkbookAppsProfile;
+      XamarinMacWorkbookAppsProfile
+    </WorkbookAppsProfileDependsOnTargets>
+  </PropertyGroup>
+
   <Target
     Name="WorkbookAppsProfile"
-    DependsOnTargets="CoreProfile;DotNetCoreWorkbookAppsProfile;DesktopWorkbookAppsProfile"/>
+    DependsOnTargets="$(WorkbookAppsProfileDependsOnTargets)"/>
 
   <Target
     Name="DotNetCoreWorkbookAppsProfile">
@@ -99,17 +110,44 @@
       <ProjectsToBuild
         Condition="$(IsWindows)"
         Include="WorkbookApps\Xamarin.Workbooks.Wpf\*.csproj"/>
+    </ItemGroup>
+  </Target>
+
+  <Target
+    Name="XamarinAndroidWorkbookAppsProfile"
+    Condition="!$(IsDotNetCoreMSBuild) And $(HaveXamarinAndroid)">
+    <ItemGroup>
+      <ProjectsToBuild Include="WorkbookApps\Xamarin.Workbooks.Android\*.csproj"/>
+      <ProjectsToBuild Include="Agents\Xamarin.Interactive.Android.ActivityTrackerShim\*.csproj"/>
+      <ProjectsToBuild Include="Agents\Xamarin.Interactive.Forms.Android\*.csproj"/>
       <ProjectsToBuild
-        Condition="$(HaveXamarinMac)"
-        Include="WorkbookApps\Xamarin.Workbooks.Mac\*.csproj"/>
-      <ProjectsToBuild
-        Condition="$(HaveXamarinIos)"
-        Include="WorkbookApps\Xamarin.Workbooks.iOS\*.csproj">
+        Condition="Exists('workbooks-proprietary')"
+        Include="workbooks-proprietary\ClientIntegrations\Xamarin.Workbooks.Client.Android\*.csproj"/>
+    </ItemGroup>
+  </Target>
+
+  <Target
+    Name="XamarinIosWorkbookAppsProfile"
+    Condition="!$(IsDotNetCoreMSBuild) And $(HaveXamarinIos)">
+    <ItemGroup>
+      <ProjectsToBuild Include="WorkbookApps\Xamarin.Workbooks.iOS\*.csproj">
         <Platform>iPhoneSimulator</Platform>
       </ProjectsToBuild>
+      <ProjectsToBuild Include="Agents\Xamarin.Interactive.Forms.iOS\*.csproj"/>
       <ProjectsToBuild
-        Condition="$(HaveXamarinAndroid)"
-        Include="WorkbookApps\Xamarin.Workbooks.Android\*.csproj"/>
+        Condition="$(IsWindows)"
+        Include="Clients\Xamarin.Interactive.Client.Mac.SimChecker\*.csproj"/>
+      <ProjectsToBuild
+        Condition="$(IsWindows)"
+        Include="ClientIntegrations\Xamarin.Workbooks.Client.iOS\*.csproj"/>
+    </ItemGroup>
+  </Target>
+
+  <Target
+    Name="XamarinMacWorkbookAppsProfile"
+    Condition="!$(IsDotNetCoreMSBuild) And $(HaveXamarinMac)">
+    <ItemGroup>
+      <ProjectsToBuild Include="WorkbookApps\Xamarin.Workbooks.Mac\*.csproj"/>
     </ItemGroup>
   </Target>
 
