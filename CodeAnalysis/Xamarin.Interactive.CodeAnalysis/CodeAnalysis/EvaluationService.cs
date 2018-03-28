@@ -48,8 +48,8 @@ namespace Xamarin.Interactive.CodeAnalysis
         {
             public CodeCellId CodeCellId { get; }
 
-            public ImmutableList<Diagnostic> Diagnostics { get; set; }
-                = ImmutableList<Diagnostic>.Empty;
+            public IReadOnlyList<Diagnostic> Diagnostics { get; set; }
+                = Array.Empty<Diagnostic> ();
 
             public bool IsDirty { get; set; }
             public bool AgentTerminatedWhileEvaluating { get; set; }
@@ -401,14 +401,16 @@ namespace Xamarin.Interactive.CodeAnalysis
             CancellationToken cancellationToken = default)
         {
             if (!agentConnection.IsConnected) {
-                codeCellState.Diagnostics.Add (new Diagnostic (
-                    DiagnosticSeverity.Error,
-                    "Cannot evaluate: not connected to agent."));
+                codeCellState.Diagnostics = new [] {
+                    new Diagnostic (
+                        DiagnosticSeverity.Error,
+                        "Cannot evaluate: not connected to agent.")
+                };
                 return CodeCellEvaluationStatus.Disconnected;
             }
 
             Compilation compilation = null;
-            ImmutableList<Diagnostic> diagnostics = null;
+            IReadOnlyList<Diagnostic> diagnostics = null;
             ExceptionNode exception = null;
 
             try {
@@ -451,11 +453,13 @@ namespace Xamarin.Interactive.CodeAnalysis
             } catch (Exception e) {
                 Log.Error (TAG, "marking agent as terminated", e);
                 codeCellState.AgentTerminatedWhileEvaluating = true;
-                codeCellState.Diagnostics.Add (new Diagnostic (
-                    DiagnosticSeverity.Error,
-                    Catalog.GetString (
-                        "The application terminated during evaluation of this cell. " +
-                        "Run this cell manually to try again.")));
+                codeCellState.Diagnostics = new [] {
+                    new Diagnostic (
+                        DiagnosticSeverity.Error,
+                        Catalog.GetString (
+                            "The application terminated during evaluation of this cell. " +
+                            "Run this cell manually to try again."))
+                };
             }
 
             CodeCellEvaluationStatus evaluationStatus;

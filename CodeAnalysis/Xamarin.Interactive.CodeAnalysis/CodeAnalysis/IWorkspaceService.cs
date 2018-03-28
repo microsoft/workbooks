@@ -6,7 +6,6 @@
 // Licensed under the MIT License.
 
 using System.Collections.Generic;
-using System.Collections.Immutable;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -45,7 +44,7 @@ namespace Xamarin.Interactive.CodeAnalysis
         /// Returns a list of <see cref="CodeCellId"/>. Implementations should never
         /// return <c>null</c>.
         /// </returns>
-        ImmutableList<CodeCellId> GetTopologicallySortedCellIds ();
+        IReadOnlyList<CodeCellId> GetTopologicallySortedCellIds ();
 
         /// <summary>
         /// Inserts a new cell into the workspace. The workspace implementation may
@@ -130,7 +129,7 @@ namespace Xamarin.Interactive.CodeAnalysis
         /// <returns>
         /// Returns a list of diagnostics. Implementations should never return <c>null</c>.
         /// </returns>
-        Task<ImmutableList<Diagnostic>> GetCellDiagnosticsAsync (
+        Task<IReadOnlyList<Diagnostic>> GetCellDiagnosticsAsync (
             CodeCellId cellId,
             CancellationToken cancellationToken = default);
 
@@ -212,6 +211,6 @@ namespace Xamarin.Interactive.CodeAnalysis
         /// Returns a list of dependencies. May return either an empty list or
         /// <c>null</c> to indicate there are none.
         /// </returns>
-        ImmutableList<ExternalDependency> GetExternalDependencies ();
+        IEnumerable<ExternalDependency> GetExternalDependencies ();
     }
 }

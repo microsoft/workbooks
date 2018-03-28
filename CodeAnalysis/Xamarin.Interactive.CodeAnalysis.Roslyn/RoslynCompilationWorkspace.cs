@@ -771,7 +771,7 @@ namespace Xamarin.Interactive.CodeAnalysis.Roslyn
 
         #region IWorkspaceService
 
-        public ImmutableList<CodeCellId> GetTopologicallySortedCellIds ()
+        public IReadOnlyList<CodeCellId> GetTopologicallySortedCellIds ()
             => workspace
                 .CurrentSolution
                 .GetProjectDependencyGraph ()
@@ -826,7 +826,7 @@ namespace Xamarin.Interactive.CodeAnalysis.Roslyn
             return sourceText.ToString ();
         }
 
-        public async Task<ImmutableList<InteractiveDiagnostic>> GetCellDiagnosticsAsync (
+        public async Task<IReadOnlyList<InteractiveDiagnostic>> GetCellDiagnosticsAsync (
             CodeCellId cellId,
             CancellationToken cancellationToken = default)
         {
@@ -911,7 +911,7 @@ namespace Xamarin.Interactive.CodeAnalysis.Roslyn
                 cancellationToken);
         }
 
-        public ImmutableList<ExternalDependency> GetExternalDependencies ()
+        public IEnumerable<ExternalDependency> GetExternalDependencies ()
         {
             var dependencies = ImmutableList<ExternalDependency>.Empty;
 

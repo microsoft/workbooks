@@ -536,7 +536,7 @@ namespace Xamarin.Interactive.Workbook.Models
             }
 
             CodeAnalysis.Compilation compilation = null;
-            ImmutableList<Diagnostic> diagnostics = null;
+            IReadOnlyList<Diagnostic> diagnostics = null;
             ExceptionNode exception = null;
             bool agentTerminatedWhileEvaluating = false;
 

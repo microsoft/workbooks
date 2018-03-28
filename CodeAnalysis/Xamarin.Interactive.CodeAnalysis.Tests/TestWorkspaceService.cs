@@ -36,7 +36,7 @@ namespace Xamarin.Interactive.CodeAnalysis
         public TestWorkspaceService (WorkspaceConfiguration configuration)
             => Configuration = configuration;
 
-        public virtual ImmutableList<CodeCellId> GetTopologicallySortedCellIds ()
+        public virtual IReadOnlyList<CodeCellId> GetTopologicallySortedCellIds ()
             => throw new NotImplementedException ();
 
         public virtual CodeCellId InsertCell (
@@ -59,7 +59,7 @@ namespace Xamarin.Interactive.CodeAnalysis
         public bool IsCellOutdated (CodeCellId cellId)
             => throw new NotImplementedException ();
 
-        public Task<ImmutableList<Diagnostic>> GetCellDiagnosticsAsync (
+        public Task<IReadOnlyList<Diagnostic>> GetCellDiagnosticsAsync (
             CodeCellId cellId,
             CancellationToken cancellationToken = default)
             => throw new NotImplementedException ();
@@ -91,7 +91,7 @@ namespace Xamarin.Interactive.CodeAnalysis
 
         #endregion
 
-        public ImmutableList<ExternalDependency> GetExternalDependencies ()
+        public IEnumerable<ExternalDependency> GetExternalDependencies ()
             => throw new NotImplementedException ();
     }
 }

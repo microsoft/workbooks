@@ -69,17 +69,17 @@ namespace Xamarin.Interactive.CodeAnalysis
 
         string GetCellBuffer (CodeCellId cellId);
 
-        Task<ImmutableList<Diagnostic>> GetCellDiagnosticsAsync (CodeCellId cellId, CancellationToken cancellationToken = default(CancellationToken));
+        Task<IReadOnlyList<Diagnostic>> GetCellDiagnosticsAsync (CodeCellId cellId, CancellationToken cancellationToken = default(CancellationToken));
 
         Task<IEnumerable<CompletionItem>> GetCompletionsAsync (CodeCellId cellId, Position position, CancellationToken cancellationToken = default(CancellationToken));
 
-        ImmutableList<ExternalDependency> GetExternalDependencies ();
+        IEnumerable<ExternalDependency> GetExternalDependencies ();
 
         Task<Hover> GetHoverAsync (CodeCellId cellId, Position position, CancellationToken cancellationToken = default(CancellationToken));
 
         Task<SignatureHelp> GetSignatureHelpAsync (CodeCellId cellId, Position position, CancellationToken cancellationToken = default(CancellationToken));
 
-        ImmutableList<CodeCellId> GetTopologicallySortedCellIds ();
+        IReadOnlyList<CodeCellId> GetTopologicallySortedCellIds ();
 
         CodeCellId InsertCell (CodeCellId previousCellId, CodeCellId nextCellId);
 
