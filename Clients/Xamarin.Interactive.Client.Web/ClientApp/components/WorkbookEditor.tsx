@@ -501,12 +501,8 @@ export class WorkbookEditor extends React.Component<WorkbooksEditorProps, Workbo
     }
 
     loadNewContent(newContent: string): Promise<any> {
-        return convertFromMarkdown(newContent, this.props.shellContext.session).then((value: {
-            contentState: Draft.ContentState,
-            workbookMetadata: any,
-        }) => {
-            this.onChange(EditorState.createWithContent(value.contentState));
-            return value.workbookMetadata;
+        return convertFromMarkdown(newContent, this.props.shellContext.session).then(contentState => {
+            this.onChange(EditorState.createWithContent(contentState));
         });
     }
 

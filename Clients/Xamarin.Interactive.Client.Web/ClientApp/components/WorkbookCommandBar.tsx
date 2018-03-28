@@ -26,6 +26,7 @@ interface WorkbookCommandBarProps {
     loadWorkbook: () => void
     saveWorkbook: () => void
     dumpDraftState: () => void
+    loadGist: () => void
 }
 
 interface WorkbookCommandBarState {
@@ -65,7 +66,7 @@ export class WorkbookCommandBar extends React.Component<WorkbookCommandBarProps,
                 name: `${target.flavor} (${(target.sdk as any).Name})`
             })
         this.setState({ workbookTargetItems })
-     }
+    }
 
     render() {
         const commandBarProps = {
@@ -98,6 +99,13 @@ export class WorkbookCommandBar extends React.Component<WorkbookCommandBarProps,
                     icon: 'OpenFile',
                     disabled: !this.state.canOpenWorkbook,
                     onClick: this.props.loadWorkbook
+                },
+                {
+                    key: 'openGist',
+                    name: 'Open Gist',
+                    icon: 'OpenSource',
+                    disabled: !this.state.canOpenWorkbook,
+                    onClick: this.props.loadGist
                 },
                 {
                     key: 'saveWorkbook',

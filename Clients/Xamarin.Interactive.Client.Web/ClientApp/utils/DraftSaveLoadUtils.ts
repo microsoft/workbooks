@@ -33,15 +33,11 @@ function codeBlocksSerializer(content: string): string {
     return '```csharp\n' + outputContent + '\n```\n';
 }
 
-export async function convertFromMarkdown(workbook: string, session: WorkbookSession): Promise<{
-    contentState: ContentState,
-    workbookMetadata: any
-}> {
-    const { content, data } = splitMarkdownAndMetadata(workbook);
+export async function convertFromMarkdown(workbook: string, session: WorkbookSession): Promise<ContentState> {
     const md = new MarkdownIt("commonmark", {
         breaks: true,
     });
-    const html = fixUpCodeElements(md.render(content));
+    const html = fixUpCodeElements(md.render(workbook));
     const { contentBlocks, entityMap } = convertFromHTML(html);
 
     // Load all the code cells into Roslyn. This prevents us from having to deal
@@ -64,10 +60,7 @@ export async function convertFromMarkdown(workbook: string, session: WorkbookSes
         previousDocumentId = codeCellId;
     }
 
-    return {
-        contentState: ContentState.createFromBlockArray(contentBlocks, entityMap),
-        workbookMetadata: data
-    }
+    return ContentState.createFromBlockArray(contentBlocks, entityMap)
 }
 
 function splitMarkdownAndMetadata(content: string): { content: string, data: {} } {
