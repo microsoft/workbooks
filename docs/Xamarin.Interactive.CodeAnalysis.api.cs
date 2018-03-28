@@ -24,11 +24,11 @@ namespace Xamarin.Interactive.CodeAnalysis
             get;
         }
 
-        public IObservable<ICodeCellEvent> Events {
+        public EvaluationContextId EvaluationContextId {
             get;
         }
 
-        public EvaluationContextId Id {
+        public IObservable<ICodeCellEvent> Events {
             get;
         }
 
@@ -65,17 +65,9 @@ namespace Xamarin.Interactive.CodeAnalysis
             get;
         }
 
-        EvaluationContextId EvaluationContextId {
-            get;
-        }
+        Task<Compilation> EmitCellCompilationAsync (CodeCellId cellId, IEvaluationEnvironment evaluationEnvironment, CancellationToken cancellationToken = default(CancellationToken));
 
         string GetCellBuffer (CodeCellId cellId);
-
-        [@return: TupleElementNames (new string[] {
-            "compilation",
-            "diagnostics"
-        })]
-        Task<ValueTuple<Compilation, ImmutableList<Diagnostic>>> GetCellCompilationAsync (CodeCellId cellId, IEvaluationEnvironment evaluationEnvironment, CancellationToken cancellationToken = default(CancellationToken));
 
         Task<ImmutableList<Diagnostic>> GetCellDiagnosticsAsync (CodeCellId cellId, CancellationToken cancellationToken = default(CancellationToken));
 
@@ -89,7 +81,7 @@ namespace Xamarin.Interactive.CodeAnalysis
 
         ImmutableList<CodeCellId> GetTopologicallySortedCellIds ();
 
-        CodeCellId InsertCell (string initialBuffer, CodeCellId previousCellId, CodeCellId nextCellId);
+        CodeCellId InsertCell (CodeCellId previousCellId, CodeCellId nextCellId);
 
         bool IsCellComplete (CodeCellId cellId);
 
@@ -102,6 +94,10 @@ namespace Xamarin.Interactive.CodeAnalysis
     public interface IWorkspaceServiceActivator
     {
         Task<IWorkspaceService> CreateNew (LanguageDescription languageDescription, WorkspaceConfiguration configuration, CancellationToken cancellationToken);
+    }
+    public static class IWorkspaceServiceExtensions
+    {
+        public static CodeCellId InsertCell (this IWorkspaceService workspaceService, string initialBuffer, CodeCellId previousCellId, CodeCellId nextCellId);
     }
     public struct LanguageDescription
     {

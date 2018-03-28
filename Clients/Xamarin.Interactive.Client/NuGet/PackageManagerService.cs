@@ -200,7 +200,7 @@ namespace Xamarin.Interactive.NuGet
                     package.Identity.Version.Version,
                     agent,
                     dependencyResolver,
-                    evaluationService.Id,
+                    evaluationService.EvaluationContextId,
                     agent.IncludePeImage);
             }
 
@@ -239,7 +239,7 @@ namespace Xamarin.Interactive.NuGet
                 }).ToArray ();
 
                 await agent.Api.LoadAssembliesAsync (
-                    evaluationService.Id,
+                    evaluationService.EvaluationContextId,
                     assembliesToLoad);
             }
 
