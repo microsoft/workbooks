@@ -11,12 +11,15 @@
   <PropertyGroup>
     <IsWindows>false</IsWindows>
     <IsWindows Condition="$([MSBuild]::IsOSPlatform('Windows'))">true</IsWindows>
+    <RuntimeIdentifierPlatformBase Condition="$(IsWindows)">win</RuntimeIdentifierPlatformBase>
 
     <IsMac>false</IsMac>
     <IsMac Condition="$([MSBuild]::IsOSPlatform('OSX'))">true</IsMac>
+    <RuntimeIdentifierPlatformBase Condition="$(IsMac)">osx</RuntimeIdentifierPlatformBase>
 
     <IsLinux>false</IsLinux>
     <IsLinux Condition="$([MSBuild]::IsOSPlatform('Linux'))">true</IsLinux>
+    <RuntimeIdentifierPlatformBase Condition="$(IsLinux)">linux</RuntimeIdentifierPlatformBase>
 
     <IsDotNetCoreMSBuild>false</IsDotNetCoreMSBuild>
     <IsDotNetCoreMSBuild Condition="'$(MSBuildRuntimeType)' == 'Core'">true</IsDotNetCoreMSBuild>
