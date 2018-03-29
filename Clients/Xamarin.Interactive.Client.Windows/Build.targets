@@ -1,6 +1,7 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildThisFileDirectory)..\Xamarin.Interactive.Client\ClientApp\WebApp.targets" />
   <Import Project="$(MSBuildThisFileDirectory)..\SharedClientResources.targets" />
+  <Import Project="..\..\build\Metadata.targets"/>
 
   <PropertyGroup>
     <ClientAppResourcesOutputPath>$(OutputPath)</ClientAppResourcesOutputPath>
@@ -34,10 +35,40 @@
       SkipUnchangedFiles="true"
       SourceFiles="@(InspectorSupplementaryFiles)"
       DestinationFolder="$(InspectorOutputPath)"/>
-
     <Copy
       SkipUnchangedFiles="true"
       SourceFiles="@(InspectorAppFiles)"
       DestinationFiles="$(InspectorOutputPath)%(RecursiveDir)$([System.String]::new(%(FileName)).Replace($(AssemblyName), $(InspectorAssemblyName)))%(Extension)"/>
+  </Target>
+
+  <Target
+    Name="Package"
+    DependsOnTargets="ResolveNuGetCli;Xamarin_Build_ReadAllProperties">
+    <PropertyGroup>
+      <WixProject>$(TopDirectory)Package\Windows\Xamarin.Interactive.Windows.Installer.wixproj</WixProject>
+    </PropertyGroup>
+    <PropertyGroup>
+      <InstallerDefineConstants Condition="Exists('$(TopDirectory)_build\$(Configuration)\WorkbookApps\iOS\Xamarin.Workbooks.iOS.app')">$(InstallerDefineConstants);iOSSupport</InstallerDefineConstants>
+      <InstallerDefineConstants Condition="Exists('$(ProprietaryDirectory)ClientIntegrations\Xamarin.Workbooks.Client.Android\bin\$(Configuration)\net461\Xamarin.Workbooks.Client.Android.dll')">$(InstallerDefineConstants);AndroidSupport</InstallerDefineConstants>
+      <InstallerDefineConstants Condition="'$(InstallerDefineConstants)' != ''">$([MSBuild]::Escape($(InstallerDefineConstants.TrimStart(';'))))</InstallerDefineConstants>
+    </PropertyGroup>
+
+    <Message
+      Importance="high"
+      Text="InstallerDefineConstants: $(InstallerDefineConstants)"/>
+
+    <Exec Command="&quot;$(NuGet)&quot; restore &quot;$(WixProject)&quot;"/>
+
+    <MSBuild
+      BuildInParallel="true"
+      Projects="$(WixProject)"
+      Properties="$(MSBuildCommonProperties);BuildProjectReferences=false;InstallerDefineConstants=$(InstallerDefineConstants)"
+      Targets="Build"/>
+
+    <MakeDir Directories="$(ArtifactsBasePath)"/>
+    <Copy
+      SourceFiles="$(TopDirectory)Package\Windows\bin\$(Configuration)\en-US\XamarinInteractive.msi"
+      DestinationFiles="$(ArtifactsBasePath)XamarinInteractive-$(ReleaseVersion_SemVer).msi"/>
+    <Message Text="Generated $(ArtifactsBasePath)XamarinInteractive-$(ReleaseVersion_SemVer).msi" Importance="high"/>
   </Target>
 </Project>

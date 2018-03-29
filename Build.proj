@@ -7,9 +7,7 @@
   <Import Project="$(MSBuildThisFileDirectory)build\Metadata.targets"/>
   <Import Project="$(MSBuildThisFileDirectory)build\Utility.targets"/>
   <Import Project="$(MSBuildThisFileDirectory)build\Clean.targets"/>
-  <Import
-    Project="$(MSBuildThisFileDirectory)workbooks-proprietary\provisionator.targets"
-    Condition="Exists('$(MSBuildThisFileDirectory)workbooks-proprietary\provisionator.targets')"/>
+
   <Import
     Project="$(MSBuildThisFileDirectory)build\Local.props"
     Condition="Exists('$(MSBuildThisFileDirectory)build\Local.props')"/>
@@ -17,7 +15,6 @@
   <PropertyGroup>
     <SolutionPlatform Condition="'$(OS)' == 'Windows_NT'">Windows</SolutionPlatform>
     <SolutionPlatform Condition="'$(OS)' == 'Unix'">macOS</SolutionPlatform>
-    <Provisionator_ArtifactCachePath Condition="'$(Provisionator_ArtifactCachePath)' == ''">$(MSBuildThisFileDirectory)</Provisionator_ArtifactCachePath>
   </PropertyGroup>
 
   <!-- External Tools -->
@@ -40,6 +37,7 @@
     <MSBuildCommonProperties>
       $(MSBuildCommonProperties);
       Configuration=$(Configuration);
+      Profile=Desktop;
       HaveXamarinIos=true;
       HaveXamarinAndroid=true;
     </MSBuildCommonProperties>
@@ -116,17 +114,12 @@
     <MSBuild
       Condition="'$(SolutionPlatform)' == 'macOS'"
       Projects="$(MSBuildProjectFile)"
-      Targets="_BuildMac;_BuildProprietary"/>
+      Targets="_BuildMac"/>
     <MSBuild
       Projects="$(MSBuildProjectFile)"
-      Targets="_BuildWin;_BuildProprietary;GenerateSignFiles;_KillWrenchAdbServer"
+      Targets="_BuildWin;GenerateSignFiles;_KillWrenchAdbServer"
       RunEachTargetSeparately="true"
       Condition="'$(SolutionPlatform)' == 'Windows'"/>
-    <MSBuild
-      Condition="'$(SolutionPlatform)' == 'macOS'"
-      Projects="CoreBuild.proj"
-      Targets="Package"
-      Properties="Configuration=$(Configuration)"/>
   </Target>
 
   <Target Name="_BuildMac">
@@ -146,63 +139,19 @@
       Targets="Restore;Build"/>
   </Target>
 
-  <Target
-    Condition="Exists('workbooks-proprietary\Build.proj')"
-    Name="_BuildProprietary">
-    <MSBuild
-      Projects="workbooks-proprietary\Build.proj"
-      Properties="$(MSBuildCommonProperties)"
-      Targets="Build"/>
-  </Target>
-
   <Target Name="_KillWrenchAdbServer">
     <Exec
       Command="$(WrenchAdb) kill-server"
       Condition="Exists('$(WrenchAdb)')"/>
   </Target>
 
-  <Target Name="Rebuild">
-    <CallTarget Targets="Clean;Build"/>
-  </Target>
-
-  <Target Name="Install">
-    <CallTarget Targets="_InstallMac" Condition="'$(SolutionPlatform)' == 'macOS'"/>
-    <CallTarget Targets="_InstallWin" Condition="'$(SolutionPlatform)' == 'Windows'"/>
-  </Target>
-
-  <Target Name="_InstallWin" DependsOnTargets="Xamarin_Build_ReadAllProperties">
-    <PropertyGroup>
-      <WixProject>Package\Windows\Xamarin.Interactive.Windows.Installer.wixproj</WixProject>
-
-      <InstallerDefineConstants Condition="Exists('_build\$(Configuration)\WorkbookApps\iOS\Xamarin.Workbooks.iOS.app')">$(InstallerDefineConstants);iOSSupport</InstallerDefineConstants>
-      <InstallerDefineConstants Condition="Exists('workbooks-proprietary\Build.proj')">$(InstallerDefineConstants);AndroidSupport</InstallerDefineConstants>
-
-      <InstallerDefineConstants Condition="'$(InstallerDefineConstants)' != ''">$([MSBuild]::Escape($(InstallerDefineConstants.Substring(1))))</InstallerDefineConstants>
-    </PropertyGroup>
-
-    <Message
-      Importance="high"
-      Text="InstallerDefineConstants: $(InstallerDefineConstants)"/>
-
-    <Exec Command="&quot;$(NuGet)&quot; restore &quot;$(WixProject)&quot;"/>
-
-    <MSBuild
-      BuildInParallel="true"
-      Projects="$(WixProject)"
-      Properties="$(MSBuildCommonProperties);BuildProjectReferences=false;InstallerDefineConstants=$(InstallerDefineConstants)"
-      Targets="Build"/>
-  </Target>
-
   <Target
     Name="Package"
     DependsOnTargets="_Bootstrap">
-    <MakeDir Directories="$(PackageOutputDir)"/>
     <MSBuild
-      Condition="'$(SolutionPlatform)' == 'macOS'"
-      Projects="Clients\Xamarin.Interactive.Client.Mac\Xamarin.Interactive.Client.Mac.csproj"
+      Projects="CoreBuild.proj"
       Targets="Package"
-      Properties="Configuration=$(Configuration)"/>
-    <CallTarget Targets="_PackageWin" Condition="'$(SolutionPlatform)' == 'Windows'"/>
+      Properties="$(MSBuildCommonProperties)"/>
     <Copy
       SkipUnchangedFiles="true"
       SourceFiles="$(UpdateInfoFile)"
@@ -217,13 +166,6 @@
     <CallTarget Targets="_PackageInspectorNuGetMac" Condition="'$(SolutionPlatform)' == 'macOS'"/>
     <CallTarget Targets="_PackageInspectorNuGetWin" Condition="'$(SolutionPlatform)' == 'Windows'"/>
     <CallTarget Targets="GenerateReleaseNotes" Condition="'$(SolutionPlatform)' == 'macOS'"/>
-  </Target>
-
-  <Target Name="_PackageWin" DependsOnTargets="Install;Xamarin_Build_ReadAllProperties;_PackagePdbs">
-    <Copy
-      SourceFiles="Package\Windows\bin\$(Configuration)\en-US\XamarinInteractive.msi"
-      DestinationFiles="$(PackageOutputDir)XamarinInteractive-$(ReleaseVersion_SemVer).msi"/>
-    <Message Text="Generated $(PackageOutputDir)XamarinInteractive-$(ReleaseVersion_SemVer).msi" Importance="high"/>
   </Target>
 
   <Target Name="PackageNuGet" DependsOnTargets="Xamarin_Build_ReadAllProperties">

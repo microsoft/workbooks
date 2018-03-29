@@ -9,6 +9,7 @@
   <PropertyGroup>
     <Configuration Condition="'$(Configuration)' == ''">Debug</Configuration>
 
+    <!-- TODO: Move all of this to environment.props -->
     <BuiltWorkbookAppsBasePath>$(MSBuildThisFileDirectory)_build\$(Configuration)\WorkbookApps\</BuiltWorkbookAppsBasePath>
     <ArtifactsBasePath>$(MSBuildThisFileDirectory)_artifacts\</ArtifactsBasePath>
     <ProfileProperties>
@@ -50,7 +51,9 @@
       </ProjectsToBuild>
       <ProjectsToBuild
         Condition="$(IsWindows)"
-        Include="Clients\Xamarin.Interactive.Client.Windows\*.csproj"/>
+        Include="Clients\Xamarin.Interactive.Client.Windows\*.csproj">
+        <HasPackageTarget>true</HasPackageTarget>
+      </ProjectsToBuild>
       <ProjectsToBuild
         Condition="$(IsWindows)"
         Include="Tools\InstallerVerifier\*.csproj"/>
@@ -124,8 +127,8 @@
       <ProjectsToBuild Include="Agents\Xamarin.Interactive.Android.ActivityTrackerShim\*.csproj"/>
       <ProjectsToBuild Include="Agents\Xamarin.Interactive.Forms.Android\*.csproj"/>
       <ProjectsToBuild
-        Condition="Exists('workbooks-proprietary')"
-        Include="workbooks-proprietary\ClientIntegrations\Xamarin.Workbooks.Client.Android\*.csproj"/>
+        Condition="Exists($(ProprietaryDirectory))"
+        Include="$(ProprietaryDirectory)ClientIntegrations\Xamarin.Workbooks.Client.Android\*.csproj"/>
     </ItemGroup>
   </Target>
 
