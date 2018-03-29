@@ -59,6 +59,9 @@
         Include="Tools\InstallerVerifier\*.csproj"/>
       <ProjectsToBuild
         Include="Tests\Xamarin.Interactive.Tests\*.csproj" />
+      <ProjectsToBuild
+        Condition="$(IsMac)"
+        Include="Tests\Xamarin.Interactive.Tests.InspectorSupport.Mac\*.csproj"/>
     </ItemGroup>
   </Target>
 
@@ -304,5 +307,11 @@
       Condition="!Exists($(TestAssembly))"
       Text="Desktop test assembly does not exist: $(TestAssembly)"/>
     <Exec Command="&quot;$(TestDriver)&quot; cli test $(TestAssembly) &quot;-result:$(TopDirectory)Tests/Regressions.$(Configuration).xml&quot; $(TestCommand)"/>
+  </Target>
+
+  <Target
+    Name="TestInspectorInjector"
+    Condition="$(IsMac)">
+    <Exec Command="Tests/Xamarin.Interactive.Tests.InspectorSupport.Mac/bin/$(Configuration)/Xamarin.Interactive.Tests.InspectorSupport.Mac.app/Contents/MacOS/Xamarin.Interactive.Tests.InspectorSupport.Mac"/>
   </Target>
 </Project>
