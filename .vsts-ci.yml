@@ -49,6 +49,13 @@ steps:
     msbuildArguments: '/t:Package /p:Profile=$(msbuild.buildProfile)'
   displayName: Package
 
+- task: MSBuild@1
+  inputs:
+    solution: CoreBuild.proj
+    configuration: '$(msbuild.configuration)'
+    msbuildArguments: '/t:ArchiveSymbolFiles /p:Profile=$(msbuild.buildProfile)'
+  displayName: Archive Symbol Files
+
 - task: PublishBuildArtifacts@1
   inputs:
     PathtoPublish: '_artifacts'

@@ -7,9 +7,7 @@
   <Import Project="$(MSBuildThisFileDirectory)build\Metadata.targets"/>
   <Import Project="$(MSBuildThisFileDirectory)build\Utility.targets"/>
   <Import Project="$(MSBuildThisFileDirectory)build\Clean.targets"/>
-  <Import
-    Project="$(MSBuildThisFileDirectory)workbooks-proprietary\provisionator.targets"
-    Condition="Exists('$(MSBuildThisFileDirectory)workbooks-proprietary\provisionator.targets')"/>
+
   <Import
     Project="$(MSBuildThisFileDirectory)build\Local.props"
     Condition="Exists('$(MSBuildThisFileDirectory)build\Local.props')"/>
@@ -17,7 +15,6 @@
   <PropertyGroup>
     <SolutionPlatform Condition="'$(OS)' == 'Windows_NT'">Windows</SolutionPlatform>
     <SolutionPlatform Condition="'$(OS)' == 'Unix'">macOS</SolutionPlatform>
-    <Provisionator_ArtifactCachePath Condition="'$(Provisionator_ArtifactCachePath)' == ''">$(MSBuildThisFileDirectory)</Provisionator_ArtifactCachePath>
   </PropertyGroup>
 
   <!-- External Tools -->
@@ -36,12 +33,18 @@
 
   <!-- General Configuration -->
   <PropertyGroup>
-    <SolutionToBuild>Xamarin.Interactive.sln</SolutionToBuild>
-    <SolutionProperties>$(SolutionProperties);Platform=$(SolutionPlatform)</SolutionProperties>
     <Configuration Condition="'$(Configuration)' == ''">Debug</Configuration>
     <MSBuildCommonProperties>
       $(MSBuildCommonProperties);
-      Configuration=$(Configuration)
+      Configuration=$(Configuration);
+      Profile=Desktop;
+      HaveXamarinIos=true;
+      HaveXamarinAndroid=true;
+    </MSBuildCommonProperties>
+
+    <MSBuildCommonProperties Condition="'$(SolutionPlatform)' == 'macOS'">
+      $(MSBuildCommonProperties);
+      HaveXamarinMac=true;
     </MSBuildCommonProperties>
 
     <PackageOutputDir Condition="'$(PackageOutputDir)' == ''">_artifacts\</PackageOutputDir>
@@ -54,7 +57,6 @@
   <!-- Platform Specific Configuration -->
   <PropertyGroup Condition="'$(SolutionPlatform)' == 'Windows'">
     <UpdateInfoFile>Package\Windows\updateinfo</UpdateInfoFile>
-    <InspectorOutputPathSuffix>InspectorExe</InspectorOutputPathSuffix>
     <InspectorPackageName>Xamarin.Inspector.Windows</InspectorPackageName>
     <InspectorPackageNuspec>Package\Windows\$(InspectorPackageName).nuspec</InspectorPackageNuspec>
   </PropertyGroup>
@@ -112,52 +114,29 @@
     <MSBuild
       Condition="'$(SolutionPlatform)' == 'macOS'"
       Projects="$(MSBuildProjectFile)"
-      Targets="_BuildMac;_BuildProprietary"
-      Properties="InteractiveBuildTarget=Build"/>
+      Targets="_BuildMac"/>
     <MSBuild
       Projects="$(MSBuildProjectFile)"
-      Targets="_BuildWin;_BuildProprietary;GenerateSignFiles;_KillWrenchAdbServer"
+      Targets="_BuildWin;GenerateSignFiles;_KillWrenchAdbServer"
       RunEachTargetSeparately="true"
-      Properties="InteractiveBuildTarget=Build"
       Condition="'$(SolutionPlatform)' == 'Windows'"/>
-    <MSBuild
-      Condition="'$(SolutionPlatform)' == 'macOS'"
-      Projects="CoreBuild.proj"
-      Targets="Package"
-      Properties="Configuration=$(Configuration)"/>
   </Target>
 
   <Target Name="_BuildMac">
     <Exec Command="xcrun -k"/>
     <MSBuild
       BuildInParallel="true"
-      Projects="$(SolutionToBuild)"
-      Properties="$(SolutionProperties);$(MSBuildCommonProperties)"
-      Targets="Restore;$(InteractiveBuildTarget)"/>
+      Projects="CoreBuild.proj"
+      Properties="$(MSBuildCommonProperties)"
+      Targets="Restore;Build"/>
   </Target>
 
   <Target Name="_BuildWin">
-    <!-- Build "Xamarin Inspector.exe" -->
     <MSBuild
       BuildInParallel="true"
-      Projects="Clients\Xamarin.Interactive.Client.Windows\Xamarin.Interactive.Client.Windows.csproj"
-      Properties="$(MSBuildCommonProperties);ClientOutputPathSuffix=$(InspectorOutputPathSuffix);ClientAssemblyName=Xamarin Inspector;ClientDefineConstants=CLIENT_FLAVOR_INSPECTOR"
-      Targets="Restore;$(InteractiveBuildTarget)"/>
-    <!-- Build everything else -->
-    <MSBuild
-      BuildInParallel="true"
-      Projects="$(SolutionToBuild)"
-      Properties="$(SolutionProperties);$(MSBuildCommonProperties);ServerAddress=$(MacBuildHostAddress);ServerUser=$(MacBuildHostUser)"
-      Targets="Restore;$(InteractiveBuildTarget)"/>
-  </Target>
-
-  <Target
-    Condition="Exists('workbooks-proprietary\Build.proj')"
-    Name="_BuildProprietary">
-    <MSBuild
-      Projects="workbooks-proprietary\Build.proj"
-      Properties="$(SolutionProperties);$(MSBuildCommonProperties)"
-      Targets="Build"/>
+      Projects="CoreBuild.proj"
+      Properties="$(MSBuildCommonProperties);ServerAddress=$(MacBuildHostAddress);ServerUser=$(MacBuildHostUser)"
+      Targets="Restore;Build"/>
   </Target>
 
   <Target Name="_KillWrenchAdbServer">
@@ -166,48 +145,13 @@
       Condition="Exists('$(WrenchAdb)')"/>
   </Target>
 
-  <Target Name="Rebuild">
-    <CallTarget Targets="Clean;Build"/>
-  </Target>
-
-  <Target Name="Install">
-    <CallTarget Targets="_InstallMac" Condition="'$(SolutionPlatform)' == 'macOS'"/>
-    <CallTarget Targets="_InstallWin" Condition="'$(SolutionPlatform)' == 'Windows'"/>
-  </Target>
-
-  <Target Name="_InstallWin" DependsOnTargets="Xamarin_Build_ReadAllProperties">
-    <PropertyGroup>
-      <WixProject>Package\Windows\Xamarin.Interactive.Windows.Installer.wixproj</WixProject>
-
-      <InstallerDefineConstants Condition="Exists('_build\$(Configuration)\WorkbookApps\iOS\Xamarin.Workbooks.iOS.app')">$(InstallerDefineConstants);iOSSupport</InstallerDefineConstants>
-      <InstallerDefineConstants Condition="Exists('workbooks-proprietary\Build.proj')">$(InstallerDefineConstants);AndroidSupport</InstallerDefineConstants>
-
-      <InstallerDefineConstants Condition="'$(InstallerDefineConstants)' != ''">$([MSBuild]::Escape($(InstallerDefineConstants.Substring(1))))</InstallerDefineConstants>
-    </PropertyGroup>
-
-    <Message
-      Importance="high"
-      Text="InstallerDefineConstants: $(InstallerDefineConstants)"/>
-
-    <Exec Command="&quot;$(NuGet)&quot; restore &quot;$(WixProject)&quot;"/>
-
-    <MSBuild
-      BuildInParallel="true"
-      Projects="$(WixProject)"
-      Properties="$(MSBuildCommonProperties);BuildProjectReferences=false;InstallerDefineConstants=$(InstallerDefineConstants)"
-      Targets="Build"/>
-  </Target>
-
   <Target
     Name="Package"
     DependsOnTargets="_Bootstrap">
-    <MakeDir Directories="$(PackageOutputDir)"/>
     <MSBuild
-      Condition="'$(SolutionPlatform)' == 'macOS'"
-      Projects="Clients\Xamarin.Interactive.Client.Mac\Xamarin.Interactive.Client.Mac.csproj"
-      Targets="Package"
-      Properties="Configuration=$(Configuration)"/>
-    <CallTarget Targets="_PackageWin" Condition="'$(SolutionPlatform)' == 'Windows'"/>
+      Projects="CoreBuild.proj"
+      Targets="Package;ArchiveSymbolFiles"
+      Properties="$(MSBuildCommonProperties)"/>
     <Copy
       SkipUnchangedFiles="true"
       SourceFiles="$(UpdateInfoFile)"
@@ -222,13 +166,6 @@
     <CallTarget Targets="_PackageInspectorNuGetMac" Condition="'$(SolutionPlatform)' == 'macOS'"/>
     <CallTarget Targets="_PackageInspectorNuGetWin" Condition="'$(SolutionPlatform)' == 'Windows'"/>
     <CallTarget Targets="GenerateReleaseNotes" Condition="'$(SolutionPlatform)' == 'macOS'"/>
-  </Target>
-
-  <Target Name="_PackageWin" DependsOnTargets="Install;Xamarin_Build_ReadAllProperties;_PackagePdbs">
-    <Copy
-      SourceFiles="Package\Windows\bin\$(Configuration)\en-US\XamarinInteractive.msi"
-      DestinationFiles="$(PackageOutputDir)XamarinInteractive-$(ReleaseVersion_SemVer).msi"/>
-    <Message Text="Generated $(PackageOutputDir)XamarinInteractive-$(ReleaseVersion_SemVer).msi" Importance="high"/>
   </Target>
 
   <Target Name="PackageNuGet" DependsOnTargets="Xamarin_Build_ReadAllProperties">
@@ -254,7 +191,7 @@
 
   <Target Name="_PackageInspectorNuGetWin" DependsOnTargets="Xamarin_Build_ReadAllProperties">
     <PropertyGroup>
-      <InspectorClientFilesPath>Clients\Xamarin.Interactive.Client.Windows\bin\$(Configuration)$(InspectorOutputPathSuffix)\</InspectorClientFilesPath>
+      <InspectorClientFilesPath>Clients\Xamarin.Interactive.Client.Windows\bin\$(Configuration)\Inspector\</InspectorClientFilesPath>
       <!-- Add a parent folder since there's no app bundle like on Mac -->
       <InspectorNuGetPackageWindowsContentDir>$(InspectorNuGetPackageContentDir)\Xamarin.Inspector.Windows\</InspectorNuGetPackageWindowsContentDir>
     </PropertyGroup>
@@ -313,66 +250,20 @@
       DestinationFiles="$(PackageOutputDir)\$(InspectorPackageFileName)"/>
   </Target>
 
-  <Target Name="_PackagePdbs" DependsOnTargets="Xamarin_Build_ReadAllProperties">
-    <ItemGroup>
-      <Pdbs Include="Agents\**\bin\$(Configuration)\**\*.pdb" />
-      <Pdbs Include="Clients\**\bin\$(Configuration)\*.pdb" />
-      <Pdbs Include="WorkbookApps\**\bin\$(Configuration)\*.pdb" />
-      <Pdbs Include="Clients\Xamarin.Interactive.Client.Windows\bin\$(Configuration)$(InspectorOutputPathSuffix)\Xamarin Inspector.pdb" />
-    </ItemGroup>
-    <PropertyGroup>
-      <PdbArchiveName>XamarinInteractive-$(ReleaseVersion_SemVer).msi.symbols.zip</PdbArchiveName>
-      <SevenZipListFile>PdbList.lst</SevenZipListFile>
-    </PropertyGroup>
-    <WriteLinesToFile File="$(SevenZipListFile)" Lines="@(Pdbs)" Overwrite="true" Encoding="UTF-8" />
-    <Exec Command="&quot;$(SevenZip)&quot; a $(PdbArchiveName) %40$(SevenZipListFile)" ConsoleToMSBuild="true" />
-    <Copy SourceFiles="$(PdbArchiveName)" DestinationFiles="$(PackageOutputDir)$(PdbArchiveName)" />
-  </Target>
-
   <Target Name="TestRegressions">
-    <PropertyGroup Condition="'$(SolutionPlatform)' == 'macOS'">
-      <TestDriver>Clients\Xamarin.Interactive.Client.Mac\bin\$(Configuration)\Xamarin Workbooks.app\Contents\MacOS\Xamarin Workbooks</TestDriver>
-    </PropertyGroup>
-    <PropertyGroup Condition="'$(SolutionPlatform)' == 'Windows'">
-      <TestDriver>Clients\Xamarin.Interactive.Client.Windows\bin\$(Configuration)\Xamarin Workbooks.exe</TestDriver>
-    </PropertyGroup>
-    <PropertyGroup>
-      <TestCommand Condition=" '$(TestToRun)' != '' ">-test:$(TestToRun)</TestCommand>
-    </PropertyGroup>
     <MSBuild
-      Projects="Tests\Xamarin.Interactive.Tests\Xamarin.Interactive.Tests.csproj"
+      Projects="CoreBuild.proj"
       Properties="$(MSBuildCommonProperties)"
-      Targets="Build"/>
-    <Exec Command="&quot;$(TestDriver)&quot; cli test &quot;Tests\Xamarin.Interactive.Tests\bin\$(Configuration)\net461\Xamarin.Interactive.Tests.dll&quot; -result:&quot;$(MSBuildThisFileDirectory)Tests/Regressions.$(Configuration).xml&quot; $(TestCommand)"/>
-  </Target>
+      Targets="Test"/>
+   </Target>
 
   <Target
     Name="TestInspectorInjector"
     Condition="'$(SolutionPlatform)' == 'macOS'">
-    <Exec Command="Tests/Xamarin.Interactive.Tests.InspectorSupport.Mac/bin/$(Configuration)/Xamarin.Interactive.Tests.InspectorSupport.Mac.app/Contents/MacOS/Xamarin.Interactive.Tests.InspectorSupport.Mac"/>
-  </Target>
-
-  <Target
-    Name="TestInstaller"
-    Condition="'$(SolutionPlatform)' == 'macOS'">
-    <Exec Command="Tests\installer-upgrade-mac &quot;$(PackageOutputDir)XamarinInteractive-$(ReleaseVersion_SemVer).pkg&quot; &quot;$(ReleaseVersion_UpdateInfo)&quot; &quot;$(ReleaseVersion_AppleCFBundleVersion)&quot;"/>
-  </Target>
-
-  <ItemGroup>
-    <LintAssemblies Include="@(AndroidAgentFiles)"/>
-    <LintAssemblies Include="@(iOSAgentFiles)"/>
-    <LintAssemblies Include="@(MacMobileAgentFiles)"/>
-    <LintAssemblies Include="@(MacDesktopAgentFiles)"/>
-  </ItemGroup>
-
-  <Target Name="TestLint">
-    <CallTarget Targets="_TestLintMac" Condition="'$(SolutionPlatform)' == 'macOS'"/>
-  </Target>
-
-  <Target Name="_TestLintMac">
-    <Exec
-      Condition="'%(Extension)' == '.dll'"
-      Command="Tools\Xamarin.Interactive.Lint\bin\$(Configuration)\xilint.exe %(LintAssemblies.Identity)"/>
+    <MSBuild
+      Projects="CoreBuild.proj"
+      Properties="$(MSBuildCommonProperties)"
+      Targets="TestInspectorInjector"/>
   </Target>
 
   <Target Name="UpdatePublicApiDefinitions">
