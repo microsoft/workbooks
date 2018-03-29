@@ -150,7 +150,7 @@
     DependsOnTargets="_Bootstrap">
     <MSBuild
       Projects="CoreBuild.proj"
-      Targets="Package"
+      Targets="Package;ArchiveSymbolFiles"
       Properties="$(MSBuildCommonProperties)"/>
     <Copy
       SkipUnchangedFiles="true"
@@ -248,21 +248,6 @@
     <Copy
       SourceFiles="$(InspectorNuGetPackageBuildDir)\$(InspectorPackageFileName)"
       DestinationFiles="$(PackageOutputDir)\$(InspectorPackageFileName)"/>
-  </Target>
-
-  <Target Name="_PackagePdbs" DependsOnTargets="Xamarin_Build_ReadAllProperties">
-    <ItemGroup>
-      <Pdbs Include="Agents\**\bin\$(Configuration)\**\*.pdb" />
-      <Pdbs Include="Clients\**\bin\$(Configuration)\**\*.pdb" />
-      <Pdbs Include="WorkbookApps\**\bin\$(Configuration)\*.pdb" />
-    </ItemGroup>
-    <PropertyGroup>
-      <PdbArchiveName>XamarinInteractive-$(ReleaseVersion_SemVer).msi.symbols.zip</PdbArchiveName>
-      <SevenZipListFile>PdbList.lst</SevenZipListFile>
-    </PropertyGroup>
-    <WriteLinesToFile File="$(SevenZipListFile)" Lines="@(Pdbs)" Overwrite="true" Encoding="UTF-8" />
-    <Exec Command="&quot;$(SevenZip)&quot; a $(PdbArchiveName) %40$(SevenZipListFile)" ConsoleToMSBuild="true" />
-    <Copy SourceFiles="$(PdbArchiveName)" DestinationFiles="$(PackageOutputDir)$(PdbArchiveName)" />
   </Target>
 
   <Target Name="TestRegressions">

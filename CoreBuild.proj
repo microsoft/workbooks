@@ -314,4 +314,25 @@
     Condition="$(IsMac)">
     <Exec Command="Tests/Xamarin.Interactive.Tests.InspectorSupport.Mac/bin/$(Configuration)/Xamarin.Interactive.Tests.InspectorSupport.Mac.app/Contents/MacOS/Xamarin.Interactive.Tests.InspectorSupport.Mac"/>
   </Target>
+
+  <Target
+    Name="ArchiveSymbolFiles"
+    DependsOnTargets="Xamarin_Build_ReadAllProperties">
+    <PropertyGroup>
+      <SymbolFilesArchive>$(ArtifactsBasePath)XamarinInteractive-$(ReleaseVersion_SemVer).$(RuntimeIdentifierPlatformBase).symbols.zip</SymbolFilesArchive>
+    </PropertyGroup>
+    <ItemGroup>
+      <SymbolFilesToArchive Include="Agents\**\bin\$(Configuration)\**\*.pdb" />
+      <SymbolFilesToArchive Include="Clients\**\bin\$(Configuration)\**\*.pdb" />
+      <SymbolFilesToArchive Include="WorkbookApps\**\bin\$(Configuration)\*.pdb" />
+    </ItemGroup>
+
+    <MakeDir Directories="$([System.IO.Path]::GetDirectoryName($(SymbolFilesArchive)))"/>
+
+    <Message Text="Archiving symbol files to &quot;$(SymbolFilesArchive)&quot;."/>
+    <ZipArchive
+      SourceFiles="@(SymbolFilesToArchive)"
+      DestinationArchiveFileName="$(SymbolFilesArchive)"/>
+  </Target>
+
 </Project>
