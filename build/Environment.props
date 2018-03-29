@@ -34,13 +34,28 @@
 
     <HaveXamarinIos Condition="'$(HaveXamarinIos)' == ''">false</HaveXamarinIos>
     <HaveXamarinIos Condition="$(IsMac) And Exists('/Library/Frameworks/Xamarin.iOS.framework/Versions/Current/Version')">true</HaveXamarinIos>
+    <HaveXamarinIos Condition="$(IsWindows) And Exists('$(MSBuildExtensionsPath)\Xamarin\iOS')">true</HaveXamarinIos>
 
     <HaveXamarinAndroid Condition="'$(HaveXamarinAndroid)' == ''">false</HaveXamarinAndroid>
     <HaveXamarinAndroid Condition="$(IsMac) And Exists('/Library/Frameworks/Xamarin.Android.framework/Versions/Current/Version')">true</HaveXamarinAndroid>
+    <HaveXamarinAndroid Condition="$(IsWindows) And Exists('$(MSBuildExtensionsPath)\Xamarin\Android')">true</HaveXamarinAndroid>
   </PropertyGroup>
 
   <ItemGroup>
     <WhichSearchPath Include="$(TopDirectory)"/>
     <WhichSearchPath Include="$(Provisionator_ArtifactCachePath)"/>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ConfigurationSummary Include="Host Environment:"/>
+    <ConfigurationSummary Include="%20%20Host RID Base: $(RuntimeIdentifierPlatformBase)"/>
+    <ConfigurationSummary Include="%20%20.NET Core MSBuild: $(IsDotNetCoreMSBuild)"/>
+    <ConfigurationSummary Include="%20%20MSBuildBinPath: $(MSBuildBinPath)"/>
+    <ConfigurationSummary Include="%20%20MSBuildExtensionsPath: $(MSBuildExtensionsPath)"/>
+    <ConfigurationSummary Include="%20%20Available SDKs/Frameworks:"/>
+    <ConfigurationSummary Include="%20%20%20%20Mono: $(HaveMono)"/>
+    <ConfigurationSummary Include="%20%20%20%20Xamarin.Mac: $(HaveXamarinMac)"/>
+    <ConfigurationSummary Include="%20%20%20%20Xamarin.iOS: $(HaveXamarinIos)"/>
+    <ConfigurationSummary Include="%20%20%20%20Xamarin.Android: $(HaveXamarinAndroid)"/>
   </ItemGroup>
 </Project>

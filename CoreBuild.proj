@@ -237,6 +237,7 @@
   <Target
     Name="ConfigurationSummary"
     AfterTargets="ComputeSolution">
+    <Message Importance="High" Text="%(ConfigurationSummary.Identity)"/>
     <Message Importance="High" Text="Projects To Build:"/>
     <Message Importance="High" Text="  %(ProjectsToBuild.Filename)"/>
   </Target>
