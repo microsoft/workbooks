@@ -1,5 +1,14 @@
 <Project>
   <PropertyGroup>
+    <TopDirectory>$([MSBuild]::NormalizeDirectory($(MSBuildThisFileDirectory)..))</TopDirectory>
+    <ProprietaryDirectory>$([MSBuild]::NormalizeDirectory($(TopDirectory)workbooks-proprietary))</ProprietaryDirectory>
+  </PropertyGroup>
+
+  <Import
+    Project="$(ProprietaryDirectory)provisionator.targets"
+    Condition="Exists('$(ProprietaryDirectory)provisionator.targets')"/>
+
+  <PropertyGroup>
     <IsWindows>false</IsWindows>
     <IsWindows Condition="$([MSBuild]::IsOSPlatform('Windows'))">true</IsWindows>
 
@@ -11,10 +20,6 @@
 
     <IsDotNetCoreMSBuild>false</IsDotNetCoreMSBuild>
     <IsDotNetCoreMSBuild Condition="'$(MSBuildRuntimeType)' == 'Core'">true</IsDotNetCoreMSBuild>
-  </PropertyGroup>
-
-  <PropertyGroup>
-    <TopDirectory>$([MSBuild]::NormalizeDirectory($(MSBuildThisFileDirectory)..))</TopDirectory>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -30,4 +35,9 @@
     <HaveXamarinAndroid Condition="'$(HaveXamarinAndroid)' == ''">false</HaveXamarinAndroid>
     <HaveXamarinAndroid Condition="$(IsMac) And Exists('/Library/Frameworks/Xamarin.Android.framework/Versions/Current/Version')">true</HaveXamarinAndroid>
   </PropertyGroup>
+
+  <ItemGroup>
+    <WhichSearchPath Include="$(TopDirectory)"/>
+    <WhichSearchPath Include="$(Provisionator_ArtifactCachePath)"/>
+  </ItemGroup>
 </Project>
