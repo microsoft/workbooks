@@ -266,49 +266,19 @@
   </Target>
 
   <Target Name="TestRegressions">
-    <PropertyGroup Condition="'$(SolutionPlatform)' == 'macOS'">
-      <TestDriver>Clients\Xamarin.Interactive.Client.Mac\bin\$(Configuration)\Xamarin Workbooks.app\Contents\MacOS\Xamarin Workbooks</TestDriver>
-    </PropertyGroup>
-    <PropertyGroup Condition="'$(SolutionPlatform)' == 'Windows'">
-      <TestDriver>Clients\Xamarin.Interactive.Client.Windows\bin\$(Configuration)\Xamarin Workbooks.exe</TestDriver>
-    </PropertyGroup>
-    <PropertyGroup>
-      <TestCommand Condition=" '$(TestToRun)' != '' ">-test:$(TestToRun)</TestCommand>
-    </PropertyGroup>
     <MSBuild
-      Projects="Tests\Xamarin.Interactive.Tests\Xamarin.Interactive.Tests.csproj"
+      Projects="CoreBuild.proj"
       Properties="$(MSBuildCommonProperties)"
-      Targets="Build"/>
-    <Exec Command="&quot;$(TestDriver)&quot; cli test &quot;Tests\Xamarin.Interactive.Tests\bin\$(Configuration)\net461\Xamarin.Interactive.Tests.dll&quot; -result:&quot;$(MSBuildThisFileDirectory)Tests/Regressions.$(Configuration).xml&quot; $(TestCommand)"/>
-  </Target>
+      Targets="Test"/>
+   </Target>
 
   <Target
     Name="TestInspectorInjector"
     Condition="'$(SolutionPlatform)' == 'macOS'">
-    <Exec Command="Tests/Xamarin.Interactive.Tests.InspectorSupport.Mac/bin/$(Configuration)/Xamarin.Interactive.Tests.InspectorSupport.Mac.app/Contents/MacOS/Xamarin.Interactive.Tests.InspectorSupport.Mac"/>
-  </Target>
-
-  <Target
-    Name="TestInstaller"
-    Condition="'$(SolutionPlatform)' == 'macOS'">
-    <Exec Command="Tests\installer-upgrade-mac &quot;$(PackageOutputDir)XamarinInteractive-$(ReleaseVersion_SemVer).pkg&quot; &quot;$(ReleaseVersion_UpdateInfo)&quot; &quot;$(ReleaseVersion_AppleCFBundleVersion)&quot;"/>
-  </Target>
-
-  <ItemGroup>
-    <LintAssemblies Include="@(AndroidAgentFiles)"/>
-    <LintAssemblies Include="@(iOSAgentFiles)"/>
-    <LintAssemblies Include="@(MacMobileAgentFiles)"/>
-    <LintAssemblies Include="@(MacDesktopAgentFiles)"/>
-  </ItemGroup>
-
-  <Target Name="TestLint">
-    <CallTarget Targets="_TestLintMac" Condition="'$(SolutionPlatform)' == 'macOS'"/>
-  </Target>
-
-  <Target Name="_TestLintMac">
-    <Exec
-      Condition="'%(Extension)' == '.dll'"
-      Command="Tools\Xamarin.Interactive.Lint\bin\$(Configuration)\xilint.exe %(LintAssemblies.Identity)"/>
+    <MSBuild
+      Projects="CoreBuild.proj"
+      Properties="$(MSBuildCommonProperties)"
+      Targets="TestInspectorInjector"/>
   </Target>
 
   <Target Name="UpdatePublicApiDefinitions">
