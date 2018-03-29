@@ -52,6 +52,9 @@
         Condition="$(IsWindows)"
         Include="Clients\Xamarin.Interactive.Client.Windows\*.csproj"/>
       <ProjectsToBuild
+        Condition="$(IsWindows)"
+        Include="Tools\InstallerVerifier\*.csproj"/>
+      <ProjectsToBuild
         Include="Tests\Xamarin.Interactive.Tests\*.csproj" />
     </ItemGroup>
   </Target>
