@@ -1,6 +1,16 @@
+sudo: false
 language: csharp
 mono: none
 dotnet: 2.1.4
+
+before_install:
+  - curl -o- -L https://yarnpkg.com/install.sh | bash -s -- --version 1.5.1
+  - export PATH=$HOME/.yarn/bin:$PATH
+
+cache:
+  yarn: true
+
 script:
 - dotnet build CoreBuild.proj
 - dotnet msbuild CoreBuild.proj /t:Test
+- dotnet msbuild CoreBuild.proj /t:Package

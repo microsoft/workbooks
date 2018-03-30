@@ -4,20 +4,21 @@
 
   <PropertyGroup>
     <Node Condition="'$(Node)' == ''">node</Node>
-    <Npm Condition="'$(Npm)' == ''">npm</Npm>
+    <Yarn Condition="'$(Yarn)' == ''">yarn</Yarn>
+    <YarnInstall>$(Yarn) install --non-interactive</YarnInstall>
   </PropertyGroup>
 
   <Target
-    Name="DebugNpmInstall"
+    Name="DebugYarnInstall"
     Condition="'$(Configuration)' == 'Debug' And !Exists('node_modules')">
-    <Message Importance="high" Text="Performing first-run npm install..."/>
-    <Exec Command="$(Npm) install --save-dev"/>
+    <Message Importance="high" Text="Performing first-run yarn install..."/>
+    <Exec Command="$(YarnInstall)"/>
   </Target>
 
   <Target
     Name="DebugRunWebpack"
     BeforeTargets="Build"
-    DependsOnTargets="DebugNpmInstall"
+    DependsOnTargets="DebugYarnInstall"
     Condition="'$(Configuration)' == 'Debug' And !Exists('wwwroot\dist')">
     <Message Importance="high" Text="Performing first-run Webpack build..."/>
     <Exec Command="$(Node) node_modules/webpack/bin/webpack.js --config webpack.config.vendor.js"/>
@@ -27,7 +28,7 @@
   <Target
     Name="PublishRunWebpack"
     AfterTargets="ComputeFilesToPublish">
-    <Exec Command="$(Npm) install"/>
+    <Exec Command="$(YarnInstall)"/>
     <Exec Command="$(Node) node_modules/webpack/bin/webpack.js --config webpack.config.vendor.js --env.prod"/>
     <Exec Command="$(Node) node_modules/webpack/bin/webpack.js --env.prod"/>
 

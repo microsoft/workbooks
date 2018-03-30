@@ -19,6 +19,9 @@ steps:
     versionSpec: 4.6.1
   displayName: Install NuGet CLI
 
+- script: npm install -g yarn
+  displayName: Install Yarn
+
 # This script runs both via bash (macOS/Linux) and cmd (Windows).
 # Keep it both valid bash and batch or break it out conditionally.
 - script: |
