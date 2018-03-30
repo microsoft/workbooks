@@ -103,14 +103,13 @@
   </Target>
 
   <Target Name="_Bootstrap" DependsOnTargets="
-    ProvisioningCheck;
     Xamarin_Build_ReadAllProperties;
     _ResolveToolPaths"/>
 
   <!-- Build and Clean use the same _Build* targets since the only difference is the Target passed to each csproj/sln.
        We use MSBuild instead of CallTarget as an easy way to pass along said Target. Also, Rebuild requires calling
        _Build* targets twice, and CallTarget does not allow that. -->
-  <Target Name="Build" DependsOnTargets="_Bootstrap;UpdateInvertedDependencies">
+  <Target Name="Build" DependsOnTargets="ProvisioningCheck;_Bootstrap;UpdateInvertedDependencies">
     <MSBuild
       Condition="'$(SolutionPlatform)' == 'macOS'"
       Projects="$(MSBuildProjectFile)"
