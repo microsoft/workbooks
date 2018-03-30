@@ -1,0 +1,2 @@
+# https://github.com/yarnpkg/yarn/issues/4226
+@types/**/node_modules
