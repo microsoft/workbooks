@@ -13,3 +13,4 @@ cache:
 script:
 - dotnet build CoreBuild.proj
 - dotnet msbuild CoreBuild.proj /t:Test
+- dotnet msbuild CoreBuild.proj /t:Package
