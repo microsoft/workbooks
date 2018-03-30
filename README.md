@@ -149,12 +149,12 @@ First, make sure that you connect to a Mac build host via Visual Studio at
 least once. You can do this by doing the following:
 
 * Open Visual Studio
-* Go to _Tools → Options → Xamarin → iOS Settings_
-* Click "Find Xamarin Mac Agent"
+* Go to `Tools` → `Options` → `Xamarin` → `iOS Settings`
+* Click `Find Xamarin Mac Agent`
 * Select a Mac on your network, or add one by name
 * Enter credentials when prompted
 
-Once the connection completes, click OK to close all the dialogs. Then,
+Once the connection completes, click `OK` to close all the dialogs. Then,
 build the `Release` configuration by running the following:
 
 ```bash
@@ -207,7 +207,7 @@ Official builds and releases of Xamarin Workbooks & Inspector from Microsoft
 collect usage data and send it to Microsoft to help improve our products
 and services. [Read our privacy statement to learn more](https://go.microsoft.com/fwlink/?LinkID=824704).
 
-Users may opt out of telemetry and usage data collection from the _Preferences_
+Users may opt out of telemetry and usage data collection from the `Preferences`
 dialog.
 
 _Non-Microsoft builds do not enable telemetry collection at all._
