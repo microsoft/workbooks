@@ -1,28 +1,51 @@
 <Project>
-  <Import Project="Xamarin.Build\Xamarin.Build.targets"/>
-  <Import Project="Environment.props"/>
-
-  <Target Name="ResolveNodeCli">
-    <Which
-      Condition="!Exists('$(Npm)')"
-      Program="npm"
-      PreferPaths="@(WhichSearchPath)">
-      <Output TaskParameter="FullPath" PropertyName="Npm"/>
-    </Which>
+  <Target Name="ResolveExternalTools">
     <Which
       Condition="!Exists('$(Node)')"
       Program="node"
       PreferPaths="@(WhichSearchPath)">
       <Output TaskParameter="FullPath" PropertyName="Node"/>
     </Which>
-  </Target>
+    <ItemGroup>
+      <PropertiesToPersist Include="Node">
+        <Value>$(Node)</Value>
+      </PropertiesToPersist>
+    </ItemGroup>
 
-  <Target Name="ResolveNuGetCli">
+    <Which
+      Condition="!Exists('$(Yarn)')"
+      Program="yarn"
+      PreferPaths="@(WhichSearchPath)">
+      <Output TaskParameter="FullPath" PropertyName="Yarn"/>
+    </Which>
+    <ItemGroup>
+      <PropertiesToPersist Include="Yarn">
+        <Value>$(Yarn)</Value>
+      </PropertiesToPersist>
+    </ItemGroup>
+
+    <Which
+      Condition="!Exists('$(Npm)')"
+      Program="npm"
+      PreferPaths="@(WhichSearchPath)">
+      <Output TaskParameter="FullPath" PropertyName="Npm"/>
+    </Which>
+    <ItemGroup>
+      <PropertiesToPersist Include="Npm">
+        <Value>$(Npm)</Value>
+      </PropertiesToPersist>
+    </ItemGroup>
+
     <Which
       Condition="!Exists('$(NuGet)')"
       Program="nuget"
       PreferPaths="@(WhichSearchPath)">
       <Output TaskParameter="FullPath" PropertyName="NuGet"/>
     </Which>
+    <ItemGroup>
+      <PropertiesToPersist Include="NuGet">
+        <Value>$(NuGet)</Value>
+      </PropertiesToPersist>
+    </ItemGroup>
   </Target>
 </Project>

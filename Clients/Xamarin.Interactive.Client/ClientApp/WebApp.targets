@@ -15,8 +15,7 @@
   </PropertyGroup>
 
   <Target
-    Name="_Browserify"
-    DependsOnTargets="ResolveNodeCli">
+    Name="_Browserify">
     <Exec WorkingDirectory="$(MSBuildThisFileDirectory)" Command="&quot;$(Npm)&quot; install --save-dev" />
     <TypeScriptConfig TSConfigFile="$(TypeScriptConfigDirectory)tsconfig.json">
       <Output TaskParameter="Files" ItemName="TSConfigSourceFiles"/>

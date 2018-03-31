@@ -2,6 +2,12 @@
   <PropertyGroup>
     <TopDirectory>$([MSBuild]::NormalizeDirectory($(MSBuildThisFileDirectory)..))</TopDirectory>
     <ProprietaryDirectory>$([MSBuild]::NormalizeDirectory($(TopDirectory)workbooks-proprietary))</ProprietaryDirectory>
+    <BuiltWorkbookAppsBasePath>$([MSBuild]::NormalizeDirectory($(TopDirectory)_build\$(Configuration)\WorkbookApps))</BuiltWorkbookAppsBasePath>
+    <ArtifactsBasePath>$([MSBuild]::NormalizeDirectory($(TopDirectory)_artifacts))</ArtifactsBasePath>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <Configuration Condition="'$(Configuration)' == ''">Debug</Configuration>
   </PropertyGroup>
 
   <Import

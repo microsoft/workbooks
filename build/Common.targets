@@ -1,6 +1,7 @@
 <!-- These targets should be included in all of our .csproj projects -->
 <Project>
-  <Import Project="Environment.targets"/>
+  <Import Project="Shared.targets"/>
+  <Import Project="Utility.targets"/>
 
   <PropertyGroup>
     <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>

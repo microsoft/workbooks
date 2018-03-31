@@ -1,22 +1,6 @@
 <Project InitialTargets="Configure" DefaultTargets="Restore;Build">
-  <Import Project="build\Top.targets"/>
-
-  <Import
-    Project="build.local.props"
-    Condition="Exists('build.local.props')"/>
-
-  <PropertyGroup>
-    <Configuration Condition="'$(Configuration)' == ''">Debug</Configuration>
-
-    <!-- TODO: Move all of this to environment.props -->
-    <BuiltWorkbookAppsBasePath>$(MSBuildThisFileDirectory)_build\$(Configuration)\WorkbookApps\</BuiltWorkbookAppsBasePath>
-    <ArtifactsBasePath>$(MSBuildThisFileDirectory)_artifacts\</ArtifactsBasePath>
-    <ProfileProperties>
-      Configuration=$(Configuration);
-      BuiltWorkbookAppsBasePath=$(BuiltWorkbookAppsBasePath);
-      ArtifactsBasePath=$(ArtifactsBasePath);
-    </ProfileProperties>
-  </PropertyGroup>
+  <Import Project="build\Shared.targets"/>
+  <Import Project="build\Environment.targets"/>
 
   <!-- Profiles -->
 
@@ -214,7 +198,8 @@
   <!-- Configuration / Solution Generation -->
 
   <Target
-    Name="Configure">
+    Name="Configure"
+    DependsOnTargets="ResolveExternalTools">
     <PropertyGroup>
       <Profile Condition="'$(Profile.ToLowerInvariant())' == 'full'"></Profile>
       <Profile Condition="'$(Profile.ToLowerInvariant())' == 'fullprofile'"></Profile>
@@ -231,13 +216,38 @@
       </Profiles>
       <ProfileTargets Include="@(Profiles -> '%(ProfileName)Profile')"/>
     </ItemGroup>
+
+    <Message Text="%(PropertiesToPersist.Value)" Importance="High"/>
+
+    <ItemGroup>
+      <PropertiesToPersist Include="Configuration">
+        <Value>$(Configuration)</Value>
+      </PropertiesToPersist>
+      <PropertiesToPersist Include="Profile">
+        <Value>$(Profile)</Value>
+      </PropertiesToPersist>
+    </ItemGroup>
+
+    <ItemGroup>
+      <PropertiesToPersistXml Include="&lt;Project&gt;"/>
+      <PropertiesToPersistXml Include="%20%20&lt;PropertyGroup&gt;"/>
+      <PropertiesToPersistXml Include="%20%20%20%20&lt;%(PropertiesToPersist.Identity)&gt;%(PropertiesToPersist.Value)&lt;/%(PropertiesToPersist.Identity)&gt;"/>
+      <PropertiesToPersistXml Include="%20%20&lt;/PropertyGroup&gt;"/>
+      <PropertiesToPersistXml Include="&lt;/Project&gt;"/>
+    </ItemGroup>
+
+    <MakeDir Directories="_build"/>
+    <WriteLinesToFile
+      Lines="@(PropertiesToPersistXml)"
+      Overwrite="true"
+      File="_build\Configuration.props"/>
   </Target>
 
   <Target
     Name="ConfigurationSummary"
     AfterTargets="ComputeSolution">
     <Message Importance="High" Text="%(ConfigurationSummary.Identity)"/>
-    <Message Importance="High" Text="Projects To Build:"/>
+    <Message Importance="High" Text="Projects To Build ($(Configuration)):"/>
     <Message Importance="High" Text="  %(ProjectsToBuild.Filename)"/>
   </Target>
 

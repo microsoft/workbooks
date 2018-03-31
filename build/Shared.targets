@@ -1,0 +1,9 @@
+<Project>
+  <Import Project="Xamarin.Build\Xamarin.Build.targets"/>
+
+  <Import
+    Condition="Exists('..\_build\Configuration.props')"
+    Project="..\_build\Configuration.props"/>
+
+  <Import Project="Environment.props"/>
+</Project>

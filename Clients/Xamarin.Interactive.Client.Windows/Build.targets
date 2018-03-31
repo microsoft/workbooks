@@ -43,7 +43,7 @@
 
   <Target
     Name="Package"
-    DependsOnTargets="ResolveNuGetCli;Xamarin_Build_ReadAllProperties">
+    DependsOnTargets="Xamarin_Build_ReadAllProperties">
     <PropertyGroup>
       <WixProject>$(TopDirectory)Package\Windows\Xamarin.Interactive.Windows.Installer.wixproj</WixProject>
     </PropertyGroup>
