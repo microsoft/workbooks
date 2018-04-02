@@ -6,8 +6,10 @@
 // Licensed under the MIT License.
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.IO;
+using System.Runtime.InteropServices;
 
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
@@ -28,12 +30,17 @@ namespace Xamarin.MSBuild
 
         public override bool Execute ()
         {
+            var isWindows = RuntimeInformation.IsOSPlatform (OSPlatform.Windows);
+
             var preferPaths = PreferPaths ?? Array.Empty<string> ();
 
-            var extensions = new [] { null, ".exe" };
-            var searchPaths = preferPaths
-                .Concat (Environment.GetEnvironmentVariable ("PATH").Split (
-                    Environment.OSVersion.Platform == PlatformID.Unix ? ':' : ';'));
+            var extensions = new List<string> { null, ".exe" };
+            if (isWindows)
+                extensions.Add (".cmd");
+
+            var searchPaths = preferPaths.Concat (Environment
+                .GetEnvironmentVariable ("PATH")
+                .Split (isWindows ? ';' : ':'));
 
             foreach (var programDir in searchPaths) {
                 foreach (var extension in extensions) {
