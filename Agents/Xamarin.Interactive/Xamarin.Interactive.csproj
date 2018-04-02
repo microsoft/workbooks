@@ -17,5 +17,5 @@
   <ItemGroup>
     <None Include="API\Xamarin.Interactive.api.cs" />
   </ItemGroup>
-  <Import Project="..\..\build\Common.targets" />
+  <Import Project="..\..\build\Project.targets" />
 </Project>

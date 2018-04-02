@@ -60,5 +60,5 @@
       <Name>Xamarin.Interactive</Name>
     </ProjectReference>
   </ItemGroup>
-  <Import Project="..\..\build\Common.targets" />
+  <Import Project="..\..\build\Project.targets" />
 </Project>

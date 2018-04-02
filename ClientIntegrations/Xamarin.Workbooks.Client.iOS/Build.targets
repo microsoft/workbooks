@@ -1,5 +1,5 @@
 <Project>
-  <Import Project="..\..\build\Common.targets"/>
+  <Import Project="..\..\build\Project.targets"/>
 
   <Target Name="CopyToWorkbookApp" BeforeTargets="Build">
     <PropertyGroup>

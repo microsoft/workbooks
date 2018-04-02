@@ -32,6 +32,11 @@
   </PropertyGroup>
 
   <PropertyGroup>
+    <ClientBundleOutputPath Condition="$(IsMac)">$([MSBuild]::NormalizeDirectory($(TopDirectory)Clients\Xamarin.Interactive.Client.Mac\bin\$(Configuration)\Xamarin Workbooks.app\Contents\MonoBundle))</ClientBundleOutputPath>
+    <ClientBundleOutputPath Condition="$(IsWindows)">$([MSBuild]::NormalizeDirectory($(TopDirectory)Clients\Xamarin.Interactive.Client.Windows\bin\$(Configuration)))</ClientBundleOutputPath>
+  </PropertyGroup>
+
+  <PropertyGroup>
     <HaveMono Condition="'$(HaveMono)' == ''">false</HaveMono>
     <HaveMono Condition="$(IsMac) And Exists('/Library/Frameworks/Mono.framework/Versions/Current/VERSION')">true</HaveMono>
 

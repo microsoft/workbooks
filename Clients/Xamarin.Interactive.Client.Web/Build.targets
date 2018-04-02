@@ -1,6 +1,6 @@
 <Project>
   <Import Project="..\..\build\Metadata.targets" />
-  <Import Project="..\..\build\Common.targets" />
+  <Import Project="..\..\build\Project.targets" />
 
   <PropertyGroup>
     <Node Condition="'$(Node)' == ''">node</Node>
