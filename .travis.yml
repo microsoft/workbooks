@@ -6,6 +6,7 @@ dotnet: 2.1.4
 before_install:
   - curl -o- -L https://yarnpkg.com/install.sh | bash -s -- --version 1.5.1
   - export PATH=$HOME/.yarn/bin:$PATH
+  - curl -O -L https://dist.nuget.org/win-x86-commandline/v4.6.1/nuget.exe
 
 cache:
   yarn: true
