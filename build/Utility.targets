@@ -48,9 +48,6 @@ Copyright 2017 Microsoft. All rights reserved.
       <BuildInfoFile Include="build\ProductAssemblyInfo.cs"/>
       <BuildInfoFile Include="Clients\Xamarin.Interactive.Client.Mac\Info.plist"/>
       <BuildInfoFile Include="Clients\Xamarin.Interactive.Client.Windows\Properties\AssemblyInfo.cs"/>
-      <BuildInfoFile Include="$(BuildInfoDistFile)"/>
-      <BuildInfoFile Include="Clients\Xamarin.Interactive.Client.Mac\PackageAssets\updateinfo"/>
-      <BuildInfoFile Include="Package\Windows\updateinfo"/>
       <BuildInfoFile Include="Agents\Xamarin.Interactive\Xamarin.Interactive.nuspec"/>
       <BuildInfoFile Include="Clients\Xamarin.Interactive.Client\Telemetry\Client.cs"/>
     </ItemGroup>

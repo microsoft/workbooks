@@ -21,42 +21,6 @@
     <SevenZip>C:\Program Files\7-zip\7z.exe</SevenZip>
   </PropertyGroup>
 
-  <ItemGroup>
-    <WhichSearchPath Include="$(MSBuildThisFileDirectory)"/>
-    <WhichSearchPath Include="$(Provisionator_ArtifactCachePath)"/>
-  </ItemGroup>
-
-  <!-- General Configuration -->
-  <PropertyGroup>
-    <Configuration Condition="'$(Configuration)' == ''">Debug</Configuration>
-    <MSBuildCommonProperties>
-      $(MSBuildCommonProperties);
-      Configuration=$(Configuration);
-      Profile=Desktop;
-      HaveXamarinIos=true;
-      HaveXamarinAndroid=true;
-    </MSBuildCommonProperties>
-
-    <MSBuildCommonProperties Condition="'$(SolutionPlatform)' == 'macOS'">
-      $(MSBuildCommonProperties);
-      HaveXamarinMac=true;
-    </MSBuildCommonProperties>
-
-    <PackageOutputDir Condition="'$(PackageOutputDir)' == ''">_artifacts\</PackageOutputDir>
-
-    <BuildInfoDistFile>Package/buildinfo</BuildInfoDistFile>
-  </PropertyGroup>
-
-  <!-- Platform Specific Configuration -->
-  <PropertyGroup Condition="'$(SolutionPlatform)' == 'Windows'">
-    <UpdateInfoFile>Package\Windows\updateinfo</UpdateInfoFile>
-    <InspectorPackageName>Xamarin.Inspector.Windows</InspectorPackageName>
-    <InspectorPackageNuspec>Package\Windows\$(InspectorPackageName).nuspec</InspectorPackageNuspec>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(SolutionPlatform)' == 'macOS'">
-    <UpdateInfoFile>Clients\Xamarin.Interactive.Client.Mac\PackageAssets\updateinfo</UpdateInfoFile>
-  </PropertyGroup>
-
   <!-- XVS mac build host configuration (in VSTS) -->
   <PropertyGroup Condition="'$(TF_BUILD)' == 'True'">
     <MacBuildHostAddress Condition="'$(AGENT_NAME)' == 'RE Cambridge Windows-Inspector-1'">bockover-1.guest.corp.microsoft.com</MacBuildHostAddress>
@@ -87,7 +51,6 @@
     <MSBuild
       BuildInParallel="true"
       Projects="CoreBuild.proj"
-      Properties="$(MSBuildCommonProperties)"
       Targets="Restore;Build"/>
   </Target>
 
@@ -95,7 +58,7 @@
     <MSBuild
       BuildInParallel="true"
       Projects="CoreBuild.proj"
-      Properties="$(MSBuildCommonProperties);ServerAddress=$(MacBuildHostAddress);ServerUser=$(MacBuildHostUser)"
+      Properties="ServerAddress=$(MacBuildHostAddress);ServerUser=$(MacBuildHostUser)"
       Targets="Restore;Build"/>
   </Target>
 
@@ -109,25 +72,13 @@
     Name="Package">
     <MSBuild
       Projects="CoreBuild.proj"
-      Targets="Package;ArchiveSymbolFiles"
-      Properties="$(MSBuildCommonProperties)"/>
-    <Copy
-      SkipUnchangedFiles="true"
-      SourceFiles="$(UpdateInfoFile)"
-      DestinationFolder="$(PackageOutputDir)"/>
-    <Message Text="Generated $(PackageOutputDir)updateinfo" Importance="high"/>
-    <Copy
-      SkipUnchangedFiles="true"
-      SourceFiles="$(BuildInfoDistFile)"
-      DestinationFolder="$(PackageOutputDir)"/>
-    <Message Text="Generated $(PackageOutputDir)buildinfo" Importance="high"/>
+      Targets="Package;ArchiveSymbolFiles"/>
     <CallTarget Targets="GenerateReleaseNotes" Condition="'$(SolutionPlatform)' == 'macOS'"/>
   </Target>
 
   <Target Name="TestRegressions">
     <MSBuild
       Projects="CoreBuild.proj"
-      Properties="$(MSBuildCommonProperties)"
       Targets="Test"/>
    </Target>
 
@@ -136,7 +87,6 @@
     Condition="'$(SolutionPlatform)' == 'macOS'">
     <MSBuild
       Projects="CoreBuild.proj"
-      Properties="$(MSBuildCommonProperties)"
       Targets="TestInspectorInjector"/>
   </Target>
 

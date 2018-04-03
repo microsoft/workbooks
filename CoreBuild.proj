@@ -179,6 +179,30 @@
   <Target
     Name="Package"
     DependsOnTargets="@(ProfileTargets)">
+    <MakeDir Directories="$(ArtifactsBasePath)"/>
+
+    <PropertyGroup>
+      <XamarinUpdaterProductGuid Condition="$(IsMac)">42a8c70f-b3dc-42f4-b8a5-435a1bb2410c</XamarinUpdaterProductGuid>
+      <XamarinUpdaterProductGuid Condition="$(IsWindows)">201185fb-fefe-4996-bdfe-4b6ac311a73b</XamarinUpdaterProductGuid>
+    </PropertyGroup>
+    <WriteLinesToFile
+      Condition="'$(XamarinUpdaterProductGuid)' != ''"
+      File="$(ArtifactsBasePath)updateinfo"
+      Lines="$(XamarinUpdaterProductGuid) $(ReleaseVersion_UpdateInfo)"
+      Overwrite="true"/>
+
+    <ItemGroup>
+      <BuildInfoLines Include="Version: $(ReleaseVersion_SemVer)"/>
+      <BuildInfoLines Include="Hash: $(CommonGitInfo_MaxRevisionShort)"/>
+      <BuildInfoLines Include="Branch: $(BuildEnvironment_Branch)"/>
+      <BuildInfoLines Include="Build date: $([System.DateTime]::UtcNow.ToString('r'))"/>
+      <BuildInfoLines Include="Client compatibility: 1"/>
+    </ItemGroup>
+    <WriteLinesToFile
+      File="$(ArtifactsBasePath)buildinfo"
+      Lines="@(BuildInfoLines)"
+      Overwrite="true"/>
+
     <ItemGroup>
       <PackageProjectsToBuild
         Include="@(ProjectsToBuild)"

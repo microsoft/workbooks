@@ -18,6 +18,9 @@
 
     <WorkbooksAppSharedSupportPath>$(InstallDestDir)Applications\$(WorkbooksAppBundleName)\Contents\SharedSupport\</WorkbooksAppSharedSupportPath>
     <InspectorAppSharedSupportPath>$(InspectorClientInstallPath)$(InspectorAppBundleName)\Contents\SharedSupport\</InspectorAppSharedSupportPath>
+
+    <BuildInfoArtifact>$(ArtifactsBasePath)buildinfo</BuildInfoArtifact>
+    <UpdateInfoArtifact>$(ArtifactsBasePath)updateinfo</UpdateInfoArtifact>
   </PropertyGroup>
 
   <Target
@@ -115,8 +118,7 @@
     <InstallDependsOnMac>
       Uninstall;
       _InstallUninstallerMac;
-      _InstallBuildInfoMac;
-      _InstallUpdateInfoMac;
+      _InstallFrameworkMetadata;
       _InstallSDKMac;
       _InstallAgentsMac;
       _InstallClientAppMac
@@ -136,17 +138,10 @@
       DestinationFolder="$(FrameworkInstallDir)"/>
   </Target>
 
-  <Target Name="_InstallBuildInfoMac">
+  <Target Name="_InstallFrameworkMetadata">
     <Copy
       SkipUnchangedFiles="true"
-      SourceFiles="$(TopDirectory)Package\buildinfo"
-      DestinationFolder="$(FrameworkInstallDir)"/>
-  </Target>
-
-  <Target Name="_InstallUpdateInfoMac">
-    <Copy
-      SkipUnchangedFiles="true"
-      SourceFiles="$(UpdateInfoFile)"
+      SourceFiles="$(BuildInfoArtifact);$(UpdateInfoArtifact)"
       DestinationFolder="$(FrameworkInstallDir)"/>
   </Target>
 
@@ -235,11 +230,7 @@
       DestinationFolder="$(WorkbooksAppSharedSupportPath)Agents\Forms\iOS"/>
     <Copy
       SkipUnchangedFiles="true"
-      SourceFiles="$(UpdateInfoFile)"
-      DestinationFolder="$(WorkbooksAppSharedSupportPath)"/>
-    <Copy
-      SkipUnchangedFiles="true"
-      SourceFiles="$(BuildInfoDistFile)"
+      SourceFiles="$(BuildInfoArtifact);$(UpdateInfoArtifact)"
       DestinationFolder="$(WorkbooksAppSharedSupportPath)"/>
 
     <!-- Install Inspector.app in old location -->
@@ -272,11 +263,7 @@
       DestinationFolder="$(InspectorAppSharedSupportPath)Agents\Forms\iOS"/>
     <Copy
       SkipUnchangedFiles="true"
-      SourceFiles="$(UpdateInfoFile)"
-      DestinationFolder="$(InspectorAppSharedSupportPath)"/>
-    <Copy
-      SkipUnchangedFiles="true"
-      SourceFiles="$(BuildInfoDistFile)"
+      SourceFiles="$(BuildInfoArtifact);$(UpdateInfoArtifact)"
       DestinationFolder="$(InspectorAppSharedSupportPath)"/>
   </Target>
 </Project>
