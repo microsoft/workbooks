@@ -1,7 +1,12 @@
 <Project InitialTargets="Configure" DefaultTargets="Restore;Build">
   <Import Project="build\Global.targets"/>
   <Import Project="build\Environment.targets"/>
-  <Import Project="build\Metadata.targets"/>
+
+  <PropertyGroup>
+    <ReleaseVersion_SemVer>2.0.0-dev</ReleaseVersion_SemVer>
+    <CommonGitInfo_SetMinRevisionFromMostRecentTagRegex>true</CommonGitInfo_SetMinRevisionFromMostRecentTagRegex>
+    <CommonGitInfo_MostRecentTagRegex>^v\d+</CommonGitInfo_MostRecentTagRegex>
+  </PropertyGroup>
 
   <!-- Profiles -->
 
@@ -199,8 +204,34 @@
   <!-- Configuration / Solution Generation -->
 
   <Target
+    Name="GenerateReleaseVersions"
+    DependsOnTargets="
+      Xamarin_Build_ReadBuildEnvironment;
+      Xamarin_Build_ReadCommonGitInfo">
+    <PropertyGroup>
+      <CommonGitInfo_MaxRevision Condition="'$(BuildEnvironment_Revision)' != ''">$(BuildEnvironment_Revision)</CommonGitInfo_MaxRevision>
+      <ReleaseVersion_SemVer>$(ReleaseVersion_SemVer)+$(CommonGitInfo_MinMaxCommitDistance)</ReleaseVersion_SemVer>
+      <ReleaseVersion_UpdateInfo>$(CommonGitInfo_MaxRevisionTimestamp)</ReleaseVersion_UpdateInfo>
+    </PropertyGroup>
+    <ItemGroup>
+      <PropertiesToPersist Include="CommonGitInfo_MaxRevision">
+        <Value>$(CommonGitInfo_MaxRevision)</Value>
+      </PropertiesToPersist>
+      <PropertiesToPersist Include="ReleaseVersion_SemVer">
+        <Value>$(ReleaseVersion_SemVer)</Value>
+      </PropertiesToPersist>
+      <PropertiesToPersist Include="ReleaseVersion_UpdateInfo">
+        <Value>$(ReleaseVersion_UpdateInfo)</Value>
+      </PropertiesToPersist>
+    </ItemGroup>
+  </Target>
+
+  <Target
     Name="Configure"
-    DependsOnTargets="ResolveExternalTools">
+    DependsOnTargets="
+      GenerateReleaseVersions;
+      Xamarin_Build_ReadReleaseVersions;
+      ResolveExternalTools">
     <PropertyGroup>
       <Profile Condition="'$(Profile.ToLowerInvariant())' == 'full'"></Profile>
       <Profile Condition="'$(Profile.ToLowerInvariant())' == 'fullprofile'"></Profile>
@@ -218,8 +249,6 @@
       <ProfileTargets Include="@(Profiles -> '%(ProfileName)Profile')"/>
     </ItemGroup>
 
-    <Message Text="%(PropertiesToPersist.Value)" Importance="High"/>
-
     <ItemGroup>
       <PropertiesToPersist Include="Configuration">
         <Value>$(Configuration)</Value>
@@ -229,19 +258,10 @@
       </PropertiesToPersist>
     </ItemGroup>
 
-    <ItemGroup>
-      <PropertiesToPersistXml Include="&lt;Project&gt;"/>
-      <PropertiesToPersistXml Include="%20%20&lt;PropertyGroup&gt;"/>
-      <PropertiesToPersistXml Include="%20%20%20%20&lt;%(PropertiesToPersist.Identity)&gt;%(PropertiesToPersist.Value)&lt;/%(PropertiesToPersist.Identity)&gt;"/>
-      <PropertiesToPersistXml Include="%20%20&lt;/PropertyGroup&gt;"/>
-      <PropertiesToPersistXml Include="&lt;/Project&gt;"/>
-    </ItemGroup>
-
-    <MakeDir Directories="_build"/>
-    <WriteLinesToFile
-      Lines="@(PropertiesToPersistXml)"
-      Overwrite="true"
-      File="_build\Configuration.props"/>
+    <UpdateMSBuildProject
+      Project="$(GlobalConfigurationPropsFile)"
+      AsNewProject="true"
+      Properties="@(PropertiesToPersist)"/>
   </Target>
 
   <Target
@@ -344,8 +364,7 @@
   </Target>
 
   <Target
-    Name="ArchiveSymbolFiles"
-    DependsOnTargets="Xamarin_Build_ReadAllProperties">
+    Name="ArchiveSymbolFiles">
     <PropertyGroup>
       <SymbolFilesArchive>$(ArtifactsBasePath)XamarinInteractive-$(ReleaseVersion_SemVer).$(RuntimeIdentifierPlatformBase).symbols.zip</SymbolFilesArchive>
     </PropertyGroup>

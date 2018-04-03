@@ -1,5 +1,4 @@
 <Project>
-  <Import Project="..\..\build\Metadata.targets" />
   <Import Project="..\..\build\Project.targets" />
 
   <PropertyGroup>
@@ -51,8 +50,7 @@
 
   <Target
     Name="PackageArchive"
-    AfterTargets="AfterPublish"
-    DependsOnTargets="Xamarin_Build_ReadAllProperties">
+    AfterTargets="AfterPublish">
     <PropertyGroup>
       <ArchiveName>workbooks-server-$(ReleaseVersion_SemVer).$(RuntimeIdentifier)</ArchiveName>
     </PropertyGroup>

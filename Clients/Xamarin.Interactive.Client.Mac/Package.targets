@@ -23,11 +23,9 @@
     <InspectorNuGetPackageContentDir>$(InspectorNuGetPackageBuildDir)\contentFiles\any\any\</InspectorNuGetPackageContentDir>
   </PropertyGroup>
 
-  <Import Project="$(TopDirectory)build\Metadata.targets"/>
-
   <Target
     Name="Package"
-    DependsOnTargets="Xamarin_Build_ReadAllProperties;Install">
+    DependsOnTargets="Install">
     <PropertyGroup>
       <PackageFile>$(ArtifactsBasePath)XamarinInteractive-$(ReleaseVersion_SemVer).pkg</PackageFile>
     </PropertyGroup>

@@ -4,7 +4,6 @@
   ToolsVersion="12.0">
   <Import Project="$(MSBuildThisFileDirectory)build\Environment.props"/>
   <Import Project="$(MSBuildThisFileDirectory)build\Xamarin.Build\Xamarin.Build.targets"/>
-  <Import Project="$(MSBuildThisFileDirectory)build\Metadata.targets"/>
   <Import Project="$(MSBuildThisFileDirectory)build\Utility.targets"/>
 
   <Import
@@ -86,26 +85,13 @@
     <Message Text="Congratulations! Here's an ounce of confidence in your pull request!" Importance="high"/>
   </Target>
 
-  <Target Name="_ResolveToolPaths">
-    <Which
-      Condition="!Exists('$(NuGet)')"
-      Program="nuget"
-      PreferPaths="@(WhichSearchPath)">
-      <Output TaskParameter="FullPath" PropertyName="NuGet"/>
-    </Which>
-  </Target>
-
   <Target Name="ProvisioningCheck">
     <CallTarget
       Condition=" '$(Provisionator)' != '' "
       Targets="_ProvisioningCheck"/>
   </Target>
 
-  <Target Name="_Bootstrap" DependsOnTargets="
-    Xamarin_Build_ReadAllProperties;
-    _ResolveToolPaths"/>
-
-  <Target Name="Build" DependsOnTargets="ProvisioningCheck;_Bootstrap;UpdateInvertedDependencies">
+  <Target Name="Build" DependsOnTargets="ProvisioningCheck;UpdateInvertedDependencies">
     <MSBuild
       Condition="'$(SolutionPlatform)' == 'macOS'"
       Projects="$(MSBuildProjectFile)"
@@ -141,8 +127,7 @@
   </Target>
 
   <Target
-    Name="Package"
-    DependsOnTargets="_Bootstrap">
+    Name="Package">
     <MSBuild
       Projects="CoreBuild.proj"
       Targets="Package;ArchiveSymbolFiles"
@@ -163,7 +148,7 @@
     <CallTarget Targets="GenerateReleaseNotes" Condition="'$(SolutionPlatform)' == 'macOS'"/>
   </Target>
 
-  <Target Name="PackageNuGet" DependsOnTargets="Xamarin_Build_ReadAllProperties">
+  <Target Name="PackageNuGet">
     <PropertyGroup>
       <AgentPcl>$(MSBuildThisFileDirectory)Agents\Xamarin.Interactive\bin\$(Configuration)\netstandard2.0\Xamarin.Interactive.dll</AgentPcl>
       <StrippedPcl>$(MSBuildThisFileDirectory)Agents\Xamarin.Interactive\bin\$(Configuration)\netstandard2.0\Xamarin.Interactive.Stripped.dll</StrippedPcl>
@@ -176,7 +161,7 @@
         DestinationFiles="$(PackageOutputDir)\Xamarin.Workbooks.Integration.$(WorkbooksIntegrationNuGetPackageVersion).nupkg" />
   </Target>
 
-  <Target Name="_PackageInspectorNuGetMac" DependsOnTargets="Xamarin_Build_ReadAllProperties">
+  <Target Name="_PackageInspectorNuGetMac">
     <!-- Copy completed Inspector.app bundle to staging area where Xamarin.Inspector.Mac.nupkg can be built later -->
     <MakeDir Directories="$(InspectorNuGetPackageContentDir)"/>
     <Exec Command="cp -a &quot;$(InspectorClientInstallPath)\$(InspectorAppBundleName)&quot; &quot;$(InspectorNuGetPackageContentDir)&quot;"/>
@@ -184,7 +169,7 @@
     <CallTarget Targets="_DoPackageInspectorNuGet"/>
   </Target>
 
-  <Target Name="_PackageInspectorNuGetWin" DependsOnTargets="Xamarin_Build_ReadAllProperties">
+  <Target Name="_PackageInspectorNuGetWin">
     <PropertyGroup>
       <InspectorClientFilesPath>Clients\Xamarin.Interactive.Client.Windows\bin\$(Configuration)\Inspector\</InspectorClientFilesPath>
       <!-- Add a parent folder since there's no app bundle like on Mac -->
@@ -225,7 +210,7 @@
     <CallTarget Targets="_DoPackageInspectorNuGet"/>
   </Target>
 
-  <Target Name="_DoPackageInspectorNuGet" DependsOnTargets="Xamarin_Build_ReadAllProperties">
+  <Target Name="_DoPackageInspectorNuGet">
     <PropertyGroup>
       <InspectorPackageFileName>$(InspectorPackageName).$(ReleaseVersion_SemVerNuGetSafe).nupkg</InspectorPackageFileName>
     </PropertyGroup>

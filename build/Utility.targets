@@ -40,8 +40,7 @@ Copyright 2017 Microsoft. All rights reserved.
   </Target>
 
   <Target
-    Name="UpdateBuildInfo"
-    DependsOnTargets="Xamarin_Build_ReadAllProperties">
+    Name="UpdateBuildInfo">
     <ItemGroup>
       <BuildInfoFile Include="UPDATES.md"/>
       <BuildInfoFile Include="RETHESIS"/>
@@ -100,7 +99,6 @@ Copyright 2017 Microsoft. All rights reserved.
 
   <Target
     Name="GenerateReleaseNotes"
-    DependsOnTargets="Xamarin_Build_ReadAllProperties"
     Inputs="$(MSBuildThisFileDirectory)..\UPDATES.md"
     Outputs="$(PackageOutputDir)updater-release-notes-$(ReleaseVersion_SemVer).html">
     <CommonMarkToHtml
@@ -110,8 +108,7 @@ Copyright 2017 Microsoft. All rights reserved.
   </Target>
 
   <Target
-    Name="GeneratePublicationManifest"
-    DependsOnTargets="Xamarin_Build_ReadAllProperties">
+    Name="GeneratePublicationManifest">
     <PropertyGroup Condition="'$(OS)' == 'Windows_NT'">
       <ProductName>Xamarin Workbooks &amp; Inspector (Win)</ProductName>
       <UpdateInfoFile>..\Package\Windows\updateinfo</UpdateInfoFile>
@@ -147,7 +144,7 @@ Copyright 2017 Microsoft. All rights reserved.
       ReleaseDescription="Xamarin Workbooks &amp; Inspector $(ReleaseVersion_FriendlyLong)"/>
   </Target>
 
-  <Target Name="GenerateSignFiles" DependsOnTargets="Xamarin_Build_ReadAllProperties">
+  <Target Name="GenerateSignFiles">
     <MakeDir Directories="$(PackageOutputDir)"/>
     <ItemGroup>
       <SignTarget Include="Agents\**\Xamarin*.dll"/>
@@ -178,8 +175,7 @@ Copyright 2017 Microsoft. All rights reserved.
     <Message Importance="High" Text="##vso[task.setvariable variable=xamarin.interactive.authenticodeZipFile;]$(SignArchiveName)" />
   </Target>
 
-  <Target Name="DownloadAndExtractSignedFile"
-          DependsOnTargets="Xamarin_Build_ReadAllProperties">
+  <Target Name="DownloadAndExtractSignedFile">
     <!-- $(xamarin.interactive.authenticodeStorageContainerUri)/to-sign/$(xamarin.interactive.authenticodeZipFile) -->
     <PropertyGroup>
       <SignArchiveName>sign-$(CommongitInfo_MaxRevisionShort).zip</SignArchiveName>

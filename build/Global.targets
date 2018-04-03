@@ -1,9 +1,13 @@
 <Project>
+  <PropertyGroup>
+    <GlobalConfigurationPropsFile>$([MSBuild]::NormalizePath('$(MSBuildThisFileDirectory)..\_build\Configuration.props'))</GlobalConfigurationPropsFile>
+  </PropertyGroup>
+
   <Import Project="Xamarin.Build\Xamarin.Build.targets"/>
 
   <Import
-    Condition="Exists('..\_build\Configuration.props')"
-    Project="..\_build\Configuration.props"/>
+    Condition="Exists('$(GlobalConfigurationPropsFile)')"
+    Project="$(GlobalConfigurationPropsFile)"/>
 
   <Import Project="Environment.props"/>
 </Project>

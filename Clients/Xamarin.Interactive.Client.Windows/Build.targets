@@ -1,7 +1,6 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildThisFileDirectory)..\Xamarin.Interactive.Client\ClientApp\WebApp.targets" />
   <Import Project="$(MSBuildThisFileDirectory)..\SharedClientResources.targets" />
-  <Import Project="..\..\build\Metadata.targets"/>
 
   <PropertyGroup>
     <ClientAppResourcesOutputPath>$(OutputPath)</ClientAppResourcesOutputPath>
@@ -42,8 +41,7 @@
   </Target>
 
   <Target
-    Name="Package"
-    DependsOnTargets="Xamarin_Build_ReadAllProperties">
+    Name="Package">
     <PropertyGroup>
       <WixProject>$(TopDirectory)Package\Windows\Xamarin.Interactive.Windows.Installer.wixproj</WixProject>
     </PropertyGroup>
