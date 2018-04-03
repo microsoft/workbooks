@@ -43,8 +43,6 @@
     </MSBuildCommonProperties>
 
     <PackageOutputDir Condition="'$(PackageOutputDir)' == ''">_artifacts\</PackageOutputDir>
-    <InspectorNuGetPackageBuildDir>_inspectorPackage</InspectorNuGetPackageBuildDir>
-    <InspectorNuGetPackageContentDir>$(InspectorNuGetPackageBuildDir)\contentFiles\any\any\</InspectorNuGetPackageContentDir>
 
     <BuildInfoDistFile>Package/buildinfo</BuildInfoDistFile>
   </PropertyGroup>
@@ -64,10 +62,6 @@
     <MacBuildHostAddress Condition="'$(AGENT_NAME)' == 'RE Cambridge Windows-Inspector-1'">bockover-1.guest.corp.microsoft.com</MacBuildHostAddress>
     <MacBuildHostAddress Condition="'$(AGENT_NAME)' == 'Cambridge Windows-Inspector-2'">inspector-1.guest.corp.microsoft.com</MacBuildHostAddress>
     <MacBuildHostUser>builder</MacBuildHostUser>
-  </PropertyGroup>
-
-  <PropertyGroup>
-    <WorkbooksIntegrationNuGetPackageVersion>1.0.0-rc6</WorkbooksIntegrationNuGetPackageVersion>
   </PropertyGroup>
 
   <Target Name="ProvisioningCheck">
@@ -127,69 +121,7 @@
       SourceFiles="$(BuildInfoDistFile)"
       DestinationFolder="$(PackageOutputDir)"/>
     <Message Text="Generated $(PackageOutputDir)buildinfo" Importance="high"/>
-    <CallTarget Targets="_PackageInspectorNuGetWin" Condition="'$(SolutionPlatform)' == 'Windows'"/>
     <CallTarget Targets="GenerateReleaseNotes" Condition="'$(SolutionPlatform)' == 'macOS'"/>
-  </Target>
-
-  <Target Name="_PackageInspectorNuGetWin">
-    <PropertyGroup>
-      <InspectorClientFilesPath>Clients\Xamarin.Interactive.Client.Windows\bin\$(Configuration)\Inspector\</InspectorClientFilesPath>
-      <!-- Add a parent folder since there's no app bundle like on Mac -->
-      <InspectorNuGetPackageWindowsContentDir>$(InspectorNuGetPackageContentDir)\Xamarin.Inspector.Windows\</InspectorNuGetPackageWindowsContentDir>
-    </PropertyGroup>
-    <ItemGroup>
-      <InspectorClientFiles
-        Include="$(InspectorClientFilesPath)**\*"
-        Exclude="$(InspectorClientFilesPath)*.pdb;$(InspectorClientFilesPath)*.xml"/>
-    </ItemGroup>
-
-    <Copy
-      SkipUnchangedFiles="true"
-      SourceFiles="@(InspectorClientFiles)"
-      DestinationFolder="$(InspectorNuGetPackageWindowsContentDir)Client\%(RecursiveDir)"/>
-
-    <Copy
-      SkipUnchangedFiles="true"
-      SourceFiles="@(AndroidAgentFiles)"
-      DestinationFolder="$(InspectorNuGetPackageWindowsContentDir)Agents\Android"/>
-    <Copy
-      SkipUnchangedFiles="true"
-      SourceFiles="@(iOSAgentFiles)"
-      DestinationFolder="$(InspectorNuGetPackageWindowsContentDir)Agents\iOS"/>
-    <Copy
-      SkipUnchangedFiles="true"
-      SourceFiles="@(WpfAgentFiles)"
-      DestinationFolder="$(InspectorNuGetPackageWindowsContentDir)Agents\WPF"/>
-    <Copy
-      SkipUnchangedFiles="true"
-      SourceFiles="@(AndroidFormsAgentFiles)"
-      DestinationFolder="$(InspectorNuGetPackageWindowsContentDir)Agents\Forms\Android"/>
-    <Copy
-      SkipUnchangedFiles="true"
-      SourceFiles="@(iOSFormsAgentFiles)"
-      DestinationFolder="$(InspectorNuGetPackageWindowsContentDir)Agents\Forms\iOS"/>
-
-    <CallTarget Targets="_DoPackageInspectorNuGet"/>
-  </Target>
-
-  <Target Name="_DoPackageInspectorNuGet">
-    <PropertyGroup>
-      <InspectorPackageFileName>$(InspectorPackageName).$(ReleaseVersion_SemVerNuGetSafe).nupkg</InspectorPackageFileName>
-    </PropertyGroup>
-
-    <Error Text="NuGet is not provisioned" Condition="!Exists('$(NuGet)')"/>
-    <Copy
-      SkipUnchangedFiles="true"
-      SourceFiles="$(InspectorPackageNuspec)"
-      DestinationFolder="$(InspectorNuGetPackageBuildDir)"/>
-    <!-- Use SemVerNuGetSafe to get versions in the form of x.y.z-beta1-build.123 instead of x.y.z-beta1+123.
-         NuGet does not support reading build numbers from semver metadata. -->
-    <Exec
-      Command="&quot;$(NuGet)&quot; pack $(InspectorPackageName).nuspec -Version $(ReleaseVersion_SemVerNuGetSafe) -NoPackageAnalysis"
-      WorkingDirectory="$(InspectorNuGetPackageBuildDir)"/>
-    <Copy
-      SourceFiles="$(InspectorNuGetPackageBuildDir)\$(InspectorPackageFileName)"
-      DestinationFiles="$(PackageOutputDir)\$(InspectorPackageFileName)"/>
   </Target>
 
   <Target Name="TestRegressions">

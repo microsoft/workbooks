@@ -1,13 +1,20 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildThisFileDirectory)..\Xamarin.Interactive.Client\ClientApp\WebApp.targets" />
   <Import Project="$(MSBuildThisFileDirectory)..\SharedClientResources.targets" />
+  <Import Project="$(MSBuildThisFileDirectory)..\..\build\Project.targets" />
 
   <PropertyGroup>
     <ClientAppResourcesOutputPath>$(OutputPath)</ClientAppResourcesOutputPath>
+    <PackageAssetsDirectory>$(TopDirectory)Package\Windows\</PackageAssetsDirectory>
     <BuildDependsOn>
       $(BuildDependsOn);
       CopySharedClientResources;
     </BuildDependsOn>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <InspectorOutputPath>bin\$(Configuration)\Inspector\</InspectorOutputPath>
+    <InspectorAssemblyName>Xamarin Inspector</InspectorAssemblyName>
   </PropertyGroup>
 
   <Target Name="XIInstall" BeforeTargets="Build">
@@ -19,10 +26,6 @@
   </Target>
 
   <Target Name="BuildInspector" AfterTargets="Build">
-    <PropertyGroup>
-      <InspectorOutputPath>bin\$(Configuration)\Inspector\</InspectorOutputPath>
-      <InspectorAssemblyName>Xamarin Inspector</InspectorAssemblyName>
-    </PropertyGroup>
     <ItemGroup>
       <InspectorAppFiles
         Include="$(OutputPath)\$(AssemblyName)*"/>
@@ -43,7 +46,7 @@
   <Target
     Name="Package">
     <PropertyGroup>
-      <WixProject>$(TopDirectory)Package\Windows\Xamarin.Interactive.Windows.Installer.wixproj</WixProject>
+      <WixProject>$(PackageAssetsDirectory)Xamarin.Interactive.Windows.Installer.wixproj</WixProject>
     </PropertyGroup>
     <PropertyGroup>
       <InstallerDefineConstants Condition="Exists('$(TopDirectory)_build\$(Configuration)\WorkbookApps\iOS\Xamarin.Workbooks.iOS.app')">$(InstallerDefineConstants);iOSSupport</InstallerDefineConstants>
@@ -65,8 +68,79 @@
 
     <MakeDir Directories="$(ArtifactsBasePath)"/>
     <Copy
-      SourceFiles="$(TopDirectory)Package\Windows\bin\$(Configuration)\en-US\XamarinInteractive.msi"
+      SourceFiles="$(PackageAssetsDirectory)bin\$(Configuration)\en-US\XamarinInteractive.msi"
       DestinationFiles="$(ArtifactsBasePath)XamarinInteractive-$(ReleaseVersion_SemVer).msi"/>
     <Message Text="Generated $(ArtifactsBasePath)XamarinInteractive-$(ReleaseVersion_SemVer).msi" Importance="high"/>
   </Target>
+
+  <Target
+    Name="PackageInspectorNuGet"
+    AfterTargets="Package">
+    <PropertyGroup>
+      <InspectorNuGetBuildDirectory>bin\$(Configuration)\Inspector.NuGet\</InspectorNuGetBuildDirectory>
+      <InspectorNuGetPayloadDirectory>$(InspectorNuGetBuildDirectory)contentFiles\any\any\</InspectorNuGetPayloadDirectory>
+      <ArtifactsBasePathRelative>$([MSBuild]::MakeRelative($(MSBuildThisFileDirectory), $(ArtifactsBasePath)))</ArtifactsBasePathRelative>
+    </PropertyGroup>
+
+    <RemoveDir Directories="$(InspectorNuGetBuildDirectory)"/>
+
+    <Copy
+      SkipUnchangedFiles="true"
+      SourceFiles="$(PackageAssetsDirectory)Xamarin.Inspector.Windows.nuspec"
+      DestinationFolder="$(InspectorNuGetBuildDirectory)"/>
+
+    <ItemGroup>
+      <InspectorClientFiles
+        Include="$(InspectorOutputPath)**\*"
+        Exclude="$(InspectorOutputPath)*.pdb;$(InspectorOutputPath)*.xml"/>
+    </ItemGroup>
+    <Copy
+      SkipUnchangedFiles="true"
+      SourceFiles="@(InspectorClientFiles)"
+      DestinationFolder="$(InspectorNuGetPayloadDirectory)Client\%(RecursiveDir)"/>
+
+    <ItemGroup>
+      <AndroidAgentFiles Include="$(TopDirectory)Agents\Xamarin.Interactive.Android\bin\$(Configuration)\*\Xamarin.Interactive.Android.dll"/>
+    </ItemGroup>
+    <Copy
+      SkipUnchangedFiles="true"
+      SourceFiles="@(AndroidAgentFiles)"
+      DestinationFolder="$(InspectorNuGetPayloadDirectory)Agents\Android"/>
+
+    <ItemGroup>
+      <iOSAgentFiles Include="$(TopDirectory)Agents\Xamarin.Interactive.iOS\bin\$(Configuration)\*\Xamarin.Interactive.iOS.dll"/>
+    </ItemGroup>
+    <Copy
+      SkipUnchangedFiles="true"
+      SourceFiles="@(iOSAgentFiles)"
+      DestinationFolder="$(InspectorNuGetPayloadDirectory)Agents\iOS"/>
+
+    <ItemGroup>
+      <WpfAgentFiles Include="$(TopDirectory)Agents\Xamarin.Interactive.Wpf\bin\$(Configuration)\*\Xamarin.Interactive.Wpf.dll"/>
+    </ItemGroup>
+    <Copy
+      SkipUnchangedFiles="true"
+      SourceFiles="@(WpfAgentFiles)"
+      DestinationFolder="$(InspectorNuGetPayloadDirectory)Agents\WPF"/>
+
+    <ItemGroup>
+      <AndroidFormsAgentFiles Include="$(TopDirectory)Agents\Xamarin.Interactive.Forms.Android\bin\$(Configuration)\*\Xamarin.Interactive.Forms.Android.dll"/>
+      <AndroidFormsAgentFiles Include="$(TopDirectory)Agents\Xamarin.Interactive.Forms.Android\bin\$(Configuration)\*\Xamarin.Interactive.Forms.dll"/>
+    </ItemGroup>
+    <Copy
+      SkipUnchangedFiles="true"
+      SourceFiles="@(AndroidFormsAgentFiles)"
+      DestinationFolder="$(InspectorNuGetPayloadDirectory)Agents\Forms\Android"/>
+
+    <ItemGroup>
+      <iOSFormsAgentFiles Include="$(TopDirectory)Agents\Xamarin.Interactive.Forms.iOS\bin\$(Configuration)\*\Xamarin.Interactive.Forms.iOS.dll"/>
+      <iOSFormsAgentFiles Include="$(TopDirectory)Agents\Xamarin.Interactive.Forms.iOS\bin\$(Configuration)\*\Xamarin.Interactive.Forms.dll"/>
+    </ItemGroup>
+    <Copy
+      SkipUnchangedFiles="true"
+      SourceFiles="@(iOSFormsAgentFiles)"
+      DestinationFolder="$(InspectorNuGetPayloadDirectory)Agents\Forms\iOS"/>
+
+    <Exec Command="&quot;$(NuGet)&quot; pack $(InspectorNuGetBuildDirectory)Xamarin.Inspector.Windows.nuspec -OutputDirectory $(ArtifactsBasePathRelative) -Version $(ReleaseVersion_SemVerNuGetSafe) -NoPackageAnalysis"/>
+   </Target>
 </Project>

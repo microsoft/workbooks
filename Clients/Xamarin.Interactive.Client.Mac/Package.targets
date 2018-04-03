@@ -24,7 +24,7 @@
     Name="PackageInspectorNuGet"
     AfterTargets="Package">
     <PropertyGroup>
-      <InspectorNuGetBuildDirectory>$(OutputPath)_inspectorNuGet\</InspectorNuGetBuildDirectory>
+      <InspectorNuGetBuildDirectory>$(OutputPath)Inspector.NuGet\</InspectorNuGetBuildDirectory>
       <InspectorNuGetPayloadDirectory>$(InspectorNuGetBuildDirectory)contentFiles\any\any\</InspectorNuGetPayloadDirectory>
     </PropertyGroup>
 
