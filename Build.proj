@@ -60,10 +60,6 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(SolutionPlatform)' == 'macOS'">
     <UpdateInfoFile>Clients\Xamarin.Interactive.Client.Mac\PackageAssets\updateinfo</UpdateInfoFile>
-    <InspectorPackageName>Xamarin.Inspector.Mac</InspectorPackageName>
-    <InspectorPackageNuspec>Clients\Xamarin.Interactive.Client.Mac\PackageAssets\$(InspectorPackageName).nuspec</InspectorPackageNuspec>
-    <InspectorAppBundleName>Xamarin Inspector.app</InspectorAppBundleName>
-    <InspectorClientInstallPath>Clients\Xamarin.Interactive.Client.Mac\_install\Library\Frameworks\Xamarin.Interactive.framework\Versions\Current\InspectorClient\</InspectorClientInstallPath>
   </PropertyGroup>
 
   <!-- XVS mac build host configuration (in VSTS) -->
@@ -143,7 +139,6 @@
       DestinationFolder="$(PackageOutputDir)"/>
     <Message Text="Generated $(PackageOutputDir)buildinfo" Importance="high"/>
     <CallTarget Targets="PackageNuGet" Condition="'$(SolutionPlatform)' == 'macOS'"/>
-    <CallTarget Targets="_PackageInspectorNuGetMac" Condition="'$(SolutionPlatform)' == 'macOS'"/>
     <CallTarget Targets="_PackageInspectorNuGetWin" Condition="'$(SolutionPlatform)' == 'Windows'"/>
     <CallTarget Targets="GenerateReleaseNotes" Condition="'$(SolutionPlatform)' == 'macOS'"/>
   </Target>
@@ -159,14 +154,6 @@
     <Copy
         SourceFiles="Agents\Xamarin.Interactive\Xamarin.Workbooks.Integration.$(WorkbooksIntegrationNuGetPackageVersion).nupkg"
         DestinationFiles="$(PackageOutputDir)\Xamarin.Workbooks.Integration.$(WorkbooksIntegrationNuGetPackageVersion).nupkg" />
-  </Target>
-
-  <Target Name="_PackageInspectorNuGetMac">
-    <!-- Copy completed Inspector.app bundle to staging area where Xamarin.Inspector.Mac.nupkg can be built later -->
-    <MakeDir Directories="$(InspectorNuGetPackageContentDir)"/>
-    <Exec Command="cp -a &quot;$(InspectorClientInstallPath)\$(InspectorAppBundleName)&quot; &quot;$(InspectorNuGetPackageContentDir)&quot;"/>
-
-    <CallTarget Targets="_DoPackageInspectorNuGet"/>
   </Target>
 
   <Target Name="_PackageInspectorNuGetWin">

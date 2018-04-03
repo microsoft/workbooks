@@ -18,10 +18,29 @@
 
     <WorkbooksAppSharedSupportPath>$(InstallDestDir)Applications\$(WorkbooksAppBundleName)\Contents\SharedSupport\</WorkbooksAppSharedSupportPath>
     <InspectorAppSharedSupportPath>$(InspectorClientInstallPath)$(InspectorAppBundleName)\Contents\SharedSupport\</InspectorAppSharedSupportPath>
-
-    <InspectorNuGetPackageBuildDir>_inspectorPackage</InspectorNuGetPackageBuildDir>
-    <InspectorNuGetPackageContentDir>$(InspectorNuGetPackageBuildDir)\contentFiles\any\any\</InspectorNuGetPackageContentDir>
   </PropertyGroup>
+
+  <Target
+    Name="PackageInspectorNuGet"
+    AfterTargets="Package">
+    <PropertyGroup>
+      <InspectorNuGetBuildDirectory>$(OutputPath)_inspectorNuGet\</InspectorNuGetBuildDirectory>
+      <InspectorNuGetPayloadDirectory>$(InspectorNuGetBuildDirectory)contentFiles\any\any\</InspectorNuGetPayloadDirectory>
+    </PropertyGroup>
+
+    <RemoveDir Directories="$(InspectorNuGetBuildDirectory)"/>
+    <MakeDir Directories="$(InspectorNuGetPayloadDirectory)"/>
+
+    <Exec
+      WorkingDirectory="$(InspectorNuGetPayloadDirectory)"
+      Command="ln -s &quot;..\..\..\..\$(InspectorAppBundleName)&quot; ."/>
+
+    <Copy
+      SourceFiles="$(PackageAssetsDirectory)Xamarin.Inspector.Mac.nuspec"
+      DestinationFolder="$(InspectorNuGetBuildDirectory)"/>
+
+    <Exec Command="&quot;$(NuGet)&quot; pack $(InspectorNuGetBuildDirectory)Xamarin.Inspector.Mac.nuspec -OutputDirectory &quot;$(ArtifactsBasePath)&quot; -Version $(ReleaseVersion_SemVerNuGetSafe) -NoPackageAnalysis"/>
+  </Target>
 
   <Target
     Name="Package"
