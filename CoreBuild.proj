@@ -1,6 +1,7 @@
 <Project InitialTargets="Configure" DefaultTargets="Restore;Build">
   <Import Project="build\Global.targets"/>
   <Import Project="build\Environment.targets"/>
+  <Import Project="build\Utility.targets"/>
 
   <PropertyGroup>
     <ReleaseVersion_SemVer>2.0.0-dev</ReleaseVersion_SemVer>

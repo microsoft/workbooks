@@ -73,14 +73,6 @@
     <WorkbooksIntegrationNuGetPackageVersion>1.0.0-rc6</WorkbooksIntegrationNuGetPackageVersion>
   </PropertyGroup>
 
-  <Target Name="BuildAndTest">
-    <MSBuild
-      Projects="$(MSBuildProjectFile)"
-      Targets="UpdateBuildInfo;Build;Package;TestRegressions"
-      Properties="Configuration=Release"/>
-    <Message Text="Congratulations! Here's an ounce of confidence in your pull request!" Importance="high"/>
-  </Target>
-
   <Target Name="ProvisioningCheck">
     <CallTarget
       Condition=" '$(Provisionator)' != '' "
@@ -231,6 +223,12 @@
       Projects="CoreBuild.proj"
       Properties="$(MSBuildCommonProperties)"
       Targets="TestInspectorInjector"/>
+  </Target>
+
+  <Target Name="UpdateBuildInfo">
+    <MSBuild
+      Projects="CoreBuild.proj"
+      Targets="UpdateBuildInfo"/>
   </Target>
 
   <Target Name="UpdatePublicApiDefinitions">
