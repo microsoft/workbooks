@@ -37,8 +37,10 @@
   </PropertyGroup>
 
   <PropertyGroup>
+    <MonoInstallRootDirectory Condition="$(IsMac)">$([MSBuild]::NormalizeDirectory('/Library/Frameworks/Mono.framework/Versions/Current'))</MonoInstallRootDirectory>
     <HaveMono Condition="'$(HaveMono)' == ''">false</HaveMono>
-    <HaveMono Condition="$(IsMac) And Exists('/Library/Frameworks/Mono.framework/Versions/Current/VERSION')">true</HaveMono>
+    <HaveMono Condition="'$(MonoInstallRootDirectory)' != '' And Exists('$(MonoInstallRootDirectory)VERSION')">true</HaveMono>
+    <MonoCilStrip Condition='$(HaveMono)'>$(MonoInstallRootDirectory)Commands/mono-cil-strip</MonoCilStrip>
 
     <HaveXamarinMac Condition="'$(HaveXamarinMac)' == ''">false</HaveXamarinMac>
     <HaveXamarinMac Condition="$(IsMac) And Exists('/Library/Frameworks/Xamarin.Mac.framework/Versions/Current/Version')">true</HaveXamarinMac>

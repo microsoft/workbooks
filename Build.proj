@@ -20,9 +20,6 @@
     <WrenchAdb>C:\Users\builder\AppData\Local\Android\android-sdk\platform-tools\adb.exe</WrenchAdb>
     <SevenZip>C:\Program Files\7-zip\7z.exe</SevenZip>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(SolutionPlatform)' == 'macOS'">
-    <CILStrip>/Library/Frameworks/Mono.framework/Versions/Current/Commands/mono-cil-strip</CILStrip>
-  </PropertyGroup>
 
   <ItemGroup>
     <WhichSearchPath Include="$(MSBuildThisFileDirectory)"/>
@@ -130,22 +127,8 @@
       SourceFiles="$(BuildInfoDistFile)"
       DestinationFolder="$(PackageOutputDir)"/>
     <Message Text="Generated $(PackageOutputDir)buildinfo" Importance="high"/>
-    <CallTarget Targets="PackageNuGet" Condition="'$(SolutionPlatform)' == 'macOS'"/>
     <CallTarget Targets="_PackageInspectorNuGetWin" Condition="'$(SolutionPlatform)' == 'Windows'"/>
     <CallTarget Targets="GenerateReleaseNotes" Condition="'$(SolutionPlatform)' == 'macOS'"/>
-  </Target>
-
-  <Target Name="PackageNuGet">
-    <PropertyGroup>
-      <AgentPcl>$(MSBuildThisFileDirectory)Agents\Xamarin.Interactive\bin\$(Configuration)\netstandard2.0\Xamarin.Interactive.dll</AgentPcl>
-      <StrippedPcl>$(MSBuildThisFileDirectory)Agents\Xamarin.Interactive\bin\$(Configuration)\netstandard2.0\Xamarin.Interactive.Stripped.dll</StrippedPcl>
-    </PropertyGroup>
-    <Exec Command="$(CILStrip) &quot;$(AgentPcl)&quot; &quot;$(StrippedPcl)&quot;"/>
-    <Error Text="NuGet is not provisioned" Condition="!Exists('$(NuGet)')"/>
-    <Exec Command="$(NuGet) pack Xamarin.Interactive.nuspec -Version $(WorkbooksIntegrationNuGetPackageVersion) -Properties Configuration=$(Configuration)" WorkingDirectory="Agents\Xamarin.Interactive" />
-    <Copy
-        SourceFiles="Agents\Xamarin.Interactive\Xamarin.Workbooks.Integration.$(WorkbooksIntegrationNuGetPackageVersion).nupkg"
-        DestinationFiles="$(PackageOutputDir)\Xamarin.Workbooks.Integration.$(WorkbooksIntegrationNuGetPackageVersion).nupkg" />
   </Target>
 
   <Target Name="_PackageInspectorNuGetWin">

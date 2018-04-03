@@ -7,6 +7,8 @@
     <ReleaseVersion_SemVer>2.0.0-dev</ReleaseVersion_SemVer>
     <CommonGitInfo_SetMinRevisionFromMostRecentTagRegex>true</CommonGitInfo_SetMinRevisionFromMostRecentTagRegex>
     <CommonGitInfo_MostRecentTagRegex>^v\d+</CommonGitInfo_MostRecentTagRegex>
+
+    <WorkbooksIntegrationNuGetPackageVersion>2.0.0-rc1</WorkbooksIntegrationNuGetPackageVersion>
   </PropertyGroup>
 
   <!-- Profiles -->
@@ -60,6 +62,7 @@
     <ItemGroup>
       <ProjectsToBuild Include="Agents\Xamarin.Interactive\*.csproj">
         <HasPublicApi>true</HasPublicApi>
+        <HasPackageTarget>true</HasPackageTarget>
       </ProjectsToBuild>
       <ProjectsToBuild Include="CodeAnalysis\Xamarin.Interactive.CodeAnalysis\*.csproj">
         <HasPublicApi>true</HasPublicApi>
@@ -256,6 +259,9 @@
       </PropertiesToPersist>
       <PropertiesToPersist Include="Profile">
         <Value>$(Profile)</Value>
+      </PropertiesToPersist>
+      <PropertiesToPersist Include="WorkbooksIntegrationNuGetPackageVersion">
+        <Value>$(WorkbooksIntegrationNuGetPackageVersion)</Value>
       </PropertiesToPersist>
     </ItemGroup>
 
