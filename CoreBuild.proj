@@ -400,7 +400,8 @@
   </Target>
 
   <Target
-    Name="ArchiveSymbolFiles">
+    Name="ArchiveSymbolFiles"
+    BeforeTargets="Package">
     <PropertyGroup>
       <SymbolFilesArchive>$(ArtifactsBasePath)XamarinInteractive-$(ReleaseVersion_SemVer).$(RuntimeIdentifierPlatformBase).symbols.zip</SymbolFilesArchive>
     </PropertyGroup>
@@ -416,6 +417,17 @@
     <ZipArchive
       SourceFiles="@(SymbolFilesToArchive)"
       DestinationArchiveFileName="$(SymbolFilesArchive)"/>
+  </Target>
+
+  <Target
+    Name="GenerateReleaseNotes"
+    AfterTargets="Package"
+    Inputs="$(TopDirectory)UPDATES.md"
+    Outputs="$(ArtifactsBasePath)updater-release-notes-$(ReleaseVersion_SemVer).html">
+    <CommonMarkToHtml
+      CommonMarkFile="$(TopDirectory)UPDATES.md"
+      HtmlTemplateFile="$(TopDirectory)Package\release-notes-template.html"
+      HtmlOutputFile="$(ArtifactsBasePath)updater-release-notes-$(ReleaseVersion_SemVer).html" />
   </Target>
 
 </Project>

@@ -12,7 +12,8 @@ Copyright 2017 Microsoft. All rights reserved.
   ToolsVersion="12.0">
 
   <Target
-    Name="UpdateInvertedDependencies">
+    Name="UpdateInvertedDependencies"
+    AfterTargets="Build">
     <ItemGroup>
       <Solution Include="$(MSBuildThisFileDirectory)..\*.sln"/>
     </ItemGroup>
@@ -95,44 +96,30 @@ Copyright 2017 Microsoft. All rights reserved.
   </Target>
 
   <Target
-    Name="GenerateReleaseNotes"
-    Inputs="$(MSBuildThisFileDirectory)..\UPDATES.md"
-    Outputs="$(PackageOutputDir)updater-release-notes-$(ReleaseVersion_SemVer).html">
-    <CommonMarkToHtml
-      CommonMarkFile="$(MSBuildThisFileDirectory)..\UPDATES.md"
-      HtmlTemplateFile="$(MSBuildThisFileDirectory)..\Package\release-notes-template.html"
-      HtmlOutputFile="$(PackageOutputDir)updater-release-notes-$(ReleaseVersion_SemVer).html" />
-  </Target>
-
-  <Target
     Name="GeneratePublicationManifest">
-    <PropertyGroup Condition="'$(OS)' == 'Windows_NT'">
-      <ProductName>Xamarin Workbooks &amp; Inspector (Win)</ProductName>
-      <UpdateInfoFile>..\Package\Windows\updateinfo</UpdateInfoFile>
-    </PropertyGroup>
-    <PropertyGroup Condition="'$(OS)' == 'Unix'">
-      <ProductName>Xamarin Workbooks &amp; Inspector (Mac)</ProductName>
-      <UpdateInfoFile>..\Clients\Xamarin.Interactive.Client.Mac\PackageAssets\updateinfo</UpdateInfoFile>
+    <PropertyGroup>
+      <ProductName Condition="$(IsWindows)">Xamarin Workbooks &amp; Inspector (Win)</ProductName>
+      <ProductName Condition="$(IsMac)">Xamarin Workbooks &amp; Inspector (Mac)</ProductName>
     </PropertyGroup>
 
     <ItemGroup>
-      <PublicationItem Include="$(PackageOutputDir)*.pkg">
+      <PublicationItem Include="$(ArtifactsBasePath)*.pkg">
         <Evergreen Condition="'$(ReleaseVersion_CandidateLevel)' == 'Stable'">XamarinInteractive.pkg</Evergreen>
       </PublicationItem>
-      <PublicationItem Include="$(PackageOutputDir)*.msi">
+      <PublicationItem Include="$(ArtifactsBasePath)*.msi">
         <Evergreen Condition="'$(ReleaseVersion_CandidateLevel)' == 'Stable'">XamarinInteractive.msi</Evergreen>
       </PublicationItem>
-      <PublicationItem Include="$(PackageOutputDir)*.html"/>
-      <PublicationItem Remove="$(PackageOutputDir)Policheck*"/>
+      <PublicationItem Include="$(ArtifactsBasePath)*.html"/>
+      <PublicationItem Remove="$(ArtifactsBasePath)Policheck*"/>
     </ItemGroup>
 
-    <ReadLinesFromFile File="$(MSBuildThisFileDirectory)..\RETHESIS">
+    <ReadLinesFromFile File="$(TopDirectory)RETHESIS">
       <Output TaskParameter="Lines" ItemName="UpdaterReleaseNotes"/>
     </ReadLinesFromFile>
 
     <GeneratePublicationManifest
-      OutputFile="$(PackageOutputDir)publication-manifest.json"
-      UpdateInfoFile="$(MSBuildThisFileDirectory)$(UpdateInfoFile)"
+      OutputFile="$(ArtifactsBasePath)publication-manifest.json"
+      UpdateInfoFile="$(ArtifactsBasePath)updateinfo"
       ProductName="$(ProductName)"
       UpdaterReleaseNotes="@(UpdaterReleaseNotes)"
       FilesToInclude="@(PublicationItem)"
@@ -141,8 +128,11 @@ Copyright 2017 Microsoft. All rights reserved.
       ReleaseDescription="Xamarin Workbooks &amp; Inspector $(ReleaseVersion_FriendlyLong)"/>
   </Target>
 
-  <Target Name="GenerateSignFiles">
-    <MakeDir Directories="$(PackageOutputDir)"/>
+  <Target
+    Name="GenerateSignFiles"
+    Condition="$(IsWindows)"
+    AfterTargets="Build">
+    <MakeDir Directories="$(ArtifactsBasePath)"/>
     <ItemGroup>
       <SignTarget Include="Agents\**\Xamarin*.dll"/>
       <SignTarget Include="Agents\**\*.exe"/>
@@ -163,11 +153,11 @@ Copyright 2017 Microsoft. All rights reserved.
       <SignTarget Remove="workbooks-proprietary\**\Xamarin.Android*"/>
     </ItemGroup>
     <PropertyGroup>
-      <SignTargetPath>$(PackageOutputDir)sign-target.txt</SignTargetPath>
+      <SignTargetPath>$(ArtifactsBasePath)sign-target.txt</SignTargetPath>
       <SignArchiveName>sign-$(CommongitInfo_MaxRevisionShort).zip</SignArchiveName>
+      <SevenZip>C:\Program Files\7-zip\7z.exe</SevenZip>
     </PropertyGroup>
     <WriteLinesToFile Lines="@(SignTarget)" File="$(SignTargetPath)" Overwrite="true"/>
-    <!-- $(SevenZip) comes from Build.proj, where this targets file is included -->
     <Exec Command="&quot;$(SevenZip)&quot; a &quot;$(SignArchiveName)&quot; %40$(SignTargetPath)" ConsoleToMSBuild="true" />
     <Message Importance="High" Text="##vso[task.setvariable variable=xamarin.interactive.authenticodeZipFile;]$(SignArchiveName)" />
   </Target>
@@ -212,15 +202,15 @@ Copyright 2017 Microsoft. All rights reserved.
       <PolicheckInput Remove="**\*.bin" />
     </ItemGroup>
     <PropertyGroup>
-      <PolicheckInputFile>$(MSBuildThisFileDirectory)..\PolicheckInput.txt</PolicheckInputFile>
+      <PolicheckInputFile>$(TopDirectory)PolicheckInput.txt</PolicheckInputFile>
     </PropertyGroup>
     <WriteLinesTofile Lines="@(PolicheckInput)" File="$(PolicheckInputFile)" Overwrite="true" />
   </Target>
 
   <Target Name="ProcessPolicheckXml">
     <PropertyGroup>
-        <PolicheckXml Condition=" '$(PolicheckXml)' == '' ">$(MSBuildThisFileDirectory)..\Policheck.xml</PolicheckXml>
-        <PolicheckOutputPath Condition=" '$(PolicheckOutputPath)' == '' ">$(MSBuildThisFileDirectory)..\Policheck.html</PolicheckOutputPath>
+      <PolicheckXml Condition=" '$(PolicheckXml)' == '' ">$(TopDirectory)Policheck.xml</PolicheckXml>
+      <PolicheckOutputPath Condition=" '$(PolicheckOutputPath)' == '' ">$(TopDirectoryPolicheck.html</PolicheckOutputPath>
     </PropertyGroup>
     <ProcessPolicheckXml PolicheckXml="$(PolicheckXml)" OutputPath="$(PolicheckOutputPath)" />
   </Target>
