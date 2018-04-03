@@ -298,9 +298,14 @@
   <!-- Utility Targets -->
 
   <Target Name="Clean">
-    <ItemGroup>
-      <DirectoriesToRemove Include="$(TopDirectory)_*"/>
-    </ItemGroup>
+    <FindDirectories
+      BasePath="$(TopDirectory)"
+      Recurse="false"
+      SearchPattern="_*">
+      <Output
+        TaskParameter="Directories"
+        ItemName="DirectoriesToRemove"/>
+    </FindDirectories>
 
     <FindDirectories
       BasePath="$(TopDirectory)"

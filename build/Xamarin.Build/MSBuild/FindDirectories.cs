@@ -15,10 +15,13 @@ namespace Xamarin.MSBuild
         [Required]
         public string BasePath { get; set; }
 
-        [Required]
         public string [] IncludeNames { get; set; }
 
         public string [] ExcludeNames { get; set; }
+
+        public bool Recurse { get; set; } = true;
+
+        public string SearchPattern { get; set; } = "*";
 
         [Output]
         public string [] Directories { get; set; }
@@ -26,15 +29,15 @@ namespace Xamarin.MSBuild
         public override bool Execute ()
         {
             var paths = new List<string> ();
-            var includeNames = new HashSet<string> (IncludeNames);
+            var includeNames = new HashSet<string> (IncludeNames ?? Array.Empty<string> ());
             var excludeNames = new HashSet<string> (ExcludeNames ?? Array.Empty<string> ());
 
             void Walk (DirectoryInfo directory)
             {
-                foreach (var child in directory.EnumerateDirectories ()) {
-                    if (includeNames.Contains (child.Name))
+                foreach (var child in directory.EnumerateDirectories (SearchPattern)) {
+                    if (includeNames.Count == 0 || includeNames.Contains (child.Name))
                         paths.Add (child.FullName);
-                    else if (!excludeNames.Contains (child.Name))
+                    else if (Recurse && !excludeNames.Contains (child.Name))
                         Walk (child);
                 }
             }
