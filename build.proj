@@ -1,5 +1,6 @@
 <Project InitialTargets="Configure" DefaultTargets="Restore;Build">
-  <Import Project="build\Global.targets"/>
+  <Import Project="Directory.Build.props"/>
+  <Import Project="Directory.Build.targets"/>
   <Import Project="build\Environment.targets"/>
   <Import Project="build\Utility.targets"/>
 

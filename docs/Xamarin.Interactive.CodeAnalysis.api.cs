@@ -1,6 +1,4 @@
-[assembly: AssemblyCompany ("Xamarin.Interactive.CodeAnalysis")]
 [assembly: AssemblyConfiguration ("Release")]
-[assembly: AssemblyInformationalVersion ("1.0.0")]
 [assembly: AssemblyProduct ("Xamarin.Interactive.CodeAnalysis")]
 [assembly: AssemblyTitle ("Xamarin.Interactive.CodeAnalysis")]
 [assembly: InternalsVisibleTo ("Xamarin.Interactive.Client")]

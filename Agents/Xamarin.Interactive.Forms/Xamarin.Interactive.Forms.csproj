@@ -10,6 +10,4 @@
   <ItemGroup>
     <ProjectReference Include="..\Xamarin.Interactive\Xamarin.Interactive.csproj" />
   </ItemGroup>
-
-  <Import Project="..\..\build\Project.targets" />
 </Project>

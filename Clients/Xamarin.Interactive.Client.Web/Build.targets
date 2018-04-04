@@ -1,6 +1,4 @@
 <Project>
-  <Import Project="..\..\build\Project.targets" />
-
   <PropertyGroup>
     <Node Condition="'$(Node)' == ''">node</Node>
     <Yarn Condition="'$(Yarn)' == ''">yarn</Yarn>

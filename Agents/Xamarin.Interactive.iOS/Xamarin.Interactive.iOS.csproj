@@ -44,7 +44,6 @@
     <Folder Include="Resources\" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
-  <Import Project="..\..\build\Project.targets" />
   <ItemGroup>
     <Compile Include="iOSAgent.cs" />
     <Compile Include="iOSEvaluationContextGlobalObject.cs" />

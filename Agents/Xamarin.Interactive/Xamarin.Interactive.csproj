@@ -3,7 +3,6 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
-  <Import Project="..\..\build\Project.targets" />
   <Target Name="Package" Condition="Exists('$(MonoCilStrip)')">
     <Exec Command="$(MonoCilStrip) &quot;$(OutputPath)$(AssemblyName).dll&quot; &quot;$(OutputPath)$(AssemblyName).Stripped.dll&quot;" />
     <Exec Command="$(NuGet) pack Xamarin.Interactive.nuspec -Version $(WorkbooksIntegrationNuGetPackageVersion) -OutputDirectory &quot;$(ArtifactsBasePath)&quot; -Properties Configuration=$(Configuration)" />
