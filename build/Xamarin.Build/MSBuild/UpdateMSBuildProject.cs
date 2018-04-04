@@ -27,8 +27,10 @@ namespace Xamarin.MSBuild
                 : projectCollection.LoadProject (Project);
 
             if (Properties != null) {
-                foreach (var property in Properties)
-                    project.SetProperty (property.ItemSpec, property.GetMetadata ("Value"));
+                foreach (var property in Properties) {
+                    var projectProperty = project.SetProperty (property.ItemSpec, property.GetMetadata ("Value"));
+                    projectProperty.Xml.Condition = $"'$({property.ItemSpec})' == ''";
+                }
             }
 
             project.Save (Encoding.UTF8);
