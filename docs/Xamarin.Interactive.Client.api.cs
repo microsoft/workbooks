@@ -1,5 +1,5 @@
 [assembly: AssemblyConfiguration ("Release")]
-[assembly: AssemblyCopyright ("Copyright 2016-2017 Microsoft. All rights reserved.\nCopyright 2014-2016 Xamarin Inc. All rights reserved.")]
+[assembly: AssemblyCopyright ("Copyright 2016-2018 Microsoft. All rights reserved.\nCopyright 2014-2016 Xamarin Inc. All rights reserved.")]
 [assembly: AssemblyProduct ("Xamarin.Interactive.Client")]
 [assembly: AssemblyTitle ("Xamarin.Interactive.Client")]
 [assembly: InternalsVisibleTo ("Xamarin.Interactive.DotNetCore")]
