@@ -17,6 +17,8 @@ using System.Runtime.CompilerServices;
 // replace with a real file version (see BuildInfoTask).
 [assembly: AssemblyFileVersion ("0.65.70.86")]
 
+#if !PRODUCT_ASSEMBLY_INFO_OMIT_IVT
+
 #if PCL_FACADE_ASSEMBLY
 
 [assembly: InternalsVisibleTo ("Xamarin.Interactive")]
@@ -76,4 +78,5 @@ using System.Runtime.CompilerServices;
 // misc
 [assembly: InternalsVisibleTo ("Xamarin.Interactive.Telemetry.Server")]
 
+#endif
 #endif
