@@ -158,9 +158,11 @@
   <Target
     Name="Build"
     DependsOnTargets="@(ProfileTargets)">
+    <Exec Condition="$(IsWindows) And Exists('$(Adb)')" Command="$(Adb) kill-server"/>
+    <Exec Condition="$(IsMac)" Command="xcrun -k"/>
     <MSBuild
       Projects="$(SolutionFile)"
-      Properties="$(ProfileProperties)"
+      Properties="$(SolutionGlobalProperties)"
       Targets="Build"/>
   </Target>
 
@@ -170,7 +172,7 @@
     <Message Importance="High" Text="Restoring NuGet packages for $(SolutionFileRelative)..."/>
     <MSBuild
       Projects="$(SolutionFile)"
-      Properties="$(ProfileProperties)"
+      Properties="$(SolutionGlobalProperties)"
       Targets="Restore"/>
   </Target>
 
@@ -210,7 +212,7 @@
     </ItemGroup>
     <MSBuild
       Projects="@(PackageProjectsToBuild)"
-      Properties="$(ProfileProperties);WorkbookAppsBasePath="
+      Properties="$(SolutionGlobalProperties)"
       Targets="Package"/>
   </Target>
 
@@ -309,6 +311,8 @@
       <SolutionFile>$(MSBuildThisFileDirectory)solutions\Xamarin.Interactive.sln</SolutionFile>
       <SolutionFileRelative>$([MSBuild]::MakeRelative($(MSBuildThisFileDirectory), $(SolutionFile)))</SolutionFileRelative>
       <SolutionBasePath>$([System.IO.Path]::GetDirectoryName($(SolutionFile)))\</SolutionBasePath>
+
+      <SolutionGlobalProperties>Configuration=$(Configuration)</SolutionGlobalProperties>
     </PropertyGroup>
   </Target>
 
@@ -430,4 +434,14 @@
       HtmlOutputFile="$(ArtifactsBasePath)updater-release-notes-$(ReleaseVersion_SemVer).html" />
   </Target>
 
+  <Target
+    Name="UpdatePublicApiDocs"
+    DependsOnTargets="UpdatePublicApiDefinitions">
+    <Exec Command="mdoc update --delete Agents\Xamarin.Interactive\bin\Release\netstandard2.0\Xamarin.Interactive.dll -out Agents\Xamarin.Interactive\API\en -r /Library/Frameworks/Mono.framework/Versions/Current/lib/mono/4.5/Facades/netstandard.dll"/>
+  </Target>
+
+  <Target
+    Name="AssemblePublicApiDocs">
+    <Exec Command="mdoc assemble -o Agents\Xamarin.Interactive\API\interactive-api Agents\Xamarin.Interactive\API\en"/>
+  </Target>
 </Project>

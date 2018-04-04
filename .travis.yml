@@ -12,6 +12,6 @@ cache:
   yarn: true
 
 script:
-- dotnet build CoreBuild.proj
-- dotnet msbuild CoreBuild.proj /t:Test
-- dotnet msbuild CoreBuild.proj /t:Package
+- dotnet build build.proj
+- dotnet msbuild build.proj /t:Test
+- dotnet msbuild build.proj /t:Package

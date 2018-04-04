@@ -59,12 +59,26 @@
     <WhichSearchPath Include="$(Provisionator_ArtifactCachePath)"/>
   </ItemGroup>
 
+  <PropertyGroup Condition="'$(TF_BUILD)' == 'True'">
+    <MacBuildHostAddress Condition="'$(AGENT_NAME)' == 'RE Cambridge Windows-Inspector-1'">bockover-1.guest.corp.microsoft.com</MacBuildHostAddress>
+    <MacBuildHostAddress Condition="'$(AGENT_NAME)' == 'Cambridge Windows-Inspector-2'">inspector-1.guest.corp.microsoft.com</MacBuildHostAddress>
+    <MacBuildHostUser>builder</MacBuildHostUser>
+    <Adb Condition="Exists('$(UserProfile)\AppData\Local\Android\android-sdk\platform-tools\adb.exe')">$(UserProfile)\AppData\Local\Android\android-sdk\platform-tools\adb.exe</Adb>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <SevenZip Condition="Exists('C:\Program Files\7-zip\7z.exe')">C:\Program Files\7-zip\7z.exe</SevenZip>
+  </PropertyGroup>
+
   <ItemGroup>
     <ConfigurationSummary Include="Host Environment:"/>
     <ConfigurationSummary Include="%20%20Host RID Base: $(RuntimeIdentifierPlatformBase)"/>
     <ConfigurationSummary Include="%20%20.NET Core MSBuild: $(IsDotNetCoreMSBuild)"/>
     <ConfigurationSummary Include="%20%20MSBuildBinPath: $(MSBuildBinPath)"/>
     <ConfigurationSummary Include="%20%20MSBuildExtensionsPath: $(MSBuildExtensionsPath)"/>
+    <ConfigurationSummary Condition="'$(MacBuildHostAddress)' != ''" Include="%20%20MacBuildHostAddress: $(MacBuildHostAddress)"/>
+    <ConfigurationSummary Condition="'$(MacBuildHostUser)' != ''" Include="%20%20MacBuildHostAddress: $(MacBuildHostUser)"/>
+    <ConfigurationSummary Condition="'$(Adb)' != ''" Include="%20%20Adb: $(Adb)"/>
     <ConfigurationSummary Include="%20%20Available SDKs/Frameworks:"/>
     <ConfigurationSummary Include="%20%20%20%20Mono: $(HaveMono)"/>
     <ConfigurationSummary Include="%20%20%20%20Xamarin.Mac: $(HaveXamarinMac)"/>

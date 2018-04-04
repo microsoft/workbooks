@@ -1,16 +1,4 @@
-<!--
-Utility.targets
-
-Author:
-  Aaron Bockover <abock@xamarin.com>
-
-Copyright 2017 Microsoft. All rights reserved.
--->
-<Project
-  xmlns="http://schemas.microsoft.com/developer/msbuild/2003"
-  DefaultTargets="Build"
-  ToolsVersion="12.0">
-
+<Project>
   <Target
     Name="UpdateInvertedDependencies"
     AfterTargets="Build">
@@ -129,9 +117,7 @@ Copyright 2017 Microsoft. All rights reserved.
   </Target>
 
   <Target
-    Name="GenerateSignFiles"
-    Condition="$(IsWindows)"
-    AfterTargets="Build">
+    Name="GenerateSignFiles">
     <MakeDir Directories="$(ArtifactsBasePath)"/>
     <ItemGroup>
       <SignTarget Include="Agents\**\Xamarin*.dll"/>
@@ -155,7 +141,6 @@ Copyright 2017 Microsoft. All rights reserved.
     <PropertyGroup>
       <SignTargetPath>$(ArtifactsBasePath)sign-target.txt</SignTargetPath>
       <SignArchiveName>sign-$(CommongitInfo_MaxRevisionShort).zip</SignArchiveName>
-      <SevenZip>C:\Program Files\7-zip\7z.exe</SevenZip>
     </PropertyGroup>
     <WriteLinesToFile Lines="@(SignTarget)" File="$(SignTargetPath)" Overwrite="true"/>
     <Exec Command="&quot;$(SevenZip)&quot; a &quot;$(SignArchiveName)&quot; %40$(SignTargetPath)" ConsoleToMSBuild="true" />
@@ -170,7 +155,6 @@ Copyright 2017 Microsoft. All rights reserved.
     <Message Importance="High" Text="Downloading Authenticode-signed .zip from $(SignedArchiveName)" />
     <Error Text="Cannot download signed file, missing SignedArchiveName property." Condition=" '$(SignedArchiveName)' == '' " />
 
-    <!-- $(PowerShell) is defined the same way as $(SevenZip) -->
     <Exec Command="&quot;$(PowerShell)&quot; -Command &quot;&amp; { Invoke-WebRequest -UseBasicParsing -OutFile $(SignArchiveName) $(SignedArchiveName) }&quot;"
           Condition=" '$(SignedArchiveName)' != '' "/>
     <Exec Command="&quot;$(SevenZip)&quot; x -aoa $(SignArchiveName)" Condition=" Exists('$(SignArchiveName)') " />

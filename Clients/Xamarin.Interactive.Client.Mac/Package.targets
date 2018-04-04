@@ -1,8 +1,5 @@
 <Project>
   <PropertyGroup>
-    <TopDirectory>..\..\</TopDirectory>
-    <AbsoluteTopDirectory>$(MSBuildThisFileDirectory)$(TopDirectory)</AbsoluteTopDirectory>
-
     <PackageAssetsDirectory>PackageAssets\</PackageAssetsDirectory>
 
     <InstallDestDir Condition="'$(InstallDestDir)' == ''">_install\</InstallDestDir>
