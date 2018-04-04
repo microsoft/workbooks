@@ -32,21 +32,30 @@ namespace Xamarin.MSBuild
         {
             var isWindows = RuntimeInformation.IsOSPlatform (OSPlatform.Windows);
 
-            var preferPaths = PreferPaths ?? Array.Empty<string> ();
+            var extensions = new List<string> (Environment
+                .GetEnvironmentVariable ("PATHEXT")
+                ?.Split (new [] { ';' }, StringSplitOptions.RemoveEmptyEntries) ?? Array.Empty<string> ());
 
-            var extensions = new List<string> { null, ".exe" };
-            if (isWindows)
-                extensions.Add (".cmd");
+            if (extensions.Count == 0)
+                extensions.Add (".exe");
+
+            extensions.Insert (0, null);
+
+            var preferPaths = PreferPaths ?? Array.Empty<string> ();
 
             var searchPaths = preferPaths.Concat (Environment
                 .GetEnvironmentVariable ("PATH")
                 .Split (isWindows ? ';' : ':'));
 
-            foreach (var programDir in searchPaths) {
+            var filesToCheck = searchPaths
+                .Where (Directory.Exists)
+                .Select (p => new DirectoryInfo (p))
+                .SelectMany (p => p.EnumerateFiles ());
+
+            foreach (var file in filesToCheck) {
                 foreach (var extension in extensions) {
-                    var programPath = Path.Combine (programDir, Program) + extension;
-                    if (File.Exists (programPath)) {
-                        FullPath = programPath;
+                    if (string.Equals (file.Name, Program + extension, StringComparison.OrdinalIgnoreCase)) {
+                        FullPath = file.FullName;
                         Log.LogMessage (MessageImportance.High, "Found '{0}' at '{1}'", Program, FullPath);
                         return true;
                     }
