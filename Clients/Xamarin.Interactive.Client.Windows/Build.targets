@@ -62,7 +62,7 @@
     <MSBuild
       BuildInParallel="true"
       Projects="$(WixProject)"
-      Properties="$(MSBuildCommonProperties);RunWixToolsOutOfProc=true;BuildProjectReferences=false;InstallerDefineConstants=$(InstallerDefineConstants)"
+      Properties="Configuration=$(Configuration);RunWixToolsOutOfProc=true;BuildProjectReferences=false;InstallerDefineConstants=$(InstallerDefineConstants)"
       Targets="Build"/>
 
     <MakeDir Directories="$(ArtifactsBasePath)"/>
