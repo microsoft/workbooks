@@ -300,6 +300,14 @@
   <Target
     Name="ConfigurationSummary"
     AfterTargets="ComputeSolution">
+    <ItemGroup>
+      <ConfigurationSummary Include="%20%20Resolved Tools:"/>
+      <ConfigurationSummary Condition="'$(Adb)' != ''" Include="%20%20%20%20Adb: $(Adb)"/>
+      <ConfigurationSummary Include="%20%20%20%20NuGet: $(NuGet)"/>
+      <ConfigurationSummary Include="%20%20%20%20Node: $(Node)"/>
+      <ConfigurationSummary Include="%20%20%20%20Yarn: $(Yarn)"/>
+      <ConfigurationSummary Include="%20%20%20%20Npm: $(Npm)"/>
+    </ItemGroup>
     <Message Importance="High" Text="%(ConfigurationSummary.Identity)"/>
     <Message Importance="High" Text="Projects To Build ($(Configuration)):"/>
     <Message Importance="High" Text="  %(ProjectsToBuild.Filename)"/>

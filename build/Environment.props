@@ -56,7 +56,6 @@
 
   <ItemGroup>
     <WhichSearchPath Include="$(TopDirectory)"/>
-    <WhichSearchPath Include="$(Provisionator_ArtifactCachePath)"/>
   </ItemGroup>
 
   <PropertyGroup Condition="'$(TF_BUILD)' == 'True'">
@@ -78,7 +77,6 @@
     <ConfigurationSummary Include="%20%20MSBuildExtensionsPath: $(MSBuildExtensionsPath)"/>
     <ConfigurationSummary Condition="'$(MacBuildHostAddress)' != ''" Include="%20%20MacBuildHostAddress: $(MacBuildHostAddress)"/>
     <ConfigurationSummary Condition="'$(MacBuildHostUser)' != ''" Include="%20%20MacBuildHostAddress: $(MacBuildHostUser)"/>
-    <ConfigurationSummary Condition="'$(Adb)' != ''" Include="%20%20Adb: $(Adb)"/>
     <ConfigurationSummary Include="%20%20Available SDKs/Frameworks:"/>
     <ConfigurationSummary Include="%20%20%20%20Mono: $(HaveMono)"/>
     <ConfigurationSummary Include="%20%20%20%20Xamarin.Mac: $(HaveXamarinMac)"/>
