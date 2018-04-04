@@ -12,6 +12,12 @@
     <WorkbooksIntegrationNuGetPackageVersion>2.0.0-rc1</WorkbooksIntegrationNuGetPackageVersion>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <SolutionFile>$(MSBuildThisFileDirectory)build\Xamarin.Interactive.sln</SolutionFile>
+    <SolutionFileRelative>$([MSBuild]::MakeRelative($(MSBuildThisFileDirectory), $(SolutionFile)))</SolutionFileRelative>
+    <SolutionBasePath>$([System.IO.Path]::GetDirectoryName($(SolutionFile)))\</SolutionBasePath>
+  </PropertyGroup>
+
   <!-- Profiles -->
 
   <Target
@@ -163,7 +169,6 @@
     <Exec Condition="$(IsMac)" Command="xcrun -k"/>
     <MSBuild
       Projects="$(SolutionFile)"
-      Properties="$(SolutionGlobalProperties)"
       Targets="Build"/>
   </Target>
 
@@ -173,7 +178,6 @@
     <Message Importance="High" Text="Restoring NuGet packages for $(SolutionFileRelative)..."/>
     <MSBuild
       Projects="$(SolutionFile)"
-      Properties="$(SolutionGlobalProperties)"
       Targets="Restore"/>
   </Target>
 
@@ -213,7 +217,6 @@
     </ItemGroup>
     <MSBuild
       Projects="@(PackageProjectsToBuild)"
-      Properties="$(SolutionGlobalProperties)"
       Targets="Package"/>
   </Target>
 
@@ -300,7 +303,7 @@
 
   <Target
     Name="ConfigurationSummary"
-    AfterTargets="ComputeSolution">
+    BeforeTargets="Restore;Build">
     <ItemGroup>
       <ConfigurationSummary Include="%20%20Resolved Tools:"/>
       <ConfigurationSummary Condition="'$(Adb)' != ''" Include="%20%20%20%20Adb: $(Adb)"/>
@@ -315,26 +318,19 @@
   </Target>
 
   <Target
-    Name="ComputeSolution">
-    <PropertyGroup>
-      <SolutionFile>$(MSBuildThisFileDirectory)solutions\Xamarin.Interactive.sln</SolutionFile>
-      <SolutionFileRelative>$([MSBuild]::MakeRelative($(MSBuildThisFileDirectory), $(SolutionFile)))</SolutionFileRelative>
-      <SolutionBasePath>$([System.IO.Path]::GetDirectoryName($(SolutionFile)))\</SolutionBasePath>
-
-      <SolutionGlobalProperties>Configuration=$(Configuration)</SolutionGlobalProperties>
-    </PropertyGroup>
-  </Target>
-
-  <Target
     Name="GenerateSolution"
-    DependsOnTargets="ComputeSolution"
-    BeforeTargets="Restore;Build">
+    BeforeTargets="Restore;Build"
+    Inputs="
+      $(MSBuildThisFileFullPath);
+      $(GlobalConfigurationPropsFile);
+      $(SolutionBasePath)SolutionGlobalSections"
+    Outputs="$(SolutionFile)">
     <Message Importance="High" Text="Generating $(SolutionFileRelative)..."/>
     <GenerateSolution
       ProjectsRelativeToPath="$(MSBuildThisFile)"
       Projects="@(ProjectsToBuild)"
       SolutionConfiguration="$(Configuration)"
-      GlobalSectionsFiles="$(SolutionBasePath)GlobalSections"
+      GlobalSectionsFiles="$(SolutionBasePath)SolutionGlobalSections"
       OutputFile="$(SolutionFile)"/>
   </Target>
 
