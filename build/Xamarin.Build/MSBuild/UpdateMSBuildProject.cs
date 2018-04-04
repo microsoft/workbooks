@@ -2,6 +2,7 @@
 // Licensed under the MIT License.
 
 using System;
+using System.IO;
 using System.Text;
 
 using Microsoft.Build.Construction;
@@ -33,7 +34,19 @@ namespace Xamarin.MSBuild
                 }
             }
 
-            project.Save (Encoding.UTF8);
+            if (!File.Exists (project.FullPath)) {
+                project.Save (Encoding.UTF8);
+                return true;
+            }
+
+            project.Save (Path.GetTempFileName (), Encoding.UTF8);
+
+            if (File.ReadAllText (project.FullPath) != File.ReadAllText (Project)) {
+                File.Delete (Project);
+                File.Move (project.FullPath, Project);
+            } else {
+                File.Delete (project.FullPath);
+            }
 
             return true;
         }
