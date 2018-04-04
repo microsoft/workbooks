@@ -4,7 +4,7 @@
   <PropertyGroup>
     <Node Condition="'$(Node)' == ''">node</Node>
     <Yarn Condition="'$(Yarn)' == ''">yarn</Yarn>
-    <YarnInstall>$(Yarn) install --non-interactive</YarnInstall>
+    <YarnInstall>&quot;$(Yarn)&quot; install --non-interactive</YarnInstall>
   </PropertyGroup>
 
   <Target
@@ -20,16 +20,16 @@
     DependsOnTargets="DebugYarnInstall"
     Condition="'$(Configuration)' == 'Debug' And !Exists('wwwroot\dist')">
     <Message Importance="high" Text="Performing first-run Webpack build..."/>
-    <Exec Command="$(Node) node_modules/webpack/bin/webpack.js --config webpack.config.vendor.js"/>
-    <Exec Command="$(Node) node_modules/webpack/bin/webpack.js"/>
+    <Exec Command="&quot;$(Node)&quot; node_modules/webpack/bin/webpack.js --config webpack.config.vendor.js"/>
+    <Exec Command="&quot;$(Node)&quot; node_modules/webpack/bin/webpack.js"/>
   </Target>
 
   <Target
     Name="PublishRunWebpack"
     AfterTargets="ComputeFilesToPublish">
     <Exec Command="$(YarnInstall)"/>
-    <Exec Command="$(Node) node_modules/webpack/bin/webpack.js --config webpack.config.vendor.js --env.prod"/>
-    <Exec Command="$(Node) node_modules/webpack/bin/webpack.js --env.prod"/>
+    <Exec Command="&quot;$(Node)&quot; node_modules/webpack/bin/webpack.js --config webpack.config.vendor.js --env.prod"/>
+    <Exec Command="&quot;$(Node)&quot; node_modules/webpack/bin/webpack.js --env.prod"/>
 
     <ItemGroup>
       <DistFiles Include="wwwroot\dist\**; wwwroot\vs\**; ClientApp\dist\**"/>
