@@ -173,7 +173,9 @@ namespace Xamarin.Interactive.CodeAnalysis
             var evaluation = new Evaluation (
                 evaluationRequestId,
                 compilation.CodeCellId,
-                EvaluationResultHandling.Replace,
+                interrupted || (inFlight.OriginalValue == null && !compilation.IsResultAnExpression)
+                    ? EvaluationResultHandling.Ignore
+                    : EvaluationResultHandling.Replace,
                 // an exception in the call to Prepare should not be explicitly caught
                 // here (see above) since it'll be handled at a higher level and can be
                 // flagged as being a bug in our code since this method should never throw.

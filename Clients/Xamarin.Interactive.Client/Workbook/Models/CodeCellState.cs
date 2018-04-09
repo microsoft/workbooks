@@ -22,9 +22,6 @@ namespace Xamarin.Interactive.Workbook.Models
 
         public IWorkspaceService CompilationWorkspace { get; private set; }
         public CodeCellId CodeCellId { get; private set; }
-
-        public bool IsResultAnExpression { get; set; }
-
         public int EvaluationCount { get; private set; }
         public bool AgentTerminatedWhileEvaluating { get; private set; }
 

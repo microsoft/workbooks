@@ -54,7 +54,6 @@ namespace Xamarin.Interactive.CodeAnalysis
             public bool IsDirty { get; set; }
             public bool AgentTerminatedWhileEvaluating { get; set; }
             public int EvaluationCount { get; set; }
-            public bool IsResultAnExpression { get; set; }
 
             public CodeCellState (CodeCellId codeCellId)
                 => CodeCellId = codeCellId;
@@ -194,12 +193,8 @@ namespace Xamarin.Interactive.CodeAnalysis
 
         void OnAgentMessage (object message)
         {
-            if (message is Evaluation evaluation &&
-                cellStates.TryGetValue (evaluation.CodeCellId, out var cell) &&
-                cell.IsResultAnExpression)
-                events.Observers.OnNext (evaluation);
-            else if (message is CapturedOutputSegment segment)
-                events.Observers.OnNext (segment);
+            if (message is ICodeCellEvent evnt)
+                events.Observers.OnNext (evnt);
         }
 
         #endregion
@@ -447,13 +442,10 @@ namespace Xamarin.Interactive.CodeAnalysis
             codeCellState.Diagnostics = diagnostics;
 
             try {
-                if (compilation != null) {
-                    codeCellState.IsResultAnExpression = compilation.IsResultAnExpression;
-
+                if (compilation != null)
                     await agentConnection.Api.EvaluateAsync (
                         compilation,
                         cancellationToken);
-                }
             } catch (XipErrorMessageException e) {
                 exception = e.XipErrorMessage.Exception;
             } catch (Exception e) {

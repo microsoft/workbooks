@@ -20,6 +20,12 @@ namespace Xamarin.Interactive.CodeAnalysis
         /// <summary>
         /// The result will be appended to any previous evaluation results for the cell.
         /// </summary>
-        Append
+        Append,
+
+        /// <summary>
+        /// Ignore this result. (e.g. perhaps the code that produced this result
+        /// was not an expression and did not actually produce a value)
+        /// </summary>
+        Ignore
     }
 }

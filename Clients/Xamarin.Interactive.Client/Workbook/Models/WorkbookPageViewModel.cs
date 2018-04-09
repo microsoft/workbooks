@@ -569,13 +569,10 @@ namespace Xamarin.Interactive.Workbook.Models
                 codeCellState.View.RenderDiagnostic (diagnostic);
 
             try {
-                if (compilation != null) {
-                    codeCellState.IsResultAnExpression = compilation.IsResultAnExpression;
-
+                if (compilation != null)
                     await ClientSession.Agent.Api.EvaluateAsync (
                         compilation,
                         cancellationToken);
-                }
             } catch (XipErrorMessageException e) {
                 exception = e.XipErrorMessage.Exception;
             } catch (Exception e) {
@@ -626,8 +623,7 @@ namespace Xamarin.Interactive.Workbook.Models
 
         static void RenderResult (
             CodeCellState codeCellState,
-            Evaluation result,
-            bool isResultAnExpression)
+            Evaluation result)
         {
             if (codeCellState == null)
                 throw new ArgumentNullException (nameof (codeCellState));
@@ -651,7 +647,7 @@ namespace Xamarin.Interactive.Workbook.Models
                     cultureInfo,
                     EvaluationService.FilterException (result.Exception),
                     result.ResultHandling);
-            else if (!result.Interrupted && result.ValueRepresentations != null || isResultAnExpression)
+            else if (result.ResultHandling != EvaluationResultHandling.Ignore)
                 codeCellState.View.RenderResult (
                     cultureInfo,
                     result.ResultRepresentations is RepresentedObject ro ? ro : result.ResultRepresentations? [0],
@@ -679,7 +675,7 @@ namespace Xamarin.Interactive.Workbook.Models
                 return;
             }
 
-            RenderResult (codeCellState, result, codeCellState.IsResultAnExpression);
+            RenderResult (codeCellState, result);
         }
 
         void RenderCapturedOutputSegment (CapturedOutputSegment segment)
