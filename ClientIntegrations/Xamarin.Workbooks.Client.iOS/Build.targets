@@ -1,6 +1,4 @@
 <Project>
-  <Import Project="..\..\build\Common.targets"/>
-
   <Target Name="CopyToWorkbookApp" BeforeTargets="Build">
     <PropertyGroup>
       <ClientIntegrationOutputPath>..\..\_build\$(Configuration)\WorkbookApps\iOS\ClientIntegration</ClientIntegrationOutputPath>

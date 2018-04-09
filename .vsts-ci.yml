@@ -33,30 +33,27 @@ steps:
 
 - task: MSBuild@1
   inputs:
-    solution: CoreBuild.proj
+    solution: build.proj
     configuration: '$(msbuild.configuration)'
     msbuildArguments: '/t:Restore /p:Profile=$(msbuild.buildProfile)'
   displayName: Restore
 
 - task: MSBuild@1
   inputs:
-    solution: CoreBuild.proj
-    configuration: '$(msbuild.configuration)'
-    msbuildArguments: '/t:Build /p:Profile=$(msbuild.buildProfile)'
+    solution: build.proj
+    msbuildArguments: '/t:Build'
   displayName: Build
 
 - task: MSBuild@1
   inputs:
-    solution: CoreBuild.proj
-    configuration: '$(msbuild.configuration)'
-    msbuildArguments: '/t:Package /p:Profile=$(msbuild.buildProfile)'
+    solution: build.proj
+    msbuildArguments: '/t:Package'
   displayName: Package
 
 - task: MSBuild@1
   inputs:
-    solution: CoreBuild.proj
-    configuration: '$(msbuild.configuration)'
-    msbuildArguments: '/t:ArchiveSymbolFiles /p:Profile=$(msbuild.buildProfile)'
+    solution: build.proj
+    msbuildArguments: '/t:ArchiveSymbolFiles'
   displayName: Archive Symbol Files
 
 - task: PublishBuildArtifacts@1
@@ -68,9 +65,8 @@ steps:
 
 - task: MSBuild@1
   inputs:
-    solution: CoreBuild.proj
-    configuration: '$(msbuild.configuration)'
-    msbuildArguments: '/t:Test /p:Profile=$(msbuild.buildProfile)'
+    solution: build.proj
+    msbuildArguments: '/t:Test'
   displayName: Run xUnit Tests
 
 - task: PublishTestResults@2

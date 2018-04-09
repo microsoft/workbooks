@@ -4,10 +4,10 @@
 
     <ComponentGroup Id="RootComponents" Directory="INSTALLFOLDER">
       <Component Id="BuildInfo" Guid="017D5713-0AB7-43A5-91D7-768FCD6F8555">
-        <File Id="BuildInfo" Source="$(var.ProjectDir)/../buildinfo"/>
+        <File Id="BuildInfo" Source="$(var.ProjectDir)/../../_artifacts/buildinfo"/>
       </Component>
       <Component Id="UpdateInfo" Guid="58E3D7CB-0D14-4DA0-A631-4D25750C494D">
-        <File Id="UpdateInfo" Source="$(var.ProjectDir)/updateinfo"/>
+        <File Id="UpdateInfo" Source="$(var.ProjectDir)/../../_artifacts/updateinfo"/>
       </Component>
 
       <!-- These files install directly to the GAC, and do not actually deploy to the install folder -->

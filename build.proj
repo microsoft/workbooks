@@ -1,22 +1,21 @@
 <Project InitialTargets="Configure" DefaultTargets="Restore;Build">
-  <Import Project="build\Top.targets"/>
-  <Import Project="build\Clean.targets"/>
-
-  <Import
-    Project="build.local.props"
-    Condition="Exists('build.local.props')"/>
+  <Import Project="Directory.Build.props"/>
+  <Import Project="Directory.Build.targets"/>
+  <Import Project="build\Environment.targets"/>
+  <Import Project="build\Utility.targets"/>
 
   <PropertyGroup>
-    <Configuration Condition="'$(Configuration)' == ''">Debug</Configuration>
+    <ReleaseVersion_SemVer>2.0.0-dev</ReleaseVersion_SemVer>
+    <CommonGitInfo_SetMinRevisionFromMostRecentTagRegex>true</CommonGitInfo_SetMinRevisionFromMostRecentTagRegex>
+    <CommonGitInfo_MostRecentTagRegex>^v\d+</CommonGitInfo_MostRecentTagRegex>
 
-    <!-- TODO: Move all of this to environment.props -->
-    <BuiltWorkbookAppsBasePath>$(MSBuildThisFileDirectory)_build\$(Configuration)\WorkbookApps\</BuiltWorkbookAppsBasePath>
-    <ArtifactsBasePath>$(MSBuildThisFileDirectory)_artifacts\</ArtifactsBasePath>
-    <ProfileProperties>
-      Configuration=$(Configuration);
-      BuiltWorkbookAppsBasePath=$(BuiltWorkbookAppsBasePath);
-      ArtifactsBasePath=$(ArtifactsBasePath);
-    </ProfileProperties>
+    <WorkbooksIntegrationNuGetPackageVersion>2.0.0-rc1</WorkbooksIntegrationNuGetPackageVersion>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <SolutionFile>$(MSBuildThisFileDirectory)build\Xamarin.Interactive.sln</SolutionFile>
+    <SolutionFileRelative>$([MSBuild]::MakeRelative($(MSBuildThisFileDirectory), $(SolutionFile)))</SolutionFileRelative>
+    <SolutionBasePath>$([System.IO.Path]::GetDirectoryName($(SolutionFile)))\</SolutionBasePath>
   </PropertyGroup>
 
   <!-- Profiles -->
@@ -70,6 +69,7 @@
     <ItemGroup>
       <ProjectsToBuild Include="Agents\Xamarin.Interactive\*.csproj">
         <HasPublicApi>true</HasPublicApi>
+        <HasPackageTarget>true</HasPackageTarget>
       </ProjectsToBuild>
       <ProjectsToBuild Include="CodeAnalysis\Xamarin.Interactive.CodeAnalysis\*.csproj">
         <HasPublicApi>true</HasPublicApi>
@@ -165,9 +165,10 @@
   <Target
     Name="Build"
     DependsOnTargets="@(ProfileTargets)">
+    <Exec Condition="$(IsWindows) And Exists('$(Adb)')" Command="$(Adb) kill-server"/>
+    <Exec Condition="$(IsMac)" Command="xcrun -k"/>
     <MSBuild
       Projects="$(SolutionFile)"
-      Properties="$(ProfileProperties)"
       Targets="Build"/>
   </Target>
 
@@ -177,7 +178,6 @@
     <Message Importance="High" Text="Restoring NuGet packages for $(SolutionFileRelative)..."/>
     <MSBuild
       Projects="$(SolutionFile)"
-      Properties="$(ProfileProperties)"
       Targets="Restore"/>
   </Target>
 
@@ -186,6 +186,30 @@
   <Target
     Name="Package"
     DependsOnTargets="@(ProfileTargets)">
+    <MakeDir Directories="$(ArtifactsBasePath)"/>
+
+    <PropertyGroup>
+      <XamarinUpdaterProductGuid Condition="$(IsMac)">42a8c70f-b3dc-42f4-b8a5-435a1bb2410c</XamarinUpdaterProductGuid>
+      <XamarinUpdaterProductGuid Condition="$(IsWindows)">201185fb-fefe-4996-bdfe-4b6ac311a73b</XamarinUpdaterProductGuid>
+    </PropertyGroup>
+    <WriteLinesToFile
+      Condition="'$(XamarinUpdaterProductGuid)' != ''"
+      File="$(ArtifactsBasePath)updateinfo"
+      Lines="$(XamarinUpdaterProductGuid) $(ReleaseVersion_UpdateInfo)"
+      Overwrite="true"/>
+
+    <ItemGroup>
+      <BuildInfoLines Include="Version: $(ReleaseVersion_SemVer)"/>
+      <BuildInfoLines Include="Hash: $(CommonGitInfo_MaxRevisionShort)"/>
+      <BuildInfoLines Include="Branch: $(BuildEnvironment_Branch)"/>
+      <BuildInfoLines Include="Build date: $([System.DateTime]::UtcNow.ToString('r'))"/>
+      <BuildInfoLines Include="Client compatibility: 1"/>
+    </ItemGroup>
+    <WriteLinesToFile
+      File="$(ArtifactsBasePath)buildinfo"
+      Lines="@(BuildInfoLines)"
+      Overwrite="true"/>
+
     <ItemGroup>
       <PackageProjectsToBuild
         Include="@(ProjectsToBuild)"
@@ -193,7 +217,6 @@
     </ItemGroup>
     <MSBuild
       Projects="@(PackageProjectsToBuild)"
-      Properties="$(ProfileProperties);WorkbookAppsBasePath="
       Targets="Package"/>
   </Target>
 
@@ -215,7 +238,34 @@
   <!-- Configuration / Solution Generation -->
 
   <Target
-    Name="Configure">
+    Name="GenerateReleaseVersions"
+    DependsOnTargets="
+      Xamarin_Build_ReadBuildEnvironment;
+      Xamarin_Build_ReadCommonGitInfo">
+    <PropertyGroup>
+      <CommonGitInfo_MaxRevision Condition="'$(BuildEnvironment_Revision)' != ''">$(BuildEnvironment_Revision)</CommonGitInfo_MaxRevision>
+      <ReleaseVersion_SemVer>$(ReleaseVersion_SemVer)+$(CommonGitInfo_MinMaxCommitDistance)</ReleaseVersion_SemVer>
+      <ReleaseVersion_UpdateInfo>$(CommonGitInfo_MaxRevisionTimestamp)</ReleaseVersion_UpdateInfo>
+    </PropertyGroup>
+    <ItemGroup>
+      <PropertiesToPersist Include="CommonGitInfo_MaxRevision">
+        <Value>$(CommonGitInfo_MaxRevision)</Value>
+      </PropertiesToPersist>
+      <PropertiesToPersist Include="ReleaseVersion_SemVer">
+        <Value>$(ReleaseVersion_SemVer)</Value>
+      </PropertiesToPersist>
+      <PropertiesToPersist Include="ReleaseVersion_UpdateInfo">
+        <Value>$(ReleaseVersion_UpdateInfo)</Value>
+      </PropertiesToPersist>
+    </ItemGroup>
+  </Target>
+
+  <Target
+    Name="Configure"
+    DependsOnTargets="
+      GenerateReleaseVersions;
+      Xamarin_Build_ReadReleaseVersions;
+      ResolveExternalTools">
     <PropertyGroup>
       <Profile Condition="'$(Profile.ToLowerInvariant())' == 'full'"></Profile>
       <Profile Condition="'$(Profile.ToLowerInvariant())' == 'fullprofile'"></Profile>
@@ -232,39 +282,81 @@
       </Profiles>
       <ProfileTargets Include="@(Profiles -> '%(ProfileName)Profile')"/>
     </ItemGroup>
+
+    <ItemGroup>
+      <PropertiesToPersist Include="Configuration">
+        <Value>$(Configuration)</Value>
+      </PropertiesToPersist>
+      <PropertiesToPersist Include="Profile">
+        <Value>$(Profile)</Value>
+      </PropertiesToPersist>
+      <PropertiesToPersist Include="WorkbooksIntegrationNuGetPackageVersion">
+        <Value>$(WorkbooksIntegrationNuGetPackageVersion)</Value>
+      </PropertiesToPersist>
+    </ItemGroup>
+
+    <UpdateMSBuildProject
+      Project="$(GlobalConfigurationPropsFile)"
+      AsNewProject="true"
+      Properties="@(PropertiesToPersist)"/>
   </Target>
 
   <Target
     Name="ConfigurationSummary"
-    AfterTargets="ComputeSolution">
+    BeforeTargets="Restore;Build">
+    <ItemGroup>
+      <ConfigurationSummary Include="%20%20Resolved Tools:"/>
+      <ConfigurationSummary Condition="'$(Adb)' != ''" Include="%20%20%20%20Adb: $(Adb)"/>
+      <ConfigurationSummary Include="%20%20%20%20NuGet: $(NuGet)"/>
+      <ConfigurationSummary Include="%20%20%20%20Node: $(Node)"/>
+      <ConfigurationSummary Include="%20%20%20%20Yarn: $(Yarn)"/>
+      <ConfigurationSummary Include="%20%20%20%20Npm: $(Npm)"/>
+    </ItemGroup>
     <Message Importance="High" Text="%(ConfigurationSummary.Identity)"/>
-    <Message Importance="High" Text="Projects To Build:"/>
+    <Message Importance="High" Text="Projects To Build ($(Configuration)):"/>
     <Message Importance="High" Text="  %(ProjectsToBuild.Filename)"/>
   </Target>
 
   <Target
-    Name="ComputeSolution">
-    <PropertyGroup>
-      <SolutionFile>$(MSBuildThisFileDirectory)solutions\Xamarin.Interactive.sln</SolutionFile>
-      <SolutionFileRelative>$([MSBuild]::MakeRelative($(MSBuildThisFileDirectory), $(SolutionFile)))</SolutionFileRelative>
-      <SolutionBasePath>$([System.IO.Path]::GetDirectoryName($(SolutionFile)))\</SolutionBasePath>
-    </PropertyGroup>
-  </Target>
-
-  <Target
     Name="GenerateSolution"
-    DependsOnTargets="ComputeSolution"
-    BeforeTargets="Restore;Build">
+    BeforeTargets="Restore;Build"
+    Inputs="
+      $(MSBuildThisFileFullPath);
+      $(GlobalConfigurationPropsFile);
+      $(SolutionBasePath)SolutionGlobalSections"
+    Outputs="$(SolutionFile)">
     <Message Importance="High" Text="Generating $(SolutionFileRelative)..."/>
     <GenerateSolution
       ProjectsRelativeToPath="$(MSBuildThisFile)"
       Projects="@(ProjectsToBuild)"
       SolutionConfiguration="$(Configuration)"
-      GlobalSectionsFiles="$(SolutionBasePath)GlobalSections"
+      GlobalSectionsFiles="$(SolutionBasePath)SolutionGlobalSections"
       OutputFile="$(SolutionFile)"/>
   </Target>
 
   <!-- Utility Targets -->
+
+  <Target Name="Clean">
+    <FindDirectories
+      BasePath="$(TopDirectory)"
+      Recurse="false"
+      SearchPattern="_*">
+      <Output
+        TaskParameter="Directories"
+        ItemName="DirectoriesToRemove"/>
+    </FindDirectories>
+
+    <FindDirectories
+      BasePath="$(TopDirectory)"
+      IncludeNames="obj;bin"
+      ExcludeNames="node_modules;Xamarin.Build">
+      <Output
+        TaskParameter="Directories"
+        ItemName="DirectoriesToRemove"/>
+    </FindDirectories>
+
+    <RemoveDir Directories="@(DirectoriesToRemove)"/>
+  </Target>
 
   <Target
     Name="UpdatePublicApiDefinitions"
@@ -318,7 +410,7 @@
 
   <Target
     Name="ArchiveSymbolFiles"
-    DependsOnTargets="Xamarin_Build_ReadAllProperties">
+    BeforeTargets="Package">
     <PropertyGroup>
       <SymbolFilesArchive>$(ArtifactsBasePath)XamarinInteractive-$(ReleaseVersion_SemVer).$(RuntimeIdentifierPlatformBase).symbols.zip</SymbolFilesArchive>
     </PropertyGroup>
@@ -336,4 +428,25 @@
       DestinationArchiveFileName="$(SymbolFilesArchive)"/>
   </Target>
 
+  <Target
+    Name="GenerateReleaseNotes"
+    AfterTargets="Package"
+    Inputs="$(TopDirectory)UPDATES.md"
+    Outputs="$(ArtifactsBasePath)updater-release-notes-$(ReleaseVersion_SemVer).html">
+    <CommonMarkToHtml
+      CommonMarkFile="$(TopDirectory)UPDATES.md"
+      HtmlTemplateFile="$(TopDirectory)Package\release-notes-template.html"
+      HtmlOutputFile="$(ArtifactsBasePath)updater-release-notes-$(ReleaseVersion_SemVer).html" />
+  </Target>
+
+  <Target
+    Name="UpdatePublicApiDocs"
+    DependsOnTargets="UpdatePublicApiDefinitions">
+    <Exec Command="mdoc update --delete Agents\Xamarin.Interactive\bin\Release\netstandard2.0\Xamarin.Interactive.dll -out Agents\Xamarin.Interactive\API\en -r /Library/Frameworks/Mono.framework/Versions/Current/lib/mono/4.5/Facades/netstandard.dll"/>
+  </Target>
+
+  <Target
+    Name="AssemblePublicApiDocs">
+    <Exec Command="mdoc assemble -o Agents\Xamarin.Interactive\API\interactive-api Agents\Xamarin.Interactive\API\en"/>
+  </Target>
 </Project>

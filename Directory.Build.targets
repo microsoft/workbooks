@@ -1,0 +1,3 @@
+<Project>
+  <Import Project="build\Xamarin.Build\Xamarin.Build.targets"/>
+</Project>

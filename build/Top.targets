@@ -1,5 +1,0 @@
-<Project>
-  <Import Project="Environment.targets"/>
-  <Import Project="Metadata.targets"/>
-  <Import Project="Utility.targets"/>
-</Project>

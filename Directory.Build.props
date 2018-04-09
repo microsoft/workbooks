@@ -1,0 +1,27 @@
+<Project>
+  <PropertyGroup>
+    <GlobalConfigurationPropsFile>$([MSBuild]::NormalizePath('$(MSBuildThisFileDirectory)_build\Configuration.props'))</GlobalConfigurationPropsFile>
+    <ProjectRelativePath>$([MSBuild]::MakeRelative($(MSBuildThisFileDirectory), $(MSBuildProjectFullPath)))</ProjectRelativePath>
+
+    <!-- Do not apply properties that can influence MSBuild-builtin-defaults for projects we don't own (proppy) -->
+    <ShouldApplyProjectProperties>true</ShouldApplyProjectProperties>
+    <ShouldApplyProjectProperties Condition="$(ProjectRelativePath.StartsWith('External'))">false</ShouldApplyProjectProperties>
+  </PropertyGroup>
+
+  <Import
+    Condition="Exists('$(GlobalConfigurationPropsFile)')"
+    Project="$(GlobalConfigurationPropsFile)"/>
+
+  <Import Project="build\Environment.props"/>
+
+  <PropertyGroup Condition="$(ShouldApplyProjectProperties) And '$(MSBuildProjectExtension)' == '.csproj'">
+    <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
+    <GenerateAssemblyFileVersionAttribute>false</GenerateAssemblyFileVersionAttribute>
+    <GenerateAssemblyInformationalVersionAttribute>false</GenerateAssemblyInformationalVersionAttribute>
+    <GenerateAssemblyVersionAttribute>false</GenerateAssemblyVersionAttribute>
+  </PropertyGroup>
+
+  <ItemGroup Condition="$(ShouldApplyProjectProperties) And '$(MSBuildProjectExtension)' == '.csproj'">
+    <Compile Include="$(MSBuildThisFileDirectory)build\ProductAssemblyInfo.cs"/>
+  </ItemGroup>
+</Project>

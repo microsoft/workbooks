@@ -1,15 +1,4 @@
-<!--
-Xamarin.Build.Targets
-
-Author:
-  Aaron Bockover <abock@xamarin.com>
-
-Copyright 2017 Microsoft. All rights reserved.
--->
-<Project
-  xmlns="http://schemas.microsoft.com/developer/msbuild/2003"
-  DefaultTargets="Build"
-  ToolsVersion="12.0">
+<Project>
   <PropertyGroup>
     <Xamarin_Build_AssemblyFile>$(MSBuildThisFileDirectory)Xamarin.Build.dll</Xamarin_Build_AssemblyFile>
   </PropertyGroup>
@@ -32,6 +21,10 @@ Copyright 2017 Microsoft. All rights reserved.
 
   <UsingTask
     TaskName="Xamarin.MSBuild.GenerateSolution"
+    AssemblyFile="$(Xamarin_Build_AssemblyFile)"/>
+
+  <UsingTask
+    TaskName="Xamarin.MSBuild.UpdateMSBuildProject"
     AssemblyFile="$(Xamarin_Build_AssemblyFile)"/>
 
   <UsingTask
@@ -73,15 +66,35 @@ Copyright 2017 Microsoft. All rights reserved.
         TaskParameter="CandidateLevel"
         PropertyName="ReleaseVersion_CandidateLevel"/>
     </ReleaseVersion>
-    <Message Text="SemVer: $(ReleaseVersion_SemVer)" Importance="high"/>
-    <Message Text="SemVerNuGetSafe: $(ReleaseVersion_SemVerNuGetSafe)" Importance="high"/>
-    <Message Text="SemVerWithoutBuild: $(ReleaseVersion_SemVerWithoutBuild)" Importance="high"/>
-    <Message Text="AppleCFBundleVersion: $(ReleaseVersion_AppleCFBundleVersion)" Importance="high"/>
-    <Message Text="AppleCFBundleShortVersion: $(ReleaseVersion_AppleCFBundleShortVersion)" Importance="high"/>
-    <Message Text="WindowsFileVersion: $(ReleaseVersion_WindowsFileVersion)" Importance="high"/>
-    <Message Text="FriendlyLong: $(ReleaseVersion_FriendlyLong)" Importance="high"/>
-    <Message Text="FriendlyShort: $(ReleaseVersion_FriendlyShort)" Importance="high"/>
-    <Message Text="CandidateLevel: $(ReleaseVersion_CandidateLevel)" Importance="high"/>
+    <ItemGroup>
+      <PropertiesToPersist Include="ReleaseVersion_SemVer">
+        <Value>$(ReleaseVersion_SemVer)</Value>
+      </PropertiesToPersist>
+      <PropertiesToPersist Include="ReleaseVersion_SemVerNuGetSafe">
+        <Value>$(ReleaseVersion_SemVerNuGetSafe)</Value>
+      </PropertiesToPersist>
+      <PropertiesToPersist Include="ReleaseVersion_SemVerWithoutBuild">
+        <Value>$(ReleaseVersion_SemVerWithoutBuild)</Value>
+      </PropertiesToPersist>
+      <PropertiesToPersist Include="ReleaseVersion_AppleCFBundleVersion">
+        <Value>$(ReleaseVersion_AppleCFBundleVersion)</Value>
+      </PropertiesToPersist>
+      <PropertiesToPersist Include="ReleaseVersion_AppleCFBundleShortVersion">
+        <Value>$(ReleaseVersion_AppleCFBundleShortVersion)</Value>
+      </PropertiesToPersist>
+      <PropertiesToPersist Include="ReleaseVersion_WindowsFileVersion">
+        <Value>$(ReleaseVersion_WindowsFileVersion)</Value>
+      </PropertiesToPersist>
+      <PropertiesToPersist Include="ReleaseVersion_FriendlyLong">
+        <Value>$(ReleaseVersion_FriendlyLong)</Value>
+      </PropertiesToPersist>
+      <PropertiesToPersist Include="ReleaseVersion_FriendlyShort">
+        <Value>$(ReleaseVersion_FriendlyShort)</Value>
+      </PropertiesToPersist>
+      <PropertiesToPersist Include="ReleaseVersion_CandidateLevel">
+        <Value>$(ReleaseVersion_CandidateLevel)</Value>
+      </PropertiesToPersist>
+    </ItemGroup>
   </Target>
 
   <UsingTask
@@ -123,15 +136,35 @@ Copyright 2017 Microsoft. All rights reserved.
         TaskParameter="MinMaxCommitDistance"
         PropertyName="CommonGitInfo_MinMaxCommitDistance"/>
     </CommonGitInfo>
-    <Message Text="MinRevisionLong: $(CommonGitInfo_MinRevisionLong)" Importance="high"/>
-    <Message Text="MinRevisionShort: $(CommonGitInfo_MinRevisionShort)" Importance="high"/>
-    <Message Text="MinRevisionTimestamp: $(CommonGitInfo_MinRevisionTimestamp)" Importance="high"/>
-    <Message Text="MaxRevisionLong: $(CommonGitInfo_MaxRevisionLong)" Importance="high"/>
-    <Message Text="MaxRevisionShort: $(CommonGitInfo_MaxRevisionShort)" Importance="high"/>
-    <Message Text="MaxRevisionTimestamp: $(CommonGitInfo_MaxRevisionTimestamp)" Importance="high"/>
-    <Message Text="MostRecentTag: $(CommonGitInfo_MostRecentTag)" Importance="high"/>
-    <Message Text="MostRecentTagMatchingRegex: $(CommonGitInfo_MostRecentTagMatchingRegex)" Importance="high"/>
-    <Message Text="MinMaxCommitDistance: $(CommonGitInfo_MinMaxCommitDistance)" Importance="high"/>
+    <ItemGroup>
+      <PropertiesToPersist Include="CommonGitInfo_MinRevisionLong">
+        <Value>$(CommonGitInfo_MinRevisionLong)</Value>
+      </PropertiesToPersist>
+      <PropertiesToPersist Include="CommonGitInfo_MinRevisionShort">
+        <Value>$(CommonGitInfo_MinRevisionShort)</Value>
+      </PropertiesToPersist>
+      <PropertiesToPersist Include="CommonGitInfo_MinRevisionTimestamp">
+        <Value>$(CommonGitInfo_MinRevisionTimestamp)</Value>
+      </PropertiesToPersist>
+      <PropertiesToPersist Include="CommonGitInfo_MaxRevisionLong">
+        <Value>$(CommonGitInfo_MaxRevisionLong)</Value>
+      </PropertiesToPersist>
+      <PropertiesToPersist Include="CommonGitInfo_MaxRevisionShort">
+        <Value>$(CommonGitInfo_MaxRevisionShort)</Value>
+      </PropertiesToPersist>
+      <PropertiesToPersist Include="CommonGitInfo_MaxRevisionTimestamp">
+        <Value>$(CommonGitInfo_MaxRevisionTimestamp)</Value>
+      </PropertiesToPersist>
+      <PropertiesToPersist Include="CommonGitInfo_MostRecentTag">
+        <Value>$(CommonGitInfo_MostRecentTag)</Value>
+      </PropertiesToPersist>
+      <PropertiesToPersist Include="CommonGitInfo_MostRecentTagMatchingRegex">
+        <Value>$(CommonGitInfo_MostRecentTagMatchingRegex)</Value>
+      </PropertiesToPersist>
+      <PropertiesToPersist Include="CommonGitInfo_MinMaxCommitDistance">
+        <Value>$(CommonGitInfo_MinMaxCommitDistance)</Value>
+      </PropertiesToPersist>
+    </ItemGroup>
   </Target>
 
   <UsingTask
@@ -151,23 +184,17 @@ Copyright 2017 Microsoft. All rights reserved.
         TaskParameter="Branch"
         PropertyName="BuildEnvironment_Branch"/>
     </BuildEnvironment>
-    <Message Text="BuildEnvironment_DefinitionName: $(BuildEnvironment_DefinitionName)" Importance="high"/>
-    <Message Text="BuildEnvironment_Revision: $(BuildEnvironment_Revision)" Importance="high"/>
-    <Message Text="BuildEnvironment_Branch: $(BuildEnvironment_Branch)" Importance="high"/>
-  </Target>
-
-  <UsingTask
-    TaskName="Xamarin.MSBuild.GlobalDotJson"
-    AssemblyFile="$(Xamarin_Build_AssemblyFile)"/>
-
-  <Target
-    Name="Xamarin_Build_ReadGlobalDotJson">
-    <GlobalDotJson FileName="$(MSBuildThisFileDirectory)..\..\global.json">
-      <Output
-        TaskParameter="AppVersion"
-        PropertyName="GlobalDotJson_AppVersion"/>
-    </GlobalDotJson>
-    <Message Text="GlobalDotJson_AppVersion: $(GlobalDotJson_AppVersion)" Importance="high"/>
+    <ItemGroup>
+      <PropertiesToPersist Include="BuildEnvironment_DefinitionName">
+        <Value>$(BuildEnvironment_DefinitionName)</Value>
+      </PropertiesToPersist>
+      <PropertiesToPersist Include="BuildEnvironment_Revision">
+        <Value>$(BuildEnvironment_Revision)</Value>
+      </PropertiesToPersist>
+      <PropertiesToPersist Include="BuildEnvironment_Branch">
+        <Value>$(BuildEnvironment_Branch)</Value>
+      </PropertiesToPersist>
+    </ItemGroup>
   </Target>
 
   <UsingTask
@@ -185,5 +212,4 @@ Copyright 2017 Microsoft. All rights reserved.
   <UsingTask
     TaskName="Xamarin.MSBuild.ProcessPolicheckXml"
     AssemblyFile="$(Xamarin_Build_AssemblyFile)"/>
-
 </Project>

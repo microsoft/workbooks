@@ -80,5 +80,4 @@
       <LogicalName>Xamburger.tif</LogicalName>
     </EmbeddedResource>
   </ItemGroup>
-  <Import Project="..\..\build\Common.targets" />
 </Project>

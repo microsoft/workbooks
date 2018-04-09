@@ -2,6 +2,12 @@
   <PropertyGroup>
     <TopDirectory>$([MSBuild]::NormalizeDirectory($(MSBuildThisFileDirectory)..))</TopDirectory>
     <ProprietaryDirectory>$([MSBuild]::NormalizeDirectory($(TopDirectory)workbooks-proprietary))</ProprietaryDirectory>
+    <BuiltWorkbookAppsBasePath>$([MSBuild]::NormalizeDirectory($(TopDirectory)_build\$(Configuration)\WorkbookApps))</BuiltWorkbookAppsBasePath>
+    <ArtifactsBasePath>$([MSBuild]::NormalizeDirectory($(TopDirectory)_artifacts))</ArtifactsBasePath>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <Configuration Condition="'$(Configuration)' == ''">Debug</Configuration>
   </PropertyGroup>
 
   <Import
@@ -26,8 +32,15 @@
   </PropertyGroup>
 
   <PropertyGroup>
+    <ClientBundleOutputPath Condition="$(IsMac)">$([MSBuild]::NormalizeDirectory($(TopDirectory)Clients\Xamarin.Interactive.Client.Mac\bin\$(Configuration)\Xamarin Workbooks.app\Contents\MonoBundle))</ClientBundleOutputPath>
+    <ClientBundleOutputPath Condition="$(IsWindows)">$([MSBuild]::NormalizeDirectory($(TopDirectory)Clients\Xamarin.Interactive.Client.Windows\bin\$(Configuration)))</ClientBundleOutputPath>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <MonoInstallRootDirectory Condition="$(IsMac)">$([MSBuild]::NormalizeDirectory('/Library/Frameworks/Mono.framework/Versions/Current'))</MonoInstallRootDirectory>
     <HaveMono Condition="'$(HaveMono)' == ''">false</HaveMono>
-    <HaveMono Condition="$(IsMac) And Exists('/Library/Frameworks/Mono.framework/Versions/Current/VERSION')">true</HaveMono>
+    <HaveMono Condition="'$(MonoInstallRootDirectory)' != '' And Exists('$(MonoInstallRootDirectory)VERSION')">true</HaveMono>
+    <MonoCilStrip Condition='$(HaveMono)'>$(MonoInstallRootDirectory)Commands/mono-cil-strip</MonoCilStrip>
 
     <HaveXamarinMac Condition="'$(HaveXamarinMac)' == ''">false</HaveXamarinMac>
     <HaveXamarinMac Condition="$(IsMac) And Exists('/Library/Frameworks/Xamarin.Mac.framework/Versions/Current/Version')">true</HaveXamarinMac>
@@ -43,8 +56,18 @@
 
   <ItemGroup>
     <WhichSearchPath Include="$(TopDirectory)"/>
-    <WhichSearchPath Include="$(Provisionator_ArtifactCachePath)"/>
   </ItemGroup>
+
+  <PropertyGroup Condition="'$(TF_BUILD)' == 'True'">
+    <MacBuildHostAddress Condition="'$(AGENT_NAME)' == 'RE Cambridge Windows-Inspector-1'">bockover-1.guest.corp.microsoft.com</MacBuildHostAddress>
+    <MacBuildHostAddress Condition="'$(AGENT_NAME)' == 'Cambridge Windows-Inspector-2'">inspector-1.guest.corp.microsoft.com</MacBuildHostAddress>
+    <MacBuildHostUser>builder</MacBuildHostUser>
+    <Adb Condition="Exists('$(UserProfile)\AppData\Local\Android\android-sdk\platform-tools\adb.exe')">$(UserProfile)\AppData\Local\Android\android-sdk\platform-tools\adb.exe</Adb>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <SevenZip Condition="Exists('C:\Program Files\7-zip\7z.exe')">C:\Program Files\7-zip\7z.exe</SevenZip>
+  </PropertyGroup>
 
   <ItemGroup>
     <ConfigurationSummary Include="Host Environment:"/>
@@ -52,6 +75,8 @@
     <ConfigurationSummary Include="%20%20.NET Core MSBuild: $(IsDotNetCoreMSBuild)"/>
     <ConfigurationSummary Include="%20%20MSBuildBinPath: $(MSBuildBinPath)"/>
     <ConfigurationSummary Include="%20%20MSBuildExtensionsPath: $(MSBuildExtensionsPath)"/>
+    <ConfigurationSummary Condition="'$(MacBuildHostAddress)' != ''" Include="%20%20MacBuildHostAddress: $(MacBuildHostAddress)"/>
+    <ConfigurationSummary Condition="'$(MacBuildHostUser)' != ''" Include="%20%20MacBuildHostAddress: $(MacBuildHostUser)"/>
     <ConfigurationSummary Include="%20%20Available SDKs/Frameworks:"/>
     <ConfigurationSummary Include="%20%20%20%20Mono: $(HaveMono)"/>
     <ConfigurationSummary Include="%20%20%20%20Xamarin.Mac: $(HaveXamarinMac)"/>

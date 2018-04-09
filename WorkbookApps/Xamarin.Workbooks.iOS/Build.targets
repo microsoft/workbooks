@@ -1,6 +1,5 @@
 <Project>
   <Import Project="..\WorkbookApp.targets" />
-  <Import Project="..\..\build\Common.targets"/>
 
   <PropertyGroup>
     <AfterTargetForInstall Condition=" '$(OS)' == 'Unix' ">AfterCodesign</AfterTargetForInstall>
@@ -46,7 +45,7 @@
     <PropertyGroup>
       <ManifestAppPath>$(AssemblyName).app</ManifestAppPath>
       <WixInputManifest>..\..\Package\Windows\iOSWorkbookAppFiles.wxs</WixInputManifest>
-      <AppManagerAssembly Condition="$(TargetPlatformIsWindows)">iOS\ClientIntegration\Xamarin.Workbooks.Client.iOS.dll</AppManagerAssembly>
+      <AppManagerAssembly Condition="$(IsWindows)">iOS\ClientIntegration\Xamarin.Workbooks.Client.iOS.dll</AppManagerAssembly>
     </PropertyGroup>
 
     <ItemGroup>

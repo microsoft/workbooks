@@ -1,21 +1,10 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-  </PropertyGroup>
-
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-  </PropertyGroup>
-
-  <ItemGroup>
-    <Compile Remove="API\Xamarin.Interactive.api.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="API\Xamarin.Interactive.api.cs" />
-  </ItemGroup>
-  <Import Project="..\..\build\Common.targets" />
+  <Target Name="Package" Condition="Exists('$(MonoCilStrip)')">
+    <Exec Command="$(MonoCilStrip) &quot;$(OutputPath)$(AssemblyName).dll&quot; &quot;$(OutputPath)$(AssemblyName).Stripped.dll&quot;" />
+    <Exec Command="$(NuGet) pack Xamarin.Interactive.nuspec -Version $(WorkbooksIntegrationNuGetPackageVersion) -OutputDirectory &quot;$(ArtifactsBasePath)&quot; -Properties Configuration=$(Configuration)" />
+  </Target>
 </Project>

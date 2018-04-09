@@ -9,13 +9,15 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 
 [assembly: AssemblyCopyright (
-    "Copyright 2016-2017 Microsoft. All rights reserved.\n" +
+    "Copyright 2016-2018 Microsoft. All rights reserved.\n" +
     "Copyright 2014-2016 Xamarin Inc. All rights reserved.")]
 [assembly: AssemblyVersion ("1.0.0.0")]
 
 // Spells 0.A.F.V, a magic version that UpdateBuildInfo will
 // replace with a real file version (see BuildInfoTask).
 [assembly: AssemblyFileVersion ("0.65.70.86")]
+
+#if !PRODUCT_ASSEMBLY_INFO_OMIT_IVT
 
 #if PCL_FACADE_ASSEMBLY
 
@@ -76,4 +78,5 @@ using System.Runtime.CompilerServices;
 // misc
 [assembly: InternalsVisibleTo ("Xamarin.Interactive.Telemetry.Server")]
 
+#endif
 #endif

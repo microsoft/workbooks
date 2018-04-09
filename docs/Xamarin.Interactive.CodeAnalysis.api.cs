@@ -1,6 +1,5 @@
-[assembly: AssemblyCompany ("Xamarin.Interactive.CodeAnalysis")]
 [assembly: AssemblyConfiguration ("Release")]
-[assembly: AssemblyInformationalVersion ("1.0.0")]
+[assembly: AssemblyCopyright ("Copyright 2016-2018 Microsoft. All rights reserved.\nCopyright 2014-2016 Xamarin Inc. All rights reserved.")]
 [assembly: AssemblyProduct ("Xamarin.Interactive.CodeAnalysis")]
 [assembly: AssemblyTitle ("Xamarin.Interactive.CodeAnalysis")]
 [assembly: InternalsVisibleTo ("Xamarin.Interactive.Client")]

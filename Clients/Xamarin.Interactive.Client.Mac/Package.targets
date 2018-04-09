@@ -1,8 +1,5 @@
 <Project>
   <PropertyGroup>
-    <TopDirectory>..\..\</TopDirectory>
-    <AbsoluteTopDirectory>$(MSBuildThisFileDirectory)$(TopDirectory)</AbsoluteTopDirectory>
-
     <PackageAssetsDirectory>PackageAssets\</PackageAssetsDirectory>
 
     <InstallDestDir Condition="'$(InstallDestDir)' == ''">_install\</InstallDestDir>
@@ -19,15 +16,35 @@
     <WorkbooksAppSharedSupportPath>$(InstallDestDir)Applications\$(WorkbooksAppBundleName)\Contents\SharedSupport\</WorkbooksAppSharedSupportPath>
     <InspectorAppSharedSupportPath>$(InspectorClientInstallPath)$(InspectorAppBundleName)\Contents\SharedSupport\</InspectorAppSharedSupportPath>
 
-    <InspectorNuGetPackageBuildDir>_inspectorPackage</InspectorNuGetPackageBuildDir>
-    <InspectorNuGetPackageContentDir>$(InspectorNuGetPackageBuildDir)\contentFiles\any\any\</InspectorNuGetPackageContentDir>
+    <BuildInfoArtifact>$(ArtifactsBasePath)buildinfo</BuildInfoArtifact>
+    <UpdateInfoArtifact>$(ArtifactsBasePath)updateinfo</UpdateInfoArtifact>
   </PropertyGroup>
 
-  <Import Project="$(TopDirectory)build\Metadata.targets"/>
+  <Target
+    Name="PackageInspectorNuGet"
+    AfterTargets="Package">
+    <PropertyGroup>
+      <InspectorNuGetBuildDirectory>$(OutputPath)Inspector.NuGet\</InspectorNuGetBuildDirectory>
+      <InspectorNuGetPayloadDirectory>$(InspectorNuGetBuildDirectory)contentFiles\any\any\</InspectorNuGetPayloadDirectory>
+    </PropertyGroup>
+
+    <RemoveDir Directories="$(InspectorNuGetBuildDirectory)"/>
+    <MakeDir Directories="$(InspectorNuGetPayloadDirectory)"/>
+
+    <Exec
+      WorkingDirectory="$(InspectorNuGetPayloadDirectory)"
+      Command="ln -s &quot;..\..\..\..\$(InspectorAppBundleName)&quot; ."/>
+
+    <Copy
+      SourceFiles="$(PackageAssetsDirectory)Xamarin.Inspector.Mac.nuspec"
+      DestinationFolder="$(InspectorNuGetBuildDirectory)"/>
+
+    <Exec Command="&quot;$(NuGet)&quot; pack $(InspectorNuGetBuildDirectory)Xamarin.Inspector.Mac.nuspec -OutputDirectory &quot;$(ArtifactsBasePath)&quot; -Version $(ReleaseVersion_SemVerNuGetSafe) -NoPackageAnalysis"/>
+  </Target>
 
   <Target
     Name="Package"
-    DependsOnTargets="Xamarin_Build_ReadAllProperties;Install">
+    DependsOnTargets="Install">
     <PropertyGroup>
       <PackageFile>$(ArtifactsBasePath)XamarinInteractive-$(ReleaseVersion_SemVer).pkg</PackageFile>
     </PropertyGroup>
@@ -98,8 +115,7 @@
     <InstallDependsOnMac>
       Uninstall;
       _InstallUninstallerMac;
-      _InstallBuildInfoMac;
-      _InstallUpdateInfoMac;
+      _InstallFrameworkMetadata;
       _InstallSDKMac;
       _InstallAgentsMac;
       _InstallClientAppMac
@@ -119,17 +135,10 @@
       DestinationFolder="$(FrameworkInstallDir)"/>
   </Target>
 
-  <Target Name="_InstallBuildInfoMac">
+  <Target Name="_InstallFrameworkMetadata">
     <Copy
       SkipUnchangedFiles="true"
-      SourceFiles="$(TopDirectory)Package\buildinfo"
-      DestinationFolder="$(FrameworkInstallDir)"/>
-  </Target>
-
-  <Target Name="_InstallUpdateInfoMac">
-    <Copy
-      SkipUnchangedFiles="true"
-      SourceFiles="$(UpdateInfoFile)"
+      SourceFiles="$(BuildInfoArtifact);$(UpdateInfoArtifact)"
       DestinationFolder="$(FrameworkInstallDir)"/>
   </Target>
 
@@ -218,11 +227,7 @@
       DestinationFolder="$(WorkbooksAppSharedSupportPath)Agents\Forms\iOS"/>
     <Copy
       SkipUnchangedFiles="true"
-      SourceFiles="$(UpdateInfoFile)"
-      DestinationFolder="$(WorkbooksAppSharedSupportPath)"/>
-    <Copy
-      SkipUnchangedFiles="true"
-      SourceFiles="$(BuildInfoDistFile)"
+      SourceFiles="$(BuildInfoArtifact);$(UpdateInfoArtifact)"
       DestinationFolder="$(WorkbooksAppSharedSupportPath)"/>
 
     <!-- Install Inspector.app in old location -->
@@ -255,11 +260,7 @@
       DestinationFolder="$(InspectorAppSharedSupportPath)Agents\Forms\iOS"/>
     <Copy
       SkipUnchangedFiles="true"
-      SourceFiles="$(UpdateInfoFile)"
-      DestinationFolder="$(InspectorAppSharedSupportPath)"/>
-    <Copy
-      SkipUnchangedFiles="true"
-      SourceFiles="$(BuildInfoDistFile)"
+      SourceFiles="$(BuildInfoArtifact);$(UpdateInfoArtifact)"
       DestinationFolder="$(InspectorAppSharedSupportPath)"/>
   </Target>
 </Project>
