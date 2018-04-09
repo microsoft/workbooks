@@ -74,8 +74,8 @@ namespace Xamarin.Interactive.CodeAnalysis
         readonly IWorkspaceService workspace;
 
         EvaluationEnvironment evaluationEnvironment;
-        IAgentConnection agentConnection;
-        IDisposable agentConnectionMessagesSubscription;
+        IAgentEvaluationService agentEvaluationService;
+        IDisposable agentEvaluationServiceEventsSubscription;
 
         readonly Dictionary<CodeCellId, CodeCellState> cellStates
             = new Dictionary<CodeCellId, CodeCellState> ();
@@ -105,22 +105,18 @@ namespace Xamarin.Interactive.CodeAnalysis
                 this.evaluationEnvironment = evaluationEnvironment;
         }
 
-        internal void NotifyAgentConnected (IAgentConnection agentConnection)
+        internal void NotifyPeerUpdated (IAgentEvaluationService agentEvaluationService)
         {
             lock (stateChangeLock) {
-                if (this.agentConnection != null)
-                    NotifyAgentDisconnected ();
+                agentEvaluationServiceEventsSubscription?.Dispose ();
+                agentEvaluationServiceEventsSubscription = null;
 
-                this.agentConnection = agentConnection;
-                agentConnectionMessagesSubscription = this.agentConnection.Api.Messages.Subscribe (
-                    new Observer<object> (OnAgentMessage));
+                this.agentEvaluationService = agentEvaluationService;
+
+                agentEvaluationServiceEventsSubscription = agentEvaluationService
+                    ?.Events
+                    ?.Subscribe (events.Observers);
             }
-        }
-
-        internal void NotifyAgentDisconnected ()
-        {
-            lock (stateChangeLock)
-                agentConnectionMessagesSubscription?.Dispose ();
         }
 
         #region IEvaluationService
@@ -185,16 +181,6 @@ namespace Xamarin.Interactive.CodeAnalysis
             workspace.SetCellBuffer (nugetReferenceCellId, buffer.ToString ());
 
             return true;
-        }
-
-        #endregion
-
-        #region Agent Messages
-
-        void OnAgentMessage (object message)
-        {
-            if (message is ICodeCellEvent evnt)
-                events.Observers.OnNext (evnt);
         }
 
         #endregion
@@ -367,7 +353,7 @@ namespace Xamarin.Interactive.CodeAnalysis
                 cancellationToken);
 
             if (evaluationModel.ShouldResetAgentState)
-                await agentConnection.Api.ResetStateAsync ();
+                await agentEvaluationService.ResetStateAsync (cancellationToken);
 
             CodeCellEvaluationFinishedEvent lastCellFinishedEvent = default;
 
@@ -401,7 +387,7 @@ namespace Xamarin.Interactive.CodeAnalysis
             CodeCellState codeCellState,
             CancellationToken cancellationToken = default)
         {
-            if (!agentConnection.IsConnected) {
+            if (agentEvaluationService == null) {
                 codeCellState.Diagnostics = new [] {
                     new Diagnostic (
                         DiagnosticSeverity.Error,
@@ -430,9 +416,9 @@ namespace Xamarin.Interactive.CodeAnalysis
                     .ToArray ();
 
                 if (integrationAssemblies.Length > 0)
-                    await agentConnection.Api.LoadAssembliesAsync (
-                        EvaluationContextId,
-                        integrationAssemblies);
+                    await agentEvaluationService.LoadAssembliesAsync (
+                        integrationAssemblies,
+                        cancellationToken);
 
                 // FIXME: this is where we'd LoadWorkbookDependencyAsync
             } catch (Exception e) {
@@ -443,7 +429,7 @@ namespace Xamarin.Interactive.CodeAnalysis
 
             try {
                 if (compilation != null)
-                    await agentConnection.Api.EvaluateAsync (
+                    await agentEvaluationService.EvaluateAsync (
                         compilation,
                         cancellationToken);
             } catch (XipErrorMessageException e) {

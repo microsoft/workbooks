@@ -91,7 +91,10 @@ namespace Xamarin.Interactive.Session
             PostEvent (InitializingWorkspace);
 
             var workspaceConfiguration = await WorkspaceConfiguration.CreateAsync (
-                State.AgentConnection,
+                State.AgentConnection.Type,
+                State.AgentConnection.IncludePeImage,
+                State.AgentConnection.AssemblySearchPaths,
+                State.AgentConnection.Api,
                 sessionKind,
                 cancellationToken).ConfigureAwait (false);
 
@@ -104,7 +107,7 @@ namespace Xamarin.Interactive.Session
                 workspaceService,
                 sessionDescription.EvaluationEnvironment);
 
-            evaluationService.NotifyAgentConnected (state.AgentConnection);
+            evaluationService.NotifyPeerUpdated (state.AgentConnection.Api);
 
             PackageManagerService packageManagerService = null;
 
@@ -204,7 +207,7 @@ namespace Xamarin.Interactive.Session
                     ((IDisposable)State.AgentConnection).Dispose ();
                 }
 
-                State.EvaluationService.service?.NotifyAgentDisconnected ();
+                State.EvaluationService.service?.NotifyPeerUpdated (null);
 
                 State = State.WithAgentConnection (new AgentConnection (agentType));
             }

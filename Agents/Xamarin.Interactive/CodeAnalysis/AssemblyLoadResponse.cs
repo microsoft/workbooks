@@ -6,33 +6,16 @@
 // Licensed under the MIT License.
 
 using System;
-using System.Linq;
-
-using Xamarin.Interactive.CodeAnalysis.Resolving;
+using System.Collections.Generic;
 
 namespace Xamarin.Interactive.CodeAnalysis
 {
     [Serializable]
     sealed class AssemblyLoadResponse
     {
-        public ResultItem [] LoadResults { get; set; }
+        public IReadOnlyList<AssemblyLoadResult> LoadResults { get; }
 
-        public bool InitializedAgentIntegration
-            => LoadResults != null && LoadResults.Any (r => r.InitializedAgentIntegration);
-
-        [Serializable]
-        public struct ResultItem
-        {
-            public AssemblyIdentity AssemblyName { get; }
-            public bool Success { get; }
-            public bool InitializedAgentIntegration { get; }
-
-            public ResultItem (AssemblyIdentity assemblyName, bool success, bool initializedAgentIntegration)
-            {
-                AssemblyName = assemblyName ?? throw new ArgumentNullException (nameof (assemblyName));
-                Success = success;
-                InitializedAgentIntegration = initializedAgentIntegration;
-            }
-        }
+        public AssemblyLoadResponse (AssemblyLoadResult [] loadResults)
+            => LoadResults = loadResults;
     }
 }

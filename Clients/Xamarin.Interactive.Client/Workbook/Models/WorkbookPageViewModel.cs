@@ -462,7 +462,7 @@ namespace Xamarin.Interactive.Workbook.Models
             var isFirstCell = codeCell.GetPreviousCell<CodeCell> () == null;
 
             if (isFirstCell && ClientSession.SessionKind == ClientSessionKind.Workbook)
-                await ClientSession.Agent.Api.ResetStateAsync ();
+                await ((IAgentEvaluationService)ClientSession.Agent.Api).ResetStateAsync ();
 
             while (codeCell != null) {
                 if (CodeCells.TryGetValue (codeCell.View.Editor, out codeCellState)) {
@@ -555,8 +555,7 @@ namespace Xamarin.Interactive.Workbook.Models
                     .Where (ra => ra.HasIntegration)
                     .ToArray ();
                 if (integrationAssemblies.Length > 0)
-                    await ClientSession.Agent.Api.LoadAssembliesAsync (
-                        EvaluationContextId,
+                    await ((IAgentEvaluationService)ClientSession.Agent.Api).LoadAssembliesAsync (
                         integrationAssemblies);
             } catch (Exception e) {
                 exception = ExceptionNode.Create (e);
@@ -570,7 +569,7 @@ namespace Xamarin.Interactive.Workbook.Models
 
             try {
                 if (compilation != null)
-                    await ClientSession.Agent.Api.EvaluateAsync (
+                    await ((IAgentEvaluationService)ClientSession.Agent.Api).EvaluateAsync (
                         compilation,
                         cancellationToken);
             } catch (XipErrorMessageException e) {

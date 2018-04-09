@@ -26,10 +26,12 @@ using Xamarin.Interactive.Serialization;
 using Xamarin.Interactive.Remote;
 using Xamarin.Interactive.Representations;
 using Xamarin.Interactive.Representations.Reflection;
+using System.Collections.Generic;
+using Xamarin.Interactive.CodeAnalysis.Events;
 
 namespace Xamarin.Interactive.Client
 {
-    sealed class AgentClient
+    sealed class AgentClient : IAgentEvaluationService
     {
         const string TAG = nameof (AgentClient);
 
@@ -94,6 +96,13 @@ namespace Xamarin.Interactive.Client
                             break;
                         case MessageChannel.Ping ping:
                             break;
+                        case ICodeCellEvent evnt:
+                            try {
+                                codeCellEvents.Observers.OnNext (evnt);
+                            } catch (Exception e) {
+                                Log.Error (TAG, $"Exception in {nameof (ICodeCellEvent)} observer", e);
+                            }
+                            break;
                         default:
                             try {
                                 messages.Observers.OnNext (message);
@@ -122,46 +131,6 @@ namespace Xamarin.Interactive.Client
             }
 
             messages.Observers.OnCompleted ();
-        }
-
-        public Task<TargetCompilationConfiguration> InitializeEvaluationContextAsync (bool includePeImage)
-            => SendAsync<TargetCompilationConfiguration> (
-                new EvaluationContextInitializeRequest (includePeImage),
-                SessionCancellationToken);
-
-        public Task ResetStateAsync ()
-            => SendAsync<SuccessResponse> (
-                new ResetStateRequest (),
-                SessionCancellationToken);
-
-        public Task<AssemblyDefinition []> GetAppDomainAssembliesAsync (bool includePeImage)
-            => SendAsync<AssemblyDefinition []> (
-                new GetAppDomainAssembliesRequest (includePeImage),
-                SessionCancellationToken);
-
-        public Task<AssemblyLoadResponse> LoadAssembliesAsync (
-            EvaluationContextId evaluationContextId,
-            AssemblyDefinition [] assemblies)
-            => SendAsync<AssemblyLoadResponse> (
-                new AssemblyLoadRequest (evaluationContextId, assemblies),
-                SessionCancellationToken);
-
-        public Task EvaluateAsync (
-            Compilation compilation,
-            CancellationToken cancellationToken = default (CancellationToken))
-        {
-            var request = new EvaluationRequest (compilation);
-
-            var resultTask = new TaskCompletionSource ();
-            var evalTask = SendAsync<Evaluation> (
-                request,
-                GetCancellationToken (cancellationToken));
-
-            // TryAdd will only fail for duplicate keys, which is not
-            // practically possible (see MainThreadRequest.MessageId).
-            messageChannelAwaiters.TryAdd (request.MessageId, resultTask);
-
-            return Task.WhenAll (resultTask.Task, evalTask);
         }
 
         public Task AbortEvaluationAsync (EvaluationContextId evaluationContextId)
@@ -300,6 +269,70 @@ namespace Xamarin.Interactive.Client
 
             return result;
         }
+
+        #region IAgentEvaluationService
+
+        readonly Observable<ICodeCellEvent> codeCellEvents = new Observable<ICodeCellEvent> ();
+        IObservable<ICodeCellEvent> IAgentEvaluationService.Events => codeCellEvents;
+
+        public EvaluationContextId EvaluationContextId { get; private set; }
+
+        async Task<TargetCompilationConfiguration> IAgentEvaluationService.InitializeAsync (
+            bool includePeImage,
+            CancellationToken cancellationToken)
+        {
+            var configuration = await SendAsync<TargetCompilationConfiguration> (
+                new EvaluationContextInitializeRequest (includePeImage),
+                SessionCancellationToken);
+
+            EvaluationContextId = configuration.EvaluationContextId;
+
+            return configuration;
+        }
+
+        async Task<IReadOnlyList<AssemblyDefinition>> IAgentEvaluationService.GetAppDomainAssembliesAsync (
+            bool includePeImage,
+            CancellationToken cancellationToken)
+            => await SendAsync<AssemblyDefinition []> (
+                new GetAppDomainAssembliesRequest (includePeImage),
+                GetCancellationToken (cancellationToken));
+
+        Task IAgentEvaluationService.ResetStateAsync (
+            CancellationToken cancellationToken)
+            => SendAsync<SuccessResponse> (
+                new ResetStateRequest (),
+                GetCancellationToken (cancellationToken));
+
+        async Task<IReadOnlyList<AssemblyLoadResult>> IAgentEvaluationService.LoadAssembliesAsync (
+            IReadOnlyList<AssemblyDefinition> assemblies,
+            CancellationToken cancellationToken)
+        {
+            var response = await SendAsync<AssemblyLoadResponse> (
+                new AssemblyLoadRequest (EvaluationContextId, assemblies),
+                GetCancellationToken (cancellationToken));
+
+            return response.LoadResults;
+        }
+
+        Task IAgentEvaluationService.EvaluateAsync (
+            Compilation compilation,
+            CancellationToken cancellationToken)
+        {
+            var request = new EvaluationRequest (compilation);
+
+            var resultTask = new TaskCompletionSource ();
+            var evalTask = SendAsync<Evaluation> (
+                request,
+                GetCancellationToken (cancellationToken));
+
+            // TryAdd will only fail for duplicate keys, which is not
+            // practically possible (see MainThreadRequest.MessageId).
+            messageChannelAwaiters.TryAdd (request.MessageId, resultTask);
+
+            return Task.WhenAll (resultTask.Task, evalTask);
+        }
+
+        #endregion
 
         sealed class XipRequestMessageHttpContent : HttpContent
         {

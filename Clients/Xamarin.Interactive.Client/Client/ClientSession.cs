@@ -329,7 +329,7 @@ namespace Xamarin.Interactive.Client
                         var evaluationService = new EvaluationService (
                             CompilationWorkspace,
                             new EvaluationEnvironment (WorkingDirectory));
-                        evaluationService.NotifyAgentConnected (Agent);
+                        evaluationService.NotifyPeerUpdated (Agent.Api);
                         EvaluationService = evaluationService;
                     }
 
@@ -530,7 +530,10 @@ namespace Xamarin.Interactive.Client
                 CompilationWorkspace = await WorkspaceServiceFactory.CreateWorkspaceServiceAsync (
                     "csharp",
                     await WorkspaceConfiguration.CreateAsync (
-                        Agent,
+                        Agent.Type,
+                        Agent.IncludePeImage,
+                        Agent.AssemblySearchPaths,
+                        Agent.Api,
                         SessionKind,
                         cancellationToken),
                     cancellationToken);

@@ -198,7 +198,8 @@ namespace Xamarin.Interactive.NuGet
             if (PackageIdComparer.Equals (package.Identity.Id, "Xamarin.Forms")) {
                 await WorkspaceConfiguration.LoadFormsAgentExtensions (
                     package.Identity.Version.Version,
-                    agent,
+                    agent.Type,
+                    agent.Api,
                     dependencyResolver,
                     evaluationService.EvaluationContextId,
                     agent.IncludePeImage);
@@ -238,9 +239,9 @@ namespace Xamarin.Interactive.NuGet
                     );
                 }).ToArray ();
 
-                await agent.Api.LoadAssembliesAsync (
-                    evaluationService.EvaluationContextId,
-                    assembliesToLoad);
+                await ((IAgentEvaluationService)agent.Api).LoadAssembliesAsync (
+                    assembliesToLoad,
+                    cancellationToken);
             }
 
             await getAgentConnectionHandler (true, cancellationToken);

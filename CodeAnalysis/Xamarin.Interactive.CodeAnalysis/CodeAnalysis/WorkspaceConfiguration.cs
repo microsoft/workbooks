@@ -43,27 +43,27 @@ namespace Xamarin.Interactive.CodeAnalysis
         }
 
         internal static async Task<WorkspaceConfiguration> CreateAsync (
-            IAgentConnection agent,
+            AgentType agentType,
+            bool includePeImage,
+            IReadOnlyList<string> assemblySearchPaths,
+            IAgentEvaluationService agentEvaluationService,
             ClientSessionKind sessionKind,
             CancellationToken cancellationToken = default)
         {
-            // HACK: This is a temporary fix to get iOS agent/app assemblies
-            // sent to the Windows client when using the remote simulator.
-            var includePeImage = agent.IncludePeImage;
-
-            var configuration = await agent.Api.InitializeEvaluationContextAsync (includePeImage)
+            var configuration = await agentEvaluationService.InitializeAsync (includePeImage, cancellationToken)
                 .ConfigureAwait (false);
             if (configuration == null)
                 throw new Exception (
-                    $"{nameof (agent.Api.InitializeEvaluationContextAsync)} " +
+                    $"{nameof (IAgentEvaluationService)}.{nameof (IAgentEvaluationService.InitializeAsync)} " +
                     $"did not return a {nameof (TargetCompilationConfiguration)}");
 
             var dependencyResolver = CreateDependencyResolver (
-                agent.Type,
-                agent.AssemblySearchPaths);
+                agentType,
+                assemblySearchPaths);
 
-            var defaultRefs = await agent.Api.GetAppDomainAssembliesAsync (includePeImage)
-                .ConfigureAwait (false);
+            var defaultRefs = await agentEvaluationService.GetAppDomainAssembliesAsync (
+                includePeImage,
+                cancellationToken).ConfigureAwait (false);
 
             // Only do this for Inspector sessions. Workbooks will do their own Forms init later.
             if (sessionKind == ClientSessionKind.LiveInspection) {
@@ -71,7 +71,8 @@ namespace Xamarin.Interactive.CodeAnalysis
                 if (formsReference != null)
                     await LoadFormsAgentExtensions (
                         formsReference.Name.Version,
-                        agent,
+                        agentType,
+                        agentEvaluationService,
                         dependencyResolver,
                         configuration.EvaluationContextId,
                         includePeImage).ConfigureAwait (false);
@@ -86,7 +87,7 @@ namespace Xamarin.Interactive.CodeAnalysis
                 ResolveHostObjectType (
                     dependencyResolver,
                     configuration,
-                    agent.Type));
+                    agentType));
         }
 
         static InteractiveDependencyResolver CreateDependencyResolver (
@@ -172,12 +173,13 @@ namespace Xamarin.Interactive.CodeAnalysis
 
         internal static async Task LoadFormsAgentExtensions (
             Version formsVersion,
-            IAgentConnection agent,
+            AgentType agentType,
+            IAgentEvaluationService agentEvaluationService,
             DependencyResolver dependencyResolver,
             EvaluationContextId evaluationContextId,
             bool includePeImage)
         {
-            var formsAssembly = InteractiveInstallation.Default.LocateFormsAssembly (agent.Type);
+            var formsAssembly = InteractiveInstallation.Default.LocateFormsAssembly (agentType);
             if (string.IsNullOrWhiteSpace (formsAssembly))
                 return;
 
@@ -217,11 +219,10 @@ namespace Xamarin.Interactive.CodeAnalysis
                 );
             }).ToArray ();
 
-            var res = await agent.Api.LoadAssembliesAsync (
-                evaluationContextId,
+            var results = await agentEvaluationService.LoadAssembliesAsync (
                 assembliesToLoad);
 
-            var failed = res.LoadResults.Where (p => !p.Success);
+            var failed = results.Where (p => !p.Success);
             if (failed.Any ()) {
                 var failedLoads = string.Join (", ", failed.Select (p => p.AssemblyName.Name));
                 Log.Warning (

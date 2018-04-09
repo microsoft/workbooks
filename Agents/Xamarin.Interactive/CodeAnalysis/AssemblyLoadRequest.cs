@@ -6,6 +6,8 @@
 // Licensed under the MIT License.
 
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 
@@ -26,18 +28,17 @@ namespace Xamarin.Interactive.CodeAnalysis
 
         public AssemblyLoadRequest (
             EvaluationContextId evaluationContextId,
-            AssemblyDefinition [] assemblies)
+            IReadOnlyList<AssemblyDefinition> assemblies)
         {
             EvaluationContextId = evaluationContextId;
-            Assemblies = assemblies;
+            Assemblies = assemblies?.ToArray ();
         }
 
         protected override Task<AssemblyLoadResponse> HandleAsync (Agent agent)
         {
-            var response = new AssemblyLoadResponse ();
             var scriptContext = agent.GetEvaluationContext (EvaluationContextId);
 
-            var responses = new AssemblyLoadResponse.ResultItem [Assemblies.Length];
+            var results = new AssemblyLoadResult [Assemblies.Length];
 
             scriptContext.AssemblyContext.AddRange (Assemblies);
             for (var i = 0; i < Assemblies.Length; i++) {
@@ -69,16 +70,14 @@ namespace Xamarin.Interactive.CodeAnalysis
                 } catch (Exception e) {
                     Log.Error (TAG, $"Could not load sent assembly {asm.Name}: {e.Message}", e);
                 } finally {
-                    responses [i] = new AssemblyLoadResponse.ResultItem (
+                    results [i] = new AssemblyLoadResult (
                         asm.Name,
                         didLoad,
                         initializedAgentIntegration);
                 }
             }
 
-            response.LoadResults = responses;
-
-            return Task.FromResult (response);
+            return Task.FromResult (new AssemblyLoadResponse (results));
         }
     }
 }
