@@ -197,10 +197,7 @@ namespace Xamarin.Interactive.CodeAnalysis
             if (message is Evaluation evaluation &&
                 cellStates.TryGetValue (evaluation.CodeCellId, out var cell) &&
                 cell.IsResultAnExpression)
-                events.Observers.OnNext (new CodeCellResultEvent (
-                    evaluation.CodeCellId,
-                    evaluation.ResultHandling,
-                    (RepresentedObject)evaluation.Result));
+                events.Observers.OnNext (evaluation);
             else if (message is CapturedOutputSegment segment)
                 events.Observers.OnNext (segment);
         }
@@ -474,7 +471,7 @@ namespace Xamarin.Interactive.CodeAnalysis
             CodeCellEvaluationStatus evaluationStatus;
 
             if (exception != null) {
-                events.Observers.OnNext (new CodeCellResultEvent (
+                events.Observers.OnNext (new Evaluation (
                     codeCellState.CodeCellId,
                     EvaluationResultHandling.Replace,
                     FilterException (exception)));

@@ -161,11 +161,10 @@ namespace Xamarin.Interactive.Core
             CodeCellId codeCellid,
             object result,
             EvaluationResultHandling resultHandling = EvaluationResultHandling.Replace)
-            => MainThread.Post (() => PublishEvaluation (new Evaluation {
-                CodeCellId = codeCellid,
-                ResultHandling = resultHandling,
-                Result = RepresentationManager.Prepare (result)
-            }));
+            => MainThread.Post (() => PublishEvaluation (new Evaluation (
+                codeCellid,
+                resultHandling,
+                RepresentationManager.Prepare (result))));
 
         internal void PublishEvaluation (Evaluation result)
             => MessageChannel.Push (result);

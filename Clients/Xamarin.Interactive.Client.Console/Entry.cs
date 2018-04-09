@@ -299,7 +299,7 @@ namespace Xamarin.Interactive.Client.Console
             case CapturedOutputSegment output:
                 RenderOutput (output);
                 break;
-            case CodeCellResultEvent result:
+            case Evaluation result:
                 RenderResult (result);
                 break;
             }
@@ -345,10 +345,10 @@ namespace Xamarin.Interactive.Client.Console
             ResetColor ();
         }
 
-        static void RenderResult (CodeCellResultEvent result)
+        static void RenderResult (Evaluation result)
         {
             ForegroundColor = ConsoleColor.Magenta;
-            Write (result.Type.Name);
+            Write (result.ResultType.Name);
             Write (": ");
             ResetColor ();
 
@@ -360,11 +360,11 @@ namespace Xamarin.Interactive.Client.Console
             // then the result was null or something unexpected happened in eval.
             WriteLine (
                 result
-                    .ValueRepresentations
+                    .ResultRepresentations
                     .OfType<ReflectionInteractiveObject> ()
                     .FirstOrDefault ()
                     ?.ToStringRepresentation ??
-                        result.ValueRepresentations.FirstOrDefault () ??
+                        result.ResultRepresentations.FirstOrDefault () ??
                             "null");
         }
 

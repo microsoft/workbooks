@@ -14,19 +14,19 @@ import { MockedCodeCellView } from './CodeCellView';
 
 export class ComponentPlayground extends React.Component<RouteComponentProps<{}>> {
     private readonly nullResult: CodeCellResult = {
-        $type: CodeCellEventType.Result,
+        $type: CodeCellEventType.Evaluation,
         codeCellId: '85cd037b-4cb6-4489-a854-912959b60a6b/3fb9e8a3-2c29-429d-b417-e2678761b57e',
         resultHandling: CodeCellResultHandling.Replace,
-        type: null,
-        valueRepresentations: null
+        resultType: null,
+        resultRepresentations: null
     }
 
     private readonly numberResult: CodeCellResult = {
-        $type: CodeCellEventType.Result,
+        $type: CodeCellEventType.Evaluation,
         codeCellId: '65a6fd4c-696f-4b2f-9d0d-3bf452e69f5f/eab2b254-9047-4670-bdb1-5e24aefa4843',
         resultHandling: CodeCellResultHandling.Replace,
-        type: 'System.Double',
-        valueRepresentations: [
+        resultType: 'System.Double',
+        resultRepresentations: [
             25000000000.32,
             {
                 $type: 'System.Double',
@@ -59,11 +59,11 @@ export class ComponentPlayground extends React.Component<RouteComponentProps<{}>
     }
 
     private readonly dateTimeResult: CodeCellResult = {
-        $type: CodeCellEventType.Result,
+        $type: CodeCellEventType.Evaluation,
         codeCellId: 'dca76582-6c22-4c64-9893-2270a67552ce/e9234d19-89a4-4e43-a7cd-780f3fd04541',
         resultHandling: CodeCellResultHandling.Replace,
-        type: 'System.DateTime',
-        valueRepresentations: [
+        resultType: 'System.DateTime',
+        resultRepresentations: [
             '2018-03-03T23:22:00.102405',
             {
                 $type: 'System.DateTime',

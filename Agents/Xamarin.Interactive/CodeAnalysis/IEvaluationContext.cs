@@ -12,6 +12,6 @@ namespace Xamarin.Interactive.CodeAnalysis
     public interface IEvaluationContext
     {
         EvaluationContextId Id { get; }
-        IObservable<IEvaluation> Evaluations { get; }
+        IObservable<EvaluationInFlight> Evaluations { get; }
     }
 }

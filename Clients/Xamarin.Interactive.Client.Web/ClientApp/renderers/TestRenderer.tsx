@@ -10,7 +10,7 @@ import { CodeCellResult } from '../evaluation';
 import { ResultRenderer } from '../rendering'
 
 export default function TestRendererFactory(result: CodeCellResult) {
-    if (!result.valueRepresentations || result.valueRepresentations.length === 0)
+    if (!result.resultRepresentations || result.resultRepresentations.length === 0)
         return new TestRenderer
     return null
 }

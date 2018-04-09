@@ -31,8 +31,8 @@ namespace Xamarin.Interactive.CodeAnalysis
 
         object [] submissionStates;
 
-        readonly Observable<IEvaluation> evaluations = new Observable<IEvaluation> ();
-        public IObservable<IEvaluation> Evaluations => evaluations;
+        readonly Observable<EvaluationInFlight> evaluations = new Observable<EvaluationInFlight> ();
+        public IObservable<EvaluationInFlight> Evaluations => evaluations;
 
         public EvaluationAssemblyContext AssemblyContext { get; } = new EvaluationAssemblyContext ();
 
@@ -109,14 +109,9 @@ namespace Xamarin.Interactive.CodeAnalysis
                 agent.LoadExternalDependencies (null, assembly?.ExternalDependencies);
 
             Exception evaluationException = null;
-            var result = new Evaluation {
-                RequestId = evaluationRequestId,
-                CodeCellId = compilation.CodeCellId,
-                Phase = EvaluationPhase.Compiled
-            };
+            ExceptionNode evaluationExceptionToReturn = null;
 
-            if (compilation?.ExecutableAssembly?.Content.PEImage != null)
-                result.Compilation = compilation;
+            var inFlight = new EvaluationInFlight (EvaluationPhase.Compiled, compilation);
 
             loadedAssemblies = new List<AssemblyDefinition> ();
 
@@ -135,6 +130,7 @@ namespace Xamarin.Interactive.CodeAnalysis
             currentRunThread.CurrentUICulture = InteractiveCulture.CurrentUICulture;
 
             initializedAgentIntegration = false;
+            var interrupted = false;
 
             try {
                 // We _only_ want to capture exceptions from user-code here but
@@ -144,59 +140,59 @@ namespace Xamarin.Interactive.CodeAnalysis
                 // before the exception was raised... we still want to send that
                 // captured output back to the client for rendering.
                 stopwatch.Start ();
-                result.Result = await CoreRunAsync (compilation, cancellationToken);
+                inFlight = inFlight.With (originalValue: await CoreRunAsync (compilation, cancellationToken));
             } catch (AggregateException e) when (e.InnerExceptions?.Count == 1) {
                 evaluationException = e;
                 // the Roslyn-emitted script delegates are async, so all exceptions
                 // raised within a delegate should be AggregateException; if there's
                 // just one inner exception, unwind it since the async nature of the
                 // script delegates is a REPL implementation detail.
-                result.Exception = ExceptionNode.Create (e.InnerExceptions [0]);
+                evaluationExceptionToReturn = ExceptionNode.Create (e.InnerExceptions [0]);
             } catch (ThreadAbortException e) {
                 evaluationException = e;
-                result.Interrupted = true;
+                interrupted = true;
                 Thread.ResetAbort ();
             } catch (ThreadInterruptedException e) {
                 evaluationException = e;
-                result.Interrupted = true;
+                interrupted = true;
             } catch (Exception e) {
                 evaluationException = e;
-                result.Exception = ExceptionNode.Create (e);
+                evaluationExceptionToReturn = ExceptionNode.Create (e);
             } finally {
                 stopwatch.Stop ();
                 currentRunThread = null;
 
-                result.Phase = EvaluationPhase.Evaluated;
-                evaluations.Observers.OnNext (result);
+                inFlight = inFlight.With (phase: EvaluationPhase.Evaluated);
+                evaluations.Observers.OnNext (inFlight);
 
                 capturedOutputWriter.SegmentCaptured -= CapturedOutputWriter_SegmentCaptured;
                 Console.SetOut (savedStdout);
                 Console.SetError (savedStderr);
             }
 
-            result.EvaluationDuration = stopwatch.Elapsed;
+            var evaluation = new Evaluation (
+                evaluationRequestId,
+                compilation.CodeCellId,
+                EvaluationResultHandling.Replace,
+                // an exception in the call to Prepare should not be explicitly caught
+                // here (see above) since it'll be handled at a higher level and can be
+                // flagged as being a bug in our code since this method should never throw.
+                agent.RepresentationManager.Prepare (inFlight.OriginalValue),
+                evaluationExceptionToReturn,
+                stopwatch.Elapsed,
+                InteractiveCulture.CurrentCulture.LCID,
+                InteractiveCulture.CurrentUICulture.LCID,
+                interrupted,
+                initializedAgentIntegration,
+                loadedAssemblies.ToArray ());
 
-            // an exception in PrepareResult should not be explicitly caught
-            // here (see above) since it'll be handled at a higher level and can be
-            // flagged as being a bug in our code since this method should never throw.
-            result.Result = agent.RepresentationManager.Prepare (result.Result);
+            inFlight = inFlight.With (EvaluationPhase.Represented, evaluation: evaluation);
+            evaluations.Observers.OnNext (inFlight);
 
-            result.InitializedAgentIntegration = initializedAgentIntegration;
-            result.LoadedAssemblies = loadedAssemblies.ToArray ();
+            agent.PublishEvaluation (evaluation);
 
-            result.CultureLCID = InteractiveCulture.CurrentCulture.LCID;
-            result.UICultureLCID = InteractiveCulture.CurrentUICulture.LCID;
-
-            result.Phase = EvaluationPhase.Represented;
-            evaluations.Observers.OnNext (result);
-
-            if (evaluationException != null)
-                evaluations.Observers.OnError (evaluationException);
-
-            agent.PublishEvaluation (result);
-
-            result.Phase = EvaluationPhase.Completed;
-            evaluations.Observers.OnNext (result);
+            inFlight = inFlight.With (phase: EvaluationPhase.Completed);
+            evaluations.Observers.OnNext (inFlight);
         }
 
         async Task<object> CoreRunAsync (

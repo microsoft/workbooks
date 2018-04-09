@@ -651,10 +651,10 @@ namespace Xamarin.Interactive.Workbook.Models
                     cultureInfo,
                     EvaluationService.FilterException (result.Exception),
                     result.ResultHandling);
-            else if (!result.Interrupted && result.Result != null || isResultAnExpression)
+            else if (!result.Interrupted && result.ValueRepresentations != null || isResultAnExpression)
                 codeCellState.View.RenderResult (
                     cultureInfo,
-                    result.Result,
+                    result.ResultRepresentations is RepresentedObject ro ? ro : result.ResultRepresentations? [0],
                     result.ResultHandling);
         }
 
@@ -667,8 +667,8 @@ namespace Xamarin.Interactive.Workbook.Models
             if (codeCellState == null)
                 return;
 
-            if (result.Result is RepresentedObject ro &&
-                ro.Any (r => r is Guid guid && guid == EvaluationContextGlobalObject.clear)) {
+            if (result.ResultRepresentations?.Any (
+                r => r is Guid guid && guid == EvaluationContextGlobalObject.clear) == true) {
                 if (ClientSession.SessionKind == ClientSessionKind.Workbook)
                     codeCellState.View.RenderDiagnostic (new Diagnostic (
                         DiagnosticSeverity.Error,

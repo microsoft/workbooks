@@ -1,43 +1,85 @@
-//
-// Author:
-//   Aaron Bockover <abock@xamarin.com>
-//
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
 using System;
+using System.Collections.Generic;
 
-using Xamarin.Interactive.Protocol;
-using Xamarin.Interactive.Representations.Reflection;
-
+using Xamarin.Interactive.CodeAnalysis.Events;
 using Xamarin.Interactive.CodeAnalysis.Resolving;
+using Xamarin.Interactive.Protocol;
+using Xamarin.Interactive.Representations;
+using Xamarin.Interactive.Representations.Reflection;
 
 namespace Xamarin.Interactive.CodeAnalysis
 {
     [Serializable]
-    sealed class Evaluation : IXipResponseMessage, IEvaluation
+    public sealed class Evaluation : IXipResponseMessage, ICodeCellEvent
     {
-        [NonSerialized]
-        Compilation compilation;
-        ICompilation IEvaluation.Compilation => compilation;
-        public Compilation Compilation {
-            set => compilation = value;
+        readonly Guid requestId;
+        Guid IXipResponseMessage.RequestId => requestId;
+
+        public CodeCellId CodeCellId { get; }
+        public EvaluationResultHandling ResultHandling { get; }
+        public IRepresentedType ResultType { get; }
+        public IReadOnlyList<object> ResultRepresentations { get; }
+        internal ExceptionNode Exception { get; }
+        public TimeSpan EvaluationDuration { get; }
+        public int CultureLCID { get; }
+        public int UICultureLCID { get; }
+        public bool Interrupted { get; }
+        public bool InitializedAgentIntegration { get; }
+        public IReadOnlyList<AssemblyDefinition> LoadedAssemblies { get; }
+
+        public Evaluation (
+            CodeCellId codeCellId,
+            EvaluationResultHandling resultHandling,
+            object value)
+            : this (
+                Guid.Empty,
+                codeCellId,
+                resultHandling,
+                value)
+        {
         }
 
-        public Guid RequestId { get; set; }
-        public CodeCellId CodeCellId { get; set; }
-        public EvaluationPhase Phase { get; set; }
-        public EvaluationResultHandling ResultHandling { get; set; }
-        public object Result { get; set; }
-        public ExceptionNode Exception { get; set; }
-        public bool Interrupted { get; set; }
-        public TimeSpan EvaluationDuration { get; set; }
-        // CultureInfo is serializable, but it's very very heavy, and
-        // does not cache (e.g. is not IObjectReference) so so we'll
-        // just look up by LCID on the other side
-        public int CultureLCID { get; set; }
-        public int UICultureLCID { get; set; }
-        public bool InitializedAgentIntegration { get; set; }
-        public AssemblyDefinition [] LoadedAssemblies { get; set; }
+        internal Evaluation (
+            Guid requestId,
+            CodeCellId codeCellId,
+            EvaluationResultHandling resultHandling,
+            object value,
+            ExceptionNode exception = null,
+            TimeSpan evaluationDuration = default,
+            int cultureLCID = 0,
+            int uiCultureLCID = 0,
+            bool interrupted = false,
+            bool initializedAgentIntegration = false,
+            IReadOnlyList<AssemblyDefinition> loadedAssemblies = null)
+        {
+            this.requestId = requestId;
+
+            CodeCellId = codeCellId;
+            ResultHandling = resultHandling;
+
+            switch (value) {
+            case null:
+                break;
+            case RepresentedObject representedObject:
+                ResultType = representedObject.RepresentedType;
+                ResultRepresentations = representedObject;
+                break;
+            default:
+                ResultType = RepresentedType.Lookup (value.GetType ());
+                ResultRepresentations = new [] { value };
+                break;
+            }
+
+            Exception = exception;
+            EvaluationDuration = evaluationDuration;
+            CultureLCID = cultureLCID;
+            UICultureLCID = uiCultureLCID;
+            Interrupted = interrupted;
+            InitializedAgentIntegration = initializedAgentIntegration;
+            LoadedAssemblies = loadedAssemblies;
+        }
     }
 }

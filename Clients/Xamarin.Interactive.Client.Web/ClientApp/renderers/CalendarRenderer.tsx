@@ -14,10 +14,10 @@ import { CodeCellResult } from '../evaluation';
 import { ResultRenderer, ResultRendererRepresentation } from '../rendering'
 
 export default function CalendarRendererFactory(result: CodeCellResult) {
-    return result.valueRepresentations &&
-        result.valueRepresentations.length > 0 &&
-        typeof result.valueRepresentations[0] === 'string' &&
-        result.type === 'System.DateTime'
+    return result.resultRepresentations &&
+        result.resultRepresentations.length > 0 &&
+        typeof result.resultRepresentations[0] === 'string' &&
+        result.resultType === 'System.DateTime'
         ? new CalendarRenderer
         : null
 }
@@ -28,7 +28,7 @@ class CalendarRenderer implements ResultRenderer {
             displayName: 'Calendar',
             component: CalendarRepresentation,
             componentProps: {
-                value: new Date((result.valueRepresentations as any[])[0] as string)
+                value: new Date((result.resultRepresentations as any[])[0] as string)
             }
         }]
     }

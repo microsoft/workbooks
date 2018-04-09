@@ -16,8 +16,8 @@ import {
 const xirType = 'Xamarin.Interactive.Representations.VerbatimHtml'
 
 export default function VerbatimHtmlRendererFactory(result: CodeCellResult) {
-    return result.valueRepresentations &&
-        result.valueRepresentations.some(r => r.$type === xirType)
+    return result.resultRepresentations &&
+        result.resultRepresentations.some(r => r.$type === xirType)
         ? new VerbatimHtmlRenderer
         : null
 }
@@ -30,10 +30,10 @@ class VerbatimHtmlRenderer implements ResultRenderer {
     getRepresentations(result: CodeCellResult) {
         const reps: ResultRendererRepresentation[] = []
 
-        if (!result.valueRepresentations)
+        if (!result.resultRepresentations)
             return reps
 
-        for (const value of result.valueRepresentations) {
+        for (const value of result.resultRepresentations) {
             if (value.$type === xirType)
                 reps.push({
                     displayName: 'HTML',

@@ -32,7 +32,7 @@ export interface Diagnostic {
 export const enum CodeCellEventType {
     EvaluationStarted = 'CodeCellEvaluationStartedEvent',
     EvaluationFinished = 'CodeCellEvaluationFinishedEvent',
-    Result = 'CodeCellResultEvent',
+    Evaluation = 'Evaluation',
     CapturedOutputSegment = 'CapturedOutputSegment'
 }
 
@@ -67,8 +67,8 @@ export interface CodeCellUpdate extends ICodeCellEvent {
 
 export interface CodeCellResult extends ICodeCellEvent  {
     resultHandling: CodeCellResultHandling
-    type: string | null
-    valueRepresentations: any[] | null
+    resultType: string | null
+    resultRepresentations: any[] | null
 }
 
 export interface CapturedOutputSegment extends ICodeCellEvent {
