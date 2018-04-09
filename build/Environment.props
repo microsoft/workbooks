@@ -36,23 +36,44 @@
     <ClientBundleOutputPath Condition="$(IsWindows)">$([MSBuild]::NormalizeDirectory($(TopDirectory)Clients\Xamarin.Interactive.Client.Windows\bin\$(Configuration)))</ClientBundleOutputPath>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(WithoutXamarin)' != ''">
+    <HaveXamarinMac>false</HaveXamarinMac>
+    <HaveXamarinIos>false</HaveXamarinIos>
+    <HaveXamarinAndroid>false</HaveXamarinAndroid>
+  </PropertyGroup>
+
   <PropertyGroup>
     <MonoInstallRootDirectory Condition="$(IsMac)">$([MSBuild]::NormalizeDirectory('/Library/Frameworks/Mono.framework/Versions/Current'))</MonoInstallRootDirectory>
+    <HaveMono Condition="'$(HaveMono)' == '' And '$(MonoInstallRootDirectory)' != '' And Exists('$(MonoInstallRootDirectory)VERSION')">true</HaveMono>
     <HaveMono Condition="'$(HaveMono)' == ''">false</HaveMono>
-    <HaveMono Condition="'$(MonoInstallRootDirectory)' != '' And Exists('$(MonoInstallRootDirectory)VERSION')">true</HaveMono>
     <MonoCilStrip Condition='$(HaveMono)'>$(MonoInstallRootDirectory)Commands/mono-cil-strip</MonoCilStrip>
 
+    <HaveXamarinMac Condition="'$(HaveXamarinMac)' == '' And $(IsMac) And Exists('/Library/Frameworks/Xamarin.Mac.framework/Versions/Current/Version')">true</HaveXamarinMac>
     <HaveXamarinMac Condition="'$(HaveXamarinMac)' == ''">false</HaveXamarinMac>
-    <HaveXamarinMac Condition="$(IsMac) And Exists('/Library/Frameworks/Xamarin.Mac.framework/Versions/Current/Version')">true</HaveXamarinMac>
 
+    <HaveXamarinIos Condition="'$(HaveXamarinIos)' == '' And $(IsMac) And Exists('/Library/Frameworks/Xamarin.iOS.framework/Versions/Current/Version')">true</HaveXamarinIos>
+    <HaveXamarinIos Condition="'$(HaveXamarinIos)' == '' And $(IsWindows) And Exists('$(MSBuildExtensionsPath)\Xamarin\iOS')">true</HaveXamarinIos>
     <HaveXamarinIos Condition="'$(HaveXamarinIos)' == ''">false</HaveXamarinIos>
-    <HaveXamarinIos Condition="$(IsMac) And Exists('/Library/Frameworks/Xamarin.iOS.framework/Versions/Current/Version')">true</HaveXamarinIos>
-    <HaveXamarinIos Condition="$(IsWindows) And Exists('$(MSBuildExtensionsPath)\Xamarin\iOS')">true</HaveXamarinIos>
 
+    <HaveXamarinAndroid Condition="'$(HaveXamarinAndroid)' == '' And $(IsMac) And Exists('/Library/Frameworks/Xamarin.Android.framework/Versions/Current/Version')">true</HaveXamarinAndroid>
+    <HaveXamarinAndroid Condition="'$(HaveXamarinAndroid)' == '' And $(IsWindows) And Exists('$(MSBuildExtensionsPath)\Xamarin\Android')">true</HaveXamarinAndroid>
     <HaveXamarinAndroid Condition="'$(HaveXamarinAndroid)' == ''">false</HaveXamarinAndroid>
-    <HaveXamarinAndroid Condition="$(IsMac) And Exists('/Library/Frameworks/Xamarin.Android.framework/Versions/Current/Version')">true</HaveXamarinAndroid>
-    <HaveXamarinAndroid Condition="$(IsWindows) And Exists('$(MSBuildExtensionsPath)\Xamarin\Android')">true</HaveXamarinAndroid>
   </PropertyGroup>
+
+  <ItemGroup>
+    <PropertiesToPersist Include="HaveMono">
+      <Value>$(HaveMono)</Value>
+    </PropertiesToPersist>
+    <PropertiesToPersist Include="HaveXamarinMac">
+      <Value>$(HaveXamarinMac)</Value>
+    </PropertiesToPersist>
+    <PropertiesToPersist Include="HaveXamarinIos">
+      <Value>$(HaveXamarinIos)</Value>
+    </PropertiesToPersist>
+    <PropertiesToPersist Include="HaveXamarinAndroid">
+      <Value>$(HaveXamarinAndroid)</Value>
+    </PropertiesToPersist>
+  </ItemGroup>
 
   <ItemGroup>
     <WhichSearchPath Include="$(TopDirectory)"/>
