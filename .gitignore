@@ -5,7 +5,8 @@ node_modules/
 packages/
 workbooks-proprietary/
 
-Build/Local.props
+*.Tests.xml
+TestResults/
 
 External/Newtonsoft.Json*
 *.dll
