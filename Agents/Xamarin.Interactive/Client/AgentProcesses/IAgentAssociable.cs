@@ -14,7 +14,7 @@ namespace Xamarin.Interactive.Client.AgentProcesses
 {
     interface IAgentAssociable
     {
-        Task<AgentAssociation> GetAgentAssociationAsync (
+        Task<AgentIdentity> GetAgentAssociationAsync (
             AgentIdentity agentIdentity,
             CancellationToken cancellationToken);
     }

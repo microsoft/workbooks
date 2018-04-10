@@ -92,8 +92,6 @@ namespace Xamarin.Interactive.Session
 
             var workspaceConfiguration = await WorkspaceConfiguration.CreateAsync (
                 State.AgentConnection.Type,
-                State.AgentConnection.IncludePeImage,
-                State.AgentConnection.AssemblySearchPaths,
                 State.AgentConnection.Api,
                 sessionKind,
                 cancellationToken).ConfigureAwait (false);

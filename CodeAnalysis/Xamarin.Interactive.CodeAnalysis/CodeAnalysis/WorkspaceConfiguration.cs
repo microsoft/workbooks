@@ -27,42 +27,36 @@ namespace Xamarin.Interactive.CodeAnalysis
 
         public TargetCompilationConfiguration CompilationConfiguration { get; }
         public InteractiveDependencyResolver DependencyResolver { get; }
-        public bool IncludePEImagesInDependencyResolution { get; }
-        public Type HostObjectType { get; }
 
         public WorkspaceConfiguration (
             TargetCompilationConfiguration compilationConfiguration,
-            InteractiveDependencyResolver dependencyResolver,
-            bool includePEImagesInDependencyResolution,
-            Type hostObjectType = null)
+            InteractiveDependencyResolver dependencyResolver)
         {
             CompilationConfiguration = compilationConfiguration;
             DependencyResolver = dependencyResolver;
-            IncludePEImagesInDependencyResolution = includePEImagesInDependencyResolution;
-            HostObjectType = hostObjectType;
         }
 
         internal static async Task<WorkspaceConfiguration> CreateAsync (
             AgentType agentType,
-            bool includePeImage,
-            IReadOnlyList<string> assemblySearchPaths,
             IAgentEvaluationService agentEvaluationService,
             ClientSessionKind sessionKind,
             CancellationToken cancellationToken = default)
         {
-            var configuration = await agentEvaluationService.InitializeAsync (includePeImage, cancellationToken)
-                .ConfigureAwait (false);
+            await agentEvaluationService.InitializeAsync (cancellationToken).ConfigureAwait (false);
+
+            var configuration = agentEvaluationService.TargetCompilationConfiguration;
+
             if (configuration == null)
                 throw new Exception (
-                    $"{nameof (IAgentEvaluationService)}.{nameof (IAgentEvaluationService.InitializeAsync)} " +
-                    $"did not return a {nameof (TargetCompilationConfiguration)}");
+                    $"{nameof (IAgentEvaluationService)}." +
+                    $"{nameof (IAgentEvaluationService.TargetCompilationConfiguration)} " +
+                    $"is null");
 
             var dependencyResolver = CreateDependencyResolver (
                 agentType,
-                assemblySearchPaths);
+                configuration.AssemblySearchPaths);
 
             var defaultRefs = await agentEvaluationService.GetAppDomainAssembliesAsync (
-                includePeImage,
                 cancellationToken).ConfigureAwait (false);
 
             // Only do this for Inspector sessions. Workbooks will do their own Forms init later.
@@ -73,21 +67,21 @@ namespace Xamarin.Interactive.CodeAnalysis
                         formsReference.Name.Version,
                         agentType,
                         agentEvaluationService,
-                        dependencyResolver,
-                        configuration.EvaluationContextId,
-                        includePeImage).ConfigureAwait (false);
+                        dependencyResolver).ConfigureAwait (false);
             }
 
             dependencyResolver.AddDefaultReferences (defaultRefs);
 
-            return new WorkspaceConfiguration (
-                configuration,
+            var globalStateType = ResolveHostObjectType (
                 dependencyResolver,
-                includePeImage,
-                ResolveHostObjectType (
-                    dependencyResolver,
-                    configuration,
-                    agentType));
+                configuration,
+                agentType);
+
+            configuration.With (globalStateType: configuration
+                .GlobalStateType
+                .WithResolvedType (globalStateType));
+
+            return new WorkspaceConfiguration (configuration, dependencyResolver);
         }
 
         static InteractiveDependencyResolver CreateDependencyResolver (
@@ -132,13 +126,13 @@ namespace Xamarin.Interactive.CodeAnalysis
 
             using (var assemblyContext = new EvaluationAssemblyContext ()) {
                 string globalStateAssemblyCachePath = null;
-                if (configuration.GlobalStateAssembly.Content.PEImage != null)
+                if (configuration.GlobalStateType.Assembly.Content.PEImage != null)
                     globalStateAssemblyCachePath =
                         dependencyResolver.CacheRemoteAssembly (
-                            configuration.GlobalStateAssembly);
+                            configuration.GlobalStateType.Assembly);
 
                 var resolvedAssemblies = dependencyResolver
-                    .Resolve (new [] { configuration.GlobalStateAssembly })
+                    .Resolve (new [] { configuration.GlobalStateType.Assembly })
                     .Select (r => new AssemblyDefinition (r.AssemblyName, r.Path));
 
                 assemblyContext.AddRange (resolvedAssemblies);
@@ -146,7 +140,7 @@ namespace Xamarin.Interactive.CodeAnalysis
                 var globalStateAssemblyDef = resolvedAssemblies.First (
                     assembly => ResolvedAssembly.NameEqualityComparer.Default.Equals (
                         assembly.Name,
-                        configuration.GlobalStateAssembly.Name));
+                        configuration.GlobalStateType.Assembly.Name));
 
                 netStandardAssembly = netStandardAssembly ??
                     Assembly.ReflectionOnlyLoadFrom (
@@ -167,7 +161,7 @@ namespace Xamarin.Interactive.CodeAnalysis
                     globalStateAssembly = Assembly.ReflectionOnlyLoadFrom (
                         globalStateAssemblyCachePath ?? globalStateAssemblyDef.Content.Location);
 
-                return globalStateAssembly.GetType (configuration.GlobalStateTypeName);
+                return globalStateAssembly.GetType (configuration.GlobalStateType.Name);
             }
         }
 
@@ -175,9 +169,7 @@ namespace Xamarin.Interactive.CodeAnalysis
             Version formsVersion,
             AgentType agentType,
             IAgentEvaluationService agentEvaluationService,
-            DependencyResolver dependencyResolver,
-            EvaluationContextId evaluationContextId,
-            bool includePeImage)
+            DependencyResolver dependencyResolver)
         {
             var formsAssembly = InteractiveInstallation.Default.LocateFormsAssembly (agentType);
             if (string.IsNullOrWhiteSpace (formsAssembly))
@@ -208,6 +200,9 @@ namespace Xamarin.Interactive.CodeAnalysis
                 return;
             }
 
+            var includePeImage = agentEvaluationService
+                .TargetCompilationConfiguration
+                .IncludePEImagesInDependencyResolution;
             var assembliesToLoad = deps.Select (dep => {
                 var peImage = includePeImage ? GetFileBytes (dep.Path) : null;
                 var syms = includePeImage ? GetDebugSymbolsFromAssemblyPath (dep.Path) : null;
@@ -219,8 +214,7 @@ namespace Xamarin.Interactive.CodeAnalysis
                 );
             }).ToArray ();
 
-            var results = await agentEvaluationService.LoadAssembliesAsync (
-                assembliesToLoad);
+            var results = await agentEvaluationService.LoadAssembliesAsync (assembliesToLoad);
 
             var failed = results.Where (p => !p.Success);
             if (failed.Any ()) {

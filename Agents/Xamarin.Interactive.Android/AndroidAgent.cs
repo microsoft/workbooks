@@ -101,6 +101,9 @@ namespace Xamarin.Interactive.Android
             activity?.FindViewById<ViewGroup> (contentId)?.RemoveAllViews ();
         }
 
+        internal override bool IncludePEImageInAssemblyDefinitions (HostOS compilationOS)
+            => true;
+
         string GetApplicationName ()
         {
             var context = Application.Context;

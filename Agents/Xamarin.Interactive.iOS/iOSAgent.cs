@@ -65,6 +65,9 @@ namespace Xamarin.Interactive.iOS
                 subview.RemoveFromSuperview ();
         }
 
+        internal override bool IncludePEImageInAssemblyDefinitions (HostOS compilationOS)
+            => compilationOS != HostOS.macOS;
+
         internal override IEnumerable<string> GetReplDefaultUsingNamespaces ()
         {
             return base.GetReplDefaultUsingNamespaces ()

@@ -9,6 +9,7 @@
 
 using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Net;
 using System.Net.Http;
@@ -26,7 +27,6 @@ using Xamarin.Interactive.Serialization;
 using Xamarin.Interactive.Remote;
 using Xamarin.Interactive.Representations;
 using Xamarin.Interactive.Representations.Reflection;
-using System.Collections.Generic;
 using Xamarin.Interactive.CodeAnalysis.Events;
 
 namespace Xamarin.Interactive.Client
@@ -50,8 +50,14 @@ namespace Xamarin.Interactive.Client
 
         public CancellationToken SessionCancellationToken { get; set; }
 
-        public AgentClient (string host, ushort port)
+        public AgentClient (
+            string host,
+            ushort port,
+            IReadOnlyList<string> assemblySearchPaths)
         {
+            TargetCompilationConfiguration = TargetCompilationConfiguration.CreateInitialForCompilationWorkspace (
+                assemblySearchPaths);
+
             if (string.IsNullOrEmpty (host))
                 host = IPAddress.Loopback.ToString ();
 
@@ -132,11 +138,6 @@ namespace Xamarin.Interactive.Client
 
             messages.Observers.OnCompleted ();
         }
-
-        public Task AbortEvaluationAsync (EvaluationContextId evaluationContextId)
-            => SendAsync<bool> (
-                new AbortEvaluationRequest (evaluationContextId),
-                SessionCancellationToken);
 
         public Task<AgentFeatures> GetAgentFeaturesAsync (
             CancellationToken cancellationToken = default (CancellationToken))
@@ -275,26 +276,20 @@ namespace Xamarin.Interactive.Client
         readonly Observable<ICodeCellEvent> codeCellEvents = new Observable<ICodeCellEvent> ();
         IObservable<ICodeCellEvent> IAgentEvaluationService.Events => codeCellEvents;
 
-        public EvaluationContextId EvaluationContextId { get; private set; }
+        public TargetCompilationConfiguration TargetCompilationConfiguration { get; private set; }
 
-        async Task<TargetCompilationConfiguration> IAgentEvaluationService.InitializeAsync (
-            bool includePeImage,
+        async Task IAgentEvaluationService.InitializeAsync (
             CancellationToken cancellationToken)
         {
-            var configuration = await SendAsync<TargetCompilationConfiguration> (
-                new EvaluationContextInitializeRequest (includePeImage),
-                SessionCancellationToken);
-
-            EvaluationContextId = configuration.EvaluationContextId;
-
-            return configuration;
+            TargetCompilationConfiguration = await SendAsync<TargetCompilationConfiguration> (
+                new EvaluationContextInitializeRequest (TargetCompilationConfiguration),
+                GetCancellationToken (cancellationToken));
         }
 
         async Task<IReadOnlyList<AssemblyDefinition>> IAgentEvaluationService.GetAppDomainAssembliesAsync (
-            bool includePeImage,
             CancellationToken cancellationToken)
             => await SendAsync<AssemblyDefinition []> (
-                new GetAppDomainAssembliesRequest (includePeImage),
+                new GetAppDomainAssembliesRequest (TargetCompilationConfiguration.IncludePEImagesInDependencyResolution),
                 GetCancellationToken (cancellationToken));
 
         Task IAgentEvaluationService.ResetStateAsync (
@@ -308,11 +303,17 @@ namespace Xamarin.Interactive.Client
             CancellationToken cancellationToken)
         {
             var response = await SendAsync<AssemblyLoadResponse> (
-                new AssemblyLoadRequest (EvaluationContextId, assemblies),
+                new AssemblyLoadRequest (TargetCompilationConfiguration.EvaluationContextId, assemblies),
                 GetCancellationToken (cancellationToken));
 
             return response.LoadResults;
         }
+
+        Task IAgentEvaluationService.AbortEvaluationAsync (
+            CancellationToken cancellationToken)
+            => SendAsync<bool> (
+                new AbortEvaluationRequest (TargetCompilationConfiguration.EvaluationContextId),
+                GetCancellationToken (cancellationToken));
 
         Task IAgentEvaluationService.EvaluateAsync (
             Compilation compilation,

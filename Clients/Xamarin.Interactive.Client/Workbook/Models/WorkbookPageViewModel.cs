@@ -362,7 +362,7 @@ namespace Xamarin.Interactive.Workbook.Models
             if (!ClientSession.Agent.IsConnected)
                 return;
 
-            await ClientSession.Agent.Api.AbortEvaluationAsync (EvaluationContextId);
+            await ((IAgentEvaluationService)ClientSession.Agent.Api).AbortEvaluationAsync ();
         }
 
         public Task<bool> AddTopLevelReferencesAsync (

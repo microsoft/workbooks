@@ -21,16 +21,10 @@ namespace Xamarin.Interactive.Client
     {
         readonly IAgentTicket ticket;
 
-        IReadOnlyList<string> IAgentConnection.AssemblySearchPaths => AssemblySearchPaths;
-
         public AgentType Type { get; }
         public AgentIdentity Identity { get; }
         public AgentClient Api { get; }
-        public ImmutableArray<string> AssemblySearchPaths { get; }
         public AgentFeatures Features { get; }
-
-        public bool IncludePeImage
-            => (HostEnvironment.OS != HostOS.macOS && Type == AgentType.iOS) || Type == AgentType.Android;
 
         public bool IsConnected
             => ticket != null && !ticket.IsDisposed && Api != null;
@@ -38,7 +32,6 @@ namespace Xamarin.Interactive.Client
         public AgentConnection (AgentType agentType)
         {
             Type = agentType;
-            AssemblySearchPaths = ImmutableArray<string>.Empty;
         }
 
         AgentConnection (
@@ -46,7 +39,6 @@ namespace Xamarin.Interactive.Client
             AgentType type,
             AgentIdentity identity,
             AgentClient apiClient,
-            ImmutableArray<string> assemblySearchPaths,
             AgentFeatures features)
         {
             this.ticket = ticket;
@@ -54,7 +46,6 @@ namespace Xamarin.Interactive.Client
             Type = type;
             Identity = identity;
             Api = apiClient;
-            AssemblySearchPaths = assemblySearchPaths;
             Features = features;
         }
 
@@ -73,7 +64,6 @@ namespace Xamarin.Interactive.Client
                 agentType,
                 Identity,
                 Api,
-                AssemblySearchPaths,
                 Features);
         }
 
@@ -101,8 +91,6 @@ namespace Xamarin.Interactive.Client
                     messageService,
                     disconnectedHandler);
 
-            var assemblySearchPaths = ticket.AssemblySearchPaths;
-
             var identity = await ticket.GetAgentIdentityAsync (cancellationToken);
             if (identity == null)
                 throw new Exception ("IAgentTicket.GetAgentIdentityAsync did not return an identity");
@@ -118,9 +106,6 @@ namespace Xamarin.Interactive.Client
                 identity.AgentType,
                 identity,
                 apiClient,
-                assemblySearchPaths == null
-                    ? ImmutableArray<string>.Empty
-                    : assemblySearchPaths.ToImmutableArray (),
                 await apiClient.GetAgentFeaturesAsync (cancellationToken));
         }
 
@@ -139,7 +124,6 @@ namespace Xamarin.Interactive.Client
                 Type,
                 Identity,
                 Api,
-                AssemblySearchPaths,
                 features);
         }
 

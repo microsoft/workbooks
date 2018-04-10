@@ -98,7 +98,7 @@ namespace Xamarin.Interactive.NuGet
             var agent = await getAgentConnectionHandler (false, cancellationToken);
 
             foreach (var package in packageManager.InstalledPackages)
-                await LoadPackageIntegrationsAsync (agent, package, cancellationToken);
+                await LoadPackageIntegrationsAsync (agent.Type, agent.Api, package, cancellationToken);
         }
 
         /// <summary>
@@ -145,7 +145,7 @@ namespace Xamarin.Interactive.NuGet
 
             foreach (var installedPackage in installedPackages) {
                 ReferencePackageInWorkspace (installedPackage);
-                await LoadPackageIntegrationsAsync (agent, installedPackage, cancellationToken);
+                await LoadPackageIntegrationsAsync (agent.Type, agent.Api, installedPackage, cancellationToken);
             }
 
             // TODO: Figure out metapackages. Install Microsoft.AspNet.SignalR, for example,
@@ -190,20 +190,18 @@ namespace Xamarin.Interactive.NuGet
         }
 
         async Task LoadPackageIntegrationsAsync (
-            IAgentConnection agent,
+            AgentType agentType,
+            IAgentEvaluationService agentEvaluationService,
             InteractivePackage package,
             CancellationToken cancellationToken)
         {
             // Forms is special-cased because we own it and load the extension from our framework.
-            if (PackageIdComparer.Equals (package.Identity.Id, "Xamarin.Forms")) {
+            if (PackageIdComparer.Equals (package.Identity.Id, "Xamarin.Forms"))
                 await WorkspaceConfiguration.LoadFormsAgentExtensions (
                     package.Identity.Version.Version,
-                    agent.Type,
-                    agent.Api,
-                    dependencyResolver,
-                    evaluationService.EvaluationContextId,
-                    agent.IncludePeImage);
-            }
+                    agentType,
+                    agentEvaluationService,
+                    dependencyResolver);
 
             var assembliesToLoadOnAgent = new List<ResolvedAssembly> ();
 
@@ -224,11 +222,15 @@ namespace Xamarin.Interactive.NuGet
             }
 
             if (assembliesToLoadOnAgent.Count > 0) {
+                var includePeImage = agentEvaluationService
+                    .TargetCompilationConfiguration
+                    .IncludePEImagesInDependencyResolution;
+
                 var assembliesToLoad = assembliesToLoadOnAgent.Select (dep => {
-                    var peImage = agent.IncludePeImage
+                    var peImage = includePeImage
                        ? GetFileBytes (dep.Path)
                        : null;
-                    var syms = agent.IncludePeImage
+                    var syms = includePeImage
                         ? GetDebugSymbolsFromAssemblyPath (dep.Path)
                         : null;
                     return new AssemblyDefinition (
@@ -239,7 +241,7 @@ namespace Xamarin.Interactive.NuGet
                     );
                 }).ToArray ();
 
-                await ((IAgentEvaluationService)agent.Api).LoadAssembliesAsync (
+                await agentEvaluationService.LoadAssembliesAsync (
                     assembliesToLoad,
                     cancellationToken);
             }

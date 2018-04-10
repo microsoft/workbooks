@@ -1,7 +1,3 @@
-//
-// Author:
-//   Aaron Bockover <abock@xamarin.com>
-//
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
@@ -18,40 +14,43 @@ namespace Xamarin.Interactive.CodeAnalysis
     [Serializable]
     sealed class EvaluationContextInitializeRequest : MainThreadRequest<TargetCompilationConfiguration>
     {
-        public bool IncludePeImage { get; }
+        public TargetCompilationConfiguration Configuration { get; }
 
-        public EvaluationContextInitializeRequest (bool includePeImage)
-        {
-            IncludePeImage = includePeImage;
-        }
+        public EvaluationContextInitializeRequest (TargetCompilationConfiguration configuration)
+            => Configuration = configuration
+                ?? throw new ArgumentNullException (nameof (configuration));
 
         protected override Task<TargetCompilationConfiguration> HandleAsync (Agent agent)
         {
-            var response = new TargetCompilationConfiguration ();
-
-            response.DefaultUsings = agent.GetReplDefaultUsingNamespaces ().ToArray ();
-            response.DefaultWarningSuppressions = agent.GetReplDefaultWarningSuppressions ().ToArray ();
-
             var evaluationContext = agent.CreateEvaluationContext ();
-            response.EvaluationContextId = evaluationContext.Id;
+
+            var includePEImagesInDependencyResolution = agent.IncludePEImageInAssemblyDefinitions (
+                Configuration.CompilationOS);
+
+            TypeDefinition globalStateTypeDefinition = default;
 
             if (evaluationContext.GlobalState != null) {
                 var globalStateType = evaluationContext.GlobalState.GetType ();
-                response.GlobalStateTypeName = globalStateType.FullName;
+                byte [] peImage = null;
 
-                // HACK: This is a temporary fix to get iOS agent/app assemblies sent to the
-                //       Windows client when using the remote sim.
-                var peImage = IncludePeImage && File.Exists (globalStateType.Assembly.Location)
-                    ? File.ReadAllBytes (globalStateType.Assembly.Location)
-                    : null;
+                if (includePEImagesInDependencyResolution &&
+                    File.Exists (globalStateType.Assembly.Location))
+                    peImage = File.ReadAllBytes (globalStateType.Assembly.Location);
 
-                response.GlobalStateAssembly = new AssemblyDefinition (
-                    new AssemblyIdentity (globalStateType.Assembly.GetName ()),
-                    globalStateType.Assembly.Location,
-                    peImage: peImage);
+                globalStateTypeDefinition = new TypeDefinition (
+                    new AssemblyDefinition (
+                        new AssemblyIdentity (globalStateType.Assembly.GetName ()),
+                        globalStateType.Assembly.Location,
+                        peImage: peImage),
+                    globalStateType.FullName);
             }
 
-            return Task.FromResult (response);
+            return Task.FromResult (Configuration.With (
+                evaluationContextId: evaluationContext.Id,
+                globalStateType: globalStateTypeDefinition,
+                defaultImports: agent.GetReplDefaultUsingNamespaces ().ToArray (),
+                defaultWarningSuppressions: agent.GetReplDefaultWarningSuppressions ().ToArray (),
+                includePEImagesInDependencyResolution: includePEImagesInDependencyResolution));
         }
     }
 }

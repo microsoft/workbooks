@@ -393,11 +393,11 @@ namespace Xamarin.Interactive.CodeAnalysis.Roslyn
 
             DependencyResolver = dependencyResolver;
 
-            hostObjectType = configuration.HostObjectType;
+            hostObjectType = compilationConfiguration.GlobalStateType.ResolvedType;
             EvaluationContextId = compilationConfiguration.EvaluationContextId;
-            includePeImagesInResolution = configuration.IncludePEImagesInDependencyResolution;
+            includePeImagesInResolution = compilationConfiguration.IncludePEImagesInDependencyResolution;
 
-            initialImports = compilationConfiguration.DefaultUsings.ToImmutableArray ();
+            initialImports = compilationConfiguration.DefaultImports.ToImmutableArray ();
             initialWarningSuppressions = compilationConfiguration.DefaultWarningSuppressions.ToImmutableArray ();
             initialDiagnosticOptions = initialWarningSuppressions.ToImmutableDictionary (
                 warningId => warningId,

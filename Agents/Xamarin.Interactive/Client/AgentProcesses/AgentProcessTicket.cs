@@ -26,7 +26,6 @@ namespace Xamarin.Interactive.Client.AgentProcesses
 
         public int Id { get; }
 
-        public IReadOnlyList<string> AssemblySearchPaths { get; private set; }
         public bool IsDisposed { get; private set; }
 
         public event EventHandler Disposed;
@@ -55,20 +54,10 @@ namespace Xamarin.Interactive.Client.AgentProcesses
             }
         }
 
-        public async Task<IAgentProcessState> GetAgentProcessStateAsync (CancellationToken cancellationToken)
-        {
-            var agentProcessState = await AgentProcessManager.StartAsync (
+        public Task<IAgentProcessState> GetAgentProcessStateAsync (CancellationToken cancellationToken)
+            => AgentProcessManager.StartAsync (
                 ticket: this,
                 cancellationToken: cancellationToken);
-
-            AssemblySearchPaths = agentProcessState
-                .AgentProcess
-                .WorkbookApp
-                .Sdk
-                .AssemblySearchPaths;
-
-            return agentProcessState;
-        }
 
         public async Task<AgentIdentity> GetAgentIdentityAsync (
             CancellationToken cancellationToken = default (CancellationToken))

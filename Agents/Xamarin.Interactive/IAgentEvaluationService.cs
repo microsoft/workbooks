@@ -15,14 +15,11 @@ namespace Xamarin.Interactive.CodeAnalysis
     {
         IObservable<ICodeCellEvent> Events { get; }
 
-        EvaluationContextId EvaluationContextId { get; }
+        TargetCompilationConfiguration TargetCompilationConfiguration { get; }
 
-        Task<TargetCompilationConfiguration> InitializeAsync (
-            bool includePeImage,
-            CancellationToken cancellationToken = default);
+        Task InitializeAsync (CancellationToken cancellationToken = default);
 
         Task<IReadOnlyList<AssemblyDefinition>> GetAppDomainAssembliesAsync (
-            bool includePeImage,
             CancellationToken cancellationToken = default);
 
         Task ResetStateAsync (CancellationToken cancellationToken = default);
@@ -34,5 +31,7 @@ namespace Xamarin.Interactive.CodeAnalysis
         Task EvaluateAsync (
             Compilation compilation,
             CancellationToken cancellationToken = default);
+
+        Task AbortEvaluationAsync (CancellationToken cancellationToken = default);
     }
 }

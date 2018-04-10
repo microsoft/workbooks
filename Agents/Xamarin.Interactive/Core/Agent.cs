@@ -184,6 +184,9 @@ namespace Xamarin.Interactive.Core
         internal virtual IEnumerable<string> GetReplDefaultWarningSuppressions ()
             => Array.Empty<string> ();
 
+        internal virtual bool IncludePEImageInAssemblyDefinitions (HostOS compilationOS)
+            => false;
+
         public abstract InspectView GetVisualTree (string hierarchyKind);
 
         public virtual InspectView HighlightView (double x, double y, bool clear, string hierarchyKind)

@@ -24,7 +24,6 @@ namespace Xamarin.Interactive.Client
 
         AgentIdentity agentIdentity;
 
-        public IReadOnlyList<string> AssemblySearchPaths { get; }
         public IMessageService MessageService { get; }
         public bool IsDisposed { get; private set; }
 
@@ -43,9 +42,9 @@ namespace Xamarin.Interactive.Client
 
             client = new AgentClient (
                 clientSessionUri.Host,
-                clientSessionUri.Port);
+                clientSessionUri.Port,
+                clientSessionUri.AssemblySearchPaths);
 
-            AssemblySearchPaths = clientSessionUri.AssemblySearchPaths;
             MessageService = messageService;
 
             client.OpenAgentMessageChannel (monitorConnectionCancellationTokenSource.Token)

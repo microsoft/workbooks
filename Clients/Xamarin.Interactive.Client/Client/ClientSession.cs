@@ -531,8 +531,6 @@ namespace Xamarin.Interactive.Client
                     "csharp",
                     await WorkspaceConfiguration.CreateAsync (
                         Agent.Type,
-                        Agent.IncludePeImage,
-                        Agent.AssemblySearchPaths,
                         Agent.Api,
                         SessionKind,
                         cancellationToken),
