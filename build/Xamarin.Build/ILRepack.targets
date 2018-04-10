@@ -1,23 +1,17 @@
 <Project>
   <Target
     Name="ILRepack"
-    AfterTargets="Build"
-    Condition="!$([MSBuild]::IsOsPlatform('Linux'))"
-    Inputs="$(UnpackedAssembly)"
+    AfterTargets="CopyFilesToOutputDirectory"
+    Inputs="$(TargetPath)"
     Outputs="$(PackedAssembly)">
     <ItemGroup>
-      <NuGetSearchPaths Include="$(NuGetPackageFolders)" />
+      <RepackReference
+        Include="@(Reference)"
+        Condition="!$([System.String]::new(%(Filename)).StartsWith('Microsoft'))"/>
     </ItemGroup>
-    <ItemGroup Condition="$([MSBuild]::ISOSUnixLike())">
-      <NetstandardLibraryPaths Include="$([MSBuild]::NormalizeDirectory(%(NuGetSearchPaths.Identity)))netstandard.library\**\netstandard.dll" />
-    </ItemGroup>
-    <PropertyGroup>
-      <CILRunner Condition='$([MSBuild]::IsOSUnixLike())'>mono </CILRunner>
-    </PropertyGroup>
-    <ItemGroup>
-      <ReferencedAssembly Include="$(OutputPath)*.dll" Exclude="$(OutputPath)System.*;$(OutputPath)Microsoft.*;$(UnpackedAssembly)" />
-    </ItemGroup>
-    <Exec Command="$(CILRunner)$(ILRepack) /internalize $(UnpackedAssembly) @(ReferencedAssembly -> '%(Identity)', ' ') /out:$(PackedAssembly) /lib:$(OutputPath) @(NetstandardLibraryPaths -> '/lib:%(RootDir)%(Directory)', ' ')" />
-    <Exec Condition="$([MSBuild]::IsOSUnixLike())" Command="chmod +x $(PackedAssembly)" />
+    <ILRepack
+      InputAssemblies="$(TargetPath)"
+      OutputAssembly="$(PackedAssembly)"
+      References="@(RepackReference)"/>
   </Target>
 </Project>

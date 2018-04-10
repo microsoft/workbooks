@@ -4,6 +4,10 @@
   </PropertyGroup>
 
   <UsingTask
+    TaskName="Xamarin.MSBuild.ILRepack"
+    AssemblyFile="$(Xamarin_Build_AssemblyFile)"/>
+
+  <UsingTask
     TaskName="Xamarin.MSBuild.FindReplaceInFiles"
     AssemblyFile="$(Xamarin_Build_AssemblyFile)"/>
 

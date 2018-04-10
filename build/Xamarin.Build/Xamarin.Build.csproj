@@ -3,16 +3,19 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <OutputPath>bin</OutputPath>
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
-    <UnpackedAssembly>$([MSBuild]::NormalizePath($(MSBuildThisFileDirectory)$(OutputPath)\$(TargetFramework)\$(AssemblyName).dll))</UnpackedAssembly>
     <PackedAssembly>$(MSBuildThisFileDirectory)$(AssemblyName).dll</PackedAssembly>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="ILRepack" Version="2.0.15" />
+    <PackageReference Include="Mono.Cecil" Version="0.10.0" />
     <PackageReference Include="Newtonsoft.Json" Version="11.0.1" />
     <PackageReference Include="CommonMark.NET" Version="0.15.1" />
     <PackageReference Include="Microsoft.Build" Version="15.6.82" />
     <PackageReference Include="Microsoft.Build.Tasks.Core" Version="15.6.82" />
     <PackageReference Include="System.IO.Compression.ZipFile" Version="4.3.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="$(ILRepack)" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\..\Agents\Xamarin.Interactive\Core\FilePath.cs">
@@ -36,5 +39,5 @@
       <LastGenOutput>PolicheckHtmlTemplate.cs</LastGenOutput>
     </None>
   </ItemGroup>
-  <Import Project="ILRepack.targets"/>
+  <Import Project="ILRepack.targets" />
 </Project>
