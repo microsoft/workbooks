@@ -525,10 +525,8 @@ namespace Xamarin.Interactive.Core
 
         public DirectoryInfo CreateDirectory ();
 
-        [IteratorStateMachine (typeof(FilePath.<EnumerateDirectories>d__28))]
         public IEnumerable<FilePath> EnumerateDirectories (string searchPattern = "*", SearchOption searchOption = SearchOption.TopDirectoryOnly);
 
-        [IteratorStateMachine (typeof(FilePath.<EnumerateFiles>d__29))]
         public IEnumerable<FilePath> EnumerateFiles (string searchPattern = "*", SearchOption searchOption = SearchOption.TopDirectoryOnly);
 
         public bool Equals (FilePath other);

@@ -46,6 +46,7 @@ namespace ApiDump
             case "StructLayout":
             case "DebuggerStepThrough":
             case "AsyncStateMachine":
+            case "IteratorStateMachine":
                 attribute.Remove ();
                 break;
             }
@@ -79,26 +80,32 @@ namespace ApiDump
 
         public override void VisitConstructorDeclaration (ConstructorDeclaration constructorDeclaration)
         {
-            if (constructorDeclaration.IsPublic ())
+            if (constructorDeclaration.IsPublic ()) {
+                base.VisitConstructorDeclaration (constructorDeclaration);
                 constructorDeclaration.Body = null;
-            else
+            } else {
                 constructorDeclaration.Remove ();
+            }
         }
 
         public override void VisitDestructorDeclaration (DestructorDeclaration destructorDeclaration)
         {
-            if (destructorDeclaration.IsPublic ())
+            if (destructorDeclaration.IsPublic ()) {
+                base.VisitDestructorDeclaration (destructorDeclaration);
                 destructorDeclaration.Body = null;
-            else
+            } else {
                 destructorDeclaration.Remove ();
+            }
         }
 
         public override void VisitMethodDeclaration (MethodDeclaration methodDeclaration)
         {
-            if (methodDeclaration.IsPublic ())
+            if (methodDeclaration.IsPublic ()) {
+                base.VisitMethodDeclaration (methodDeclaration);
                 methodDeclaration.Body = null;
-            else
+            } else {
                 methodDeclaration.Remove ();
+            }
         }
 
         public override void VisitOperatorDeclaration (OperatorDeclaration operatorDeclaration)

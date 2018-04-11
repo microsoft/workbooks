@@ -33,17 +33,15 @@ namespace Xamarin.Interactive.CodeAnalysis
 
         public EvaluationService (IWorkspaceService workspace, IEvaluationEnvironment evaluationEnvironment);
 
-        [AsyncStateMachine (typeof(EvaluationService.<AddTopLevelReferencesAsync>d__27))]
         public Task<bool> AddTopLevelReferencesAsync (IReadOnlyList<string> references, CancellationToken cancellationToken = default(CancellationToken));
 
         public void Dispose ();
 
         public Task EvaluateAllAsync (CancellationToken cancellationToken = default(CancellationToken));
 
-        [AsyncStateMachine (typeof(EvaluationService.<EvaluateAsync>d__34))]
-        public Task<CodeCellEvaluationFinishedEvent> EvaluateAsync (CodeCellId targetCodeCellId = default(CodeCellId), bool evaluateAll = false, CancellationToken cancellationToken = default(CancellationToken));
-
         public Task EvaluateAsync (string input, CancellationToken cancellationToken = default(CancellationToken));
+
+        public Task<CodeCellEvaluationFinishedEvent> EvaluateAsync (CodeCellId targetCodeCellId = default(CodeCellId), bool evaluateAll = false, CancellationToken cancellationToken = default(CancellationToken));
 
         public IDisposable InhibitEvaluate ();
 
@@ -55,7 +53,6 @@ namespace Xamarin.Interactive.CodeAnalysis
 
         public Task RemoveCodeCellAsync (CodeCellId codeCellId, CancellationToken cancellationToken = default(CancellationToken));
 
-        [AsyncStateMachine (typeof(EvaluationService.<UpdateCodeCellAsync>d__31))]
         public Task<CodeCellUpdatedEvent> UpdateCodeCellAsync (CodeCellId codeCellId, string buffer, CancellationToken cancellationToken = default(CancellationToken));
     }
     public interface IWorkspaceService

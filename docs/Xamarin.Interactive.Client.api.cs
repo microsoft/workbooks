@@ -223,7 +223,6 @@ namespace Xamarin.Interactive.Collections
 
         public void AddSource (IReadOnlyList<T> source);
 
-        [IteratorStateMachine (typeof(AggregateObservableCollection<>.<GetEnumerator>d__18))]
         public IEnumerator<T> GetEnumerator ();
     }
 }
@@ -351,7 +350,6 @@ namespace Xamarin.Interactive.Session
 
         public void Dispose ();
 
-        [AsyncStateMachine (typeof(InteractiveSession.<InitializeAsync>d__22))]
         public Task InitializeAsync (InteractiveSessionDescription sessionDescription, CancellationToken cancellationToken = default(CancellationToken));
 
         public void TerminateAgentConnection ();
