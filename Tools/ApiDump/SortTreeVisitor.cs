@@ -38,17 +38,17 @@ namespace ApiDump
 
         static string GetNodeSortName (AstNode node)
         {
-            var entity = node as EntityDeclaration;
-            if (entity != null)
+            if (node is EntityDeclaration entity)
                 return entity.Name;
 
-            var type = node as TypeDeclaration;
-            if (type != null)
+            if (node is TypeDeclaration type)
                 return type.Name;
 
-            var ns = node as NamespaceDeclaration;
-            if (ns != null)
+            if (node is NamespaceDeclaration ns)
                 return ns.FullName;
+
+            if (node is AttributeSection attributeSection)
+                return attributeSection.ToString ();
 
             return null;
         }
@@ -76,6 +76,7 @@ namespace ApiDump
 
         public override void VisitSyntaxTree (SyntaxTree syntaxTree)
         {
+            SortNodeCollection (syntaxTree.GetChildrenByRole (EntityDeclaration.AttributeRole));
             SortNodeCollection (syntaxTree.Members);
             base.VisitSyntaxTree (syntaxTree);
         }
