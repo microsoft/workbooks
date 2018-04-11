@@ -2,10 +2,10 @@
 [assembly: AssemblyCopyright ("Copyright 2016-2018 Microsoft. All rights reserved.\nCopyright 2014-2016 Xamarin Inc. All rights reserved.")]
 [assembly: AssemblyProduct ("Xamarin.Interactive.CodeAnalysis")]
 [assembly: AssemblyTitle ("Xamarin.Interactive.CodeAnalysis")]
+[assembly: InternalsVisibleTo ("Xamarin Inspector")]
+[assembly: InternalsVisibleTo ("Xamarin Workbooks")]
 [assembly: InternalsVisibleTo ("Xamarin.Interactive.Client")]
 [assembly: InternalsVisibleTo ("Xamarin.Interactive.Tests")]
-[assembly: InternalsVisibleTo ("Xamarin Workbooks")]
-[assembly: InternalsVisibleTo ("Xamarin Inspector")]
 [assembly: TargetFramework (".NETStandard,Version=v2.0", FrameworkDisplayName = "")]
 namespace Xamarin.Interactive.CodeAnalysis
 {
