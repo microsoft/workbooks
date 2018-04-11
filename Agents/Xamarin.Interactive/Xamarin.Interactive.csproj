@@ -3,6 +3,21 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="11.0.1">
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+  </ItemGroup>
+  <Target
+    Name="ILRepack"
+    AfterTargets="CopyFilesToOutputDirectory">
+    <ItemGroup>
+      <RepackNamespaceRename Include="^Newtonsoft%5C.Json(%5C.)%3F">
+        <Replacement>Xamarin.Interactive.Json$1</Replacement>
+      </RepackNamespaceRename>
+    </ItemGroup>
+    <ILRepack InputAssemblies="$(TargetPath)" References="@(Reference)" NamespaceRenames="@(RepackNamespaceRename)"/>
+  </Target>
   <Target Name="Package" Condition="Exists('$(MonoCilStrip)')">
     <Exec Command="$(MonoCilStrip) &quot;$(OutputPath)$(AssemblyName).dll&quot; &quot;$(OutputPath)$(AssemblyName).Stripped.dll&quot;" />
     <Exec Command="$(NuGet) pack Xamarin.Interactive.nuspec -Version $(WorkbooksIntegrationNuGetPackageVersion) -OutputDirectory &quot;$(ArtifactsBasePath)&quot; -Properties Configuration=$(Configuration)" />
