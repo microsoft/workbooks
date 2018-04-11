@@ -373,8 +373,7 @@
     <MSBuild
       Projects="Tools\ApiDump\ApiDump.csproj;@(PublicApiProjectsToBuild)"
       Properties="Configuration=$(ApiConfiguration)"
-      Targets="Build"/>
-    <Message Importance="High" Text="Tools\ApiDump\ApiDump.csproj;@(PublicApiProjectsToBuild)"/>
+      Targets="Restore;Build"/>
     <ItemGroup>
       <PublicApiAssembly Include="%(PublicApiProjectsToBuild.RelativeDir)bin\$(ApiConfiguration)\*\%(Filename).dll">
         <ApiFile>docs\%(Filename).api.cs</ApiFile>
