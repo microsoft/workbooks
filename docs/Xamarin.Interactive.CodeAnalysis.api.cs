@@ -122,15 +122,7 @@ namespace Xamarin.Interactive.CodeAnalysis
             get;
         }
 
-        public Type HostObjectType {
-            get;
-        }
-
-        public bool IncludePEImagesInDependencyResolution {
-            get;
-        }
-
-        public WorkspaceConfiguration (TargetCompilationConfiguration compilationConfiguration, InteractiveDependencyResolver dependencyResolver, bool includePEImagesInDependencyResolution, Type hostObjectType = null);
+        public WorkspaceConfiguration (TargetCompilationConfiguration compilationConfiguration, InteractiveDependencyResolver dependencyResolver);
     }
     [AttributeUsage (AttributeTargets.Assembly)]
     public sealed class WorkspaceServiceAttribute : Attribute
@@ -178,26 +170,6 @@ namespace Xamarin.Interactive.CodeAnalysis.Events
         }
 
         public CodeCellEvaluationStartedEvent (CodeCellId codeCellId);
-    }
-    public sealed class CodeCellResultEvent : ICodeCellEvent
-    {
-        public CodeCellId CodeCellId {
-            get;
-        }
-
-        public EvaluationResultHandling ResultHandling {
-            get;
-        }
-
-        public IRepresentedType Type {
-            get;
-        }
-
-        public IReadOnlyList<object> ValueRepresentations {
-            get;
-        }
-
-        public CodeCellResultEvent (CodeCellId codeCellId, EvaluationResultHandling resultHandling, object value);
     }
     public struct CodeCellUpdatedEvent : ICodeCellEvent
     {

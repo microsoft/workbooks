@@ -114,6 +114,23 @@ namespace Xamarin.Interactive
 namespace Xamarin.Interactive.CodeAnalysis
 {
     [Serializable]
+    public struct AssemblyLoadResult
+    {
+        public AssemblyIdentity AssemblyName {
+            get;
+        }
+
+        public bool InitializedAgentIntegration {
+            get;
+        }
+
+        public bool Success {
+            get;
+        }
+
+        public AssemblyLoadResult (AssemblyIdentity assemblyName, bool success, bool initializedAgentIntegration);
+    }
+    [Serializable]
     public struct CodeCellId : IEquatable<CodeCellId>
     {
         public static bool operator == (CodeCellId a, CodeCellId b);
@@ -176,6 +193,51 @@ namespace Xamarin.Interactive.CodeAnalysis
         }
 
         public Compilation (CodeCellId codeCellId, int submissionNumber, EvaluationContextId evaluationContextId, EvaluationEnvironment evaluationEnvironment, bool isResultAnExpression, AssemblyDefinition executableAssembly, IReadOnlyList<AssemblyDefinition> references);
+    }
+    [Serializable]
+    public sealed class Evaluation : IXipResponseMessage, ICodeCellEvent
+    {
+        public CodeCellId CodeCellId {
+            get;
+        }
+
+        public int CultureLCID {
+            get;
+        }
+
+        public TimeSpan EvaluationDuration {
+            get;
+        }
+
+        public bool InitializedAgentIntegration {
+            get;
+        }
+
+        public bool Interrupted {
+            get;
+        }
+
+        public IReadOnlyList<AssemblyDefinition> LoadedAssemblies {
+            get;
+        }
+
+        public EvaluationResultHandling ResultHandling {
+            get;
+        }
+
+        public IReadOnlyList<object> ResultRepresentations {
+            get;
+        }
+
+        public IRepresentedType ResultType {
+            get;
+        }
+
+        public int UICultureLCID {
+            get;
+        }
+
+        public Evaluation (CodeCellId codeCellId, EvaluationResultHandling resultHandling, object value);
     }
     public class EvaluationContextGlobalObject
     {
@@ -253,6 +315,24 @@ namespace Xamarin.Interactive.CodeAnalysis
 
         public EvaluationEnvironment (FilePath workingDirectory);
     }
+    public struct EvaluationInFlight
+    {
+        public ICompilation Compilation {
+            get;
+        }
+
+        public Evaluation Evaluation {
+            get;
+        }
+
+        public object OriginalValue {
+            get;
+        }
+
+        public EvaluationPhase Phase {
+            get;
+        }
+    }
     public enum EvaluationPhase
     {
         None,
@@ -264,7 +344,30 @@ namespace Xamarin.Interactive.CodeAnalysis
     public enum EvaluationResultHandling
     {
         Replace,
-        Append
+        Append,
+        Ignore
+    }
+    public interface IAgentEvaluationService
+    {
+        IObservable<ICodeCellEvent> Events {
+            get;
+        }
+
+        TargetCompilationConfiguration TargetCompilationConfiguration {
+            get;
+        }
+
+        Task AbortEvaluationAsync (CancellationToken cancellationToken = default(CancellationToken));
+
+        Task EvaluateAsync (Compilation compilation, CancellationToken cancellationToken = default(CancellationToken));
+
+        Task<IReadOnlyList<AssemblyDefinition>> GetAppDomainAssembliesAsync (CancellationToken cancellationToken = default(CancellationToken));
+
+        Task InitializeAsync (CancellationToken cancellationToken = default(CancellationToken));
+
+        Task<IReadOnlyList<AssemblyLoadResult>> LoadAssembliesAsync (IReadOnlyList<AssemblyDefinition> assemblies, CancellationToken cancellationToken = default(CancellationToken));
+
+        Task ResetStateAsync (CancellationToken cancellationToken = default(CancellationToken));
     }
     public interface ICompilation
     {
@@ -276,23 +379,9 @@ namespace Xamarin.Interactive.CodeAnalysis
             get;
         }
     }
-    public interface IEvaluation
-    {
-        ICompilation Compilation {
-            get;
-        }
-
-        EvaluationPhase Phase {
-            get;
-        }
-
-        object Result {
-            get;
-        }
-    }
     public interface IEvaluationContext
     {
-        IObservable<IEvaluation> Evaluations {
+        IObservable<EvaluationInFlight> Evaluations {
             get;
         }
 
@@ -307,32 +396,31 @@ namespace Xamarin.Interactive.CodeAnalysis
     [Serializable]
     public sealed class TargetCompilationConfiguration
     {
-        public string[] DefaultUsings {
+        public IReadOnlyList<string> AssemblySearchPaths {
             get;
-            set;
         }
 
-        public string[] DefaultWarningSuppressions {
+        public IReadOnlyList<string> DefaultImports {
             get;
-            set;
+        }
+
+        public IReadOnlyList<string> DefaultWarningSuppressions {
+            get;
         }
 
         public EvaluationContextId EvaluationContextId {
             get;
-            set;
         }
 
-        public AssemblyDefinition GlobalStateAssembly {
+        public TypeDefinition GlobalStateType {
             get;
-            set;
         }
 
-        public string GlobalStateTypeName {
+        public bool IncludePEImagesInDependencyResolution {
             get;
-            set;
         }
 
-        public TargetCompilationConfiguration ();
+        public static TargetCompilationConfiguration CreateInitialForCompilationWorkspace (IReadOnlyList<string> assemblySearchPaths = null);
     }
 }
 namespace Xamarin.Interactive.CodeAnalysis.Events
@@ -436,6 +524,25 @@ namespace Xamarin.Interactive.CodeAnalysis.Resolving
         public override int GetHashCode ();
 
         public override string ToString ();
+    }
+    [Serializable]
+    public sealed class TypeDefinition
+    {
+        public AssemblyDefinition Assembly {
+            get;
+        }
+
+        public string Name {
+            get;
+        }
+
+        public Type ResolvedType {
+            get;
+        }
+
+        public TypeDefinition (AssemblyDefinition assembly, string name, Type resolvedType = null);
+
+        public TypeDefinition WithResolvedType (Type resolvedType);
     }
 }
 namespace Xamarin.Interactive.CodeAnalysis.Workbooks
