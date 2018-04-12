@@ -347,6 +347,11 @@ namespace Xamarin.Interactive.Client.Console
 
         static void RenderResult (Evaluation result)
         {
+            if (result.ResultType == null) {
+                WriteLine ("null");
+                return;
+            }
+
             ForegroundColor = ConsoleColor.Magenta;
             Write (result.ResultType.Name);
             Write (": ");
