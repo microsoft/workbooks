@@ -10,10 +10,11 @@ import {
     Calendar,
     DayOfWeek
 } from 'office-ui-fabric-react/lib/Calendar';
-import { CodeCellResult } from '../evaluation';
+import { RepresentedResult } from '../evaluation';
 import { ResultRenderer, ResultRendererRepresentation } from '../rendering'
+import { randomReactKey } from '../utils';
 
-export default function CalendarRendererFactory(result: CodeCellResult) {
+export default function CalendarRendererFactory(result: RepresentedResult) {
     return result.valueRepresentations &&
         result.valueRepresentations.length > 0 &&
         typeof result.valueRepresentations[0] === 'string' &&
@@ -23,9 +24,10 @@ export default function CalendarRendererFactory(result: CodeCellResult) {
 }
 
 class CalendarRenderer implements ResultRenderer {
-    getRepresentations(result: CodeCellResult) {
+    getRepresentations(result: RepresentedResult) {
         return [{
             displayName: 'Calendar',
+            key: randomReactKey(),
             component: CalendarRepresentation,
             componentProps: {
                 value: new Date((result.valueRepresentations as any[])[0] as string)

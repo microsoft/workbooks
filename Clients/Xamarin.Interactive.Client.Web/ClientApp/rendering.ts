@@ -7,7 +7,9 @@
 
 import * as React from 'react'
 
-import { CodeCellResult } from './evaluation'
+import { RepresentedResult } from './evaluation'
+import { WorkbookShellContext } from './components/WorkbookShell';
+import { extname } from 'path';
 
 export const enum ResultRendererRepresentationOptions {
     None = 0,
@@ -39,15 +41,27 @@ export const enum ResultRendererRepresentationOptions {
 }
 
 export interface ResultRenderer {
-    getRepresentations(result: CodeCellResult): ResultRendererRepresentation[]
+    getRepresentations(result: RepresentedResult, context?: WorkbookShellContext): ResultRendererRepresentation[]
 }
 
-export type ResultRendererFactory = (result: CodeCellResult) => ResultRenderer | null
+export type ResultRendererFactory = (result: RepresentedResult) => ResultRenderer | null
 
 export interface ResultRendererRepresentation {
     displayName: string
+    key: string
     component: any
     componentProps?: {}
     order?: number
     options?: ResultRendererRepresentationOptions,
+    interact?(rep: ResultRendererRepresentation): Promise<ResultRendererRepresentation>
+    renderComponent?(rep: ResultRendererRepresentation): any
+}
+
+export interface RepresentationMap<K,V> {
+    [K: string]: V
+}
+
+export interface RepresentedObjectState {
+    representations: RepresentationMap<string, ResultRendererRepresentation>
+    selectedRepresentation: string
 }

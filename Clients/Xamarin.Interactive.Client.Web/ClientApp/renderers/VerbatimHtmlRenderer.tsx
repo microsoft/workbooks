@@ -7,15 +7,16 @@
 
 import * as React from 'react'
 import * as ReactDOM from 'react-dom'
-import { CodeCellResult } from '../evaluation'
+import { RepresentedResult } from '../evaluation'
 import {
     ResultRenderer,
     ResultRendererRepresentation
 } from '../rendering'
+import { randomReactKey } from '../utils';
 
 const xirType = 'Xamarin.Interactive.Representations.VerbatimHtml'
 
-export default function VerbatimHtmlRendererFactory(result: CodeCellResult) {
+export default function VerbatimHtmlRendererFactory(result: RepresentedResult) {
     return result.valueRepresentations &&
         result.valueRepresentations.some(r => r.$type === xirType)
         ? new VerbatimHtmlRenderer
@@ -27,7 +28,7 @@ interface VerbatimHtmlValue {
 }
 
 class VerbatimHtmlRenderer implements ResultRenderer {
-    getRepresentations(result: CodeCellResult) {
+    getRepresentations(result: RepresentedResult) {
         const reps: ResultRendererRepresentation[] = []
 
         if (!result.valueRepresentations)
@@ -37,6 +38,7 @@ class VerbatimHtmlRenderer implements ResultRenderer {
             if (value.$type === xirType)
                 reps.push({
                     displayName: 'HTML',
+                    key: randomReactKey(),
                     component: VerbatimHtmlRepresentation,
                     componentProps: {
                         value: value as VerbatimHtmlValue

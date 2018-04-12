@@ -68,9 +68,38 @@ namespace Xamarin.Interactive.Representations
                 }
             }
 
+            if (Value is RepresentedObject)
+            {
+                var representation = Value as RepresentedObject;
+                //serializer.Property("representedType", representation.RepresentedType.ToSerializableName());
+                serializer.Property ("representations", representation.Select (v => new JsonRepresentation (v)));
+            }
+
+            if (Value is InteractiveObjectBase) {
+                var baseObject = Value as InteractiveObjectBase;
+                serializer.Property ("handle", baseObject.Handle.ToString ());
+                serializer.Property ("representedObjectHandle", baseObject.RepresentedObjectHandle.ToString());
+            }
+
+            if (Value is InteractiveEnumerable) {
+                var enumerableObject = Value as InteractiveEnumerable;
+                serializer.Property ("isLastSlice", enumerableObject.IsLastSlice);
+                serializer.Property ("count", enumerableObject.Count);
+                if (enumerableObject.Slice != null)
+                    serializer.Property ("slice", enumerableObject.Slice.Select(v => new JsonRepresentation (v)));
+            }
+
             if (Value is ReflectionInteractiveObject) {
-                var reflectedObject = Value as ReflectionInteractiveObject;
-                serializer.Property ("handle", reflectedObject.RepresentedObjectHandle.ToString());
+                var reflectedObject = Value as InteractiveObject;
+                serializer.Property ("isExpanded", reflectedObject.Members != null || !reflectedObject.HasMembers);
+                if (reflectedObject.Members != null) {
+                    for (var i = 0; i < reflectedObject.Members.Count(); i++) {
+                        var member = reflectedObject.Members[i];
+                        var name = member.Name;
+                        var value = reflectedObject.Values[i];
+                        serializer.Property(name, value);
+                    }
+                }
             }
 
             if (word != null) {

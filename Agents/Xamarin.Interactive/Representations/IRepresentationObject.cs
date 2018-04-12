@@ -9,7 +9,7 @@ using Xamarin.Interactive.Serialization;
 
 namespace Xamarin.Interactive.Representations
 {
-    interface IRepresentationObject : ISerializableObject
+    public interface IRepresentationObject : ISerializableObject
     {
     }
 

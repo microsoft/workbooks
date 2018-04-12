@@ -8,7 +8,7 @@
 import * as React from 'react';
 import { RouteComponentProps } from 'react-router';
 
-import { CodeCellResult, CodeCellResultHandling, CodeCellEventType } from '../evaluation'
+import { RepresentedResult, CodeCellResult, CodeCellResultHandling, CodeCellEventType } from '../evaluation'
 import { ResultRendererRegistry } from '../ResultRendererRegistry'
 import { MockedCodeCellView } from './CodeCellView';
 
@@ -18,7 +18,8 @@ export class ComponentPlayground extends React.Component<RouteComponentProps<{}>
         codeCellId: '85cd037b-4cb6-4489-a854-912959b60a6b/3fb9e8a3-2c29-429d-b417-e2678761b57e',
         resultHandling: CodeCellResultHandling.Replace,
         type: null,
-        valueRepresentations: null
+        valueRepresentations: null,
+        interact: undefined
     }
 
     private readonly numberResult: CodeCellResult = {
@@ -55,7 +56,8 @@ export class ComponentPlayground extends React.Component<RouteComponentProps<{}>
                     }
                 ]
             }
-        ]
+        ],
+        interact: undefined
     }
 
     private readonly dateTimeResult: CodeCellResult = {
@@ -69,7 +71,8 @@ export class ComponentPlayground extends React.Component<RouteComponentProps<{}>
                 $type: 'System.DateTime',
                 $toString: '03/03/2018 23:22:00'
             }
-        ]
+        ],
+        interact: undefined
     }
 
     public render() {

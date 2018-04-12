@@ -192,4 +192,8 @@ export class WorkbookSession {
     restorePackages(packages: PackageDescription[]): Promise<PackageDescription[]> {
         return this.hubConnection.invoke("RestorePackages", packages)
     }
+
+    interact(handle: string): Promise<any> {
+        return this.hubConnection.invoke("Interact", handle)
+    }
 }

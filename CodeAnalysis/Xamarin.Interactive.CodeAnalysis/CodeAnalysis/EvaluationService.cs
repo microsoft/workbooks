@@ -355,6 +355,19 @@ namespace Xamarin.Interactive.CodeAnalysis
             return model;
         }
 
+        public Task<IInteractiveObject> InteractAsync (
+            long handle,
+            int memberIndex = -1,
+            int representationIndex = -1,
+            CancellationToken cancellationToken = default)
+            => agentConnection.Api.InteractAsync (handle,
+                memberIndex < 0 ?
+                    (object) new InteractiveObject.ReadAllMembersInteractMessage () :
+                    new InteractiveObject.InteractMessage {
+                        MemberIndex = memberIndex,
+                        RepresentationIndex = representationIndex
+                    });
+
         public async Task<CodeCellEvaluationFinishedEvent> EvaluateAsync (
             CodeCellId targetCodeCellId = default,
             bool evaluateAll = false,

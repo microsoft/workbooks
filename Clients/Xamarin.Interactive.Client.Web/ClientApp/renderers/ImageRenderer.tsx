@@ -6,7 +6,7 @@
 // Licensed under the MIT License.
 
 import * as React from 'react'
-import { CodeCellResult } from '../evaluation'
+import { RepresentedResult } from '../evaluation'
 import {
     ResultRenderer,
     ResultRendererRepresentation
@@ -18,8 +18,9 @@ import {
 } from 'office-ui-fabric-react/lib/Image'
 
 import './ImageRenderer.scss'
+import { randomReactKey } from '../utils';
 
-export default function ImageRendererFactory(result: CodeCellResult) {
+export default function ImageRendererFactory(result: RepresentedResult) {
     return result.valueRepresentations &&
         result.valueRepresentations.some(r => r.$type === "Xamarin.Interactive.Representations.Image")
         ? new ImageRenderer
@@ -36,22 +37,24 @@ interface ImageValue {
 }
 
 class ImageRenderer implements ResultRenderer {
-    getRepresentations(result: CodeCellResult) {
+    public static readonly typeName = "Xamarin.Interactive.Representations.Image"
+    getRepresentations(result: RepresentedResult) {
         const reps: ResultRendererRepresentation[] = []
 
         if (!result.valueRepresentations)
             return reps
 
         for (const value of result.valueRepresentations) {
-            if (value.$type !== "Xamarin.Interactive.Representations.Image")
+            if (value.$type !== ImageRenderer.typeName)
                 continue
 
             const image = (value as ImageValue)
             if (!image.format)
-                continue;
+                continue
 
             reps.push({
                 displayName: 'Image',
+                key: randomReactKey(),
                 component: ImageRepresentation,
                 componentProps: {
                     value: "Image",
