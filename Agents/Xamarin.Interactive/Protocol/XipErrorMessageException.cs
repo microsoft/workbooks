@@ -1,7 +1,3 @@
-//
-// Author:
-//   Aaron Bockover <abock@xamarin.com>
-//
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
@@ -11,12 +7,10 @@ namespace Xamarin.Interactive.Protocol
 {
     sealed class XipErrorMessageException : Exception
     {
-        public XipErrorMessage XipErrorMessage { get; private set; }
+        public XipErrorMessage XipErrorMessage { get; }
 
         public XipErrorMessageException (XipErrorMessage message)
             : base (message.Message ?? "unhandled exception")
-        {
-            XipErrorMessage = message;
-        }
+            => XipErrorMessage = message;
     }
 }

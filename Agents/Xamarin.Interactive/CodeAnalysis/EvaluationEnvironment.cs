@@ -7,15 +7,18 @@
 
 using System;
 
+using Newtonsoft.Json;
+
 using Xamarin.Interactive.Core;
 
 namespace Xamarin.Interactive.CodeAnalysis
 {
-    [Serializable]
+    [JsonObject]
     public struct EvaluationEnvironment
     {
         public FilePath WorkingDirectory { get; }
 
+        [JsonConstructor]
         public EvaluationEnvironment (FilePath workingDirectory)
             => WorkingDirectory = workingDirectory;
     }

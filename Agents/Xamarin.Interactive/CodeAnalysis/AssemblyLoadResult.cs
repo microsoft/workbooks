@@ -5,17 +5,20 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
+using Newtonsoft.Json;
+
 using Xamarin.Interactive.CodeAnalysis.Resolving;
 
 namespace Xamarin.Interactive.CodeAnalysis
 {
-    [Serializable]
+    [JsonObject]
     public struct AssemblyLoadResult
     {
         public AssemblyIdentity AssemblyName { get; }
         public bool Success { get; }
         public bool InitializedAgentIntegration { get; }
 
+        [JsonConstructor]
         public AssemblyLoadResult (
             AssemblyIdentity assemblyName,
             bool success,

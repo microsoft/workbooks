@@ -123,7 +123,7 @@ namespace Xamarin.Interactive.Core
         /// </summary>
         public virtual void LoadExternalDependencies (
             Assembly loadedAssembly,
-            AssemblyDependency [] externalDependencies)
+            IReadOnlyList<AssemblyDependency> externalDependencies)
         {
         }
 
@@ -304,9 +304,12 @@ namespace Xamarin.Interactive.Core
             var request = WebRequest.CreateHttp (identifyAgentRequest.Uri);
             request.Method = "POST";
 
-            new XipSerializer (
-                await request.GetRequestStreamAsync (),
-                InteractiveSerializerSettings.SharedInstance).Serialize (Identity);
+            InteractiveJsonSerializerSettings
+                .SharedInstance
+                .CreateSerializer ()
+                .Serialize (
+                    await request.GetRequestStreamAsync (),
+                    Identity);
 
             var response = (HttpWebResponse)await request.GetResponseAsync ();
 

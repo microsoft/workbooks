@@ -1,7 +1,3 @@
-//
-// Author:
-//   Aaron Bockover <abock@xamarin.com>
-//
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
@@ -9,26 +5,48 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 
-using NUnit.Framework;
-
-using Should;
+using Xunit;
 
 using Xamarin.Interactive.Representations;
 using Xamarin.Interactive.Representations.Reflection;
 using Xamarin.Interactive.Serialization;
+using Xamarin.Interactive.Logging;
 
-namespace Xamarin.Interactive.Tests
+namespace Xamarin.Interactive.Representations
 {
-    [TestFixture]
-    class RepresentationTests
+    public sealed class RepresentationManagerTests
     {
-        RepresentationManager manager;
-
-        [SetUp]
-        public void SetUp ()
+        static RepresentationManagerTests ()
         {
-            manager = new RepresentationManager ();
+            MainThread.Initialize ();
+            Logging.Log.Initialize (new TestLogProvider ());
         }
+
+        sealed class TestLogProvider : Logging.ILogProvider
+        {
+            public LogLevel LogLevel { get; set; } = LogLevel.Warning;
+
+            #pragma warning disable 67
+            public event EventHandler<LogEntry> EntryAdded;
+            #pragma warning restore 67
+
+            public void Commit (LogEntry entry)
+            {
+                switch (entry.Level) {
+                case LogLevel.Error:
+                case LogLevel.Critical:
+                    throw new Exception ($"Log.{entry.Level}: {entry}");
+                case LogLevel.Warning:
+                    Console.Error.WriteLine ($"Log.Warning: {entry}");
+                    break;
+                }
+            }
+
+            public LogEntry[] GetEntries()
+                => throw new NotImplementedException ();
+        }
+
+        RepresentationManager manager = new RepresentationManager ();
 
         #region RepresentationManager.Normalize
 
@@ -53,27 +71,28 @@ namespace Xamarin.Interactive.Tests
         enum Int64Enum : long { Min = long.MinValue, Max = long.MaxValue }
         enum UInt64Enum : ulong { Min = ulong.MinValue, Max = ulong.MaxValue }
 
-        [TestCase (FlagsEnum.Zero)]
-        [TestCase (FlagsEnum.One)]
-        [TestCase (FlagsEnum.Two)]
-        [TestCase (FlagsEnum.Four)]
-        [TestCase (FlagsEnum.Eight)]
-        [TestCase (SByteEnum.Min)]
-        [TestCase (SByteEnum.Max)]
-        [TestCase (ByteEnum.Min)]
-        [TestCase (ByteEnum.Max)]
-        [TestCase (Int16Enum.Min)]
-        [TestCase (Int16Enum.Max)]
-        [TestCase (UInt16Enum.Min)]
-        [TestCase (UInt16Enum.Max)]
-        [TestCase (Int32Enum.Min)]
-        [TestCase (Int32Enum.Max)]
-        [TestCase (UInt32Enum.Min)]
-        [TestCase (UInt32Enum.Max)]
-        [TestCase (Int64Enum.Min)]
-        [TestCase (Int64Enum.Max)]
-        [TestCase (UInt64Enum.Min)]
-        [TestCase (UInt64Enum.Max)]
+        [Theory]
+        [InlineData (FlagsEnum.Zero)]
+        [InlineData (FlagsEnum.One)]
+        [InlineData (FlagsEnum.Two)]
+        [InlineData (FlagsEnum.Four)]
+        [InlineData (FlagsEnum.Eight)]
+        [InlineData (SByteEnum.Min)]
+        [InlineData (SByteEnum.Max)]
+        [InlineData (ByteEnum.Min)]
+        [InlineData (ByteEnum.Max)]
+        [InlineData (Int16Enum.Min)]
+        [InlineData (Int16Enum.Max)]
+        [InlineData (UInt16Enum.Min)]
+        [InlineData (UInt16Enum.Max)]
+        [InlineData (Int32Enum.Min)]
+        [InlineData (Int32Enum.Max)]
+        [InlineData (UInt32Enum.Min)]
+        [InlineData (UInt32Enum.Max)]
+        [InlineData (Int64Enum.Min)]
+        [InlineData (Int64Enum.Max)]
+        [InlineData (UInt64Enum.Min)]
+        [InlineData (UInt64Enum.Max)]
         public void EnumValue (Enum value)
         {
             var reps = manager.Prepare (value);
@@ -101,7 +120,7 @@ namespace Xamarin.Interactive.Tests
 
             var values = Enum.GetValues (type);
 
-            rep.Values.Length.ShouldEqual (values.Length);
+            rep.Values.Count.ShouldEqual (values.Length);
 
             for (int i = 0; i < values.Length; i++)
                 rep.Values [i].ShouldEqual (Convert.ChangeType (
@@ -110,7 +129,7 @@ namespace Xamarin.Interactive.Tests
                     CultureInfo.InvariantCulture));
         }
 
-        [Test]
+        [Fact]
         public void IInteractiveObject ()
         {
             var interactiverObject = new DictionaryInteractiveObject (0, manager.Prepare);
@@ -119,7 +138,7 @@ namespace Xamarin.Interactive.Tests
             reps [0].ShouldBeInstanceOf<DictionaryInteractiveObject> ();
         }
 
-        [Test]
+        [Fact]
         public void ExceptionNode ()
         {
             foreach (var exception in new Exception [] {
@@ -136,7 +155,7 @@ namespace Xamarin.Interactive.Tests
 
         public string MemberProperty { get; set; }
 
-        [Test]
+        [Fact]
         public void MemberInfo ()
         {
             var member = GetType ().GetProperty (nameof (MemberProperty));
@@ -201,43 +220,45 @@ namespace Xamarin.Interactive.Tests
             }
         }
 
-        [TestCase (true)]
-        [TestCase (false)]
-        [TestCase (Char.MinValue, TestName = "Char.MinValue")]
-        [TestCase (Char.MaxValue, TestName = "Char.MaxValue")]
-        [TestCase (SByte.MinValue)]
-        [TestCase (SByte.MaxValue)]
-        [TestCase (Byte.MinValue)]
-        [TestCase (Byte.MaxValue)]
-        [TestCase (Int16.MinValue)]
-        [TestCase (UInt16.MaxValue)]
-        [TestCase (Int32.MinValue)]
-        [TestCase (UInt32.MaxValue)]
-        [TestCase (Int64.MinValue)]
-        [TestCase (UInt64.MaxValue)]
-        [TestCase (Single.MinValue)]
-        [TestCase (Single.MaxValue)]
-        [TestCase (Single.Epsilon)]
-        [TestCase (Single.PositiveInfinity)]
-        [TestCase (Single.NegativeInfinity)]
-        [TestCase (Single.NaN)]
-        [TestCase (Double.MinValue)]
-        [TestCase (Double.MaxValue)]
-        [TestCase (Double.Epsilon)]
-        [TestCase (Double.PositiveInfinity)]
-        [TestCase (Double.NegativeInfinity)]
-        [TestCase (Double.NaN)]
-        [TestCase (Math.PI)]
-        [TestCase (Math.E)]
+        [Theory]
+        [InlineData (true)]
+        [InlineData (false)]
+        [InlineData (Char.MinValue)]
+        [InlineData (Char.MaxValue)]
+        [InlineData (SByte.MinValue)]
+        [InlineData (SByte.MaxValue)]
+        [InlineData (Byte.MinValue)]
+        [InlineData (Byte.MaxValue)]
+        [InlineData (Int16.MinValue)]
+        [InlineData (UInt16.MaxValue)]
+        [InlineData (Int32.MinValue)]
+        [InlineData (UInt32.MaxValue)]
+        [InlineData (Int64.MinValue)]
+        [InlineData (UInt64.MaxValue)]
+        [InlineData (Single.MinValue)]
+        [InlineData (Single.MaxValue)]
+        [InlineData (Single.Epsilon)]
+        [InlineData (Single.PositiveInfinity)]
+        [InlineData (Single.NegativeInfinity)]
+        [InlineData (Single.NaN)]
+        [InlineData (Double.MinValue)]
+        [InlineData (Double.MaxValue)]
+        [InlineData (Double.Epsilon)]
+        [InlineData (Double.PositiveInfinity)]
+        [InlineData (Double.NegativeInfinity)]
+        [InlineData (Double.NaN)]
+        [InlineData (Math.PI)]
+        [InlineData (Math.E)]
         public void Raw_TypeCode_Constable (object value)
             => AssertRaw (value, hasInteractiveRepresentation: false);
 
-        [TestCase ("")]
-        [TestCase ("🙀 🐖 💨")]
+        [Theory]
+        [InlineData ("")]
+        [InlineData ("🙀 🐖 💨")]
         public void Raw_TypeCode_String (string value)
             => AssertRaw (value, hasInteractiveRepresentation: true);
 
-        [Test]
+        [Fact]
         public void Raw_TypeCode_DateTime ()
             => AssertRaw (
                 new [] {
@@ -249,7 +270,7 @@ namespace Xamarin.Interactive.Tests
                 },
                 hasInteractiveRepresentation: true);
 
-        [Test]
+        [Fact]
         public void Raw_TypeCode_Decimal ()
             => AssertRaw (
                 new [] {
@@ -261,7 +282,7 @@ namespace Xamarin.Interactive.Tests
                 },
                 hasInteractiveRepresentation: false);
 
-        [Test]
+        [Fact]
         public void Raw_TimeSpan ()
             => AssertRaw (
                 new [] {
@@ -271,7 +292,7 @@ namespace Xamarin.Interactive.Tests
                 },
                 hasInteractiveRepresentation: true);
 
-        [Test]
+        [Fact]
         public void Raw_Guid ()
             => AssertRaw (
                 new [] {
@@ -300,7 +321,7 @@ namespace Xamarin.Interactive.Tests
             }
         }
 
-        [Test]
+        [Fact]
         public void WordSizedNumber_IntPtr ()
             => AssertWordSizedNumber (
                 new [] {
@@ -310,7 +331,7 @@ namespace Xamarin.Interactive.Tests
                 },
                 WordSizedNumberFlags.Pointer | WordSizedNumberFlags.Signed);
 
-        [Test]
+        [Fact]
         public void WordSizedNumber_UIntPtr ()
             => AssertWordSizedNumber (
                 new [] {
@@ -322,7 +343,7 @@ namespace Xamarin.Interactive.Tests
 
         #if false && (MAC || IOS)
 
-        [Test]
+        [Fact]
         public void WordSizedNumber_NInt ()
             => AssertWordSizedNumber (
                 new [] {
@@ -331,7 +352,7 @@ namespace Xamarin.Interactive.Tests
                 },
                 WordSizedNumberFlags.Signed);
 
-        [Test]
+        [Fact]
         public void WordSizedNumber_NUint ()
             => AssertWordSizedNumber (
                 new [] {
@@ -340,7 +361,7 @@ namespace Xamarin.Interactive.Tests
                 },
                 WordSizedNumberFlags.None);
 
-        [Test]
+        [Fact]
         public void WordSizedNumber_NFloat ()
             => AssertWordSizedNumber (
                 new [] {
@@ -357,31 +378,25 @@ namespace Xamarin.Interactive.Tests
 
         #endregion
 
-        [TestCase (true)]
-        [TestCase (false)]
-        public void RootObject_AllowISerializableObject (bool allowISerializableObject)
+        [Fact]
+        public void RootObject_AllowISerializableObject ()
         {
-            var reps = manager.Prepare (new Color (0.5, 1, 0.25, 0.3), allowISerializableObject);
+            var reps = manager.Prepare (new Color (0.5, 1, 0.25, 0.3));
 
             reps.Count.ShouldEqual (3);
 
-            if (allowISerializableObject)
-                reps [0].ShouldBeInstanceOf<JsonPayload> ();
-            else
-                reps [0].ShouldBeInstanceOf<Color> ();
-
+            reps [0].ShouldBeInstanceOf<Color> ();
             reps [reps.Count - 1].ShouldBeInstanceOf<ReflectionInteractiveObject> ();
         }
 
-        [TestCase (true)]
-        [TestCase (false)]
-        public void ChildObject_AllowISerializableObject (bool allowISerializableObject)
+        [Fact]
+        public void ChildObject_AllowISerializableObject ()
         {
             var reps = manager.Prepare (new {
                 Color = new Color (0.5, 1, 0.25, 0.3),
                 Point = new Point (10, 20),
                 String = "hello"
-            }, allowISerializableObject);
+            });
 
             reps.Count.ShouldEqual (2);
 
@@ -398,10 +413,7 @@ namespace Xamarin.Interactive.Tests
 
             var colorRep = root.Values [0].ShouldBeInstanceOf<RepresentedObject> ();
             colorRep.Count.ShouldEqual (3);
-            if (allowISerializableObject)
-                colorRep [0].ShouldBeInstanceOf<JsonPayload> ();
-            else
-                colorRep [0].ShouldBeInstanceOf<Color> ();
+            colorRep [0].ShouldBeInstanceOf<Color> ();
             colorRep [colorRep.Count - 1].ShouldBeInstanceOf<ReflectionInteractiveObject> ();
 
             var pointRep = root.Values [1].ShouldBeInstanceOf<RepresentedObject> ();

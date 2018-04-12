@@ -8,6 +8,7 @@
 
 using System;
 using System.Reflection;
+using System.Collections.Generic;
 
 using Xamarin.Interactive.CodeAnalysis.Resolving;
 using Xamarin.Interactive.Core;
@@ -36,7 +37,7 @@ namespace Xamarin.Interactive.ConsoleAgent
 
         public override void LoadExternalDependencies (
             Assembly loadedAssembly,
-            AssemblyDependency [] externalDependencies)
+            IReadOnlyList<AssemblyDependency> externalDependencies)
         {
             if (externalDependencies == null)
                 return;

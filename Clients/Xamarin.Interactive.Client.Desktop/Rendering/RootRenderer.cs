@@ -62,26 +62,12 @@ namespace Xamarin.Interactive.Rendering
                 foreach (var result in representedObject)
                     AppendSubrenderState (result);
             } else {
-                if (renderState.Source != null && !(renderState.Source is JsonPayload))
-                    AppendSubrenderState (RepresentationManager.ToJson (renderState.Source));
                 AppendSubrenderState (renderState.Source);
             }
         }
 
         void AppendSubrenderState (object value)
         {
-            if (value == null)
-                value = (JsonPayload)"null";
-
-            if (value is JsonPayload) {
-                try {
-                    value = context.Document.Context.GlobalObject.xiexports
-                        .DeserializeDotNetObject ((string)(JsonPayload)value);
-                } catch (Exception e) {
-                    Log.Error (TAG, $"JavaScript threw while deserializing: {value}", e);
-                }
-            }
-
             foreach (var renderer in context.Renderers.GetRenderers (value)) {
                 renderer.Bind (renderState.With (context, value));
                 if (!renderer.IsEnabled)

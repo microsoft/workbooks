@@ -9,16 +9,42 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 
+using Newtonsoft.Json;
+
 using Xamarin.Interactive.Core;
 using Xamarin.Interactive.Representations.Reflection;
 
 namespace Xamarin.Interactive.Representations
 {
-    [Serializable]
+    [JsonObject]
     sealed class ReflectionInteractiveObject : InteractiveObject
     {
-        [NonSerialized] readonly object representedObject;
-        [NonSerialized] readonly RepresentedMemberPredicate memberFilter;
+        [JsonIgnore] readonly object representedObject;
+        [JsonIgnore] readonly RepresentedMemberPredicate memberFilter;
+
+        [JsonConstructor]
+        ReflectionInteractiveObject (
+            long handle,
+            long representedObjectHandle,
+            RepresentedType representedType,
+            int depth,
+            bool hasMembers,
+            RepresentedMemberInfo [] members,
+            object [] values,
+            string toStringRepresentation,
+            bool suppressToStringRepresentation)
+            : base (
+                handle,
+                representedObjectHandle,
+                representedType,
+                depth,
+                hasMembers,
+                members,
+                values,
+                toStringRepresentation,
+                suppressToStringRepresentation)
+        {
+        }
 
         public ReflectionInteractiveObject (int depth,
             object representedObject,

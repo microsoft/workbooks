@@ -18,6 +18,8 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 
+using Newtonsoft.Json;
+
 using Xamarin.Interactive.CodeAnalysis;
 using Xamarin.Interactive.CodeAnalysis.Resolving;
 using Xamarin.Interactive.Core;
@@ -90,8 +92,9 @@ namespace Xamarin.Interactive.Client
         public async Task OpenAgentMessageChannel (
             CancellationToken cancellationToken = default (CancellationToken))
         {
-            var request = new OpenMessageChannelRequest (Process.GetCurrentProcess ().Id);
-            var response = new MessageChannelClosedResponse (request.MessageId);
+            var request = new OpenMessageChannelRequest (
+                Guid.NewGuid (),
+                Process.GetCurrentProcess ().Id);
 
             try {
                 await Task.Run (() => {
@@ -154,7 +157,7 @@ namespace Xamarin.Interactive.Client
 
         public Task<InteractiveObject> GetObjectMembersAsync (long viewHandle)
             => SendAsync<InteractiveObject> (
-                new GetObjectMembersRequest { ViewHandle = viewHandle },
+                new GetObjectMembersRequest (viewHandle),
                 SessionCancellationToken);
 
         public async Task<SetObjectMemberResponse> SetObjectMemberAsync (
@@ -163,12 +166,11 @@ namespace Xamarin.Interactive.Client
             object value,
             bool returnUpdatedValue)
             => (await SendAsync<SetObjectMemberResponse> (
-                new SetObjectMemberRequest {
-                    ObjectHandle = objHandle,
-                    MemberInfo = memberInfo,
-                    Value = value,
-                    ReturnUpdatedValue = returnUpdatedValue
-                },
+                new SetObjectMemberRequest (
+                    objHandle,
+                    memberInfo,
+                    value,
+                    returnUpdatedValue),
                 SessionCancellationToken));
 
         public async Task<T> HighlightView<T> (
@@ -183,34 +185,23 @@ namespace Xamarin.Interactive.Client
 
             // NOTE: Not using simpler SendAsync override because we don't want to throw on error
             await SendAsync (
-                new HighlightViewRequest {
-                    X = x,
-                    Y = y,
-                    Clear = clear,
-                    HierarchyKind = hierarchyKind,
-                },
+                new HighlightViewRequest (x, y, clear, hierarchyKind),
                 response => result = response as T,
                 GetCancellationToken (cancellationToken));
 
             return result;
         }
 
-        public async Task<IInteractiveObject> InteractAsync (IInteractiveObject obj, object message)
-            => (await SendAsync<InteractResponse> (
-                new InteractRequest {
-                    InteractiveObjectHandle = obj.Handle,
-                    Message = message
-                },
-                SessionCancellationToken))?.Result;
+        public Task<IInteractiveObject> InteractAsync (IInteractiveObject obj, object message)
+            => SendAsync<IInteractiveObject> (
+                new InteractRequest (obj.Handle, message),
+                SessionCancellationToken);
 
-        public async Task SetLogLevelAsync (LogLevel newLogLevel)
-            => await SendAsync<SuccessResponse> (
-                new SetLogLevelRequest {
-                    LogLevel = newLogLevel
-                });
+        public Task SetLogLevelAsync (LogLevel newLogLevel)
+            => SendAsync<bool> (new SetLogLevelRequest (newLogLevel));
 
         async Task SendAsync (
-            IXipRequestMessage message,
+            object message,
             Action<object> responseHandler,
             CancellationToken cancellationToken = default (CancellationToken))
         {
@@ -220,9 +211,13 @@ namespace Xamarin.Interactive.Client
             if (responseHandler == null)
                 throw new ArgumentNullException (nameof (responseHandler));
 
+            var serializer = InteractiveJsonSerializerSettings
+                .SharedInstance
+                .CreateSerializer ();
+
             var response = await httpClient.SendAsync (
                 new HttpRequestMessage (HttpMethod.Post, "/api/v1") {
-                    Content = new XipRequestMessageHttpContent (message)
+                    Content = new XipRequestMessageHttpContent (serializer, message)
                 },
                 HttpCompletionOption.ResponseHeadersRead,
                 cancellationToken);
@@ -233,24 +228,15 @@ namespace Xamarin.Interactive.Client
                 response.EnsureSuccessStatusCode ();
             }
 
-            using (var contentStream = new HttpResponseStream (await response.Content.ReadAsStreamAsync ())) {
-                var responseSerializer = new XipSerializer (contentStream, InteractiveSerializerSettings.SharedInstance);
-
-                while (!cancellationToken.IsCancellationRequested) {
-                    try {
-                        var responseMessage = responseSerializer.Deserialize ();
-                        if (responseMessage is XipEndOfMessagesMessage)
-                            break;
-                        responseHandler (responseMessage);
-                    } catch (EndOfStreamException) {
-                        break;
-                    }
-                }
-            }
+            using (var contentStream = await response.Content.ReadAsStreamAsync ())
+                await serializer.DeserializeMultiple (
+                    contentStream,
+                    responseHandler,
+                    cancellationToken);
         }
 
         async Task<TResult> SendAsync<TResult> (
-            IXipRequestMessage message,
+            object message,
             CancellationToken cancellationToken = default (CancellationToken))
         {
             TResult result = default(TResult);
@@ -286,15 +272,9 @@ namespace Xamarin.Interactive.Client
                 GetCancellationToken (cancellationToken));
         }
 
-        async Task<IReadOnlyList<AssemblyDefinition>> IAgentEvaluationService.GetAppDomainAssembliesAsync (
-            CancellationToken cancellationToken)
-            => await SendAsync<AssemblyDefinition []> (
-                new GetAppDomainAssembliesRequest (TargetCompilationConfiguration.IncludePEImagesInDependencyResolution),
-                GetCancellationToken (cancellationToken));
-
         Task IAgentEvaluationService.ResetStateAsync (
             CancellationToken cancellationToken)
-            => SendAsync<SuccessResponse> (
+            => SendAsync<bool> (
                 new ResetStateRequest (),
                 GetCancellationToken (cancellationToken));
 
@@ -312,17 +292,17 @@ namespace Xamarin.Interactive.Client
         Task IAgentEvaluationService.AbortEvaluationAsync (
             CancellationToken cancellationToken)
             => SendAsync<bool> (
-                new AbortEvaluationRequest (TargetCompilationConfiguration.EvaluationContextId),
+                new EvaluationAbortRequest (TargetCompilationConfiguration.EvaluationContextId),
                 GetCancellationToken (cancellationToken));
 
-        Task IAgentEvaluationService.EvaluateAsync (
+        async Task IAgentEvaluationService.EvaluateAsync (
             Compilation compilation,
             CancellationToken cancellationToken)
         {
-            var request = new EvaluationRequest (compilation);
+            var request = new EvaluationRequest (Guid.NewGuid (), compilation);
 
             var resultTask = new TaskCompletionSource ();
-            var evalTask = SendAsync<Evaluation> (
+            var evalTask = SendAsync<bool> (
                 request,
                 GetCancellationToken (cancellationToken));
 
@@ -330,17 +310,19 @@ namespace Xamarin.Interactive.Client
             // practically possible (see MainThreadRequest.MessageId).
             messageChannelAwaiters.TryAdd (request.MessageId, resultTask);
 
-            return Task.WhenAll (resultTask.Task, evalTask);
+            await Task.WhenAll (resultTask.Task, evalTask);
         }
 
         #endregion
 
         sealed class XipRequestMessageHttpContent : HttpContent
         {
-            readonly IXipRequestMessage message;
+            readonly JsonSerializer serializer;
+            readonly object message;
 
-            public XipRequestMessageHttpContent (IXipRequestMessage message)
+            public XipRequestMessageHttpContent (JsonSerializer serializer, object message)
             {
+                this.serializer = serializer;
                 this.message = message;
 
                 EnsureHeaders ();
@@ -364,8 +346,7 @@ namespace Xamarin.Interactive.Client
             {
                 EnsureHeaders ();
 
-                new XipSerializer (stream, InteractiveSerializerSettings.SharedInstance)
-                    .Serialize (message);
+                serializer.Serialize (stream, message);
 
                 return stream.FlushAsync ();
             }
@@ -374,84 +355,6 @@ namespace Xamarin.Interactive.Client
             {
                 length = -1;
                 return false;
-            }
-        }
-
-        sealed class HttpResponseStream : Stream
-        {
-            readonly Stream baseStream;
-
-            public HttpResponseStream (Stream baseStream)
-                => this.baseStream = baseStream
-                    ?? throw new ArgumentNullException (nameof (baseStream));
-
-            public override bool CanRead => baseStream.CanRead;
-            public override bool CanSeek => baseStream.CanSeek;
-            public override bool CanWrite => baseStream.CanWrite;
-            public override long Length => baseStream.Length;
-
-            public override long Position {
-                get => baseStream.Position;
-                set => baseStream.Position = value;
-            }
-
-            public override long Seek (long offset, SeekOrigin origin)
-                => baseStream.Seek (offset, origin);
-
-            public override void SetLength (long value)
-                => baseStream.SetLength (value);
-
-            public override int Read (byte [] buffer, int offset, int count)
-            {
-                var read = baseStream.Read (buffer, offset, count);
-                if (read == 0)
-                    throw new EndOfStreamException ();
-                return read;
-            }
-
-            public override async Task<int> ReadAsync (
-                byte [] buffer,
-                int offset,
-                int count,
-                CancellationToken cancellationToken)
-            {
-                var read = await baseStream
-                    .ReadAsync (buffer, offset, count, cancellationToken)
-                    .ConfigureAwait (false);
-                if (read == 0)
-                    throw new EndOfStreamException ();
-                return read;
-            }
-
-            public override void Write (byte [] buffer, int offset, int count)
-                => baseStream.Write (buffer, offset, count);
-
-            public override Task WriteAsync (
-                byte [] buffer,
-                int offset,
-                int count,
-                CancellationToken cancellationToken)
-                => baseStream.WriteAsync (buffer, offset, count, cancellationToken);
-
-            public override void Flush ()
-                => baseStream.Flush ();
-
-            public override Task FlushAsync (CancellationToken cancellationToken)
-                => baseStream.FlushAsync (cancellationToken);
-
-            public override Task CopyToAsync (
-                Stream destination,
-                int bufferSize,
-                CancellationToken cancellationToken)
-                => baseStream.CopyToAsync (destination, bufferSize, cancellationToken);
-
-            public override void Close ()
-                => baseStream.Close ();
-
-            protected override void Dispose (bool disposing)
-            {
-                if (disposing)
-                    baseStream.Dispose ();
             }
         }
     }

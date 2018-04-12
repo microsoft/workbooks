@@ -8,13 +8,15 @@
 using System;
 using System.IO;
 
+using Newtonsoft.Json;
+
 using Xamarin.Versioning;
 
 using Xamarin.Interactive.Serialization;
 
 namespace Xamarin.Interactive.Core
 {
-    [Serializable]
+    [JsonObject]
     sealed class AgentIdentity
     {
         const string needToObsoleteAgentType =
@@ -81,6 +83,7 @@ namespace Xamarin.Interactive.Core
         public int ScreenWidth { get; }
         public int ScreenHeight { get; }
 
+        [JsonConstructor]
         AgentIdentity (
             Guid id,
             AgentType agentType,
@@ -156,19 +159,6 @@ namespace Xamarin.Interactive.Core
                 DeviceManufacturer,
                 ScreenWidth,
                 ScreenHeight);
-        }
-
-        public string SerializeToString ()
-        {
-            var stream = new MemoryStream ();
-            new XipSerializer (stream).Serialize (this);
-            return Convert.ToBase64String (stream.ToArray ());
-        }
-
-        public static AgentIdentity Deserialize (string serializedIdentity)
-        {
-            var identity = Convert.FromBase64String (serializedIdentity);
-            return new XipSerializer (new MemoryStream (identity)).Deserialize () as AgentIdentity;
         }
     }
 }

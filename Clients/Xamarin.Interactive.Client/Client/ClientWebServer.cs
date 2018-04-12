@@ -312,11 +312,14 @@ namespace Xamarin.Interactive.Client
                 return Task.CompletedTask;
 
             if (apiRequestPath [0] == "identify" && context.Request.HttpMethod == "POST") {
+                var identity = (AgentIdentity)InteractiveJsonSerializerSettings
+                    .SharedInstance
+                    .CreateSerializer ()
+                    .Deserialize (context.Request.InputStream);
+
                 if (AgentIdentificationManager.RespondToAgentIdentityRequest (
                     Guid.Parse (context.Request.QueryString ["token"]),
-                    (AgentIdentity)new XipSerializer (
-                    context.Request.InputStream,
-                    InteractiveSerializerSettings.SharedInstance).Deserialize ()))
+                    identity))
                     context.Response.StatusCode = 200;
             }
 

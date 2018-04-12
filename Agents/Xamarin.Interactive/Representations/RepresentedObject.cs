@@ -18,7 +18,6 @@ namespace Xamarin.Interactive.Representations
     // implying null and two being typical for a tuple of both a raw value
     // and an InteractiveObject representation. We don't return an array
     // directly since we might tack on more result metadata in the future.
-    [Serializable]
     sealed class RepresentedObject : IReadOnlyList<object>
     {
         readonly RepresentedType representedType;

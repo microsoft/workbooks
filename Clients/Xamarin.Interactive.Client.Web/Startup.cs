@@ -47,7 +47,7 @@ namespace Xamarin.Interactive.Client.Web
             services
                 .AddSignalR ()
                 .AddJsonProtocol (options => {
-                    options.PayloadSerializerSettings = new InteractiveJsonSerializerSettings ();
+                    options.PayloadSerializerSettings = new ExternalInteractiveJsonSerializerSettings ();
                 });
         }
 

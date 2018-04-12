@@ -7,13 +7,14 @@
 
 using System;
 
-using Xamarin.Interactive.Serialization;
+using Newtonsoft.Json;
 
 namespace Xamarin.Interactive.Representations
 {
-    [Serializable]
-    class Thickness : IRepresentationObject
+    [JsonObject]
+    sealed class Thickness : IRepresentationObject
     {
+        [JsonConstructor]
         public Thickness (double left, double top, double right, double bottom)
         {
             Left = left;
@@ -26,8 +27,5 @@ namespace Xamarin.Interactive.Representations
         public double Top { get; }
         public double Right { get; }
         public double Bottom { get; }
-
-        void ISerializableObject.Serialize (ObjectSerializer serializer)
-            => throw new NotImplementedException ();
     }
 }

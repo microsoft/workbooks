@@ -2,14 +2,16 @@
 // Licensed under the MIT License.
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
+using Xamarin.Interactive.CodeAnalysis;
 using Xamarin.Interactive.CodeAnalysis.Resolving;
 using Xamarin.Interactive.Core;
 
-namespace Xamarin.Interactive.CodeAnalysis
+namespace Xamarin.Interactive.Protocol
 {
     [Serializable]
     sealed class EvaluationContextInitializeRequest : MainThreadRequest<TargetCompilationConfiguration>
@@ -45,11 +47,29 @@ namespace Xamarin.Interactive.CodeAnalysis
                     globalStateType.FullName);
             }
 
+            var assemblies = new List<AssemblyDefinition> ();
+
+            foreach (var asm in Agent.AppDomainStartupAssemblies) {
+                if (!asm.IsDynamic && !String.IsNullOrEmpty (asm.Location)) {
+                    // HACK: This is a temporary fix to get iOS agent/app assemblies sent to the
+                    //       Windows client when using the remote sim.
+                    var peImage = includePEImagesInDependencyResolution && File.Exists (asm.Location)
+                        ? File.ReadAllBytes (asm.Location)
+                        : null;
+
+                    assemblies.Add (new AssemblyDefinition (
+                        new AssemblyIdentity (asm.GetName ()),
+                        asm.Location,
+                        peImage: peImage));
+                }
+            }
+
             return Task.FromResult (Configuration.With (
                 evaluationContextId: evaluationContext.Id,
                 globalStateType: globalStateTypeDefinition,
                 defaultImports: agent.GetReplDefaultUsingNamespaces ().ToArray (),
                 defaultWarningSuppressions: agent.GetReplDefaultWarningSuppressions ().ToArray (),
+                initialReferences: assemblies,
                 includePEImagesInDependencyResolution: includePEImagesInDependencyResolution));
         }
     }

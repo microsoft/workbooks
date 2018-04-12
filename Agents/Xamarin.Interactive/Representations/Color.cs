@@ -7,12 +7,12 @@
 
 using System;
 
-using Xamarin.Interactive.Serialization;
+using Newtonsoft.Json;
 
 namespace Xamarin.Interactive.Representations
 {
-    [Serializable]
-    public sealed class Color : IFallbackRepresentationObject, ISerializableObject, IEquatable<Color>
+    [JsonObject]
+    public sealed class Color : IRepresentationObject, IEquatable<Color>
     {
         public ColorSpace ColorSpace { get; }
 
@@ -22,6 +22,7 @@ namespace Xamarin.Interactive.Representations
         public double Green { get; }
         public double Blue { get; }
 
+        [JsonConstructor]
         public Color (double red, double green, double blue, double alpha = 1)
         {
             ColorSpace = ColorSpace.Rgb;
@@ -29,15 +30,6 @@ namespace Xamarin.Interactive.Representations
             Green = green;
             Blue = blue;
             Alpha = alpha;
-        }
-
-        void ISerializableObject.Serialize (ObjectSerializer serializer)
-        {
-            serializer.Property (nameof (ColorSpace), (int)ColorSpace);
-            serializer.Property (nameof (Alpha), Alpha);
-            serializer.Property (nameof (Red), Red);
-            serializer.Property (nameof (Green), Green);
-            serializer.Property (nameof (Blue), Blue);
         }
 
         public override int GetHashCode ()

@@ -11,14 +11,16 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 
+using Newtonsoft.Json;
+
+using Xamarin.Interactive.CodeAnalysis;
+using Xamarin.Interactive.CodeAnalysis.Resolving;
 using Xamarin.Interactive.Core;
 using Xamarin.Interactive.Logging;
 
-using Xamarin.Interactive.CodeAnalysis.Resolving;
-
-namespace Xamarin.Interactive.CodeAnalysis
+namespace Xamarin.Interactive.Protocol
 {
-    [Serializable]
+    [JsonObject]
     sealed class AssemblyLoadRequest : MainThreadRequest<AssemblyLoadResponse>
     {
         const string TAG = nameof (AssemblyLoadRequest);
@@ -26,6 +28,7 @@ namespace Xamarin.Interactive.CodeAnalysis
         public EvaluationContextId EvaluationContextId { get; }
         public AssemblyDefinition [] Assemblies { get; }
 
+        [JsonConstructor]
         public AssemblyLoadRequest (
             EvaluationContextId evaluationContextId,
             IReadOnlyList<AssemblyDefinition> assemblies)

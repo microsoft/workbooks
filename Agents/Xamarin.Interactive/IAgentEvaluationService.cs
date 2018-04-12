@@ -19,9 +19,6 @@ namespace Xamarin.Interactive.CodeAnalysis
 
         Task InitializeAsync (CancellationToken cancellationToken = default);
 
-        Task<IReadOnlyList<AssemblyDefinition>> GetAppDomainAssembliesAsync (
-            CancellationToken cancellationToken = default);
-
         Task ResetStateAsync (CancellationToken cancellationToken = default);
 
         Task<IReadOnlyList<AssemblyLoadResult>> LoadAssembliesAsync (

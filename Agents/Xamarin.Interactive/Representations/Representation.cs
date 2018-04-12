@@ -7,11 +7,11 @@
 
 using System;
 
-using Xamarin.Interactive.Serialization;
+using Newtonsoft.Json;
 
 namespace Xamarin.Interactive.Representations
 {
-    [Serializable]
+    [JsonObject]
     public struct Representation : IRepresentationObject
     {
         public static readonly Representation Empty = new Representation ();
@@ -19,6 +19,7 @@ namespace Xamarin.Interactive.Representations
         public object Value { get; }
         public bool CanEdit { get; }
 
+        [JsonConstructor]
         public Representation (object value, bool canEdit = false)
         {
             Value = value;
@@ -27,10 +28,5 @@ namespace Xamarin.Interactive.Representations
 
         internal Representation With (object value, bool canEdit)
             => new Representation (value, canEdit);
-
-        void ISerializableObject.Serialize (ObjectSerializer serializer)
-        {
-            throw new NotImplementedException ();
-        }
     }
 }

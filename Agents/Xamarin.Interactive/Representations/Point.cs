@@ -7,13 +7,14 @@
 
 using System;
 
-using Xamarin.Interactive.Serialization;
+using Newtonsoft.Json;
 
 namespace Xamarin.Interactive.Representations
 {
-    [Serializable]
+    [JsonObject]
     public sealed class Point : IRepresentationObject
     {
+        [JsonConstructor]
         public Point (double x, double y)
         {
             X = x;
@@ -22,10 +23,5 @@ namespace Xamarin.Interactive.Representations
 
         public double X { get; }
         public double Y { get; }
-
-        void ISerializableObject.Serialize (ObjectSerializer serializer)
-        {
-            throw new NotImplementedException ();
-        }
     }
 }

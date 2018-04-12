@@ -7,13 +7,14 @@
 
 using System;
 
-using Xamarin.Interactive.Serialization;
+using Newtonsoft.Json;
 
 namespace Xamarin.Interactive.Representations
 {
-    [Serializable]
+    [JsonObject]
     public sealed class Size : IRepresentationObject
     {
+        [JsonConstructor]
         public Size (double width, double height)
         {
             Width = width;
@@ -22,10 +23,5 @@ namespace Xamarin.Interactive.Representations
 
         public double Width { get; }
         public double Height { get; }
-
-        void ISerializableObject.Serialize (ObjectSerializer serializer)
-        {
-            throw new NotImplementedException ();
-        }
     }
 }

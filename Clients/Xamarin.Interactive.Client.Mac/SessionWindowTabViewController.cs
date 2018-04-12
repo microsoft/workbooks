@@ -265,7 +265,7 @@ namespace Xamarin.Interactive.Client.Mac
                 .Agent
                 .Features?
                 .SupportedViewInspectionHierarchies?
-                .Length > 0;
+                .Count > 0;
 
             var viewInspectionTab = GetTabViewItem (viewInspectorViewController);
 

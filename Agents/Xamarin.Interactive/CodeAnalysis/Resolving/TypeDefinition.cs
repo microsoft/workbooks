@@ -4,11 +4,13 @@
 using System;
 using System.Reflection;
 
+using Newtonsoft.Json;
+
 using Xamarin.Interactive.Core;
 
 namespace Xamarin.Interactive.CodeAnalysis.Resolving
 {
-    [Serializable]
+    [JsonObject]
     public sealed class TypeDefinition
     {
         public AssemblyDefinition Assembly { get; }
@@ -18,6 +20,7 @@ namespace Xamarin.Interactive.CodeAnalysis.Resolving
         readonly Type resolvedType;
         public Type ResolvedType => resolvedType;
 
+        [JsonConstructor]
         public TypeDefinition (
             AssemblyDefinition assembly,
             string name,

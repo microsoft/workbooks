@@ -56,12 +56,11 @@ namespace Xamarin.Interactive.CodeAnalysis
                 agentType,
                 configuration.AssemblySearchPaths);
 
-            var defaultRefs = await agentEvaluationService.GetAppDomainAssembliesAsync (
-                cancellationToken).ConfigureAwait (false);
-
             // Only do this for Inspector sessions. Workbooks will do their own Forms init later.
             if (sessionKind == ClientSessionKind.LiveInspection) {
-                var formsReference = defaultRefs.FirstOrDefault (ra => ra.Name.Name == "Xamarin.Forms.Core");
+                var formsReference = configuration
+                    .InitialReferences
+                    .FirstOrDefault (ra => ra.Name.Name == "Xamarin.Forms.Core");
                 if (formsReference != null)
                     await LoadFormsAgentExtensions (
                         formsReference.Name.Version,
@@ -70,7 +69,7 @@ namespace Xamarin.Interactive.CodeAnalysis
                         dependencyResolver).ConfigureAwait (false);
             }
 
-            dependencyResolver.AddDefaultReferences (defaultRefs);
+            dependencyResolver.AddDefaultReferences (configuration.InitialReferences);
 
             var globalStateType = ResolveHostObjectType (
                 dependencyResolver,

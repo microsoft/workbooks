@@ -8,11 +8,13 @@
 using System;
 using System.Collections.Generic;
 
+using Newtonsoft.Json;
+
 using Xamarin.Interactive.CodeAnalysis.Resolving;
 
 namespace Xamarin.Interactive.CodeAnalysis
 {
-    [Serializable]
+    [JsonObject]
     public sealed class Compilation : ICompilation
     {
         AssemblyDefinition ICompilation.Assembly => ExecutableAssembly;
@@ -25,6 +27,7 @@ namespace Xamarin.Interactive.CodeAnalysis
         public AssemblyDefinition ExecutableAssembly { get; }
         public IReadOnlyList<AssemblyDefinition> References { get; }
 
+        [JsonConstructor]
         public Compilation (
             CodeCellId codeCellId,
             int submissionNumber,

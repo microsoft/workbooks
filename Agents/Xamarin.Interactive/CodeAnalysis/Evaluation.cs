@@ -3,6 +3,9 @@
 
 using System;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
+
+using Newtonsoft.Json;
 
 using Xamarin.Interactive.CodeAnalysis.Events;
 using Xamarin.Interactive.CodeAnalysis.Resolving;
@@ -12,11 +15,10 @@ using Xamarin.Interactive.Representations.Reflection;
 
 namespace Xamarin.Interactive.CodeAnalysis
 {
-    [Serializable]
+    [JsonObject]
     public sealed class Evaluation : IXipResponseMessage, ICodeCellEvent
     {
-        readonly Guid requestId;
-        Guid IXipResponseMessage.RequestId => requestId;
+        public Guid RequestId { get; }
 
         public CodeCellId CodeCellId { get; }
         public EvaluationResultHandling ResultHandling { get; }
@@ -29,6 +31,39 @@ namespace Xamarin.Interactive.CodeAnalysis
         public bool Interrupted { get; }
         public bool InitializedAgentIntegration { get; }
         public IReadOnlyList<AssemblyDefinition> LoadedAssemblies { get; }
+
+        public bool IsNullResult => ResultType == null ||
+            ResultRepresentations == null ||
+            ResultRepresentations.Count == 0;
+
+        [JsonConstructor]
+        Evaluation (
+            Guid requestId,
+            CodeCellId codeCellId,
+            EvaluationResultHandling resultHandling,
+            IRepresentedType resultType,
+            IReadOnlyList<object> resultRepresentations,
+            ExceptionNode exception,
+            TimeSpan evaluationDuration,
+            int cultureLCID,
+            int uiCultureLCID,
+            bool interrupted,
+            bool initializedAgentIntegration,
+            IReadOnlyList<AssemblyDefinition> loadedAssemblies)
+        {
+            RequestId = requestId;
+            CodeCellId = codeCellId;
+            ResultHandling = resultHandling;
+            ResultType = resultType;
+            ResultRepresentations = resultRepresentations;
+            Exception = exception;
+            EvaluationDuration = evaluationDuration;
+            CultureLCID = cultureLCID;
+            UICultureLCID = uiCultureLCID;
+            Interrupted = interrupted;
+            InitializedAgentIntegration = initializedAgentIntegration;
+            LoadedAssemblies = loadedAssemblies;
+        }
 
         public Evaluation (
             CodeCellId codeCellId,
@@ -55,8 +90,7 @@ namespace Xamarin.Interactive.CodeAnalysis
             bool initializedAgentIntegration = false,
             IReadOnlyList<AssemblyDefinition> loadedAssemblies = null)
         {
-            this.requestId = requestId;
-
+            RequestId = requestId;
             CodeCellId = codeCellId;
             ResultHandling = resultHandling;
 

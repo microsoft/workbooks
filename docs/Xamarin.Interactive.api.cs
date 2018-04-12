@@ -113,7 +113,7 @@ namespace Xamarin.Interactive
 }
 namespace Xamarin.Interactive.CodeAnalysis
 {
-    [Serializable]
+    [JsonObject]
     public struct AssemblyLoadResult
     {
         public AssemblyIdentity AssemblyName {
@@ -128,9 +128,9 @@ namespace Xamarin.Interactive.CodeAnalysis
             get;
         }
 
+        [JsonConstructor]
         public AssemblyLoadResult (AssemblyIdentity assemblyName, bool success, bool initializedAgentIntegration);
     }
-    [Serializable]
     public struct CodeCellId : IEquatable<CodeCellId>
     {
         public static bool operator == (CodeCellId a, CodeCellId b);
@@ -161,7 +161,7 @@ namespace Xamarin.Interactive.CodeAnalysis
 
         public override string ToString ();
     }
-    [Serializable]
+    [JsonObject]
     public sealed class Compilation : ICompilation
     {
         public CodeCellId CodeCellId {
@@ -192,9 +192,10 @@ namespace Xamarin.Interactive.CodeAnalysis
             get;
         }
 
+        [JsonConstructor]
         public Compilation (CodeCellId codeCellId, int submissionNumber, EvaluationContextId evaluationContextId, EvaluationEnvironment evaluationEnvironment, bool isResultAnExpression, AssemblyDefinition executableAssembly, IReadOnlyList<AssemblyDefinition> references);
     }
-    [Serializable]
+    [JsonObject]
     public sealed class Evaluation : IXipResponseMessage, ICodeCellEvent
     {
         public CodeCellId CodeCellId {
@@ -217,7 +218,15 @@ namespace Xamarin.Interactive.CodeAnalysis
             get;
         }
 
+        public bool IsNullResult {
+            get;
+        }
+
         public IReadOnlyList<AssemblyDefinition> LoadedAssemblies {
+            get;
+        }
+
+        public Guid RequestId {
             get;
         }
 
@@ -289,12 +298,15 @@ namespace Xamarin.Interactive.CodeAnalysis
         [EvaluationContextGlobalObject.InteractiveHelpAttribute (Description = "Uses a Stopwatch to time the specified action delegate")]
         public static TimeSpan Time (Action action);
     }
-    [Serializable]
     public struct EvaluationContextId : IEquatable<EvaluationContextId>
     {
         public static bool operator == (EvaluationContextId a, EvaluationContextId b);
 
+        public static explicit operator EvaluationContextId (string id);
+
         public static implicit operator EvaluationContextId (int id);
+
+        public static implicit operator string (EvaluationContextId id);
 
         public static bool operator != (EvaluationContextId a, EvaluationContextId b);
 
@@ -306,13 +318,14 @@ namespace Xamarin.Interactive.CodeAnalysis
 
         public override string ToString ();
     }
-    [Serializable]
+    [JsonObject]
     public struct EvaluationEnvironment
     {
         public FilePath WorkingDirectory {
             get;
         }
 
+        [JsonConstructor]
         public EvaluationEnvironment (FilePath workingDirectory);
     }
     public struct EvaluationInFlight
@@ -361,8 +374,6 @@ namespace Xamarin.Interactive.CodeAnalysis
 
         Task EvaluateAsync (Compilation compilation, CancellationToken cancellationToken = default(CancellationToken));
 
-        Task<IReadOnlyList<AssemblyDefinition>> GetAppDomainAssembliesAsync (CancellationToken cancellationToken = default(CancellationToken));
-
         Task InitializeAsync (CancellationToken cancellationToken = default(CancellationToken));
 
         Task<IReadOnlyList<AssemblyLoadResult>> LoadAssembliesAsync (IReadOnlyList<AssemblyDefinition> assemblies, CancellationToken cancellationToken = default(CancellationToken));
@@ -393,7 +404,7 @@ namespace Xamarin.Interactive.CodeAnalysis
     {
         void IntegrateWith (IEvaluationContext evaluationContext);
     }
-    [Serializable]
+    [JsonObject]
     public sealed class TargetCompilationConfiguration
     {
         public IReadOnlyList<string> AssemblySearchPaths {
@@ -420,6 +431,10 @@ namespace Xamarin.Interactive.CodeAnalysis
             get;
         }
 
+        public IReadOnlyList<AssemblyDefinition> InitialReferences {
+            get;
+        }
+
         public static TargetCompilationConfiguration CreateInitialForCompilationWorkspace (IReadOnlyList<string> assemblySearchPaths = null);
     }
 }
@@ -434,7 +449,7 @@ namespace Xamarin.Interactive.CodeAnalysis.Events
 }
 namespace Xamarin.Interactive.CodeAnalysis.Resolving
 {
-    [Serializable]
+    [JsonObject]
     public sealed class AssemblyContent
     {
         public byte[] DebugSymbols {
@@ -451,7 +466,7 @@ namespace Xamarin.Interactive.CodeAnalysis.Resolving
 
         public Stream OpenPEImage ();
     }
-    [Serializable]
+    [JsonObject]
     public sealed class AssemblyDefinition
     {
         public AssemblyContent Content {
@@ -462,7 +477,7 @@ namespace Xamarin.Interactive.CodeAnalysis.Resolving
             get;
         }
 
-        public AssemblyDependency[] ExternalDependencies {
+        public IReadOnlyList<AssemblyDependency> ExternalDependencies {
             get;
         }
 
@@ -478,7 +493,7 @@ namespace Xamarin.Interactive.CodeAnalysis.Resolving
 
         public AssemblyDefinition (AssemblyName name, FilePath location, string entryPointType = null, string entryPointMethod = null, byte[] peImage = null, byte[] debugSymbols = null, AssemblyDependency[] externalDependencies = null, bool hasIntegration = false);
     }
-    [Serializable]
+    [JsonObject]
     public struct AssemblyDependency
     {
         public byte[] Data {
@@ -489,7 +504,7 @@ namespace Xamarin.Interactive.CodeAnalysis.Resolving
             get;
         }
     }
-    [Serializable]
+    [JsonObject]
     public struct AssemblyEntryPoint
     {
         public string MethodName {
@@ -500,7 +515,7 @@ namespace Xamarin.Interactive.CodeAnalysis.Resolving
             get;
         }
     }
-    [Serializable]
+    [JsonObject]
     public sealed class AssemblyIdentity
     {
         public static implicit operator AssemblyName (AssemblyIdentity assemblyIdentity);
@@ -525,7 +540,7 @@ namespace Xamarin.Interactive.CodeAnalysis.Resolving
 
         public override string ToString ();
     }
-    [Serializable]
+    [JsonObject]
     public sealed class TypeDefinition
     {
         public AssemblyDefinition Assembly {
@@ -540,6 +555,7 @@ namespace Xamarin.Interactive.CodeAnalysis.Resolving
             get;
         }
 
+        [JsonConstructor]
         public TypeDefinition (AssemblyDefinition assembly, string name, Type resolvedType = null);
 
         public TypeDefinition WithResolvedType (Type resolvedType);
@@ -731,8 +747,8 @@ namespace Xamarin.Interactive.Logging
 }
 namespace Xamarin.Interactive.Representations
 {
-    [Serializable]
-    public sealed class Color : IFallbackRepresentationObject, ISerializableObject, IEquatable<Color>
+    [JsonObject]
+    public sealed class Color : IRepresentationObject, IEquatable<Color>
     {
         public double Alpha {
             get;
@@ -754,6 +770,7 @@ namespace Xamarin.Interactive.Representations
             get;
         }
 
+        [JsonConstructor]
         public Color (double red, double green, double blue, double alpha = 1.0);
 
         public bool Equals (Color other);
@@ -762,13 +779,12 @@ namespace Xamarin.Interactive.Representations
 
         public override int GetHashCode ();
     }
-    [Serializable]
     public enum ColorSpace
     {
         Rgb
     }
-    [Serializable]
-    public sealed class GeoLocation : IRepresentationObject, ISerializableObject
+    [JsonObject]
+    public sealed class GeoLocation : IRepresentationObject
     {
         public double? Altitude {
             get;
@@ -802,19 +818,21 @@ namespace Xamarin.Interactive.Representations
             get;
         }
 
+        [JsonConstructor]
         public GeoLocation (double latitude, double longitude, double? altitude = null, double? horizontalAccuracy = null, double? verticalAccuracy = null, double? speed = null, double? bearing = null, DateTime timestamp = default(DateTime));
     }
-    [Serializable]
-    public sealed class GeoPolyline : IRepresentationObject, ISerializableObject
+    [JsonObject]
+    public sealed class GeoPolyline : IRepresentationObject
     {
-        public GeoLocation[] Points {
+        public IReadOnlyList<GeoLocation> Points {
             get;
         }
 
-        public GeoPolyline (GeoLocation[] points);
+        [JsonConstructor]
+        public GeoPolyline (IReadOnlyList<GeoLocation> points);
     }
-    [Serializable]
-    public sealed class Image : IRepresentationObject, ISerializableObject
+    [JsonObject]
+    public sealed class Image : IRepresentationObject
     {
         public byte[] Data {
             get;
@@ -836,6 +854,7 @@ namespace Xamarin.Interactive.Representations
             get;
         }
 
+        [JsonConstructor]
         public Image (ImageFormat format, byte[] data, int width = 0, int height = 0, double scale = 1.0);
 
         public static Image FromData (byte[] data, int width = 0, int height = 0);
@@ -848,7 +867,6 @@ namespace Xamarin.Interactive.Representations
 
         public static Image FromUri (string uri, int width = 0, int height = 0);
     }
-    [Serializable]
     public enum ImageFormat
     {
         Unknown,
@@ -870,8 +888,8 @@ namespace Xamarin.Interactive.Representations
 
         void AddProvider<T> (Func<T, object> handler);
     }
-    [Serializable]
-    public sealed class Point : IRepresentationObject, ISerializableObject
+    [JsonObject]
+    public sealed class Point : IRepresentationObject
     {
         public double X {
             get;
@@ -881,10 +899,11 @@ namespace Xamarin.Interactive.Representations
             get;
         }
 
+        [JsonConstructor]
         public Point (double x, double y);
     }
-    [Serializable]
-    public sealed class Rectangle : IRepresentationObject, ISerializableObject
+    [JsonObject]
+    public sealed class Rectangle : IRepresentationObject
     {
         public double Height {
             get;
@@ -902,10 +921,11 @@ namespace Xamarin.Interactive.Representations
             get;
         }
 
+        [JsonConstructor]
         public Rectangle (double x, double y, double width, double height);
     }
-    [Serializable]
-    public struct Representation : IRepresentationObject, ISerializableObject
+    [JsonObject]
+    public struct Representation : IRepresentationObject
     {
         public static readonly Representation Empty;
 
@@ -917,6 +937,7 @@ namespace Xamarin.Interactive.Representations
             get;
         }
 
+        [JsonConstructor]
         public Representation (object value, bool canEdit = false);
     }
     public abstract class RepresentationProvider
@@ -931,8 +952,8 @@ namespace Xamarin.Interactive.Representations
 
         public virtual bool TryConvertFromRepresentation (IRepresentedType representedType, object[] representations, out object represented);
     }
-    [Serializable]
-    public sealed class Size : IRepresentationObject, ISerializableObject
+    [JsonObject]
+    public sealed class Size : IRepresentationObject
     {
         public double Height {
             get;
@@ -942,11 +963,13 @@ namespace Xamarin.Interactive.Representations
             get;
         }
 
+        [JsonConstructor]
         public Size (double width, double height);
     }
-    [Serializable]
-    public sealed class VerbatimHtml : IRepresentationObject, ISerializableObject
+    [JsonObject]
+    public sealed class VerbatimHtml : IRepresentationObject
     {
+        [JsonConstructor]
         public VerbatimHtml (string content);
 
         public VerbatimHtml (StringBuilder builder);
@@ -1002,46 +1025,6 @@ namespace Xamarin.Interactive.Representations.Reflection
 }
 namespace Xamarin.Interactive.Serialization
 {
-    public interface ISerializableObject
-    {
-        void Serialize (ObjectSerializer serializer);
-    }
-    public sealed class ObjectSerializer
-    {
-        public void Object (ISerializableObject value);
-
-        public void Property (string name, bool value);
-
-        public void Property (string name, byte[] value);
-
-        public void Property (string name, byte[] value, PropertyOptions options);
-
-        public void Property (string name, double value);
-
-        public void Property (string name, float value);
-
-        public void Property (string name, IEnumerable<bool> value);
-
-        public void Property (string name, IEnumerable<byte[]> value);
-
-        public void Property (string name, IEnumerable<double> value);
-
-        public void Property (string name, IEnumerable<float> value);
-
-        public void Property (string name, IEnumerable<int> value);
-
-        public void Property (string name, IEnumerable<string> value);
-
-        public void Property (string name, int value);
-
-        public void Property (string name, string value);
-
-        public void Property (string name, string value, PropertyOptions options);
-
-        public void Property<TSerializable> (string name, IEnumerable<TSerializable> value) where TSerializable : ISerializableObject;
-
-        public void Property<TSerializable> (string name, TSerializable value) where TSerializable : ISerializableObject;
-    }
     [Flags]
     public enum PropertyOptions
     {

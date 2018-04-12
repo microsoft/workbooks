@@ -1,14 +1,13 @@
-//
-// Author:
-//   Aaron Bockover <abock@xamarin.com>
-//
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
 using System;
 
+using Newtonsoft.Json;
+
 namespace Xamarin.Interactive.Core
 {
+    [JsonObject]
     sealed class IdentifyAgentRequest : IEquatable<IdentifyAgentRequest>
     {
         static readonly int clientProcessId = System.Diagnostics.Process.GetCurrentProcess ().Id;
@@ -31,6 +30,7 @@ namespace Xamarin.Interactive.Core
         public Guid RequestToken { get; }
         public int ProcessId { get; }
 
+        [JsonConstructor]
         IdentifyAgentRequest (
             Uri uri,
             Guid requestToken,

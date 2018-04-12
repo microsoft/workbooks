@@ -8,28 +8,36 @@
 using System;
 using System.Threading.Tasks;
 
+using Newtonsoft.Json;
+
+using Xamarin.Interactive.CodeAnalysis;
 using Xamarin.Interactive.Core;
 
-namespace Xamarin.Interactive.CodeAnalysis
+namespace Xamarin.Interactive.Protocol
 {
-    [Serializable]
-    sealed class EvaluationRequest : MainThreadRequest<Evaluation>
+    [JsonObject]
+    sealed class EvaluationRequest : MainThreadRequest<bool>
     {
+        public Guid MessageId { get; }
         public Compilation Compilation { get; }
 
-        public EvaluationRequest (Compilation compilation)
-            => Compilation = compilation
+        [JsonConstructor]
+        public EvaluationRequest (
+            Guid messageId,
+            Compilation compilation)
+        {
+            MessageId = messageId;
+            Compilation = compilation
                 ?? throw new ArgumentNullException (nameof (compilation));
+        }
 
-        protected override bool CanReturnNull => true;
-
-        protected override async Task<Evaluation> HandleAsync (Agent agent)
+        protected override async Task<bool> HandleAsync (Agent agent)
         {
             agent.ChangeDirectory (Compilation.EvaluationEnvironment.WorkingDirectory);
             await agent
                 .GetEvaluationContext (Compilation.EvaluationContextId)
                 .RunAsync (MessageId, Compilation);
-            return null;
+            return true;
         }
     }
 }

@@ -19,6 +19,7 @@ using Xamarin.Interactive.Core;
 using Xamarin.Interactive.I18N;
 using Xamarin.Interactive.Logging;
 using Xamarin.Interactive.Messages;
+using Xamarin.Interactive.Protocol;
 using Xamarin.Interactive.NuGet;
 using Xamarin.Interactive.Workbook.LoadAndSave;
 using Xamarin.Interactive.Workbook.Models;

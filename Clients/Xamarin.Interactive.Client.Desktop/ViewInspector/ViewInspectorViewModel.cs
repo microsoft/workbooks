@@ -31,7 +31,7 @@ namespace Xamarin.Interactive.Client.ViewInspector
         public ClientSession Session { get; }
 
         public DelegateCommand RefreshVisualTreeCommand { get; }
-        
+
         public DelegateCommand ShowPaneCommand { get; }
 
         public ViewInspectorViewModel (ClientSession session)
@@ -45,7 +45,7 @@ namespace Xamarin.Interactive.Client.ViewInspector
             RefreshVisualTreeCommand = new DelegateCommand (
                 RefreshVisualTree,
                 p => !IsVisualTreeRefreshing);
-          
+
             ShowPaneCommand = new DelegateCommand (p => {
                 if (int.TryParse (p.ToString (), out var pane))
                     SelectedPane = pane;
@@ -127,7 +127,7 @@ namespace Xamarin.Interactive.Client.ViewInspector
         public bool DisplayFrames {
             get => displayMode.HasFlag (DisplayMode.Frames);
             set {
-                DisplayMode = SetFlag (displayMode, DisplayMode.Frames, value);             
+                DisplayMode = SetFlag (displayMode, DisplayMode.Frames, value);
             }
         }
 
@@ -223,7 +223,7 @@ namespace Xamarin.Interactive.Client.ViewInspector
                     var supportedHierarchies = Session.Agent.Features?.SupportedViewInspectionHierarchies;
                     UpdateSupportedHierarchies (supportedHierarchies);
 
-                    if (supportedHierarchies != null && supportedHierarchies.Length > 0) {
+                    if (supportedHierarchies != null && supportedHierarchies.Count > 0) {
                         if (!supportedHierarchies.Contains (selectedHierarchy)) {
                             selectedHierarchy = supportedHierarchies [0];
                             OnPropertyChanged (nameof (SelectedHierarchy));
@@ -321,7 +321,7 @@ namespace Xamarin.Interactive.Client.ViewInspector
         public void OnSessionAvailable () { }
 
         public void OnAgentConnected () {
-            NoSupportedHierarchies = Session.Agent.Features.SupportedViewInspectionHierarchies.Length == 0;
+            NoSupportedHierarchies = Session.Agent.Features.SupportedViewInspectionHierarchies.Count == 0;
             if (SelectedPane == 1)
                 RefreshVisualTree ();
         }

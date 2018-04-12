@@ -8,14 +8,19 @@
 using System;
 using System.Collections.Generic;
 
-namespace Xamarin.Interactive.CodeAnalysis
+using Newtonsoft.Json;
+
+using Xamarin.Interactive.CodeAnalysis;
+
+namespace Xamarin.Interactive.Protocol
 {
-    [Serializable]
+    [JsonObject]
     sealed class AssemblyLoadResponse
     {
         public IReadOnlyList<AssemblyLoadResult> LoadResults { get; }
 
-        public AssemblyLoadResponse (AssemblyLoadResult [] loadResults)
+        [JsonConstructor]
+        public AssemblyLoadResponse (IReadOnlyList<AssemblyLoadResult> loadResults)
             => LoadResults = loadResults;
     }
 }

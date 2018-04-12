@@ -150,23 +150,13 @@ namespace Xamarin.Interactive.PropertyEditor
                 if (ro.Count == 0)
                     return default (Representation).Value;
 
-                Representation fallback = ro.GetRepresentation (0);
                 for (int i = 0; i < ro.Count; i++) {
                     var current = ro.GetRepresentation (i);
-                    if (current.Value is JsonPayload)
-                        continue;
-
-                    if (fallback.Value is JsonPayload)
-                        fallback = current;
-
                     if (current.CanEdit)
                         return current.Value;
                 }
 
-                // If the only representation available is a JsonPayload treat it as an error in this case
-                return fallback.Value is JsonPayload ?
-                           new InteractiveObject.GetMemberValueError () :
-                           fallback.Value;
+                return ro.GetRepresentation (0).Value;
             }
 
             return editor.PropertyHelper.ToLocalValue (ChooseRepresentation (representedObject));

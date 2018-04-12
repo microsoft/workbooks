@@ -9,7 +9,6 @@ using System;
 
 namespace Xamarin.Interactive.Representations
 {
-    [Serializable]
     [Flags]
     enum WordSizedNumberFlags : byte
     {

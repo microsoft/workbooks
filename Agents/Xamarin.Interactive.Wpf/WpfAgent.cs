@@ -124,7 +124,7 @@ namespace Xamarin.Interactive.Wpf
 
         public override void LoadExternalDependencies (
             Assembly loadedAssembly,
-            AssemblyDependency [] externalDependencies)
+            IReadOnlyList<AssemblyDependency> externalDependencies)
         {
             if (externalDependencies == null)
                 return;

@@ -4,14 +4,27 @@
 using System;
 using System.Reflection;
 
+using Newtonsoft.Json;
+
 namespace Xamarin.Interactive.CodeAnalysis.Resolving
 {
-    [Serializable]
+    [JsonObject]
     public sealed class AssemblyIdentity
     {
         public string Name { get; }
         public string FullName { get; }
         public Version Version { get; }
+
+        [JsonConstructor]
+        AssemblyIdentity (
+            string name,
+            string fullName,
+            Version version)
+        {
+            Name = name;
+            FullName = fullName;
+            Version = version;
+        }
 
         internal AssemblyIdentity (AssemblyName assemblyName)
         {

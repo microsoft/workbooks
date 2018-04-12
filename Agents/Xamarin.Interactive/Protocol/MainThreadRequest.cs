@@ -1,7 +1,3 @@
-//
-// Author:
-//   Aaron Bockover <abock@xamarin.com>
-//
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
@@ -9,19 +5,13 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-using Xamarin.Interactive.Protocol;
+using Xamarin.Interactive.Core;
 using Xamarin.Interactive.Representations.Reflection;
 
-namespace Xamarin.Interactive.Core
+namespace Xamarin.Interactive.Protocol
 {
-    [Serializable]
     abstract class MainThreadRequest<TResponseMessage> : IXipRequestMessage<Agent>
-        where TResponseMessage : class
     {
-        public Guid MessageId { get; } = Guid.NewGuid ();
-
-        protected virtual bool CanReturnNull => false;
-
         protected abstract Task<TResponseMessage> HandleAsync (Agent agent);
 
         public void Handle (Agent agent, Action<object> responseWriter)
@@ -32,13 +22,10 @@ namespace Xamarin.Interactive.Core
                 async () => {
                     try {
                         result = await HandleAsync (agent);
-                        if (result == null && !CanReturnNull)
-                            throw new Exception ($"{GetType ()}.Handle(Agent) returned null");
                     } catch (Exception e) {
-                        result = new XipErrorMessage {
-                            Message = $"{GetType ()}.Handle(Agent) threw an exception",
-                            Exception = ExceptionNode.Create (e)
-                        };
+                        result = new XipErrorMessage (
+                            $"{GetType ()}.Handle(Agent) threw an exception",
+                            e);
                     }
                 },
                 CancellationToken.None,

@@ -3,14 +3,17 @@
 
 using System;
 
+using Newtonsoft.Json;
+
 namespace Xamarin.Interactive.CodeAnalysis.Resolving
 {
-    [Serializable]
+    [JsonObject]
     public struct AssemblyEntryPoint
     {
         public string TypeName { get; }
         public string MethodName { get; }
 
+        [JsonConstructor]
         internal AssemblyEntryPoint (string typeName, string methodName)
         {
             TypeName = typeName;

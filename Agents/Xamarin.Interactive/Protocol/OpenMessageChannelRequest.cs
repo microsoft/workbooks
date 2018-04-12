@@ -1,27 +1,29 @@
-//
-// Author:
-//   Aaron Bockover <abock@xamarin.com>
-//
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
 using System;
 using System.Diagnostics;
 
-using Xamarin.Interactive.Logging;
-using Xamarin.Interactive.Protocol;
+using Newtonsoft.Json;
 
-namespace Xamarin.Interactive.Core
+using Xamarin.Interactive.Core;
+using Xamarin.Interactive.Logging;
+
+namespace Xamarin.Interactive.Protocol
 {
-    [Serializable]
+    [JsonObject]
     sealed class OpenMessageChannelRequest : IXipRequestMessage<Agent>
     {
-        public Guid MessageId { get; } = Guid.NewGuid ();
+        public Guid MessageId { get; }
 
         readonly int requestingProcessId;
 
-        public OpenMessageChannelRequest (int requestingProcessId)
+        [JsonConstructor]
+        public OpenMessageChannelRequest (
+            Guid messageId,
+            int requestingProcessId)
         {
+            MessageId = messageId;
             this.requestingProcessId = requestingProcessId;
         }
 

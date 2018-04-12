@@ -1,26 +1,23 @@
-//
-// Author:
-//   Sandy Armstrong <sandy@xamarin.com>
-//
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
 using System;
 
+using Newtonsoft.Json;
+
 using Xamarin.Interactive.CodeAnalysis;
-using Xamarin.Interactive.Protocol;
+using Xamarin.Interactive.Core;
 using Xamarin.Interactive.Representations.Reflection;
 
-namespace Xamarin.Interactive.Core
+namespace Xamarin.Interactive.Protocol
 {
-    [Serializable]
-    sealed class AbortEvaluationRequest : IXipRequestMessage<Agent>
+    [JsonObject]
+    sealed class EvaluationAbortRequest : IXipRequestMessage<Agent>
     {
-        public Guid MessageId { get; } = Guid.NewGuid ();
-
         public EvaluationContextId EvaluationContextId { get; }
 
-        public AbortEvaluationRequest (EvaluationContextId evaluationContextId)
+        [JsonConstructor]
+        public EvaluationAbortRequest (EvaluationContextId evaluationContextId)
             => EvaluationContextId = evaluationContextId;
 
         public void Handle (Agent agent, Action<object> responseWriter)
@@ -33,9 +30,7 @@ namespace Xamarin.Interactive.Core
                     thread.Abort ();
                 responseWriter (true);
             } catch (Exception e) {
-                responseWriter (new XipErrorMessage {
-                    Exception = ExceptionNode.Create (e)
-                });
+                responseWriter (new XipErrorMessage (e));
             }
         }
     }

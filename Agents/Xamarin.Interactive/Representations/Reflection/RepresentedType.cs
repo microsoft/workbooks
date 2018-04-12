@@ -15,8 +15,7 @@ using Xamarin.Interactive.Serialization;
 
 namespace Xamarin.Interactive.Representations.Reflection
 {
-    [Serializable]
-    sealed class RepresentedType : IRepresentedType, ISerializable, IObjectReference
+    sealed class RepresentedType : IRepresentedType
     {
         static readonly ReaderWriterLockSlim resolveLock = new ReaderWriterLockSlim ();
         static readonly Dictionary<string, RepresentedType> fromStringMap
@@ -85,21 +84,6 @@ namespace Xamarin.Interactive.Representations.Reflection
 
         RepresentedType ()
         {
-        }
-
-        RepresentedType (SerializationInfo info, StreamingContext context)
-        {
-            Name = info.GetString ("Name");
-        }
-
-        void ISerializable.GetObjectData (SerializationInfo info, StreamingContext context)
-        {
-            info.AddValue ("Name", Name);
-        }
-
-        object IObjectReference.GetRealObject (StreamingContext context)
-        {
-            return RepresentedType.Lookup (Name);
         }
 
         readonly Dictionary<string, RepresentedMemberInfo> proxyableMembers = new Dictionary<string, RepresentedMemberInfo> ();
@@ -193,6 +177,5 @@ namespace Xamarin.Interactive.Representations.Reflection
 
             return null;
         }
-
     }
 }

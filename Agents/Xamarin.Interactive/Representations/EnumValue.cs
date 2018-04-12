@@ -6,45 +6,40 @@
 // Licensed under the MIT License.
 
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 
+using Newtonsoft.Json;
+
 using Xamarin.Interactive.Representations.Reflection;
-using Xamarin.Interactive.Serialization;
 
 namespace Xamarin.Interactive.Representations
 {
-    [Serializable]
+    [JsonObject]
     sealed class EnumValue : IRepresentationObject
     {
-        readonly RepresentedType representedType;
-        readonly RepresentedType underlyingType;
-        readonly object value;
-        readonly object [] values;
-        readonly string [] names;
-        readonly bool isFlags;
+        public RepresentedType RepresentedType { get; }
+        public RepresentedType UnderlyingType { get; }
+        public object Value { get; }
+        public IReadOnlyList<object> Values { get; }
+        public IReadOnlyList<string> Names { get; }
+        public bool IsFlags { get; }
 
-        public RepresentedType RepresentedType {
-            get { return representedType; }
-        }
-
-        public RepresentedType UnderlyingType {
-            get { return underlyingType; }
-        }
-
-        public object Value {
-            get { return value; }
-        }
-
-        public object [] Values {
-            get { return values; }
-        }
-
-        public string [] Names {
-            get { return names; }
-        }
-
-        public bool IsFlags {
-            get { return isFlags; }
+        [JsonConstructor]
+        EnumValue (
+            RepresentedType representedType,
+            RepresentedType underlyingType,
+            object value,
+            IReadOnlyList<object> values,
+            IReadOnlyList<string> names,
+            bool isFlags)
+        {
+            RepresentedType = representedType;
+            UnderlyingType = underlyingType;
+            Value = value;
+            Values = values;
+            Names = names;
+            IsFlags = isFlags;
         }
 
         public EnumValue (Enum value)
@@ -52,23 +47,19 @@ namespace Xamarin.Interactive.Representations
             var type = value.GetType ();
             var underlyingType = Enum.GetUnderlyingType (type);
 
-            representedType = RepresentedType.Lookup (type);
-            this.underlyingType = RepresentedType.Lookup (underlyingType);
+            RepresentedType = RepresentedType.Lookup (type);
+            UnderlyingType = RepresentedType.Lookup (underlyingType);
 
-            this.value = Convert.ChangeType (value, underlyingType, CultureInfo.InvariantCulture);
-            names = Enum.GetNames (type);
-            isFlags = type.IsDefined (typeof (FlagsAttribute), false);
+            Value = Convert.ChangeType (value, underlyingType, CultureInfo.InvariantCulture);
+            Names = Enum.GetNames (type);
+            IsFlags = type.IsDefined (typeof (FlagsAttribute), false);
 
             var values = Enum.GetValues (type);
-            this.values = new object [values.Length];
+            var convertedValues = new object [values.Length];
             for (int i = 0; i < values.Length; i++)
-                this.values [i] = Convert.ChangeType (
+                convertedValues [i] = Convert.ChangeType (
                     values.GetValue (i), underlyingType, CultureInfo.InvariantCulture);
-        }
-
-        void ISerializableObject.Serialize (ObjectSerializer serializer)
-        {
-            throw new NotImplementedException ();
+            Values = convertedValues;
         }
     }
 }
