@@ -79,7 +79,9 @@ namespace Xamarin.Interactive.Client
 
             IAgentTicket ticket;
 
-            if (clientSessionUri == null || clientSessionUri.SessionKind == ClientSessionKind.Workbook)
+            if (clientSessionUri == null ||
+                clientSessionUri.Host == null ||
+                !ValidPortRange.IsValid (clientSessionUri.Port))
                 ticket = await workbookApp.RequestAgentTicketAsync (
                     clientSessionUri,
                     messageService,
