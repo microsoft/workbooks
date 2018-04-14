@@ -158,13 +158,6 @@
     <Compile Include="ViewInspector\InspectViewNode.cs" />
     <Compile Include="ViewInspector\InspectViewMaterial.cs" />
     <Compile Include="ViewInspector\SceneKitDolly.cs" />
-    <Compile Include="WebDocument\XIWebDocumentRepresentation.cs" />
-    <Compile Include="WebDocument\XIWebDocumentView.cs" />
-    <Compile Include="WebDocument\MapView\XIMapViewWebDocumentRepresentation.cs" />
-    <Compile Include="WebDocument\MapView\XIMapViewWebDocumentView.cs" />
-    <Compile Include="WebDocument\MapView\XIMapViewDelegate.cs" />
-    <Compile Include="WebDocument\MapView\PolylinePointAnnotation.cs" />
-    <Compile Include="WebDocument\MapView\XIPinAnnotationView.cs" />
     <Compile Include="PackageManagerWindow.cs" />
     <Compile Include="PackageManagerWindow.designer.cs">
       <DependentUpon>PackageManagerWindow.cs</DependentUpon>
