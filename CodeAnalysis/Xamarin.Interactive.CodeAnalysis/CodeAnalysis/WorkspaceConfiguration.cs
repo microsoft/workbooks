@@ -76,7 +76,7 @@ namespace Xamarin.Interactive.CodeAnalysis
                 configuration,
                 agentType);
 
-            configuration.With (globalStateType: configuration
+            configuration = configuration.With (globalStateType: configuration
                 .GlobalStateType
                 .WithResolvedType (globalStateType));
 
