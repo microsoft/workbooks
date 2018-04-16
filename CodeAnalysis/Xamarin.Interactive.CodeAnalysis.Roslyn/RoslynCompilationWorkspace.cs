@@ -215,6 +215,9 @@ namespace Xamarin.Interactive.CodeAnalysis.Roslyn
                 }
             }
 
+            public new void ApplyDocumentTextChanged (DocumentId documentId, SourceText newText)
+                => base.ApplyDocumentTextChanged (documentId, newText);
+
             #endregion
 
             public new Solution SetCurrentSolution (Solution solution)
@@ -438,23 +441,17 @@ namespace Xamarin.Interactive.CodeAnalysis.Roslyn
         Project GetProject (DocumentId documentId) =>
             workspace.CurrentSolution.GetDocument (documentId).Project;
 
-        public DocumentId AddSubmission (SourceText buffer,
-            DocumentId previousDocumentId, DocumentId nextDocumentId)
+        public DocumentId AddSubmission (DocumentId previousDocumentId, DocumentId nextDocumentId)
         {
-            if (buffer == null)
-                throw new ArgumentNullException (nameof(buffer));
-
             var project = workspace.AddProject (CreateSubmissionProjectInfo ());
 
             // AdhocWorkspace.AddDocument will add text as SourceCodeKind.Regular
             // not Script, so we need to do this the long way here...
             var documentId = DocumentId.CreateNewId (project.Id, project.Name);
-            var loader = TextLoader.From (TextAndVersion.Create (buffer, VersionStamp.Create ()));
             workspace.AddDocument (DocumentInfo.Create (documentId,
                 project.Name,
                 null,
-                SourceCodeKind.Script,
-                loader));
+                SourceCodeKind.Script));
 
             workspace.OpenDocument (documentId);
 
@@ -759,14 +756,15 @@ namespace Xamarin.Interactive.CodeAnalysis.Roslyn
 
         #endregion
 
-        bool TryGetSourceText (CodeCellId codeCellId, out SourceText sourceText)
-            => TryGetSourceText (codeCellId.ToDocumentId (), out sourceText);
-
-        bool TryGetSourceText (DocumentId documentId, out SourceText sourceText)
+        Task<SourceText> GetSourceTextAsync (DocumentId documentId, CancellationToken cancellationToken)
         {
-            sourceText = default;
             var document = workspace.CurrentSolution?.GetDocument (documentId);
-            return document != null && document.TryGetText (out sourceText);
+            if (document == null)
+                throw new ArgumentException (
+                    $"documnent {documentId} does not exist in workspace",
+                    nameof (documentId));
+
+            return document.GetTextAsync (cancellationToken);
         }
 
         #region IWorkspaceService
@@ -785,7 +783,6 @@ namespace Xamarin.Interactive.CodeAnalysis.Roslyn
             CodeCellId previousCellId,
             CodeCellId nextCellId)
             => AddSubmission (
-                new CodeCellBuffer (string.Empty).CurrentText,
                 previousCellId.ToDocumentId (),
                 nextCellId.ToDocumentId ()).ToCodeCellId ();
 
@@ -797,13 +794,20 @@ namespace Xamarin.Interactive.CodeAnalysis.Roslyn
         public bool IsCellComplete (CodeCellId cellId)
             => IsDocumentSubmissionComplete (cellId.ToDocumentId ());
 
-        public bool IsCellOutdated (CodeCellId cellId)
+        public async Task<bool> IsCellOutdatedAsync (
+            CodeCellId cellId,
+            CancellationToken cancellationToken = default)
         {
-            if (HaveAnyLoadDirectiveFilesChanged (cellId.ToDocumentId ()) &&
-                TryGetSourceText (cellId, out var sourceText)) {
-                // a trick to force Roslyn into invalidating the tree it's holding on
+            var documentId = cellId.ToDocumentId ();
+            if (HaveAnyLoadDirectiveFilesChanged (documentId)) {
+                // A trick to force Roslyn into invalidating the tree it's holding on
                 // to representing code pulled in via any #load directives in the cell.
-                ((CodeCellBuffer)sourceText.Container).Invalidate ();
+                // Unfortunately we have to go from SourceText → string → SourceText
+                // to force SourceText.Container.TextChanged to be raised.
+                // See https://github.com/dotnet/roslyn/issues/21964
+                SetCellBuffer (
+                    cellId,
+                    await GetCellBufferAsync (cellId, cancellationToken));
                 return true;
             }
 
@@ -811,20 +815,14 @@ namespace Xamarin.Interactive.CodeAnalysis.Roslyn
         }
 
         public void SetCellBuffer (CodeCellId cellId, string buffer)
-        {
-            if (!TryGetSourceText (cellId, out var sourceText))
-                throw new ArgumentException ("cell does not exist in workspace", nameof (cellId));
+            => workspace.ApplyDocumentTextChanged (
+                cellId.ToDocumentId (),
+                SourceText.From (buffer ?? string.Empty));
 
-            ((CodeCellBuffer)sourceText.Container).Value = buffer;
-        }
-
-        public string GetCellBuffer (CodeCellId cellId)
-        {
-            if (!TryGetSourceText (cellId, out var sourceText))
-                throw new ArgumentException ("cell does not exist in workspace", nameof (cellId));
-
-            return sourceText.ToString ();
-        }
+        public async Task<string> GetCellBufferAsync (
+            CodeCellId cellId,
+            CancellationToken cancellationToken = default)
+            => (await GetSourceTextAsync (cellId.ToDocumentId (), cancellationToken)).ToString ();
 
         public async Task<IReadOnlyList<InteractiveDiagnostic>> GetCellDiagnosticsAsync (
             CodeCellId cellId,
@@ -865,48 +863,45 @@ namespace Xamarin.Interactive.CodeAnalysis.Roslyn
             Position position,
             CancellationToken cancellationToken = default)
         {
-            if (!TryGetSourceText (cellId, out var sourceText))
-                return default;
-
             if (hoverController == null)
                 hoverController = new HoverController (this);
 
             return await hoverController.ProvideHoverAsync (
-                sourceText,
+                await GetSourceTextAsync (
+                    cellId.ToDocumentId (),
+                    cancellationToken),
                 position,
                 cancellationToken);
         }
 
-        public async Task<IEnumerable<Xamarin.Interactive.CodeAnalysis.Models.CompletionItem>> GetCompletionsAsync (
+        public async Task<IEnumerable<Models.CompletionItem>> GetCompletionsAsync (
             CodeCellId cellId,
             Position position,
             CancellationToken cancellationToken = default)
         {
-            if (!TryGetSourceText (cellId.ToDocumentId (), out var sourceText))
-                return null;
-
             if (completionController == null)
                 completionController = new CompletionController (this);
 
             return await completionController.ProvideFilteredCompletionItemsAsync (
-                sourceText,
+                await GetSourceTextAsync (
+                    cellId.ToDocumentId (),
+                    cancellationToken),
                 position,
                 cancellationToken);
         }
 
-        public Task<SignatureHelp> GetSignatureHelpAsync (
+        public async Task<SignatureHelp> GetSignatureHelpAsync (
             CodeCellId cellId,
             Position position,
             CancellationToken cancellationToken = default)
         {
-            if (!TryGetSourceText (cellId, out var sourceText))
-                return null;
-
             if (signatureHelpController == null)
                 signatureHelpController = new SignatureHelpController (this);
 
-            return signatureHelpController.ComputeSignatureHelpAsync (
-                sourceText,
+            return await signatureHelpController.ComputeSignatureHelpAsync (
+                await GetSourceTextAsync (
+                    cellId.ToDocumentId (),
+                    cancellationToken),
                 position,
                 cancellationToken);
         }

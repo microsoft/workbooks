@@ -472,7 +472,7 @@ namespace Xamarin.Interactive.Workbook.Models
                         codeCellState.View.IsDirty ||
                         codeCellState.View.IsOutdated;
 
-                    if (ClientSession.CompilationWorkspace.IsCellOutdated (codeCellState.CodeCellId))
+                    if (await ClientSession.CompilationWorkspace.IsCellOutdatedAsync (codeCellState.CodeCellId))
                         evaluateCodeCell = true;
 
                     if (evaluateCodeCell)

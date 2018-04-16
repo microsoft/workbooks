@@ -167,7 +167,9 @@ namespace Xamarin.Interactive.CodeAnalysis
                     true,
                     cancellationToken);
             } else {
-                buffer.Append (workspace.GetCellBuffer (nugetReferenceCellId));
+                buffer.Append (await workspace.GetCellBufferAsync (
+                    nugetReferenceCellId,
+                    cancellationToken));
             }
 
             // TODO: Prevent dupes. Return false if no changes made
@@ -326,7 +328,7 @@ namespace Xamarin.Interactive.CodeAnalysis
                 var isTargetCell = targetCellIndex == i;
                 var shouldEvaluate = isTargetCell || cell.IsEvaluationCandidate;
 
-                if (!shouldEvaluate && workspace.IsCellOutdated (cell.CodeCellId))
+                if (!shouldEvaluate && await workspace.IsCellOutdatedAsync (cell.CodeCellId, cancellationToken))
                     shouldEvaluate = true;
 
                 if (shouldEvaluate) {

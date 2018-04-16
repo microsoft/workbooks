@@ -77,7 +77,9 @@ namespace Xamarin.Interactive.CodeAnalysis
         /// <returns>
         /// Returns the text content as a string. Implementations should never return <c>null</c>.
         /// </returns>
-        string GetCellBuffer (CodeCellId cellId);
+        Task<string> GetCellBufferAsync (
+            CodeCellId cellId,
+            CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Updates the text content of the cell identified by <paramref name="cellId"/>
@@ -116,7 +118,9 @@ namespace Xamarin.Interactive.CodeAnalysis
         /// <returns>
         /// Returns <c>true</c> if the cell must be re-evaluated, <c>false</c> otherwise.
         /// </returns>
-        bool IsCellOutdated (CodeCellId cellId);
+        Task<bool> IsCellOutdatedAsync (
+            CodeCellId cellId,
+            CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Gets a list of all current diagnostics for the cell identified by

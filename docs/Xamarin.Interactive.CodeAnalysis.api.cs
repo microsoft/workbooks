@@ -63,7 +63,7 @@ namespace Xamarin.Interactive.CodeAnalysis
 
         Task<Compilation> EmitCellCompilationAsync (CodeCellId cellId, EvaluationEnvironment evaluationEnvironment, CancellationToken cancellationToken = default(CancellationToken));
 
-        string GetCellBuffer (CodeCellId cellId);
+        Task<string> GetCellBufferAsync (CodeCellId cellId, CancellationToken cancellationToken = default(CancellationToken));
 
         Task<IReadOnlyList<Diagnostic>> GetCellDiagnosticsAsync (CodeCellId cellId, CancellationToken cancellationToken = default(CancellationToken));
 
@@ -81,7 +81,7 @@ namespace Xamarin.Interactive.CodeAnalysis
 
         bool IsCellComplete (CodeCellId cellId);
 
-        bool IsCellOutdated (CodeCellId cellId);
+        Task<bool> IsCellOutdatedAsync (CodeCellId cellId, CancellationToken cancellationToken = default(CancellationToken));
 
         void RemoveCell (CodeCellId cellId, CodeCellId nextCellId);
 
