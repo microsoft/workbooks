@@ -15,13 +15,13 @@ namespace Xamarin.Interactive.Session
     {
         public LanguageDescription LanguageDescription { get; }
         public string TargetPlatformIdentifier { get; }
-        public IEvaluationEnvironment EvaluationEnvironment { get; }
+        public EvaluationEnvironment EvaluationEnvironment { get; }
 
         [JsonConstructor]
         public InteractiveSessionDescription (
             LanguageDescription languageDescription,
             string targetPlatformIdentifier,
-            IEvaluationEnvironment evaluationEnvironment = null)
+            EvaluationEnvironment evaluationEnvironment = default)
         {
             LanguageDescription = languageDescription;
             TargetPlatformIdentifier = targetPlatformIdentifier;

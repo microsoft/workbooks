@@ -155,7 +155,7 @@ namespace Xamarin.Interactive.CodeAnalysis
             get;
         }
 
-        public IEvaluationEnvironment EvaluationEnvironment {
+        public EvaluationEnvironment EvaluationEnvironment {
             get;
         }
 
@@ -175,7 +175,7 @@ namespace Xamarin.Interactive.CodeAnalysis
             get;
         }
 
-        public Compilation (CodeCellId codeCellId, int submissionNumber, EvaluationContextId evaluationContextId, IEvaluationEnvironment evaluationEnvironment, bool isResultAnExpression, AssemblyDefinition executableAssembly, IReadOnlyList<AssemblyDefinition> references);
+        public Compilation (CodeCellId codeCellId, int submissionNumber, EvaluationContextId evaluationContextId, EvaluationEnvironment evaluationEnvironment, bool isResultAnExpression, AssemblyDefinition executableAssembly, IReadOnlyList<AssemblyDefinition> references);
     }
     public class EvaluationContextGlobalObject
     {
@@ -245,13 +245,13 @@ namespace Xamarin.Interactive.CodeAnalysis
         public override string ToString ();
     }
     [Serializable]
-    public struct EvaluationEnvironment : IEvaluationEnvironment
+    public struct EvaluationEnvironment
     {
-        public string WorkingDirectory {
+        public FilePath WorkingDirectory {
             get;
         }
 
-        public EvaluationEnvironment (string workingDirectory);
+        public EvaluationEnvironment (FilePath workingDirectory);
     }
     public enum EvaluationPhase
     {
@@ -303,12 +303,6 @@ namespace Xamarin.Interactive.CodeAnalysis
     public interface IEvaluationContextIntegration
     {
         void IntegrateWith (IEvaluationContext evaluationContext);
-    }
-    public interface IEvaluationEnvironment
-    {
-        string WorkingDirectory {
-            get;
-        }
     }
     [Serializable]
     public sealed class TargetCompilationConfiguration

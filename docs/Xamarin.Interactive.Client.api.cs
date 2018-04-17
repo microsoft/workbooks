@@ -356,7 +356,7 @@ namespace Xamarin.Interactive.Session
     }
     public sealed class InteractiveSessionDescription
     {
-        public IEvaluationEnvironment EvaluationEnvironment {
+        public EvaluationEnvironment EvaluationEnvironment {
             get;
         }
 
@@ -369,7 +369,7 @@ namespace Xamarin.Interactive.Session
         }
 
         [JsonConstructor]
-        public InteractiveSessionDescription (LanguageDescription languageDescription, string targetPlatformIdentifier, IEvaluationEnvironment evaluationEnvironment = null);
+        public InteractiveSessionDescription (LanguageDescription languageDescription, string targetPlatformIdentifier, EvaluationEnvironment evaluationEnvironment = default(EvaluationEnvironment));
     }
     public struct InteractiveSessionEvent
     {

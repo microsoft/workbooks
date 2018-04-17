@@ -658,7 +658,7 @@ namespace Xamarin.Interactive.CodeAnalysis.Roslyn
         public async Task<CodeAnalysis.Compilation>
             EmitSubmissionCompilationAsync (
                 DocumentId submissionDocumentId,
-                IEvaluationEnvironment evaluationEnvironment,
+                EvaluationEnvironment evaluationEnvironment,
                 CancellationToken cancellationToken = default)
         {
             if (submissionDocumentId == null)
@@ -849,7 +849,7 @@ namespace Xamarin.Interactive.CodeAnalysis.Roslyn
 
         public Task<CodeAnalysis.Compilation> EmitCellCompilationAsync (
             CodeCellId cellId,
-            IEvaluationEnvironment evaluationEnvironment,
+            EvaluationEnvironment evaluationEnvironment,
             CancellationToken cancellationToken = default)
             => EmitSubmissionCompilationAsync (
                 cellId.ToDocumentId (),

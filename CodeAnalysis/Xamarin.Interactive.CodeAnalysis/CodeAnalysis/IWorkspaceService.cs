@@ -151,7 +151,7 @@ namespace Xamarin.Interactive.CodeAnalysis
         /// </returns>
         Task<Compilation> EmitCellCompilationAsync (
             CodeCellId cellId,
-            IEvaluationEnvironment evaluationEnvironment,
+            EvaluationEnvironment evaluationEnvironment,
             CancellationToken cancellationToken = default);
 
         /// <summary>

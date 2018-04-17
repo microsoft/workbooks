@@ -72,7 +72,7 @@ namespace Xamarin.Interactive.CodeAnalysis
         readonly Inhibitor evaluationInhibitor = new Inhibitor ();
 
         readonly IWorkspaceService workspace;
-        readonly IEvaluationEnvironment evaluationEnvironment;
+        readonly EvaluationEnvironment evaluationEnvironment;
 
         IAgentConnection agentConnection;
         IDisposable agentConnectionMessagesSubscription;
@@ -91,7 +91,7 @@ namespace Xamarin.Interactive.CodeAnalysis
 
         public EvaluationService (
             IWorkspaceService workspace,
-            IEvaluationEnvironment evaluationEnvironment)
+            EvaluationEnvironment evaluationEnvironment)
         {
             this.workspace = workspace
                 ?? throw new ArgumentNullException (nameof (workspace));

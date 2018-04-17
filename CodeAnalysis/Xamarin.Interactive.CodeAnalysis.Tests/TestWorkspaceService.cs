@@ -66,7 +66,7 @@ namespace Xamarin.Interactive.CodeAnalysis
 
         public virtual Task<Compilation> EmitCellCompilationAsync (
             CodeCellId cellId,
-            IEvaluationEnvironment evaluationEnvironment,
+            EvaluationEnvironment evaluationEnvironment,
             CancellationToken cancellationToken = default)
             => throw new NotImplementedException ();
 

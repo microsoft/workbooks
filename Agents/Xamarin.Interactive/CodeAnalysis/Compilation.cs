@@ -21,7 +21,7 @@ namespace Xamarin.Interactive.CodeAnalysis
         public int SubmissionNumber { get; }
         public EvaluationContextId EvaluationContextId { get; }
         public bool IsResultAnExpression { get; }
-        public IEvaluationEnvironment EvaluationEnvironment { get; }
+        public EvaluationEnvironment EvaluationEnvironment { get; }
         public AssemblyDefinition ExecutableAssembly { get; }
         public IReadOnlyList<AssemblyDefinition> References { get; }
 
@@ -29,7 +29,7 @@ namespace Xamarin.Interactive.CodeAnalysis
             CodeCellId codeCellId,
             int submissionNumber,
             EvaluationContextId evaluationContextId,
-            IEvaluationEnvironment evaluationEnvironment,
+            EvaluationEnvironment evaluationEnvironment,
             bool isResultAnExpression,
             AssemblyDefinition executableAssembly,
             IReadOnlyList<AssemblyDefinition> references)

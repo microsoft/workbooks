@@ -98,8 +98,7 @@ namespace Xamarin.Interactive.Session
 
             var evaluationService = new EvaluationService (
                 workspaceService,
-                sessionDescription.EvaluationEnvironment
-                    ?? new EvaluationEnvironment (null));
+                sessionDescription.EvaluationEnvironment);
 
             evaluationService.NotifyAgentConnected (state.AgentConnection);
 
