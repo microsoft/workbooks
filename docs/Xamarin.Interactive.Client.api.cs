@@ -352,6 +352,8 @@ namespace Xamarin.Interactive.Session
 
         public Task InitializeAsync (InteractiveSessionDescription sessionDescription, CancellationToken cancellationToken = default(CancellationToken));
 
+        public void NotifySessionDescriptionChanged (InteractiveSessionDescription sessionDescription);
+
         public void TerminateAgentConnection ();
     }
     public sealed class InteractiveSessionDescription

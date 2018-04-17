@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Xamarin.Interactive.Client;
 using Xamarin.Interactive.CodeAnalysis;
 using Xamarin.Interactive.CodeAnalysis.Events;
+using Xamarin.Interactive.Core;
 using Xamarin.Interactive.Logging;
 using Xamarin.Interactive.Messages;
 using Xamarin.Interactive.NuGet;
@@ -75,6 +76,9 @@ namespace Xamarin.Interactive.Session
             InteractiveSessionDescription sessionDescription,
             CancellationToken cancellationToken = default)
         {
+            if (sessionDescription == null)
+                throw new ArgumentNullException (nameof (sessionDescription));
+
             cancellationToken = GetCancellationToken (cancellationToken);
 
             State = State.WithSessionDescription (sessionDescription);
@@ -124,7 +128,45 @@ namespace Xamarin.Interactive.Session
                     new Observer<ICodeCellEvent> (OnEvaluationServiceEvent))),
                 packageManagerService);
 
+            UpdateWorkingDirectory (
+                default,
+                sessionDescription.EvaluationEnvironment.WorkingDirectory);
+
             PostEvent (Ready);
+        }
+
+        public void NotifySessionDescriptionChanged (InteractiveSessionDescription sessionDescription)
+        {
+            if (sessionDescription == null)
+                throw new ArgumentNullException (nameof (sessionDescription));
+
+            var oldSessionDescription = State.SessionDescription;
+
+            State = State.WithSessionDescription (sessionDescription);
+
+            if (State.EvaluationService.service != null)
+                State.EvaluationService.service.NotifyEvaluationEnvironmentChanged (
+                    sessionDescription.EvaluationEnvironment);
+
+            UpdateWorkingDirectory (
+                oldSessionDescription.EvaluationEnvironment.WorkingDirectory,
+                sessionDescription.EvaluationEnvironment.WorkingDirectory);
+        }
+
+        void UpdateWorkingDirectory (FilePath previousWorkingDirectory, FilePath currentWorkingDirectory)
+        {
+            var dependencyResolver = State.WorkspaceService?.Configuration?.DependencyResolver;
+            if (dependencyResolver != null) {
+                dependencyResolver.RemoveAssemblySearchPath (previousWorkingDirectory);
+                dependencyResolver.RemoveAssemblySearchPath (currentWorkingDirectory);
+
+                if (currentWorkingDirectory.DirectoryExists) {
+                    dependencyResolver.BaseDirectory = currentWorkingDirectory;
+                    dependencyResolver.AddAssemblySearchPath (currentWorkingDirectory);
+                } else {
+                    dependencyResolver.BaseDirectory = default;
+                }
+            }
         }
 
         void OnEvaluationServiceEvent (ICodeCellEvent codeCellEvent)

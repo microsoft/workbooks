@@ -69,11 +69,12 @@ namespace Xamarin.Interactive.CodeAnalysis
             public List<CodeCellState> CellsToEvaluate { get; } = new List<CodeCellState> ();
         }
 
+        readonly object stateChangeLock = new object ();
         readonly Inhibitor evaluationInhibitor = new Inhibitor ();
 
         readonly IWorkspaceService workspace;
-        readonly EvaluationEnvironment evaluationEnvironment;
 
+        EvaluationEnvironment evaluationEnvironment;
         IAgentConnection agentConnection;
         IDisposable agentConnectionMessagesSubscription;
 
@@ -99,9 +100,15 @@ namespace Xamarin.Interactive.CodeAnalysis
             this.evaluationEnvironment = evaluationEnvironment;
         }
 
+        internal void NotifyEvaluationEnvironmentChanged (EvaluationEnvironment evaluationEnvironment)
+        {
+            lock (stateChangeLock)
+                this.evaluationEnvironment = evaluationEnvironment;
+        }
+
         internal void NotifyAgentConnected (IAgentConnection agentConnection)
         {
-            lock (this) {
+            lock (stateChangeLock) {
                 if (this.agentConnection != null)
                     NotifyAgentDisconnected ();
 
@@ -113,7 +120,7 @@ namespace Xamarin.Interactive.CodeAnalysis
 
         internal void NotifyAgentDisconnected ()
         {
-            lock (this)
+            lock (stateChangeLock)
                 agentConnectionMessagesSubscription?.Dispose ();
         }
 
