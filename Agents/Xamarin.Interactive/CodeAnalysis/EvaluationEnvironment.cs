@@ -7,14 +7,16 @@
 
 using System;
 
+using Xamarin.Interactive.Core;
+
 namespace Xamarin.Interactive.CodeAnalysis
 {
     [Serializable]
-    public struct EvaluationEnvironment : IEvaluationEnvironment
+    public struct EvaluationEnvironment
     {
-        public string WorkingDirectory { get; }
+        public FilePath WorkingDirectory { get; }
 
-        public EvaluationEnvironment (string workingDirectory)
+        public EvaluationEnvironment (FilePath workingDirectory)
             => WorkingDirectory = workingDirectory;
     }
 }

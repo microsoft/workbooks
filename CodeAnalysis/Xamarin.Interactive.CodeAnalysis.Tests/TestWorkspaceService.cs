@@ -47,7 +47,9 @@ namespace Xamarin.Interactive.CodeAnalysis
         public virtual void RemoveCell (CodeCellId cellId, CodeCellId nextCellId)
             => throw new NotImplementedException ();
 
-        public virtual string GetCellBuffer (CodeCellId cellId)
+        public virtual Task<string> GetCellBufferAsync (
+            CodeCellId cellId,
+            CancellationToken cancellationToken = default)
             => throw new NotImplementedException ();
 
         public virtual void SetCellBuffer (CodeCellId cellId, string buffer)
@@ -56,7 +58,9 @@ namespace Xamarin.Interactive.CodeAnalysis
         public bool IsCellComplete (CodeCellId cellId)
             => throw new NotImplementedException ();
 
-        public bool IsCellOutdated (CodeCellId cellId)
+        public Task<bool> IsCellOutdatedAsync (
+            CodeCellId cellId,
+            CancellationToken cancellationToken = default)
             => throw new NotImplementedException ();
 
         public Task<IReadOnlyList<Diagnostic>> GetCellDiagnosticsAsync (
@@ -66,7 +70,7 @@ namespace Xamarin.Interactive.CodeAnalysis
 
         public virtual Task<Compilation> EmitCellCompilationAsync (
             CodeCellId cellId,
-            IEvaluationEnvironment evaluationEnvironment,
+            EvaluationEnvironment evaluationEnvironment,
             CancellationToken cancellationToken = default)
             => throw new NotImplementedException ();
 

@@ -148,7 +148,7 @@ namespace Xamarin.Interactive.Client.Console
                         GetPrompt (i > 0),
                         null);
 
-                    var existingBuffer = session.WorkspaceService.GetCellBuffer (cellId);
+                    var existingBuffer = await session.WorkspaceService.GetCellBufferAsync (cellId);
 
                     await session.EvaluationService.UpdateCodeCellAsync (
                         cellId,

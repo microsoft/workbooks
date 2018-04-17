@@ -31,7 +31,7 @@ namespace Xamarin.Interactive.CodeAnalysis
             get;
         }
 
-        public EvaluationService (IWorkspaceService workspace, IEvaluationEnvironment evaluationEnvironment);
+        public EvaluationService (IWorkspaceService workspace, EvaluationEnvironment evaluationEnvironment);
 
         public Task<bool> AddTopLevelReferencesAsync (IReadOnlyList<string> references, CancellationToken cancellationToken = default(CancellationToken));
 
@@ -61,9 +61,9 @@ namespace Xamarin.Interactive.CodeAnalysis
             get;
         }
 
-        Task<Compilation> EmitCellCompilationAsync (CodeCellId cellId, IEvaluationEnvironment evaluationEnvironment, CancellationToken cancellationToken = default(CancellationToken));
+        Task<Compilation> EmitCellCompilationAsync (CodeCellId cellId, EvaluationEnvironment evaluationEnvironment, CancellationToken cancellationToken = default(CancellationToken));
 
-        string GetCellBuffer (CodeCellId cellId);
+        Task<string> GetCellBufferAsync (CodeCellId cellId, CancellationToken cancellationToken = default(CancellationToken));
 
         Task<IReadOnlyList<Diagnostic>> GetCellDiagnosticsAsync (CodeCellId cellId, CancellationToken cancellationToken = default(CancellationToken));
 
@@ -81,7 +81,7 @@ namespace Xamarin.Interactive.CodeAnalysis
 
         bool IsCellComplete (CodeCellId cellId);
 
-        bool IsCellOutdated (CodeCellId cellId);
+        Task<bool> IsCellOutdatedAsync (CodeCellId cellId, CancellationToken cancellationToken = default(CancellationToken));
 
         void RemoveCell (CodeCellId cellId, CodeCellId nextCellId);
 

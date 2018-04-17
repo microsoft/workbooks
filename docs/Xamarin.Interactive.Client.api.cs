@@ -352,11 +352,13 @@ namespace Xamarin.Interactive.Session
 
         public Task InitializeAsync (InteractiveSessionDescription sessionDescription, CancellationToken cancellationToken = default(CancellationToken));
 
+        public void NotifySessionDescriptionChanged (InteractiveSessionDescription sessionDescription);
+
         public void TerminateAgentConnection ();
     }
     public sealed class InteractiveSessionDescription
     {
-        public IEvaluationEnvironment EvaluationEnvironment {
+        public EvaluationEnvironment EvaluationEnvironment {
             get;
         }
 
@@ -369,7 +371,7 @@ namespace Xamarin.Interactive.Session
         }
 
         [JsonConstructor]
-        public InteractiveSessionDescription (LanguageDescription languageDescription, string targetPlatformIdentifier, IEvaluationEnvironment evaluationEnvironment = null);
+        public InteractiveSessionDescription (LanguageDescription languageDescription, string targetPlatformIdentifier, EvaluationEnvironment evaluationEnvironment = default(EvaluationEnvironment));
     }
     public struct InteractiveSessionEvent
     {

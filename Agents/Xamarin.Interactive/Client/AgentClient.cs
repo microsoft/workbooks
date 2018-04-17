@@ -134,13 +134,6 @@ namespace Xamarin.Interactive.Client
                 new ResetStateRequest (),
                 SessionCancellationToken);
 
-        public Task AssociateClientSession (
-            ClientSessionAssociationKind kind,
-            FilePath workingDirectory = default (FilePath))
-            => SendAsync<SuccessResponse> (
-                new ClientSessionAssociation (kind, workingDirectory),
-                SessionCancellationToken);
-
         public Task<AssemblyDefinition []> GetAppDomainAssembliesAsync (bool includePeImage)
             => SendAsync<AssemblyDefinition []> (
                 new GetAppDomainAssembliesRequest (includePeImage),
