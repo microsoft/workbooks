@@ -111,11 +111,7 @@ namespace Xamarin.Interactive.Client
 
             isDisposed = true;
 
-            if (agent.IsConnected)
-                agent.Api.AssociateClientSession (ClientSessionAssociationKind.Dissociating)
-                     .ContinueWith (task => Workbook.Close ());
-            else
-                Workbook.Close ();
+            Workbook.Close ();
 
             ResetAgentConnection ();
             cancellationTokenSource.Cancel ();
@@ -530,9 +526,6 @@ namespace Xamarin.Interactive.Client
 
             if (agent.IsConnected) {
                 await GacCache.InitializingTask;
-                await Agent.Api.AssociateClientSession (
-                    ClientSessionAssociationKind.Initial,
-                    WorkingDirectory);
 
                 CompilationWorkspace = await WorkspaceServiceFactory.CreateWorkspaceServiceAsync (
                     "csharp",
@@ -610,13 +603,6 @@ namespace Xamarin.Interactive.Client
             AssertWorkbookSession ();
             Workbook.Save (saveOperation);
             UpdateTitle ();
-
-            // Update working directory in agent. If not connected, this will happen when creating the
-            // compilation workspace.
-            if (Agent.IsConnected)
-                Agent.Api.AssociateClientSession (
-                    ClientSessionAssociationKind.Reassociating,
-                    Workbook.WorkingBasePath).Forget ();
         }
 
         async Task RefreshForAgentIntegration ()
