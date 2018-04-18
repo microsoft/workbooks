@@ -192,7 +192,7 @@ namespace Xamarin.Interactive.NuGet
 
         async Task LoadPackageIntegrationsAsync (
             AgentType agentType,
-            IAgentEvaluationService agentEvaluationService,
+            IEvaluationContextManager evaluationContextManager,
             InteractivePackage package,
             CancellationToken cancellationToken)
         {
@@ -201,7 +201,7 @@ namespace Xamarin.Interactive.NuGet
                 await WorkspaceConfiguration.LoadFormsAgentExtensions (
                     package.Identity.Version.Version,
                     agentType,
-                    agentEvaluationService,
+                    evaluationContextManager,
                     dependencyResolver);
 
             var assembliesToLoadOnAgent = new List<ResolvedAssembly> ();
@@ -223,7 +223,7 @@ namespace Xamarin.Interactive.NuGet
             }
 
             if (assembliesToLoadOnAgent.Count > 0) {
-                var includePeImage = agentEvaluationService
+                var includePeImage = evaluationContextManager
                     .TargetCompilationConfiguration
                     .IncludePEImagesInDependencyResolution;
 
@@ -242,7 +242,7 @@ namespace Xamarin.Interactive.NuGet
                     );
                 }).ToArray ();
 
-                await agentEvaluationService.LoadAssembliesAsync (
+                await evaluationContextManager.LoadAssembliesAsync (
                     assembliesToLoad,
                     cancellationToken);
             }

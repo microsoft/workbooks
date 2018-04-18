@@ -363,7 +363,7 @@ namespace Xamarin.Interactive.Workbook.Models
             if (!ClientSession.Agent.IsConnected)
                 return;
 
-            await ((IAgentEvaluationService)ClientSession.Agent.Api).AbortEvaluationAsync ();
+            await ((IEvaluationContextManager)ClientSession.Agent.Api).AbortEvaluationAsync ();
         }
 
         public Task<bool> AddTopLevelReferencesAsync (
@@ -463,7 +463,7 @@ namespace Xamarin.Interactive.Workbook.Models
             var isFirstCell = codeCell.GetPreviousCell<CodeCell> () == null;
 
             if (isFirstCell && ClientSession.SessionKind == ClientSessionKind.Workbook)
-                await ((IAgentEvaluationService)ClientSession.Agent.Api).ResetStateAsync ();
+                await ((IEvaluationContextManager)ClientSession.Agent.Api).ResetStateAsync ();
 
             while (codeCell != null) {
                 if (CodeCells.TryGetValue (codeCell.View.Editor, out codeCellState)) {
@@ -556,7 +556,7 @@ namespace Xamarin.Interactive.Workbook.Models
                     .Where (ra => ra.HasIntegration)
                     .ToArray ();
                 if (integrationAssemblies.Length > 0)
-                    await ((IAgentEvaluationService)ClientSession.Agent.Api).LoadAssembliesAsync (
+                    await ((IEvaluationContextManager)ClientSession.Agent.Api).LoadAssembliesAsync (
                         integrationAssemblies);
             } catch (Exception e) {
                 exception = ExceptionNode.Create (e);
@@ -570,7 +570,7 @@ namespace Xamarin.Interactive.Workbook.Models
 
             try {
                 if (compilation != null)
-                    await ((IAgentEvaluationService)ClientSession.Agent.Api).EvaluateAsync (
+                    await ((IEvaluationContextManager)ClientSession.Agent.Api).EvaluateAsync (
                         compilation,
                         cancellationToken);
             } catch (XipErrorMessageException e) {

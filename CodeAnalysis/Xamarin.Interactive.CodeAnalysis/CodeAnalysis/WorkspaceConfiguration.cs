@@ -39,18 +39,18 @@ namespace Xamarin.Interactive.CodeAnalysis
 
         internal static async Task<WorkspaceConfiguration> CreateAsync (
             AgentType agentType,
-            IAgentEvaluationService agentEvaluationService,
+            IEvaluationContextManager evaluationContextManager,
             ClientSessionKind sessionKind,
             CancellationToken cancellationToken = default)
         {
-            await agentEvaluationService.InitializeAsync (cancellationToken).ConfigureAwait (false);
+            await evaluationContextManager.InitializeAsync (cancellationToken).ConfigureAwait (false);
 
-            var configuration = agentEvaluationService.TargetCompilationConfiguration;
+            var configuration = evaluationContextManager.TargetCompilationConfiguration;
 
             if (configuration == null)
                 throw new Exception (
-                    $"{nameof (IAgentEvaluationService)}." +
-                    $"{nameof (IAgentEvaluationService.TargetCompilationConfiguration)} " +
+                    $"{nameof (IEvaluationContextManager)}." +
+                    $"{nameof (IEvaluationContextManager.TargetCompilationConfiguration)} " +
                     $"is null");
 
             var dependencyResolver = CreateDependencyResolver (
@@ -66,7 +66,7 @@ namespace Xamarin.Interactive.CodeAnalysis
                     await LoadFormsAgentExtensions (
                         formsReference.Name.Version,
                         agentType,
-                        agentEvaluationService,
+                        evaluationContextManager,
                         dependencyResolver).ConfigureAwait (false);
             }
 
@@ -168,7 +168,7 @@ namespace Xamarin.Interactive.CodeAnalysis
         internal static async Task LoadFormsAgentExtensions (
             Version formsVersion,
             AgentType agentType,
-            IAgentEvaluationService agentEvaluationService,
+            IEvaluationContextManager evaluationContextManager,
             DependencyResolver dependencyResolver)
         {
             var formsAssembly = InteractiveInstallation.Default.LocateFormsAssembly (agentType);
@@ -200,7 +200,7 @@ namespace Xamarin.Interactive.CodeAnalysis
                 return;
             }
 
-            var includePeImage = agentEvaluationService
+            var includePeImage = evaluationContextManager
                 .TargetCompilationConfiguration
                 .IncludePEImagesInDependencyResolution;
             var assembliesToLoad = deps.Select (dep => {
@@ -214,7 +214,7 @@ namespace Xamarin.Interactive.CodeAnalysis
                 );
             }).ToArray ();
 
-            var results = await agentEvaluationService.LoadAssembliesAsync (assembliesToLoad);
+            var results = await evaluationContextManager.LoadAssembliesAsync (assembliesToLoad);
 
             var failed = results.Where (p => !p.Success);
             if (failed.Any ()) {

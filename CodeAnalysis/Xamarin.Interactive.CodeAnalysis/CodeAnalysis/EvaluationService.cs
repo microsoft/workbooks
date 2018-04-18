@@ -74,8 +74,8 @@ namespace Xamarin.Interactive.CodeAnalysis
         readonly IWorkspaceService workspace;
 
         EvaluationEnvironment evaluationEnvironment;
-        IAgentEvaluationService agentEvaluationService;
-        IDisposable agentEvaluationServiceEventsSubscription;
+        IEvaluationContextManager evaluationContextManager;
+        IDisposable evaluationContextManagerEventsSubscription;
 
         readonly Dictionary<CodeCellId, CodeCellState> cellStates
             = new Dictionary<CodeCellId, CodeCellState> ();
@@ -105,15 +105,15 @@ namespace Xamarin.Interactive.CodeAnalysis
                 this.evaluationEnvironment = evaluationEnvironment;
         }
 
-        internal void NotifyPeerUpdated (IAgentEvaluationService agentEvaluationService)
+        internal void NotifyPeerUpdated (IEvaluationContextManager evaluationContextManager)
         {
             lock (stateChangeLock) {
-                agentEvaluationServiceEventsSubscription?.Dispose ();
-                agentEvaluationServiceEventsSubscription = null;
+                evaluationContextManagerEventsSubscription?.Dispose ();
+                evaluationContextManagerEventsSubscription = null;
 
-                this.agentEvaluationService = agentEvaluationService;
+                this.evaluationContextManager = evaluationContextManager;
 
-                agentEvaluationServiceEventsSubscription = agentEvaluationService
+                evaluationContextManagerEventsSubscription = evaluationContextManager
                     ?.Events
                     ?.Subscribe (events.Observers);
             }
@@ -353,7 +353,7 @@ namespace Xamarin.Interactive.CodeAnalysis
                 cancellationToken);
 
             if (evaluationModel.ShouldResetAgentState)
-                await agentEvaluationService.ResetStateAsync (cancellationToken);
+                await evaluationContextManager.ResetStateAsync (cancellationToken);
 
             CodeCellEvaluationFinishedEvent lastCellFinishedEvent = default;
 
@@ -387,7 +387,7 @@ namespace Xamarin.Interactive.CodeAnalysis
             CodeCellState codeCellState,
             CancellationToken cancellationToken = default)
         {
-            if (agentEvaluationService == null) {
+            if (evaluationContextManager == null) {
                 codeCellState.Diagnostics = new [] {
                     new Diagnostic (
                         DiagnosticSeverity.Error,
@@ -416,7 +416,7 @@ namespace Xamarin.Interactive.CodeAnalysis
                     .ToArray ();
 
                 if (integrationAssemblies.Length > 0)
-                    await agentEvaluationService.LoadAssembliesAsync (
+                    await evaluationContextManager.LoadAssembliesAsync (
                         integrationAssemblies,
                         cancellationToken);
 
@@ -429,7 +429,7 @@ namespace Xamarin.Interactive.CodeAnalysis
 
             try {
                 if (compilation != null)
-                    await agentEvaluationService.EvaluateAsync (
+                    await evaluationContextManager.EvaluateAsync (
                         compilation,
                         cancellationToken);
             } catch (XipErrorMessageException e) {

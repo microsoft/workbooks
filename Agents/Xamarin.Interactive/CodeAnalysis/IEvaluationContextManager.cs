@@ -11,7 +11,7 @@ using Xamarin.Interactive.CodeAnalysis.Resolving;
 
 namespace Xamarin.Interactive.CodeAnalysis
 {
-    public interface IAgentEvaluationService
+    public interface IEvaluationContextManager
     {
         IObservable<ICodeCellEvent> Events { get; }
 
