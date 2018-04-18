@@ -19,12 +19,6 @@ using System.Runtime.CompilerServices;
 
 #if !PRODUCT_ASSEMBLY_INFO_OMIT_IVT
 
-#if PCL_FACADE_ASSEMBLY
-
-[assembly: InternalsVisibleTo ("Xamarin.Interactive")]
-
-#else
-
 // agents
 [assembly: InternalsVisibleTo ("Xamarin.Interactive.DotNetCore")]
 [assembly: InternalsVisibleTo ("Xamarin.Interactive.Android")]
@@ -78,5 +72,4 @@ using System.Runtime.CompilerServices;
 // misc
 [assembly: InternalsVisibleTo ("Xamarin.Interactive.Telemetry.Server")]
 
-#endif
 #endif
