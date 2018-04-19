@@ -13,25 +13,23 @@ using Xamarin.Forms;
 using Xamarin.Forms.Platform.iOS;
 
 using Xamarin.Interactive;
+using Xamarin.Interactive.CodeAnalysis.Evaluating;
 using Xamarin.Interactive.Client;
 using Xamarin.Interactive.iOS;
 using Xamarin.Interactive.Logging;
 
-[assembly: AgentIntegration (typeof (Xamarin.Interactive.Forms.iOS.iOSFormsAgentIntegration))]
+[assembly: EvaluationContextManagerIntegration (typeof (Xamarin.Interactive.Forms.iOS.iOSFormsAgentIntegration))]
 
 namespace Xamarin.Interactive.Forms.iOS
 {
-    class iOSFormsAgentIntegration : IAgentIntegration
+    sealed class iOSFormsAgentIntegration : IEvaluationContextManagerIntegration
     {
         const string TAG = nameof (iOSFormsAgentIntegration);
         public const string HierarchyKind = "Xamarin.Forms";
 
-        iOSAgent realAgent;
-
-        public void IntegrateWith (IAgent agent)
+        public void IntegrateWith (EvaluationContextManager evaluationContextManager)
         {
-            // TODO: Refactor this into shared code between iOS and Android.
-            realAgent = agent as iOSAgent;
+            var realAgent = evaluationContextManager.Context as iOSAgent;
 
             if (realAgent == null)
                 return;
@@ -42,10 +40,11 @@ namespace Xamarin.Interactive.Forms.iOS
             try {
                 realAgent.ViewHierarchyHandlerManager.AddViewHierarchyHandler (HierarchyKind,
                     new iOSFormsViewHierarchyHandler (realAgent));
-                realAgent.RepresentationManager.AddProvider (new FormsRepresentationProvider ());
+
+                evaluationContextManager.RepresentationManager.AddProvider<FormsRepresentationProvider> ();
 
                 if (realAgent.ClientSessionUri.SessionKind == ClientSessionKind.Workbook) {
-                    realAgent.RegisterResetStateHandler (ResetStateHandler);
+                    evaluationContextManager.RegisterResetStateHandler (ResetStateHandler);
 
                     Log.Debug (TAG, "Initializing Xamarin.Forms.");
                     Xamarin.Forms.Forms.Init ();
@@ -64,7 +63,7 @@ namespace Xamarin.Interactive.Forms.iOS
             }
         }
 
-        private void ResetStateHandler ()
+        void ResetStateHandler ()
         {
             // The RVC is our view controller, we just need to add our views back. :|
             var rvc = UIApplication.SharedApplication.KeyWindow.RootViewController;

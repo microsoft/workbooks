@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 
 using Xamarin.Interactive.Client;
 using Xamarin.Interactive.CodeAnalysis;
+using Xamarin.Interactive.CodeAnalysis.Evaluating;
 using Xamarin.Interactive.CodeAnalysis.Resolving;
 using Xamarin.Interactive.Core;
 using Xamarin.Interactive.Logging;
@@ -293,8 +294,8 @@ namespace Xamarin.Interactive.NuGet
 
                 if (refAsm.GetReferencedAssemblies ().Any (r => r.Name == "Xamarin.Interactive")) {
                     var integrationType = refAsm
-                        .GetCustomAttribute<AgentIntegrationAttribute> ()
-                        ?.AgentIntegrationType;
+                        .GetCustomAttribute<EvaluationContextManagerIntegrationAttribute> ()
+                        ?.IntegrationType;
 
                     if (integrationType != null)
                         return true;

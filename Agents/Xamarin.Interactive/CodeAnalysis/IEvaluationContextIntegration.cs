@@ -1,14 +1,10 @@
-//
-// Author:
-//   Aaron Bockover <abock@xamarin.com>
-//
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
-namespace Xamarin.Interactive.CodeAnalysis
+namespace Xamarin.Interactive.CodeAnalysis.Evaluating
 {
-    public interface IEvaluationContextIntegration
+    public interface IEvaluationContextHostIntegration
     {
-        void IntegrateWith (IEvaluationContext evaluationContext);
+        void IntegrateWith (EvaluationContextHost evaluationContextHost);
     }
 }

@@ -15,16 +15,17 @@ using Xamarin.Forms.Platform.Android;
 
 using Xamarin.Interactive;
 using Xamarin.Interactive.Android;
+using Xamarin.Interactive.CodeAnalysis.Evaluating;
 using Xamarin.Interactive.Client;
 using Xamarin.Interactive.Logging;
 
 using Application = Android.App.Application;
 
-[assembly: AgentIntegration (typeof (Xamarin.Interactive.Forms.Android.AndroidFormsAgentIntegration))]
+[assembly: EvaluationContextManagerIntegration (typeof (Xamarin.Interactive.Forms.Android.AndroidFormsAgentIntegration))]
 
 namespace Xamarin.Interactive.Forms.Android
 {
-    class AndroidFormsAgentIntegration : IAgentIntegration
+    class AndroidFormsAgentIntegration : IEvaluationContextManagerIntegration
     {
         const string TAG = nameof (AndroidFormsAgentIntegration);
 
@@ -36,9 +37,9 @@ namespace Xamarin.Interactive.Forms.Android
 
         AndroidAgent realAgent;
 
-        public void IntegrateWith (IAgent agent)
+        public void IntegrateWith (EvaluationContextManager evaluationContextManager)
         {
-            realAgent = agent as AndroidAgent;
+            realAgent = evaluationContextManager.Context as AndroidAgent;
 
             if (realAgent == null)
                 return;
@@ -49,10 +50,11 @@ namespace Xamarin.Interactive.Forms.Android
             try {
                 realAgent.ViewHierarchyHandlerManager.AddViewHierarchyHandler (HierarchyKind,
                     new AndroidFormsViewHierarchyHandler (realAgent));
-                realAgent.RepresentationManager.AddProvider (new FormsRepresentationProvider ());
+
+                evaluationContextManager.RepresentationManager.AddProvider<FormsRepresentationProvider> ();
 
                 if (realAgent.ClientSessionUri.SessionKind == ClientSessionKind.Workbook) {
-                    realAgent.RegisterResetStateHandler (ResetStateHandler);
+                    evaluationContextManager.RegisterResetStateHandler (ResetStateHandler);
 
                     // Set up launching the Forms activity.
                     Log.Debug (TAG, "Setting up activity type and grabbing current activity...");

@@ -1,23 +1,21 @@
-//
-// Author:
-//   Aaron Bockover <abock@xamarin.com>
-//
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
 using System;
-using System.Globalization;
 
 namespace Xamarin.Interactive.CodeAnalysis
 {
     /// <summary>
-    /// An opaque identifier for <see cref="IEvaluationContext"/>.
+    /// An opaque identifier for <see cref="EvaluationContext"/>.
     /// </summary>
     public struct EvaluationContextId : IEquatable<EvaluationContextId>
     {
-        readonly int id;
+        internal static EvaluationContextId Create ()
+            => new EvaluationContextId (Guid.NewGuid ());
 
-        internal EvaluationContextId (int id)
+        readonly Guid id;
+
+        EvaluationContextId (Guid id)
             => this.id = id;
 
         public bool Equals (EvaluationContextId id)
@@ -27,10 +25,10 @@ namespace Xamarin.Interactive.CodeAnalysis
             => obj is EvaluationContextId id && Equals (id);
 
         public override int GetHashCode ()
-            => id;
+            => id.GetHashCode ();
 
         public override string ToString ()
-            => id.ToString (CultureInfo.InvariantCulture);
+            => id.ToString ();
 
         public static bool operator == (EvaluationContextId a, EvaluationContextId b)
             => a.Equals (b);
@@ -38,13 +36,10 @@ namespace Xamarin.Interactive.CodeAnalysis
         public static bool operator != (EvaluationContextId a, EvaluationContextId b)
             => !a.Equals (b);
 
-        public static implicit operator EvaluationContextId (int id)
-            => new EvaluationContextId (id);
-
         public static implicit operator string (EvaluationContextId id)
             => id.ToString ();
 
         public static explicit operator EvaluationContextId (string id)
-            => new EvaluationContextId (int.Parse (id));
+            => new EvaluationContextId (Guid.Parse (id));
     }
 }

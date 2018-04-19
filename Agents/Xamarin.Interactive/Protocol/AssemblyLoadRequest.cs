@@ -14,6 +14,7 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 
 using Xamarin.Interactive.CodeAnalysis;
+using Xamarin.Interactive.CodeAnalysis.Evaluating;
 using Xamarin.Interactive.CodeAnalysis.Resolving;
 using Xamarin.Interactive.Core;
 using Xamarin.Interactive.Logging;
@@ -39,15 +40,15 @@ namespace Xamarin.Interactive.Protocol
 
         protected override Task<AssemblyLoadResponse> HandleAsync (Agent agent)
         {
-            var scriptContext = agent.GetEvaluationContext (EvaluationContextId);
+            var evaluationContext = agent.EvaluationContextManager.GetEvaluationContext (EvaluationContextId);
 
             var results = new AssemblyLoadResult [Assemblies.Length];
 
-            scriptContext.AssemblyContext.AddRange (Assemblies);
+            evaluationContext.AssemblyContext.AddRange (Assemblies);
             for (var i = 0; i < Assemblies.Length; i++) {
                 AssemblyDefinition asm = Assemblies [i];
                 bool didLoad = false;
-                bool initializedAgentIntegration = false;
+                bool initializedIntegration = false;
 
                 try {
                     Assembly loadedAsm = null;
@@ -68,15 +69,16 @@ namespace Xamarin.Interactive.Protocol
                     }
 
                     if (loadedAsm != null)
-                        initializedAgentIntegration = scriptContext
-                            .CheckLoadedAssemblyForAgentIntegration (loadedAsm) != null;
+                        initializedIntegration = evaluationContext
+                            .Host
+                            .TryLoadIntegration (loadedAsm);
                 } catch (Exception e) {
                     Log.Error (TAG, $"Could not load sent assembly {asm.Name}: {e.Message}", e);
                 } finally {
                     results [i] = new AssemblyLoadResult (
                         asm.Name,
                         didLoad,
-                        initializedAgentIntegration);
+                        initializedIntegration);
                 }
             }
 

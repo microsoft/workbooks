@@ -44,15 +44,6 @@
 namespace Xamarin.Interactive
 {
     [AttributeUsage (AttributeTargets.Assembly)]
-    public sealed class AgentIntegrationAttribute : Attribute
-    {
-        public Type AgentIntegrationType {
-            get;
-        }
-
-        public AgentIntegrationAttribute (Type agentIntegrationType);
-    }
-    [AttributeUsage (AttributeTargets.Assembly)]
     public sealed class BuildInfoAttribute : Attribute
     {
         public DateTime Date {
@@ -63,28 +54,14 @@ namespace Xamarin.Interactive
             get;
         }
     }
-    public interface IAgent
+    [AttributeUsage (AttributeTargets.Assembly)]
+    public sealed class EvaluationContextHostIntegrationAttribute : Attribute
     {
-        Func<object> CreateDefaultHttpMessageHandler {
-            get;
-            set;
-        }
-
-        IRepresentationManager RepresentationManager {
+        public Type IntegrationType {
             get;
         }
 
-        IAgentSynchronizationContext SynchronizationContexts {
-            get;
-        }
-
-        void PublishEvaluation (CodeCellId codeCellId, object result, EvaluationResultHandling resultHandling = EvaluationResultHandling.Replace);
-
-        void RegisterResetStateHandler (Action handler);
-    }
-    public interface IAgentIntegration
-    {
-        void IntegrateWith (IAgent agent);
+        public EvaluationContextHostIntegrationAttribute (Type integrationType);
     }
     public interface IAgentSynchronizationContext
     {
@@ -210,7 +187,7 @@ namespace Xamarin.Interactive.CodeAnalysis
             get;
         }
 
-        public bool InitializedAgentIntegration {
+        public bool InitializedIntegration {
             get;
         }
 
@@ -265,13 +242,14 @@ namespace Xamarin.Interactive.CodeAnalysis
             set;
         }
 
-        [EvaluationContextGlobalObject.InteractiveHelpAttribute (Description = "This help text", ShowReturnType = false)]
-        public object help {
+        [EvaluationContextGlobalObject.InteractiveHelpAttribute (Description = "Direct public access to the evaluation context powering the interactive session")]
+        public EvaluationContext EvaluationContext {
             get;
+            internal set;
         }
 
-        [EvaluationContextGlobalObject.InteractiveHelpAttribute (Description = "Direct public access to the agent powering the interactive session")]
-        public IAgent InteractiveAgent {
+        [EvaluationContextGlobalObject.InteractiveHelpAttribute (Description = "This help text", ShowReturnType = false)]
+        public object help {
             get;
         }
 
@@ -304,8 +282,6 @@ namespace Xamarin.Interactive.CodeAnalysis
 
         public static explicit operator EvaluationContextId (string id);
 
-        public static implicit operator EvaluationContextId (int id);
-
         public static implicit operator string (EvaluationContextId id);
 
         public static bool operator != (EvaluationContextId a, EvaluationContextId b);
@@ -328,30 +304,11 @@ namespace Xamarin.Interactive.CodeAnalysis
         [JsonConstructor]
         public EvaluationEnvironment (FilePath workingDirectory);
     }
-    public struct EvaluationInFlight
-    {
-        public ICompilation Compilation {
-            get;
-        }
-
-        public Evaluation Evaluation {
-            get;
-        }
-
-        public object OriginalValue {
-            get;
-        }
-
-        public EvaluationPhase Phase {
-            get;
-        }
-    }
     public enum EvaluationPhase
     {
         None,
         Compiled,
         Evaluated,
-        Represented,
         Completed
     }
     public enum EvaluationResultHandling
@@ -360,7 +317,17 @@ namespace Xamarin.Interactive.CodeAnalysis
         Append,
         Ignore
     }
-    public interface IAgentEvaluationService
+    public interface ICompilation
+    {
+        AssemblyDefinition Assembly {
+            get;
+        }
+
+        CodeCellId CodeCellId {
+            get;
+        }
+    }
+    public interface IEvaluationServiceBackend
     {
         IObservable<ICodeCellEvent> Events {
             get;
@@ -379,30 +346,6 @@ namespace Xamarin.Interactive.CodeAnalysis
         Task<IReadOnlyList<AssemblyLoadResult>> LoadAssembliesAsync (IReadOnlyList<AssemblyDefinition> assemblies, CancellationToken cancellationToken = default(CancellationToken));
 
         Task ResetStateAsync (CancellationToken cancellationToken = default(CancellationToken));
-    }
-    public interface ICompilation
-    {
-        AssemblyDefinition Assembly {
-            get;
-        }
-
-        CodeCellId CodeCellId {
-            get;
-        }
-    }
-    public interface IEvaluationContext
-    {
-        IObservable<EvaluationInFlight> Evaluations {
-            get;
-        }
-
-        EvaluationContextId Id {
-            get;
-        }
-    }
-    public interface IEvaluationContextIntegration
-    {
-        void IntegrateWith (IEvaluationContext evaluationContext);
     }
     [JsonObject]
     public sealed class TargetCompilationConfiguration
@@ -436,6 +379,87 @@ namespace Xamarin.Interactive.CodeAnalysis
         }
 
         public static TargetCompilationConfiguration CreateInitialForCompilationWorkspace (IReadOnlyList<string> assemblySearchPaths = null);
+    }
+}
+namespace Xamarin.Interactive.CodeAnalysis.Evaluating
+{
+    public sealed class EvaluationAssemblyContext : IDisposable
+    {
+        public Action<Assembly, AssemblyDefinition> AssemblyResolvedHandler {
+            get;
+        }
+
+        public EvaluationAssemblyContext (Action<Assembly, AssemblyDefinition> assemblyResolvedHandler = null);
+
+        public void Add (Assembly assembly);
+
+        public void Add (AssemblyDefinition assembly);
+
+        public void AddRange (IEnumerable<AssemblyDefinition> assemblies);
+
+        public void Dispose ();
+    }
+    public sealed class EvaluationContext
+    {
+        public IObservable<ICodeCellEvent> Events {
+            get;
+        }
+
+        public EvaluationContextHost Host {
+            get;
+        }
+
+        public EvaluationContextId Id {
+            get;
+        }
+
+        public TargetCompilationConfiguration TargetCompilationConfiguration {
+            get;
+        }
+    }
+    public class EvaluationContextHost
+    {
+        public IObservable<ICodeCellEvent> Events {
+            get;
+        }
+
+        public IRepresentationManager RepresentationManager {
+            get;
+        }
+
+        public IAgentSynchronizationContext SynchronizationContexts {
+            get;
+        }
+
+        public void PublishValueForCell (CodeCellId codeCellId, object result, EvaluationResultHandling resultHandling = EvaluationResultHandling.Replace);
+
+        public void RegisterResetStateHandler (Action handler);
+    }
+    public sealed class EvaluationInFlight : ICodeCellEvent
+    {
+        public CodeCellId CodeCellId {
+            get;
+        }
+
+        public ICompilation Compilation {
+            get;
+        }
+
+        public Evaluation Evaluation {
+            get;
+        }
+
+        public object OriginalValue {
+            get;
+        }
+
+        public EvaluationPhase Phase {
+            get;
+        }
+    }
+    public interface IEvaluationContextHostIntegration
+    {
+        void IntegrateWith (EvaluationContextHost evaluationContextHost);
     }
 }
 namespace Xamarin.Interactive.CodeAnalysis.Events
@@ -882,11 +906,11 @@ namespace Xamarin.Interactive.Representations
     }
     public interface IRepresentationManager
     {
-        void AddProvider (RepresentationProvider provider);
-
         void AddProvider (string typeName, Func<object, object> handler);
 
         void AddProvider<T> (Func<T, object> handler);
+
+        void AddProvider<TRepresentationProvider> () where TRepresentationProvider : RepresentationProvider, new();
     }
     [JsonObject]
     public sealed class Point : IRepresentationObject

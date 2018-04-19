@@ -28,6 +28,16 @@ namespace Xamarin.Interactive.Representations
 
         AgentRepresentationProvider agentRepresentationProvider;
         readonly List<RepresentationProvider> providers = new List<RepresentationProvider> (4);
+        readonly HashSet<Type> activatedProviderTypes = new HashSet<Type> ();
+
+        public void AddProvider<TRepresentationProvider> ()
+            where TRepresentationProvider : RepresentationProvider, new ()
+        {
+            MainThread.Ensure ();
+
+            if (activatedProviderTypes.Add (typeof (TRepresentationProvider)))
+                AddProvider (new TRepresentationProvider ());
+        }
 
         public void AddProvider (RepresentationProvider provider)
         {

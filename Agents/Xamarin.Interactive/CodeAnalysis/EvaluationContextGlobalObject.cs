@@ -22,6 +22,8 @@ using Xamarin.Interactive.Representations.Reflection;
 
 namespace Xamarin.Interactive.CodeAnalysis
 {
+    using Evaluating;
+
     public class EvaluationContextGlobalObject
     {
         /// <summary>
@@ -59,7 +61,9 @@ namespace Xamarin.Interactive.CodeAnalysis
             this.agent = agent;
         }
 
-        internal EvaluationContext EvaluationContext { get; set; }
+        [InteractiveHelp (
+            Description = "Direct public access to the evaluation context powering the interactive session")]
+        public EvaluationContext EvaluationContext { get; internal set; }
 
         ReplHelp cachedHelp;
 
@@ -106,9 +110,6 @@ namespace Xamarin.Interactive.CodeAnalysis
         [InteractiveHelp (Description = "This help text", ShowReturnType = false)]
         public object help => GetCachedHelp ();
 
-        [InteractiveHelp (Description = "Direct public access to the agent powering the interactive session")]
-        public IAgent InteractiveAgent => agent;
-
         [InteractiveHelp (Description = "Uses a Stopwatch to time the specified action delegate")]
         public static TimeSpan Time (Action action)
         {
@@ -136,7 +137,7 @@ namespace Xamarin.Interactive.CodeAnalysis
 
             var variablesTable = new DictionaryInteractiveObject (
                 0,
-                agent.RepresentationManager.Prepare,
+                EvaluationContext.Host.InternalRepresentationManager.Prepare,
                 title: "Declared Global Variables");
 
             foreach (var variable in variables) {

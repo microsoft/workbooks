@@ -14,6 +14,7 @@ using System.Windows;
 using System.Windows.Input;
 
 using Xamarin.Interactive.CodeAnalysis;
+using Xamarin.Interactive.CodeAnalysis.Evaluating;
 using Xamarin.Interactive.CodeAnalysis.Resolving;
 using Xamarin.Interactive.Core;
 using Xamarin.Interactive.Inspection;
@@ -53,19 +54,53 @@ namespace Xamarin.Interactive.Wpf
         protected override IdentifyAgentRequest GetIdentifyAgentRequest ()
             => IdentifyAgentRequest.FromCommandLineArguments (Environment.GetCommandLineArgs ());
 
-        protected override EvaluationContextGlobalObject CreateEvaluationContextGlobalObject ()
-            => new WpfEvaluationContextGlobalObject (this);
+        protected override EvaluationContextManager CreateEvaluationContextManager ()
+            => new WpfEvaluationContextManager (this);
 
-        internal override IEnumerable<string> GetReplDefaultUsingNamespaces ()
+        sealed class WpfEvaluationContextManager : EvaluationContextManager
         {
-            return base.GetReplDefaultUsingNamespaces ().Concat (new [] {
+            readonly WpfAgent agent;
+
+            public WpfEvaluationContextManager (WpfAgent agent)
+                : base (agent.RepresentationManager, agent)
+                => this.agent = agent;
+
+            static readonly string [] defaultImports = {
                 "System.Windows",
                 "System.Windows.Controls",
                 "System.Windows.Media"
-            });
+            };
+
+            protected override TargetCompilationConfiguration PrepareTargetCompilationConfiguration (
+                TargetCompilationConfiguration configuration)
+                => configuration.With (
+                    defaultImports: configuration.DefaultImports.Concat (defaultImports).ToArray ());
+
+            protected override object CreateGlobalState ()
+                => new WpfEvaluationContextGlobalObject (agent);
+
+            protected override void OnResetState ()
+                => agent.ResetState ();
+
+            internal override void LoadExternalDependencies (
+                Assembly loadedAssembly,
+                IReadOnlyList<AssemblyDependency> externalDependencies)
+            {
+                if (externalDependencies == null)
+                    return;
+
+                foreach (var externalDep in externalDependencies) {
+                    try {
+                        Log.Debug (TAG, $"Loading external dependency from {externalDep.Location}…");
+                        WindowsSupport.LoadLibrary (externalDep.Location);
+                    } catch (Exception e) {
+                        Log.Error (TAG, "Could not load external dependency.", e);
+                    }
+                }
+            }
         }
 
-        protected override void HandleResetState ()
+        void ResetState ()
         {
             if (ClientSessionUri.SessionKind == Client.ClientSessionKind.LiveInspection ||
                 mainWindowCreator == null)
@@ -120,23 +155,6 @@ namespace Xamarin.Interactive.Wpf
             if (disposing)
                 ObjectCache.Shared.ClearHandles ();
             base.Dispose (disposing);
-        }
-
-        public override void LoadExternalDependencies (
-            Assembly loadedAssembly,
-            IReadOnlyList<AssemblyDependency> externalDependencies)
-        {
-            if (externalDependencies == null)
-                return;
-
-            foreach (var externalDep in externalDependencies) {
-                try {
-                    Log.Debug (TAG, $"Loading external dependency from {externalDep.Location}…");
-                    WindowsSupport.LoadLibrary (externalDep.Location);
-                } catch (Exception e) {
-                    Log.Error (TAG, "Could not load external dependency.", e);
-                }
-            }
         }
 
         bool IViewHierarchyHandler.TryGetHighlightedView (double x, double y, bool clear, out IInspectView highlightedView)

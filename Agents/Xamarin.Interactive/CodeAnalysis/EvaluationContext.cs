@@ -13,50 +13,51 @@ using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 
+using Xamarin.Interactive.CodeAnalysis.Events;
 using Xamarin.Interactive.CodeAnalysis.Resolving;
 using Xamarin.Interactive.Core;
 using Xamarin.Interactive.Representations;
 using Xamarin.Interactive.Representations.Reflection;
 
-namespace Xamarin.Interactive.CodeAnalysis
+namespace Xamarin.Interactive.CodeAnalysis.Evaluating
 {
-    sealed class EvaluationContext : IEvaluationContext
+    public sealed class EvaluationContext
     {
-        static int lastEvaluationContextId = -1;
-
-        readonly Agent agent;
-
-        public object GlobalState { get; }
-        public EvaluationContextId Id { get; }
-
+        readonly List<AssemblyDefinition> loadedAssemblies = new List<AssemblyDefinition> ();
         object [] submissionStates;
-
-        readonly Observable<EvaluationInFlight> evaluations = new Observable<EvaluationInFlight> ();
-        public IObservable<EvaluationInFlight> Evaluations => evaluations;
-
-        public EvaluationAssemblyContext AssemblyContext { get; } = new EvaluationAssemblyContext ();
-
-        bool initializedAgentIntegration;
-        List<AssemblyDefinition> loadedAssemblies = new List<AssemblyDefinition> ();
-
         volatile Thread currentRunThread;
-        public Thread CurrentRunThread => currentRunThread;
+        bool initializedIntegration;
 
-        public EvaluationContext (Agent agent, object globalState)
+        readonly Observable<ICodeCellEvent> events = new Observable<ICodeCellEvent> ();
+        public IObservable<ICodeCellEvent> Events => events;
+
+        public EvaluationContextId Id { get; }
+        public EvaluationContextHost Host { get; }
+        public TargetCompilationConfiguration TargetCompilationConfiguration { get; }
+
+        internal EvaluationAssemblyContext AssemblyContext { get; }
+
+        internal EvaluationContext (
+            EvaluationContextHost host,
+            TargetCompilationConfiguration targetCompilationConfiguration,
+            object globalState)
         {
-            this.agent = agent ?? throw new ArgumentNullException (nameof (agent));
+            Host = host
+                ?? throw new ArgumentNullException (nameof (host));
 
-            GlobalState = globalState;
-            Id = ++lastEvaluationContextId;
+            TargetCompilationConfiguration = targetCompilationConfiguration
+                ?? throw new ArgumentNullException (nameof (targetCompilationConfiguration));
 
-            submissionStates = new [] { GlobalState, null };
+            Id = TargetCompilationConfiguration.EvaluationContextId;
 
-            AssemblyContext.AssemblyResolvedHandler = HandleAssemblyResolved;
+            AssemblyContext = new EvaluationAssemblyContext (HandleAssemblyResolved);
+
+            submissionStates = new [] { globalState, null };
         }
 
-        public void Dispose ()
+        internal void Dispose ()
         {
-            evaluations.Observers.OnCompleted ();
+            events.Observers.OnCompleted ();
 
             AssemblyContext.Dispose ();
             GC.SuppressFinalize (this);
@@ -64,56 +65,26 @@ namespace Xamarin.Interactive.CodeAnalysis
 
         void HandleAssemblyResolved (Assembly assembly, AssemblyDefinition remoteAssembly)
         {
-            initializedAgentIntegration |= CheckLoadedAssemblyForAgentIntegration (assembly) != null;
+            initializedIntegration |= Host.TryLoadIntegration (assembly);
             loadedAssemblies.Add (remoteAssembly);
-            agent.LoadExternalDependencies (assembly, remoteAssembly.ExternalDependencies);
+            Host.LoadExternalDependencies (assembly, remoteAssembly.ExternalDependencies);
         }
 
-        public IAgentIntegration CheckLoadedAssemblyForAgentIntegration (Assembly assembly)
-        {
-            if (assembly?.GetReferencedAssemblies ().Any (r => r.Name == "Xamarin.Interactive") == false)
-                return null;
-
-            var integrationType = assembly
-                .GetCustomAttribute<AgentIntegrationAttribute> ()
-                ?.AgentIntegrationType;
-
-            if (integrationType == null)
-                return null;
-
-            if (!typeof (IAgentIntegration).IsAssignableFrom (integrationType))
-                throw new InvalidOperationException (
-                    $"encountered [assembly:{typeof (AgentIntegrationAttribute).FullName}" +
-                    $"({integrationType.FullName})] on assembly '{assembly.FullName}', " +
-                    $"but type specified does not implement " +
-                    $"{typeof (IAgentIntegration).FullName}");
-
-            var integration = (IAgentIntegration)Activator.CreateInstance (integrationType);
-            integration.IntegrateWith (agent);
-
-            if (integration is IEvaluationContextIntegration evalContextIntegration)
-                evalContextIntegration.IntegrateWith (this);
-
-            ReflectionRepresentationProvider.AgentHasIntegratedWith (integration);
-
-            return integration;
-        }
-
-        public async Task RunAsync (
+        internal async Task EvaluateAsync (
             Guid evaluationRequestId,
             Compilation compilation,
             CancellationToken cancellationToken = default (CancellationToken))
         {
             foreach (var assembly in new AssemblyDefinition [] { compilation.ExecutableAssembly }
                 .Concat (compilation.References ?? new AssemblyDefinition [] { }))
-                agent.LoadExternalDependencies (null, assembly?.ExternalDependencies);
+                Host.LoadExternalDependencies (null, assembly?.ExternalDependencies);
 
             Exception evaluationException = null;
             ExceptionNode evaluationExceptionToReturn = null;
 
-            var inFlight = new EvaluationInFlight (EvaluationPhase.Compiled, compilation);
+            var inFlight = EvaluationInFlight.Create (compilation);
 
-            loadedAssemblies = new List<AssemblyDefinition> ();
+            loadedAssemblies.Clear ();
 
             var savedStdout = Console.Out;
             var savedStderr = Console.Error;
@@ -129,7 +100,7 @@ namespace Xamarin.Interactive.CodeAnalysis
             currentRunThread.CurrentCulture = InteractiveCulture.CurrentCulture;
             currentRunThread.CurrentUICulture = InteractiveCulture.CurrentUICulture;
 
-            initializedAgentIntegration = false;
+            initializedIntegration = false;
             var interrupted = false;
 
             try {
@@ -140,7 +111,7 @@ namespace Xamarin.Interactive.CodeAnalysis
                 // before the exception was raised... we still want to send that
                 // captured output back to the client for rendering.
                 stopwatch.Start ();
-                inFlight = inFlight.With (originalValue: await CoreRunAsync (compilation, cancellationToken));
+                inFlight = inFlight.With (originalValue: await CoreEvaluateAsync (compilation, cancellationToken));
             } catch (AggregateException e) when (e.InnerExceptions?.Count == 1) {
                 evaluationException = e;
                 // the Roslyn-emitted script delegates are async, so all exceptions
@@ -163,7 +134,7 @@ namespace Xamarin.Interactive.CodeAnalysis
                 currentRunThread = null;
 
                 inFlight = inFlight.With (phase: EvaluationPhase.Evaluated);
-                evaluations.Observers.OnNext (inFlight);
+                events.Observers.OnNext (inFlight);
 
                 capturedOutputWriter.SegmentCaptured -= CapturedOutputWriter_SegmentCaptured;
                 Console.SetOut (savedStdout);
@@ -179,25 +150,22 @@ namespace Xamarin.Interactive.CodeAnalysis
                 // an exception in the call to Prepare should not be explicitly caught
                 // here (see above) since it'll be handled at a higher level and can be
                 // flagged as being a bug in our code since this method should never throw.
-                agent.RepresentationManager.Prepare (inFlight.OriginalValue),
+                Host.InternalRepresentationManager.Prepare (inFlight.OriginalValue),
                 evaluationExceptionToReturn,
                 stopwatch.Elapsed,
                 InteractiveCulture.CurrentCulture.LCID,
                 InteractiveCulture.CurrentUICulture.LCID,
                 interrupted,
-                initializedAgentIntegration,
+                initializedIntegration,
                 loadedAssemblies.ToArray ());
 
-            inFlight = inFlight.With (EvaluationPhase.Represented, evaluation: evaluation);
-            evaluations.Observers.OnNext (inFlight);
+            events.Observers.OnNext (evaluation);
 
-            agent.PublishEvaluation (evaluation);
-
-            inFlight = inFlight.With (phase: EvaluationPhase.Completed);
-            evaluations.Observers.OnNext (inFlight);
+            inFlight = inFlight.With (EvaluationPhase.Completed, evaluation: evaluation);
+            events.Observers.OnNext (inFlight);
         }
 
-        async Task<object> CoreRunAsync (
+        async Task<object> CoreEvaluateAsync (
             Compilation compilation,
             CancellationToken cancellationToken)
         {
@@ -232,19 +200,32 @@ namespace Xamarin.Interactive.CodeAnalysis
             return await ((Task<object>)submission (submissionStates)).ConfigureAwait (false);
         }
 
-        void CapturedOutputWriter_SegmentCaptured (CapturedOutputSegment segment)
-            => agent.MessageChannel.Push (segment);
+        internal void AbortInFlightEvaluation ()
+            => currentRunThread?.Abort ();
 
-        public struct Variable
+        void CapturedOutputWriter_SegmentCaptured (CapturedOutputSegment segment)
+            => events.Observers.OnNext (segment);
+
+        internal struct GlobalVariable
         {
-            public FieldInfo Field { get; set; }
-            public object Value { get; set; }
-            public Exception ValueReadException { get; set; }
+            public FieldInfo Field { get;}
+            public object Value { get; }
+            public Exception ValueReadException { get; }
+
+            public GlobalVariable (
+                FieldInfo field,
+                object value,
+                Exception valueReadException)
+            {
+                Field = field;
+                Value = value;
+                ValueReadException = valueReadException;
+            }
         }
 
-        public IReadOnlyCollection<Variable> GetGlobalVariables ()
+        internal IReadOnlyCollection<GlobalVariable> GetGlobalVariables ()
         {
-            var globalVars = new Dictionary<string, Variable> ();
+            var globalVars = new Dictionary<string, GlobalVariable> ();
 
             for (int i = 1; i < submissionStates.Length; i++) {
                 var state = submissionStates [i];
@@ -257,21 +238,23 @@ namespace Xamarin.Interactive.CodeAnalysis
                     if (field.IsInitOnly)
                         continue;
 
-                    var variable = new Variable {
-                        Field = field
-                    };
+                    object value = null;
+                    Exception exception = null;
 
                     try {
-                        variable.Value = field.GetValue (state);
+                        value = field.GetValue (state);
                     } catch (Exception e) {
-                        variable.ValueReadException = e;
+                        exception = e;
                     }
 
-                    globalVars [field.Name] = variable;
+                    globalVars [field.Name] = new GlobalVariable (
+                        field,
+                        value,
+                        exception);
                 }
             }
 
-            return globalVars.Values as IReadOnlyCollection<Variable>;
+            return globalVars.Values as IReadOnlyCollection<GlobalVariable>;
         }
     }
 }

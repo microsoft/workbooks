@@ -10,6 +10,7 @@ using System;
 using System.Reflection;
 using System.Collections.Generic;
 
+using Xamarin.Interactive.CodeAnalysis.Evaluating;
 using Xamarin.Interactive.CodeAnalysis.Resolving;
 using Xamarin.Interactive.Core;
 using Xamarin.Interactive.Logging;
@@ -35,28 +36,39 @@ namespace Xamarin.Interactive.ConsoleAgent
             throw new NotSupportedException ();
         }
 
-        public override void LoadExternalDependencies (
-            Assembly loadedAssembly,
-            IReadOnlyList<AssemblyDependency> externalDependencies)
+        protected override EvaluationContextManager CreateEvaluationContextManager ()
+            => new DotNetFrameworkEvaluationContextManager (this);
+
+        sealed class DotNetFrameworkEvaluationContextManager : EvaluationContextManager
         {
-            if (externalDependencies == null)
-                return;
+            internal DotNetFrameworkEvaluationContextManager (ConsoleAgent agent)
+                : base (agent.RepresentationManager, agent)
+            {
+            }
 
-            // On Mono platforms, we can't do anything until we've loaded the assembly, because we need
-            // to insert things specifically into its DllMap.
-            if (MacIntegration.IsMac && loadedAssembly == null)
-                return;
+            internal override void LoadExternalDependencies (
+                Assembly loadedAssembly,
+                IReadOnlyList<AssemblyDependency> externalDependencies)
+            {
+                if (externalDependencies == null)
+                    return;
 
-            foreach (var externalDep in externalDependencies) {
-                try {
-                    Log.Debug (TAG, $"Loading external dependency from {externalDep.Location}.");
-                    if (MacIntegration.IsMac) {
-                        MonoSupport.AddDllMapEntries (loadedAssembly, externalDep);
-                    } else {
-                        WindowsSupport.LoadLibrary (externalDep.Location);
+                // On Mono platforms, we can't do anything until we've loaded the assembly, because we need
+                // to insert things specifically into its DllMap.
+                if (MacIntegration.IsMac && loadedAssembly == null)
+                    return;
+
+                foreach (var externalDep in externalDependencies) {
+                    try {
+                        Log.Debug (TAG, $"Loading external dependency from {externalDep.Location}.");
+                        if (MacIntegration.IsMac) {
+                            MonoSupport.AddDllMapEntries (loadedAssembly, externalDep);
+                        } else {
+                            WindowsSupport.LoadLibrary (externalDep.Location);
+                        }
+                    } catch (Exception e) {
+                        Log.Error (TAG, "Could not load external dependency.", e);
                     }
-                } catch (Exception e) {
-                    Log.Error (TAG, "Could not load external dependency.", e);
                 }
             }
         }

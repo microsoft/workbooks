@@ -15,7 +15,7 @@ namespace Xamarin.Interactive.Protocol
     {
         protected override Task<bool> HandleAsync (Agent agent)
         {
-            agent.ResetState ();
+            agent.EvaluationContextManager.ResetState ();
             return Task.FromResult (true);
         }
     }

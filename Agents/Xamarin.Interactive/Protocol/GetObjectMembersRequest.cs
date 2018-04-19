@@ -22,8 +22,10 @@ namespace Xamarin.Interactive.Protocol
 
         protected override Task<InteractiveObject> HandleAsync (Agent agent)
         {
-            var members = agent.RepresentationManager.PrepareInteractiveObject (
-                ObjectCache.Shared.GetObject (ViewHandle));
+            var members = agent
+                .RepresentationManager
+                .PrepareInteractiveObject (
+                    ObjectCache.Shared.GetObject (ViewHandle));
             members?.Interact (new InteractiveObject.ReadAllMembersInteractMessage ());
             return Task.FromResult (members);
         }

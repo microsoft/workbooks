@@ -11,7 +11,8 @@ namespace Xamarin.Interactive.Representations
 {
     public interface IRepresentationManager
     {
-        void AddProvider (RepresentationProvider provider);
+        void AddProvider<TRepresentationProvider> ()
+            where TRepresentationProvider : RepresentationProvider, new ();
         void AddProvider (string typeName, Func<object, object> handler);
         void AddProvider<T> (Func<T, object> handler);
     }

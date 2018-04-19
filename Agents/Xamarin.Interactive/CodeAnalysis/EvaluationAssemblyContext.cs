@@ -14,9 +14,9 @@ using Xamarin.Interactive.Logging;
 
 using Xamarin.Interactive.CodeAnalysis.Resolving;
 
-namespace Xamarin.Interactive.CodeAnalysis
+namespace Xamarin.Interactive.CodeAnalysis.Evaluating
 {
-    sealed class EvaluationAssemblyContext : IDisposable
+    public sealed class EvaluationAssemblyContext : IDisposable
     {
         // Implement a custom AssemblyName comparer so that we don't have to insert
         // multiple different varieties of the same assembly name into the dictionary.
@@ -54,10 +54,11 @@ namespace Xamarin.Interactive.CodeAnalysis
             = new Dictionary<AssemblyName, Assembly> (
                 AssemblyNameInsensitiveNameOnlyComparer.Default);
 
-        public Action<Assembly, AssemblyDefinition> AssemblyResolvedHandler { get; set; }
+        public Action<Assembly, AssemblyDefinition> AssemblyResolvedHandler { get; }
 
-        public EvaluationAssemblyContext ()
+        public EvaluationAssemblyContext (Action<Assembly, AssemblyDefinition> assemblyResolvedHandler = null)
         {
+            AssemblyResolvedHandler = assemblyResolvedHandler;
             AppDomain.CurrentDomain.AssemblyResolve += HandleAssemblyResolve;
         }
 

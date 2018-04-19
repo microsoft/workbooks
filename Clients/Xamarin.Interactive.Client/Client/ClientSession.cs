@@ -475,7 +475,7 @@ namespace Xamarin.Interactive.Client
 
         void HandleAgentMessage (object message)
         {
-            if (message is Evaluation result && result.InitializedAgentIntegration)
+            if (message is Evaluation result && result.InitializedIntegration)
                 RefreshForAgentIntegration ().Forget ();
         }
 

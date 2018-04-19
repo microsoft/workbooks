@@ -29,7 +29,7 @@ namespace Xamarin.Interactive.CodeAnalysis
         public int CultureLCID { get; }
         public int UICultureLCID { get; }
         public bool Interrupted { get; }
-        public bool InitializedAgentIntegration { get; }
+        public bool InitializedIntegration { get; }
         public IReadOnlyList<AssemblyDefinition> LoadedAssemblies { get; }
 
         public bool IsNullResult => ResultType == null ||
@@ -48,7 +48,7 @@ namespace Xamarin.Interactive.CodeAnalysis
             int cultureLCID,
             int uiCultureLCID,
             bool interrupted,
-            bool initializedAgentIntegration,
+            bool initializedIntegration,
             IReadOnlyList<AssemblyDefinition> loadedAssemblies)
         {
             RequestId = requestId;
@@ -61,7 +61,7 @@ namespace Xamarin.Interactive.CodeAnalysis
             CultureLCID = cultureLCID;
             UICultureLCID = uiCultureLCID;
             Interrupted = interrupted;
-            InitializedAgentIntegration = initializedAgentIntegration;
+            InitializedIntegration = initializedIntegration;
             LoadedAssemblies = loadedAssemblies;
         }
 
@@ -87,7 +87,7 @@ namespace Xamarin.Interactive.CodeAnalysis
             int cultureLCID = 0,
             int uiCultureLCID = 0,
             bool interrupted = false,
-            bool initializedAgentIntegration = false,
+            bool initializedIntegration = false,
             IReadOnlyList<AssemblyDefinition> loadedAssemblies = null)
         {
             RequestId = requestId;
@@ -112,7 +112,7 @@ namespace Xamarin.Interactive.CodeAnalysis
             CultureLCID = cultureLCID;
             UICultureLCID = uiCultureLCID;
             Interrupted = interrupted;
-            InitializedAgentIntegration = initializedAgentIntegration;
+            InitializedIntegration = initializedIntegration;
             LoadedAssemblies = loadedAssemblies;
         }
     }

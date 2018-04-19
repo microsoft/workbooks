@@ -34,12 +34,7 @@ namespace Xamarin.Interactive.CodeAnalysis
         /// <summary>
         /// The cell's evaluation result as been fully transformed through
         /// <see cref="IAgent.RepresentationManager"/>, and <see cref="IEvaluation.Result"/>
-        /// has been updated to reflect that.
-        /// </summary>
-        Represented,
-
-        /// <summary>
-        /// Cell evaluation is complete and the final result has been published to
+        /// has been updated to reflect that. The evaluation has been published to
         /// the client for rendering.
         /// </summary>
         Completed

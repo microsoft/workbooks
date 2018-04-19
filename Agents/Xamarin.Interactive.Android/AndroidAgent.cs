@@ -21,6 +21,7 @@ using Android.Runtime;
 
 using Xamarin.Interactive.Client;
 using Xamarin.Interactive.CodeAnalysis;
+using Xamarin.Interactive.CodeAnalysis.Evaluating;
 using Xamarin.Interactive.Core;
 using Xamarin.Interactive.Inspection;
 using Xamarin.Interactive.Remote;
@@ -29,29 +30,26 @@ using AG = Android.Graphics;
 
 namespace Xamarin.Interactive.Android
 {
-    class AndroidAgent : Agent, IViewHierarchyHandler
+    sealed class AndroidAgent : Agent, IViewHierarchyHandler
     {
         View highlightedView;
         Drawable highlightedViewOriginalBackground;
 
-        AG.Point displaySize;
-        int contentId;
-
-        public IActivityTracker ActivityTracker { get; set; }
-        internal int ContentId => contentId;
+        public IActivityTracker ActivityTracker { get; internal set; }
+        internal int ContentId { get; }
 
         public AndroidAgent (
             IActivityTracker activityTracker,
             int contentId = -1)
         {
-            this.contentId = contentId;
-
-            var windowManager = Application.Context.GetSystemService (
-                global::Android.Content.Context.WindowService)
-                .JavaCast<IWindowManager> ();
-            displaySize = GetRealSize (windowManager.DefaultDisplay);
-
             ActivityTracker = activityTracker;
+            ContentId = contentId;
+
+            var displaySize = GetRealSize (Application
+                .Context
+                .GetSystemService (global::Android.Content.Context.WindowService)
+                .JavaCast<IWindowManager> ()
+                .DefaultDisplay);
 
             Identity = new AgentIdentity (
                 AgentType.Android,
@@ -89,20 +87,14 @@ namespace Xamarin.Interactive.Android
             return null;
         }
 
-        protected override EvaluationContextGlobalObject CreateEvaluationContextGlobalObject ()
-            => new AndroidEvaluationContextGlobalObject (this);
-
-        protected override void HandleResetState ()
+        void ResetState ()
         {
-            if (ClientSessionUri.SessionKind == ClientSessionKind.LiveInspection || contentId == -1)
+            if (ClientSessionUri.SessionKind == ClientSessionKind.LiveInspection || ContentId == -1)
                 return;
 
             var activity = ActivityTracker?.StartedActivities?.FirstOrDefault ();
-            activity?.FindViewById<ViewGroup> (contentId)?.RemoveAllViews ();
+            activity?.FindViewById<ViewGroup> (ContentId)?.RemoveAllViews ();
         }
-
-        internal override bool IncludePEImageInAssemblyDefinitions (HostOS compilationOS)
-            => true;
 
         string GetApplicationName ()
         {
@@ -276,6 +268,28 @@ namespace Xamarin.Interactive.Android
             if (disposing)
                 ObjectCache.Shared.ClearHandles ();
             base.Dispose (disposing);
+        }
+
+        protected override EvaluationContextManager CreateEvaluationContextManager ()
+            => new AndroidEvaluationContextManager (this);
+
+        sealed class AndroidEvaluationContextManager : EvaluationContextManager
+        {
+            readonly AndroidAgent agent;
+
+            public AndroidEvaluationContextManager (AndroidAgent agent)
+                : base (agent.RepresentationManager, agent)
+                => this.agent = agent;
+
+            protected override object CreateGlobalState ()
+                => new AndroidEvaluationContextGlobalObject (agent);
+
+            protected override TargetCompilationConfiguration PrepareTargetCompilationConfiguration (
+                TargetCompilationConfiguration configuration)
+                => configuration.With (includePEImagesInDependencyResolution: true);
+
+            protected override void OnResetState ()
+                => agent.ResetState ();
         }
     }
 }

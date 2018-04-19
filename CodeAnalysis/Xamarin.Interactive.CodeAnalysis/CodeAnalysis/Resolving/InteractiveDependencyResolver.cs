@@ -69,7 +69,7 @@ namespace Xamarin.Interactive.CodeAnalysis.Resolving
                 var ctor = metadataReader.GetMemberReference ((MemberReferenceHandle)attr.Constructor);
                 var typeReference = metadataReader.GetTypeReference ((TypeReferenceHandle)ctor.Parent);
 
-                var integrationType = typeof (AgentIntegrationAttribute);
+                var integrationType = typeof (EvaluationContextManagerIntegrationAttribute);
                 if (metadataReader.GetString (typeReference.Namespace) == integrationType.Namespace &&
                     metadataReader.GetString (typeReference.Name) == integrationType.Name)
                     return resolvedAssembly.With (

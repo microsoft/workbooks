@@ -35,8 +35,9 @@ namespace Xamarin.Interactive.Protocol
         {
             agent.ChangeDirectory (Compilation.EvaluationEnvironment.WorkingDirectory);
             await agent
+                .EvaluationContextManager
                 .GetEvaluationContext (Compilation.EvaluationContextId)
-                .RunAsync (MessageId, Compilation);
+                .EvaluateAsync (MessageId, Compilation);
             return true;
         }
     }

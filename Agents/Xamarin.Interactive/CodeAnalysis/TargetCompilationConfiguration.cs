@@ -48,10 +48,10 @@ namespace Xamarin.Interactive.CodeAnalysis
             CompilationOS = compilationOS;
             EvaluationContextId = evaluationContextId;
             GlobalStateType = globalStateType;
-            DefaultImports = defaultImports;
-            DefaultWarningSuppressions = defaultWarningSuppressions;
-            InitialReferences = initialReferences;
-            AssemblySearchPaths = assemblySearchPaths;
+            DefaultImports = defaultImports ?? Array.Empty<string> ();
+            DefaultWarningSuppressions = defaultWarningSuppressions ?? Array.Empty<string> ();
+            InitialReferences = initialReferences ?? Array.Empty<AssemblyDefinition> ();
+            AssemblySearchPaths = assemblySearchPaths ?? Array.Empty<string> ();
             IncludePEImagesInDependencyResolution = includePEImagesInDependencyResolution;
         }
 

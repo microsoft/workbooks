@@ -20,12 +20,6 @@ namespace Xamarin.Interactive.Representations
     {
         const string TAG = nameof (ReflectionRepresentationProvider);
 
-        public static void AgentHasIntegratedWith (IAgentIntegration integration)
-        {
-            if (integration.GetType ().Name == "OxyPlotAgentIntegration")
-                enableOxyPlotSupport = false;
-        }
-
         public override IEnumerable<object> ProvideRepresentations (object obj)
         {
             yield return ProvideSingleRepresentation (obj);
@@ -185,7 +179,6 @@ namespace Xamarin.Interactive.Representations
 
         #region OxyPlot Helpers
 
-        static bool enableOxyPlotSupport = true;
         static MethodInfo OxyPlot_SvgExporter_ExportToString;
 
         static Image SvgFromOxyPlot (Type type, object value)
@@ -193,7 +186,7 @@ namespace Xamarin.Interactive.Representations
             if (type == null)
                 throw new ArgumentNullException (nameof (type));
 
-            if (!enableOxyPlotSupport || value == null)
+            if (value == null)
                 return null;
 
             if (OxyPlot_SvgExporter_ExportToString == null)

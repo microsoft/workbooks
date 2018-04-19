@@ -266,11 +266,9 @@ namespace Xamarin.Interactive.Client
 
         async Task IAgentEvaluationService.InitializeAsync (
             CancellationToken cancellationToken)
-        {
-            TargetCompilationConfiguration = await SendAsync<TargetCompilationConfiguration> (
+            => TargetCompilationConfiguration = await SendAsync<TargetCompilationConfiguration> (
                 new EvaluationContextInitializeRequest (TargetCompilationConfiguration),
                 GetCancellationToken (cancellationToken));
-        }
 
         Task IAgentEvaluationService.ResetStateAsync (
             CancellationToken cancellationToken)

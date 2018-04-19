@@ -5,7 +5,7 @@ using System;
 
 using Newtonsoft.Json;
 
-using Xamarin.Interactive.CodeAnalysis;
+using Xamarin.Interactive.CodeAnalysis.Evaluating;
 using Xamarin.Interactive.Core;
 using Xamarin.Interactive.Representations.Reflection;
 
@@ -23,11 +23,10 @@ namespace Xamarin.Interactive.Protocol
         public void Handle (Agent agent, Action<object> responseWriter)
         {
             try {
-                var thread = agent
+                agent
+                    .EvaluationContextManager
                     .GetEvaluationContext (EvaluationContextId)
-                    .CurrentRunThread;
-                if (thread != null)
-                    thread.Abort ();
+                    .AbortInFlightEvaluation ();
                 responseWriter (true);
             } catch (Exception e) {
                 responseWriter (new XipErrorMessage (e));

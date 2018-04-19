@@ -10,6 +10,7 @@ using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices;
 
+using Xamarin.Interactive.Core;
 using Xamarin.Interactive.Logging;
 
 namespace Xamarin.Interactive.ConsoleAgent
@@ -42,7 +43,7 @@ namespace Xamarin.Interactive.ConsoleAgent
 
         public static bool IsMac => isMac;
 
-        public static void Integrate (IAgent agent)
+        public static void Integrate (Agent agent)
         {
             if (!IsMac)
                 return;

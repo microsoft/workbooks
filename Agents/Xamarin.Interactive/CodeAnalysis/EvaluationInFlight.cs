@@ -1,20 +1,31 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
-namespace Xamarin.Interactive.CodeAnalysis
-{
+using Xamarin.Interactive.CodeAnalysis.Events;
 
+namespace Xamarin.Interactive.CodeAnalysis.Evaluating
+{
     /// <summary>
     /// The state of an evaluation taking place for a single cell in a workbook.
     /// </summary>
-    public struct EvaluationInFlight
+    public sealed class EvaluationInFlight : ICodeCellEvent
     {
+        internal static EvaluationInFlight Create (Compilation compilation)
+            => new EvaluationInFlight (
+                compilation.CodeCellId,
+                EvaluationPhase.Compiled,
+                compilation);
+
+        /// <summary>
+        /// An identifier that is unique to the cell being evaluated. This should be
+        /// passed to <see cref="IAgent.PublishEvaluation"/>.
+        /// </summary>
+        public CodeCellId CodeCellId { get; }
 
         /// <summary>
         /// The current phase of evaluation for the cell.
         /// </summary>
         public EvaluationPhase Phase { get; }
-
 
         /// <summary>
         /// The compilation that produced this evaluation.
@@ -34,12 +45,14 @@ namespace Xamarin.Interactive.CodeAnalysis
         /// </summary>
         public Evaluation Evaluation { get; }
 
-        internal EvaluationInFlight (
+        EvaluationInFlight (
+            CodeCellId codeCellId,
             EvaluationPhase phase,
             ICompilation compilation = null,
             object originalValue = null,
             Evaluation evaluation = null)
         {
+            CodeCellId = codeCellId;
             Phase = phase;
             Compilation = compilation;
             OriginalValue = originalValue;
@@ -52,6 +65,7 @@ namespace Xamarin.Interactive.CodeAnalysis
             Optional<object> originalValue = default,
             Optional<Evaluation> evaluation = default)
             => new EvaluationInFlight (
+                CodeCellId,
                 phase.GetValueOrDefault (Phase),
                 compilation.GetValueOrDefault (Compilation),
                 originalValue.GetValueOrDefault (OriginalValue),
