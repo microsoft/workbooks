@@ -55,13 +55,13 @@ namespace Xamarin.Interactive
         }
     }
     [AttributeUsage (AttributeTargets.Assembly)]
-    public sealed class EvaluationContextHostIntegrationAttribute : Attribute
+    public sealed class EvaluationContextManagerIntegrationAttribute : Attribute
     {
         public Type IntegrationType {
             get;
         }
 
-        public EvaluationContextHostIntegrationAttribute (Type integrationType);
+        public EvaluationContextManagerIntegrationAttribute (Type integrationType);
     }
     public interface IAgentSynchronizationContext
     {
@@ -139,13 +139,9 @@ namespace Xamarin.Interactive.CodeAnalysis
         public override string ToString ();
     }
     [JsonObject]
-    public sealed class Compilation : ICompilation
+    public sealed class Compilation
     {
         public CodeCellId CodeCellId {
-            get;
-        }
-
-        public EvaluationContextId EvaluationContextId {
             get;
         }
 
@@ -170,10 +166,46 @@ namespace Xamarin.Interactive.CodeAnalysis
         }
 
         [JsonConstructor]
-        public Compilation (CodeCellId codeCellId, int submissionNumber, EvaluationContextId evaluationContextId, EvaluationEnvironment evaluationEnvironment, bool isResultAnExpression, AssemblyDefinition executableAssembly, IReadOnlyList<AssemblyDefinition> references);
+        public Compilation (CodeCellId codeCellId, int submissionNumber, EvaluationEnvironment evaluationEnvironment, bool isResultAnExpression, AssemblyDefinition executableAssembly, IReadOnlyList<AssemblyDefinition> references);
     }
     [JsonObject]
-    public sealed class Evaluation : IXipResponseMessage, ICodeCellEvent
+    public sealed class TargetCompilationConfiguration
+    {
+        public IReadOnlyList<string> AssemblySearchPaths {
+            get;
+        }
+
+        public IReadOnlyList<string> DefaultImports {
+            get;
+        }
+
+        public IReadOnlyList<string> DefaultWarningSuppressions {
+            get;
+        }
+
+        public EvaluationContextId EvaluationContextId {
+            get;
+        }
+
+        public TypeDefinition GlobalStateType {
+            get;
+        }
+
+        public bool IncludePEImagesInDependencyResolution {
+            get;
+        }
+
+        public IReadOnlyList<AssemblyDefinition> InitialReferences {
+            get;
+        }
+
+        public static TargetCompilationConfiguration CreateInitialForCompilationWorkspace (IReadOnlyList<string> assemblySearchPaths = null);
+    }
+}
+namespace Xamarin.Interactive.CodeAnalysis.Evaluating
+{
+    [JsonObject]
+    public sealed class Evaluation : ICodeCellEvent
     {
         public CodeCellId CodeCellId {
             get;
@@ -203,10 +235,6 @@ namespace Xamarin.Interactive.CodeAnalysis
             get;
         }
 
-        public Guid RequestId {
-            get;
-        }
-
         public EvaluationResultHandling ResultHandling {
             get;
         }
@@ -224,6 +252,40 @@ namespace Xamarin.Interactive.CodeAnalysis
         }
 
         public Evaluation (CodeCellId codeCellId, EvaluationResultHandling resultHandling, object value);
+    }
+    public sealed class EvaluationAssemblyContext : IDisposable
+    {
+        public Action<Assembly, AssemblyDefinition> AssemblyResolvedHandler {
+            get;
+        }
+
+        public EvaluationAssemblyContext (Action<Assembly, AssemblyDefinition> assemblyResolvedHandler = null);
+
+        public void Add (Assembly assembly);
+
+        public void Add (AssemblyDefinition assembly);
+
+        public void AddRange (IEnumerable<AssemblyDefinition> assemblies);
+
+        public void Dispose ();
+    }
+    public sealed class EvaluationContext
+    {
+        public IObservable<ICodeCellEvent> Events {
+            get;
+        }
+
+        public EvaluationContextManager Host {
+            get;
+        }
+
+        public EvaluationContextId Id {
+            get;
+        }
+
+        public TargetCompilationConfiguration TargetCompilationConfiguration {
+            get;
+        }
     }
     public class EvaluationContextGlobalObject
     {
@@ -294,130 +356,7 @@ namespace Xamarin.Interactive.CodeAnalysis
 
         public override string ToString ();
     }
-    [JsonObject]
-    public struct EvaluationEnvironment
-    {
-        public FilePath WorkingDirectory {
-            get;
-        }
-
-        [JsonConstructor]
-        public EvaluationEnvironment (FilePath workingDirectory);
-    }
-    public enum EvaluationPhase
-    {
-        None,
-        Compiled,
-        Evaluated,
-        Completed
-    }
-    public enum EvaluationResultHandling
-    {
-        Replace,
-        Append,
-        Ignore
-    }
-    public interface ICompilation
-    {
-        AssemblyDefinition Assembly {
-            get;
-        }
-
-        CodeCellId CodeCellId {
-            get;
-        }
-    }
-    public interface IEvaluationServiceBackend
-    {
-        IObservable<ICodeCellEvent> Events {
-            get;
-        }
-
-        TargetCompilationConfiguration TargetCompilationConfiguration {
-            get;
-        }
-
-        Task AbortEvaluationAsync (CancellationToken cancellationToken = default(CancellationToken));
-
-        Task EvaluateAsync (Compilation compilation, CancellationToken cancellationToken = default(CancellationToken));
-
-        Task InitializeAsync (CancellationToken cancellationToken = default(CancellationToken));
-
-        Task<IReadOnlyList<AssemblyLoadResult>> LoadAssembliesAsync (IReadOnlyList<AssemblyDefinition> assemblies, CancellationToken cancellationToken = default(CancellationToken));
-
-        Task ResetStateAsync (CancellationToken cancellationToken = default(CancellationToken));
-    }
-    [JsonObject]
-    public sealed class TargetCompilationConfiguration
-    {
-        public IReadOnlyList<string> AssemblySearchPaths {
-            get;
-        }
-
-        public IReadOnlyList<string> DefaultImports {
-            get;
-        }
-
-        public IReadOnlyList<string> DefaultWarningSuppressions {
-            get;
-        }
-
-        public EvaluationContextId EvaluationContextId {
-            get;
-        }
-
-        public TypeDefinition GlobalStateType {
-            get;
-        }
-
-        public bool IncludePEImagesInDependencyResolution {
-            get;
-        }
-
-        public IReadOnlyList<AssemblyDefinition> InitialReferences {
-            get;
-        }
-
-        public static TargetCompilationConfiguration CreateInitialForCompilationWorkspace (IReadOnlyList<string> assemblySearchPaths = null);
-    }
-}
-namespace Xamarin.Interactive.CodeAnalysis.Evaluating
-{
-    public sealed class EvaluationAssemblyContext : IDisposable
-    {
-        public Action<Assembly, AssemblyDefinition> AssemblyResolvedHandler {
-            get;
-        }
-
-        public EvaluationAssemblyContext (Action<Assembly, AssemblyDefinition> assemblyResolvedHandler = null);
-
-        public void Add (Assembly assembly);
-
-        public void Add (AssemblyDefinition assembly);
-
-        public void AddRange (IEnumerable<AssemblyDefinition> assemblies);
-
-        public void Dispose ();
-    }
-    public sealed class EvaluationContext
-    {
-        public IObservable<ICodeCellEvent> Events {
-            get;
-        }
-
-        public EvaluationContextHost Host {
-            get;
-        }
-
-        public EvaluationContextId Id {
-            get;
-        }
-
-        public TargetCompilationConfiguration TargetCompilationConfiguration {
-            get;
-        }
-    }
-    public class EvaluationContextHost
+    public class EvaluationContextManager : IEvaluationContextManager
     {
         public IObservable<ICodeCellEvent> Events {
             get;
@@ -431,9 +370,31 @@ namespace Xamarin.Interactive.CodeAnalysis.Evaluating
             get;
         }
 
+        public Task AbortEvaluationAsync (EvaluationContextId evaluationContextId, CancellationToken cancellationToken = default(CancellationToken));
+
+        public Task<TargetCompilationConfiguration> CreateEvaluationContextAsync (CancellationToken cancellationToken = default(CancellationToken));
+
+        public Task<TargetCompilationConfiguration> CreateEvaluationContextAsync (TargetCompilationConfiguration targetCompilationConfiguration, CancellationToken cancellationToken = default(CancellationToken));
+
+        public Task EvaluateAsync (EvaluationContextId evaluationContextId, Compilation compilation, CancellationToken cancellationToken = default(CancellationToken));
+
+        public Task<IReadOnlyList<AssemblyLoadResult>> LoadAssembliesAsync (EvaluationContextId evaluationContextId, IReadOnlyList<AssemblyDefinition> assemblies, CancellationToken cancellationToken = default(CancellationToken));
+
         public void PublishValueForCell (CodeCellId codeCellId, object result, EvaluationResultHandling resultHandling = EvaluationResultHandling.Replace);
 
         public void RegisterResetStateHandler (Action handler);
+
+        public Task ResetStateAsync (EvaluationContextId evaluationContextId, CancellationToken cancellationToken = default(CancellationToken));
+    }
+    [JsonObject]
+    public struct EvaluationEnvironment
+    {
+        public FilePath WorkingDirectory {
+            get;
+        }
+
+        [JsonConstructor]
+        public EvaluationEnvironment (FilePath workingDirectory);
     }
     public sealed class EvaluationInFlight : ICodeCellEvent
     {
@@ -441,7 +402,7 @@ namespace Xamarin.Interactive.CodeAnalysis.Evaluating
             get;
         }
 
-        public ICompilation Compilation {
+        public Compilation Compilation {
             get;
         }
 
@@ -457,9 +418,40 @@ namespace Xamarin.Interactive.CodeAnalysis.Evaluating
             get;
         }
     }
-    public interface IEvaluationContextHostIntegration
+    public enum EvaluationPhase
     {
-        void IntegrateWith (EvaluationContextHost evaluationContextHost);
+        None,
+        Compiled,
+        Evaluated,
+        Completed
+    }
+    public enum EvaluationResultHandling
+    {
+        Replace,
+        Append,
+        Ignore
+    }
+    public interface IEvaluationContextManager
+    {
+        IObservable<ICodeCellEvent> Events {
+            get;
+        }
+
+        Task AbortEvaluationAsync (EvaluationContextId evaluationContextId, CancellationToken cancellationToken = default(CancellationToken));
+
+        Task<TargetCompilationConfiguration> CreateEvaluationContextAsync (CancellationToken cancellationToken = default(CancellationToken));
+
+        Task<TargetCompilationConfiguration> CreateEvaluationContextAsync (TargetCompilationConfiguration initialConfiguration, CancellationToken cancellationToken = default(CancellationToken));
+
+        Task EvaluateAsync (EvaluationContextId evaluationContextId, Compilation compilation, CancellationToken cancellationToken = default(CancellationToken));
+
+        Task<IReadOnlyList<AssemblyLoadResult>> LoadAssembliesAsync (EvaluationContextId evaluationContextId, IReadOnlyList<AssemblyDefinition> assemblies, CancellationToken cancellationToken = default(CancellationToken));
+
+        Task ResetStateAsync (EvaluationContextId evaluationContextId, CancellationToken cancellationToken = default(CancellationToken));
+    }
+    public interface IEvaluationContextManagerIntegration
+    {
+        void IntegrateWith (EvaluationContextManager evaluationContextManager);
     }
 }
 namespace Xamarin.Interactive.CodeAnalysis.Events

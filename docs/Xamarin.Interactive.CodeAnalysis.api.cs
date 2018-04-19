@@ -9,52 +9,6 @@
 [assembly: TargetFramework (".NETStandard,Version=v2.0", FrameworkDisplayName = "")]
 namespace Xamarin.Interactive.CodeAnalysis
 {
-    public enum CodeCellEvaluationStatus
-    {
-        Success,
-        Disconnected,
-        Interrupted,
-        ErrorDiagnostic,
-        EvaluationException
-    }
-    public sealed class EvaluationService : IEvaluationService, IDisposable
-    {
-        public bool CanEvaluate {
-            get;
-        }
-
-        public EvaluationContextId EvaluationContextId {
-            get;
-        }
-
-        public IObservable<ICodeCellEvent> Events {
-            get;
-        }
-
-        public EvaluationService (IWorkspaceService workspace, EvaluationEnvironment evaluationEnvironment);
-
-        public Task<bool> AddTopLevelReferencesAsync (IReadOnlyList<string> references, CancellationToken cancellationToken = default(CancellationToken));
-
-        public void Dispose ();
-
-        public Task EvaluateAllAsync (CancellationToken cancellationToken = default(CancellationToken));
-
-        public Task EvaluateAsync (string input, CancellationToken cancellationToken = default(CancellationToken));
-
-        public Task<CodeCellEvaluationFinishedEvent> EvaluateAsync (CodeCellId targetCodeCellId = default(CodeCellId), bool evaluateAll = false, CancellationToken cancellationToken = default(CancellationToken));
-
-        public IDisposable InhibitEvaluate ();
-
-        public Task<CodeCellId> InsertCodeCellAsync (string initialBuffer = null, CodeCellId relativeToCodeCellId = default(CodeCellId), bool insertBefore = false, CancellationToken cancellationToken = default(CancellationToken));
-
-        public Task LoadWorkbookDependencyAsync (string dependency, CancellationToken cancellationToken = default(CancellationToken));
-
-        public void OutdateAllCodeCells ();
-
-        public Task RemoveCodeCellAsync (CodeCellId codeCellId, CancellationToken cancellationToken = default(CancellationToken));
-
-        public Task<CodeCellUpdatedEvent> UpdateCodeCellAsync (CodeCellId codeCellId, string buffer, CancellationToken cancellationToken = default(CancellationToken));
-    }
     public interface IWorkspaceService
     {
         WorkspaceConfiguration Configuration {
@@ -139,6 +93,55 @@ namespace Xamarin.Interactive.CodeAnalysis
     }
     public static class WorkspaceServiceFactory
     {
+    }
+}
+namespace Xamarin.Interactive.CodeAnalysis.Evaluating
+{
+    public enum CodeCellEvaluationStatus
+    {
+        Success,
+        Disconnected,
+        Interrupted,
+        ErrorDiagnostic,
+        EvaluationException
+    }
+    public sealed class EvaluationService : IEvaluationService, IDisposable
+    {
+        public bool CanEvaluate {
+            get;
+        }
+
+        public IObservable<ICodeCellEvent> Events {
+            get;
+        }
+
+        public TargetCompilationConfiguration TargetCompilationConfiguration {
+            get;
+        }
+
+        public EvaluationService (IWorkspaceService workspace, EvaluationEnvironment evaluationEnvironment);
+
+        public Task<bool> AddTopLevelReferencesAsync (IReadOnlyList<string> references, CancellationToken cancellationToken = default(CancellationToken));
+
+        public void Dispose ();
+
+        public Task EvaluateAllAsync (CancellationToken cancellationToken = default(CancellationToken));
+
+        public Task EvaluateAsync (string input, CancellationToken cancellationToken = default(CancellationToken));
+
+        public Task<CodeCellEvaluationFinishedEvent> EvaluateAsync (CodeCellId targetCodeCellId = default(CodeCellId), bool evaluateAll = false, CancellationToken cancellationToken = default(CancellationToken));
+
+        public IDisposable InhibitEvaluate ();
+
+        public Task<CodeCellId> InsertCodeCellAsync (string initialBuffer = null, CodeCellId relativeToCodeCellId = default(CodeCellId), bool insertBefore = false, CancellationToken cancellationToken = default(CancellationToken));
+
+        public Task LoadWorkbookDependencyAsync (string dependency, CancellationToken cancellationToken = default(CancellationToken));
+
+        public void OutdateAllCodeCells ();
+
+        public Task RemoveCodeCellAsync (CodeCellId codeCellId, CancellationToken cancellationToken = default(CancellationToken));
+
+        public Task<CodeCellUpdatedEvent> UpdateCodeCellAsync (CodeCellId codeCellId, string buffer, CancellationToken cancellationToken = default(CancellationToken));
     }
 }
 namespace Xamarin.Interactive.CodeAnalysis.Events
