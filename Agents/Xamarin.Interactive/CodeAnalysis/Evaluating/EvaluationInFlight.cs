@@ -30,7 +30,7 @@ namespace Xamarin.Interactive.CodeAnalysis.Evaluating
         /// <summary>
         /// The compilation that produced this evaluation.
         /// </summary>
-        public ICompilation Compilation { get; }
+        public Compilation Compilation { get; }
 
         /// <summary>
         /// The original raw result value produced this evaluation. This will be
@@ -48,7 +48,7 @@ namespace Xamarin.Interactive.CodeAnalysis.Evaluating
         EvaluationInFlight (
             CodeCellId codeCellId,
             EvaluationPhase phase,
-            ICompilation compilation = null,
+            Compilation compilation = null,
             object originalValue = null,
             Evaluation evaluation = null)
         {
@@ -61,7 +61,7 @@ namespace Xamarin.Interactive.CodeAnalysis.Evaluating
 
         internal EvaluationInFlight With (
             Optional<EvaluationPhase> phase = default,
-            Optional<ICompilation> compilation = default,
+            Optional<Compilation> compilation = default,
             Optional<object> originalValue = default,
             Optional<Evaluation> evaluation = default)
             => new EvaluationInFlight (

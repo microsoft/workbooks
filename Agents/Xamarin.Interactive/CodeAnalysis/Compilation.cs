@@ -16,13 +16,10 @@ using Xamarin.Interactive.CodeAnalysis.Resolving;
 namespace Xamarin.Interactive.CodeAnalysis
 {
     [JsonObject]
-    public sealed class Compilation : ICompilation
+    public sealed class Compilation
     {
-        AssemblyDefinition ICompilation.Assembly => ExecutableAssembly;
-
         public CodeCellId CodeCellId { get; }
         public int SubmissionNumber { get; }
-        public EvaluationContextId EvaluationContextId { get; }
         public bool IsResultAnExpression { get; }
         public EvaluationEnvironment EvaluationEnvironment { get; }
         public AssemblyDefinition ExecutableAssembly { get; }
@@ -32,7 +29,6 @@ namespace Xamarin.Interactive.CodeAnalysis
         public Compilation (
             CodeCellId codeCellId,
             int submissionNumber,
-            EvaluationContextId evaluationContextId,
             EvaluationEnvironment evaluationEnvironment,
             bool isResultAnExpression,
             AssemblyDefinition executableAssembly,
@@ -40,7 +36,6 @@ namespace Xamarin.Interactive.CodeAnalysis
         {
             CodeCellId = codeCellId;
             SubmissionNumber = submissionNumber;
-            EvaluationContextId = evaluationContextId;
             EvaluationEnvironment = evaluationEnvironment;
             IsResultAnExpression = isResultAnExpression;
             ExecutableAssembly = executableAssembly;
