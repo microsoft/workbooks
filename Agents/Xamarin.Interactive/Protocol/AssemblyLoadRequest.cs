@@ -27,7 +27,7 @@ namespace Xamarin.Interactive.Protocol
         const string TAG = nameof (AssemblyLoadRequest);
 
         public EvaluationContextId EvaluationContextId { get; }
-        public AssemblyDefinition [] Assemblies { get; }
+        public IReadOnlyList<AssemblyDefinition> Assemblies { get; }
 
         [JsonConstructor]
         public AssemblyLoadRequest (
@@ -35,17 +35,17 @@ namespace Xamarin.Interactive.Protocol
             IReadOnlyList<AssemblyDefinition> assemblies)
         {
             EvaluationContextId = evaluationContextId;
-            Assemblies = assemblies?.ToArray ();
+            Assemblies = assemblies ?? Array.Empty<AssemblyDefinition> ();
         }
 
         protected override Task<AssemblyLoadResponse> HandleAsync (Agent agent)
         {
             var evaluationContext = agent.EvaluationContextManager.GetEvaluationContext (EvaluationContextId);
 
-            var results = new AssemblyLoadResult [Assemblies.Length];
+            var results = new AssemblyLoadResult [Assemblies.Count];
 
             evaluationContext.AssemblyContext.AddRange (Assemblies);
-            for (var i = 0; i < Assemblies.Length; i++) {
+            for (var i = 0; i < Assemblies.Count; i++) {
                 AssemblyDefinition asm = Assemblies [i];
                 bool didLoad = false;
                 bool initializedIntegration = false;
