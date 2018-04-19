@@ -20,10 +20,10 @@ namespace Xamarin.Interactive.Protocol
         public ResetStateRequest (EvaluationContextId evaluationContextId)
             => EvaluationContextId = evaluationContextId;
 
-        protected override Task<bool> HandleAsync (Agent agent)
+        protected override async Task<bool> HandleAsync (Agent agent)
         {
-            agent.EvaluationContextManager.ResetState ();
-            return Task.FromResult (true);
+            await agent.EvaluationContextManager.ResetStateAsync (EvaluationContextId);
+            return true;
         }
     }
 }

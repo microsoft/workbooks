@@ -6,7 +6,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-
+using System.Threading;
+using System.Threading.Tasks;
 using Xamarin.Interactive.CodeAnalysis.Events;
 using Xamarin.Interactive.CodeAnalysis.Resolving;
 using Xamarin.Interactive.Core;
@@ -15,7 +16,7 @@ using Xamarin.Interactive.Representations;
 
 namespace Xamarin.Interactive.CodeAnalysis.Evaluating
 {
-    public class EvaluationContextManager
+    public class EvaluationContextManager : IEvaluationContextManager
     {
         const string TAG = nameof (EvaluationContextManager);
 
@@ -95,14 +96,20 @@ namespace Xamarin.Interactive.CodeAnalysis.Evaluating
             }
         }
 
-        internal EvaluationContext CreateEvaluationContext (
-            TargetCompilationConfiguration targetCompilationConfiguration = null)
-        {
-            var globalStateObject = CreateGlobalState ();
+        public Task<TargetCompilationConfiguration> CreateEvaluationContextAsync (
+            CancellationToken cancellationToken = default)
+            => CreateEvaluationContextAsync (
+                TargetCompilationConfiguration.CreateInitialForCompilationWorkspace (),
+                cancellationToken);
 
+        public Task<TargetCompilationConfiguration> CreateEvaluationContextAsync (
+            TargetCompilationConfiguration targetCompilationConfiguration,
+            CancellationToken cancellationToken = default)
+        {
             if (targetCompilationConfiguration == null)
-                targetCompilationConfiguration = TargetCompilationConfiguration
-                    .CreateInitialForCompilationWorkspace ();
+                throw new ArgumentNullException (nameof (targetCompilationConfiguration));
+
+            var globalStateObject = CreateGlobalState ();
 
             targetCompilationConfiguration = targetCompilationConfiguration.With (
                 defaultImports: defaultImports);
@@ -131,7 +138,7 @@ namespace Xamarin.Interactive.CodeAnalysis.Evaluating
 
             OnEvaluationContextCreated (evaluationContext);
 
-            return evaluationContext;
+            return Task.FromResult (targetCompilationConfiguration);
         }
 
         internal virtual void LoadExternalDependencies (
@@ -176,7 +183,7 @@ namespace Xamarin.Interactive.CodeAnalysis.Evaluating
         {
         }
 
-        internal EvaluationContext GetEvaluationContext (EvaluationContextId evaluationContextId)
+        EvaluationContext GetEvaluationContext (EvaluationContextId evaluationContextId)
         {
             if (evaluationContexts.TryGetValue (evaluationContextId, out var registration))
                 return registration.Context;
@@ -189,7 +196,9 @@ namespace Xamarin.Interactive.CodeAnalysis.Evaluating
             => resetStateHandlers.Add (handler
                 ?? throw new ArgumentNullException (nameof (handler)));
 
-        internal void ResetState ()
+        public Task ResetStateAsync (
+            EvaluationContextId evaluationContextId,
+            CancellationToken cancellationToken = default)
         {
             OnResetState ();
 
@@ -200,6 +209,8 @@ namespace Xamarin.Interactive.CodeAnalysis.Evaluating
                     Log.Error (TAG, "Registered reset state handler threw exception", e);
                 }
             }
+
+            return Task.CompletedTask;
         }
 
         protected virtual void OnResetState ()
@@ -263,6 +274,74 @@ namespace Xamarin.Interactive.CodeAnalysis.Evaluating
                 evaluationContextId: EvaluationContextId.Create (),
                 globalStateType: globalStateTypeDefinition,
                 initialReferences: assemblies);
+        }
+
+        public Task<IReadOnlyList<AssemblyLoadResult>> LoadAssembliesAsync (
+            EvaluationContextId evaluationContextId,
+            IReadOnlyList<AssemblyDefinition> assemblies,
+            CancellationToken cancellationToken = default)
+        {
+            if (assemblies == null)
+                assemblies = Array.Empty<AssemblyDefinition> ();
+
+            var evaluationContext = GetEvaluationContext (evaluationContextId);
+
+            var results = new AssemblyLoadResult [assemblies.Count];
+
+            evaluationContext.AssemblyContext.AddRange (assemblies);
+
+            for (var i = 0; i < assemblies.Count; i++) {
+                var assembly = assemblies [i];
+                var didLoad = false;
+                var initializedIntegration = false;
+
+                try {
+                    Assembly loadedAssembly = null;
+
+                    if (assembly.Content.Location.FileExists) {
+                        loadedAssembly = Assembly.LoadFrom (assembly.Content.Location);
+                        didLoad = true;
+                    } else if (assembly.Content.PEImage != null) {
+                        loadedAssembly = Assembly.Load (
+                            assembly.Content.PEImage,
+                            assembly.Content.DebugSymbols);
+                        didLoad = true;
+                    } else {
+                        Log.Warning (
+                            TAG,
+                            $"Could not load assembly name {assembly.Name}, location didn't " +
+                            "exist and PE image wasn't sent.");
+                    }
+
+                    if (loadedAssembly != null)
+                        initializedIntegration = TryLoadIntegration (loadedAssembly);
+                } catch (Exception e) {
+                    Log.Error (TAG, $"Could not load sent assembly {assembly.Name}", e);
+                } finally {
+                    results [i] = new AssemblyLoadResult (
+                        assembly.Name,
+                        didLoad,
+                        initializedIntegration);
+                }
+            }
+
+            return Task.FromResult<IReadOnlyList<AssemblyLoadResult>> (results);
+        }
+
+        public Task EvaluateAsync (
+            EvaluationContextId evaluationContextId,
+            Compilation compilation,
+            CancellationToken cancellationToken = default)
+            => GetEvaluationContext (evaluationContextId).EvaluateAsync (
+                compilation,
+                cancellationToken);
+
+        public Task AbortEvaluationAsync (
+            EvaluationContextId evaluationContextId,
+            CancellationToken cancellationToken = default)
+        {
+            GetEvaluationContext (evaluationContextId).AbortEvaluation ();
+            return Task.CompletedTask;
         }
     }
 }

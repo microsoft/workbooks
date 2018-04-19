@@ -7,7 +7,6 @@ using Newtonsoft.Json;
 
 using Xamarin.Interactive.CodeAnalysis.Evaluating;
 using Xamarin.Interactive.Core;
-using Xamarin.Interactive.Representations.Reflection;
 
 namespace Xamarin.Interactive.Protocol
 {
@@ -25,8 +24,9 @@ namespace Xamarin.Interactive.Protocol
             try {
                 agent
                     .EvaluationContextManager
-                    .GetEvaluationContext (EvaluationContextId)
-                    .AbortInFlightEvaluation ();
+                    .AbortEvaluationAsync (EvaluationContextId)
+                    .GetAwaiter ()
+                    .GetResult ();
                 responseWriter (true);
             } catch (Exception e) {
                 responseWriter (new XipErrorMessage (e));

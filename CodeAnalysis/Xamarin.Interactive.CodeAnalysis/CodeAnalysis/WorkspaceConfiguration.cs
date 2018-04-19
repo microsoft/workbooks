@@ -44,13 +44,13 @@ namespace Xamarin.Interactive.CodeAnalysis
             CancellationToken cancellationToken = default)
         {
             var configuration = await evaluationContextManager
-                .InitializeAsync (cancellationToken)
+                .CreateEvaluationContextAsync (cancellationToken)
                 .ConfigureAwait (false);
 
             if (configuration == null)
                 throw new Exception (
                     $"{nameof (IEvaluationContextManager)}." +
-                    $"{nameof (IEvaluationContextManager.InitializeAsync)} " +
+                    $"{nameof (IEvaluationContextManager.CreateEvaluationContextAsync)} " +
                     $"returned null");
 
             var dependencyResolver = CreateDependencyResolver (

@@ -9,17 +9,14 @@ using Newtonsoft.Json;
 
 using Xamarin.Interactive.CodeAnalysis.Events;
 using Xamarin.Interactive.CodeAnalysis.Resolving;
-using Xamarin.Interactive.Protocol;
 using Xamarin.Interactive.Representations;
 using Xamarin.Interactive.Representations.Reflection;
 
 namespace Xamarin.Interactive.CodeAnalysis.Evaluating
 {
     [JsonObject]
-    public sealed class Evaluation : IXipResponseMessage, ICodeCellEvent
+    public sealed class Evaluation : ICodeCellEvent
     {
-        public Guid RequestId { get; }
-
         public CodeCellId CodeCellId { get; }
         public EvaluationResultHandling ResultHandling { get; }
         public IRepresentedType ResultType { get; }
@@ -38,7 +35,6 @@ namespace Xamarin.Interactive.CodeAnalysis.Evaluating
 
         [JsonConstructor]
         Evaluation (
-            Guid requestId,
             CodeCellId codeCellId,
             EvaluationResultHandling resultHandling,
             IRepresentedType resultType,
@@ -51,7 +47,6 @@ namespace Xamarin.Interactive.CodeAnalysis.Evaluating
             bool initializedIntegration,
             IReadOnlyList<AssemblyDefinition> loadedAssemblies)
         {
-            RequestId = requestId;
             CodeCellId = codeCellId;
             ResultHandling = resultHandling;
             ResultType = resultType;
@@ -70,15 +65,14 @@ namespace Xamarin.Interactive.CodeAnalysis.Evaluating
             EvaluationResultHandling resultHandling,
             object value)
             : this (
-                Guid.Empty,
                 codeCellId,
                 resultHandling,
-                value)
+                value,
+                exception: null) // to avoid calling self
         {
         }
 
         internal Evaluation (
-            Guid requestId,
             CodeCellId codeCellId,
             EvaluationResultHandling resultHandling,
             object value,
@@ -90,7 +84,6 @@ namespace Xamarin.Interactive.CodeAnalysis.Evaluating
             bool initializedIntegration = false,
             IReadOnlyList<AssemblyDefinition> loadedAssemblies = null)
         {
-            RequestId = requestId;
             CodeCellId = codeCellId;
             ResultHandling = resultHandling;
 

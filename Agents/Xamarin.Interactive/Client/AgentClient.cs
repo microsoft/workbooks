@@ -46,8 +46,8 @@ namespace Xamarin.Interactive.Client
         /// message channel should register an awaiter and await the request task and
         /// the registered awaiter task (e.g. <see cref="EvaluateAsync"/>).
         /// </summary>
-        readonly ConcurrentDictionary<Guid, TaskCompletionSource> messageChannelAwaiters
-            = new ConcurrentDictionary<Guid, TaskCompletionSource> ();
+        readonly ConcurrentDictionary<object, TaskCompletionSource> messageChannelAwaiters
+            = new ConcurrentDictionary<object, TaskCompletionSource> ();
 
         readonly Observable<object> messages = new Observable<object> ();
         public IObservable<object> Messages => messages;
@@ -101,6 +101,8 @@ namespace Xamarin.Interactive.Client
             try {
                 await Task.Run (() => {
                     SendAsync (request, message => {
+                        object awaiterKey = null;
+
                         switch (message) {
                         case LogEntry logEntry:
                             Log.Commit (logEntry);
@@ -108,6 +110,9 @@ namespace Xamarin.Interactive.Client
                         case MessageChannel.Ping ping:
                             break;
                         case ICodeCellEvent evnt:
+                            if (evnt is Evaluation)
+                                awaiterKey = evnt.CodeCellId;
+
                             try {
                                 codeCellEvents.Observers.OnNext (evnt);
                             } catch (Exception e) {
@@ -123,8 +128,8 @@ namespace Xamarin.Interactive.Client
                             break;
                         }
 
-                        if (message is IXipResponseMessage responseMessage &&
-                            messageChannelAwaiters.TryRemove (responseMessage.RequestId, out var awaiter))
+                        if (awaiterKey != null &&
+                            messageChannelAwaiters.TryRemove (awaiterKey, out var awaiter))
                             awaiter.SetResult ();
                     }, cancellationToken).GetAwaiter ().GetResult ();
                 }, cancellationToken);
@@ -264,10 +269,17 @@ namespace Xamarin.Interactive.Client
         readonly Observable<ICodeCellEvent> codeCellEvents = new Observable<ICodeCellEvent> ();
         IObservable<ICodeCellEvent> IEvaluationContextManager.Events => codeCellEvents;
 
-        Task<TargetCompilationConfiguration> IEvaluationContextManager.InitializeAsync (
+        Task<TargetCompilationConfiguration> IEvaluationContextManager.CreateEvaluationContextAsync (
             CancellationToken cancellationToken)
             => SendAsync<TargetCompilationConfiguration> (
                 new EvaluationContextInitializeRequest (initialTargetCompilationConfiguration),
+                GetCancellationToken (cancellationToken));
+
+        Task<TargetCompilationConfiguration> IEvaluationContextManager.CreateEvaluationContextAsync (
+            TargetCompilationConfiguration initialConfiguration,
+            CancellationToken cancellationToken)
+            => SendAsync<TargetCompilationConfiguration> (
+                new EvaluationContextInitializeRequest (initialConfiguration),
                 GetCancellationToken (cancellationToken));
 
         Task IEvaluationContextManager.ResetStateAsync (
@@ -301,21 +313,19 @@ namespace Xamarin.Interactive.Client
             Compilation compilation,
             CancellationToken cancellationToken)
         {
-            var request = new EvaluationRequest (
-                evaluationContextId,
-                Guid.NewGuid (),
-                compilation);
+            var responseTask = new TaskCompletionSource ();
 
-            var resultTask = new TaskCompletionSource ();
-            var evalTask = SendAsync<bool> (
-                request,
-                GetCancellationToken (cancellationToken));
+            if (!messageChannelAwaiters.TryAdd (compilation.CodeCellId, responseTask))
+                throw new InvalidOperationException (
+                    "An evaluation for cell {compilation.CodeCellId} is already in process");
 
-            // TryAdd will only fail for duplicate keys, which is not
-            // practically possible (see MainThreadRequest.MessageId).
-            messageChannelAwaiters.TryAdd (request.MessageId, resultTask);
-
-            await Task.WhenAll (resultTask.Task, evalTask);
+            await Task.WhenAll (
+                responseTask.Task,
+                SendAsync<bool> (
+                     new EvaluationRequest (
+                        evaluationContextId,
+                        compilation),
+                    GetCancellationToken (cancellationToken)));
         }
 
         #endregion

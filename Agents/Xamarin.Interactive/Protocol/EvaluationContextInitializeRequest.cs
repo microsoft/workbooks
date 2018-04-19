@@ -2,13 +2,9 @@
 // Licensed under the MIT License.
 
 using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
 
 using Xamarin.Interactive.CodeAnalysis;
-using Xamarin.Interactive.CodeAnalysis.Resolving;
 using Xamarin.Interactive.Core;
 
 namespace Xamarin.Interactive.Protocol
@@ -23,9 +19,6 @@ namespace Xamarin.Interactive.Protocol
                 ?? throw new ArgumentNullException (nameof (configuration));
 
         protected override Task<TargetCompilationConfiguration> HandleAsync (Agent agent)
-            => Task.FromResult (agent
-                .EvaluationContextManager
-                .CreateEvaluationContext (Configuration)
-                .TargetCompilationConfiguration);
+            => agent.EvaluationContextManager.CreateEvaluationContextAsync (Configuration);
     }
 }

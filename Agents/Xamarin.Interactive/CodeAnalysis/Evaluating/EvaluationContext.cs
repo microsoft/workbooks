@@ -71,7 +71,6 @@ namespace Xamarin.Interactive.CodeAnalysis.Evaluating
         }
 
         internal async Task EvaluateAsync (
-            Guid evaluationRequestId,
             Compilation compilation,
             CancellationToken cancellationToken = default (CancellationToken))
         {
@@ -142,7 +141,6 @@ namespace Xamarin.Interactive.CodeAnalysis.Evaluating
             }
 
             var evaluation = new Evaluation (
-                evaluationRequestId,
                 compilation.CodeCellId,
                 interrupted || (inFlight.OriginalValue == null && !compilation.IsResultAnExpression)
                     ? EvaluationResultHandling.Ignore
@@ -200,7 +198,7 @@ namespace Xamarin.Interactive.CodeAnalysis.Evaluating
             return await ((Task<object>)submission (submissionStates)).ConfigureAwait (false);
         }
 
-        internal void AbortInFlightEvaluation ()
+        internal void AbortEvaluation ()
             => currentRunThread?.Abort ();
 
         void CapturedOutputWriter_SegmentCaptured (CapturedOutputSegment segment)

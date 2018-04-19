@@ -1,8 +1,4 @@
-﻿//
-// Author:
-//   Aaron Bockover <abock@xamarin.com>
-//
-// Copyright (c) Microsoft Corporation. All rights reserved.
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
 using System;
@@ -20,17 +16,14 @@ namespace Xamarin.Interactive.Protocol
     sealed class EvaluationRequest : MainThreadRequest<bool>
     {
         public EvaluationContextId EvaluationContextId { get; }
-        public Guid MessageId { get; }
         public Compilation Compilation { get; }
 
         [JsonConstructor]
         public EvaluationRequest (
             EvaluationContextId evaluationContextId,
-            Guid messageId,
             Compilation compilation)
         {
             EvaluationContextId = evaluationContextId;
-            MessageId = messageId;
             Compilation = compilation
                 ?? throw new ArgumentNullException (nameof (compilation));
         }
@@ -40,8 +33,9 @@ namespace Xamarin.Interactive.Protocol
             agent.ChangeDirectory (Compilation.EvaluationEnvironment.WorkingDirectory);
             await agent
                 .EvaluationContextManager
-                .GetEvaluationContext (EvaluationContextId)
-                .EvaluateAsync (MessageId, Compilation);
+                .EvaluateAsync (
+                    EvaluationContextId,
+                    Compilation);
             return true;
         }
     }
