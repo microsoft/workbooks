@@ -15,6 +15,7 @@ using Mono.Options;
 using Mono.Terminal;
 
 using Xamarin.Interactive.CodeAnalysis;
+using Xamarin.Interactive.CodeAnalysis.Evaluating;
 using Xamarin.Interactive.CodeAnalysis.Events;
 using Xamarin.Interactive.CodeAnalysis.Models;
 using Xamarin.Interactive.Core;

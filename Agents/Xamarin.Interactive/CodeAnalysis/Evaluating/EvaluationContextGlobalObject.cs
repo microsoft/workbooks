@@ -20,7 +20,7 @@ using Xamarin.Interactive.Core;
 using Xamarin.Interactive.Representations;
 using Xamarin.Interactive.Representations.Reflection;
 
-namespace Xamarin.Interactive.CodeAnalysis
+namespace Xamarin.Interactive.CodeAnalysis.Evaluating
 {
     using Evaluating;
 

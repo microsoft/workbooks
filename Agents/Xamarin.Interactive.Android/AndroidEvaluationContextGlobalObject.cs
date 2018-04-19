@@ -12,7 +12,7 @@ using Android.App;
 using Android.Views;
 using Android.Graphics;
 
-using Xamarin.Interactive.CodeAnalysis;
+using Xamarin.Interactive.CodeAnalysis.Evaluating;
 
 namespace Xamarin.Interactive.Android
 {

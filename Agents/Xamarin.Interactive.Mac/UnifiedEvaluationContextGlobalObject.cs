@@ -5,7 +5,7 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
-using Xamarin.Interactive.CodeAnalysis;
+using Xamarin.Interactive.CodeAnalysis.Evaluating;
 using Xamarin.Interactive.Core;
 
 namespace Xamarin.Interactive.Unified

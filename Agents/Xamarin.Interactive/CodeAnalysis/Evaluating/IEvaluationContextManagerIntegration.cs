@@ -3,8 +3,8 @@
 
 namespace Xamarin.Interactive.CodeAnalysis.Evaluating
 {
-    public interface IEvaluationContextHostIntegration
+    public interface IEvaluationContextManagerIntegration
     {
-        void IntegrateWith (EvaluationContextHost evaluationContextHost);
+        void IntegrateWith (EvaluationContextManager evaluationContextManager);
     }
 }

@@ -5,7 +5,7 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
-namespace Xamarin.Interactive.CodeAnalysis
+namespace Xamarin.Interactive.CodeAnalysis.Evaluating
 {
     /// <summary>
     /// The phase of an evaluation taking place for a single cell in a workbook.

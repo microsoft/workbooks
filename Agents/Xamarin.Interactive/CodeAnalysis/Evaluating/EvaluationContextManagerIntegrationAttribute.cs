@@ -10,11 +10,11 @@ using System;
 namespace Xamarin.Interactive
 {
     [AttributeUsage (AttributeTargets.Assembly)]
-    public sealed class EvaluationContextHostIntegrationAttribute : Attribute
+    public sealed class EvaluationContextManagerIntegrationAttribute : Attribute
     {
         public Type IntegrationType { get; }
 
-        public EvaluationContextHostIntegrationAttribute (Type integrationType)
+        public EvaluationContextManagerIntegrationAttribute (Type integrationType)
             => IntegrationType = integrationType;
     }
 }

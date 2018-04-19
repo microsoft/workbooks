@@ -6,6 +6,7 @@ using System.Collections.Generic;
 
 using Newtonsoft.Json;
 
+using Xamarin.Interactive.CodeAnalysis.Evaluating;
 using Xamarin.Interactive.CodeAnalysis.Resolving;
 
 namespace Xamarin.Interactive.CodeAnalysis

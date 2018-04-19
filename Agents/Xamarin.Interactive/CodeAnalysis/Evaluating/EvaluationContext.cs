@@ -32,13 +32,13 @@ namespace Xamarin.Interactive.CodeAnalysis.Evaluating
         public IObservable<ICodeCellEvent> Events => events;
 
         public EvaluationContextId Id { get; }
-        public EvaluationContextHost Host { get; }
+        public EvaluationContextManager Host { get; }
         public TargetCompilationConfiguration TargetCompilationConfiguration { get; }
 
         internal EvaluationAssemblyContext AssemblyContext { get; }
 
         internal EvaluationContext (
-            EvaluationContextHost host,
+            EvaluationContextManager host,
             TargetCompilationConfiguration targetCompilationConfiguration,
             object globalState)
         {

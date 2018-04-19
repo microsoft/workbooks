@@ -22,7 +22,7 @@ using Xamarin.Interactive.Protocol;
 using Xamarin.Interactive.Representations;
 using Xamarin.Interactive.Representations.Reflection;
 
-namespace Xamarin.Interactive.CodeAnalysis
+namespace Xamarin.Interactive.CodeAnalysis.Evaluating
 {
     public sealed class EvaluationService : IEvaluationService
     {

@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using Xamarin.Interactive.CodeAnalysis.Events;
 using Xamarin.Interactive.CodeAnalysis.Resolving;
 
-namespace Xamarin.Interactive.CodeAnalysis
+namespace Xamarin.Interactive.CodeAnalysis.Evaluating
 {
     public interface IEvaluationContextManager
     {

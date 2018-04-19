@@ -8,6 +8,7 @@
 using Newtonsoft.Json;
 
 using Xamarin.Interactive.CodeAnalysis;
+using Xamarin.Interactive.CodeAnalysis.Evaluating;
 
 namespace Xamarin.Interactive.Session
 {

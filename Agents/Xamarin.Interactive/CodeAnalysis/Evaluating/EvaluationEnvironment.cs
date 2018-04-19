@@ -11,7 +11,7 @@ using Newtonsoft.Json;
 
 using Xamarin.Interactive.Core;
 
-namespace Xamarin.Interactive.CodeAnalysis
+namespace Xamarin.Interactive.CodeAnalysis.Evaluating
 {
     [JsonObject]
     public struct EvaluationEnvironment

@@ -3,7 +3,7 @@
 
 using System;
 
-namespace Xamarin.Interactive.CodeAnalysis
+namespace Xamarin.Interactive.CodeAnalysis.Evaluating
 {
     /// <summary>
     /// An opaque identifier for <see cref="EvaluationContext"/>.

@@ -14,6 +14,7 @@ using System.Threading.Tasks;
 
 using Xamarin.Interactive.Client.ViewControllers;
 using Xamarin.Interactive.CodeAnalysis;
+using Xamarin.Interactive.CodeAnalysis.Evaluating;
 using Xamarin.Interactive.CodeAnalysis.Resolving;
 using Xamarin.Interactive.Core;
 using Xamarin.Interactive.I18N;

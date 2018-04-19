@@ -9,6 +9,7 @@ using System;
 
 using Xamarin.Interactive.Client;
 using Xamarin.Interactive.CodeAnalysis;
+using Xamarin.Interactive.CodeAnalysis.Evaluating;
 using Xamarin.Interactive.NuGet;
 
 namespace Xamarin.Interactive.Session

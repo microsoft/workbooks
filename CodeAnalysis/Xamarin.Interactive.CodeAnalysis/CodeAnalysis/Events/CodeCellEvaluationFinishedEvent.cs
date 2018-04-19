@@ -8,6 +8,7 @@
 using System;
 using System.Collections.Generic;
 
+using Xamarin.Interactive.CodeAnalysis.Evaluating;
 using Xamarin.Interactive.CodeAnalysis.Models;
 
 namespace Xamarin.Interactive.CodeAnalysis.Events

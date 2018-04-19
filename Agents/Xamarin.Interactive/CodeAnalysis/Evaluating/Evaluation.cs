@@ -13,7 +13,7 @@ using Xamarin.Interactive.Protocol;
 using Xamarin.Interactive.Representations;
 using Xamarin.Interactive.Representations.Reflection;
 
-namespace Xamarin.Interactive.CodeAnalysis
+namespace Xamarin.Interactive.CodeAnalysis.Evaluating
 {
     [JsonObject]
     public sealed class Evaluation : IXipResponseMessage, ICodeCellEvent

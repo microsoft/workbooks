@@ -21,6 +21,8 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 
 using Xamarin.Interactive.CodeAnalysis;
+using Xamarin.Interactive.CodeAnalysis.Evaluating;
+using Xamarin.Interactive.CodeAnalysis.Events;
 using Xamarin.Interactive.CodeAnalysis.Resolving;
 using Xamarin.Interactive.Core;
 using Xamarin.Interactive.Logging;
@@ -29,7 +31,6 @@ using Xamarin.Interactive.Serialization;
 using Xamarin.Interactive.Remote;
 using Xamarin.Interactive.Representations;
 using Xamarin.Interactive.Representations.Reflection;
-using Xamarin.Interactive.CodeAnalysis.Events;
 
 namespace Xamarin.Interactive.Client
 {

@@ -15,9 +15,9 @@ using Xamarin.Interactive.Representations;
 
 namespace Xamarin.Interactive.CodeAnalysis.Evaluating
 {
-    public class EvaluationContextHost
+    public class EvaluationContextManager
     {
-        const string TAG = nameof (EvaluationContextHost);
+        const string TAG = nameof (EvaluationContextManager);
 
         static readonly Assembly [] appDomainStartupAssemblies = AppDomain.CurrentDomain.GetAssemblies ();
 
@@ -50,8 +50,8 @@ namespace Xamarin.Interactive.CodeAnalysis.Evaluating
             }
         }
 
-        readonly Dictionary<EvaluationContextHostIntegrationAttribute, IEvaluationContextHostIntegration> loadedIntegrations
-            = new Dictionary<EvaluationContextHostIntegrationAttribute, IEvaluationContextHostIntegration> ();
+        readonly Dictionary<EvaluationContextManagerIntegrationAttribute, IEvaluationContextManagerIntegration> loadedIntegrations
+            = new Dictionary<EvaluationContextManagerIntegrationAttribute, IEvaluationContextManagerIntegration> ();
 
         readonly Dictionary<EvaluationContextId, EvaluationContextRegistration> evaluationContexts
             = new Dictionary<EvaluationContextId, EvaluationContextRegistration> ();
@@ -69,7 +69,7 @@ namespace Xamarin.Interactive.CodeAnalysis.Evaluating
 
         readonly IList<Action> resetStateHandlers = new List<Action> ();
 
-        internal EvaluationContextHost (
+        internal EvaluationContextManager (
             RepresentationManager representationManager,
             object context = null)
         {
@@ -145,7 +145,7 @@ namespace Xamarin.Interactive.CodeAnalysis.Evaluating
             if (assembly?.GetReferencedAssemblies ().Any (r => r.Name == "Xamarin.Interactive") == false)
                 return false;
 
-            var integrationAttribute = assembly.GetCustomAttribute<EvaluationContextHostIntegrationAttribute> ();
+            var integrationAttribute = assembly.GetCustomAttribute<EvaluationContextManagerIntegrationAttribute> ();
             var integrationType = integrationAttribute?.IntegrationType;
 
             if (integrationType == null)
@@ -154,14 +154,14 @@ namespace Xamarin.Interactive.CodeAnalysis.Evaluating
             if (loadedIntegrations.TryGetValue (integrationAttribute, out var integration))
                 return false;
 
-            if (!typeof (IEvaluationContextHostIntegration).IsAssignableFrom (integrationType))
+            if (!typeof (IEvaluationContextManagerIntegration).IsAssignableFrom (integrationType))
                 throw new InvalidOperationException (
-                    $"encountered [assembly:{typeof (IEvaluationContextHostIntegration).FullName}" +
+                    $"encountered [assembly:{typeof (IEvaluationContextManagerIntegration).FullName}" +
                     $"({integrationType.FullName})] on assembly '{assembly.FullName}', " +
                     $"but type specified does not implement " +
-                    $"{typeof (IEvaluationContextHostIntegration).FullName}");
+                    $"{typeof (IEvaluationContextManagerIntegration).FullName}");
 
-            integration = (IEvaluationContextHostIntegration)Activator.CreateInstance (integrationType);
+            integration = (IEvaluationContextManagerIntegration)Activator.CreateInstance (integrationType);
             integration.IntegrateWith (this);
 
             loadedIntegrations.Add (integrationAttribute, integration);

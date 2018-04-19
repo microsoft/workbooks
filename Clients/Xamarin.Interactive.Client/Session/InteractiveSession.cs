@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 using Xamarin.Interactive.Client;
 using Xamarin.Interactive.CodeAnalysis;
+using Xamarin.Interactive.CodeAnalysis.Evaluating;
 using Xamarin.Interactive.CodeAnalysis.Events;
 using Xamarin.Interactive.Core;
 using Xamarin.Interactive.Logging;
