@@ -355,15 +355,16 @@ namespace Xamarin.Interactive.Workbook.Models
 
         #region Evaluation
 
-        public EvaluationContextId EvaluationContextId
-            => ClientSession.CompilationWorkspace.Configuration.CompilationConfiguration.EvaluationContextId;
+        public TargetCompilationConfiguration TargetCompilationConfiguration
+            => ClientSession.CompilationWorkspace.Configuration.CompilationConfiguration;
 
         protected async Task AbortEvaluationAsync ()
         {
             if (!ClientSession.Agent.IsConnected)
                 return;
 
-            await ((IEvaluationContextManager)ClientSession.Agent.Api).AbortEvaluationAsync ();
+            await ((IEvaluationContextManager)ClientSession.Agent.Api).AbortEvaluationAsync (
+                TargetCompilationConfiguration.EvaluationContextId);
         }
 
         public Task<bool> AddTopLevelReferencesAsync (
@@ -463,7 +464,8 @@ namespace Xamarin.Interactive.Workbook.Models
             var isFirstCell = codeCell.GetPreviousCell<CodeCell> () == null;
 
             if (isFirstCell && ClientSession.SessionKind == ClientSessionKind.Workbook)
-                await ((IEvaluationContextManager)ClientSession.Agent.Api).ResetStateAsync ();
+                await ((IEvaluationContextManager)ClientSession.Agent.Api).ResetStateAsync (
+                    TargetCompilationConfiguration.EvaluationContextId);
 
             while (codeCell != null) {
                 if (CodeCells.TryGetValue (codeCell.View.Editor, out codeCellState)) {
@@ -557,6 +559,7 @@ namespace Xamarin.Interactive.Workbook.Models
                     .ToArray ();
                 if (integrationAssemblies.Length > 0)
                     await ((IEvaluationContextManager)ClientSession.Agent.Api).LoadAssembliesAsync (
+                        TargetCompilationConfiguration.EvaluationContextId,
                         integrationAssemblies);
             } catch (Exception e) {
                 exception = ExceptionNode.Create (e);
@@ -571,6 +574,7 @@ namespace Xamarin.Interactive.Workbook.Models
             try {
                 if (compilation != null)
                     await ((IEvaluationContextManager)ClientSession.Agent.Api).EvaluateAsync (
+                        TargetCompilationConfiguration.EvaluationContextId,
                         compilation,
                         cancellationToken);
             } catch (XipErrorMessageException e) {

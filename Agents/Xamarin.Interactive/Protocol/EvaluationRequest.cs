@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 
 using Xamarin.Interactive.CodeAnalysis;
+using Xamarin.Interactive.CodeAnalysis.Evaluating;
 using Xamarin.Interactive.Core;
 
 namespace Xamarin.Interactive.Protocol
@@ -18,14 +19,17 @@ namespace Xamarin.Interactive.Protocol
     [JsonObject]
     sealed class EvaluationRequest : MainThreadRequest<bool>
     {
+        public EvaluationContextId EvaluationContextId { get; }
         public Guid MessageId { get; }
         public Compilation Compilation { get; }
 
         [JsonConstructor]
         public EvaluationRequest (
+            EvaluationContextId evaluationContextId,
             Guid messageId,
             Compilation compilation)
         {
+            EvaluationContextId = evaluationContextId;
             MessageId = messageId;
             Compilation = compilation
                 ?? throw new ArgumentNullException (nameof (compilation));
@@ -36,7 +40,7 @@ namespace Xamarin.Interactive.Protocol
             agent.ChangeDirectory (Compilation.EvaluationEnvironment.WorkingDirectory);
             await agent
                 .EvaluationContextManager
-                .GetEvaluationContext (Compilation.EvaluationContextId)
+                .GetEvaluationContext (EvaluationContextId)
                 .EvaluateAsync (MessageId, Compilation);
             return true;
         }

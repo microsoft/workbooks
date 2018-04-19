@@ -82,7 +82,9 @@ namespace Xamarin.Interactive.CodeAnalysis.Evaluating
 
         CodeCellId nugetReferenceCellId;
 
-        public EvaluationContextId EvaluationContextId => workspace.Configuration.CompilationConfiguration.EvaluationContextId;
+        public TargetCompilationConfiguration TargetCompilationConfiguration => workspace
+            .Configuration
+            .CompilationConfiguration;
 
         readonly Observable<ICodeCellEvent> events = new Observable<ICodeCellEvent> ();
         public IObservable<ICodeCellEvent> Events => events;
@@ -353,7 +355,9 @@ namespace Xamarin.Interactive.CodeAnalysis.Evaluating
                 cancellationToken);
 
             if (evaluationModel.ShouldResetAgentState)
-                await evaluationContextManager.ResetStateAsync (cancellationToken);
+                await evaluationContextManager.ResetStateAsync (
+                    TargetCompilationConfiguration.EvaluationContextId,
+                    cancellationToken);
 
             CodeCellEvaluationFinishedEvent lastCellFinishedEvent = default;
 
@@ -417,6 +421,7 @@ namespace Xamarin.Interactive.CodeAnalysis.Evaluating
 
                 if (integrationAssemblies.Length > 0)
                     await evaluationContextManager.LoadAssembliesAsync (
+                        TargetCompilationConfiguration.EvaluationContextId,
                         integrationAssemblies,
                         cancellationToken);
 
@@ -430,6 +435,7 @@ namespace Xamarin.Interactive.CodeAnalysis.Evaluating
             try {
                 if (compilation != null)
                     await evaluationContextManager.EvaluateAsync (
+                        TargetCompilationConfiguration.EvaluationContextId,
                         compilation,
                         cancellationToken);
             } catch (XipErrorMessageException e) {

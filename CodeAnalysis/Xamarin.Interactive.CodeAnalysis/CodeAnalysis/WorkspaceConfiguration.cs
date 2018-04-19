@@ -43,15 +43,15 @@ namespace Xamarin.Interactive.CodeAnalysis
             ClientSessionKind sessionKind,
             CancellationToken cancellationToken = default)
         {
-            await evaluationContextManager.InitializeAsync (cancellationToken).ConfigureAwait (false);
-
-            var configuration = evaluationContextManager.TargetCompilationConfiguration;
+            var configuration = await evaluationContextManager
+                .InitializeAsync (cancellationToken)
+                .ConfigureAwait (false);
 
             if (configuration == null)
                 throw new Exception (
                     $"{nameof (IEvaluationContextManager)}." +
-                    $"{nameof (IEvaluationContextManager.TargetCompilationConfiguration)} " +
-                    $"is null");
+                    $"{nameof (IEvaluationContextManager.InitializeAsync)} " +
+                    $"returned null");
 
             var dependencyResolver = CreateDependencyResolver (
                 agentType,
@@ -66,6 +66,7 @@ namespace Xamarin.Interactive.CodeAnalysis
                     await LoadFormsAgentExtensions (
                         formsReference.Name.Version,
                         agentType,
+                        configuration,
                         evaluationContextManager,
                         dependencyResolver).ConfigureAwait (false);
             }
@@ -168,6 +169,7 @@ namespace Xamarin.Interactive.CodeAnalysis
         internal static async Task LoadFormsAgentExtensions (
             Version formsVersion,
             AgentType agentType,
+            TargetCompilationConfiguration configuration,
             IEvaluationContextManager evaluationContextManager,
             DependencyResolver dependencyResolver)
         {
@@ -200,9 +202,7 @@ namespace Xamarin.Interactive.CodeAnalysis
                 return;
             }
 
-            var includePeImage = evaluationContextManager
-                .TargetCompilationConfiguration
-                .IncludePEImagesInDependencyResolution;
+            var includePeImage = configuration.IncludePEImagesInDependencyResolution;
             var assembliesToLoad = deps.Select (dep => {
                 var peImage = includePeImage ? GetFileBytes (dep.Path) : null;
                 var syms = includePeImage ? GetDebugSymbolsFromAssemblyPath (dep.Path) : null;
@@ -214,7 +214,9 @@ namespace Xamarin.Interactive.CodeAnalysis
                 );
             }).ToArray ();
 
-            var results = await evaluationContextManager.LoadAssembliesAsync (assembliesToLoad);
+            var results = await evaluationContextManager.LoadAssembliesAsync (
+                configuration.EvaluationContextId,
+                assembliesToLoad);
 
             var failed = results.Where (p => !p.Success);
             if (failed.Any ()) {

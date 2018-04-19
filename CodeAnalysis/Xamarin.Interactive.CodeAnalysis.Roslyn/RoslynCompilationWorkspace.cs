@@ -721,7 +721,6 @@ namespace Xamarin.Interactive.CodeAnalysis.Roslyn
                 return new CodeAnalysis.Compilation (
                     submissionDocumentId.ToCodeCellId (),
                     submissionCount,
-                    EvaluationContextId,
                     evaluationEnvironment,
                     DetermineIfResultIsAnExpression (
                         compilation,

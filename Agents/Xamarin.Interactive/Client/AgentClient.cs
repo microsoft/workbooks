@@ -39,6 +39,7 @@ namespace Xamarin.Interactive.Client
         const string TAG = nameof (AgentClient);
 
         readonly HttpClient httpClient;
+        readonly TargetCompilationConfiguration initialTargetCompilationConfiguration;
 
         /// <summary>
         /// Any request that should await a response delivered through the out-of-band
@@ -58,8 +59,8 @@ namespace Xamarin.Interactive.Client
             ushort port,
             IReadOnlyList<string> assemblySearchPaths)
         {
-            TargetCompilationConfiguration = TargetCompilationConfiguration.CreateInitialForCompilationWorkspace (
-                assemblySearchPaths);
+            initialTargetCompilationConfiguration = TargetCompilationConfiguration
+                .CreateInitialForCompilationWorkspace (assemblySearchPaths);
 
             if (string.IsNullOrEmpty (host))
                 host = IPAddress.Loopback.ToString ();
@@ -263,42 +264,47 @@ namespace Xamarin.Interactive.Client
         readonly Observable<ICodeCellEvent> codeCellEvents = new Observable<ICodeCellEvent> ();
         IObservable<ICodeCellEvent> IEvaluationContextManager.Events => codeCellEvents;
 
-        public TargetCompilationConfiguration TargetCompilationConfiguration { get; private set; }
-
-        async Task IEvaluationContextManager.InitializeAsync (
+        Task<TargetCompilationConfiguration> IEvaluationContextManager.InitializeAsync (
             CancellationToken cancellationToken)
-            => TargetCompilationConfiguration = await SendAsync<TargetCompilationConfiguration> (
-                new EvaluationContextInitializeRequest (TargetCompilationConfiguration),
+            => SendAsync<TargetCompilationConfiguration> (
+                new EvaluationContextInitializeRequest (initialTargetCompilationConfiguration),
                 GetCancellationToken (cancellationToken));
 
         Task IEvaluationContextManager.ResetStateAsync (
+            EvaluationContextId evaluationContextId,
             CancellationToken cancellationToken)
             => SendAsync<bool> (
-                new ResetStateRequest (),
+                new ResetStateRequest (evaluationContextId),
                 GetCancellationToken (cancellationToken));
 
         async Task<IReadOnlyList<AssemblyLoadResult>> IEvaluationContextManager.LoadAssembliesAsync (
+            EvaluationContextId evaluationContextId,
             IReadOnlyList<AssemblyDefinition> assemblies,
             CancellationToken cancellationToken)
         {
             var response = await SendAsync<AssemblyLoadResponse> (
-                new AssemblyLoadRequest (TargetCompilationConfiguration.EvaluationContextId, assemblies),
+                new AssemblyLoadRequest (evaluationContextId, assemblies),
                 GetCancellationToken (cancellationToken));
 
             return response.LoadResults;
         }
 
         Task IEvaluationContextManager.AbortEvaluationAsync (
+            EvaluationContextId evaluationContextId,
             CancellationToken cancellationToken)
             => SendAsync<bool> (
-                new EvaluationAbortRequest (TargetCompilationConfiguration.EvaluationContextId),
+                new EvaluationAbortRequest (evaluationContextId),
                 GetCancellationToken (cancellationToken));
 
         async Task IEvaluationContextManager.EvaluateAsync (
+            EvaluationContextId evaluationContextId,
             Compilation compilation,
             CancellationToken cancellationToken)
         {
-            var request = new EvaluationRequest (Guid.NewGuid (), compilation);
+            var request = new EvaluationRequest (
+                evaluationContextId,
+                Guid.NewGuid (),
+                compilation);
 
             var resultTask = new TaskCompletionSource ();
             var evalTask = SendAsync<bool> (

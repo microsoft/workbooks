@@ -20,7 +20,7 @@ namespace Xamarin.Interactive.CodeAnalysis.Evaluating
     /// </summary>
     interface IEvaluationService : IDisposable
     {
-        EvaluationContextId EvaluationContextId { get; }
+        TargetCompilationConfiguration TargetCompilationConfiguration { get; }
         bool CanEvaluate { get; }
         void OutdateAllCodeCells ();
         IDisposable InhibitEvaluate ();

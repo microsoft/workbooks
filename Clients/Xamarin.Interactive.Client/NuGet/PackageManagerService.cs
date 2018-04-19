@@ -99,7 +99,12 @@ namespace Xamarin.Interactive.NuGet
             var agent = await getAgentConnectionHandler (false, cancellationToken);
 
             foreach (var package in packageManager.InstalledPackages)
-                await LoadPackageIntegrationsAsync (agent.Type, agent.Api, package, cancellationToken);
+                await LoadPackageIntegrationsAsync (
+                    agent.Type,
+                    evaluationService.TargetCompilationConfiguration,
+                    agent.Api,
+                    package,
+                    cancellationToken);
         }
 
         /// <summary>
@@ -146,7 +151,12 @@ namespace Xamarin.Interactive.NuGet
 
             foreach (var installedPackage in installedPackages) {
                 ReferencePackageInWorkspace (installedPackage);
-                await LoadPackageIntegrationsAsync (agent.Type, agent.Api, installedPackage, cancellationToken);
+                await LoadPackageIntegrationsAsync (
+                    agent.Type,
+                    evaluationService.TargetCompilationConfiguration,
+                    agent.Api,
+                    installedPackage,
+                    cancellationToken);
             }
 
             // TODO: Figure out metapackages. Install Microsoft.AspNet.SignalR, for example,
@@ -192,6 +202,7 @@ namespace Xamarin.Interactive.NuGet
 
         async Task LoadPackageIntegrationsAsync (
             AgentType agentType,
+            TargetCompilationConfiguration targetCompilationConfiguration,
             IEvaluationContextManager evaluationContextManager,
             InteractivePackage package,
             CancellationToken cancellationToken)
@@ -201,6 +212,7 @@ namespace Xamarin.Interactive.NuGet
                 await WorkspaceConfiguration.LoadFormsAgentExtensions (
                     package.Identity.Version.Version,
                     agentType,
+                    targetCompilationConfiguration,
                     evaluationContextManager,
                     dependencyResolver);
 
@@ -223,9 +235,7 @@ namespace Xamarin.Interactive.NuGet
             }
 
             if (assembliesToLoadOnAgent.Count > 0) {
-                var includePeImage = evaluationContextManager
-                    .TargetCompilationConfiguration
-                    .IncludePEImagesInDependencyResolution;
+                var includePeImage = targetCompilationConfiguration.IncludePEImagesInDependencyResolution;
 
                 var assembliesToLoad = assembliesToLoadOnAgent.Select (dep => {
                     var peImage = includePeImage
@@ -243,6 +253,7 @@ namespace Xamarin.Interactive.NuGet
                 }).ToArray ();
 
                 await evaluationContextManager.LoadAssembliesAsync (
+                    targetCompilationConfiguration.EvaluationContextId,
                     assembliesToLoad,
                     cancellationToken);
             }

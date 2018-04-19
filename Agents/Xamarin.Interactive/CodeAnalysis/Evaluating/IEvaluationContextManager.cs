@@ -15,20 +15,25 @@ namespace Xamarin.Interactive.CodeAnalysis.Evaluating
     {
         IObservable<ICodeCellEvent> Events { get; }
 
-        TargetCompilationConfiguration TargetCompilationConfiguration { get; }
+        Task<TargetCompilationConfiguration> InitializeAsync (
+            CancellationToken cancellationToken = default);
 
-        Task InitializeAsync (CancellationToken cancellationToken = default);
-
-        Task ResetStateAsync (CancellationToken cancellationToken = default);
+        Task ResetStateAsync (
+            EvaluationContextId evaluationContextId,
+            CancellationToken cancellationToken = default);
 
         Task<IReadOnlyList<AssemblyLoadResult>> LoadAssembliesAsync (
+            EvaluationContextId evaluationContextId,
             IReadOnlyList<AssemblyDefinition> assemblies,
             CancellationToken cancellationToken = default);
 
         Task EvaluateAsync (
+            EvaluationContextId evaluationContextId,
             Compilation compilation,
             CancellationToken cancellationToken = default);
 
-        Task AbortEvaluationAsync (CancellationToken cancellationToken = default);
+        Task AbortEvaluationAsync (
+            EvaluationContextId evaluationContextId,
+            CancellationToken cancellationToken = default);
     }
 }
