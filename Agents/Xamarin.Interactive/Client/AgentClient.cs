@@ -34,12 +34,11 @@ using Xamarin.Interactive.Representations.Reflection;
 
 namespace Xamarin.Interactive.Client
 {
-    sealed class AgentClient : IEvaluationContextManager
+    sealed class AgentClient : IAgentClient
     {
         const string TAG = nameof (AgentClient);
 
         readonly HttpClient httpClient;
-        readonly TargetCompilationConfiguration initialTargetCompilationConfiguration;
 
         /// <summary>
         /// Any request that should await a response delivered through the out-of-band
@@ -50,17 +49,15 @@ namespace Xamarin.Interactive.Client
             = new ConcurrentDictionary<object, TaskCompletionSource> ();
 
         readonly Observable<object> messages = new Observable<object> ();
-        public IObservable<object> Messages => messages;
 
-        public CancellationToken SessionCancellationToken { get; set; }
+        readonly AgentClientEvaluationContextManager evaluationContextManager;
+        public IEvaluationContextManager EvaluationContextManager => evaluationContextManager;
 
         public AgentClient (
             string host,
             ushort port,
             IReadOnlyList<string> assemblySearchPaths)
         {
-            initialTargetCompilationConfiguration = TargetCompilationConfiguration
-                .CreateInitialForCompilationWorkspace (assemblySearchPaths);
 
             if (string.IsNullOrEmpty (host))
                 host = IPAddress.Loopback.ToString ();
@@ -69,10 +66,21 @@ namespace Xamarin.Interactive.Client
                 Timeout = Timeout.InfiniteTimeSpan,
                 BaseAddress = new Uri ($"http://{host}:{port}/")
             };
+
+            evaluationContextManager = new AgentClientEvaluationContextManager (this, assemblySearchPaths);
         }
 
+        #region Session Cancellation
+
+        CancellationToken sessionCancellationToken;
+
         CancellationToken GetCancellationToken (CancellationToken cancellationToken)
-            => SessionCancellationToken.LinkWith (cancellationToken);
+            => sessionCancellationToken.LinkWith (cancellationToken);
+
+        public void UpdateSessionCancellationToken (CancellationToken cancellationToken)
+            => sessionCancellationToken = cancellationToken;
+
+        #endregion
 
         /// <summary>
         /// Requests the agent's identity. Should only be called from implementors
@@ -114,7 +122,7 @@ namespace Xamarin.Interactive.Client
                                 awaiterKey = evnt.CodeCellId;
 
                             try {
-                                codeCellEvents.Observers.OnNext (evnt);
+                                evaluationContextManager.PostEvent (evnt);
                             } catch (Exception e) {
                                 Log.Error (TAG, $"Exception in {nameof (ICodeCellEvent)} observer", e);
                             }
@@ -150,42 +158,46 @@ namespace Xamarin.Interactive.Client
         }
 
         public Task<AgentFeatures> GetAgentFeaturesAsync (
-            CancellationToken cancellationToken = default (CancellationToken))
+            CancellationToken cancellationToken = default)
             => SendAsync<AgentFeatures> (
                 new AgentFeaturesRequest (),
                 GetCancellationToken (cancellationToken));
 
         public Task<InspectView> GetVisualTreeAsync (
             string hierarchyKind,
-            bool captureViews = true)
+            bool captureViews = true,
+            CancellationToken cancellationToken = default)
             => SendAsync<InspectView> (
                 new VisualTreeRequest (hierarchyKind, captureViews),
-                SessionCancellationToken);
+                GetCancellationToken (cancellationToken));
 
-        public Task<InteractiveObject> GetObjectMembersAsync (long viewHandle)
+        public Task<InteractiveObject> GetObjectMembersAsync (
+            long viewHandle,
+            CancellationToken cancellationToken = default)
             => SendAsync<InteractiveObject> (
                 new GetObjectMembersRequest (viewHandle),
-                SessionCancellationToken);
+                GetCancellationToken (cancellationToken));
 
-        public async Task<SetObjectMemberResponse> SetObjectMemberAsync (
+        public Task<SetObjectMemberResponse> SetObjectMemberAsync (
             long objHandle,
             RepresentedMemberInfo memberInfo,
             object value,
-            bool returnUpdatedValue)
-            => (await SendAsync<SetObjectMemberResponse> (
+            bool returnUpdatedValue,
+            CancellationToken cancellationToken = default)
+            => SendAsync<SetObjectMemberResponse> (
                 new SetObjectMemberRequest (
                     objHandle,
                     memberInfo,
                     value,
                     returnUpdatedValue),
-                SessionCancellationToken));
+                GetCancellationToken (cancellationToken));
 
         public async Task<T> HighlightView<T> (
             double x,
             double y,
             bool clear,
             string hierarchyKind,
-            CancellationToken cancellationToken = default (CancellationToken))
+            CancellationToken cancellationToken = default)
             where T : InspectView
         {
             T result = null;
@@ -199,13 +211,20 @@ namespace Xamarin.Interactive.Client
             return result;
         }
 
-        public Task<IInteractiveObject> InteractAsync (IInteractiveObject obj, object message)
+        public Task<IInteractiveObject> InteractAsync (
+            IInteractiveObject obj,
+            object message,
+            CancellationToken cancellationToken = default)
             => SendAsync<IInteractiveObject> (
                 new InteractRequest (obj.Handle, message),
-                SessionCancellationToken);
+                GetCancellationToken (cancellationToken));
 
-        public Task SetLogLevelAsync (LogLevel newLogLevel)
-            => SendAsync<bool> (new SetLogLevelRequest (newLogLevel));
+        public Task SetLogLevelAsync (
+            LogLevel newLogLevel,
+            CancellationToken cancellationToken = default)
+            => SendAsync<bool> (
+                new SetLogLevelRequest (newLogLevel),
+                GetCancellationToken (cancellationToken));
 
         async Task SendAsync (
             object message,
@@ -264,71 +283,86 @@ namespace Xamarin.Interactive.Client
             return result;
         }
 
-        #region IEvaluationContextManager
-
-        readonly Observable<ICodeCellEvent> codeCellEvents = new Observable<ICodeCellEvent> ();
-        IObservable<ICodeCellEvent> IEvaluationContextManager.Events => codeCellEvents;
-
-        Task<TargetCompilationConfiguration> IEvaluationContextManager.CreateEvaluationContextAsync (
-            CancellationToken cancellationToken)
-            => SendAsync<TargetCompilationConfiguration> (
-                new EvaluationContextInitializeRequest (initialTargetCompilationConfiguration),
-                GetCancellationToken (cancellationToken));
-
-        Task<TargetCompilationConfiguration> IEvaluationContextManager.CreateEvaluationContextAsync (
-            TargetCompilationConfiguration initialConfiguration,
-            CancellationToken cancellationToken)
-            => SendAsync<TargetCompilationConfiguration> (
-                new EvaluationContextInitializeRequest (initialConfiguration),
-                GetCancellationToken (cancellationToken));
-
-        Task IEvaluationContextManager.ResetStateAsync (
-            EvaluationContextId evaluationContextId,
-            CancellationToken cancellationToken)
-            => SendAsync<bool> (
-                new ResetStateRequest (evaluationContextId),
-                GetCancellationToken (cancellationToken));
-
-        async Task<IReadOnlyList<AssemblyLoadResult>> IEvaluationContextManager.LoadAssembliesAsync (
-            EvaluationContextId evaluationContextId,
-            IReadOnlyList<AssemblyDefinition> assemblies,
-            CancellationToken cancellationToken)
+        sealed class AgentClientEvaluationContextManager : IEvaluationContextManager
         {
-            var response = await SendAsync<AssemblyLoadResponse> (
-                new AssemblyLoadRequest (evaluationContextId, assemblies),
-                GetCancellationToken (cancellationToken));
+            readonly Observable<ICodeCellEvent> codeCellEvents = new Observable<ICodeCellEvent> ();
+            IObservable<ICodeCellEvent> IEvaluationContextManager.Events => codeCellEvents;
 
-            return response.LoadResults;
+            readonly AgentClient agentClient;
+            readonly TargetCompilationConfiguration initialTargetCompilationConfiguration;
+
+            public AgentClientEvaluationContextManager (
+                AgentClient agentClient,
+                IReadOnlyList<string> assemblySearchPaths)
+            {
+                this.agentClient = agentClient;
+
+                initialTargetCompilationConfiguration = TargetCompilationConfiguration
+                    .CreateInitialForCompilationWorkspace (assemblySearchPaths);
+            }
+
+            public void PostEvent (ICodeCellEvent evnt)
+                => codeCellEvents.Observers.OnNext (evnt);
+
+            public Task<TargetCompilationConfiguration> CreateEvaluationContextAsync (
+                CancellationToken cancellationToken)
+                => agentClient.SendAsync<TargetCompilationConfiguration> (
+                    new EvaluationContextInitializeRequest (initialTargetCompilationConfiguration),
+                    agentClient.GetCancellationToken (cancellationToken));
+
+            public Task<TargetCompilationConfiguration> CreateEvaluationContextAsync (
+                TargetCompilationConfiguration initialConfiguration,
+                CancellationToken cancellationToken)
+                => agentClient.SendAsync<TargetCompilationConfiguration> (
+                    new EvaluationContextInitializeRequest (initialConfiguration),
+                    agentClient.GetCancellationToken (cancellationToken));
+
+            public Task ResetStateAsync (
+                EvaluationContextId evaluationContextId,
+                CancellationToken cancellationToken)
+                => agentClient.SendAsync<bool> (
+                    new ResetStateRequest (evaluationContextId),
+                    agentClient.GetCancellationToken (cancellationToken));
+
+            public async Task<IReadOnlyList<AssemblyLoadResult>> LoadAssembliesAsync (
+                EvaluationContextId evaluationContextId,
+                IReadOnlyList<AssemblyDefinition> assemblies,
+                CancellationToken cancellationToken)
+            {
+                var response = await agentClient.SendAsync<AssemblyLoadResponse> (
+                    new AssemblyLoadRequest (evaluationContextId, assemblies),
+                    agentClient.GetCancellationToken (cancellationToken));
+
+                return response.LoadResults;
+            }
+
+            public Task AbortEvaluationAsync (
+                EvaluationContextId evaluationContextId,
+                CancellationToken cancellationToken)
+                => agentClient.SendAsync<bool> (
+                    new EvaluationAbortRequest (evaluationContextId),
+                    agentClient.GetCancellationToken (cancellationToken));
+
+            public async Task EvaluateAsync (
+                EvaluationContextId evaluationContextId,
+                Compilation compilation,
+                CancellationToken cancellationToken)
+            {
+                var responseTask = new TaskCompletionSource ();
+
+                if (!agentClient.messageChannelAwaiters.TryAdd (compilation.CodeCellId, responseTask))
+                    throw new InvalidOperationException (
+                        "An evaluation for cell {compilation.CodeCellId} is already in process");
+
+                await Task.WhenAll (
+                    responseTask.Task,
+                    agentClient.SendAsync<bool> (
+                        new EvaluationRequest (
+                            evaluationContextId,
+                            compilation),
+                        agentClient.GetCancellationToken (cancellationToken)));
+            }
         }
-
-        Task IEvaluationContextManager.AbortEvaluationAsync (
-            EvaluationContextId evaluationContextId,
-            CancellationToken cancellationToken)
-            => SendAsync<bool> (
-                new EvaluationAbortRequest (evaluationContextId),
-                GetCancellationToken (cancellationToken));
-
-        async Task IEvaluationContextManager.EvaluateAsync (
-            EvaluationContextId evaluationContextId,
-            Compilation compilation,
-            CancellationToken cancellationToken)
-        {
-            var responseTask = new TaskCompletionSource ();
-
-            if (!messageChannelAwaiters.TryAdd (compilation.CodeCellId, responseTask))
-                throw new InvalidOperationException (
-                    "An evaluation for cell {compilation.CodeCellId} is already in process");
-
-            await Task.WhenAll (
-                responseTask.Task,
-                SendAsync<bool> (
-                     new EvaluationRequest (
-                        evaluationContextId,
-                        compilation),
-                    GetCancellationToken (cancellationToken)));
-        }
-
-        #endregion
 
         sealed class XipRequestMessageHttpContent : HttpContent
         {

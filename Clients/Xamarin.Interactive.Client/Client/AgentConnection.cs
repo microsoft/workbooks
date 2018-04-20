@@ -23,7 +23,7 @@ namespace Xamarin.Interactive.Client
 
         public AgentType Type { get; }
         public AgentIdentity Identity { get; }
-        public AgentClient Api { get; }
+        public IAgentClient Api { get; }
         public AgentFeatures Features { get; }
 
         public bool IsConnected
@@ -38,7 +38,7 @@ namespace Xamarin.Interactive.Client
             IAgentTicket ticket,
             AgentType type,
             AgentIdentity identity,
-            AgentClient apiClient,
+            IAgentClient apiClient,
             AgentFeatures features)
         {
             this.ticket = ticket;
@@ -101,7 +101,7 @@ namespace Xamarin.Interactive.Client
             if (apiClient == null)
                 throw new Exception ("IAgentTicket.GetClientAsync did not return a client");
 
-            apiClient.SessionCancellationToken = cancellationToken;
+            apiClient.UpdateSessionCancellationToken (cancellationToken);
 
             return new AgentConnection (
                 ticket,

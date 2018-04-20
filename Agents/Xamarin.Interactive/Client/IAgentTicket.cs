@@ -22,7 +22,7 @@ namespace Xamarin.Interactive.Client
         Task<AgentIdentity> GetAgentIdentityAsync (
             CancellationToken cancellationToken = default (CancellationToken));
 
-        Task<AgentClient> GetClientAsync (
+        Task<IAgentClient> GetClientAsync (
             CancellationToken cancellationToken = default (CancellationToken));
     }
 }

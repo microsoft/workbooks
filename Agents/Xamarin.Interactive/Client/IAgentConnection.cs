@@ -11,7 +11,7 @@ namespace Xamarin.Interactive.Client
     {
         AgentType Type { get; }
         AgentIdentity Identity { get; }
-        AgentClient Api { get; }
+        IAgentClient Api { get; }
         AgentFeatures Features { get; }
         bool IsConnected { get; }
     }

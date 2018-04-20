@@ -15,6 +15,7 @@ using System.Threading.Tasks;
 using Xamarin.Interactive.Client.ViewControllers;
 using Xamarin.Interactive.CodeAnalysis;
 using Xamarin.Interactive.CodeAnalysis.Evaluating;
+using Xamarin.Interactive.CodeAnalysis.Events;
 using Xamarin.Interactive.CodeAnalysis.Resolving;
 using Xamarin.Interactive.Core;
 using Xamarin.Interactive.I18N;
@@ -331,7 +332,7 @@ namespace Xamarin.Interactive.Client
                         var evaluationService = new EvaluationService (
                             CompilationWorkspace,
                             new EvaluationEnvironment (WorkingDirectory));
-                        evaluationService.NotifyPeerUpdated (Agent.Api);
+                        evaluationService.NotifyPeerUpdated (Agent.Api.EvaluationContextManager);
                         EvaluationService = evaluationService;
                     }
 
@@ -458,7 +459,8 @@ namespace Xamarin.Interactive.Client
                 HandleAgentDisconnected,
                 cancellationTokenSource.Token);
 
-            agent.Api.Messages.Subscribe (new Observer<object> (HandleAgentMessage));
+            agent.Api.EvaluationContextManager.Events.Subscribe (
+                new Observer<ICodeCellEvent> (HandleCodeCellEvent));
 
             await agent.Api.SetLogLevelAsync (Log.GetLogLevel ());
 
@@ -474,9 +476,9 @@ namespace Xamarin.Interactive.Client
             }.Post ();
         }
 
-        void HandleAgentMessage (object message)
+        void HandleCodeCellEvent (ICodeCellEvent evnt)
         {
-            if (message is Evaluation result && result.InitializedIntegration)
+            if (evnt is Evaluation evaluation && evaluation.InitializedIntegration)
                 RefreshForAgentIntegration ().Forget ();
         }
 
@@ -533,7 +535,7 @@ namespace Xamarin.Interactive.Client
                     "csharp",
                     await WorkspaceConfiguration.CreateAsync (
                         Agent.Type,
-                        Agent.Api,
+                        Agent.Api.EvaluationContextManager,
                         SessionKind,
                         cancellationToken),
                     cancellationToken);

@@ -63,7 +63,7 @@ namespace Xamarin.Interactive.Client
         public async Task<AgentIdentity> GetAgentIdentityAsync (CancellationToken cancellationToken)
             =>  agentIdentity ?? (agentIdentity = await client.GetAgentIdentityAsync (cancellationToken));
 
-        public Task<AgentClient> GetClientAsync (CancellationToken cancellationToken)
-            => Task.FromResult (client);
+        public Task<IAgentClient> GetClientAsync (CancellationToken cancellationToken)
+            => Task.FromResult<IAgentClient> (client);
     }
 }

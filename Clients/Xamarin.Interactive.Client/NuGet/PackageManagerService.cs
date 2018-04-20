@@ -102,7 +102,7 @@ namespace Xamarin.Interactive.NuGet
                 await LoadPackageIntegrationsAsync (
                     agent.Type,
                     evaluationService.TargetCompilationConfiguration,
-                    agent.Api,
+                    agent.Api.EvaluationContextManager,
                     package,
                     cancellationToken);
         }
@@ -154,7 +154,7 @@ namespace Xamarin.Interactive.NuGet
                 await LoadPackageIntegrationsAsync (
                     agent.Type,
                     evaluationService.TargetCompilationConfiguration,
-                    agent.Api,
+                    agent.Api.EvaluationContextManager,
                     installedPackage,
                     cancellationToken);
             }

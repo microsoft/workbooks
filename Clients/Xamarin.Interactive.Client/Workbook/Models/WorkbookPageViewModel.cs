@@ -17,6 +17,7 @@ using System.Threading.Tasks;
 using Xamarin.Interactive.Client;
 using Xamarin.Interactive.CodeAnalysis;
 using Xamarin.Interactive.CodeAnalysis.Evaluating;
+using Xamarin.Interactive.CodeAnalysis.Events;
 using Xamarin.Interactive.CodeAnalysis.Models;
 using Xamarin.Interactive.Editor;
 using Xamarin.Interactive.I18N;
@@ -331,14 +332,15 @@ namespace Xamarin.Interactive.Workbook.Models
 
         protected virtual void OnAgentConnected ()
         {
-            ClientSession.Agent.Api.Messages.Subscribe (new Observer<object> (HandleAgentMessage));
+            ClientSession.Agent.Api.EvaluationContextManager.Events.Subscribe (
+                new Observer<ICodeCellEvent> (HandleCodeCellEvent));
 
-            void HandleAgentMessage (object message)
+            void HandleCodeCellEvent (ICodeCellEvent evnt)
             {
-                if (message is CapturedOutputSegment segment)
+                if (evnt is CapturedOutputSegment segment)
                     MainThread.Post (() => RenderCapturedOutputSegment (segment));
 
-                if (message is Evaluation result)
+                if (evnt is Evaluation result)
                     MainThread.Post (() => RenderResult (result));
             }
         }
@@ -363,7 +365,7 @@ namespace Xamarin.Interactive.Workbook.Models
             if (!ClientSession.Agent.IsConnected)
                 return;
 
-            await ((IEvaluationContextManager)ClientSession.Agent.Api).AbortEvaluationAsync (
+            await ClientSession.Agent.Api.EvaluationContextManager.AbortEvaluationAsync (
                 TargetCompilationConfiguration.EvaluationContextId);
         }
 
@@ -464,7 +466,7 @@ namespace Xamarin.Interactive.Workbook.Models
             var isFirstCell = codeCell.GetPreviousCell<CodeCell> () == null;
 
             if (isFirstCell && ClientSession.SessionKind == ClientSessionKind.Workbook)
-                await ((IEvaluationContextManager)ClientSession.Agent.Api).ResetStateAsync (
+                await ClientSession.Agent.Api.EvaluationContextManager.ResetStateAsync (
                     TargetCompilationConfiguration.EvaluationContextId);
 
             while (codeCell != null) {
@@ -558,7 +560,7 @@ namespace Xamarin.Interactive.Workbook.Models
                     .Where (ra => ra.HasIntegration)
                     .ToArray ();
                 if (integrationAssemblies.Length > 0)
-                    await ((IEvaluationContextManager)ClientSession.Agent.Api).LoadAssembliesAsync (
+                    await ClientSession.Agent.Api.EvaluationContextManager.LoadAssembliesAsync (
                         TargetCompilationConfiguration.EvaluationContextId,
                         integrationAssemblies);
             } catch (Exception e) {
@@ -573,7 +575,7 @@ namespace Xamarin.Interactive.Workbook.Models
 
             try {
                 if (compilation != null)
-                    await ((IEvaluationContextManager)ClientSession.Agent.Api).EvaluateAsync (
+                    await ClientSession.Agent.Api.EvaluationContextManager.EvaluateAsync (
                         TargetCompilationConfiguration.EvaluationContextId,
                         compilation,
                         cancellationToken);

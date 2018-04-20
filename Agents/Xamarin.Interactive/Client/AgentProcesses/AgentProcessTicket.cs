@@ -63,7 +63,7 @@ namespace Xamarin.Interactive.Client.AgentProcesses
             CancellationToken cancellationToken = default (CancellationToken))
             => (await GetAgentProcessStateAsync (cancellationToken)).AgentIdentity;
 
-        public async Task<AgentClient> GetClientAsync (
+        public async Task<IAgentClient> GetClientAsync (
             CancellationToken cancellationToken = default(CancellationToken))
             => (await GetAgentProcessStateAsync (cancellationToken)).AgentClient;
 
