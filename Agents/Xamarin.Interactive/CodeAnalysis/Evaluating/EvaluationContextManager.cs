@@ -123,14 +123,13 @@ namespace Xamarin.Interactive.CodeAnalysis.Evaluating
 
             var evaluationContext = new EvaluationContext (
                 this,
-                targetCompilationConfiguration,
                 globalStateObject);
 
             if (globalStateObject is EvaluationContextGlobalObject evaluationContextGlobalObject)
                 evaluationContextGlobalObject.EvaluationContext = evaluationContext;
 
             evaluationContexts.Add (
-                evaluationContext.Id,
+                targetCompilationConfiguration.EvaluationContextId,
                 new EvaluationContextRegistration (
                     evaluationContext,
                     evaluationContext.Events.Subscribe (
@@ -234,6 +233,10 @@ namespace Xamarin.Interactive.CodeAnalysis.Evaluating
             TargetCompilationConfiguration configuration,
             object globalStateObject)
         {
+            var evaluationContextId = configuration.EvaluationContextId;
+            if (evaluationContextId == default)
+                evaluationContextId = EvaluationContextId.Create ();
+
             TypeDefinition globalStateTypeDefinition = default;
 
             if (globalStateObject != null) {
@@ -271,7 +274,7 @@ namespace Xamarin.Interactive.CodeAnalysis.Evaluating
             }
 
             return configuration.With (
-                evaluationContextId: EvaluationContextId.Create (),
+                evaluationContextId: evaluationContextId,
                 globalStateType: globalStateTypeDefinition,
                 initialReferences: assemblies);
         }

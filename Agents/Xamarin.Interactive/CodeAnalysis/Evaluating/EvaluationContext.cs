@@ -31,24 +31,15 @@ namespace Xamarin.Interactive.CodeAnalysis.Evaluating
         readonly Observable<ICodeCellEvent> events = new Observable<ICodeCellEvent> ();
         public IObservable<ICodeCellEvent> Events => events;
 
-        public EvaluationContextId Id { get; }
         public EvaluationContextManager Host { get; }
-        public TargetCompilationConfiguration TargetCompilationConfiguration { get; }
-
         internal EvaluationAssemblyContext AssemblyContext { get; }
 
         internal EvaluationContext (
             EvaluationContextManager host,
-            TargetCompilationConfiguration targetCompilationConfiguration,
             object globalState)
         {
             Host = host
                 ?? throw new ArgumentNullException (nameof (host));
-
-            TargetCompilationConfiguration = targetCompilationConfiguration
-                ?? throw new ArgumentNullException (nameof (targetCompilationConfiguration));
-
-            Id = TargetCompilationConfiguration.EvaluationContextId;
 
             AssemblyContext = new EvaluationAssemblyContext (HandleAssemblyResolved);
 
