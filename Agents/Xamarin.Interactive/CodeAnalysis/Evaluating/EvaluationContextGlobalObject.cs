@@ -137,7 +137,7 @@ namespace Xamarin.Interactive.CodeAnalysis.Evaluating
 
             var variablesTable = new DictionaryInteractiveObject (
                 0,
-                EvaluationContext.Host.InternalRepresentationManager.Prepare,
+                EvaluationContext.Host.RepresentationManager.Prepare,
                 title: "Declared Global Variables");
 
             foreach (var variable in variables) {

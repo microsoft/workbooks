@@ -442,7 +442,7 @@ namespace Xamarin.Interactive.CodeAnalysis.Evaluating
             get;
         }
 
-        public IRepresentationManager RepresentationManager {
+        public RepresentationManager RepresentationManager {
             get;
         }
 
@@ -976,14 +976,6 @@ namespace Xamarin.Interactive.Representations
         Uri,
         Svg
     }
-    public interface IRepresentationManager
-    {
-        void AddProvider (string typeName, Func<object, object> handler);
-
-        void AddProvider<T> (Func<T, object> handler);
-
-        void AddProvider<TRepresentationProvider> () where TRepresentationProvider : RepresentationProvider, new();
-    }
     [JsonObject]
     public sealed class Point : IRepresentationObject
     {
@@ -1035,6 +1027,28 @@ namespace Xamarin.Interactive.Representations
 
         [JsonConstructor]
         public Representation (object value, bool canEdit = false);
+    }
+    public sealed class RepresentationManager
+    {
+        public RepresentationManager (RepresentationManagerOptions options = RepresentationManagerOptions.EnforceMainThread | RepresentationManagerOptions.YieldInteractive);
+
+        public void AddProvider (RepresentationProvider provider);
+
+        public void AddProvider (string typeName, Func<object, object> handler);
+
+        public void AddProvider<T> (Func<T, object> handler);
+
+        public void AddProvider<TRepresentationProvider> () where TRepresentationProvider : RepresentationProvider, new();
+
+        public object Prepare (object obj);
+    }
+    [Flags]
+    public enum RepresentationManagerOptions
+    {
+        None = 0,
+        EnforceMainThread = 1,
+        YieldOriginal = 2,
+        YieldInteractive = 4
     }
     public abstract class RepresentationProvider
     {

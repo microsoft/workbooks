@@ -95,7 +95,7 @@ namespace Xamarin.Interactive.Representations
         [InlineData (UInt64Enum.Max)]
         public void EnumValue (Enum value)
         {
-            var reps = manager.Prepare (value);
+            var reps = (RepresentedObject)manager.Prepare (value);
 
             reps.Count.ShouldEqual (2);
 
@@ -133,7 +133,7 @@ namespace Xamarin.Interactive.Representations
         public void IInteractiveObject ()
         {
             var interactiverObject = new DictionaryInteractiveObject (0, manager.Prepare);
-            var reps = manager.Prepare (interactiverObject);
+            var reps = (RepresentedObject)manager.Prepare (interactiverObject);
             reps.Count.ShouldEqual (2);
             reps [0].ShouldBeInstanceOf<DictionaryInteractiveObject> ();
         }
@@ -145,7 +145,7 @@ namespace Xamarin.Interactive.Representations
                 new Exception ("test exception"),
                 new Exception ("outer", new Exception ("inner"))
             }) {
-                var reps = manager.Prepare (exception);
+                var reps = (RepresentedObject)manager.Prepare (exception);
                 reps.Count.ShouldEqual (3);
                 var rep = reps [0].ShouldBeInstanceOf<ExceptionNode> ();
                 reps [2].ShouldBeInstanceOf<ReflectionInteractiveObject> ();
@@ -160,7 +160,7 @@ namespace Xamarin.Interactive.Representations
         {
             var member = GetType ().GetProperty (nameof (MemberProperty));
 
-            var reps = manager.Prepare (member);
+            var reps = (RepresentedObject)manager.Prepare (member);
 
             reps.Count.ShouldEqual (3);
 
@@ -208,7 +208,7 @@ namespace Xamarin.Interactive.Representations
                     manager.AddProvider (new EditAllTheThingsRepresentationProvider ());
 
                 var valueType = value.GetType ();
-                var reps = manager.Prepare (value);
+                var reps = (RepresentedObject)manager.Prepare (value);
 
                 reps.Count.ShouldEqual (hasInteractiveRepresentation ? 3 : 2);
                 reps.RepresentedType.ResolvedType.ShouldEqual (valueType);
@@ -313,7 +313,7 @@ namespace Xamarin.Interactive.Representations
             //#endif
 
             for (int i = 0; i < values.Length; i++) {
-                var reps = manager.Prepare (values [i]);
+                var reps = (RepresentedObject)manager.Prepare (values [i]);
                 reps.Count.ShouldEqual (2);
                 var word = reps [0].ShouldBeInstanceOf<WordSizedNumber> ();
                 word.Flags.ShouldEqual (expectedFlags);
@@ -381,7 +381,7 @@ namespace Xamarin.Interactive.Representations
         [Fact]
         public void RootObject_AllowISerializableObject ()
         {
-            var reps = manager.Prepare (new Color (0.5, 1, 0.25, 0.3));
+            var reps = (RepresentedObject)manager.Prepare (new Color (0.5, 1, 0.25, 0.3));
 
             reps.Count.ShouldEqual (3);
 
@@ -392,7 +392,7 @@ namespace Xamarin.Interactive.Representations
         [Fact]
         public void ChildObject_AllowISerializableObject ()
         {
-            var reps = manager.Prepare (new {
+            var reps = (RepresentedObject)manager.Prepare (new {
                 Color = new Color (0.5, 1, 0.25, 0.3),
                 Point = new Point (10, 20),
                 String = "hello"

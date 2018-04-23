@@ -139,7 +139,7 @@ namespace Xamarin.Interactive.CodeAnalysis.Evaluating
                 // an exception in the call to Prepare should not be explicitly caught
                 // here (see above) since it'll be handled at a higher level and can be
                 // flagged as being a bug in our code since this method should never throw.
-                Host.InternalRepresentationManager.Prepare (inFlight.OriginalValue),
+                Host.RepresentationManager.Prepare (inFlight.OriginalValue),
                 evaluationExceptionToReturn,
                 stopwatch.Elapsed,
                 InteractiveCulture.CurrentCulture.LCID,

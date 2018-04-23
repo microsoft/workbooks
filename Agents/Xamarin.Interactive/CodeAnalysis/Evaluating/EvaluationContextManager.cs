@@ -59,8 +59,7 @@ namespace Xamarin.Interactive.CodeAnalysis.Evaluating
 
         internal object Context { get; }
 
-        internal RepresentationManager InternalRepresentationManager { get; }
-        public IRepresentationManager RepresentationManager => InternalRepresentationManager;
+        public RepresentationManager RepresentationManager { get; }
 
         readonly Observable<ICodeCellEvent> events = new Observable<ICodeCellEvent> ();
         public IObservable<ICodeCellEvent> Events => events;
@@ -70,11 +69,11 @@ namespace Xamarin.Interactive.CodeAnalysis.Evaluating
 
         readonly IList<Action> resetStateHandlers = new List<Action> ();
 
-        internal EvaluationContextManager (
+        public EvaluationContextManager (
             RepresentationManager representationManager,
             object context = null)
         {
-            InternalRepresentationManager = representationManager
+            RepresentationManager = representationManager
                 ?? throw new ArgumentNullException (nameof (representationManager));
 
             Context = context;
@@ -223,7 +222,7 @@ namespace Xamarin.Interactive.CodeAnalysis.Evaluating
             => MainThread.Post (() => events.Observers.OnNext (new Evaluation (
                 codeCellId,
                 resultHandling,
-                InternalRepresentationManager.Prepare (result))));
+                RepresentationManager.Prepare (result))));
 
         protected virtual TargetCompilationConfiguration PrepareTargetCompilationConfiguration (
             TargetCompilationConfiguration configuration)
