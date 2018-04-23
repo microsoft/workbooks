@@ -95,6 +95,7 @@ namespace Xamarin.Interactive.CodeAnalysis
     }
     public static class WorkspaceServiceFactory
     {
+        public static async Task<IWorkspaceService> CreateWorkspaceServiceAsync (LanguageDescription languageDescription, WorkspaceConfiguration configuration, CancellationToken cancellationToken = default(CancellationToken));
     }
 }
 namespace Xamarin.Interactive.CodeAnalysis.Evaluating

@@ -40,10 +40,10 @@ namespace Xamarin.Interactive.CodeAnalysis
                             attribute.WorkspaceServiceActivatorType);
                     });
 
-        internal static async Task<IWorkspaceService> CreateWorkspaceServiceAsync (
+        public static async Task<IWorkspaceService> CreateWorkspaceServiceAsync (
             LanguageDescription languageDescription,
             WorkspaceConfiguration configuration,
-            CancellationToken cancellationToken)
+            CancellationToken cancellationToken = default)
         {
             if (!activators.TryGetValue (languageDescription.Name, out var activator))
                 throw new Exception (
