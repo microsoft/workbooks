@@ -25,7 +25,7 @@ namespace Xamarin.Interactive.ConsoleAgent
         public ConsoleAgent ()
             => Identity = new AgentIdentity (
                 AgentType.Console,
-                Sdk.FromEntryAssembly ("Console"),
+                Sdk.FromEntryAssembly (SdkId.ConsoleNetFramework, "Console"),
                 Assembly.GetEntryAssembly ().GetName ().Name);
 
         protected override IdentifyAgentRequest GetIdentifyAgentRequest ()

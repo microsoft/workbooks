@@ -43,7 +43,7 @@ namespace Xamarin.Interactive.Wpf
 
             Identity = new AgentIdentity (
                 AgentType.WPF,
-                Sdk.FromEntryAssembly ("WPF"),
+                Sdk.FromEntryAssembly (SdkId.Wpf, "WPF"),
                 Assembly.GetEntryAssembly ().GetName ().Name);
 
             RepresentationManager.AddProvider (wpfRepresentationProvider = new WpfRepresentationProvider ());

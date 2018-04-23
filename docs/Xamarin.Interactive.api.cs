@@ -73,6 +73,82 @@ namespace Xamarin.Interactive
 
         SynchronizationContext PushContext (SynchronizationContext context);
     }
+    [JsonObject]
+    public sealed class Sdk
+    {
+        public IReadOnlyList<string> AssemblySearchPaths {
+            get;
+        }
+
+        public SdkId Id {
+            get;
+        }
+
+        public string Name {
+            get;
+        }
+
+        public string Profile {
+            get;
+        }
+
+        public FrameworkName TargetFramework {
+            get;
+        }
+
+        public string Version {
+            get;
+        }
+
+        [JsonConstructor]
+        public Sdk (SdkId id, FrameworkName targetFramework, IEnumerable<string> assemblySearchPaths, string name = null, string profile = null, string version = null);
+
+        public static Sdk FromEntryAssembly (SdkId id, string name = null, string profile = null, string version = null);
+    }
+    public static class SdkExtensions
+    {
+        public static bool Is (this Sdk sdk, SdkId id);
+
+        public static bool IsNot (this Sdk sdk, SdkId id);
+    }
+    public struct SdkId : IEquatable<SdkId>
+    {
+        public static bool operator == (SdkId a, SdkId b);
+
+        public static implicit operator SdkId (string id);
+
+        public static implicit operator string (SdkId id);
+
+        public static bool operator != (SdkId a, SdkId b);
+
+        public static readonly SdkId XamarinIos;
+
+        public static readonly SdkId XamarinMacFull;
+
+        public static readonly SdkId XamarinMacModern;
+
+        public static readonly SdkId XamarinAndroid;
+
+        public static readonly SdkId Wpf;
+
+        public static readonly SdkId ConsoleNetFramework;
+
+        public static readonly SdkId ConsoleNetCore;
+
+        public bool IsNull {
+            get;
+        }
+
+        public SdkId (string id);
+
+        public bool Equals (SdkId id);
+
+        public override bool Equals (object obj);
+
+        public override int GetHashCode ();
+
+        public override string ToString ();
+    }
     public static class Utf8
     {
         public static UTF8Encoding Encoding {
@@ -196,6 +272,10 @@ namespace Xamarin.Interactive.CodeAnalysis
         }
 
         public IReadOnlyList<AssemblyDefinition> InitialReferences {
+            get;
+        }
+
+        public Sdk Sdk {
             get;
         }
 

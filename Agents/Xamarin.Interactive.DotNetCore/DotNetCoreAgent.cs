@@ -27,7 +27,7 @@ namespace Xamarin.Interactive.DotNetCore
         public DotNetCoreAgent ()
             => Identity = new AgentIdentity (
                 AgentType.DotNetCore,
-                Sdk.FromEntryAssembly (".NET Core"),
+                Sdk.FromEntryAssembly (SdkId.ConsoleNetCore, ".NET Core"),
                 Assembly.GetEntryAssembly ().GetName ().Name);
 
         protected override IdentifyAgentRequest GetIdentifyAgentRequest ()

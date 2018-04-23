@@ -11,14 +11,20 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.Serialization;
 using System.Runtime.Versioning;
 
-namespace Xamarin.Interactive.Core
+using Newtonsoft.Json;
+
+namespace Xamarin.Interactive
 {
-    [Serializable]
-    sealed class Sdk : ISerializable
+    [JsonObject]
+    public sealed class Sdk
     {
+        /// <summary>
+        /// A unique identifier for the SDK such as "console-dotnetcore".
+        /// </summary>
+        public SdkId Id { get; }
+
         /// <summary>
         /// A user-friendly display name for the SDK
         /// product such as ".NET Core" or "Xamarin.iOS".
@@ -51,13 +57,18 @@ namespace Xamarin.Interactive.Core
         /// </summary>
         public IReadOnlyList<string> AssemblySearchPaths { get; }
 
+        [JsonConstructor]
         public Sdk (
+            SdkId id,
             FrameworkName targetFramework,
             IEnumerable<string> assemblySearchPaths,
             string name = null,
             string profile = null,
             string version = null)
         {
+            Id = ((string)id)
+                ?? throw new ArgumentNullException (nameof (id));
+
             TargetFramework = targetFramework
                 ?? throw new ArgumentNullException (nameof (targetFramework));
 
@@ -83,33 +94,13 @@ namespace Xamarin.Interactive.Core
             }
         }
 
-        Sdk (SerializationInfo info, StreamingContext context)
-        {
-            var targetFramework = info.GetString (nameof (TargetFramework));
-            if (targetFramework != null)
-                TargetFramework = new FrameworkName (targetFramework);
-            AssemblySearchPaths = (string [])info.GetValue (
-                nameof (AssemblySearchPaths),
-                typeof (string []));
-            Name = info.GetString (nameof (Name));
-            Profile = info.GetString (nameof (Profile));
-            Version = info.GetString (nameof (Version));
-        }
-
-        void ISerializable.GetObjectData (SerializationInfo info, StreamingContext context)
-        {
-            info.AddValue (nameof (TargetFramework), TargetFramework.FullName);
-            info.AddValue (nameof (AssemblySearchPaths), AssemblySearchPaths);
-            info.AddValue (nameof (Name), Name);
-            info.AddValue (nameof (Profile), Profile);
-            info.AddValue (nameof (Version), Version);
-        }
-
         public static Sdk FromEntryAssembly (
+            SdkId id,
             string name = null,
             string profile = null,
             string version = null)
             => new Sdk (
+                id,
                 new FrameworkName (Assembly
                     .GetEntryAssembly ()
                     .GetCustomAttribute<TargetFrameworkAttribute> ()
@@ -118,5 +109,24 @@ namespace Xamarin.Interactive.Core
                 name,
                 profile,
                 version);
+    }
+
+    public static class SdkExtensions
+    {
+        public static bool Is (this Sdk sdk, SdkId id)
+        {
+            if (id.IsNull)
+                throw new ArgumentNullException (nameof (id));
+
+            return sdk != null && sdk.Id == id;
+        }
+
+        public static bool IsNot (this Sdk sdk, SdkId id)
+        {
+            if (id.IsNull)
+                throw new ArgumentNullException (nameof (id));
+
+            return sdk == null || sdk.Id != id;
+        }
     }
 }

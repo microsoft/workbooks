@@ -42,15 +42,17 @@ namespace Xamarin.Interactive.Mac
         {
             #if MAC_MOBILE
             var agentType = AgentType.MacMobile;
+            var sdkId = SdkId.XamarinMacModern;
             const string profile = "Modern";
             #elif MAC_DESKTOP
             var agentType = AgentType.MacNet45;
+            var sdkId = SdkId.XamarinMacFull;
             const string profile = "Full";
             #endif
 
             Identity = new AgentIdentity (
                 agentType,
-                Sdk.FromEntryAssembly ("Xamarin.Mac", profile),
+                Sdk.FromEntryAssembly (sdkId, "Xamarin.Mac", profile),
                 NSBundle.MainBundle.InfoDictionary ["CFBundleName"] as NSString);
 
             RepresentationManager.AddProvider (new MacRepresentationProvider ());

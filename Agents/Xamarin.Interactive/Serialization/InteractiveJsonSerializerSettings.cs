@@ -7,6 +7,7 @@ using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.Serialization;
+using System.Runtime.Versioning;
 
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
@@ -116,6 +117,8 @@ namespace Xamarin.Interactive.Serialization
             // Custom Converters
             Converters.Add (new CodeCellIdConverter ());
             Converters.Add (new EvaluationContextIdConverter ());
+            Converters.Add (new SdkIdConverter ());
+            Converters.Add (new FrameworkNameConverter ());
             Converters.Add (new IRepresentedTypeConverter ());
 
             Formatting = Formatting.Indented;
@@ -140,6 +143,17 @@ namespace Xamarin.Interactive.Serialization
         {
             protected override EvaluationContextId GetValue (string value) => (EvaluationContextId)value;
             protected override string GetString (EvaluationContextId value) => (string)value;
+        }
+
+        sealed class SdkIdConverter : StringConverter<SdkId>
+        {
+            protected override SdkId GetValue (string value) => (SdkId)value;
+            protected override string GetString (SdkId value) => (string)value;
+        }
+        sealed class FrameworkNameConverter : StringConverter<FrameworkName>
+        {
+            protected override FrameworkName GetValue (string value) => new FrameworkName (value);
+            protected override string GetString (FrameworkName value) => value.FullName;
         }
 
         sealed class IRepresentedTypeConverter : StringConverter<IRepresentedType>

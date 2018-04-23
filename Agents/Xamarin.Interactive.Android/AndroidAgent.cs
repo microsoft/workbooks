@@ -54,6 +54,7 @@ namespace Xamarin.Interactive.Android
             Identity = new AgentIdentity (
                 AgentType.Android,
                 new Sdk (
+                    SdkId.XamarinAndroid,
                     new FrameworkName (typeof (Java.Interop.Runtime)
                         .Assembly
                         .GetCustomAttribute<TargetFrameworkAttribute> ()

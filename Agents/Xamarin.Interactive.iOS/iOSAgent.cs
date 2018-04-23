@@ -34,7 +34,7 @@ namespace Xamarin.Interactive.iOS
         {
             Identity = new AgentIdentity (
                 AgentType.iOS,
-                Sdk.FromEntryAssembly ("iOS"),
+                Sdk.FromEntryAssembly (SdkId.XamarinIos, "iOS"),
                 NSBundle.MainBundle.InfoDictionary ["CFBundleName"] as NSString,
                 screenWidth: (int)UIScreen.MainScreen.Bounds.Width,
                 screenHeight: (int)UIScreen.MainScreen.Bounds.Height);

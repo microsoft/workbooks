@@ -297,6 +297,7 @@ namespace Xamarin.Interactive
             var order = appJson.GetValue ("order")?.Value<int> () ?? int.MaxValue;
 
             var sdk = new Sdk (
+                id,
                 new FrameworkName (targetFramework),
                 assemblySearchPaths,
                 sdkJson.GetValue ("name")?.Value<string> (),
