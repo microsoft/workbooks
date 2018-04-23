@@ -428,7 +428,6 @@ namespace Xamarin.Interactive.CodeAnalysis.Resolving
 
         public static Task InitializingTask {
             get;
-            private set;
         }
 
         public static bool TryGetCachedAssemblyName (FilePath key, out AssemblyName assemblyName);

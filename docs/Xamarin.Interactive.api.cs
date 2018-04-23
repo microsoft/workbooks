@@ -379,7 +379,6 @@ namespace Xamarin.Interactive.CodeAnalysis.Evaluating
         [EvaluationContextGlobalObject.InteractiveHelpAttribute (Description = "Direct public access to the evaluation context powering the interactive session")]
         public EvaluationContext EvaluationContext {
             get;
-            internal set;
         }
 
         [EvaluationContextGlobalObject.InteractiveHelpAttribute (Description = "This help text", ShowReturnType = false)]
@@ -759,7 +758,6 @@ namespace Xamarin.Interactive.Logging
     {
         public static bool IsInitialized {
             get;
-            private set;
         }
 
         public static void Commit (LogLevel level, string tag, string message, [CallerMemberName] string callerMemberName = null, [CallerFilePath] string callerFilePath = null, [CallerLineNumber] int callerLineNumber = 0);
