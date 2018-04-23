@@ -332,7 +332,7 @@ namespace Xamarin.Interactive.Client
                         var evaluationService = new EvaluationService (
                             CompilationWorkspace,
                             new EvaluationEnvironment (WorkingDirectory));
-                        evaluationService.NotifyPeerUpdated (Agent.Api.EvaluationContextManager);
+                        evaluationService.NotifyEvaluationContextManagerChanged (Agent.Api.EvaluationContextManager);
                         EvaluationService = evaluationService;
                     }
 

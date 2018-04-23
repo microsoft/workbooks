@@ -116,7 +116,8 @@ namespace Xamarin.Interactive.Session
                 workspaceService,
                 sessionDescription.EvaluationEnvironment);
 
-            evaluationService.NotifyPeerUpdated (state.AgentConnection.Api.EvaluationContextManager);
+            evaluationService.NotifyEvaluationContextManagerChanged (
+                state.AgentConnection.Api.EvaluationContextManager);
 
             PackageManagerService packageManagerService = null;
 
@@ -216,7 +217,7 @@ namespace Xamarin.Interactive.Session
                     ((IDisposable)State.AgentConnection).Dispose ();
                 }
 
-                State.EvaluationService.service?.NotifyPeerUpdated (null);
+                State.EvaluationService.service?.NotifyEvaluationContextManagerChanged (null);
 
                 State = State.WithAgentConnection (new AgentConnection (agentType));
             }

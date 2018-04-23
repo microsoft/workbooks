@@ -77,6 +77,8 @@ namespace Xamarin.Interactive.CodeAnalysis
         }
 
         public WorkspaceConfiguration (TargetCompilationConfiguration compilationConfiguration, InteractiveDependencyResolver dependencyResolver);
+
+        public static Task<WorkspaceConfiguration> CreateAsync (IEvaluationContextManager evaluationContextManager, CancellationToken cancellationToken = default(CancellationToken));
     }
     [AttributeUsage (AttributeTargets.Assembly)]
     public sealed class WorkspaceServiceAttribute : Attribute
@@ -119,7 +121,7 @@ namespace Xamarin.Interactive.CodeAnalysis.Evaluating
             get;
         }
 
-        public EvaluationService (IWorkspaceService workspace, EvaluationEnvironment evaluationEnvironment);
+        public EvaluationService (IWorkspaceService workspace, EvaluationEnvironment evaluationEnvironment, IEvaluationContextManager evaluationContextManager = null);
 
         public Task<bool> AddTopLevelReferencesAsync (IReadOnlyList<string> references, CancellationToken cancellationToken = default(CancellationToken));
 
@@ -127,15 +129,13 @@ namespace Xamarin.Interactive.CodeAnalysis.Evaluating
 
         public Task EvaluateAllAsync (CancellationToken cancellationToken = default(CancellationToken));
 
-        public Task EvaluateAsync (string input, CancellationToken cancellationToken = default(CancellationToken));
-
         public Task<CodeCellEvaluationFinishedEvent> EvaluateAsync (CodeCellId targetCodeCellId = default(CodeCellId), bool evaluateAll = false, CancellationToken cancellationToken = default(CancellationToken));
 
         public IDisposable InhibitEvaluate ();
 
         public Task<CodeCellId> InsertCodeCellAsync (string initialBuffer = null, CodeCellId relativeToCodeCellId = default(CodeCellId), bool insertBefore = false, CancellationToken cancellationToken = default(CancellationToken));
 
-        public Task LoadWorkbookDependencyAsync (string dependency, CancellationToken cancellationToken = default(CancellationToken));
+        public void NotifyEvaluationContextManagerChanged (IEvaluationContextManager evaluationContextManager);
 
         public void OutdateAllCodeCells ();
 

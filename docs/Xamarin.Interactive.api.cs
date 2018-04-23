@@ -358,14 +358,6 @@ namespace Xamarin.Interactive.CodeAnalysis.Evaluating
         public EvaluationContextManager Host {
             get;
         }
-
-        public EvaluationContextId Id {
-            get;
-        }
-
-        public TargetCompilationConfiguration TargetCompilationConfiguration {
-            get;
-        }
     }
     public class EvaluationContextGlobalObject
     {
@@ -449,6 +441,8 @@ namespace Xamarin.Interactive.CodeAnalysis.Evaluating
         public IAgentSynchronizationContext SynchronizationContexts {
             get;
         }
+
+        public EvaluationContextManager (RepresentationManager representationManager, object context = null);
 
         public Task AbortEvaluationAsync (EvaluationContextId evaluationContextId, CancellationToken cancellationToken = default(CancellationToken));
 

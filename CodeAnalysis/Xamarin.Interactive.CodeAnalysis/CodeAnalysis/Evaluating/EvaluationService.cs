@@ -93,12 +93,14 @@ namespace Xamarin.Interactive.CodeAnalysis.Evaluating
 
         public EvaluationService (
             IWorkspaceService workspace,
-            EvaluationEnvironment evaluationEnvironment)
+            EvaluationEnvironment evaluationEnvironment,
+            IEvaluationContextManager evaluationContextManager = null)
         {
             this.workspace = workspace
                 ?? throw new ArgumentNullException (nameof (workspace));
 
-            this.evaluationEnvironment = evaluationEnvironment;
+            NotifyEvaluationEnvironmentChanged (evaluationEnvironment);
+            NotifyEvaluationContextManagerChanged (evaluationContextManager);
         }
 
         internal void NotifyEvaluationEnvironmentChanged (EvaluationEnvironment evaluationEnvironment)
@@ -107,7 +109,7 @@ namespace Xamarin.Interactive.CodeAnalysis.Evaluating
                 this.evaluationEnvironment = evaluationEnvironment;
         }
 
-        internal void NotifyPeerUpdated (IEvaluationContextManager evaluationContextManager)
+        public void NotifyEvaluationContextManagerChanged (IEvaluationContextManager evaluationContextManager)
         {
             lock (stateChangeLock) {
                 evaluationContextManagerEventsSubscription?.Dispose ();
@@ -135,10 +137,10 @@ namespace Xamarin.Interactive.CodeAnalysis.Evaluating
         public IDisposable InhibitEvaluate ()
             => evaluationInhibitor.Inhibit ();
 
-        public Task EvaluateAsync (string input, CancellationToken cancellationToken = default)
+        Task IEvaluationService.EvaluateAsync (string input, CancellationToken cancellationToken)
             => throw new NotImplementedException ();
 
-        public Task LoadWorkbookDependencyAsync (string dependency, CancellationToken cancellationToken = default)
+        Task IEvaluationService.LoadWorkbookDependencyAsync (string dependency, CancellationToken cancellationToken)
             => throw new NotImplementedException ();
 
         public Task EvaluateAllAsync (CancellationToken cancellationToken = default)
