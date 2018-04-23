@@ -34,7 +34,7 @@
     <PackageSigningKey>Developer ID Installer</PackageSigningKey>
     <UseRefCounting>false</UseRefCounting>
     <XamMacArch>x86_64</XamMacArch>
-    <MonoBundlingExtraArgs>--registrar:static --minos=10.10</MonoBundlingExtraArgs>
+    <MonoBundlingExtraArgs>--registrar:static --minos=10.10 --nowarn=2006,2013</MonoBundlingExtraArgs>
     <Profiling>false</Profiling>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <I18n>west</I18n>
@@ -58,29 +58,7 @@
     <XamMacArch>x86_64</XamMacArch>
     <PackageSigningKey>Developer ID Installer</PackageSigningKey>
     <DefineConstants>__UNIFIED__;__MACOS__;MAC;MONOMAC;XAMCORE_2_0</DefineConstants>
-    <MonoBundlingExtraArgs>--registrar:static --minos=10.10</MonoBundlingExtraArgs>
-    <Profiling>false</Profiling>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <I18n>west</I18n>
-    <HttpClientHandler>NSUrlSessionHandler</HttpClientHandler>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'AppStore|AnyCPU' ">
-    <Optimize>true</Optimize>
-    <OutputPath>bin\AppStore</OutputPath>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <ConsolePause>false</ConsolePause>
-    <UseSGen>false</UseSGen>
-    <IncludeMonoRuntime>true</IncludeMonoRuntime>
-    <PackageSigningKey>3rd Party Mac Developer Installer</PackageSigningKey>
-    <CreatePackage>true</CreatePackage>
-    <CodeSigningKey>3rd Party Mac Developer Application</CodeSigningKey>
-    <EnableCodeSigning>true</EnableCodeSigning>
-    <EnablePackageSigning>true</EnablePackageSigning>
-    <UseRefCounting>false</UseRefCounting>
-    <XamMacArch>x86_64</XamMacArch>
-    <DefineConstants>__UNIFIED__;__MACOS__;MAC;MONOMAC;XAMCORE_2_0</DefineConstants>
-    <MonoBundlingExtraArgs>--registrar:static --minos=10.10</MonoBundlingExtraArgs>
+    <MonoBundlingExtraArgs>--registrar:static --minos=10.10 --nowarn=2006,2013</MonoBundlingExtraArgs>
     <Profiling>false</Profiling>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <I18n>west</I18n>
