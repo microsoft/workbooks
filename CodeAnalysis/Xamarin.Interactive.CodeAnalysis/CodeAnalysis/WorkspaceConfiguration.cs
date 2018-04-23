@@ -37,12 +37,22 @@ namespace Xamarin.Interactive.CodeAnalysis
             DependencyResolver = dependencyResolver;
         }
 
+        public static Task<WorkspaceConfiguration> CreateAsync (
+            IEvaluationContextManager evaluationContextManager,
+            CancellationToken cancellationToken = default)
+            => CreateAsync (
+                evaluationContextManager,
+                ClientSessionKind.Workbook,
+                cancellationToken);
+
         internal static async Task<WorkspaceConfiguration> CreateAsync (
-            AgentType agentType,
             IEvaluationContextManager evaluationContextManager,
             ClientSessionKind sessionKind,
             CancellationToken cancellationToken = default)
         {
+            if (evaluationContextManager == null)
+                throw new ArgumentNullException (nameof (evaluationContextManager));
+
             var configuration = await evaluationContextManager
                 .CreateEvaluationContextAsync (cancellationToken)
                 .ConfigureAwait (false);
@@ -53,9 +63,7 @@ namespace Xamarin.Interactive.CodeAnalysis
                     $"{nameof (IEvaluationContextManager.CreateEvaluationContextAsync)} " +
                     $"returned null");
 
-            var dependencyResolver = CreateDependencyResolver (
-                agentType,
-                configuration.AssemblySearchPaths);
+            var dependencyResolver = CreateDependencyResolver (configuration);
 
             // Only do this for Inspector sessions. Workbooks will do their own Forms init later.
             if (sessionKind == ClientSessionKind.LiveInspection) {
@@ -65,7 +73,6 @@ namespace Xamarin.Interactive.CodeAnalysis
                 if (formsReference != null)
                     await LoadFormsAgentExtensions (
                         formsReference.Name.Version,
-                        agentType,
                         configuration,
                         evaluationContextManager,
                         dependencyResolver).ConfigureAwait (false);
@@ -75,8 +82,7 @@ namespace Xamarin.Interactive.CodeAnalysis
 
             var globalStateType = ResolveHostObjectType (
                 dependencyResolver,
-                configuration,
-                agentType);
+                configuration);
 
             configuration = configuration.With (globalStateType: configuration
                 .GlobalStateType
@@ -86,27 +92,27 @@ namespace Xamarin.Interactive.CodeAnalysis
         }
 
         static InteractiveDependencyResolver CreateDependencyResolver (
-            AgentType agentType,
-            IEnumerable<string> assemblySearchPaths)
+            TargetCompilationConfiguration configuration)
         {
-            var dependencyResolver = new InteractiveDependencyResolver (agentType: agentType);
-            var consoleOrWpf = agentType == AgentType.WPF || agentType == AgentType.Console;
+            var dependencyResolver = new InteractiveDependencyResolver (configuration);
+            var scanRecursively = configuration.Sdk?.TargetFramework.Identifier == ".NETFramework";
 
-            foreach (var strPath in assemblySearchPaths) {
-                var path = new FilePath (strPath);
+            foreach (FilePath path in configuration.AssemblySearchPaths) {
                 if (path.DirectoryExists) {
-                    Log.Info (TAG, $"Searching assembly path {path}");
+                    Log.Info (TAG, $"Searching assembly path {path} (recursive: {scanRecursively})");
                     dependencyResolver.AddAssemblySearchPath (
                         path,
-                        scanRecursively: consoleOrWpf);
+                        scanRecursively);
 
-                    if (!consoleOrWpf) {
-                        path = path.Combine ("Facades");
-                        if (path.DirectoryExists)
-                            dependencyResolver.AddAssemblySearchPath (path);
+                    if (!scanRecursively) {
+                        var facadesPath = path.Combine ("Facades");
+                        if (facadesPath.DirectoryExists) {
+                            Log.Info (TAG, $"Searching assembly path {facadesPath}");
+                            dependencyResolver.AddAssemblySearchPath (facadesPath);
+                        }
                     }
                 } else {
-                    Log.Warning (TAG, $"Assembly search path {strPath} does not exist");
+                    Log.Warning (TAG, $"Assembly search path {path} does not exist");
                 }
             }
 
@@ -118,8 +124,7 @@ namespace Xamarin.Interactive.CodeAnalysis
 
         static Type ResolveHostObjectType (
             InteractiveDependencyResolver dependencyResolver,
-            TargetCompilationConfiguration configuration,
-            AgentType agentType)
+            TargetCompilationConfiguration configuration)
         {
             if (System.Runtime.InteropServices.RuntimeInformation.FrameworkDescription.StartsWith (
                 ".NET Core", StringComparison.OrdinalIgnoreCase))
@@ -168,12 +173,11 @@ namespace Xamarin.Interactive.CodeAnalysis
 
         internal static async Task LoadFormsAgentExtensions (
             Version formsVersion,
-            AgentType agentType,
             TargetCompilationConfiguration configuration,
             IEvaluationContextManager evaluationContextManager,
             DependencyResolver dependencyResolver)
         {
-            var formsAssembly = InteractiveInstallation.Default.LocateFormsAssembly (agentType);
+            var formsAssembly = InteractiveInstallation.Default.LocateFormsAssembly (configuration.Sdk?.Id);
             if (string.IsNullOrWhiteSpace (formsAssembly))
                 return;
 

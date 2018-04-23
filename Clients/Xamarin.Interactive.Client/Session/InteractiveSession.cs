@@ -103,7 +103,6 @@ namespace Xamarin.Interactive.Session
             PostEvent (InitializingWorkspace);
 
             var workspaceConfiguration = await WorkspaceConfiguration.CreateAsync (
-                State.AgentConnection.Type,
                 State.AgentConnection.Api.EvaluationContextManager,
                 sessionKind,
                 cancellationToken).ConfigureAwait (false);

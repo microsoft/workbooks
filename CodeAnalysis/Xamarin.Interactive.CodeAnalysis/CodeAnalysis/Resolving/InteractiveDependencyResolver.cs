@@ -41,10 +41,9 @@ namespace Xamarin.Interactive.CodeAnalysis.Resolving
             "Inspector",
             "Remote Assembly Temp");
 
-        internal InteractiveDependencyResolver (AgentType agentType) : base (agentType)
+        internal InteractiveDependencyResolver (TargetCompilationConfiguration configuration) : base (configuration)
         {
-            var consoleOrWpf = AgentType == AgentType.WPF || AgentType == AgentType.Console;;
-            UseGacCache = consoleOrWpf || AgentType == AgentType.MacNet45;
+            UseGacCache = configuration?.Sdk?.TargetFramework.Identifier == ".NETFramework";
 
             AddAssemblySearchPath (assemblyTempDir);
             try {

@@ -211,7 +211,6 @@ namespace Xamarin.Interactive.NuGet
             if (PackageIdComparer.Equals (package.Identity.Id, "Xamarin.Forms"))
                 await WorkspaceConfiguration.LoadFormsAgentExtensions (
                     package.Identity.Version.Version,
-                    agentType,
                     targetCompilationConfiguration,
                     evaluationContextManager,
                     dependencyResolver);

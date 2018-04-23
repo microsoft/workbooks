@@ -17,6 +17,7 @@ namespace Xamarin.Interactive.CodeAnalysis
         public static TargetCompilationConfiguration CreateInitialForCompilationWorkspace (
             IReadOnlyList<string> assemblySearchPaths = null)
             => new TargetCompilationConfiguration (
+                default,
                 HostEnvironment.OS,
                 default,
                 default,
@@ -26,6 +27,7 @@ namespace Xamarin.Interactive.CodeAnalysis
                 new List<string> (assemblySearchPaths ?? Array.Empty<string> ()),
                 default);
 
+        public Sdk Sdk { get; }
         internal HostOS CompilationOS { get; }
         public EvaluationContextId EvaluationContextId { get; }
         public TypeDefinition GlobalStateType { get; }
@@ -37,6 +39,7 @@ namespace Xamarin.Interactive.CodeAnalysis
 
         [JsonConstructor]
         TargetCompilationConfiguration (
+            Sdk sdk,
             HostOS compilationOS,
             EvaluationContextId evaluationContextId,
             TypeDefinition globalStateType,
@@ -46,6 +49,7 @@ namespace Xamarin.Interactive.CodeAnalysis
             IReadOnlyList<string> assemblySearchPaths,
             bool includePEImagesInDependencyResolution)
         {
+            Sdk = sdk;
             CompilationOS = compilationOS;
             EvaluationContextId = evaluationContextId;
             GlobalStateType = globalStateType;
@@ -57,6 +61,7 @@ namespace Xamarin.Interactive.CodeAnalysis
         }
 
         internal TargetCompilationConfiguration With (
+            Optional<Sdk> sdk = default,
             Optional<HostOS> compilationOS = default,
             Optional<EvaluationContextId> evaluationContextId = default,
             Optional<TypeDefinition> globalStateType = default,
@@ -66,6 +71,7 @@ namespace Xamarin.Interactive.CodeAnalysis
             Optional<IReadOnlyList<string>> assemblySearchPaths = default,
             Optional<bool> includePEImagesInDependencyResolution = default)
             => new TargetCompilationConfiguration (
+                sdk.GetValueOrDefault (Sdk),
                 compilationOS.GetValueOrDefault (CompilationOS),
                 evaluationContextId.GetValueOrDefault (EvaluationContextId),
                 globalStateType.GetValueOrDefault (GlobalStateType),

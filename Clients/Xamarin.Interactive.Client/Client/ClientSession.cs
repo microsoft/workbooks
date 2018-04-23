@@ -534,7 +534,6 @@ namespace Xamarin.Interactive.Client
                 CompilationWorkspace = await WorkspaceServiceFactory.CreateWorkspaceServiceAsync (
                     "csharp",
                     await WorkspaceConfiguration.CreateAsync (
-                        Agent.Type,
                         Agent.Api.EvaluationContextManager,
                         SessionKind,
                         cancellationToken),

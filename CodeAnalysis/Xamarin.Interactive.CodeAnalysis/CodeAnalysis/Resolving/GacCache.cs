@@ -76,8 +76,8 @@ namespace Xamarin.Interactive.CodeAnalysis.Resolving
             InitializingTask = Task.Run (() => {
                 var gacPaths = GacPaths;
 
-                // AgentType.Unknown will result in the GAC cache not being used.
-                var dependencyResolver = new InteractiveDependencyResolver (AgentType.Unknown);
+                // No configuration will result in the GAC cache not being used.
+                var dependencyResolver = new InteractiveDependencyResolver (null);
 
                 foreach (var gacPath in gacPaths)
                     ProcessGacPath (gacPath, dependencyResolver);
