@@ -89,6 +89,7 @@ namespace Xamarin.Interactive.CodeAnalysis.Evaluating
 
             switch (value) {
             case null:
+                ResultRepresentations = Array.Empty<object> ();
                 break;
             case RepresentedObject representedObject:
                 ResultType = representedObject.RepresentedType;
@@ -106,7 +107,7 @@ namespace Xamarin.Interactive.CodeAnalysis.Evaluating
             UICultureLCID = uiCultureLCID;
             Interrupted = interrupted;
             InitializedIntegration = initializedIntegration;
-            LoadedAssemblies = loadedAssemblies;
+            LoadedAssemblies = loadedAssemblies ?? Array.Empty<AssemblyDefinition> ();
         }
     }
 }
