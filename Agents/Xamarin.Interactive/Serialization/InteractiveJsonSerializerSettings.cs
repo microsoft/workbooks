@@ -73,6 +73,16 @@ namespace Xamarin.Interactive.Serialization
                 return contract;
             }
 
+            protected override JsonProperty CreateProperty (
+                MemberInfo member,
+                MemberSerialization memberSerialization)
+            {
+                var property = base.CreateProperty (member, memberSerialization);
+                if (property.PropertyType.IsEnum)
+                    property.DefaultValueHandling = DefaultValueHandling.Include;
+                return property;
+            }
+
             #endif
         }
 
