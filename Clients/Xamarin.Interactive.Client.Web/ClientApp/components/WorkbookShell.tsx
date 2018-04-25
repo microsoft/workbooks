@@ -12,7 +12,7 @@ import { saveAs } from 'file-saver'
 import { loadTheme } from 'office-ui-fabric-react/lib/Styling';
 
 import { osMac } from '../utils'
-import { WorkbookSession, SessionEvent, SessionEventKind } from '../WorkbookSession'
+import { WorkbookSession, SessionEvent, SessionEventKind, SdkId } from '../WorkbookSession'
 import { WorkbookCommandBar } from './WorkbookCommandBar'
 import { WorkbookEditor } from './WorkbookEditor'
 import { ResultRendererRegistry } from '../ResultRendererRegistry'
@@ -78,9 +78,6 @@ export class WorkbookShell extends React.Component<any, WorkbookShellState> {
         this.shellContext.session.sessionEvent.addListener(this.onSessionEvent)
 
         await this.shellContext.session.connect()
-
-        if (this.commandBar)
-            this.commandBar.setWorkbookTargets(this.shellContext.session.availableWorkbookTargets)
 
         document.addEventListener('keydown', this.onDocumentKeyDown)
 
