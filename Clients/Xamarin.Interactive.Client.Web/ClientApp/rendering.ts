@@ -51,3 +51,13 @@ export interface ResultRendererRepresentation {
     order?: number
     options?: ResultRendererRepresentationOptions,
 }
+
+export function getFirstRepresentationOfType<T = {}>(result: CodeCellResult, typeName: string): T | null {
+    if (result && result.resultRepresentations) {
+        for (const representation of result.resultRepresentations) {
+            if (representation && representation.$type === typeName)
+                return representation
+        }
+    }
+    return null
+}

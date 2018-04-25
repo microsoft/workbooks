@@ -68,7 +68,11 @@ export interface CodeCellUpdate extends ICodeCellEvent {
 export interface CodeCellResult extends ICodeCellEvent  {
     resultHandling: CodeCellResultHandling
     resultType: string | null
-    resultRepresentations: any[] | null
+    resultRepresentations: any[]
+    isNullResult: boolean
+    evaluationDuration: string
+    cultureLCID: number
+    uiCultureLCID: number
 }
 
 export interface CapturedOutputSegment extends ICodeCellEvent {
