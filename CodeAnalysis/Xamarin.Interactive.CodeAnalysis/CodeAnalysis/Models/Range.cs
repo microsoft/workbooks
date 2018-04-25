@@ -11,10 +11,19 @@ namespace Xamarin.Interactive.CodeAnalysis.Models
     [MonacoSerializable ("monaco.IRange")]
     public struct Range
     {
+        [JsonProperty (DefaultValueHandling = DefaultValueHandling.Include)]
         public int StartLineNumber { get; }
+
+        [JsonProperty (DefaultValueHandling = DefaultValueHandling.Include)]
         public int StartColumn { get; }
+
+        [JsonProperty (DefaultValueHandling = DefaultValueHandling.Include)]
         public int EndLineNumber { get; }
+
+        [JsonProperty (DefaultValueHandling = DefaultValueHandling.Include)]
         public int EndColumn { get; }
+
+        [JsonProperty (DefaultValueHandling = DefaultValueHandling.Include)]
         public string FilePath { get; }
 
         [JsonConstructor]

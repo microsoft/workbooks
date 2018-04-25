@@ -5,7 +5,7 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
-export interface PositionSpan {
+export interface Range {
     startLineNumber: number
     startColumn: number
     endLineNumber: number
@@ -24,7 +24,7 @@ export interface Diagnostic {
     id: string
     message: string
     severity: DiagnosticSeverity
-    span: PositionSpan
+    range: Range
 }
 
 // Events

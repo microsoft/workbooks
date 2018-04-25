@@ -146,12 +146,12 @@ export abstract class CodeCellView<
                                             target: this.getBlockKey(),
                                             type: EditorMessageType.setCursor,
                                             data: {
-                                                lineNumber: diag.span.startLineNumber,
-                                                column: diag.span.startColumn
+                                                lineNumber: diag.range.startLineNumber,
+                                                column: diag.range.startColumn
                                             }
                                         })
                                     }}>
-                                    ({diag.span.startLineNumber},{diag.span.startColumn}):&nbsp;
+                                    ({diag.range.startLineNumber},{diag.range.startColumn}):&nbsp;
                                         {diag.severity} {diag.id}: {diag.message}
                                 </li>
                             )

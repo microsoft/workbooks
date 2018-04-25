@@ -1126,14 +1126,3 @@ namespace Xamarin.Interactive.Representations.Reflection
         Property
     }
 }
-namespace Xamarin.Interactive.Serialization
-{
-    [Flags]
-    public enum PropertyOptions
-    {
-        None = 0,
-        SerializeIfNull = 1,
-        SerializeIfEmpty = 2,
-        Default = 2
-    }
-}

@@ -11,7 +11,10 @@ namespace Xamarin.Interactive.CodeAnalysis.Models
     [MonacoSerializable ("monaco.IPosition")]
     public struct Position
     {
+        [JsonProperty (DefaultValueHandling = DefaultValueHandling.Include)]
         public int LineNumber { get; }
+
+        [JsonProperty (DefaultValueHandling = DefaultValueHandling.Include)]
         public int Column { get; }
 
         [JsonConstructor]

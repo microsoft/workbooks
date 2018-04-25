@@ -24,11 +24,13 @@ namespace Xamarin.Interactive.CodeAnalysis.Models
         /// <summary>
         /// The active signature index.
         /// </summary>
+        [JsonProperty (DefaultValueHandling = DefaultValueHandling.Include)]
         public int ActiveSignature { get; }
 
         /// <summary>
         /// The active parameter index.
         /// </summary>
+        [JsonProperty (DefaultValueHandling = DefaultValueHandling.Include)]
         public int ActiveParameter { get; }
 
         [JsonConstructor]

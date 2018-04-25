@@ -15,6 +15,7 @@ using Newtonsoft.Json.Serialization;
 
 using Xamarin.Interactive.CodeAnalysis;
 using Xamarin.Interactive.CodeAnalysis.Evaluating;
+using Xamarin.Interactive.CodeAnalysis.Models;
 using Xamarin.Interactive.Remote;
 using Xamarin.Interactive.Representations.Reflection;
 
@@ -110,7 +111,7 @@ namespace Xamarin.Interactive.Serialization
             SerializationBinder = new InteractiveJsonBinder (bindUsingTypeFullName);
 
             // Non-default NJS Converters
-            Converters.Add (new StringEnumConverter ());
+            Converters.Add (new MonacoAwareStringEnumConverter ());
             Converters.Add (new IsoDateTimeConverter ());
             Converters.Add (new VersionConverter ());
 
@@ -132,6 +133,13 @@ namespace Xamarin.Interactive.Serialization
             => JsonSerializer.Create (this);
 
         #region Converters
+
+        sealed class MonacoAwareStringEnumConverter : StringEnumConverter
+        {
+                public override bool CanConvert (Type objectType)
+                => base.CanConvert (objectType) &&
+                    objectType.GetCustomAttribute<MonacoSerializableAttribute> () == null;
+        }
 
         sealed class CodeCellIdConverter : StringConverter<CodeCellId>
         {

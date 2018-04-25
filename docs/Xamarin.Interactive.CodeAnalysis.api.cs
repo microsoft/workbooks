@@ -304,10 +304,12 @@ namespace Xamarin.Interactive.CodeAnalysis.Models
     [MonacoSerializable ("monaco.IPosition")]
     public struct Position
     {
+        [JsonProperty (DefaultValueHandling = DefaultValueHandling.Include)]
         public int Column {
             get;
         }
 
+        [JsonProperty (DefaultValueHandling = DefaultValueHandling.Include)]
         public int LineNumber {
             get;
         }
@@ -320,22 +322,27 @@ namespace Xamarin.Interactive.CodeAnalysis.Models
     [MonacoSerializable ("monaco.IRange")]
     public struct Range
     {
+        [JsonProperty (DefaultValueHandling = DefaultValueHandling.Include)]
         public int EndColumn {
             get;
         }
 
+        [JsonProperty (DefaultValueHandling = DefaultValueHandling.Include)]
         public int EndLineNumber {
             get;
         }
 
+        [JsonProperty (DefaultValueHandling = DefaultValueHandling.Include)]
         public string FilePath {
             get;
         }
 
+        [JsonProperty (DefaultValueHandling = DefaultValueHandling.Include)]
         public int StartColumn {
             get;
         }
 
+        [JsonProperty (DefaultValueHandling = DefaultValueHandling.Include)]
         public int StartLineNumber {
             get;
         }
@@ -350,10 +357,12 @@ namespace Xamarin.Interactive.CodeAnalysis.Models
     [MonacoSerializable ("monaco.languages.SignatureHelp")]
     public struct SignatureHelp
     {
+        [JsonProperty (DefaultValueHandling = DefaultValueHandling.Include)]
         public int ActiveParameter {
             get;
         }
 
+        [JsonProperty (DefaultValueHandling = DefaultValueHandling.Include)]
         public int ActiveSignature {
             get;
         }
