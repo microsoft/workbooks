@@ -16,8 +16,11 @@ namespace ApiDump
             if (entity == null)
                 return false;
 
-            var declaringType = entity.Parent as TypeDeclaration;
-            if (declaringType != null && declaringType.ClassType == ClassType.Interface)
+            if (entity.Parent is TypeDeclaration declaringType &&
+                declaringType.ClassType == ClassType.Interface)
+                return true;
+
+            if (entity is Accessor && (entity.Modifiers & (Modifiers.Internal | Modifiers.Private)) == 0)
                 return true;
 
             return entity.Modifiers.HasFlag (Modifiers.Public);
@@ -134,8 +137,12 @@ namespace ApiDump
 
         public override void VisitAccessor (Accessor accessor)
         {
-            accessor.Body = null;
-            base.VisitAccessor (accessor);
+            if (accessor.IsPublic ()) {
+                accessor.Body = null;
+                base.VisitAccessor (accessor);
+            } else {
+                accessor.Remove ();
+            }
         }
 
         public override void VisitCustomEventDeclaration (CustomEventDeclaration eventDeclaration)

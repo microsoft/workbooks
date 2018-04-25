@@ -8,33 +8,23 @@
 using System;
 using System.Text;
 
-using Xamarin.Interactive.Serialization;
+using Newtonsoft.Json;
 
 namespace Xamarin.Interactive.Representations
 {
-    [Serializable]
+    [JsonObject]
     public sealed class VerbatimHtml : IRepresentationObject
     {
         readonly string content;
 
         public VerbatimHtml (StringBuilder builder)
-        {
-            content = builder?.ToString ();
-        }
+            => content = builder?.ToString ();
 
+        [JsonConstructor]
         public VerbatimHtml (string content)
-        {
-            this.content = content;
-        }
+            => this.content = content;
 
         public override string ToString ()
-        {
-            return content;
-        }
-
-        void ISerializableObject.Serialize (ObjectSerializer serializer)
-        {
-            throw new NotImplementedException ();
-        }
+            => content;
     }
 }

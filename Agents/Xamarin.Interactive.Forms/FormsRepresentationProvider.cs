@@ -22,7 +22,7 @@ namespace Xamarin.Interactive.Forms
             yield return ProvideSingleRepresentation (obj);
         }
 
-        ISerializableObject ProvideSingleRepresentation (object obj)
+        object ProvideSingleRepresentation (object obj)
         {
             if (obj is XF.Color) {
                 var color = (XF.Color)obj;

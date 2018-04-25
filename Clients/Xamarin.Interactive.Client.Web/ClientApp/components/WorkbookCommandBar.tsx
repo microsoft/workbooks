@@ -11,10 +11,12 @@ import { IContextualMenuItem } from 'office-ui-fabric-react/lib/ContextualMenu';
 
 import {
     WorkbookTarget,
-    DotNetSdk,
+    Sdk,
     WorkbookSession,
     SessionEvent,
-    SessionEventKind
+    SessionEventKind,
+    SdkId,
+    SessionDescription
 } from '../WorkbookSession'
 
 import { WorkbookShellContext } from './WorkbookShell';
@@ -31,7 +33,13 @@ interface WorkbookCommandBarProps {
 
 interface WorkbookCommandBarState {
     canOpenWorkbook: boolean
-    workbookTargetItems: IContextualMenuItem[]
+    workbookTargetItem: IContextualMenuItem
+}
+
+const noSelectedWorkbookTargetItem = {
+    key: 'selectWorkbookTarget',
+    name: 'Select Target Platform',
+    icon: 'CSharpLanguage',
 }
 
 export class WorkbookCommandBar extends React.Component<WorkbookCommandBarProps, WorkbookCommandBarState> {
@@ -42,12 +50,21 @@ export class WorkbookCommandBar extends React.Component<WorkbookCommandBarProps,
 
         this.state = {
             canOpenWorkbook: false,
-            workbookTargetItems: []
+            workbookTargetItem: noSelectedWorkbookTargetItem
         }
     }
 
     private onSessionEvent(session: WorkbookSession, sessionEvent: SessionEvent) {
         this.setState({ canOpenWorkbook: sessionEvent.kind === SessionEventKind.Ready })
+
+        switch (sessionEvent.kind) {
+            case SessionEventKind.Ready:
+                this.setState({canOpenWorkbook: true})
+                break;
+            case SessionEventKind.WorkbookTargetChanged:
+                this.selectWorkbookTarget(sessionEvent.data)
+                break;
+        }
     }
 
     componentDidMount() {
@@ -58,27 +75,52 @@ export class WorkbookCommandBar extends React.Component<WorkbookCommandBarProps,
         this.props.shellContext.session.sessionEvent.removeListener(this.onSessionEvent)
     }
 
-    setWorkbookTargets(targets: WorkbookTarget[]) {
-        let workbookTargetItems: IContextualMenuItem[] = []
-        for (const target of targets)
-            workbookTargetItems.push({
+    private selectWorkbookTarget(selectedTarget: SessionDescription) {
+        function createWorkbookTargetItem(target: WorkbookTarget): IContextualMenuItem {
+            return {
                 key: target.id,
-                name: `${target.flavor} (${(target.sdk as any).Name})`
-            })
-        this.setState({ workbookTargetItems })
+                name: `${target.sdk.name} ${target.sdk.version}`,
+            }
+        }
+
+        let workbookTargetItems: IContextualMenuItem[] = []
+        let selectedWorkbookTargetItem: IContextualMenuItem | null = null
+
+        for (const target of this.props.shellContext.session.availableWorkbookTargets) {
+            let item = createWorkbookTargetItem(target)
+
+            if (target.id === selectedTarget.targetPlatformIdentifier) {
+                selectedWorkbookTargetItem = createWorkbookTargetItem(target)
+                selectedWorkbookTargetItem.key += '-selected'
+                selectedWorkbookTargetItem.icon = 'CSharpLanguage'
+
+                item.icon = 'CheckMark'
+            } else {
+                item.onClick = (ev, clickedItem) => {
+                    if (clickedItem)
+                        this.props.shellContext.session.initializeSession(clickedItem.key)
+                }
+            }
+
+            workbookTargetItems.push(item)
+        }
+
+        if (!selectedWorkbookTargetItem)
+            selectedWorkbookTargetItem = noSelectedWorkbookTargetItem
+
+        selectedWorkbookTargetItem.subMenuProps = {
+            items: workbookTargetItems
+        }
+
+        this.setState({
+            workbookTargetItem: selectedWorkbookTargetItem
+        })
     }
 
     render() {
         const commandBarProps = {
             items: [
-                {
-                    key: 'workbookTarget',
-                    name: 'Mono: .NET Framework',
-                    icon: 'CSharpLanguage',
-                    subMenuProps: {
-                        items: this.state.workbookTargetItems
-                    }
-                },
+                this.state.workbookTargetItem,
                 {
                     key: 'evaluateWorkbook',
                     name: 'Run All',

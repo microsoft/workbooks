@@ -12,7 +12,6 @@ namespace Xamarin.Interactive.CodeAnalysis
     /// <summary>
     /// Essentially a mirror of a Roslyn DocumentId.
     /// </summary>
-    [Serializable]
     public struct CodeCellId : IEquatable<CodeCellId>
     {
         internal static readonly CodeCellId Empty;

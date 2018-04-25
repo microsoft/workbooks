@@ -71,6 +71,9 @@
         <HasPublicApi>true</HasPublicApi>
         <HasPackageTarget>true</HasPackageTarget>
       </ProjectsToBuild>
+      <ProjectsToBuild Include="Agents\Xamarin.Interactive.Tests\*.csproj">
+        <HasXunitTests>true</HasXunitTests>
+      </ProjectsToBuild>
       <ProjectsToBuild Include="CodeAnalysis\Xamarin.Interactive.CodeAnalysis\*.csproj">
         <HasPublicApi>true</HasPublicApi>
       </ProjectsToBuild>

@@ -13,6 +13,7 @@ using System.Text;
 using Xamarin.CrossBrowser;
 
 using Xamarin.Interactive.CodeAnalysis;
+using Xamarin.Interactive.CodeAnalysis.Evaluating;
 using Xamarin.Interactive.CodeAnalysis.Models;
 using Xamarin.Interactive.Editor;
 using Xamarin.Interactive.Events;

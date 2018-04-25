@@ -9,8 +9,8 @@ import { CodeCellResult } from '../evaluation';
 import { ResultRenderer, ResultRendererRepresentation } from '../rendering'
 
 export default function InteractiveObjectRendererFactory(result: CodeCellResult) {
-    return result.valueRepresentations &&
-        result.valueRepresentations.some(r => r.$type === "Xamarin.Interactive.Representations.ReflectionInteractiveObject")
+    return result.resultRepresentations &&
+        result.resultRepresentations.some(r => r.$type === "Xamarin.Interactive.Representations.ReflectionInteractiveObject")
         ? new InteractiveObjectRenderer
         : null
 }
@@ -24,10 +24,10 @@ class InteractiveObjectRenderer implements ResultRenderer {
     getRepresentations(result: CodeCellResult) {
         const reps: ResultRendererRepresentation[] = []
 
-        if (!result.valueRepresentations)
+        if (!result.resultRepresentations)
             return reps
 
-        for (const value of result.valueRepresentations) {
+        for (const value of result.resultRepresentations) {
             if (value.$type !== "Xamarin.Interactive.Representations.ReflectionInteractiveObject")
                 continue
 

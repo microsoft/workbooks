@@ -18,6 +18,7 @@ namespace Xamarin.Versioning
         Dev = 1,
         Alpha = 3,
         Beta = 5,
+        Preview = 6,
         StableCandidate = 7,
         Stable = 9
     }
@@ -91,7 +92,7 @@ namespace Xamarin.Versioning
             @"^(?<major>\d{1,2})" +
             @"(\.(?<minor>\d{1,2}))" +
             @"(\.(?<patch>\d{1,2}))" +
-            @"(\-(?<level>(local|dev|alpha|beta|rc))(\.?(?<candidate>\d{1,2}))?)?" +
+            @"(\-(?<level>(local|dev|alpha|beta|preview|rc))(\.?(?<candidate>\d{1,2}))?)?" +
             @"(\+(build\.)?(?<build>\d{1,4}))?$",
             RegexOptions.CultureInvariant | RegexOptions.ExplicitCapture | RegexOptions.IgnoreCase);
 
@@ -147,6 +148,9 @@ namespace Xamarin.Versioning
                         break;
                     case "beta":
                         level = ReleaseCandidateLevel.Beta;
+                        break;
+                    case "preview":
+                        level = ReleaseCandidateLevel.Preview;
                         break;
                     case "rc":
                         level = ReleaseCandidateLevel.StableCandidate;
@@ -217,6 +221,7 @@ namespace Xamarin.Versioning
             case ReleaseCandidateLevel.Dev:
             case ReleaseCandidateLevel.Alpha:
             case ReleaseCandidateLevel.Beta:
+            case ReleaseCandidateLevel.Preview:
             case ReleaseCandidateLevel.StableCandidate:
                 break;
             case ReleaseCandidateLevel.Stable:
@@ -297,6 +302,9 @@ namespace Xamarin.Versioning
             case ReleaseCandidateLevel.Beta:
                 builder.Append ("-beta");
                 break;
+            case ReleaseCandidateLevel.Preview:
+                builder.Append ("-preview");
+                break;
             case ReleaseCandidateLevel.StableCandidate:
                 builder.Append ("-rc");
                 break;
@@ -354,6 +362,7 @@ namespace Xamarin.Versioning
                 builder.Append ('a');
                 break;
             case ReleaseCandidateLevel.Beta:
+            case ReleaseCandidateLevel.Preview:
                 builder.Append ('b');
                 break;
             case ReleaseCandidateLevel.StableCandidate:
@@ -397,6 +406,9 @@ namespace Xamarin.Versioning
                 break;
             case ReleaseCandidateLevel.Beta:
                 builder.Append (" Beta");
+                break;
+            case ReleaseCandidateLevel.Preview:
+                builder.Append (" Preview");
                 break;
             case ReleaseCandidateLevel.StableCandidate:
                 if (@short)

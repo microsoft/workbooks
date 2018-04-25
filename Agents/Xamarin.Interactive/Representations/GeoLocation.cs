@@ -7,13 +7,15 @@
 // Licensed under the MIT License.
 
 using System;
-using Xamarin.Interactive.Serialization;
+
+using Newtonsoft.Json;
 
 namespace Xamarin.Interactive.Representations
 {
-    [Serializable]
+    [JsonObject]
     public sealed class GeoLocation : IRepresentationObject
     {
+        [JsonConstructor]
         public GeoLocation (
             double latitude,
             double longitude,
@@ -22,7 +24,7 @@ namespace Xamarin.Interactive.Representations
             double? verticalAccuracy = null,
             double? speed = null,
             double? bearing = null,
-            DateTime timestamp = default (DateTime))
+            DateTime timestamp = default)
         {
             Latitude = latitude;
             Longitude = longitude;
@@ -42,10 +44,5 @@ namespace Xamarin.Interactive.Representations
         public double? Speed { get; }
         public double? Bearing { get; }
         public DateTime Timestamp { get; }
-
-        void ISerializableObject.Serialize (ObjectSerializer serializer)
-        {
-            throw new NotImplementedException ();
-        }
     }
 }

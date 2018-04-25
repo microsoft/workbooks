@@ -21,7 +21,6 @@ using Xamarin.CrossBrowser;
 
 using Xamarin.Interactive.Logging;
 using Xamarin.Interactive.Preferences;
-using Xamarin.Interactive.Client.Mac.WebDocument.MapView;
 using Xamarin.Interactive.Unified;
 using Xamarin.Interactive.Workbook.Views;
 
@@ -52,9 +51,6 @@ namespace Xamarin.Interactive.Client.Mac
 
             UIDelegate = new XIWebUIDelegate ();
             PolicyDelegate = new XIWebPolicyDelegate ();
-
-            RegisterViewClass<XIMapViewWebDocumentView, XIMapViewWebDocumentRepresentation> (
-                "application/x-inspector-map-view");
 
             if (WebKitPrefs.DeveloperExtrasEnabled) {
                 using (NativeExceptionHandler.Trap ()) {

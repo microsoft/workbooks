@@ -9,17 +9,45 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 
+using Newtonsoft.Json;
+
 using Xamarin.Interactive.Representations.Reflection;
 
 namespace Xamarin.Interactive.Representations
 {
-    [Serializable]
+    [JsonObject]
     sealed class DictionaryInteractiveObject : InteractiveObject
     {
-        [NonSerialized] readonly List<Tuple<RepresentedMemberInfo, object>> values
+        [JsonIgnore] readonly List<Tuple<RepresentedMemberInfo, object>> values
             = new List<Tuple<RepresentedMemberInfo, object>> ();
 
         public string Title { get; }
+
+        [JsonConstructor]
+        DictionaryInteractiveObject (
+            string title,
+            long handle,
+            long representedObjectHandle,
+            RepresentedType representedType,
+            int depth,
+            bool hasMembers,
+            RepresentedMemberInfo [] members,
+            object [] values,
+            string toStringRepresentation,
+            bool suppressToStringRepresentation)
+            : base (
+                handle,
+                representedObjectHandle,
+                representedType,
+                depth,
+                hasMembers,
+                members,
+                values,
+                toStringRepresentation,
+                suppressToStringRepresentation)
+        {
+            Title = title;
+        }
 
         public DictionaryInteractiveObject (int depth, InteractiveItemPreparer itemPreparer,
             string title = null)

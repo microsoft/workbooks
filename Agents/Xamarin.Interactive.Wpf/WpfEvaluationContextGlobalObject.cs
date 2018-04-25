@@ -9,7 +9,7 @@ using System;
 using System.Windows;
 using System.Windows.Media.Imaging;
 
-using Xamarin.Interactive.CodeAnalysis;
+using Xamarin.Interactive.CodeAnalysis.Evaluating;
 using Xamarin.Interactive.Core;
 
 namespace Xamarin.Interactive.Wpf

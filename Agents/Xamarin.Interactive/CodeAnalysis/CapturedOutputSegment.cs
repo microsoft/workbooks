@@ -7,37 +7,50 @@
 
 using System;
 
+using Newtonsoft.Json;
+
 using Xamarin.Interactive.CodeAnalysis.Events;
 
 namespace Xamarin.Interactive.CodeAnalysis
 {
-    [Serializable]
+    [JsonObject]
     struct CapturedOutputSegment : ICodeCellEvent
     {
         public CodeCellId CodeCellId { get; }
         public int FileDescriptor { get; }
         public string Value { get; }
 
-        internal CapturedOutputSegment (
+        [JsonConstructor]
+        CapturedOutputSegment (
             CodeCellId codeCellId,
             int fileDescriptor,
-            char [] buffer,
-            int index,
-            int count)
+            string value)
         {
             CodeCellId = codeCellId;
             FileDescriptor = fileDescriptor;
-            Value = new string (buffer, index, count);
+            Value = value;
         }
 
         internal CapturedOutputSegment (
             CodeCellId codeCellId,
             int fileDescriptor,
-            char singleChar)
+            char [] buffer,
+            int index,
+            int count) : this (
+            codeCellId,
+            fileDescriptor,
+            new string (buffer, index, count))
         {
-            CodeCellId = codeCellId;
-            FileDescriptor = fileDescriptor;
-            Value = singleChar.ToString ();
+        }
+
+        internal CapturedOutputSegment (
+            CodeCellId codeCellId,
+            int fileDescriptor,
+            char singleChar) : this (
+            codeCellId,
+            fileDescriptor,
+            singleChar.ToString ())
+        {
         }
     }
 }

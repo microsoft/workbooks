@@ -11,7 +11,10 @@ import { Event } from './utils/Events'
 import { CodeCellResult, CapturedOutputSegment, ICodeCellEvent, CodeCellUpdate } from './evaluation'
 import { Message, StatusUIAction, StatusUIActionWithMessage, MessageKind, MessageSeverity } from './messages'
 
-export interface DotNetSdk {
+export type SdkId = string
+
+export interface Sdk {
+    id: SdkId
     name: string
     profile: string
     targetFramework: string
@@ -23,7 +26,7 @@ export interface WorkbookTarget {
     flavor: string
     icon: string
     optionalFeatures: string[]
-    sdk: DotNetSdk
+    sdk: Sdk
 }
 
 export interface LanguageDescription {
@@ -33,11 +36,12 @@ export interface LanguageDescription {
 
 export interface SessionDescription {
     languageDescription: LanguageDescription,
-    targetPlatformIdentifier: string
+    targetPlatformIdentifier: SdkId
 }
 
 export const enum SessionEventKind {
     Uninitialized = 'Uninitialized',
+    WorkbookTargetChanged = 'WorkbookTargetChanged',
     ConnectingToAgent = 'ConnectingToAgent',
     InitializingWorkspace = 'InitializingWorkspace',
     Ready = 'Ready',
@@ -46,11 +50,9 @@ export const enum SessionEventKind {
     Evaluation = 'Evaluation'
 }
 
-type SessionEventType = ICodeCellEvent
-
 export interface SessionEvent {
     kind: SessionEventKind
-    data?: SessionEventType
+    data?: any
 }
 
 export interface PackageSource {
@@ -86,12 +88,7 @@ export class WorkbookSession {
         this.onSessionEventsComplete = this.onSessionEventsComplete.bind(this)
     }
 
-    async connect(sessionDescription: SessionDescription = {
-        languageDescription: {
-            name: 'csharp'
-        },
-        targetPlatformIdentifier: 'console'
-    }): Promise<void> {
+    async connect(): Promise<void> {
         await this.hubConnection.start()
 
         this._availableWorkbookTargets = <WorkbookTarget[]>await this.hubConnection.invoke(
@@ -105,7 +102,25 @@ export class WorkbookSession {
                 complete: this.onSessionEventsComplete
             })
 
-        await this.hubConnection.invoke('InitializeSession', sessionDescription)
+        if (this.availableWorkbookTargets && this.availableWorkbookTargets.length > 0)
+            this.initializeSession(this.availableWorkbookTargets[0].id)
+    }
+
+    async initializeSession(description: SessionDescription | SdkId) {
+        if (typeof description === 'string')
+            description = {
+                languageDescription: {
+                    name: "csharp"
+                },
+                targetPlatformIdentifier: description
+            }
+
+        this.sessionEvent.dispatch({
+            kind: SessionEventKind.WorkbookTargetChanged,
+            data: description
+        })
+
+        await this.hubConnection.invoke('InitializeSession', description)
     }
 
     onSessionEventReceived(event: SessionEvent): void {

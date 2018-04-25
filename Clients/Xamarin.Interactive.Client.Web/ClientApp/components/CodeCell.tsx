@@ -190,7 +190,7 @@ export class CodeCell extends CodeCellView<CodeCellProps, CodeCellState> {
                 })
                 if (finished.shouldStartNewCell)
                     this.props.blockProps.appendNewCodeCell()
-            case CodeCellEventType.Result:
+            case CodeCellEventType.Evaluation:
                 this.setStateFromResult(event as CodeCellResult)
                 break
             case CodeCellEventType.CapturedOutputSegment:

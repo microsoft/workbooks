@@ -19,7 +19,7 @@ namespace Xamarin.Interactive.Core
     [Serializable]
     public struct FilePath : IComparable<FilePath>, IComparable, IEquatable<FilePath>
     {
-        class FilePathTypeConverter : TypeConverter
+        sealed class FilePathTypeConverter : TypeConverter
         {
             public override bool CanConvertFrom (ITypeDescriptorContext context, Type sourceType)
                 => sourceType == typeof (string) || base.CanConvertFrom (context, sourceType);
@@ -34,6 +34,18 @@ namespace Xamarin.Interactive.Core
                     ? (object)new FilePath ((string)value)
                     : base.ConvertFrom (context, culture, value);
             }
+
+            public override bool CanConvertTo (ITypeDescriptorContext context, Type destinationType)
+                => destinationType == typeof (string) || base.CanConvertTo (context, destinationType);
+
+            public override object ConvertTo (
+                ITypeDescriptorContext context,
+                CultureInfo culture,
+                object value,
+                Type destinationType)
+                => value is FilePath path
+                    ? path.ToString ()
+                    : base.ConvertTo (context, culture, value, destinationType);
         }
 
         internal static readonly FilePath Empty = new FilePath ();

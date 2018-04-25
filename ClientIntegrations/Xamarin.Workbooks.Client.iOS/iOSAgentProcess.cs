@@ -398,7 +398,7 @@ namespace Xamarin.Interactive.Client.AgentProcesses
             return Task.CompletedTask;
         }
 
-        public Task<AgentAssociation> GetAgentAssociationAsync (
+        public Task<AgentIdentity> GetAgentAssociationAsync (
             AgentIdentity agentIdentity,
             CancellationToken cancellationToken)
         {
@@ -407,14 +407,7 @@ namespace Xamarin.Interactive.Client.AgentProcesses
 
             sshCommands.ForwardPort (boundPort: localPort, port: remotePort);
 
-            agentIdentity = agentIdentity.WithPort ((ushort)localPort);
-
-            return Task.FromResult (
-                new AgentAssociation (
-                    agentIdentity,
-                    new AgentClient (
-                        agentIdentity.Host,
-                        agentIdentity.Port)));
+            return Task.FromResult (agentIdentity.WithPort ((ushort)localPort));
         }
     }
 

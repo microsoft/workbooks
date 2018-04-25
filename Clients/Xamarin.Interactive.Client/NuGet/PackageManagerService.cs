@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 
 using Xamarin.Interactive.Client;
 using Xamarin.Interactive.CodeAnalysis;
+using Xamarin.Interactive.CodeAnalysis.Evaluating;
 using Xamarin.Interactive.CodeAnalysis.Resolving;
 using Xamarin.Interactive.Core;
 using Xamarin.Interactive.Logging;
@@ -98,7 +99,12 @@ namespace Xamarin.Interactive.NuGet
             var agent = await getAgentConnectionHandler (false, cancellationToken);
 
             foreach (var package in packageManager.InstalledPackages)
-                await LoadPackageIntegrationsAsync (agent, package, cancellationToken);
+                await LoadPackageIntegrationsAsync (
+                    agent.Type,
+                    evaluationService.TargetCompilationConfiguration,
+                    agent.Api.EvaluationContextManager,
+                    package,
+                    cancellationToken);
         }
 
         /// <summary>
@@ -145,7 +151,12 @@ namespace Xamarin.Interactive.NuGet
 
             foreach (var installedPackage in installedPackages) {
                 ReferencePackageInWorkspace (installedPackage);
-                await LoadPackageIntegrationsAsync (agent, installedPackage, cancellationToken);
+                await LoadPackageIntegrationsAsync (
+                    agent.Type,
+                    evaluationService.TargetCompilationConfiguration,
+                    agent.Api.EvaluationContextManager,
+                    installedPackage,
+                    cancellationToken);
             }
 
             // TODO: Figure out metapackages. Install Microsoft.AspNet.SignalR, for example,
@@ -190,19 +201,19 @@ namespace Xamarin.Interactive.NuGet
         }
 
         async Task LoadPackageIntegrationsAsync (
-            IAgentConnection agent,
+            AgentType agentType,
+            TargetCompilationConfiguration targetCompilationConfiguration,
+            IEvaluationContextManager evaluationContextManager,
             InteractivePackage package,
             CancellationToken cancellationToken)
         {
             // Forms is special-cased because we own it and load the extension from our framework.
-            if (PackageIdComparer.Equals (package.Identity.Id, "Xamarin.Forms")) {
+            if (PackageIdComparer.Equals (package.Identity.Id, "Xamarin.Forms"))
                 await WorkspaceConfiguration.LoadFormsAgentExtensions (
                     package.Identity.Version.Version,
-                    agent,
-                    dependencyResolver,
-                    evaluationService.EvaluationContextId,
-                    agent.IncludePeImage);
-            }
+                    targetCompilationConfiguration,
+                    evaluationContextManager,
+                    dependencyResolver);
 
             var assembliesToLoadOnAgent = new List<ResolvedAssembly> ();
 
@@ -223,11 +234,13 @@ namespace Xamarin.Interactive.NuGet
             }
 
             if (assembliesToLoadOnAgent.Count > 0) {
+                var includePeImage = targetCompilationConfiguration.IncludePEImagesInDependencyResolution;
+
                 var assembliesToLoad = assembliesToLoadOnAgent.Select (dep => {
-                    var peImage = agent.IncludePeImage
+                    var peImage = includePeImage
                        ? GetFileBytes (dep.Path)
                        : null;
-                    var syms = agent.IncludePeImage
+                    var syms = includePeImage
                         ? GetDebugSymbolsFromAssemblyPath (dep.Path)
                         : null;
                     return new AssemblyDefinition (
@@ -238,9 +251,10 @@ namespace Xamarin.Interactive.NuGet
                     );
                 }).ToArray ();
 
-                await agent.Api.LoadAssembliesAsync (
-                    evaluationService.EvaluationContextId,
-                    assembliesToLoad);
+                await evaluationContextManager.LoadAssembliesAsync (
+                    targetCompilationConfiguration.EvaluationContextId,
+                    assembliesToLoad,
+                    cancellationToken);
             }
 
             await getAgentConnectionHandler (true, cancellationToken);
@@ -290,8 +304,8 @@ namespace Xamarin.Interactive.NuGet
 
                 if (refAsm.GetReferencedAssemblies ().Any (r => r.Name == "Xamarin.Interactive")) {
                     var integrationType = refAsm
-                        .GetCustomAttribute<AgentIntegrationAttribute> ()
-                        ?.AgentIntegrationType;
+                        .GetCustomAttribute<EvaluationContextManagerIntegrationAttribute> ()
+                        ?.IntegrationType;
 
                     if (integrationType != null)
                         return true;

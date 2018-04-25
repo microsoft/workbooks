@@ -41,6 +41,13 @@ namespace Xamarin.Interactive.CodeAnalysis.Resolving
                 = new FrameworkName (".NETFramework", new Version (4, 5));
         }
 
+        static TargetCompilationConfiguration iosConfiguration = TargetCompilationConfiguration
+            .CreateInitialForCompilationWorkspace ()
+            .With (sdk: new Sdk (
+                SdkId.XamarinIos,
+                FrameworkNames.Xamarin_iOS_1_0,
+                Array.Empty<string> ()));
+
         static InteractivePackageManager CreatePackageManager (FrameworkName targetFramework)
         {
             var rootPath = ClientApp.SharedInstance.FileSystem.GetTempDirectory ("tests");
@@ -57,7 +64,7 @@ namespace Xamarin.Interactive.CodeAnalysis.Resolving
         }
 
         static ImmutableArray<ResolvedAssembly> Resolve (
-            AgentType agentType,
+            TargetCompilationConfiguration configuration,
             InteractivePackageManager project,
             FilePath frameworkPath)
         {
@@ -65,7 +72,7 @@ namespace Xamarin.Interactive.CodeAnalysis.Resolving
             var stopwatch = new System.Diagnostics.Stopwatch ();
             stopwatch.Start ();
             try {
-                return result = new NativeDependencyResolver (agentType)
+                return result = new NativeDependencyResolver (configuration)
                     .AddAssemblySearchPath (frameworkPath.Combine ("Facades"))
                     .AddAssemblySearchPath (frameworkPath)
                     .Resolve (project.InstalledPackages.SelectMany (
@@ -91,7 +98,7 @@ namespace Xamarin.Interactive.CodeAnalysis.Resolving
                 cancellationToken: CancellationToken.None);
 
             var resolvedAssemblies = Resolve (
-                AgentType.iOS,
+                iosConfiguration,
                 project,
                 TargetFrameworks.Xamarin_iOS_1_0_FrameworkPath);
 
@@ -137,7 +144,7 @@ namespace Xamarin.Interactive.CodeAnalysis.Resolving
                 .ShouldEqual (new NuGetVersion ("8.0.3"));
 
             var resolvedAssemblies = Resolve (
-                AgentType.iOS,
+                iosConfiguration,
                 project,
                 TargetFrameworks.Xamarin_iOS_1_0_FrameworkPath);
 

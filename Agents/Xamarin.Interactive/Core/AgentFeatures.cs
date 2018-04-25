@@ -6,19 +6,21 @@
 // Licensed under the MIT License.
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
+
+using Newtonsoft.Json;
 
 namespace Xamarin.Interactive.Core
 {
-    [Serializable]
+    [JsonObject]
     sealed class AgentFeatures : IEquatable<AgentFeatures>
     {
-        public string [] SupportedViewInspectionHierarchies { get; }
+        public IReadOnlyList<string> SupportedViewInspectionHierarchies { get; }
 
-        public AgentFeatures (string [] supportedViewInspectionHierarchies)
-        {
-            SupportedViewInspectionHierarchies = supportedViewInspectionHierarchies;
-        }
+        [JsonConstructor]
+        public AgentFeatures (IReadOnlyList<string> supportedViewInspectionHierarchies)
+            => SupportedViewInspectionHierarchies = supportedViewInspectionHierarchies;
 
         public bool Equals (AgentFeatures obj)
         {

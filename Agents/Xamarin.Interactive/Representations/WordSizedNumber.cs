@@ -7,17 +7,32 @@
 
 using System;
 
+using Newtonsoft.Json;
+
 using Xamarin.Interactive.Serialization;
 
 namespace Xamarin.Interactive.Representations
 {
-    [Serializable]
+    [JsonObject]
     sealed class WordSizedNumber : IRepresentationObject
     {
         public string RepresentedType { get; }
         public int Size { get; } = IntPtr.Size;
         public WordSizedNumberFlags Flags { get; }
         public object Value { get; }
+
+        [JsonConstructor]
+        WordSizedNumber (
+            string representedType,
+            int size,
+            WordSizedNumberFlags flags,
+            object value)
+        {
+            RepresentedType = representedType;
+            Size = size;
+            Flags = flags;
+            Value = value;
+        }
 
         public WordSizedNumber (object value, WordSizedNumberFlags flags, ulong storage)
         {
@@ -39,11 +54,6 @@ namespace Xamarin.Interactive.Representations
                 else
                     Value = storage;
             }
-        }
-
-        void ISerializableObject.Serialize (ObjectSerializer serializer)
-        {
-            throw new NotImplementedException ();
         }
     }
 }

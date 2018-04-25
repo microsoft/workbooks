@@ -8,15 +8,16 @@
 using System;
 using System.Runtime.Serialization;
 
+using Newtonsoft.Json;
+
 using Xamarin.Interactive.Representations.Reflection;
 using Xamarin.Interactive.Serialization;
 
 namespace Xamarin.Interactive.Representations
 {
-    [Serializable]
     abstract class InteractiveObjectBase : IInteractiveObject
     {
-        [NonSerialized] readonly InteractiveItemPreparer itemPreparer;
+        [JsonIgnore] readonly InteractiveItemPreparer itemPreparer;
 
         protected InteractiveItemPreparer ItemPreparer {
             get { return itemPreparer; }
@@ -25,7 +26,20 @@ namespace Xamarin.Interactive.Representations
         public long Handle { get; set; }
         public long RepresentedObjectHandle { get; protected set; }
         public RepresentedType RepresentedType { get; protected set; }
-        public int Depth { get; private set; }
+        public int Depth { get; }
+
+        [JsonConstructor]
+        protected InteractiveObjectBase (
+            long handle,
+            long representedObjectHandle,
+            RepresentedType representedType,
+            int depth)
+        {
+            Handle = handle;
+            RepresentedObjectHandle = representedObjectHandle;
+            RepresentedType = representedType;
+            Depth = depth;
+        }
 
         protected InteractiveObjectBase (int depth, InteractiveItemPreparer itemPreparer)
         {
@@ -54,32 +68,5 @@ namespace Xamarin.Interactive.Representations
 
         protected abstract void Prepare ();
         protected abstract IInteractiveObject Interact (bool isUserInteraction, object message);
-
-        #region ISerializable Helpers
-
-        // InteractiveObjectBase does not implement ISerializable as to not force subclasses into it,
-        // but it does provide facilities to easily help subclasses should they choose to do so.
-        // Always ensure InteractiveObjectBase serializes the same data via ISerializable or reflection!
-
-        protected InteractiveObjectBase (SerializationInfo info, StreamingContext context)
-        {
-            Handle = info.GetInt64 (nameof(Handle));
-            RepresentedType = info.GetValue<RepresentedType> (nameof(RepresentedType));
-            Depth = info.GetInt32 (nameof(Depth));
-        }
-
-        protected virtual void GetObjectData (SerializationInfo info, StreamingContext context)
-        {
-            info.AddValue (nameof(Handle), Handle);
-            info.AddValue (nameof(RepresentedType), RepresentedType);
-            info.AddValue (nameof(Depth), Depth);
-        }
-
-        #endregion
-
-        void ISerializableObject.Serialize (ObjectSerializer serializer)
-        {
-            throw new NotImplementedException ();
-        }
     }
 }

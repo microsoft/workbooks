@@ -4,17 +4,20 @@
 using System;
 using System.IO;
 
+using Newtonsoft.Json;
+
 using Xamarin.Interactive.Core;
 
 namespace Xamarin.Interactive.CodeAnalysis.Resolving
 {
-    [Serializable]
+    [JsonObject]
     public sealed class AssemblyContent
     {
         public FilePath Location { get; }
         public byte [] PEImage { get; }
         public byte [] DebugSymbols { get; }
 
+        [JsonConstructor]
         internal AssemblyContent (FilePath location, byte [] peImage, byte [] debugSymbols)
         {
             Location = location;

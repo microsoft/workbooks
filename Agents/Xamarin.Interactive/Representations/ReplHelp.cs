@@ -9,57 +9,45 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 
+using Newtonsoft.Json;
+
 using Xamarin.Interactive.Representations.Reflection;
-using Xamarin.Interactive.Serialization;
 
 namespace Xamarin.Interactive.Representations
 {
-    [Serializable]
+    [JsonObject]
     sealed class ReplHelp : IRepresentationObject, IEnumerable<ReplHelp.Item>
     {
-        [Serializable]
+        [JsonObject]
         public struct Item : IRepresentationObject
         {
             public ITypeMember Member { get; }
             public string Description { get; }
             public bool ShowReturnType { get; }
 
+            [JsonConstructor]
             public Item (ITypeMember member, string description, bool showReturnType = false)
             {
                 Member = member;
                 Description = description;
                 ShowReturnType = showReturnType;
             }
-
-            void ISerializableObject.Serialize (ObjectSerializer serializer)
-            {
-                throw new NotImplementedException ();
-            }
         }
 
-        List<Item> items = new List<Item> ();
-        public IReadOnlyList<Item> Items {
-            get { return items; }
-        }
+        readonly List<Item> items;
+        public IReadOnlyList<Item> Items => items;
+
+        [JsonConstructor]
+        public ReplHelp (IReadOnlyList<Item> items = null)
+            => this.items = new List<Item> (items ?? Array.Empty<Item> ());
 
         public void Add (Item item)
-        {
-            items.Add (item);
-        }
+            => items.Add (item);
 
         public IEnumerator<Item> GetEnumerator ()
-        {
-            return items.GetEnumerator ();
-        }
+            => items.GetEnumerator ();
 
         IEnumerator IEnumerable.GetEnumerator ()
-        {
-            return GetEnumerator ();
-        }
-
-        void ISerializableObject.Serialize (ObjectSerializer serializer)
-        {
-            throw new NotImplementedException ();
-        }
+            => GetEnumerator ();
     }
 }

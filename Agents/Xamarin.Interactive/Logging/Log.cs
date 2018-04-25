@@ -14,19 +14,20 @@ namespace Xamarin.Interactive.Logging
     public static class Log
     {
         static readonly DateTime startTime = DateTime.UtcNow;
-        static ILogProvider provider;
+        static ILogProvider provider = new LogProvider (LogLevel.Warning);
 
-        public static bool IsInitialized => provider != null;
+        public static bool IsInitialized { get; private set; }
 
         internal static void Initialize (ILogProvider logProvider)
         {
             if (logProvider == null)
                 throw new ArgumentNullException (nameof (logProvider));
 
-            if (provider != null)
+            if (IsInitialized)
                 throw new InvalidOperationException ("already initialized");
 
             provider = logProvider;
+            IsInitialized = true;
         }
 
         internal static LogLevel GetLogLevel ()

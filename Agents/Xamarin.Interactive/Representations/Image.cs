@@ -6,16 +6,17 @@
 // Licensed under the MIT License.
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 
-using Xamarin.Interactive.Serialization;
+using Newtonsoft.Json;
 
 namespace Xamarin.Interactive.Representations
 {
-    [Serializable]
+    [JsonObject]
     public sealed class Image : IRepresentationObject
     {
         public static Image FromSvg (string svgData, int width = 0, int height = 0)
@@ -101,6 +102,7 @@ namespace Xamarin.Interactive.Representations
             }
         }
 
+        [JsonConstructor]
         public Image (ImageFormat format, byte [] data, int width = 0, int height = 0, double scale = 1)
         {
             if (data == null)
@@ -121,10 +123,5 @@ namespace Xamarin.Interactive.Representations
         public int Width { get; }
         public int Height { get; }
         public double Scale { get; }
-
-        void ISerializableObject.Serialize (ObjectSerializer serializer)
-        {
-            throw new NotImplementedException ();
-        }
     }
 }

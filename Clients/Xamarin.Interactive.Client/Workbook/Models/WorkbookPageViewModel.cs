@@ -16,6 +16,8 @@ using System.Threading.Tasks;
 
 using Xamarin.Interactive.Client;
 using Xamarin.Interactive.CodeAnalysis;
+using Xamarin.Interactive.CodeAnalysis.Evaluating;
+using Xamarin.Interactive.CodeAnalysis.Events;
 using Xamarin.Interactive.CodeAnalysis.Models;
 using Xamarin.Interactive.Editor;
 using Xamarin.Interactive.I18N;
@@ -330,14 +332,15 @@ namespace Xamarin.Interactive.Workbook.Models
 
         protected virtual void OnAgentConnected ()
         {
-            ClientSession.Agent.Api.Messages.Subscribe (new Observer<object> (HandleAgentMessage));
+            ClientSession.Agent.Api.EvaluationContextManager.Events.Subscribe (
+                new Observer<ICodeCellEvent> (HandleCodeCellEvent));
 
-            void HandleAgentMessage (object message)
+            void HandleCodeCellEvent (ICodeCellEvent evnt)
             {
-                if (message is CapturedOutputSegment segment)
+                if (evnt is CapturedOutputSegment segment)
                     MainThread.Post (() => RenderCapturedOutputSegment (segment));
 
-                if (message is Evaluation result)
+                if (evnt is Evaluation result)
                     MainThread.Post (() => RenderResult (result));
             }
         }
@@ -354,15 +357,16 @@ namespace Xamarin.Interactive.Workbook.Models
 
         #region Evaluation
 
-        public EvaluationContextId EvaluationContextId
-            => ClientSession.CompilationWorkspace.Configuration.CompilationConfiguration.EvaluationContextId;
+        public TargetCompilationConfiguration TargetCompilationConfiguration
+            => ClientSession.CompilationWorkspace.Configuration.CompilationConfiguration;
 
         protected async Task AbortEvaluationAsync ()
         {
             if (!ClientSession.Agent.IsConnected)
                 return;
 
-            await ClientSession.Agent.Api.AbortEvaluationAsync (EvaluationContextId);
+            await ClientSession.Agent.Api.EvaluationContextManager.AbortEvaluationAsync (
+                TargetCompilationConfiguration.EvaluationContextId);
         }
 
         public Task<bool> AddTopLevelReferencesAsync (
@@ -462,7 +466,8 @@ namespace Xamarin.Interactive.Workbook.Models
             var isFirstCell = codeCell.GetPreviousCell<CodeCell> () == null;
 
             if (isFirstCell && ClientSession.SessionKind == ClientSessionKind.Workbook)
-                await ClientSession.Agent.Api.ResetStateAsync ();
+                await ClientSession.Agent.Api.EvaluationContextManager.ResetStateAsync (
+                    TargetCompilationConfiguration.EvaluationContextId);
 
             while (codeCell != null) {
                 if (CodeCells.TryGetValue (codeCell.View.Editor, out codeCellState)) {
@@ -555,8 +560,8 @@ namespace Xamarin.Interactive.Workbook.Models
                     .Where (ra => ra.HasIntegration)
                     .ToArray ();
                 if (integrationAssemblies.Length > 0)
-                    await ClientSession.Agent.Api.LoadAssembliesAsync (
-                        EvaluationContextId,
+                    await ClientSession.Agent.Api.EvaluationContextManager.LoadAssembliesAsync (
+                        TargetCompilationConfiguration.EvaluationContextId,
                         integrationAssemblies);
             } catch (Exception e) {
                 exception = ExceptionNode.Create (e);
@@ -569,13 +574,11 @@ namespace Xamarin.Interactive.Workbook.Models
                 codeCellState.View.RenderDiagnostic (diagnostic);
 
             try {
-                if (compilation != null) {
-                    codeCellState.IsResultAnExpression = compilation.IsResultAnExpression;
-
-                    await ClientSession.Agent.Api.EvaluateAsync (
+                if (compilation != null)
+                    await ClientSession.Agent.Api.EvaluationContextManager.EvaluateAsync (
+                        TargetCompilationConfiguration.EvaluationContextId,
                         compilation,
                         cancellationToken);
-                }
             } catch (XipErrorMessageException e) {
                 exception = e.XipErrorMessage.Exception;
             } catch (Exception e) {
@@ -626,8 +629,7 @@ namespace Xamarin.Interactive.Workbook.Models
 
         static void RenderResult (
             CodeCellState codeCellState,
-            Evaluation result,
-            bool isResultAnExpression)
+            Evaluation result)
         {
             if (codeCellState == null)
                 throw new ArgumentNullException (nameof (codeCellState));
@@ -651,10 +653,10 @@ namespace Xamarin.Interactive.Workbook.Models
                     cultureInfo,
                     EvaluationService.FilterException (result.Exception),
                     result.ResultHandling);
-            else if (!result.Interrupted && result.Result != null || isResultAnExpression)
+            else if (result.ResultHandling != EvaluationResultHandling.Ignore)
                 codeCellState.View.RenderResult (
                     cultureInfo,
-                    result.Result,
+                    result.ResultRepresentations is RepresentedObject ro ? ro : result.ResultRepresentations? [0],
                     result.ResultHandling);
         }
 
@@ -667,8 +669,8 @@ namespace Xamarin.Interactive.Workbook.Models
             if (codeCellState == null)
                 return;
 
-            if (result.Result is RepresentedObject ro &&
-                ro.Any (r => r is Guid guid && guid == EvaluationContextGlobalObject.clear)) {
+            if (result.ResultRepresentations?.Any (
+                r => r is Guid guid && guid == EvaluationContextGlobalObject.clear) == true) {
                 if (ClientSession.SessionKind == ClientSessionKind.Workbook)
                     codeCellState.View.RenderDiagnostic (new Diagnostic (
                         DiagnosticSeverity.Error,
@@ -679,7 +681,7 @@ namespace Xamarin.Interactive.Workbook.Models
                 return;
             }
 
-            RenderResult (codeCellState, result, codeCellState.IsResultAnExpression);
+            RenderResult (codeCellState, result);
         }
 
         void RenderCapturedOutputSegment (CapturedOutputSegment segment)

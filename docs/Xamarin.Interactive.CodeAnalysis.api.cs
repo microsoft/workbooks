@@ -9,52 +9,6 @@
 [assembly: TargetFramework (".NETStandard,Version=v2.0", FrameworkDisplayName = "")]
 namespace Xamarin.Interactive.CodeAnalysis
 {
-    public enum CodeCellEvaluationStatus
-    {
-        Success,
-        Disconnected,
-        Interrupted,
-        ErrorDiagnostic,
-        EvaluationException
-    }
-    public sealed class EvaluationService : IEvaluationService, IDisposable
-    {
-        public bool CanEvaluate {
-            get;
-        }
-
-        public EvaluationContextId EvaluationContextId {
-            get;
-        }
-
-        public IObservable<ICodeCellEvent> Events {
-            get;
-        }
-
-        public EvaluationService (IWorkspaceService workspace, EvaluationEnvironment evaluationEnvironment);
-
-        public Task<bool> AddTopLevelReferencesAsync (IReadOnlyList<string> references, CancellationToken cancellationToken = default(CancellationToken));
-
-        public void Dispose ();
-
-        public Task EvaluateAllAsync (CancellationToken cancellationToken = default(CancellationToken));
-
-        public Task EvaluateAsync (string input, CancellationToken cancellationToken = default(CancellationToken));
-
-        public Task<CodeCellEvaluationFinishedEvent> EvaluateAsync (CodeCellId targetCodeCellId = default(CodeCellId), bool evaluateAll = false, CancellationToken cancellationToken = default(CancellationToken));
-
-        public IDisposable InhibitEvaluate ();
-
-        public Task<CodeCellId> InsertCodeCellAsync (string initialBuffer = null, CodeCellId relativeToCodeCellId = default(CodeCellId), bool insertBefore = false, CancellationToken cancellationToken = default(CancellationToken));
-
-        public Task LoadWorkbookDependencyAsync (string dependency, CancellationToken cancellationToken = default(CancellationToken));
-
-        public void OutdateAllCodeCells ();
-
-        public Task RemoveCodeCellAsync (CodeCellId codeCellId, CancellationToken cancellationToken = default(CancellationToken));
-
-        public Task<CodeCellUpdatedEvent> UpdateCodeCellAsync (CodeCellId codeCellId, string buffer, CancellationToken cancellationToken = default(CancellationToken));
-    }
     public interface IWorkspaceService
     {
         WorkspaceConfiguration Configuration {
@@ -122,15 +76,9 @@ namespace Xamarin.Interactive.CodeAnalysis
             get;
         }
 
-        public Type HostObjectType {
-            get;
-        }
+        public WorkspaceConfiguration (TargetCompilationConfiguration compilationConfiguration, InteractiveDependencyResolver dependencyResolver);
 
-        public bool IncludePEImagesInDependencyResolution {
-            get;
-        }
-
-        public WorkspaceConfiguration (TargetCompilationConfiguration compilationConfiguration, InteractiveDependencyResolver dependencyResolver, bool includePEImagesInDependencyResolution, Type hostObjectType = null);
+        public static Task<WorkspaceConfiguration> CreateAsync (IEvaluationContextManager evaluationContextManager, CancellationToken cancellationToken = default(CancellationToken));
     }
     [AttributeUsage (AttributeTargets.Assembly)]
     public sealed class WorkspaceServiceAttribute : Attribute
@@ -147,6 +95,54 @@ namespace Xamarin.Interactive.CodeAnalysis
     }
     public static class WorkspaceServiceFactory
     {
+        public static async Task<IWorkspaceService> CreateWorkspaceServiceAsync (LanguageDescription languageDescription, WorkspaceConfiguration configuration, CancellationToken cancellationToken = default(CancellationToken));
+    }
+}
+namespace Xamarin.Interactive.CodeAnalysis.Evaluating
+{
+    public enum CodeCellEvaluationStatus
+    {
+        Success,
+        Disconnected,
+        Interrupted,
+        ErrorDiagnostic,
+        EvaluationException
+    }
+    public sealed class EvaluationService : IEvaluationService, IDisposable
+    {
+        public bool CanEvaluate {
+            get;
+        }
+
+        public IObservable<ICodeCellEvent> Events {
+            get;
+        }
+
+        public TargetCompilationConfiguration TargetCompilationConfiguration {
+            get;
+        }
+
+        public EvaluationService (IWorkspaceService workspace, EvaluationEnvironment evaluationEnvironment, IEvaluationContextManager evaluationContextManager = null);
+
+        public Task<bool> AddTopLevelReferencesAsync (IReadOnlyList<string> references, CancellationToken cancellationToken = default(CancellationToken));
+
+        public void Dispose ();
+
+        public Task EvaluateAllAsync (CancellationToken cancellationToken = default(CancellationToken));
+
+        public Task<CodeCellEvaluationFinishedEvent> EvaluateAsync (CodeCellId targetCodeCellId = default(CodeCellId), bool evaluateAll = false, CancellationToken cancellationToken = default(CancellationToken));
+
+        public IDisposable InhibitEvaluate ();
+
+        public Task<CodeCellId> InsertCodeCellAsync (string initialBuffer = null, CodeCellId relativeToCodeCellId = default(CodeCellId), bool insertBefore = false, CancellationToken cancellationToken = default(CancellationToken));
+
+        public void NotifyEvaluationContextManagerChanged (IEvaluationContextManager evaluationContextManager);
+
+        public void OutdateAllCodeCells ();
+
+        public Task RemoveCodeCellAsync (CodeCellId codeCellId, CancellationToken cancellationToken = default(CancellationToken));
+
+        public Task<CodeCellUpdatedEvent> UpdateCodeCellAsync (CodeCellId codeCellId, string buffer, CancellationToken cancellationToken = default(CancellationToken));
     }
 }
 namespace Xamarin.Interactive.CodeAnalysis.Events
@@ -178,26 +174,6 @@ namespace Xamarin.Interactive.CodeAnalysis.Events
         }
 
         public CodeCellEvaluationStartedEvent (CodeCellId codeCellId);
-    }
-    public sealed class CodeCellResultEvent : ICodeCellEvent
-    {
-        public CodeCellId CodeCellId {
-            get;
-        }
-
-        public EvaluationResultHandling ResultHandling {
-            get;
-        }
-
-        public IRepresentedType Type {
-            get;
-        }
-
-        public IReadOnlyList<object> ValueRepresentations {
-            get;
-        }
-
-        public CodeCellResultEvent (CodeCellId codeCellId, EvaluationResultHandling resultHandling, object value);
     }
     public struct CodeCellUpdatedEvent : ICodeCellEvent
     {
@@ -328,10 +304,12 @@ namespace Xamarin.Interactive.CodeAnalysis.Models
     [MonacoSerializable ("monaco.IPosition")]
     public struct Position
     {
+        [JsonProperty (DefaultValueHandling = DefaultValueHandling.Include)]
         public int Column {
             get;
         }
 
+        [JsonProperty (DefaultValueHandling = DefaultValueHandling.Include)]
         public int LineNumber {
             get;
         }
@@ -344,22 +322,27 @@ namespace Xamarin.Interactive.CodeAnalysis.Models
     [MonacoSerializable ("monaco.IRange")]
     public struct Range
     {
+        [JsonProperty (DefaultValueHandling = DefaultValueHandling.Include)]
         public int EndColumn {
             get;
         }
 
+        [JsonProperty (DefaultValueHandling = DefaultValueHandling.Include)]
         public int EndLineNumber {
             get;
         }
 
+        [JsonProperty (DefaultValueHandling = DefaultValueHandling.Include)]
         public string FilePath {
             get;
         }
 
+        [JsonProperty (DefaultValueHandling = DefaultValueHandling.Include)]
         public int StartColumn {
             get;
         }
 
+        [JsonProperty (DefaultValueHandling = DefaultValueHandling.Include)]
         public int StartLineNumber {
             get;
         }
@@ -374,10 +357,12 @@ namespace Xamarin.Interactive.CodeAnalysis.Models
     [MonacoSerializable ("monaco.languages.SignatureHelp")]
     public struct SignatureHelp
     {
+        [JsonProperty (DefaultValueHandling = DefaultValueHandling.Include)]
         public int ActiveParameter {
             get;
         }
 
+        [JsonProperty (DefaultValueHandling = DefaultValueHandling.Include)]
         public int ActiveSignature {
             get;
         }
@@ -452,7 +437,6 @@ namespace Xamarin.Interactive.CodeAnalysis.Resolving
 
         public static Task InitializingTask {
             get;
-            private set;
         }
 
         public static bool TryGetCachedAssemblyName (FilePath key, out AssemblyName assemblyName);

@@ -15,6 +15,7 @@ using Mono.Options;
 using Mono.Terminal;
 
 using Xamarin.Interactive.CodeAnalysis;
+using Xamarin.Interactive.CodeAnalysis.Evaluating;
 using Xamarin.Interactive.CodeAnalysis.Events;
 using Xamarin.Interactive.CodeAnalysis.Models;
 using Xamarin.Interactive.Core;
@@ -33,6 +34,7 @@ namespace Xamarin.Interactive.Client.Console
         static CodeCellId lastCodeCellId;
         static CodeCellEvaluationStatus lastCellEvaluationStatus;
         static Spinner evalSpinner;
+        static bool dumpEvaluationJson;
 
         static async Task<int> MainAsync (string [] args)
         {
@@ -45,6 +47,8 @@ namespace Xamarin.Interactive.Client.Console
                 { "" },
                 { "Options:" },
                 { "" },
+                { "json", "Dump the raw JSON for evaluations when rendering results",
+                    v => dumpEvaluationJson = true },
                 { "l|log=", "Write debugging log to file",
                     v => logWriter = new StreamWriter (v) },
                 { "h|help", "Show this help",
@@ -299,7 +303,7 @@ namespace Xamarin.Interactive.Client.Console
             case CapturedOutputSegment output:
                 RenderOutput (output);
                 break;
-            case CodeCellResultEvent result:
+            case Evaluation result:
                 RenderResult (result);
                 break;
             }
@@ -345,27 +349,40 @@ namespace Xamarin.Interactive.Client.Console
             ResetColor ();
         }
 
-        static void RenderResult (CodeCellResultEvent result)
+        static void RenderResult (Evaluation evaluation)
         {
+            if (dumpEvaluationJson) {
+                ForegroundColor = ConsoleColor.DarkCyan;
+                WriteLine (Xamarin.Interactive.Json.JsonConvert.SerializeObject (
+                    evaluation,
+                    Serialization.InteractiveJsonSerializerSettings.SharedInstance));
+                ResetColor ();
+            }
+
+            if (evaluation.IsNullResult) {
+                WriteLine ("null");
+                return;
+            }
+
             ForegroundColor = ConsoleColor.Magenta;
-            Write (result.Type.Name);
+            Write (evaluation.ResultType.Name);
             Write (": ");
             ResetColor ();
 
             // A full client would implement real result rendering and interaction,
             // but console client only cares about showing the ToString representation
-            // right now. We will always serialize a ReflectionInteractiveObject as
-            // a representation of a result which always contains the result of calling
+            // right now. We will always serialize a ToStringRepresentation as a
+            // representation of a result which always contains the result of calling
             // .ToString on that value. Find it and display that. If that's not available,
             // then the result was null or something unexpected happened in eval.
-            WriteLine (
-                result
-                    .ValueRepresentations
-                    .OfType<ReflectionInteractiveObject> ()
-                    .FirstOrDefault ()
-                    ?.ToStringRepresentation ??
-                        result.ValueRepresentations.FirstOrDefault () ??
-                            "null");
+
+            WriteLine (evaluation
+                .ResultRepresentations
+                .OfType<ToStringRepresentation> ()
+                .FirstOrDefault ()
+                .Formats
+                .FirstOrDefault ()
+                .Value);
         }
 
         static void RenderError (string message)

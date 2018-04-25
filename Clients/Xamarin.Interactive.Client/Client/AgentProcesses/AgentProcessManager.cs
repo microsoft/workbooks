@@ -182,20 +182,20 @@ namespace Xamarin.Interactive.Client.AgentProcesses
                     .AgentIdentificationManager
                     .GetAgentIdentityAsync (identifyAgentRequest).ConfigureAwait (false);
 
-                var agentAssociable = agentProcessState.AgentProcess as IAgentAssociable;
-                if (agentAssociable == null) {
-                    LogStartStatus (ticket, "creating agent client");
-                    agentProcessState.AgentClient = new AgentClient (
-                        agentProcessState.AgentIdentity.Host,
-                        agentProcessState.AgentIdentity.Port);
-                } else {
+                var agentClientIdentity = agentProcessState.AgentIdentity;
+
+                if (agentProcessState.AgentProcess is IAgentAssociable agentAssociable) {
                     LogStartStatus (ticket, "waiting on agent association");
-                    var agentAssociation = await agentAssociable.GetAgentAssociationAsync (
+                    agentClientIdentity = await agentAssociable.GetAgentAssociationAsync (
                         agentProcessState.AgentIdentity,
                         cancellationToken).ConfigureAwait (false);
-                    agentProcessState.AgentIdentity = agentAssociation.Identity;
-                    agentProcessState.AgentClient = agentAssociation.Client;
                 }
+
+                LogStartStatus (ticket, "creating agent client");
+                agentProcessState.AgentClient = new AgentClient (
+                    agentClientIdentity.Host,
+                    agentClientIdentity.Port,
+                    agentProcessState.AgentProcess.WorkbookApp.Sdk.AssemblySearchPaths);
 
                 try {
                     LogStartStatus (ticket, "registering ticket");

@@ -19,6 +19,7 @@ using UIKit;
 
 using Xamarin.Interactive.Client;
 using Xamarin.Interactive.CodeAnalysis;
+using Xamarin.Interactive.CodeAnalysis.Evaluating;
 using Xamarin.Interactive.CodeAnalysis.Resolving;
 using Xamarin.Interactive.Core;
 using Xamarin.Interactive.Inspection;
@@ -29,13 +30,11 @@ namespace Xamarin.Interactive.iOS
 {
     sealed class iOSAgent : Agent, IViewHierarchyHandler
     {
-        string tmpDir = Path.Combine (Environment.GetFolderPath (Environment.SpecialFolder.MyDocuments), "tmp");
-
         public iOSAgent ()
         {
             Identity = new AgentIdentity (
                 AgentType.iOS,
-                Sdk.FromEntryAssembly ("iOS"),
+                Sdk.FromEntryAssembly (SdkId.XamarinIos, "iOS"),
                 NSBundle.MainBundle.InfoDictionary ["CFBundleName"] as NSString,
                 screenWidth: (int)UIScreen.MainScreen.Bounds.Width,
                 screenHeight: (int)UIScreen.MainScreen.Bounds.Height);
@@ -49,54 +48,76 @@ namespace Xamarin.Interactive.iOS
         protected override IdentifyAgentRequest GetIdentifyAgentRequest ()
             => IdentifyAgentRequest.FromCommandLineArguments (NSProcessInfo.ProcessInfo.Arguments);
 
-        protected override EvaluationContextGlobalObject CreateEvaluationContextGlobalObject ()
-            => new iOSEvaluationContextGlobalObject (this);
+        protected override EvaluationContextManager CreateEvaluationContextManager ()
+            => new iOSEvaluationContextManager (this);
 
-        protected override void HandleResetState ()
+        sealed class iOSEvaluationContextManager : EvaluationContextManager
         {
-            if (ClientSessionUri.SessionKind == ClientSessionKind.LiveInspection)
-                return;
+            static readonly string tmpDir = Path.Combine (
+                Environment.GetFolderPath (Environment.SpecialFolder.MyDocuments),
+                "tmp");
 
-            var subviews = UIApplication.SharedApplication?.KeyWindow?.RootViewController?.View?.Subviews;
-            if (subviews == null)
-                return;
+            readonly iOSAgent agent;
 
-            foreach (var subview in subviews)
-                subview.RemoveFromSuperview ();
-        }
+            public iOSEvaluationContextManager (iOSAgent agent)
+                : base (agent.RepresentationManager, agent)
+                => this.agent = agent;
 
-        internal override IEnumerable<string> GetReplDefaultUsingNamespaces ()
-        {
-            return base.GetReplDefaultUsingNamespaces ()
-                .Concat (new [] { "Foundation", "CoreGraphics", "UIKit" });
-        }
+            static readonly string [] defaultImports = {
+                "Foundation",
+                "CoreGraphics",
+                "UIKit"
+            };
 
-        public override void LoadExternalDependencies (
-            Assembly loadedAssembly,
-            AssemblyDependency [] externalDependencies)
-        {
-            if (externalDependencies == null)
-                return;
+            protected override TargetCompilationConfiguration PrepareTargetCompilationConfiguration (
+                TargetCompilationConfiguration configuration)
+                => configuration.With (
+                    includePEImagesInDependencyResolution: configuration.CompilationOS != HostOS.macOS,
+                    defaultImports: configuration.DefaultImports.Concat (defaultImports).ToArray ());
 
-            foreach (var externalDep in externalDependencies) {
-                var location = externalDep.Location;
+            protected override object CreateGlobalState ()
+                => new iOSEvaluationContextGlobalObject (agent);
 
-                if (externalDep.Data != null) {
-                    try {
-                        Directory.CreateDirectory (tmpDir);
-                        location = Path.Combine (
-                            tmpDir,
-                            Path.GetFileName (externalDep.Location));
-                        File.WriteAllBytes (location, externalDep.Data);
-                    } catch {
-                        continue;
+            protected override void OnResetState ()
+            {
+                if (agent.ClientSessionUri.SessionKind == ClientSessionKind.LiveInspection)
+                    return;
+
+                var subviews = UIApplication.SharedApplication?.KeyWindow?.RootViewController?.View?.Subviews;
+                if (subviews == null)
+                    return;
+
+                foreach (var subview in subviews)
+                    subview.RemoveFromSuperview ();
+            }
+
+            internal override void LoadExternalDependencies (
+                Assembly loadedAssembly,
+                IReadOnlyList<AssemblyDependency> externalDependencies)
+            {
+                if (externalDependencies == null)
+                    return;
+
+                foreach (var externalDep in externalDependencies) {
+                    var location = externalDep.Location;
+
+                    if (externalDep.Data != null) {
+                        try {
+                            Directory.CreateDirectory (tmpDir);
+                            location = Path.Combine (
+                                tmpDir,
+                                Path.GetFileName (externalDep.Location));
+                            File.WriteAllBytes (location, externalDep.Data);
+                        } catch {
+                            continue;
+                        }
                     }
+
+                    Dlfcn.dlopen (location, 0);
+
+                    if (externalDep.Data != null)
+                        File.Delete (location);
                 }
-
-                Dlfcn.dlopen (location, 0);
-
-                if (externalDep.Data != null)
-                    File.Delete (location);
             }
         }
 

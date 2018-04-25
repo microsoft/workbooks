@@ -27,10 +27,8 @@ namespace Xamarin.Interactive
             Default = new InteractiveInstallation (installationPaths);
         }
 
-        readonly Dictionary<AgentType, List<string>> agentAssemblyPaths
-            = new Dictionary<AgentType, List<string>> ();
-        readonly Dictionary<AgentType, List<string>> formsAgentAssemblyPaths
-            = new Dictionary<AgentType, List<string>> ();
+        readonly Dictionary<string, List<string>> formsAgentAssemblyPaths
+            = new Dictionary<string, List<string>> ();
         List<string> clientAppPaths;
 
         readonly string workbooksClientInstallPath;
@@ -52,10 +50,13 @@ namespace Xamarin.Interactive
             toolsInstallPath = installationPaths?.ToolsInstallPath;
         }
 
-        public string LocateFormsAssembly (AgentType agentType)
+        public string LocateFormsAssembly (string sdkId)
         {
+            if (sdkId == null)
+                return null;
+
             List<string> paths;
-            if (formsAgentAssemblyPaths.TryGetValue (agentType, out paths))
+            if (formsAgentAssemblyPaths.TryGetValue (sdkId, out paths))
                 return paths.First ();
 
             var searchPaths = new List<string> ();
@@ -63,13 +64,13 @@ namespace Xamarin.Interactive
                 searchPaths.Add (Path.Combine (agentsInstallPath, "Agents", "Forms"));
 
             string assemblyName = null;
-            switch (agentType) {
-            case AgentType.iOS:
+            switch (sdkId) {
+            case "ios-xamarinios":
                 assemblyName = "Xamarin.Interactive.Forms.iOS.dll";
                 searchPaths.Add (Path.Combine (
                     BuildPath, "Agents", "Xamarin.Interactive.Forms.iOS", "bin"));
                 break;
-            case AgentType.Android:
+            case "android-xamarinandroid":
                 assemblyName = "Xamarin.Interactive.Forms.Android.dll";
                 searchPaths.Add (Path.Combine (
                     BuildPath, "Agents", "Xamarin.Interactive.Forms.Android", "bin"));
@@ -78,7 +79,7 @@ namespace Xamarin.Interactive
                 return null;
             }
 
-            formsAgentAssemblyPaths.Add (agentType, paths = LocateFiles (searchPaths, assemblyName).ToList ());
+            formsAgentAssemblyPaths.Add (sdkId, paths = LocateFiles (searchPaths, assemblyName).ToList ());
             return paths.First ();
         }
 

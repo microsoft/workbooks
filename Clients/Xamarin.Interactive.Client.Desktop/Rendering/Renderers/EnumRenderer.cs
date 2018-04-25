@@ -75,7 +75,7 @@ namespace Xamarin.Interactive.Rendering.Renderers
             remainder = ToUInt64 (source.Value);
             var origValue = remainder;
 
-            var index = source.Values.Length - 1;
+            var index = source.Values.Count - 1;
             while (index >= 0) {
                 var value = ToUInt64 (source.Values [index]);
 
@@ -94,7 +94,7 @@ namespace Xamarin.Interactive.Rendering.Renderers
             // special case the first enum value of '0' but only
             // show it by name when the value is actually 0
             if (names.Count == 0 && origValue == 0 &&
-                source.Values.Length > 0 && ToUInt64 (source.Values [0]) == 0)
+                source.Values.Count > 0 && ToUInt64 (source.Values [0]) == 0)
                 names.Add (source.Names [0]);
 
             return names;

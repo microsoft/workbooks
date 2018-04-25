@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 using Xamarin.Interactive.Client;
 using Xamarin.Interactive.CodeAnalysis;
+using Xamarin.Interactive.CodeAnalysis.Evaluating;
 using Xamarin.Interactive.CodeAnalysis.Events;
 using Xamarin.Interactive.Core;
 using Xamarin.Interactive.Logging;
@@ -21,6 +22,7 @@ namespace Xamarin.Interactive.Session
     {
         readonly ClientSessionKind sessionKind;
         readonly ClientSessionUri agentUri;
+        readonly IEvaluationContextManager evaluationContextManager;
         readonly CancellationTokenSource cancellationTokenSource = new CancellationTokenSource ();
 
         readonly Observable<InteractiveSessionEvent> events = new Observable<InteractiveSessionEvent> ();
@@ -48,6 +50,16 @@ namespace Xamarin.Interactive.Session
         {
             this.sessionKind = sessionKind;
             this.agentUri = agentUri;
+        }
+
+        internal InteractiveSession (
+            IEvaluationContextManager evaluationContextManager,
+            ClientSessionKind sessionKind = ClientSessionKind.Workbook)
+        {
+            this.evaluationContextManager = evaluationContextManager
+                ?? throw new ArgumentNullException (nameof (evaluationContextManager));
+
+            this.sessionKind = sessionKind;
         }
 
         void CheckDisposed ()
@@ -91,7 +103,7 @@ namespace Xamarin.Interactive.Session
             PostEvent (InitializingWorkspace);
 
             var workspaceConfiguration = await WorkspaceConfiguration.CreateAsync (
-                State.AgentConnection,
+                State.AgentConnection.Api.EvaluationContextManager,
                 sessionKind,
                 cancellationToken).ConfigureAwait (false);
 
@@ -104,7 +116,8 @@ namespace Xamarin.Interactive.Session
                 workspaceService,
                 sessionDescription.EvaluationEnvironment);
 
-            evaluationService.NotifyAgentConnected (state.AgentConnection);
+            evaluationService.NotifyEvaluationContextManagerChanged (
+                state.AgentConnection.Api.EvaluationContextManager);
 
             PackageManagerService packageManagerService = null;
 
@@ -204,7 +217,7 @@ namespace Xamarin.Interactive.Session
                     ((IDisposable)State.AgentConnection).Dispose ();
                 }
 
-                State.EvaluationService.service?.NotifyAgentDisconnected ();
+                State.EvaluationService.service?.NotifyEvaluationContextManagerChanged (null);
 
                 State = State.WithAgentConnection (new AgentConnection (agentType));
             }

@@ -50,6 +50,7 @@ namespace ApiDump
                     !typeDeclaration.Modifiers.HasFlag (Modifiers.Static) &&
                     !typeDeclaration.Modifiers.HasFlag (Modifiers.Abstract)) {
                     switch (typeDeclaration.Name) {
+                    case "EvaluationContextManager":
                     case "EvaluationContextGlobalObject":
                     case "DependencyResolver":
                     case "NativeDependencyResolver":

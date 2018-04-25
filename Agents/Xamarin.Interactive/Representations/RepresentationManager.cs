@@ -22,27 +22,50 @@ using Xamarin.Interactive.Serialization;
 
 namespace Xamarin.Interactive.Representations
 {
-    sealed class RepresentationManager : IRepresentationManager
+    [Flags]
+    public enum RepresentationManagerOptions
+    {
+        None = 0 << 0,
+        EnforceMainThread = 1 << 0,
+        YieldOriginal = 1 << 1,
+        YieldInteractive = 1 << 2
+    }
+
+    public sealed class RepresentationManager
     {
         const string TAG = nameof (RepresentationManager);
 
         AgentRepresentationProvider agentRepresentationProvider;
         readonly List<RepresentationProvider> providers = new List<RepresentationProvider> (4);
+        readonly HashSet<Type> activatedProviderTypes = new HashSet<Type> ();
+        readonly RepresentationManagerOptions options;
 
-        // FIXME: this is a hack to avoid serializing ISerializableObject types
-        // when preparing representations that are *not* going to rendered by
-        // a web view (e.g. the property grid instead of the workbook surface).
-        // Remove this when native deserialization for ISerializationObject is
-        // implemented (e.g. when we support UWP). Prepare only happens on
-        // the main thread, so just tracking this "globally" should be sufficient.
-        bool currentPreparePassAllowsISerializableObject;
+        public RepresentationManager (RepresentationManagerOptions options =
+            RepresentationManagerOptions.EnforceMainThread |
+            RepresentationManagerOptions.YieldInteractive)
+            => this.options = options;
+
+        void MaybeEnsureMainThread ()
+        {
+            if (options.HasFlag (RepresentationManagerOptions.EnforceMainThread))
+                MainThread.Ensure ();
+        }
+
+        public void AddProvider<TRepresentationProvider> ()
+            where TRepresentationProvider : RepresentationProvider, new ()
+        {
+            MaybeEnsureMainThread ();
+
+            if (activatedProviderTypes.Add (typeof (TRepresentationProvider)))
+                AddProvider (new TRepresentationProvider ());
+        }
 
         public void AddProvider (RepresentationProvider provider)
         {
             if (provider == null)
                 throw new ArgumentNullException (nameof (provider));
 
-            MainThread.Ensure ();
+            MaybeEnsureMainThread ();
 
             if (provider is AgentRepresentationProvider agentProvider) {
                 if (agentRepresentationProvider != null)
@@ -70,19 +93,17 @@ namespace Xamarin.Interactive.Representations
             return typeMapRepresentationProvider;
         }
 
-        public void AddProvider (string typeName, Func<dynamic, object> handler)
+        public void AddProvider (string typeName, Func<object, object> handler)
             => EnsureTypeMapRepresentationProvider ().RegisterHandler (typeName, false, handler);
 
         public void AddProvider<T> (Func<T, object> handler)
             => EnsureTypeMapRepresentationProvider ().RegisterHandler (false, handler);
 
-        public InteractiveObject PrepareInteractiveObject (object obj)
+        internal InteractiveObject PrepareInteractiveObject (object obj)
         {
             if (obj == null)
                 return null;
 
-            // We don't want ISerializableObject here, ever.
-            currentPreparePassAllowsISerializableObject = false;
             var interactiveObject = new ReflectionInteractiveObject (
                 0,
                 obj,
@@ -96,14 +117,12 @@ namespace Xamarin.Interactive.Representations
         /// <summary>
         /// Prepare serializable representations for an arbitrary object.
         /// </summary>
-        public RepresentedObject Prepare (object obj, bool allowISerializableObject = true)
+        public object Prepare (object obj)
         {
             if (obj == null)
                 return null;
 
-            MainThread.Ensure ();
-
-            currentPreparePassAllowsISerializableObject = allowISerializableObject;
+            MaybeEnsureMainThread ();
 
             var representations = new RepresentedObject (obj.GetType ());
             Prepare (representations, 0, obj);
@@ -126,17 +145,15 @@ namespace Xamarin.Interactive.Representations
             if (obj == null)
                 return;
 
-            MainThread.Ensure ();
+            MaybeEnsureMainThread ();
 
-            var normalizedObj = Normalize (obj);
-            representations.Add (normalizedObj);
+            if (options.HasFlag (RepresentationManagerOptions.YieldOriginal))
+                representations.Add (obj);
 
-            if (normalizedObj == null)
-                representations.Add (ToJson (obj));
-            else
-                representations.Add (ToJson (normalizedObj));
+            representations.Add (Normalize (obj));
+            representations.Add (new ToStringRepresentation (obj));
 
-            var skipInteractive = false;
+            var skipInteractive = !options.HasFlag (RepresentationManagerOptions.YieldInteractive);
             var interactiveObj = obj;
 
             // It is not safe to provide Representation objects to providers
@@ -221,10 +238,6 @@ namespace Xamarin.Interactive.Representations
                 return interactive;
             case IRepresentationObject _:
                 return obj;
-            case ISerializableObject iserializableObject when currentPreparePassAllowsISerializableObject:
-                return (JsonPayload)iserializableObject.SerializeToString ();
-            case IFallbackRepresentationObject _:
-                return obj;
             case Exception exception:
                 return ExceptionNode.Create (exception);
             case MemberInfo memberInfo:
@@ -258,25 +271,6 @@ namespace Xamarin.Interactive.Representations
 
                 return null;
             }
-        }
-
-        /// <summary>
-        /// Produces a JSON representation of an object that otherwise does not
-        /// directly implement JSON support (e.g. ISerializableObject). This is
-        /// mostly useful for representing primitives in JSON either by value
-        /// or via ToString.
-        /// </summary>
-        internal static JsonPayload ToJson (object obj)
-        {
-            if (obj == null)
-                return null;
-            var writer = new StringWriter ();
-            var serializer = new ObjectSerializer (
-                writer,
-                enableTypes: false,
-                enableReferences: false);
-            serializer.Object (new JsonRepresentation (obj));
-            return writer.ToString ();
         }
 
         /// <summary>
@@ -424,7 +418,7 @@ namespace Xamarin.Interactive.Representations
         /// represented object such as a UIKit.UIColor via the first successful call
         /// to a registered <see cref="RepresentationProvider"/>'s version of this method.
         /// </summary>
-        public bool TryConvertFromRepresentation (
+        internal bool TryConvertFromRepresentation (
             IRepresentedType representedType,
             object [] representations,
             out object represented)

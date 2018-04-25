@@ -7,6 +7,7 @@
     <IsPackable>false</IsPackable>
     <RuntimeIdentifiers>osx-x64;win-x64</RuntimeIdentifiers>
     <AssemblyName>workbooks-server</AssemblyName>
+    <DefineConstants>$(DefineConstants);EXTERNAL_INTERACTIVE_JSON_SERIALIZER_SETTINGS</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>
@@ -27,6 +28,12 @@
     <ProjectReference Include="..\..\CodeAnalysis\Xamarin.Interactive.CodeAnalysis\Xamarin.Interactive.CodeAnalysis.csproj" />
     <ProjectReference Include="..\..\CodeAnalysis\Xamarin.Interactive.CodeAnalysis.Roslyn\Xamarin.Interactive.CodeAnalysis.Roslyn.csproj" />
     <ProjectReference Include="..\Xamarin.Interactive.Client\Xamarin.Interactive.Client.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="..\..\Agents\Xamarin.Interactive\Serialization\InteractiveJsonSerializerSettings.cs">
+      <Link>Serialization\InteractiveJsonSerializerSettings.cs</Link>
+    </Compile>
   </ItemGroup>
 
   <ItemGroup>

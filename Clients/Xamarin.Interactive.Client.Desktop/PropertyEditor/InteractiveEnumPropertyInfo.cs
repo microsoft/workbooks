@@ -26,13 +26,12 @@ namespace Xamarin.Interactive.PropertyEditor
             : base (editor, index)
         {
             var enumValue = GetEnumValue ();
-            string [] names = enumValue.Names;
-            Array values = enumValue.Values;
+            var names = enumValue.Names;
+            var values = enumValue.Values;
 
-            var predefinedValues = new Dictionary<string, T> (names.Length);
-            for (int i = 0; i < names.Length; i++) {
-                predefinedValues.Add (names [i], (T)values.GetValue (i));
-            }
+            var predefinedValues = new Dictionary<string, T> (names.Count);
+            for (int i = 0; i < names.Count; i++)
+                predefinedValues.Add (names [i], (T)values [i]);
 
             IsConstrainedToPredefined = true;
             PredefinedValues = predefinedValues;

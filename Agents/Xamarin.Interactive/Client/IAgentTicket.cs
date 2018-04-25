@@ -17,14 +17,12 @@ namespace Xamarin.Interactive.Client
 {
     interface IAgentTicket : INotifyDisposed
     {
-        IReadOnlyList<string> AssemblySearchPaths { get; }
-
         IMessageService MessageService { get; }
 
         Task<AgentIdentity> GetAgentIdentityAsync (
             CancellationToken cancellationToken = default (CancellationToken));
 
-        Task<AgentClient> GetClientAsync (
+        Task<IAgentClient> GetClientAsync (
             CancellationToken cancellationToken = default (CancellationToken));
     }
 }

@@ -10,8 +10,8 @@ import { CodeCellResult } from '../evaluation';
 import { ResultRenderer, ResultRendererRepresentation } from '../rendering'
 
 export default function ToStringRendererFactory(result: CodeCellResult) {
-    return result.valueRepresentations &&
-        result.valueRepresentations.some(r => r.$toString)
+    return result.resultRepresentations &&
+        result.resultRepresentations.some(r => r.$toString)
         ? new ToStringRenderer
         : null
 }
@@ -33,10 +33,10 @@ class ToStringRenderer implements ResultRenderer {
     getRepresentations(result: CodeCellResult) {
         const reps: ResultRendererRepresentation[] = []
 
-        if (!result.valueRepresentations)
+        if (!result.resultRepresentations)
             return reps
 
-        for (const value of result.valueRepresentations) {
+        for (const value of result.resultRepresentations) {
             if (!value.$toString)
                 continue
 

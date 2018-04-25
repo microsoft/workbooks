@@ -2,20 +2,38 @@
 // Licensed under the MIT License.
 
 using System;
+using System.Collections.Generic;
 using System.Reflection;
+
+using Newtonsoft.Json;
 
 using Xamarin.Interactive.Core;
 
 namespace Xamarin.Interactive.CodeAnalysis.Resolving
 {
-    [Serializable]
+    [JsonObject]
     public sealed class AssemblyDefinition
     {
         public AssemblyIdentity Name { get; }
         public AssemblyEntryPoint EntryPoint { get; }
         public AssemblyContent Content { get; }
-        public AssemblyDependency [] ExternalDependencies { get; }
+        public IReadOnlyList<AssemblyDependency> ExternalDependencies { get; }
         public bool HasIntegration { get; }
+
+        [JsonConstructor]
+        AssemblyDefinition (
+            AssemblyIdentity name,
+            AssemblyEntryPoint entryPoint,
+            AssemblyContent content,
+            IReadOnlyList<AssemblyDependency> externalDependencies,
+            bool hasIntegration)
+        {
+            Name = name;
+            EntryPoint = entryPoint;
+            Content = content;
+            ExternalDependencies = externalDependencies;
+            HasIntegration = hasIntegration;
+        }
 
         public AssemblyDefinition (
             AssemblyName name,
@@ -47,12 +65,13 @@ namespace Xamarin.Interactive.CodeAnalysis.Resolving
             byte [] debugSymbols = null,
             AssemblyDependency [] externalDependencies = null,
             bool hasIntegration = false)
+            : this (
+                name,
+                new AssemblyEntryPoint (entryPointType, entryPointMethod),
+                new AssemblyContent (location, peImage, debugSymbols),
+                externalDependencies,
+                hasIntegration)
         {
-            Name = name;
-            EntryPoint = new AssemblyEntryPoint (entryPointType, entryPointMethod);
-            Content = new AssemblyContent (location, peImage, debugSymbols);
-            ExternalDependencies = externalDependencies;
-            HasIntegration = hasIntegration;
         }
     }
 }

@@ -7,30 +7,27 @@
 // Licensed under the MIT License.
 
 using System;
+using System.Collections.Generic;
 
-using Xamarin.Interactive.Serialization;
+using Newtonsoft.Json;
 
 namespace Xamarin.Interactive.Representations
 {
-    [Serializable]
+    [JsonObject]
     public sealed class GeoPolyline : IRepresentationObject
     {
-        public GeoPolyline (GeoLocation [] points)
+        public IReadOnlyList<GeoLocation> Points { get; }
+
+        [JsonConstructor]
+        public GeoPolyline (IReadOnlyList<GeoLocation> points)
         {
             if (points == null)
                 throw new ArgumentNullException (nameof (points));
 
-            if (points.Length < 1)
+            if (points.Count < 1)
                 throw new ArgumentOutOfRangeException (nameof (points), "must have at least one");
 
             Points = points;
-        }
-
-        public GeoLocation [] Points { get; }
-
-        void ISerializableObject.Serialize (ObjectSerializer serializer)
-        {
-            throw new NotImplementedException ();
         }
     }
 }

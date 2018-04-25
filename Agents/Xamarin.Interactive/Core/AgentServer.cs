@@ -6,9 +6,12 @@
 // Licensed under the MIT License.
 
 using System;
+using System.IO;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
+
+using Newtonsoft.Json;
 
 using Xamarin.Interactive.Core;
 using Xamarin.Interactive.Logging;
@@ -37,13 +40,13 @@ namespace Xamarin.Interactive.Protocol
         {
             try {
                 context.Response.StatusCode = 200;
-                context.Response.ContentType = "application/octet-stream";
+                context.Response.ContentType = "application/json";
 
-                var requestSerializer = new XipSerializer (
-                    context.Request.InputStream,
-                    InteractiveSerializerSettings.SharedInstance);
+                var serializer = InteractiveJsonSerializerSettings
+                    .SharedInstance
+                    .CreateSerializer ();
 
-                var requestObject = requestSerializer.Deserialize ();
+                var requestObject = serializer.Deserialize (context.Request.InputStream);
                 if (requestObject == null) {
                     Log.Warning (TAG, "Accept: value must not be null");
                     return Task.CompletedTask;
@@ -58,13 +61,10 @@ namespace Xamarin.Interactive.Protocol
 
                 Log.Debug (TAG, $"Accept: received message: {message.GetType ()}");
 
-                var responseSerializer = new XipSerializer (
-                    context.Response.OutputStream,
-                    InteractiveSerializerSettings.SharedInstance);
-
-                message.Handle (agent, responseSerializer.Serialize);
-
-                responseSerializer.Serialize (new XipEndOfMessagesMessage ());
+                message.Handle (agent, result => {
+                    serializer.Serialize (context.Response.OutputStream, result);
+                    context.Response.OutputStream.Flush ();
+                });
             } catch (Exception e) {
                 Log.Error (TAG, e);
             }

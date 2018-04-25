@@ -25,14 +25,14 @@ namespace Xamarin.Interactive.CodeAnalysis.Resolving
 
         readonly Architecture agentArchitecture;
 
-        internal AgentType AgentType { get; }
+        internal TargetCompilationConfiguration CompilationConfiguration { get; }
 
-        internal NativeDependencyResolver (AgentType agentType)
+        internal NativeDependencyResolver (TargetCompilationConfiguration compilationConfiguration)
         {
-            AgentType = agentType;
+            CompilationConfiguration = compilationConfiguration;
 
             agentArchitecture = Environment.Is64BitProcess &&
-                (HostEnvironment.OS != HostOS.Windows || AgentType != AgentType.DotNetCore)
+                (HostEnvironment.OS != HostOS.Windows || compilationConfiguration.Sdk.IsNot (SdkId.ConsoleNetCore))
                 ? Architecture.X64
                 : Architecture.X86;
         }
@@ -46,7 +46,7 @@ namespace Xamarin.Interactive.CodeAnalysis.Resolving
             var resolvedAssembly = base.ParseAssembly (resolveOperation, path, peReader, metadataReader);
             var nativeDependencies = new List<ExternalDependency> ();
 
-            if (AgentType == AgentType.iOS)
+            if (CompilationConfiguration.Sdk.Is (SdkId.XamarinIos))
                 nativeDependencies.AddRange (
                     GetEmbeddedFrameworks (
                         resolveOperation,

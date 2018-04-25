@@ -19,6 +19,7 @@ using CoreGraphics;
 
 using Xamarin.Interactive.Client;
 using Xamarin.Interactive.CodeAnalysis;
+using Xamarin.Interactive.CodeAnalysis.Evaluating;
 using Xamarin.Interactive.CodeAnalysis.Resolving;
 using Xamarin.Interactive.Core;
 using Xamarin.Interactive.Inspection;
@@ -41,15 +42,17 @@ namespace Xamarin.Interactive.Mac
         {
             #if MAC_MOBILE
             var agentType = AgentType.MacMobile;
+            var sdkId = SdkId.XamarinMacModern;
             const string profile = "Modern";
             #elif MAC_DESKTOP
             var agentType = AgentType.MacNet45;
+            var sdkId = SdkId.XamarinMacFull;
             const string profile = "Full";
             #endif
 
             Identity = new AgentIdentity (
                 agentType,
-                Sdk.FromEntryAssembly ("Xamarin.Mac", profile),
+                Sdk.FromEntryAssembly (sdkId, "Xamarin.Mac", profile),
                 NSBundle.MainBundle.InfoDictionary ["CFBundleName"] as NSString);
 
             RepresentationManager.AddProvider (new MacRepresentationProvider ());
@@ -61,28 +64,68 @@ namespace Xamarin.Interactive.Mac
         protected override IdentifyAgentRequest GetIdentifyAgentRequest ()
             => IdentifyAgentRequest.FromCommandLineArguments (NSProcessInfo.ProcessInfo.Arguments);
 
-        protected override EvaluationContextGlobalObject CreateEvaluationContextGlobalObject ()
-            => new MacEvaluationContextGlobalObject (this);
+        protected override EvaluationContextManager CreateEvaluationContextManager ()
+            => new MacEvaluationContextManager (this);
 
-        protected override void HandleResetState ()
+        sealed class MacEvaluationContextManager : EvaluationContextManager
         {
-            if (ClientSessionUri.SessionKind == ClientSessionKind.LiveInspection)
-                return;
+            readonly MacAgent agent;
 
-            foreach (var window in NSApplication.SharedApplication.Windows) {
-                window.ResignKeyWindow ();
-                window.ResignMainWindow ();
-                window.Close ();
+            public MacEvaluationContextManager (MacAgent agent)
+                : base (agent.RepresentationManager, agent)
+                => this.agent = agent;
+
+            static readonly string [] defaultImports = {
+                "Foundation",
+                "CoreGraphics",
+                "AppKit"
+            };
+
+            protected override TargetCompilationConfiguration PrepareTargetCompilationConfiguration (
+                TargetCompilationConfiguration configuration)
+                => configuration.With (
+                    includePEImagesInDependencyResolution: configuration.CompilationOS != HostOS.macOS,
+                    defaultImports: configuration.DefaultImports.Concat (defaultImports).ToArray ());
+
+            protected override object CreateGlobalState ()
+                => new MacEvaluationContextGlobalObject (agent);
+
+            protected override void OnResetState ()
+            {
+                if (agent.ClientSessionUri.SessionKind == ClientSessionKind.LiveInspection)
+                    return;
+
+                foreach (var window in NSApplication.SharedApplication.Windows) {
+                    window.ResignKeyWindow ();
+                    window.ResignMainWindow ();
+                    window.Close ();
+                }
+
+                agent.workbookMainWindow?.Dispose ();
+                agent.workbookMainWindow = null;
             }
 
-            workbookMainWindow?.Dispose ();
-            workbookMainWindow = null;
-        }
+            internal override void LoadExternalDependencies (
+                Assembly loadedAssembly,
+                IReadOnlyList<AssemblyDependency> externalDependencies)
+            {
+                if (externalDependencies == null)
+                    return;
 
-        internal override IEnumerable<string> GetReplDefaultUsingNamespaces ()
-        {
-            return base.GetReplDefaultUsingNamespaces ()
-                .Concat (new [] { "Foundation", "CoreGraphics", "AppKit" });
+                // We can't do anything until we've loaded the assembly, because we need
+                // to insert things specifically into its DllMap.
+                if (loadedAssembly == null)
+                    return;
+
+                foreach (var externalDep in externalDependencies) {
+                    try {
+                        Log.Debug (TAG, $"Loading external dependency from {externalDep.Location}…");
+                        MonoSupport.AddDllMapEntries (loadedAssembly, externalDep);
+                    } catch (Exception e) {
+                        Log.Error (TAG, "Could not load external dependency.", e);
+                    }
+                }
+            }
         }
 
         public NSWindow GetMainWindow ()
@@ -226,28 +269,6 @@ namespace Xamarin.Interactive.Mac
             public override NSView HitTest (CGPoint aPoint)
             {
                 return null;
-            }
-        }
-
-        public override void LoadExternalDependencies (
-            Assembly loadedAssembly,
-            AssemblyDependency [] externalDependencies)
-        {
-            if (externalDependencies == null)
-                return;
-
-            // We can't do anything until we've loaded the assembly, because we need
-            // to insert things specifically into its DllMap.
-            if (loadedAssembly == null)
-                return;
-
-            foreach (var externalDep in externalDependencies) {
-                try {
-                    Log.Debug (TAG, $"Loading external dependency from {externalDep.Location}…");
-                    MonoSupport.AddDllMapEntries (loadedAssembly, externalDep);
-                } catch (Exception e) {
-                    Log.Error (TAG, "Could not load external dependency.", e);
-                }
             }
         }
     }

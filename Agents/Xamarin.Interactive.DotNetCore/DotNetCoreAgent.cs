@@ -10,6 +10,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
+using Xamarin.Interactive.CodeAnalysis;
+using Xamarin.Interactive.CodeAnalysis.Evaluating;
 using Xamarin.Interactive.CodeAnalysis.Resolving;
 using Xamarin.Interactive.ConsoleAgent;
 using Xamarin.Interactive.Core;
@@ -25,7 +27,7 @@ namespace Xamarin.Interactive.DotNetCore
         public DotNetCoreAgent ()
             => Identity = new AgentIdentity (
                 AgentType.DotNetCore,
-                Sdk.FromEntryAssembly (".NET Core"),
+                Sdk.FromEntryAssembly (SdkId.ConsoleNetCore, ".NET Core"),
                 Assembly.GetEntryAssembly ().GetName ().Name);
 
         protected override IdentifyAgentRequest GetIdentifyAgentRequest ()
@@ -34,34 +36,52 @@ namespace Xamarin.Interactive.DotNetCore
         public override InspectView GetVisualTree (string hierarchyKind)
             => throw new NotSupportedException ();
 
-        internal override IEnumerable<string> GetReplDefaultWarningSuppressions ()
-            => base.GetReplDefaultWarningSuppressions ().Concat (new [] {
+        protected override EvaluationContextManager CreateEvaluationContextManager ()
+            => new DotNetCoreEvaluationContextManager (this);
+
+        sealed class DotNetCoreEvaluationContextManager : EvaluationContextManager
+        {
+            static readonly string [] defaultWarningSuppressions = {
                 // Two assemblies with differing in release/version number. Most common with .NET Standard
                 // and PCL mixing versions.
                 "CS1701",
                 // Same type defined in multiple assemblies. Again related to .NET Standard
                 // and PCL mixing.
                 "CS1685"
-            });
+            };
 
-        public override void LoadExternalDependencies (
-            Assembly loadedAssembly,
-            AssemblyDependency [] externalDependencies)
-        {
-            if (externalDependencies == null)
-                return;
+            internal DotNetCoreEvaluationContextManager (DotNetCoreAgent agent)
+                : base (agent.RepresentationManager, agent)
+            {
+            }
 
-            foreach (var externalDep in externalDependencies) {
-                try {
-                    Log.Debug (TAG, $"Loading external dependency from {externalDep.Location}…");
-                    if (MacIntegration.IsMac) {
-                        // Don't do anything for now on Mac, nothing we've tried
-                        // so far works. :(
-                    } else {
-                        WindowsSupport.LoadLibrary (externalDep.Location);
+            protected override TargetCompilationConfiguration PrepareTargetCompilationConfiguration (
+                TargetCompilationConfiguration targetCompilationConfiguration)
+                => targetCompilationConfiguration.With (
+                    defaultWarningSuppressions: targetCompilationConfiguration
+                        .DefaultWarningSuppressions
+                        .Concat (defaultWarningSuppressions)
+                        .ToArray ());
+
+            internal override void LoadExternalDependencies (
+                Assembly loadedAssembly,
+                IReadOnlyList<AssemblyDependency> externalDependencies)
+            {
+                if (externalDependencies == null)
+                    return;
+
+                foreach (var externalDep in externalDependencies) {
+                    try {
+                        Log.Debug (TAG, $"Loading external dependency from {externalDep.Location}…");
+                        if (MacIntegration.IsMac) {
+                            // Don't do anything for now on Mac, nothing we've tried
+                            // so far works. :(
+                        } else {
+                            WindowsSupport.LoadLibrary (externalDep.Location);
+                        }
+                    } catch (Exception e) {
+                        Log.Error (TAG, "Could not load external dependency.", e);
                     }
-                } catch (Exception e) {
-                    Log.Error (TAG, "Could not load external dependency.", e);
                 }
             }
         }

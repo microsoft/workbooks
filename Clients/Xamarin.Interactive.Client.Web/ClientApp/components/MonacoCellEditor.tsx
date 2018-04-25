@@ -166,7 +166,7 @@ export class MonacoCellEditor extends React.Component<MonacoCellEditorProps, Mon
                     inlineClassName: 'xi-diagnostic',
                     hoverMessage: diagnostic.message
                 },
-                range: diagnostic.span
+                range: diagnostic.range
             })
         }
     }

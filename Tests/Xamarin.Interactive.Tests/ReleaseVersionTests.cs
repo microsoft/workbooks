@@ -27,6 +27,7 @@ namespace Xamarin.Interactive.Tests
         [TestCase ("3.53.8-alpha", "3.53.8.3000", "3.53.8a0", "3.53.8")]
         [TestCase ("3.53.8-alpha26", "3.53.8.3026", "3.53.8a26", "3.53.8")]
         [TestCase ("3.53.0-rc1", "3.53.0.7001", "3.53fc1", "3.53")]
+        [TestCase ("10.3.99-preview3", "10.3.99.6003", "10.3.99b3", "10.3.99")]
         public void ValidVersion (
             string expectedSemVer,
             string expectedWindowsFileVersion,
@@ -62,6 +63,7 @@ namespace Xamarin.Interactive.Tests
         [TestCase ("1.2.0-alpha.1", "1.2.0-alpha1")]
         [TestCase ("1.2.3+build.99", "1.2.3+99")]
         [TestCase ("1.2.3-rc3+build.99", "1.2.3-rc3+99")]
+        [TestCase ("1.2.3-preview.10+build.3000", "1.2.3-preview10+3000")]
         [TestCase ("1.2.3-rc.10+build.3000", "1.2.3-rc10+3000")]
         public void VerboseParse (string longerSemVerForm, string shorterSemVerForm)
             => ReleaseVersion
@@ -74,6 +76,7 @@ namespace Xamarin.Interactive.Tests
         [TestCase ("1.4.0-alpha1+3", "1.4 Alpha 1 Build 3", true)]
         [TestCase ("1.4.0-rc4", "1.4 RC 4", false)]
         [TestCase ("1.4.3-rc4+938", "1.4.3 RC 4 Build 938", true)]
+        [TestCase ("1.5.1-preview2+938", "1.5.1 Preview 2 Build 938", true)]
         public void Friendly (string semVer, string expectedFriendly, bool withBuildComponent)
             => ReleaseVersion
                 .Parse (semVer)
@@ -104,6 +107,7 @@ namespace Xamarin.Interactive.Tests
         [TestCase ("1.4.0+1", "1.4")]
         [TestCase ("1.4.0-dev+188", "1.4d188")]
         [TestCase ("1.4.1-local+1", "1.4.1d1")]
+        [TestCase ("1.5.0-preview1", "1.5b1")]
         public void CFBundleVersion (string semVer, string expectedCFBundleVersion)
             => ReleaseVersion
                 .Parse (semVer)
@@ -144,6 +148,8 @@ namespace Xamarin.Interactive.Tests
                 "1.4.0-beta1",
                 "1.4.0-beta2",
                 "1.4.0-beta.3",
+                "1.4.0-preview1",
+                "1.4.0-preview.2",
                 "1.4.0-rc",
                 "1.4.0-rc1",
                 "1.4.0-rc2",

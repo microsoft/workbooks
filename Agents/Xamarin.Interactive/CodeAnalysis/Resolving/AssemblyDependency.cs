@@ -3,16 +3,19 @@
 
 using System;
 
+using Newtonsoft.Json;
+
 using Xamarin.Interactive.Core;
 
 namespace Xamarin.Interactive.CodeAnalysis.Resolving
 {
-    [Serializable]
+    [JsonObject]
     public struct AssemblyDependency
     {
         public FilePath Location { get; }
         public byte [] Data { get; }
 
+        [JsonConstructor]
         internal AssemblyDependency (FilePath location, byte [] data = null)
         {
             if (location == null)

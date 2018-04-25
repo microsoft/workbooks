@@ -12,8 +12,8 @@ using System.Reflection;
 using System.Threading.Tasks;
 
 using Xamarin.Interactive.Client;
-using Xamarin.Interactive.CodeAnalysis;
-using Xamarin.Interactive.CodeAnalysis.Resolving;
+using Xamarin.Interactive.CodeAnalysis.Evaluating;
+using Xamarin.Interactive.CodeAnalysis.Events;
 using Xamarin.Interactive.Inspection;
 using Xamarin.Interactive.Logging;
 using Xamarin.Interactive.Protocol;
@@ -24,12 +24,9 @@ using Xamarin.Interactive.Serialization;
 
 namespace Xamarin.Interactive.Core
 {
-    abstract class Agent : IAgent, IDisposable
+    abstract class Agent : IDisposable
     {
         string TAG => GetType ().Name;
-
-        public static Assembly [] AppDomainStartupAssemblies { get; }
-            = AppDomain.CurrentDomain.GetAssemblies ();
 
         static Agent ()
         {
@@ -49,12 +46,6 @@ namespace Xamarin.Interactive.Core
 
         public event EventHandler IdentificationFailure;
 
-        public IAgentSynchronizationContext SynchronizationContexts { get; }
-            = new AgentSynchronizationContext ();
-
-        public RepresentationManager RepresentationManager { get; } = new RepresentationManager ();
-        IRepresentationManager IAgent.RepresentationManager => RepresentationManager;
-
         public ViewHierarchyHandlerManager ViewHierarchyHandlerManager { get; }
             = new ViewHierarchyHandlerManager ();
 
@@ -63,29 +54,12 @@ namespace Xamarin.Interactive.Core
 
         public MessageChannel MessageChannel { get; } = new MessageChannel ();
 
+        readonly Lazy<EvaluationContextManager> evaluationContextManager;
+        public EvaluationContextManager EvaluationContextManager => evaluationContextManager.Value;
+
+        internal RepresentationManager RepresentationManager { get; } = new RepresentationManager ();
+
         readonly AgentServer agentServer;
-
-        readonly IList<Action> resetStateHandlers = new List<Action> ();
-
-        readonly Dictionary<EvaluationContextId, EvaluationContext> evaluationContexts =
-            new Dictionary<EvaluationContextId, EvaluationContext> ();
-
-        public EvaluationContext CreateEvaluationContext ()
-        {
-            var globalObject = CreateEvaluationContextGlobalObject ();
-            var context = new EvaluationContext (this, globalObject);
-            globalObject.EvaluationContext = context;
-            evaluationContexts [context.Id] = context;
-            return context;
-        }
-
-        public EvaluationContext GetEvaluationContext (EvaluationContextId contextId)
-        {
-            if (evaluationContexts.TryGetValue (contextId, out var context))
-                return context;
-
-            throw new ArgumentException ($"No execution context found with session ID {contextId}");
-        }
 
         protected Agent () : this (false)
         {
@@ -93,7 +67,24 @@ namespace Xamarin.Interactive.Core
 
         protected Agent (bool unitTestContext)
         {
+            MainThread.Initialize ();
+
             agentServer = new AgentServer (this);
+
+            evaluationContextManager = new Lazy<EvaluationContextManager> (() => {
+                MainThread.Ensure ();
+                var host = CreateEvaluationContextManager ();
+                host.Events.Subscribe (new Observer<ICodeCellEvent> (evnt => {
+                    switch (evnt) {
+                    case EvaluationInFlight _:
+                        break;
+                    default:
+                        MessageChannel.Push (evnt);
+                        break;
+                    }
+                }));
+                return host;
+            });
 
             if (!unitTestContext)
                 RepresentationManager.AddProvider (new ReflectionRepresentationProvider ());
@@ -102,88 +93,19 @@ namespace Xamarin.Interactive.Core
         public void Dispose ()
         {
             Dispose (true);
+            GC.SuppressFinalize (this);
         }
 
         protected virtual void Dispose (bool disposing)
         {
-            Stop ();
-
-            foreach (var context in evaluationContexts.Values)
-                context?.Dispose ();
-            evaluationContexts.Clear ();
-        }
-
-        protected virtual EvaluationContextGlobalObject CreateEvaluationContextGlobalObject ()
-        {
-            return new EvaluationContextGlobalObject (this);
-        }
-
-        /// <summary>
-        /// Called by execution context for any native libraries sent along with a RemoteAssembly.
-        /// </summary>
-        public virtual void LoadExternalDependencies (
-            Assembly loadedAssembly,
-            AssemblyDependency [] externalDependencies)
-        {
-        }
-
-        /// <summary>
-        /// Reset UI state, for workbooks that are doing a fresh execution.
-        /// </summary>
-        public void ResetState ()
-        {
-            // Let the platform-specific agents do their work first.
-            HandleResetState ();
-
-            // Then allow the integrations to participate.
-            foreach (var resettingStateHandler in resetStateHandlers) {
-                try {
-                    resettingStateHandler.Invoke ();
-                } catch (Exception e) {
-                    Log.Warning (TAG, "Registered reset state handler threw exception.", e);
-                }
+            if (disposing) {
+                EvaluationContextManager.Dispose ();
+                Stop ();
             }
         }
 
-        protected virtual void HandleResetState ()
-        {
-        }
-
-        public void RegisterResetStateHandler (Action handler)
-        {
-            if (handler == null)
-                throw new ArgumentNullException (nameof (handler));
-
-            resetStateHandlers.Add (handler);
-        }
-
-        public void PublishEvaluation (
-            CodeCellId codeCellid,
-            object result,
-            EvaluationResultHandling resultHandling = EvaluationResultHandling.Replace)
-            => MainThread.Post (() => PublishEvaluation (new Evaluation {
-                CodeCellId = codeCellid,
-                ResultHandling = resultHandling,
-                Result = RepresentationManager.Prepare (result)
-            }));
-
-        internal void PublishEvaluation (Evaluation result)
-            => MessageChannel.Push (result);
-
-        internal virtual IEnumerable<string> GetReplDefaultUsingNamespaces ()
-        {
-            return new [] {
-                "System",
-                "System.Linq",
-                "System.Collections.Generic",
-                "System.Threading",
-                "System.Threading.Tasks",
-                "Xamarin.Interactive.CodeAnalysis.Workbooks"
-            };
-        }
-
-        internal virtual IEnumerable<string> GetReplDefaultWarningSuppressions ()
-            => Array.Empty<string> ();
+        protected virtual EvaluationContextManager CreateEvaluationContextManager ()
+            => new EvaluationContextManager (RepresentationManager, this);
 
         public abstract InspectView GetVisualTree (string hierarchyKind);
 
@@ -302,9 +224,12 @@ namespace Xamarin.Interactive.Core
             var request = WebRequest.CreateHttp (identifyAgentRequest.Uri);
             request.Method = "POST";
 
-            new XipSerializer (
-                await request.GetRequestStreamAsync (),
-                InteractiveSerializerSettings.SharedInstance).Serialize (Identity);
+            InteractiveJsonSerializerSettings
+                .SharedInstance
+                .CreateSerializer ()
+                .Serialize (
+                    await request.GetRequestStreamAsync (),
+                    Identity);
 
             var response = (HttpWebResponse)await request.GetResponseAsync ();
 

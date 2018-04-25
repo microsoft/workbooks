@@ -8,27 +8,27 @@
 using System;
 using System.Collections.Generic;
 
+using Newtonsoft.Json;
+
+using Xamarin.Interactive.CodeAnalysis.Evaluating;
 using Xamarin.Interactive.CodeAnalysis.Resolving;
 
 namespace Xamarin.Interactive.CodeAnalysis
 {
-    [Serializable]
-    public sealed class Compilation : ICompilation
+    [JsonObject]
+    public sealed class Compilation
     {
-        AssemblyDefinition ICompilation.Assembly => ExecutableAssembly;
-
         public CodeCellId CodeCellId { get; }
         public int SubmissionNumber { get; }
-        public EvaluationContextId EvaluationContextId { get; }
         public bool IsResultAnExpression { get; }
         public EvaluationEnvironment EvaluationEnvironment { get; }
         public AssemblyDefinition ExecutableAssembly { get; }
         public IReadOnlyList<AssemblyDefinition> References { get; }
 
+        [JsonConstructor]
         public Compilation (
             CodeCellId codeCellId,
             int submissionNumber,
-            EvaluationContextId evaluationContextId,
             EvaluationEnvironment evaluationEnvironment,
             bool isResultAnExpression,
             AssemblyDefinition executableAssembly,
@@ -36,7 +36,6 @@ namespace Xamarin.Interactive.CodeAnalysis
         {
             CodeCellId = codeCellId;
             SubmissionNumber = submissionNumber;
-            EvaluationContextId = evaluationContextId;
             EvaluationEnvironment = evaluationEnvironment;
             IsResultAnExpression = isResultAnExpression;
             ExecutableAssembly = executableAssembly;

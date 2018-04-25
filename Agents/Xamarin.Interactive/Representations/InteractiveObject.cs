@@ -7,34 +7,57 @@
 
 using System;
 
+using Newtonsoft.Json;
+
 using Xamarin.Interactive.Representations.Reflection;
-using Xamarin.Interactive.Serialization;
 
 namespace Xamarin.Interactive.Representations
 {
-    [Serializable]
     abstract class InteractiveObject : InteractiveObjectBase
     {
-        [Serializable]
+        [JsonObject]
         public sealed class GetMemberValueError : IRepresentationObject
         {
-            public ExceptionNode Exception { get; private set; }
+            public ExceptionNode Exception { get; }
+
+            [JsonConstructor]
+            GetMemberValueError (ExceptionNode exception)
+                => Exception = exception;
 
             public GetMemberValueError (Exception exception = null)
             {
                 if (exception != null)
                     Exception = ExceptionNode.Create (exception);
             }
-
-            void ISerializableObject.Serialize (ObjectSerializer serializer)
-            {
-                throw new NotImplementedException ();
-            }
         }
 
         protected InteractiveObject (int depth, InteractiveItemPreparer itemPreparer)
             : base (depth, itemPreparer)
         {
+        }
+
+        [JsonConstructor]
+        protected InteractiveObject (
+            long handle,
+            long representedObjectHandle,
+            RepresentedType representedType,
+            int depth,
+            bool hasMembers,
+            RepresentedMemberInfo [] members,
+            object [] values,
+            string toStringRepresentation,
+            bool suppressToStringRepresentation)
+            : base (
+                handle,
+                representedObjectHandle,
+                representedType,
+                depth)
+        {
+            HasMembers = hasMembers;
+            Members = members;
+            Values = values;
+            ToStringRepresentation = toStringRepresentation;
+            SuppressToStringRepresentation = suppressToStringRepresentation;
         }
 
         public bool HasMembers { get; protected set; }
@@ -45,14 +68,14 @@ namespace Xamarin.Interactive.Representations
 
         protected abstract void ReadMembers ();
 
-        [Serializable]
+        [JsonObject]
         public struct InteractMessage
         {
             public int MemberIndex;
             public int RepresentationIndex;
         }
 
-        [Serializable]
+        [JsonObject]
         public struct ReadAllMembersInteractMessage
         {
         }
