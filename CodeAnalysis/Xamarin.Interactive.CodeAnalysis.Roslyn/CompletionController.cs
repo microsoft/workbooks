@@ -15,6 +15,7 @@ using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Completion;
 using Microsoft.CodeAnalysis.Text;
+using Microsoft.CodeAnalysis.Editor.Implementation.IntelliSense.Completion;
 
 using Xamarin.Interactive.CodeAnalysis.Models;
 using Xamarin.Interactive.CodeAnalysis.Roslyn.Internals;
@@ -35,48 +36,46 @@ namespace Xamarin.Interactive.CodeAnalysis.Roslyn
 
         readonly RoslynCompilationWorkspace compilationWorkspace;
 
-        SourceText sourceTextContent;
         ModelComputation<CompletionModel> computation;
-        CompletionModel lastCompletionModel;
 
         public CompletionController (RoslynCompilationWorkspace compilationWorkspace)
-        {
-            this.compilationWorkspace = compilationWorkspace
+            => this.compilationWorkspace = compilationWorkspace
                 ?? throw new ArgumentNullException (nameof (compilationWorkspace));
-        }
-
-        public Task<CompletionModel> ProvideCompletionItemsAsync (
-            SourceText sourceText,
-            Position position,
-            CancellationToken cancellationToken)
-        {
-            this.sourceTextContent = sourceText;
-
-            var sourcePosition = sourceTextContent.Lines.GetPosition (position.ToRoslyn ());
-            var rules = compilationWorkspace.CompletionService.GetRules ();
-
-            StopComputation ();
-            StartNewComputation (sourcePosition, rules, filterItems: true);
-
-            var currentComputation = computation;
-            cancellationToken.Register (() => currentComputation.Stop ());
-
-            return computation.ModelTask;
-        }
 
         public async Task<IEnumerable<CompletionItem>> ProvideFilteredCompletionItemsAsync (
-            SourceText sourceText,
-            Position position,
+            Document document,
+            LinePosition position,
             CancellationToken cancellationToken)
         {
-            var model = await ProvideCompletionItemsAsync (sourceText, position, cancellationToken);
+            var sourceText = await document.GetTextAsync (cancellationToken);
+
+            Task<CompletionModel> ProvideCompletionItemsAsync ()
+            {
+                var sourcePosition = sourceText.Lines.GetPosition (position);
+                var rules = compilationWorkspace.CompletionService.GetRules ();
+
+                StopComputation ();
+                StartNewComputation (
+                    document,
+                    sourceText,
+                    sourcePosition,
+                    rules,
+                    filterItems: true);
+
+                var currentComputation = computation;
+                cancellationToken.Register (() => currentComputation.Stop ());
+
+                return computation.ModelTask;
+            }
+
+            var model = await ProvideCompletionItemsAsync ();
 
             if (model?.FilteredItems == null)
                 return Enumerable.Empty<CompletionItem> ();
 
             return model
                 .FilteredItems
-                .Where (i => i.Span.End <= model.Text.Length)
+                .Where (i => i.Span.End <= sourceText.Length)
                 .Select (i => {
                     i.Properties.TryGetValue ("InsertionText", out var insertionText);
                     i.Properties.TryGetValue (CompletionController.ItemDetailPropertyName, out var itemDetail);
@@ -86,19 +85,6 @@ namespace Xamarin.Interactive.CodeAnalysis.Roslyn
                         insertionText,
                         itemDetail);
                 });
-        }
-
-        void OnCompletionModelUpdated (CompletionModel model)
-        {
-            if (model == null) {
-                StopComputation ();
-                return;
-            }
-
-            if (lastCompletionModel == model)
-                return;
-
-            lastCompletionModel = model;
         }
 
         /// <summary>
@@ -112,20 +98,26 @@ namespace Xamarin.Interactive.CodeAnalysis.Roslyn
         /// Inspired by similar method in Completion/Controller.cs in Roslyn.
         /// </summary>
         void StartNewComputation (
+            Document document,
+            SourceText sourceText,
             int position,
             CompletionRules rules,
             bool filterItems)
         {
             computation = new ModelComputation<CompletionModel> (
-                OnCompletionModelUpdated,
-                Microsoft.CodeAnalysis.Editor.Implementation.IntelliSense.Completion.PrioritizedTaskScheduler.AboveNormalInstance);
+                model => {
+                    if (model == null)
+                        StopComputation ();
+                },
+                PrioritizedTaskScheduler.AboveNormalInstance);
 
-            ComputeModel (position);
+            ComputeModel (document, sourceText, position);
 
-            if (filterItems) {
-                var document = compilationWorkspace.GetSubmissionDocument (sourceTextContent.Container);
-                FilterModel (CompletionHelper.GetHelper (document));
-            }
+            if (filterItems)
+                FilterModel (
+                    CompletionHelper.GetHelper (document),
+                    document,
+                    sourceText);
         }
 
         void StopComputation ()
@@ -145,39 +137,47 @@ namespace Xamarin.Interactive.CodeAnalysis.Roslyn
             }
         }
 
-        void ComputeModel (
-            int position)
+        void ComputeModel (Document document, SourceText sourceText, int position)
         {
             if (computation.InitialUnfilteredModel != null)
                 return;
-            computation.ChainTask ((model, ct) => model != null ? Task.FromResult (model)
-                : ComputeModelAsync (
+
+            computation.ChainTask ((model, ct) => {
+                if (model != null)
+                    return Task.FromResult (model);
+
+                return ComputeModelAsync (
                     compilationWorkspace,
-                    sourceTextContent,
+                    document,
+                    sourceText,
                     position,
-                    ct));
+                    ct);
+            });
         }
 
-        void FilterModel (CompletionHelper helper)
-        {
-            computation.ChainTask ((model, ct) => FilterModelAsync (
-                compilationWorkspace,
-                sourceTextContent,
-                model,
-                helper,
-                ct));
-        }
+        void FilterModel (
+            CompletionHelper helper,
+            Document document,
+            SourceText sourceText)
+            => computation.ChainTask ((model, ct) => FilterModelAsync (
+                    compilationWorkspace,
+                    document,
+                    sourceText,
+                    model,
+                    helper,
+                    ct));
 
         static async Task<CompletionModel> ComputeModelAsync (
             RoslynCompilationWorkspace compilationWorkspace,
-            SourceText text,
+            Document document,
+            SourceText sourceText,
             int position,
             CancellationToken ct)
         {
             ct.ThrowIfCancellationRequested ();
 
             var completions = await compilationWorkspace.CompletionService.GetCompletionsAsync (
-                compilationWorkspace.GetSubmissionDocument (text.Container),
+                document,
                 position,
                 options: compilationWorkspace.Options,
                 cancellationToken: ct).ConfigureAwait (false);
@@ -189,7 +189,7 @@ namespace Xamarin.Interactive.CodeAnalysis.Roslyn
             //var trackingSpan = await _completionService.GetDefaultTrackingSpanAsync(_documentOpt, _subjectBufferCaretPosition, cancellationToken).ConfigureAwait(false);
 
             return CompletionModel.CreateModel (
-                text,
+                sourceText,
                 default (TextSpan),
                 completions.Items);
         }
@@ -200,6 +200,7 @@ namespace Xamarin.Interactive.CodeAnalysis.Roslyn
         /// </summary>
         static async Task<CompletionModel> FilterModelAsync (
             RoslynCompilationWorkspace compilationWorkspace,
+            Document document,
             SourceText sourceText,
             CompletionModel model,
             CompletionHelper helper,
@@ -211,7 +212,6 @@ namespace Xamarin.Interactive.CodeAnalysis.Roslyn
             RoslynCompletionItem bestFilterMatch = null;
             var bestFilterMatchIndex = 0;
 
-            var document = compilationWorkspace.GetSubmissionDocument (sourceText.Container);
             var newFilteredCompletions = new List<RoslynCompletionItem> ();
 
             foreach (var item in model.TotalItems) {

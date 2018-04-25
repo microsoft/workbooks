@@ -35,15 +35,16 @@ namespace Xamarin.Interactive.CodeAnalysis.Roslyn
         }
 
         public async Task<SignatureHelp> ComputeSignatureHelpAsync (
-            SourceText sourceText,
-            Position position,
+            Document document,
+            LinePosition position,
             CancellationToken cancellationToken)
         {
-            var sourcePosition = sourceText.Lines.GetPosition (position.ToRoslyn ());
+            var sourceText = await document.GetTextAsync (cancellationToken);
+
+            var sourcePosition = sourceText.Lines.GetPosition (position);
             if (sourcePosition <= 0)
                 return default;
 
-            var document = compilationWorkspace.GetSubmissionDocument (sourceText.Container);
             var root = await document.GetSyntaxRootAsync (cancellationToken);
             var syntaxToken = root.FindToken (sourcePosition);
 

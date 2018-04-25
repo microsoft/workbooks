@@ -756,15 +756,14 @@ namespace Xamarin.Interactive.CodeAnalysis.Roslyn
 
         #endregion
 
-        Task<SourceText> GetSourceTextAsync (DocumentId documentId, CancellationToken cancellationToken)
+        Document GetDocument (CodeCellId codeCellId)
         {
-            var document = workspace.CurrentSolution?.GetDocument (documentId);
+            var document = workspace.CurrentSolution?.GetDocument (codeCellId.ToDocumentId ());
             if (document == null)
                 throw new ArgumentException (
-                    $"documnent {documentId} does not exist in workspace",
-                    nameof (documentId));
-
-            return document.GetTextAsync (cancellationToken);
+                    $"documnent {codeCellId} does not exist in workspace",
+                    nameof (codeCellId));
+            return document;
         }
 
         #region IWorkspaceService
@@ -822,7 +821,7 @@ namespace Xamarin.Interactive.CodeAnalysis.Roslyn
         public async Task<string> GetCellBufferAsync (
             CodeCellId cellId,
             CancellationToken cancellationToken = default)
-            => (await GetSourceTextAsync (cellId.ToDocumentId (), cancellationToken)).ToString ();
+            => (await GetDocument (cellId).GetTextAsync (cancellationToken)).ToString ();
 
         public async Task<IReadOnlyList<InteractiveDiagnostic>> GetCellDiagnosticsAsync (
             CodeCellId cellId,
@@ -867,10 +866,8 @@ namespace Xamarin.Interactive.CodeAnalysis.Roslyn
                 hoverController = new HoverController (this);
 
             return await hoverController.ProvideHoverAsync (
-                await GetSourceTextAsync (
-                    cellId.ToDocumentId (),
-                    cancellationToken),
-                position,
+                GetDocument (cellId),
+                position.ToRoslyn (),
                 cancellationToken);
         }
 
@@ -883,10 +880,8 @@ namespace Xamarin.Interactive.CodeAnalysis.Roslyn
                 completionController = new CompletionController (this);
 
             return await completionController.ProvideFilteredCompletionItemsAsync (
-                await GetSourceTextAsync (
-                    cellId.ToDocumentId (),
-                    cancellationToken),
-                position,
+                GetDocument (cellId),
+                position.ToRoslyn (),
                 cancellationToken);
         }
 
@@ -899,10 +894,8 @@ namespace Xamarin.Interactive.CodeAnalysis.Roslyn
                 signatureHelpController = new SignatureHelpController (this);
 
             return await signatureHelpController.ComputeSignatureHelpAsync (
-                await GetSourceTextAsync (
-                    cellId.ToDocumentId (),
-                    cancellationToken),
-                position,
+                GetDocument (cellId),
+                position.ToRoslyn (),
                 cancellationToken);
         }
 
