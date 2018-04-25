@@ -7,64 +7,44 @@
 
 import * as React from 'react'
 import { CodeCellResult } from '../evaluation';
-import { ResultRenderer, ResultRendererRepresentation } from '../rendering'
+import {
+    ResultRenderer,
+    ResultRendererRepresentation,
+    getFirstRepresentationOfType
+} from '../rendering'
+
+const RepresentationName = 'ToStringRepresentation'
 
 export default function ToStringRendererFactory(result: CodeCellResult) {
-    return result.resultRepresentations &&
-        result.resultRepresentations.some(r => r.$toString)
+    return getFirstRepresentationOfType(result, RepresentationName)
         ? new ToStringRenderer
         : null
 }
 
-interface ToStringValue {
+interface ToStringRepresentationData {
     $type: string
-    $toString: string | {
-        culture: {
-            name: string,
-            lcid: number
-        },
-        formats: {
-            [key: string]: string
-        }[]
+    formats: {
+        name: string,
+        value: string
     }[]
 }
 
 class ToStringRenderer implements ResultRenderer {
     getRepresentations(result: CodeCellResult) {
         const reps: ResultRendererRepresentation[] = []
+        const value = getFirstRepresentationOfType<ToStringRepresentationData>(result, RepresentationName)
 
-        if (!result.resultRepresentations)
-            return reps
-
-        for (const value of result.resultRepresentations) {
-            if (!value.$toString)
-                continue
-
-            const toStringValue = (value as ToStringValue).$toString
-
-            if (typeof toStringValue === 'string') {
-                reps.push({
-                    displayName: 'String',
-                    component: ToStringRepresentation,
-                    componentProps: {
-                        value: toStringValue
-                    }
-                })
-
-                continue
-            }
-
+        if (value) {
             // TODO: some way to toggle between current culture (what we're using now,
             // index 0), and invariant culture (completely ignoring it, index 1). We
             // have never exposed the invariant culture, so this is not a regression
             // over the XCB UI.
-            for (const format of toStringValue[0].formats) {
-                const formatKey = Object.keys(format)[0] as string
+            for (const format of value.formats) {
                 reps.push({
-                    displayName: formatKey,
+                    displayName: format.name,
                     component: ToStringRepresentation,
                     componentProps: {
-                        value: format[formatKey]
+                        value: format.value
                     }
                 })
             }

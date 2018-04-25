@@ -10,7 +10,7 @@ import { CodeCellResult } from '../evaluation';
 import { ResultRenderer } from '../rendering'
 
 export default function NullRendererFactory(result: CodeCellResult) {
-    if (!result.resultRepresentations || result.resultRepresentations.length === 0)
+    if (result.isNullResult)
         return new NullRenderer
     return null
 }
