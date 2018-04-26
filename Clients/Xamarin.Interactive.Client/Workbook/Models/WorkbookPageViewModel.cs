@@ -648,12 +648,7 @@ namespace Xamarin.Interactive.Workbook.Models
 
             codeCellState.View.EvaluationDuration = result.EvaluationDuration;
 
-            if (result.Exception != null)
-                codeCellState.View.RenderResult (
-                    cultureInfo,
-                    EvaluationService.FilterException (result.Exception),
-                    result.ResultHandling);
-            else if (result.ResultHandling != EvaluationResultHandling.Ignore)
+            if (result.ResultHandling != EvaluationResultHandling.Ignore)
                 codeCellState.View.RenderResult (
                     cultureInfo,
                     result.ResultRepresentations is RepresentedObject ro ? ro : result.ResultRepresentations? [0],

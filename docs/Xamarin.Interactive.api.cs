@@ -303,10 +303,6 @@ namespace Xamarin.Interactive.CodeAnalysis.Evaluating
             get;
         }
 
-        public bool Interrupted {
-            get;
-        }
-
         public bool IsNullResult {
             get;
         }
@@ -324,6 +320,10 @@ namespace Xamarin.Interactive.CodeAnalysis.Evaluating
         }
 
         public IRepresentedType ResultType {
+            get;
+        }
+
+        public EvaluationStatus Status {
             get;
         }
 

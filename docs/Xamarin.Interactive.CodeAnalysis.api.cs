@@ -128,6 +128,8 @@ namespace Xamarin.Interactive.CodeAnalysis.Evaluating
 
         public Task<CodeCellId> InsertCodeCellAsync (string initialBuffer = null, CodeCellId relativeToCodeCellId = default(CodeCellId), bool insertBefore = false, CancellationToken cancellationToken = default(CancellationToken));
 
+        public void NotifyEvaluationComplete (CodeCellId targetCodeCellId, EvaluationStatus status);
+
         public void NotifyEvaluationContextManagerChanged (IEvaluationContextManager evaluationContextManager);
 
         public void OutdateAllCodeCells ();

@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Caching.Memory;
 
 using Xamarin.Interactive.CodeAnalysis;
+using Xamarin.Interactive.CodeAnalysis.Evaluating;
 using Xamarin.Interactive.CodeAnalysis.Events;
 using Xamarin.Interactive.CodeAnalysis.Models;
 using Xamarin.Interactive.NuGet;
@@ -93,6 +94,11 @@ namespace Xamarin.Interactive.Client.Web.Hubs
                 targetCodeCellId,
                 evaluateAll,
                 Context.Connection.ConnectionAbortedToken);
+
+        public void NotifyEvaluationComplete (string targetCodeCellId, EvaluationStatus status)
+            => GetSession ().EvaluationService.NotifyEvaluationComplete (
+                targetCodeCellId,
+                status);
 
         public Task<Hover> GetHover (
             string codeCellId,
