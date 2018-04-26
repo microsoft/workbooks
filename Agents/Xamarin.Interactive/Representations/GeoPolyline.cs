@@ -14,7 +14,7 @@ using Newtonsoft.Json;
 namespace Xamarin.Interactive.Representations
 {
     [JsonObject]
-    public sealed class GeoPolyline : IRepresentationObject
+    public sealed class GeoPolyline
     {
         public IReadOnlyList<GeoLocation> Points { get; }
 

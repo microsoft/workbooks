@@ -16,7 +16,7 @@ using Xamarin.Interactive.Representations.Reflection;
 namespace Xamarin.Interactive.Representations
 {
     [JsonObject]
-    sealed class EnumValue : IRepresentationObject
+    sealed class EnumValue
     {
         public RepresentedType RepresentedType { get; }
         public RepresentedType UnderlyingType { get; }

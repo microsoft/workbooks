@@ -13,7 +13,7 @@ using Newtonsoft.Json;
 namespace Xamarin.Interactive.Representations
 {
     [JsonObject]
-    public sealed class VerbatimHtml : IRepresentationObject
+    public sealed class VerbatimHtml
     {
         readonly string content;
 

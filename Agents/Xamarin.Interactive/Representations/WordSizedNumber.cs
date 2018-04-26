@@ -14,7 +14,7 @@ using Xamarin.Interactive.Serialization;
 namespace Xamarin.Interactive.Representations
 {
     [JsonObject]
-    sealed class WordSizedNumber : IRepresentationObject
+    sealed class WordSizedNumber
     {
         public string RepresentedType { get; }
         public int Size { get; } = IntPtr.Size;

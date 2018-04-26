@@ -837,7 +837,7 @@ namespace Xamarin.Interactive.Logging
 namespace Xamarin.Interactive.Representations
 {
     [JsonObject]
-    public sealed class Color : IRepresentationObject, IEquatable<Color>
+    public sealed class Color : IEquatable<Color>
     {
         public double Alpha {
             get;
@@ -873,7 +873,7 @@ namespace Xamarin.Interactive.Representations
         Rgb
     }
     [JsonObject]
-    public sealed class GeoLocation : IRepresentationObject
+    public sealed class GeoLocation
     {
         public double? Altitude {
             get;
@@ -911,7 +911,7 @@ namespace Xamarin.Interactive.Representations
         public GeoLocation (double latitude, double longitude, double? altitude = null, double? horizontalAccuracy = null, double? verticalAccuracy = null, double? speed = null, double? bearing = null, DateTime timestamp = default(DateTime));
     }
     [JsonObject]
-    public sealed class GeoPolyline : IRepresentationObject
+    public sealed class GeoPolyline
     {
         public IReadOnlyList<GeoLocation> Points {
             get;
@@ -921,7 +921,7 @@ namespace Xamarin.Interactive.Representations
         public GeoPolyline (IReadOnlyList<GeoLocation> points);
     }
     [JsonObject]
-    public sealed class Image : IRepresentationObject
+    public sealed class Image
     {
         public byte[] Data {
             get;
@@ -970,7 +970,7 @@ namespace Xamarin.Interactive.Representations
         Svg
     }
     [JsonObject]
-    public sealed class Point : IRepresentationObject
+    public sealed class Point
     {
         public double X {
             get;
@@ -984,7 +984,7 @@ namespace Xamarin.Interactive.Representations
         public Point (double x, double y);
     }
     [JsonObject]
-    public sealed class Rectangle : IRepresentationObject
+    public sealed class Rectangle
     {
         public double Height {
             get;
@@ -1006,7 +1006,7 @@ namespace Xamarin.Interactive.Representations
         public Rectangle (double x, double y, double width, double height);
     }
     [JsonObject]
-    public struct Representation : IRepresentationObject
+    public struct Representation
     {
         public static readonly Representation Empty;
 
@@ -1056,7 +1056,7 @@ namespace Xamarin.Interactive.Representations
         public virtual bool TryConvertFromRepresentation (IRepresentedType representedType, object[] representations, out object represented);
     }
     [JsonObject]
-    public sealed class Size : IRepresentationObject
+    public sealed class Size
     {
         public double Height {
             get;
@@ -1070,7 +1070,7 @@ namespace Xamarin.Interactive.Representations
         public Size (double width, double height);
     }
     [JsonObject]
-    public sealed class VerbatimHtml : IRepresentationObject
+    public sealed class VerbatimHtml
     {
         [JsonConstructor]
         public VerbatimHtml (string content);

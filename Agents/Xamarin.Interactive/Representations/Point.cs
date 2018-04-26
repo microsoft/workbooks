@@ -12,7 +12,7 @@ using Newtonsoft.Json;
 namespace Xamarin.Interactive.Representations
 {
     [JsonObject]
-    public sealed class Point : IRepresentationObject
+    public sealed class Point
     {
         [JsonConstructor]
         public Point (double x, double y)

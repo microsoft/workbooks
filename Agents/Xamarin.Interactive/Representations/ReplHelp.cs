@@ -16,10 +16,10 @@ using Xamarin.Interactive.Representations.Reflection;
 namespace Xamarin.Interactive.Representations
 {
     [JsonObject]
-    sealed class ReplHelp : IRepresentationObject, IEnumerable<ReplHelp.Item>
+    sealed class ReplHelp : IEnumerable<ReplHelp.Item>
     {
         [JsonObject]
-        public struct Item : IRepresentationObject
+        public struct Item
         {
             public ITypeMember Member { get; }
             public string Description { get; }
