@@ -15,6 +15,8 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 
+using Newtonsoft.Json;
+
 using Xamarin.Interactive.Core;
 using Xamarin.Interactive.Logging;
 using Xamarin.Interactive.Representations.Reflection;
@@ -236,8 +238,6 @@ namespace Xamarin.Interactive.Representations
             case IInteractiveObject interactive:
                 interactive.Handle = ObjectCache.Shared.GetHandle (interactive);
                 return interactive;
-            case IRepresentationObject _:
-                return obj;
             case Exception exception:
                 return ExceptionNode.Create (exception);
             case MemberInfo memberInfo:
@@ -263,7 +263,12 @@ namespace Xamarin.Interactive.Representations
                     WordSizedNumberFlags.Pointer,
                     (ulong)uintptr);
             default:
-                if (Type.GetTypeCode (obj.GetType ()) != TypeCode.Object)
+                var type = obj.GetType ();
+
+                if (type.GetCustomAttribute<JsonObjectAttribute> () != null)
+                    return obj;
+
+                if (Type.GetTypeCode (type) != TypeCode.Object)
                     return obj;
 
                 if (obj is byte [])

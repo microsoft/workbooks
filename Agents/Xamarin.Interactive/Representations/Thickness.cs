@@ -12,7 +12,7 @@ using Newtonsoft.Json;
 namespace Xamarin.Interactive.Representations
 {
     [JsonObject]
-    sealed class Thickness : IRepresentationObject
+    sealed class Thickness
     {
         [JsonConstructor]
         public Thickness (double left, double top, double right, double bottom)

@@ -55,6 +55,9 @@ namespace Xamarin.Interactive.DotNetCore
             {
             }
 
+            protected override object CreateGlobalState ()
+                => new EvaluationContextGlobalObject ((DotNetCoreAgent)Context);
+
             protected override TargetCompilationConfiguration PrepareTargetCompilationConfiguration (
                 TargetCompilationConfiguration targetCompilationConfiguration)
                 => targetCompilationConfiguration.With (

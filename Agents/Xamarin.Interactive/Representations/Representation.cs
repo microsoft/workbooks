@@ -12,7 +12,7 @@ using Newtonsoft.Json;
 namespace Xamarin.Interactive.Representations
 {
     [JsonObject]
-    public struct Representation : IRepresentationObject
+    public struct Representation
     {
         public static readonly Representation Empty = new Representation ();
 

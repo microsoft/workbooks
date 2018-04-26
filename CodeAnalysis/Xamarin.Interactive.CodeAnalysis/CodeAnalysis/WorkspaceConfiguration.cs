@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -122,13 +123,34 @@ namespace Xamarin.Interactive.CodeAnalysis
         static Assembly netStandardAssembly;
         static Assembly xiAssembly;
 
+        static readonly Regex dncGlobalStateTypeHackRegex = new Regex (
+            @"^Xamarin\.Interactive\..*EvaluationContextGlobalObject$");
+
         static Type ResolveHostObjectType (
             InteractiveDependencyResolver dependencyResolver,
             TargetCompilationConfiguration configuration)
         {
-            if (System.Runtime.InteropServices.RuntimeInformation.FrameworkDescription.StartsWith (
-                ".NET Core", StringComparison.OrdinalIgnoreCase))
+            if (configuration.GlobalStateType?.Name == null)
                 return typeof (object);
+
+            if (System.Runtime.InteropServices.RuntimeInformation.FrameworkDescription.StartsWith (
+                ".NET Core", StringComparison.OrdinalIgnoreCase)) {
+                // .NET Core does not support reflection-only-load and due to a bad design decision
+                // in Roslyn's scripting support, we cannot pass SRM or Roslyn type symbols to
+                // the compiler configuration for it to know the global API shape.
+                // cf. https://github.com/dotnet/corefx/issues/2800
+                // cf. https://github.com/dotnet/roslyn/issues/20920
+                //
+                // Employ a hack here to get our base globals type working by checking the name
+                // of the type and assuming it is or dervives from EvaluationContextGlobalObject.
+                //
+                // Unfortunately this still makes agent-specific API such as "MainWindow" unavailable
+                // in the Web UX (since Roslyn is running under ASP.NET Core).
+                if (dncGlobalStateTypeHackRegex.IsMatch (configuration.GlobalStateType.Name))
+                    return typeof (EvaluationContextGlobalObject);
+
+                return typeof (object);
+            }
 
             using (var assemblyContext = new EvaluationAssemblyContext ()) {
                 string globalStateAssemblyCachePath = null;

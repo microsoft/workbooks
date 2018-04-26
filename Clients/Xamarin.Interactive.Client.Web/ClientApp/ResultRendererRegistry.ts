@@ -8,7 +8,7 @@
 import { CodeCellResult } from './evaluation'
 import { ResultRendererFactory, ResultRenderer } from './rendering'
 
-import NullRendererFactory from './renderers/NullRenderer'
+import NullRenderer from './renderers/NullRenderer'
 import CalendarRendererFactory from './renderers/CalendarRenderer'
 import ToStringRendererFactory from './renderers/ToStringRenderer'
 import ImageRendererFactory from './renderers/ImageRenderer'
@@ -24,9 +24,14 @@ export class ResultRendererRegistry {
     }
 
     getRenderers(result: CodeCellResult): ResultRenderer[] {
-        return <ResultRenderer[]>this.rendererFactories
-            .map(f => f(result))
-            .filter(f => f !== null)
+        if (result.isNullResult)
+            return [new NullRenderer];
+        else if (result.resultRepresentations && result.resultRepresentations.length > 0)
+            return <ResultRenderer[]>this.rendererFactories
+                .map(f => f(result))
+                .filter(f => f !== null)
+        else
+            return []
     }
 
     static createDefault(): ResultRendererRegistry {
@@ -39,7 +44,6 @@ export class ResultRendererRegistry {
         // These are 'catch all' and should always be last
         // registry.register(InteractiveObjectRendererFactory)
         registry.register(ToStringRendererFactory)
-        registry.register(NullRendererFactory)
         return registry
     }
 

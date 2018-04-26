@@ -69,6 +69,7 @@ namespace Xamarin.Interactive.CodeAnalysis.Evaluating
                 .Concat (compilation.References ?? new AssemblyDefinition [] { }))
                 Host.LoadExternalDependencies (null, assembly?.ExternalDependencies);
 
+            var status = EvaluationStatus.Success;
             Exception evaluationException = null;
             ExceptionNode evaluationExceptionToReturn = null;
 
@@ -91,7 +92,6 @@ namespace Xamarin.Interactive.CodeAnalysis.Evaluating
             currentRunThread.CurrentUICulture = InteractiveCulture.CurrentUICulture;
 
             initializedIntegration = false;
-            var interrupted = false;
 
             try {
                 // We _only_ want to capture exceptions from user-code here but
@@ -111,11 +111,11 @@ namespace Xamarin.Interactive.CodeAnalysis.Evaluating
                 evaluationExceptionToReturn = ExceptionNode.Create (e.InnerExceptions [0]);
             } catch (ThreadAbortException e) {
                 evaluationException = e;
-                interrupted = true;
+                status = EvaluationStatus.Interrupted;
                 Thread.ResetAbort ();
             } catch (ThreadInterruptedException e) {
                 evaluationException = e;
-                interrupted = true;
+                status = EvaluationStatus.Interrupted;
             } catch (Exception e) {
                 evaluationException = e;
                 evaluationExceptionToReturn = ExceptionNode.Create (e);
@@ -131,20 +131,30 @@ namespace Xamarin.Interactive.CodeAnalysis.Evaluating
                 Console.SetError (savedStderr);
             }
 
+            var resultHandling = EvaluationResultHandling.Replace;
+            object result;
+
+            if (evaluationExceptionToReturn == null) {
+                result = inFlight.OriginalValue;
+
+                if (status == EvaluationStatus.Interrupted || (result == null && !compilation.IsResultAnExpression))
+                    resultHandling = EvaluationResultHandling.Ignore;
+            } else {
+                result = evaluationExceptionToReturn;
+                status = EvaluationStatus.EvaluationException;
+            }
+
             var evaluation = new Evaluation (
                 compilation.CodeCellId,
-                interrupted || (inFlight.OriginalValue == null && !compilation.IsResultAnExpression)
-                    ? EvaluationResultHandling.Ignore
-                    : EvaluationResultHandling.Replace,
+                status,
+                resultHandling,
                 // an exception in the call to Prepare should not be explicitly caught
                 // here (see above) since it'll be handled at a higher level and can be
                 // flagged as being a bug in our code since this method should never throw.
-                Host.RepresentationManager.Prepare (inFlight.OriginalValue),
-                evaluationExceptionToReturn,
+                Host.RepresentationManager.Prepare (result),
                 stopwatch.Elapsed,
                 InteractiveCulture.CurrentCulture.LCID,
                 InteractiveCulture.CurrentUICulture.LCID,
-                interrupted,
                 initializedIntegration,
                 loadedAssemblies.ToArray ());
 

@@ -12,7 +12,7 @@ using Newtonsoft.Json;
 namespace Xamarin.Interactive.Representations
 {
     [JsonObject]
-    public sealed class Size : IRepresentationObject
+    public sealed class Size
     {
         [JsonConstructor]
         public Size (double width, double height)

@@ -40,14 +40,6 @@ namespace Xamarin.Interactive.Client
 
         readonly HttpClient httpClient;
 
-        /// <summary>
-        /// Any request that should await a response delivered through the out-of-band
-        /// message channel should register an awaiter and await the request task and
-        /// the registered awaiter task (e.g. <see cref="EvaluateAsync"/>).
-        /// </summary>
-        readonly ConcurrentDictionary<object, TaskCompletionSource> messageChannelAwaiters
-            = new ConcurrentDictionary<object, TaskCompletionSource> ();
-
         readonly Observable<object> messages = new Observable<object> ();
 
         readonly AgentClientEvaluationContextManager evaluationContextManager;
@@ -109,8 +101,6 @@ namespace Xamarin.Interactive.Client
             try {
                 await Task.Run (() => {
                     SendAsync (request, message => {
-                        object awaiterKey = null;
-
                         switch (message) {
                         case LogEntry logEntry:
                             Log.Commit (logEntry);
@@ -118,9 +108,6 @@ namespace Xamarin.Interactive.Client
                         case MessageChannel.Ping ping:
                             break;
                         case ICodeCellEvent evnt:
-                            if (evnt is Evaluation)
-                                awaiterKey = evnt.CodeCellId;
-
                             try {
                                 evaluationContextManager.PostEvent (evnt);
                             } catch (Exception e) {
@@ -135,23 +122,9 @@ namespace Xamarin.Interactive.Client
                             }
                             break;
                         }
-
-                        if (awaiterKey != null &&
-                            messageChannelAwaiters.TryRemove (awaiterKey, out var awaiter))
-                            awaiter.SetResult ();
                     }, cancellationToken).GetAwaiter ().GetResult ();
                 }, cancellationToken);
             } catch {
-            }
-
-            foreach (var entry in messageChannelAwaiters) {
-                if (messageChannelAwaiters.TryRemove (entry.Key, out var awaiter)) {
-                    try {
-                        throw new Exception ("message channel has terminated");
-                    } catch (Exception e) {
-                        awaiter.SetException (e);
-                    }
-                }
             }
 
             messages.Observers.OnCompleted ();
@@ -343,25 +316,15 @@ namespace Xamarin.Interactive.Client
                     new EvaluationAbortRequest (evaluationContextId),
                     agentClient.GetCancellationToken (cancellationToken));
 
-            public async Task EvaluateAsync (
+            public Task EvaluateAsync (
                 EvaluationContextId evaluationContextId,
                 Compilation compilation,
                 CancellationToken cancellationToken)
-            {
-                var responseTask = new TaskCompletionSource ();
-
-                if (!agentClient.messageChannelAwaiters.TryAdd (compilation.CodeCellId, responseTask))
-                    throw new InvalidOperationException (
-                        "An evaluation for cell {compilation.CodeCellId} is already in process");
-
-                await Task.WhenAll (
-                    responseTask.Task,
-                    agentClient.SendAsync<bool> (
-                        new EvaluationRequest (
-                            evaluationContextId,
-                            compilation),
-                        agentClient.GetCancellationToken (cancellationToken)));
-            }
+                => agentClient.SendAsync<object> (
+                    new EvaluationRequest (
+                        evaluationContextId,
+                        compilation),
+                    agentClient.GetCancellationToken (cancellationToken));
         }
 
         sealed class XipRequestMessageHttpContent : HttpContent

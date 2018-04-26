@@ -2,7 +2,7 @@
   {
     "Kind": "GitRepo",
     "Name": "https://github.com/xamarin/workbooks-proprietary",
-    "Version": "agentevalservice",
+    "Version": "master",
     "Path": "workbooks-proprietary"
   },
   {

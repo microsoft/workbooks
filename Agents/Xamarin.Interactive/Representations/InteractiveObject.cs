@@ -16,7 +16,7 @@ namespace Xamarin.Interactive.Representations
     abstract class InteractiveObject : InteractiveObjectBase
     {
         [JsonObject]
-        public sealed class GetMemberValueError : IRepresentationObject
+        public sealed class GetMemberValueError
         {
             public ExceptionNode Exception { get; }
 

@@ -428,8 +428,8 @@ namespace Xamarin.Interactive.Workbook.Models
 
                 codeCell.Cell.Buffer.Value = input; // TODO: Set Mac document dirty
                 switch (await CoreEvaluateCodeCellAsync (codeCell, cancellationToken)) {
-                case CodeCellEvaluationStatus.ErrorDiagnostic:
-                case CodeCellEvaluationStatus.Disconnected:
+                case EvaluationStatus.ErrorDiagnostic:
+                case EvaluationStatus.Disconnected:
                     break;
                 default:
                     StartNewCodeCell ();
@@ -508,8 +508,8 @@ namespace Xamarin.Interactive.Workbook.Models
                 evaluatableCodeCell.View.IsEvaluating = true;
 
                 switch (await CoreEvaluateCodeCellAsync (evaluatableCodeCell)) {
-                case CodeCellEvaluationStatus.ErrorDiagnostic:
-                case CodeCellEvaluationStatus.Disconnected:
+                case EvaluationStatus.ErrorDiagnostic:
+                case EvaluationStatus.Disconnected:
                     return;
                 }
             }
@@ -525,7 +525,7 @@ namespace Xamarin.Interactive.Workbook.Models
             }
         }
 
-        async Task<CodeCellEvaluationStatus> CoreEvaluateCodeCellAsync (
+        async Task<EvaluationStatus> CoreEvaluateCodeCellAsync (
             CodeCellState codeCellState,
             CancellationToken cancellationToken = default (CancellationToken))
         {
@@ -537,7 +537,7 @@ namespace Xamarin.Interactive.Workbook.Models
                 codeCellState.View.RenderDiagnostic (new Diagnostic (
                     DiagnosticSeverity.Error,
                     "Cannot evaluate: not connected to agent."));
-                return CodeCellEvaluationStatus.Disconnected;
+                return EvaluationStatus.Disconnected;
             }
 
             CodeAnalysis.Compilation compilation = null;
@@ -594,20 +594,20 @@ namespace Xamarin.Interactive.Workbook.Models
 
             codeCellState.View.IsEvaluating = false;
 
-            CodeCellEvaluationStatus evaluationStatus;
+            EvaluationStatus evaluationStatus;
 
             if (exception != null) {
                 codeCellState.View.RenderResult (
                     CultureInfo.CurrentCulture,
                     EvaluationService.FilterException (exception),
                     EvaluationResultHandling.Replace);
-                evaluationStatus = CodeCellEvaluationStatus.EvaluationException;
+                evaluationStatus = EvaluationStatus.EvaluationException;
             } else if (hasErrorDiagnostics) {
-                return CodeCellEvaluationStatus.ErrorDiagnostic;
+                return EvaluationStatus.ErrorDiagnostic;
             } else if (agentTerminatedWhileEvaluating) {
-                evaluationStatus = CodeCellEvaluationStatus.Disconnected;
+                evaluationStatus = EvaluationStatus.Disconnected;
             } else {
-                evaluationStatus = CodeCellEvaluationStatus.Success;
+                evaluationStatus = EvaluationStatus.Success;
             }
 
             if (ClientSession.SessionKind != ClientSessionKind.Workbook)
@@ -648,12 +648,7 @@ namespace Xamarin.Interactive.Workbook.Models
 
             codeCellState.View.EvaluationDuration = result.EvaluationDuration;
 
-            if (result.Exception != null)
-                codeCellState.View.RenderResult (
-                    cultureInfo,
-                    EvaluationService.FilterException (result.Exception),
-                    result.ResultHandling);
-            else if (result.ResultHandling != EvaluationResultHandling.Ignore)
+            if (result.ResultHandling != EvaluationResultHandling.Ignore)
                 codeCellState.View.RenderResult (
                     cultureInfo,
                     result.ResultRepresentations is RepresentedObject ro ? ro : result.ResultRepresentations? [0],

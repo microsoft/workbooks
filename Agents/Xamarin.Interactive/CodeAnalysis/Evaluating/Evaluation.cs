@@ -18,14 +18,13 @@ namespace Xamarin.Interactive.CodeAnalysis.Evaluating
     public sealed class Evaluation : ICodeCellEvent
     {
         public CodeCellId CodeCellId { get; }
+        public EvaluationStatus Status { get; }
         public EvaluationResultHandling ResultHandling { get; }
         public IRepresentedType ResultType { get; }
         public IReadOnlyList<object> ResultRepresentations { get; }
-        internal ExceptionNode Exception { get; }
         public TimeSpan EvaluationDuration { get; }
         public int CultureLCID { get; }
         public int UICultureLCID { get; }
-        public bool Interrupted { get; }
         public bool InitializedIntegration { get; }
         public IReadOnlyList<AssemblyDefinition> LoadedAssemblies { get; }
 
@@ -36,26 +35,25 @@ namespace Xamarin.Interactive.CodeAnalysis.Evaluating
         [JsonConstructor]
         Evaluation (
             CodeCellId codeCellId,
+            EvaluationStatus status,
             EvaluationResultHandling resultHandling,
             IRepresentedType resultType,
             IReadOnlyList<object> resultRepresentations,
-            ExceptionNode exception,
+            bool resultIsException,
             TimeSpan evaluationDuration,
             int cultureLCID,
             int uiCultureLCID,
-            bool interrupted,
             bool initializedIntegration,
             IReadOnlyList<AssemblyDefinition> loadedAssemblies)
         {
             CodeCellId = codeCellId;
+            Status = status;
             ResultHandling = resultHandling;
             ResultType = resultType;
             ResultRepresentations = resultRepresentations;
-            Exception = exception;
             EvaluationDuration = evaluationDuration;
             CultureLCID = cultureLCID;
             UICultureLCID = uiCultureLCID;
-            Interrupted = interrupted;
             InitializedIntegration = initializedIntegration;
             LoadedAssemblies = loadedAssemblies;
         }
@@ -66,25 +64,26 @@ namespace Xamarin.Interactive.CodeAnalysis.Evaluating
             object value)
             : this (
                 codeCellId,
+                EvaluationStatus.Success,
                 resultHandling,
                 value,
-                exception: null) // to avoid calling self
+                evaluationDuration: default) // to avoid calling self
         {
         }
 
         internal Evaluation (
             CodeCellId codeCellId,
+            EvaluationStatus status,
             EvaluationResultHandling resultHandling,
             object value,
-            ExceptionNode exception = null,
             TimeSpan evaluationDuration = default,
             int cultureLCID = 0,
             int uiCultureLCID = 0,
-            bool interrupted = false,
             bool initializedIntegration = false,
             IReadOnlyList<AssemblyDefinition> loadedAssemblies = null)
         {
             CodeCellId = codeCellId;
+            Status = status;
             ResultHandling = resultHandling;
 
             switch (value) {
@@ -101,11 +100,9 @@ namespace Xamarin.Interactive.CodeAnalysis.Evaluating
                 break;
             }
 
-            Exception = exception;
             EvaluationDuration = evaluationDuration;
             CultureLCID = cultureLCID;
             UICultureLCID = uiCultureLCID;
-            Interrupted = interrupted;
             InitializedIntegration = initializedIntegration;
             LoadedAssemblies = loadedAssemblies ?? Array.Empty<AssemblyDefinition> ();
         }
