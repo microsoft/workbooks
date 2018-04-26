@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 
 using Microsoft.AspNetCore.SignalR;
@@ -101,13 +102,21 @@ namespace Xamarin.Interactive.Client.Web.Hubs
                 position,
                 Context.Connection.ConnectionAbortedToken);
 
-        public Task<IEnumerable<CompletionItem>> GetCompletions (
+        public async Task<IEnumerable<CompletionItem>> GetCompletions (
             CodeCellId codeCellId,
             Position position)
-            => GetSession ().WorkspaceService.GetCompletionsAsync (
-                codeCellId,
-                position,
-                Context.Connection.ConnectionAbortedToken);
+        {
+            var cancellationToken = Context.Connection.ConnectionAbortedToken;
+
+            try {
+                return await GetSession ().WorkspaceService.GetCompletionsAsync (
+                    codeCellId,
+                    position,
+                    cancellationToken);
+            } catch (TaskCanceledException) when (!cancellationToken.IsCancellationRequested) {
+                return Array.Empty<CompletionItem> ();
+            }
+        }
 
         public Task<SignatureHelp> GetSignatureHelp (
             CodeCellId codeCellId,
