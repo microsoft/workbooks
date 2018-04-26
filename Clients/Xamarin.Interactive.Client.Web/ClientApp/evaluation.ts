@@ -30,10 +30,10 @@ export interface Diagnostic {
 // Events
 
 export const enum CodeCellEventType {
-    EvaluationStarted = 'CodeCellEvaluationStartedEvent',
-    EvaluationFinished = 'CodeCellEvaluationFinishedEvent',
-    Evaluation = 'Evaluation',
-    CapturedOutputSegment = 'CapturedOutputSegment'
+    EvaluationStarted = 'Xamarin.Interactive.CodeAnalysis.Events.CodeCellEvaluationStartedEvent',
+    EvaluationFinished = 'Xamarin.Interactive.CodeAnalysis.Events.CodeCellEvaluationFinishedEvent',
+    Evaluation = 'Xamarin.Interactive.CodeAnalysis.Evaluating.Evaluation',
+    CapturedOutputSegment = 'Xamarin.Interactive.CodeAnalysis.CapturedOutputSegment'
 }
 
 export interface ICodeCellEvent {

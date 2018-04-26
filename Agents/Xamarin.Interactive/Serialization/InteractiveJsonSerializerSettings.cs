@@ -32,7 +32,7 @@ namespace Xamarin.Interactive.Serialization
 
         #if !EXTERNAL_INTERACTIVE_JSON_SERIALIZER_SETTINGS
         public static InteractiveJsonSerializerSettings SharedInstance { get; }
-            = new InteractiveJsonSerializerSettings (true);
+            = new InteractiveJsonSerializerSettings ();
         #endif
 
         sealed class InteractiveJsonContractResolver : DefaultContractResolver
@@ -88,21 +88,14 @@ namespace Xamarin.Interactive.Serialization
 
         sealed class InteractiveJsonBinder : ISerializationBinder
         {
-            readonly bool bindUsingTypeFullName;
-
-            public InteractiveJsonBinder (bool bindUsingTypeFullName)
-                => this.bindUsingTypeFullName = bindUsingTypeFullName;
-
             public void BindToName (Type serializedType, out string assemblyName, out string typeName)
             {
                 assemblyName = null;
 
                 if (typeof (InspectView).IsAssignableFrom (serializedType))
                     typeName = typeof (InspectView).ToSerializableName ();
-                else if (bindUsingTypeFullName)
-                    typeName = serializedType.FullName;
                 else
-                    typeName = serializedType.Name;
+                    typeName = serializedType.FullName;
             }
 
             public Type BindToType (string assemblyName, string typeName)
@@ -115,10 +108,10 @@ namespace Xamarin.Interactive.Serialization
         #else
         InteractiveJsonSerializerSettings
         #endif
-        (bool bindUsingTypeFullName = false)
+        ()
         {
             ContractResolver = new InteractiveJsonContractResolver ();
-            SerializationBinder = new InteractiveJsonBinder (bindUsingTypeFullName);
+            SerializationBinder = new InteractiveJsonBinder ();
 
             // Non-default NJS Converters
             Converters.Add (new MonacoAwareStringEnumConverter ());

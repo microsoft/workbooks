@@ -13,13 +13,7 @@ import {
     getFirstRepresentationOfType
 } from '../rendering'
 
-const RepresentationName = 'ToStringRepresentation'
-
-export default function ToStringRendererFactory(result: CodeCellResult) {
-    return getFirstRepresentationOfType(result, RepresentationName)
-        ? new ToStringRenderer
-        : null
-}
+export const ToStringRepresentationDataTypeName = 'Xamarin.Interactive.Representations.ToStringRepresentation'
 
 export interface ToStringRepresentationData {
     $type: string
@@ -29,10 +23,18 @@ export interface ToStringRepresentationData {
     }[]
 }
 
+export default function ToStringRendererFactory(result: CodeCellResult) {
+    return getFirstRepresentationOfType(result, ToStringRepresentationDataTypeName)
+        ? new ToStringRenderer
+        : null
+}
+
 class ToStringRenderer implements ResultRenderer {
     getRepresentations(result: CodeCellResult) {
         const reps: ResultRendererRepresentation[] = []
-        const value = getFirstRepresentationOfType<ToStringRepresentationData>(result, RepresentationName)
+        const value = getFirstRepresentationOfType<ToStringRepresentationData>(
+            result,
+            ToStringRepresentationDataTypeName)
 
         if (value) {
             // TODO: some way to toggle between current culture (what we're using now,
