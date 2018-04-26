@@ -32,7 +32,7 @@ namespace Xamarin.Interactive.Client.Console
     {
         static LanguageDescription language;
         static CodeCellId lastCodeCellId;
-        static CodeCellEvaluationStatus lastCellEvaluationStatus;
+        static EvaluationStatus lastCellEvaluationStatus;
         static Spinner evalSpinner;
         static bool dumpEvaluationJson;
 
@@ -166,7 +166,7 @@ namespace Xamarin.Interactive.Client.Console
 
                 // if the evaluation was not successful, remove the cell so it's not internally
                 // re-evaluated (which would continue to yield the same failures)
-                if (finishedEvent.Status != CodeCellEvaluationStatus.Success)
+                if (finishedEvent.Status != EvaluationStatus.Success)
                     await session.EvaluationService.RemoveCodeCellAsync (finishedEvent.CodeCellId);
             }
         }
@@ -224,7 +224,7 @@ namespace Xamarin.Interactive.Client.Console
 
                 await session.EvaluationService.EvaluateAsync (lastCodeCellId);
 
-                if (lastCellEvaluationStatus != CodeCellEvaluationStatus.Success)
+                if (lastCellEvaluationStatus != EvaluationStatus.Success)
                     break;
             }
 
@@ -283,13 +283,13 @@ namespace Xamarin.Interactive.Client.Console
                 lastCellEvaluationStatus = finishedEvent.Status;
 
                 switch (finishedEvent.Status) {
-                case CodeCellEvaluationStatus.Disconnected:
+                case EvaluationStatus.Disconnected:
                     RenderError ("Agent was disconnected while evaluating cell");
                     break;
-                case CodeCellEvaluationStatus.Interrupted:
+                case EvaluationStatus.Interrupted:
                     RenderError ("Evaluation was aborted");
                     break;
-                case CodeCellEvaluationStatus.EvaluationException:
+                case EvaluationStatus.EvaluationException:
                     RenderError ("An exception was thrown while evaluating cell");
                     break;
                 }

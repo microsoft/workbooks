@@ -504,6 +504,14 @@ namespace Xamarin.Interactive.CodeAnalysis.Evaluating
         Append,
         Ignore
     }
+    public enum EvaluationStatus
+    {
+        Success,
+        Disconnected,
+        Interrupted,
+        ErrorDiagnostic,
+        EvaluationException
+    }
     public interface IEvaluationContextManager
     {
         IObservable<ICodeCellEvent> Events {

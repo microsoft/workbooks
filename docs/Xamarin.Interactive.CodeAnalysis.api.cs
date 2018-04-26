@@ -100,14 +100,6 @@ namespace Xamarin.Interactive.CodeAnalysis
 }
 namespace Xamarin.Interactive.CodeAnalysis.Evaluating
 {
-    public enum CodeCellEvaluationStatus
-    {
-        Success,
-        Disconnected,
-        Interrupted,
-        ErrorDiagnostic,
-        EvaluationException
-    }
     public sealed class EvaluationService : IEvaluationService, IDisposable
     {
         public bool CanEvaluate {
@@ -161,11 +153,11 @@ namespace Xamarin.Interactive.CodeAnalysis.Events
             get;
         }
 
-        public CodeCellEvaluationStatus Status {
+        public EvaluationStatus Status {
             get;
         }
 
-        public CodeCellEvaluationFinishedEvent (CodeCellId codeCellId, CodeCellEvaluationStatus status, bool shouldStartNewCell, IReadOnlyList<Diagnostic> diagnostics);
+        public CodeCellEvaluationFinishedEvent (CodeCellId codeCellId, EvaluationStatus status, bool shouldStartNewCell, IReadOnlyList<Diagnostic> diagnostics);
     }
     public struct CodeCellEvaluationStartedEvent : ICodeCellEvent
     {
