@@ -14,10 +14,8 @@ import { CodeCellResult } from '../evaluation';
 import { ResultRenderer, ResultRendererRepresentation } from '../rendering'
 
 export default function CalendarRendererFactory(result: CodeCellResult) {
-    return result.resultRepresentations &&
-        result.resultRepresentations.length > 0 &&
-        typeof result.resultRepresentations[0] === 'string' &&
-        result.resultType === 'System.DateTime'
+    return result.resultType === 'System.DateTime' &&
+        typeof result.resultRepresentations[0] === 'string'
         ? new CalendarRenderer
         : null
 }
@@ -28,7 +26,7 @@ class CalendarRenderer implements ResultRenderer {
             displayName: 'Calendar',
             component: CalendarRepresentation,
             componentProps: {
-                value: new Date((result.resultRepresentations as any[])[0] as string)
+                value: new Date(result.resultRepresentations[0])
             }
         }]
     }
