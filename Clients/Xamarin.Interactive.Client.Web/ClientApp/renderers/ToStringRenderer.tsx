@@ -21,7 +21,7 @@ export default function ToStringRendererFactory(result: CodeCellResult) {
         : null
 }
 
-interface ToStringRepresentationData {
+export interface ToStringRepresentationData {
     $type: string
     formats: {
         name: string,
