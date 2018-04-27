@@ -599,7 +599,7 @@ namespace Xamarin.Interactive.Workbook.Models
             if (exception != null) {
                 codeCellState.View.RenderResult (
                     CultureInfo.CurrentCulture,
-                    EvaluationService.FilterException (exception),
+                    exception,
                     EvaluationResultHandling.Replace);
                 evaluationStatus = EvaluationStatus.EvaluationException;
             } else if (hasErrorDiagnostics) {
