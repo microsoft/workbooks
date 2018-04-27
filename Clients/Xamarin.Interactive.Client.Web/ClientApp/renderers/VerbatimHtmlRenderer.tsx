@@ -13,12 +13,15 @@ import {
     ResultRendererRepresentation,
     getFirstRepresentationOfType
 } from '../rendering'
-import { ToStringRepresentationData } from './ToStringRenderer'
+import {
+    ToStringRepresentationDataTypeName,
+    ToStringRepresentationData
+ } from './ToStringRenderer'
 
-const xirType = 'Xamarin.Interactive.Representations.VerbatimHtml'
+const RepresentationTypeName = 'Xamarin.Interactive.Representations.VerbatimHtml'
 
 export default function VerbatimHtmlRendererFactory(result: CodeCellResult) {
-    return getFirstRepresentationOfType(result, 'VerbatimHtml')
+    return getFirstRepresentationOfType(result, RepresentationTypeName)
         ? new VerbatimHtmlRenderer
         : null
 }
@@ -30,7 +33,10 @@ class VerbatimHtmlRenderer implements ResultRenderer {
         // avoids sending duplicate data across the wire.
         //
         // So, grab the ToStringRepresentation and render that as HTML instead.
-        const rep = getFirstRepresentationOfType<ToStringRepresentationData>(result, 'ToStringRepresentation')
+        const rep = getFirstRepresentationOfType<ToStringRepresentationData>(
+            result,
+            ToStringRepresentationDataTypeName)
+
         if (rep)
             return [{
                 displayName: 'HTML',

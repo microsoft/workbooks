@@ -21,7 +21,7 @@ import {
 
 import './ImageRenderer.scss'
 
-const RepresentationName = 'Image'
+const RepresentationName = 'Xamarin.Interactive.Representations.Image'
 
 export default function ImageRendererFactory(result: CodeCellResult) {
     return getFirstRepresentationOfType(result, RepresentationName)
@@ -33,7 +33,7 @@ interface ImageData {
     $type: string
     format: string
     data: {
-        $type: 'Byte[]'
+        $type: 'System.Byte[]'
         $value: string
     }
     width: number
