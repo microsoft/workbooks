@@ -1239,6 +1239,151 @@ namespace Xamarin.Interactive.Representations
 }
 namespace Xamarin.Interactive.Representations.Reflection
 {
+    public class CSharpWriter : IReflectionRemotingVisitor
+    {
+        public class TokenWriter
+        {
+            public TokenWriter (TextWriter writer);
+
+            public virtual void Write (char c);
+
+            public virtual void Write (int n);
+
+            public virtual void Write (string s, params object[] formatArgs);
+
+            public virtual void WriteKeyword (string keyword);
+
+            public virtual void WriteLine ();
+
+            public virtual void WriteLine (string s, params object[] formatArgs);
+
+            public virtual void WriteMemberName (string memberName);
+
+            public virtual void WriteNamespace (string @namespace);
+
+            public virtual void WriteParameterName (string parameterName);
+
+            public virtual void WriteTypeModifier (string modifier);
+
+            public virtual void WriteTypeName (string typeName);
+        }
+
+        public bool WriteLanguageKeywords {
+            get;
+            set;
+        }
+
+        public bool WriteMemberTypes {
+            get;
+            set;
+        }
+
+        public bool WriteReturnTypes {
+            get;
+            set;
+        }
+
+        public bool WriteTypeBeforeMemberName {
+            get;
+            set;
+        }
+
+        public CSharpWriter (CSharpWriter.TokenWriter writer);
+
+        public CSharpWriter (TextWriter writer);
+
+        public virtual void VisitDeclaringTypeSpec (TypeSpec typeSpec);
+
+        public virtual void VisitExceptionNode (ExceptionNode exception);
+
+        public virtual void VisitField (Field field);
+
+        public virtual void VisitMethod (Method method);
+
+        public virtual void VisitParameter (Parameter parameter);
+
+        public virtual void VisitProperty (Property property);
+
+        public virtual void VisitStackFrame (StackFrame stackFrame);
+
+        public virtual void VisitStackTrace (StackTrace stackTrace);
+
+        public virtual void VisitTypeSpec (TypeSpec typeSpec, bool writeByRefModifier);
+
+        public void VisitTypeSpec (TypeSpec typeSpec);
+    }
+    [JsonObject]
+    public sealed class ExceptionNode : Node
+    {
+        public ExceptionNode InnerException {
+            get;
+        }
+
+        public string Message {
+            get;
+        }
+
+        public StackTrace StackTrace {
+            get;
+        }
+
+        public TypeSpec Type {
+            get;
+        }
+
+        [JsonConstructor]
+        public ExceptionNode (TypeSpec type, string message, StackTrace stackTrace, ExceptionNode innerException);
+
+        public override void AcceptVisitor (IReflectionRemotingVisitor visitor);
+
+        public static ExceptionNode Create (Exception exception);
+
+        public override string ToString ();
+    }
+    [JsonObject]
+    public sealed class Field : Node, ITypeMember
+    {
+        public FieldAttributes Attributes {
+            get;
+        }
+
+        public TypeSpec DeclaringType {
+            get;
+        }
+
+        public TypeSpec FieldType {
+            get;
+        }
+
+        public string Name {
+            get;
+        }
+
+        [JsonConstructor]
+        public Field (string name, TypeSpec declaringType, TypeSpec fieldType, FieldAttributes attributes);
+
+        public override void AcceptVisitor (IReflectionRemotingVisitor visitor);
+
+        public static Field Create (FieldInfo field);
+    }
+    public interface IReflectionRemotingVisitor
+    {
+        void VisitExceptionNode (ExceptionNode exception);
+
+        void VisitField (Field field);
+
+        void VisitMethod (Method method);
+
+        void VisitParameter (Parameter parameter);
+
+        void VisitProperty (Property property);
+
+        void VisitStackFrame (StackFrame stackFrame);
+
+        void VisitStackTrace (StackTrace stackTrace);
+
+        void VisitTypeSpec (TypeSpec typeSpec);
+    }
     public interface IRepresentedMemberInfo
     {
         bool CanWrite {
@@ -1275,11 +1420,201 @@ namespace Xamarin.Interactive.Representations.Reflection
             get;
         }
     }
+    public interface ITypeMember
+    {
+        TypeSpec DeclaringType {
+            get;
+        }
+
+        string Name {
+            get;
+        }
+
+        void AcceptVisitor (IReflectionRemotingVisitor visitor);
+    }
+    [JsonObject]
+    public sealed class Method : Node, ITypeMember
+    {
+        public TypeSpec DeclaringType {
+            get;
+        }
+
+        public string Name {
+            get;
+        }
+
+        public IReadOnlyList<Parameter> Parameters {
+            get;
+        }
+
+        public TypeSpec ReturnType {
+            get;
+        }
+
+        public IReadOnlyList<TypeSpec> TypeArguments {
+            get;
+        }
+
+        public string WrapperType {
+            get;
+        }
+
+        [JsonConstructor]
+        public Method (string name, string wrapperType, TypeSpec declaringType, TypeSpec returnType, IReadOnlyList<TypeSpec> typeArguments, IReadOnlyList<Parameter> parameters);
+
+        public override void AcceptVisitor (IReflectionRemotingVisitor visitor);
+
+        public static Method Create (MethodBase method);
+    }
+    public abstract class Node
+    {
+        public abstract void AcceptVisitor (IReflectionRemotingVisitor visitor);
+    }
+    [JsonObject]
+    public sealed class Parameter : Node
+    {
+        public object DefaultValue {
+            get;
+        }
+
+        public bool HasDefaultValue {
+            get;
+        }
+
+        public bool IsOut {
+            get;
+        }
+
+        public bool IsRetval {
+            get;
+        }
+
+        public string Name {
+            get;
+        }
+
+        public TypeSpec Type {
+            get;
+        }
+
+        [JsonConstructor]
+        public Parameter (TypeSpec type, string name = null, bool isOut = false, bool isRetval = false, bool hasDefaultValue = false, object defaultValue = null);
+
+        public override void AcceptVisitor (IReflectionRemotingVisitor visitor);
+
+        public static Parameter Create (ParameterInfo parameter);
+    }
+    [JsonObject]
+    public sealed class Property : Node, ITypeMember
+    {
+        public TypeSpec DeclaringType {
+            get;
+        }
+
+        public Method Getter {
+            get;
+        }
+
+        public string Name {
+            get;
+        }
+
+        public TypeSpec PropertyType {
+            get;
+        }
+
+        public Method Setter {
+            get;
+        }
+
+        [JsonConstructor]
+        public Property (string name, TypeSpec declaringType, TypeSpec propertyType, Method getter, Method setter);
+
+        public override void AcceptVisitor (IReflectionRemotingVisitor visitor);
+
+        public static Property Create (PropertyInfo property);
+    }
     [Serializable]
     public enum RepresentedMemberKind : byte
     {
         None,
         Field,
         Property
+    }
+    [JsonObject]
+    public sealed class StackFrame : Node
+    {
+        public int Column {
+            get;
+        }
+
+        public string FileName {
+            get;
+        }
+
+        public int ILOffset {
+            get;
+        }
+
+        public Method InternalMethod {
+            get;
+        }
+
+        public bool IsTaskAwaiter {
+            get;
+        }
+
+        public int Line {
+            get;
+        }
+
+        public ITypeMember Member {
+            get;
+        }
+
+        public uint MethodIndex {
+            get;
+        }
+
+        public long NativeAddress {
+            get;
+        }
+
+        public int NativeOffset {
+            get;
+        }
+
+        [JsonConstructor]
+        public StackFrame (string fileName, int line, int column, int ilOffset, int nativeOffset, long nativeAddress, uint methodIndex, bool isTaskAwaiter, Method internalMethod, ITypeMember member);
+
+        public override void AcceptVisitor (IReflectionRemotingVisitor visitor);
+
+        public static StackFrame Create (StackFrame frame);
+    }
+    [JsonObject]
+    public sealed class StackTrace : Node
+    {
+        public IReadOnlyList<StackTrace> CapturedTraces {
+            get;
+        }
+
+        public IReadOnlyList<StackFrame> Frames {
+            get;
+        }
+
+        [JsonConstructor]
+        public StackTrace (IReadOnlyList<StackFrame> frames, IReadOnlyList<StackTrace> capturedTraces);
+
+        public override void AcceptVisitor (IReflectionRemotingVisitor visitor);
+
+        public static StackTrace Create (StackTrace trace);
+
+        public StackTrace WithCapturedTraces (IEnumerable<StackTrace> capturedTraces);
+
+        public StackTrace WithFrames (IEnumerable<StackFrame> frames);
+    }
+    public static class TypeMember
+    {
+        public static ITypeMember Create (MemberInfo memberInfo);
     }
 }
