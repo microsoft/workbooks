@@ -71,7 +71,6 @@ namespace Xamarin.Interactive.CodeAnalysis.Evaluating
 
             var status = EvaluationStatus.Success;
             Exception evaluationException = null;
-            ExceptionNode evaluationExceptionToReturn = null;
 
             var inFlight = EvaluationInFlight.Create (compilation);
 
@@ -103,12 +102,11 @@ namespace Xamarin.Interactive.CodeAnalysis.Evaluating
                 stopwatch.Start ();
                 inFlight = inFlight.With (originalValue: await CoreEvaluateAsync (compilation, cancellationToken));
             } catch (AggregateException e) when (e.InnerExceptions?.Count == 1) {
-                evaluationException = e;
                 // the Roslyn-emitted script delegates are async, so all exceptions
                 // raised within a delegate should be AggregateException; if there's
                 // just one inner exception, unwind it since the async nature of the
                 // script delegates is a REPL implementation detail.
-                evaluationExceptionToReturn = ExceptionNode.Create (e.InnerExceptions [0]);
+                evaluationException = e.InnerExceptions [0];
             } catch (ThreadAbortException e) {
                 evaluationException = e;
                 status = EvaluationStatus.Interrupted;
@@ -118,7 +116,6 @@ namespace Xamarin.Interactive.CodeAnalysis.Evaluating
                 status = EvaluationStatus.Interrupted;
             } catch (Exception e) {
                 evaluationException = e;
-                evaluationExceptionToReturn = ExceptionNode.Create (e);
             } finally {
                 stopwatch.Stop ();
                 currentRunThread = null;
@@ -134,13 +131,15 @@ namespace Xamarin.Interactive.CodeAnalysis.Evaluating
             var resultHandling = EvaluationResultHandling.Replace;
             object result;
 
-            if (evaluationExceptionToReturn == null) {
+            if (evaluationException == null) {
                 result = inFlight.OriginalValue;
 
                 if (status == EvaluationStatus.Interrupted || (result == null && !compilation.IsResultAnExpression))
                     resultHandling = EvaluationResultHandling.Ignore;
+            } else if (status == EvaluationStatus.Interrupted) {
+                result = null;
             } else {
-                result = evaluationExceptionToReturn;
+                result = evaluationException;
                 status = EvaluationStatus.EvaluationException;
             }
 
