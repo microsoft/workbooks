@@ -384,7 +384,7 @@ namespace Xamarin.Interactive.Representations.Reflection
             int typeNamesConsumed = 0;
             int typeArgIndex = 0;
 
-            foreach (var name in typeSpec.AllNames) {
+            foreach (var name in typeSpec.GetAllNames ()) {
                 if (!name.Name.StartsWith ("🐵", StringComparison.Ordinal)) {
                     if (typeNamesConsumed++ > 0)
                         writer.Write ('.');
@@ -582,7 +582,7 @@ namespace Xamarin.Interactive.Representations.Reflection
                     method.Name = builder.ToString ().Trim ();
                     builder.Clear ();
                 } else if ((c == ',' && depth == 0) || (i == name.Length - 1 && c == ')')) {
-                    var typeSpec = TypeSpec.Parse (builder.ToString ().Trim ());
+                    var typeSpec = TypeSpec.ParseBuilder (builder.ToString ().Trim ());
                     // mono_method_get_name_full writes C# keywords, so
                     // we need to translate them back to full type names
                     switch (typeSpec.Name.ToString ()) {
@@ -639,12 +639,14 @@ namespace Xamarin.Interactive.Representations.Reflection
                         break;
                     }
 
-                    if (method.ReturnType == null)
-                        method.ReturnType = typeSpec;
-                    else {
+                    if (method.ReturnType == null) {
+                        method.ReturnType = typeSpec.Build ();
+                    } else {
                         if (method.Parameters == null)
                             method.Parameters = new List<Parameter> ();
-                        method.Parameters.Add (new Parameter { Type = typeSpec });
+                        method.Parameters.Add (new Parameter {
+                            Type = typeSpec.Build ()
+                        });
                     }
                     builder.Clear ();
                 } else {

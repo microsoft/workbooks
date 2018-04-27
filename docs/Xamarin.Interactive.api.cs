@@ -759,6 +759,155 @@ namespace Xamarin.Interactive.Core
 
         public override string ToString ();
     }
+    [JsonObject]
+    public sealed class TypeSpec
+    {
+        [JsonObject]
+        public struct ArrayModifier : TypeSpec.IModifier
+        {
+            public int Dimension {
+                get;
+            }
+
+            public bool IsBound {
+                get;
+            }
+
+            [JsonConstructor]
+            public ArrayModifier (bool isBound, int dimension);
+
+            public StringBuilder Append (StringBuilder builder);
+
+            public override string ToString ();
+        }
+
+        public sealed class Builder
+        {
+            public string AssemblyName {
+                get;
+                set;
+            }
+
+            public bool HasModifiers {
+                get;
+            }
+
+            public bool IsByRef {
+                get;
+                set;
+            }
+
+            public List<TypeSpec.IModifier> Modifiers {
+                get;
+            }
+
+            public TypeSpec.TypeName Name {
+                get;
+                set;
+            }
+
+            public List<TypeSpec.TypeName> NestedNames {
+                get;
+            }
+
+            public List<TypeSpec> TypeArguments {
+                get;
+            }
+
+            public Builder ();
+
+            public void AddModifier (TypeSpec.IModifier modifier);
+
+            public void AddName (TypeSpec.TypeName name);
+
+            public void AddTypeArgument (TypeSpec typeArgument);
+
+            public TypeSpec Build ();
+        }
+
+        public interface IModifier
+        {
+            StringBuilder Append (StringBuilder builder);
+        }
+
+        [JsonObject]
+        public struct PointerModifier : TypeSpec.IModifier
+        {
+            public StringBuilder Append (StringBuilder builder);
+
+            public override string ToString ();
+        }
+
+        [JsonObject]
+        public struct TypeName : IEquatable<TypeSpec.TypeName>
+        {
+            public string Name {
+                get;
+            }
+
+            public string Namespace {
+                get;
+            }
+
+            public int TypeArgumentCount {
+                get;
+            }
+
+            [JsonConstructor]
+            public TypeName (string @namespace, string name, int typeArgumentCount = 0);
+
+            public bool Equals (TypeSpec.TypeName other);
+
+            public override bool Equals (object obj);
+
+            public override int GetHashCode ();
+
+            public override string ToString ();
+        }
+
+        public string AssemblyName {
+            get;
+        }
+
+        public bool IsByRef {
+            get;
+        }
+
+        public IReadOnlyList<TypeSpec.IModifier> Modifiers {
+            get;
+        }
+
+        public TypeSpec.TypeName Name {
+            get;
+        }
+
+        public IReadOnlyList<TypeSpec.TypeName> NestedNames {
+            get;
+        }
+
+        public IReadOnlyList<TypeSpec> TypeArguments {
+            get;
+        }
+
+        [JsonConstructor]
+        public TypeSpec (TypeSpec.TypeName name, string assemblyName, bool isByRef, IReadOnlyList<TypeSpec.TypeName> nestedNames, IReadOnlyList<TypeSpec.IModifier> modifiers, IReadOnlyList<TypeSpec> typeArguments);
+
+        public string DumpToString ();
+
+        public StringBuilder DumpToString (StringBuilder builder, int depth);
+
+        public IEnumerable<TypeSpec.TypeName> GetAllNames ();
+
+        public static TypeSpec Parse (string typeSpec);
+
+        public static TypeSpec Parse (Type type, bool assemblyQualified = false);
+
+        public static TypeSpec.Builder ParseBuilder (string typeSpec);
+
+        public static TypeSpec.Builder ParseBuilder (Type type, bool assemblyQualified = false);
+
+        public override string ToString ();
+    }
 }
 namespace Xamarin.Interactive.Logging
 {

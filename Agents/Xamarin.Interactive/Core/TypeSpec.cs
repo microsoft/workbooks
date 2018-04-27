@@ -10,20 +10,21 @@ using System.IO;
 using System.Text;
 using System.Collections.Generic;
 
+using Newtonsoft.Json;
+
 namespace Xamarin.Interactive.Core
 {
-    [Serializable]
-    sealed class TypeSpec
+    [JsonObject]
+    public sealed class TypeSpec
     {
-        [Serializable]
+        [JsonObject]
         public struct TypeName : IEquatable<TypeName>
         {
-            public static readonly TypeName Empty = new TypeName ();
+            public string Namespace { get; }
+            public string Name { get; }
+            public int TypeArgumentCount { get; }
 
-            public string Namespace { get; private set; }
-            public string Name { get; private set; }
-            public int TypeArgumentCount { get; private set; }
-
+            [JsonConstructor]
             public TypeName (string @namespace, string name, int typeArgumentCount = 0)
             {
                 if (String.IsNullOrEmpty (name))
@@ -106,29 +107,25 @@ namespace Xamarin.Interactive.Core
 
             internal static TypeName Parse (string name)
             {
-                var typeName = new TypeName ();
+                int arity = 0;
+                string @namespace = null;
 
                 var ofs = name.LastIndexOf ('`');
                 if (ofs > 0) {
-                    int arity;
-                    if (Int32.TryParse (name.Substring (ofs + 1), out arity)) {
+                    if (Int32.TryParse (name.Substring (ofs + 1), out arity))
                         name = name.Substring (0, ofs);
-                        typeName.TypeArgumentCount = arity;
-                    }
                 }
 
                 ofs = name.LastIndexOf ('.');
                 if (ofs == 0)
                     throw new ArgumentException ("must not start with a '.'", nameof (name));
 
-                if (ofs < 0) {
-                    typeName.Name = name;
-                } else {
-                    typeName.Namespace = name.Substring (0, ofs);
-                    typeName.Name = name.Substring (ofs + 1);
+                if (ofs >= 0) {
+                    @namespace = name.Substring (0, ofs);
+                    name = name.Substring (ofs + 1);
                 }
 
-                return typeName;
+                return new TypeName (@namespace, name, arity);
             }
         }
 
@@ -137,12 +134,13 @@ namespace Xamarin.Interactive.Core
             StringBuilder Append (StringBuilder builder);
         }
 
-        [Serializable]
-        public sealed class ArrayModifier : IModifier
+        [JsonObject]
+        public struct ArrayModifier : IModifier
         {
-            public bool IsBound { get; private set; }
-            public int Dimension { get; private set; }
+            public bool IsBound { get; }
+            public int Dimension { get; }
 
+            [JsonConstructor]
             public ArrayModifier (bool isBound, int dimension)
             {
                 IsBound = isBound;
@@ -161,89 +159,98 @@ namespace Xamarin.Interactive.Core
             }
 
             public override string ToString ()
-            {
-                return Append (new StringBuilder ()).ToString ();
-            }
+                => Append (new StringBuilder ()).ToString ();
         }
 
-        [Serializable]
-        public sealed class PointerModifier : IModifier
+        [JsonObject]
+        public struct PointerModifier : IModifier
         {
             public StringBuilder Append (StringBuilder builder)
-            {
-                return builder.Append ('*');
-            }
+                => builder.Append ('*');
 
             public override string ToString ()
+                => Append (new StringBuilder ()).ToString ();
+        }
+
+        public sealed class Builder
+        {
+            public TypeName Name { get; set; }
+            public string AssemblyName { get; set; }
+            public bool IsByRef { get; set; }
+            public List<TypeName> NestedNames { get; private set; }
+            public List<IModifier> Modifiers { get; private set; }
+            public List<TypeSpec> TypeArguments { get; private set; }
+
+            public bool HasModifiers => Modifiers != null && Modifiers.Count > 0;
+
+            public void AddName (TypeName name)
             {
-                return Append (new StringBuilder ()).ToString ();
+                if (name.Equals (default))
+                    throw new ArgumentException ("must not be default value", nameof (name));
+
+                if (Name.Equals (default))
+                    Name = name;
+                else
+                    (NestedNames ?? (NestedNames = new List<TypeName> ())).Add (name);
             }
-        }
 
-        sealed class EmptyList<T> : List<T>
-        {
-            public static readonly EmptyList<T> Value = new EmptyList<T> ();
-        }
+            public void AddModifier (IModifier modifier)
+            {
+                if (modifier == null)
+                    throw new ArgumentNullException (nameof (modifier));
 
-        List<TypeName> nestedNames;
-        List<IModifier> modifiers;
-        List<TypeSpec> typeArguments;
-
-        public TypeName Name { get; set; }
-        public string AssemblyName { get; set; }
-        public bool IsByRef { get; set; }
-
-        public bool HasModifiers {
-            get { return modifiers != null; }
-        }
-
-        public IEnumerable<TypeName> AllNames {
-            get {
-                if (!Name.Equals (TypeName.Empty))
-                    yield return Name;
-
-                foreach (var nestedName in NestedNames)
-                    yield return nestedName;
+                (Modifiers ?? (Modifiers = new List<IModifier> ())).Add (modifier);
             }
+
+            public void AddTypeArgument (TypeSpec typeArgument)
+            {
+                if (typeArgument == null)
+                    throw new ArgumentNullException (nameof (typeArgument));
+
+                (TypeArguments ?? (TypeArguments = new List<TypeSpec> ())).Add (typeArgument);
+            }
+
+            public TypeSpec Build ()
+                => new TypeSpec (
+                    Name,
+                    AssemblyName,
+                    IsByRef,
+                    NestedNames,
+                    Modifiers,
+                    TypeArguments);
         }
 
-        public IReadOnlyList<TypeName> NestedNames {
-            get { return nestedNames ?? EmptyList<TypeName>.Value; }
-        }
+        public TypeName Name { get; }
+        public string AssemblyName { get; }
+        public bool IsByRef { get; }
+        public IReadOnlyList<TypeName> NestedNames { get; }
+        public IReadOnlyList<IModifier> Modifiers { get; }
+        public IReadOnlyList<TypeSpec> TypeArguments { get; }
 
-        public IReadOnlyList<IModifier> Modifiers {
-            get { return modifiers ?? EmptyList<IModifier>.Value; }
-        }
-
-        public IReadOnlyList<TypeSpec> TypeArguments {
-            get { return typeArguments ?? EmptyList<TypeSpec>.Value; }
-        }
-
-        public void AddName (TypeName name)
+        [JsonConstructor]
+        public TypeSpec (
+            TypeName name,
+            string assemblyName,
+            bool isByRef,
+            IReadOnlyList<TypeName> nestedNames,
+            IReadOnlyList<IModifier> modifiers,
+            IReadOnlyList<TypeSpec> typeArguments)
         {
-            if (name.Equals (TypeName.Empty))
-                throw new ArgumentException ("must not be TypeName.Empty", nameof (name));
-
-            if (Name.Equals (TypeName.Empty))
-                Name = name;
-            else
-                (nestedNames ?? (nestedNames = new List<TypeName> ())).Add (name);
+            Name = name;
+            AssemblyName = assemblyName;
+            IsByRef = isByRef;
+            NestedNames = nestedNames ?? Array.Empty<TypeName> ();
+            Modifiers = modifiers ?? Array.Empty<IModifier> ();
+            TypeArguments = typeArguments ?? Array.Empty<TypeSpec> ();
         }
 
-        public void AddModifier (IModifier modifier)
+        public IEnumerable<TypeName> GetAllNames ()
         {
-            if (modifier == null)
-                throw new ArgumentNullException (nameof (modifier));
+            if (!Name.Equals (default))
+                yield return Name;
 
-            (modifiers ?? (modifiers = new List<IModifier> ())).Add (modifier);
-        }
-
-        public void AddTypeArgument (TypeSpec typeArgument)
-        {
-            if (typeArgument == null)
-                throw new ArgumentNullException (nameof (typeArgument));
-
-            (typeArguments ?? (typeArguments = new List<TypeSpec> ())).Add (typeArgument);
+            foreach (var nestedName in NestedNames)
+                yield return nestedName;
         }
 
         #region ToString
@@ -300,28 +307,21 @@ namespace Xamarin.Interactive.Core
         }
 
         StringBuilder AppendFullTypeSpec (StringBuilder builder)
-        {
-            return
-                AppendAssemblyName (
-                    AppendModifiers (
-                        AppendTypeArguments (
-                            AppendFullName (
-                                builder
-                            )
+            => AppendAssemblyName (
+                AppendModifiers (
+                    AppendTypeArguments (
+                        AppendFullName (
+                            builder
                         )
                     )
-                );
-        }
+                )
+            );
 
         public override string ToString ()
-        {
-            return AppendFullTypeSpec (new StringBuilder ()).ToString ();
-        }
+            => AppendFullTypeSpec (new StringBuilder ()).ToString ();
 
         public string DumpToString ()
-        {
-            return DumpToString (new StringBuilder (), 0).ToString ();
-        }
+            => DumpToString (new StringBuilder (), 0).ToString ();
 
         public StringBuilder DumpToString (StringBuilder builder, int depth)
         {
@@ -343,29 +343,37 @@ namespace Xamarin.Interactive.Core
         #region Parsing
 
         public static TypeSpec Parse (Type type, bool assemblyQualified = false)
-        {
-            return Parse (assemblyQualified ? type.AssemblyQualifiedName : type.ToString ());
-        }
+            => ParseBuilder (type, assemblyQualified).Build ();
+
+        public static TypeSpec Parse (string typeSpec)
+            => ParseBuilder (typeSpec).Build ();
+
+        public static TypeSpec.Builder ParseBuilder (Type type, bool assemblyQualified = false)
+            => ParseBuilder (
+                assemblyQualified
+                    ? type.AssemblyQualifiedName
+                    : type.ToString ());
 
         // CLR type specification string parsing ported directly from the Mono runtime's
         // mono_reflection_parse_type (mono/metadata/reflection.c)
 
-        public static TypeSpec Parse (string typeSpec)
+        public static TypeSpec.Builder ParseBuilder (string typeSpec)
         {
             if (typeSpec == null)
                 throw new ArgumentNullException (nameof (typeSpec));
 
-            return Parse (new StringReader (typeSpec), new StringBuilder (), false);
+            return Parse (
+                new StringReader (typeSpec),
+                new StringBuilder (),
+                false);
         }
 
-        static Exception Error (string message)
+        static TypeSpec.Builder Parse (TextReader reader, StringBuilder builder, bool isRecursed)
         {
-            return new ArgumentException (message, "typeSpec");
-        }
+            Exception Error (string message)
+                => new ArgumentException (message, "typeSpec");
 
-        static TypeSpec Parse (TextReader reader, StringBuilder builder, bool isRecursed)
-        {
-            var typeSpec = new TypeSpec ();
+            var typeSpec = new TypeSpec.Builder ();
             var inModifiers = false;
             char c;
 
@@ -463,7 +471,6 @@ namespace Xamarin.Interactive.Core
                             }
 
                             var typeArgument = Parse (reader, builder, true);
-                            typeSpec.AddTypeArgument (typeArgument);
 
                             // MS is lenient on [] delimited parameters
                             // that aren't fqn - and F# uses them
@@ -489,6 +496,8 @@ namespace Xamarin.Interactive.Core
                                 builder.Clear ();
                             } else if (fqname && c == ']')
                                 reader.Read ();
+
+                            typeSpec.AddTypeArgument (typeArgument.Build ());
 
                             if (reader.Read () == ']')
                                 break;
