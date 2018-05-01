@@ -19,8 +19,8 @@ namespace Xamarin.Interactive.Tests
         static void AssertType (Type type)
         {
             Assert.NotNull (type);
-            Assert.Equal (type.ToString (), TypeSpec.Parse (type).ToString ());
-            Assert.Equal (type.AssemblyQualifiedName, TypeSpec.Parse (type, true).ToString ());
+            Assert.Equal (type.ToString (), TypeSpec.Create (type).ToString ());
+            Assert.Equal (type.AssemblyQualifiedName, TypeSpec.Create (type, true).ToString ());
         }
 
         static TypeSpec AssertType (string typeSpecString)
@@ -77,7 +77,7 @@ namespace Xamarin.Interactive.Tests
         [Theory]
         [InlineData ("X&")]
         public void ByRefModifier (string typeSpec)
-            => Assert.True (TypeSpec.Parse (typeSpec).IsByRef);
+            => Assert.True (TypeSpec.Parse (typeSpec).IsByRef ());
 
 
         [Theory]
@@ -85,7 +85,7 @@ namespace Xamarin.Interactive.Tests
         [InlineData ("X**", 0)]
         [InlineData ("X**", 1)]
         public void PointerModifier (string typeSpec, int modifierIndex)
-            => Assert.IsType<TypeSpec.PointerModifier> (TypeSpec.Parse (typeSpec).Modifiers [modifierIndex]);
+            => Assert.Equal (TypeSpec.Modifier.Pointer, TypeSpec.Parse (typeSpec).Modifiers [modifierIndex]);
 
         [Theory]
         [InlineData ("X[]", 0, false, 1)]
@@ -93,11 +93,13 @@ namespace Xamarin.Interactive.Tests
         [InlineData ("X[,]", 0, false, 2)]
         [InlineData ("X[,,]", 0, false, 3)]
         [InlineData ("X[,,,]", 0, false, 4)]
-        public void ArrayModifier (string typeSpec, int modifierIndex, bool isBound, int dimension)
+        public void ArrayModifier (string typeSpec, byte modifierIndex, bool isBound, int dimension)
         {
-            var modifier = Assert.IsType<TypeSpec.ArrayModifier> (TypeSpec.Parse (typeSpec).Modifiers [modifierIndex]);
-            Assert.Equal (isBound, modifier.IsBound);
-            Assert.Equal (dimension, modifier.Dimension);
+            var modifier = TypeSpec.Parse (typeSpec).Modifiers [modifierIndex];
+            if (isBound)
+                Assert.Equal (TypeSpec.Modifier.BoundArray, modifier);
+            else
+                Assert.Equal (dimension, (byte)modifier);
         }
 
         [Theory]
