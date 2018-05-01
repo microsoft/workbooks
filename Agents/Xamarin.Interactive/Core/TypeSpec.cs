@@ -105,7 +105,7 @@ namespace Xamarin.Interactive.Core
                 return Append (new StringBuilder (), false).ToString ();
             }
 
-            internal static TypeName Parse (string name)
+            public static TypeName Parse (string name)
             {
                 int arity = 0;
                 string @namespace = null;
@@ -210,9 +210,9 @@ namespace Xamarin.Interactive.Core
         {
             Name = name;
             AssemblyName = assemblyName;
-            NestedNames = nestedNames ?? Array.Empty<TypeName> ();
-            Modifiers = modifiers ?? Array.Empty<Modifier> ();
-            TypeArguments = typeArguments ?? Array.Empty<TypeSpec> ();
+            NestedNames = nestedNames;
+            Modifiers = modifiers;
+            TypeArguments = typeArguments;
         }
 
         public bool IsByRef ()
@@ -223,8 +223,10 @@ namespace Xamarin.Interactive.Core
             if (!Name.Equals (default))
                 yield return Name;
 
-            foreach (var nestedName in NestedNames)
-                yield return nestedName;
+            if (NestedNames != null) {
+                foreach (var nestedName in NestedNames)
+                    yield return nestedName;
+            }
         }
 
         #region ToString
@@ -233,15 +235,17 @@ namespace Xamarin.Interactive.Core
         {
             Name.Append (builder, true);
 
-            foreach (var nestedName in NestedNames)
-                nestedName.Append (builder.Append ('+'), true);
+            if (NestedNames != null) {
+                foreach (var nestedName in NestedNames)
+                    nestedName.Append (builder.Append ('+'), true);
+            }
 
             return builder;
         }
 
         StringBuilder AppendTypeArguments (StringBuilder builder)
         {
-            if (TypeArguments.Count == 0)
+            if (TypeArguments == null || TypeArguments.Count == 0)
                 return builder;
 
             builder.Append ('[');
@@ -263,6 +267,9 @@ namespace Xamarin.Interactive.Core
 
         StringBuilder AppendModifiers (StringBuilder builder)
         {
+            if (Modifiers == null)
+                return builder;
+
             foreach (var modifier in Modifiers) {
                 // 32 is the max array dimension in CTS/CLR
                 if ((byte)modifier <= 32)

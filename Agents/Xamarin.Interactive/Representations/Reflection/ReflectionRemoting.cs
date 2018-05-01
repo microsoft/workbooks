@@ -290,6 +290,9 @@ namespace Xamarin.Interactive.Representations.Reflection
         {
             WriteTypeName (typeSpec);
 
+            if (typeSpec.Modifiers == null)
+                return;
+
             foreach (var modifier in typeSpec.Modifiers) {
                 switch (modifier) {
                 case TypeSpec.Modifier.Pointer:
