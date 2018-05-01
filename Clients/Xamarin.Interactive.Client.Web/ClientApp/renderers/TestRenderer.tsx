@@ -6,6 +6,7 @@
 // Licensed under the MIT License.
 
 import * as React from 'react'
+import { randomReactKey } from '../utils'
 import { CodeCellResult } from '../evaluation';
 import { ResultRenderer } from '../rendering'
 
@@ -19,6 +20,7 @@ class TestRenderer implements ResultRenderer {
     getRepresentations(result: CodeCellResult) {
         return [
             {
+                key: randomReactKey(),
                 component: TestRepresentation,
                 componentProps: {
                     id: 1
@@ -26,6 +28,7 @@ class TestRenderer implements ResultRenderer {
                 displayName: 'Test Representation 1'
             },
             {
+                key: randomReactKey(),
                 component: TestRepresentation,
                 componentProps: {
                     id: 2

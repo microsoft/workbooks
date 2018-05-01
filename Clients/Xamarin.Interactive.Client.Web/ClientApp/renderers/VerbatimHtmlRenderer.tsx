@@ -7,6 +7,7 @@
 
 import * as React from 'react'
 import * as ReactDOM from 'react-dom'
+import { randomReactKey } from '../utils'
 import { CodeCellResult } from '../evaluation'
 import {
     ResultRenderer,
@@ -39,6 +40,7 @@ class VerbatimHtmlRenderer implements ResultRenderer {
 
         if (rep)
             return [{
+                key: randomReactKey(),
                 displayName: 'HTML',
                 component: VerbatimHtmlRepresentation,
                 componentProps: {

@@ -45,11 +45,12 @@ export interface ResultRenderer {
 export type ResultRendererFactory = (result: CodeCellResult) => ResultRenderer | null
 
 export interface ResultRendererRepresentation {
+    key: string
     displayName: string
     component: any
     componentProps?: {}
     order?: number
-    options?: ResultRendererRepresentationOptions,
+    options?: ResultRendererRepresentationOptions
 }
 
 export function getRepresentationsOfType<T = {}>(result: CodeCellResult, typeName: string): T[] {

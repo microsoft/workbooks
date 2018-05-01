@@ -6,12 +6,14 @@
 // Licensed under the MIT License.
 
 import * as React from 'react'
-import { CodeCellResult } from '../evaluation';
+import { randomReactKey } from '../utils'
+import { CodeCellResult } from '../evaluation'
 import { ResultRenderer } from '../rendering'
 
 export default class NullRenderer implements ResultRenderer {
     getRepresentations(result: CodeCellResult) {
         return [{
+            key: randomReactKey(),
             component: NullRepresentation,
             displayName: 'null'
         }]
