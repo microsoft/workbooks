@@ -240,6 +240,8 @@ namespace Xamarin.Interactive.Representations
                 return interactive;
             case Exception exception:
                 return ExceptionNode.Create (exception);
+            case Type asType:
+                return TypeNode.Create (asType);
             case MemberInfo memberInfo:
                 try {
                     var remoteMemberInfo = TypeMember.Create (memberInfo);

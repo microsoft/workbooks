@@ -1280,6 +1280,8 @@ namespace Xamarin.Interactive.Representations.Reflection
 
         public virtual void VisitStackTrace (StackTrace stackTrace);
 
+        public virtual void VisitTypeNode (TypeNode type);
+
         public virtual void VisitTypeSpec (TypeSpec typeSpec, bool writeByRefModifier);
 
         public void VisitTypeSpec (TypeSpec typeSpec);
@@ -1353,6 +1355,8 @@ namespace Xamarin.Interactive.Representations.Reflection
         void VisitStackFrame (StackFrame stackFrame);
 
         void VisitStackTrace (StackTrace stackTrace);
+
+        void VisitTypeNode (TypeNode type);
 
         void VisitTypeSpec (TypeSpec typeSpec);
     }
@@ -1588,5 +1592,25 @@ namespace Xamarin.Interactive.Representations.Reflection
     public static class TypeMember
     {
         public static ITypeMember Create (MemberInfo memberInfo);
+    }
+    [JsonObject]
+    public sealed class TypeNode : Node
+    {
+        public IReadOnlyList<ITypeMember> Members {
+            get;
+        }
+
+        public TypeSpec TypeName {
+            get;
+        }
+
+        [JsonConstructor]
+        public TypeNode (TypeSpec typeName, IReadOnlyList<ITypeMember> members);
+
+        public override void AcceptVisitor (IReflectionRemotingVisitor visitor);
+
+        public static TypeNode Create (Type type);
+
+        public override string ToString ();
     }
 }
