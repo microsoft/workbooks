@@ -9,6 +9,7 @@ using System;
 using System.IO;
 using System.Text;
 using System.Collections.Generic;
+using System.Reflection;
 
 using Newtonsoft.Json;
 
@@ -337,6 +338,10 @@ namespace Xamarin.Interactive.Core
 
         #region Parsing
 
+        // FIXME: Type.IsVariableBoundArray/Type.IsSZArray is missing in .NET Standard 2.0
+        static readonly PropertyInfo IsVariableBoundArray = typeof (Type)
+            .GetProperty (nameof (IsVariableBoundArray));
+
         public static TypeSpec Create (Type type, bool withAssemblyQualifiedNames = false)
         {
             if (type == null)
@@ -360,8 +365,13 @@ namespace Xamarin.Interactive.Core
                     modifiers.Insert (0, Modifier.ByRef);
                 else if (type.IsPointer)
                     modifiers.Insert (0, Modifier.Pointer);
-                else if (type.IsArray)
-                    modifiers.Insert (0, (Modifier)(byte)type.GetArrayRank ());
+                else if (type.IsArray) {
+                    var rank = type.GetArrayRank ();
+                    if (rank == 1 && (bool)IsVariableBoundArray.GetValue (type))
+                        modifiers.Insert (0, Modifier.BoundArray);
+                    else
+                        modifiers.Insert (0, (Modifier)(byte)rank);
+                }
 
                 type = type.GetElementType ();
             }

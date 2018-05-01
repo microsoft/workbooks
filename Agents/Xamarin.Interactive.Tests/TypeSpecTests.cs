@@ -147,6 +147,14 @@ namespace Xamarin.Interactive.Tests
         public void GenericModifiedIllegalCSharp (string typeSpec)
             => AssertType (GetType (typeSpec));
 
+        [Theory]
+        [InlineData ("System.Int32[*]")]
+        [InlineData ("System.Int32[*][*]")]
+        [InlineData ("System.Int32[*][*][*]")]
+        [InlineData ("System.Int32[*][][*][,][*][,]")]
+        public void BoundArray (string typeSpec)
+            => AssertType (GetType (typeSpec));
+
         [Fact]
         public void GenericNested ()
         {
