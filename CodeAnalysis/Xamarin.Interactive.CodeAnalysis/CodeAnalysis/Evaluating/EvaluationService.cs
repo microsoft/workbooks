@@ -477,29 +477,5 @@ namespace Xamarin.Interactive.CodeAnalysis.Evaluating
 
             return evaluationStatus;
         }
-
-        /// <summary>
-        /// Dicards the captured traces and frames that are a result of compiler-generated
-        /// code to host the submission so we only render frames the user might actually expect.
-        /// </summary>
-        internal static ExceptionNode FilterException (ExceptionNode exception)
-        {
-            try {
-                var capturedTraces = exception?.StackTrace?.CapturedTraces;
-                if (capturedTraces == null || capturedTraces.Count != 2)
-                    return exception;
-
-                var submissionTrace = capturedTraces [0];
-                exception.StackTrace = exception.StackTrace.WithCapturedTraces (new [] {
-                    submissionTrace.WithFrames (
-                        submissionTrace.Frames.Take (submissionTrace.Frames.Count - 1))
-                });
-
-                return exception;
-            } catch (Exception e) {
-                Log.Error (TAG, $"error filtering ExceptionNode [[{exception}]]", e);
-                return exception;
-            }
-        }
     }
 }

@@ -57,6 +57,8 @@ namespace ApiDump
                     case "InteractiveDependencyResolver":
                     case "ExternalDependency":
                     case "NativeDependency":
+                    case "TokenWriter":
+                    case "CSharpWriter":
                         goto visitBase;
                     }
 
