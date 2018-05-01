@@ -32,7 +32,7 @@ namespace Xamarin.Interactive.Remote
         {
             var buffer = new StringWriter ();
             var writer = new CSharpWriter (buffer) { WriteLanguageKeywords = true };
-            writer.VisitTypeSpec (TypeSpec.Parse (type));
+            writer.VisitTypeSpec (TypeSpec.Create (type));
             return buffer.ToString ();
         }
 

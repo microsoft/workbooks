@@ -19,8 +19,8 @@ namespace Xamarin.Interactive.Tests
         static void AssertType (Type type)
         {
             Assert.NotNull (type);
-            Assert.Equal (type.ToString (), TypeSpec.Parse (type).ToString ());
-            Assert.Equal (type.AssemblyQualifiedName, TypeSpec.Parse (type, true).ToString ());
+            Assert.Equal (type.ToString (), TypeSpec.Create (type).ToString ());
+            Assert.Equal (type.AssemblyQualifiedName, TypeSpec.Create (type, true).ToString ());
         }
 
         static TypeSpec AssertType (string typeSpecString)

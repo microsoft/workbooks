@@ -833,6 +833,10 @@ namespace Xamarin.Interactive.Core
 
             public override int GetHashCode ();
 
+            public static TypeSpec.TypeName Parse (string @namespace, string name);
+
+            public static TypeSpec.TypeName Parse (string name);
+
             public override string ToString ();
         }
 
@@ -859,20 +863,19 @@ namespace Xamarin.Interactive.Core
         [JsonConstructor]
         public TypeSpec (TypeSpec.TypeName name, string assemblyName = null, IReadOnlyList<TypeSpec.TypeName> nestedNames = null, IReadOnlyList<TypeSpec.Modifier> modifiers = null, IReadOnlyList<TypeSpec> typeArguments = null);
 
+        public static TypeSpec Create (Type type, bool withAssemblyQualifiedNames = false);
+
         public string DumpToString ();
 
         public StringBuilder DumpToString (StringBuilder builder, int depth);
 
         public IEnumerable<TypeSpec.TypeName> GetAllNames ();
 
-        public static TypeSpec Parse (string typeSpec);
         public bool IsByRef ();
 
-        public static TypeSpec Parse (Type type, bool assemblyQualified = false);
+        public static TypeSpec Parse (string typeSpec);
 
         public static TypeSpec.Builder ParseBuilder (string typeSpec);
-
-        public static TypeSpec.Builder ParseBuilder (Type type, bool assemblyQualified = false);
 
         public override string ToString ();
     }

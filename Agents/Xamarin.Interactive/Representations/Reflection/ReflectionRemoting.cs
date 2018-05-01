@@ -434,7 +434,7 @@ namespace Xamarin.Interactive.Representations.Reflection
                 return null;
 
             return new ExceptionNode (
-                TypeSpec.Parse (exception.GetType ()),
+                TypeSpec.Create (exception.GetType ()),
                 exception.Message,
                 StackTrace.Create (new System.Diagnostics.StackTrace (exception, true)),
                 ExceptionNode.Create (exception.InnerException));
@@ -756,7 +756,7 @@ namespace Xamarin.Interactive.Representations.Reflection
                 return null;
 
             return new Parameter (
-                TypeSpec.Parse (parameter.ParameterType),
+                TypeSpec.Create (parameter.ParameterType),
                 parameter.Name,
                 parameter.IsOut,
                 parameter.IsRetval,
@@ -807,19 +807,19 @@ namespace Xamarin.Interactive.Representations.Reflection
 
             TypeSpec returnType = null;
             if (method is MethodInfo methodInfo)
-                returnType = TypeSpec.Parse (methodInfo.ReturnType);
+                returnType = TypeSpec.Create (methodInfo.ReturnType);
 
             List<TypeSpec> typeArguments = null;
             if (method.IsGenericMethod)
                 typeArguments = method
                     .GetGenericArguments ()
-                    .Select (t => TypeSpec.Parse (t))
+                    .Select (t => TypeSpec.Create (t))
                     .ToListOrNullIfEmpty ();
 
             return new Method (
                 method.Name,
                 null,
-                TypeSpec.Parse (method.DeclaringType),
+                TypeSpec.Create (method.DeclaringType),
                 returnType,
                 typeArguments,
                 method
@@ -860,8 +860,8 @@ namespace Xamarin.Interactive.Representations.Reflection
 
             return new Field (
                 field.Name,
-                TypeSpec.Parse (field.DeclaringType),
-                TypeSpec.Parse (field.FieldType),
+                TypeSpec.Create (field.DeclaringType),
+                TypeSpec.Create (field.FieldType),
                 field.Attributes);
         }
 
@@ -900,8 +900,8 @@ namespace Xamarin.Interactive.Representations.Reflection
 
             return new Property (
                 property.Name,
-                TypeSpec.Parse (property.DeclaringType),
-                TypeSpec.Parse (property.PropertyType),
+                TypeSpec.Create (property.DeclaringType),
+                TypeSpec.Create (property.PropertyType),
                 Method.Create (property.GetGetMethod (true)),
                 Method.Create (property.GetSetMethod (true)));
         }

@@ -106,9 +106,11 @@ namespace Xamarin.Interactive.Core
             }
 
             public static TypeName Parse (string name)
+                => Parse (null, name);
+
+            public static TypeName Parse (string @namespace, string name)
             {
                 int arity = 0;
-                string @namespace = null;
 
                 var ofs = name.LastIndexOf ('`');
                 if (ofs > 0) {
@@ -121,6 +123,11 @@ namespace Xamarin.Interactive.Core
                     throw new ArgumentException ("must not start with a '.'", nameof (name));
 
                 if (ofs >= 0) {
+                    if (@namespace != null)
+                        throw new ArgumentException (
+                            "parsing name yielded a namespace but one was explicitly provided",
+                            nameof (name));
+
                     @namespace = name.Substring (0, ofs);
                     name = name.Substring (ofs + 1);
                 }
@@ -330,17 +337,84 @@ namespace Xamarin.Interactive.Core
 
         #region Parsing
 
-        public static TypeSpec Parse (Type type, bool assemblyQualified = false)
-            => ParseBuilder (type, assemblyQualified).Build ();
+        public static TypeSpec Create (Type type, bool withAssemblyQualifiedNames = false)
+        {
+            if (type == null)
+                throw new ArgumentNullException (nameof (type));
+
+            TypeName outerTypeName = default;
+            List<TypeName> nestedNames = null;
+            List<Modifier> modifiers = null;
+            List<TypeSpec> typeArgumentList = null;
+            var assemblyQualifiedName = withAssemblyQualifiedNames
+                ? type.Assembly.FullName
+                : null;
+
+            // handle generic type arguments for open (e.g <,>) and closed (e.g. <int, string>) types
+            if (type.IsGenericType) {
+                typeArgumentList = new List<TypeSpec> ();
+
+                foreach (var typeArgument in type.GetGenericArguments ()) {
+                    if (type.IsConstructedGenericType)
+                        // recurse into constructed type arguments
+                        typeArgumentList.Add (Create (
+                            typeArgument,
+                            withAssemblyQualifiedNames));
+                    else
+                        // open generics simply have a type name
+                        typeArgumentList.Add (new TypeSpec (
+                            new TypeName (null, typeArgument.Name)));
+                }
+            }
+
+            // walk nested type chain and desugar
+            while (type != null) {
+                // only provide the namespace on the outer-most type
+                var @namespace = type.DeclaringType == null
+                    ? type.Namespace
+                    : null;
+
+                // desugar the type into modifiers and desugared type
+                while (type.HasElementType) {
+                    if (modifiers == null)
+                        modifiers = new List<Modifier> ();
+
+                    if (type.IsByRef)
+                        modifiers.Insert (0, Modifier.ByRef);
+                    else if (type.IsPointer)
+                        modifiers.Insert (0, Modifier.Pointer);
+                    else if (type.IsArray)
+                        modifiers.Insert (0, (Modifier)(byte)type.GetArrayRank ());
+
+                    type = type.GetElementType ();
+                }
+
+                // when fully desugared we will have just the root type name
+                // (e.g. 'System.Int32' and not 'System.Int32**[,,]&')
+                var typeName = TypeName.Parse (@namespace, type.Name);
+
+                if (type.DeclaringType == null) {
+                    outerTypeName = typeName;
+                } else {
+                    if (nestedNames == null)
+                        nestedNames = new List<TypeName> ();
+                    nestedNames.Insert (0, typeName);
+                }
+
+                // move up the nested chain
+                type = type.DeclaringType;
+            }
+
+            return new TypeSpec (
+                outerTypeName,
+                assemblyQualifiedName,
+                nestedNames,
+                modifiers,
+                typeArgumentList);
+        }
 
         public static TypeSpec Parse (string typeSpec)
             => ParseBuilder (typeSpec).Build ();
-
-        public static TypeSpec.Builder ParseBuilder (Type type, bool assemblyQualified = false)
-            => ParseBuilder (
-                assemblyQualified
-                    ? type.AssemblyQualifiedName
-                    : type.ToString ());
 
         // CLR type specification string parsing ported directly from the Mono runtime's
         // mono_reflection_parse_type (mono/metadata/reflection.c)
