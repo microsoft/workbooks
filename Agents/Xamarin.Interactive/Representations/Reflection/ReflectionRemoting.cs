@@ -267,7 +267,7 @@ namespace Xamarin.Interactive.Representations.Reflection
             if (parameter.IsOut) {
                 writer.WriteKeyword ("out");
                 writer.Write (' ');
-            } else if (parameter.Type.IsByRef) {
+            } else if (parameter.Type.IsByRef ()) {
                 writer.WriteKeyword ("ref");
                 writer.Write (' ');
             }
@@ -290,11 +290,29 @@ namespace Xamarin.Interactive.Representations.Reflection
         {
             WriteTypeName (typeSpec);
 
-            foreach (var modifier in typeSpec.Modifiers)
-                writer.WriteTypeModifier (modifier.ToString ());
-
-            if (typeSpec.IsByRef && writeByRefModifier)
-                writer.WriteTypeModifier ("&");
+            foreach (var modifier in typeSpec.Modifiers) {
+                switch (modifier) {
+                case TypeSpec.Modifier.Pointer:
+                    writer.WriteTypeModifier ("*");
+                    break;
+                case TypeSpec.Modifier.ByRef:
+                    if (writeByRefModifier)
+                        writer.WriteTypeModifier ("&");
+                    break;
+                case TypeSpec.Modifier.BoundArray:
+                    writer.WriteTypeModifier ("[*]");
+                    break;
+                default:
+                    var rank = (byte)modifier;
+                    if (rank >= 1 && rank <= 32)
+                        writer.WriteTypeModifier ($"[{new string(',', rank - 1)}]");
+                    else
+                        throw new ArgumentOutOfRangeException (
+                            $"invalid modifier: {modifier}",
+                            nameof (typeSpec));
+                    break;
+                }
+            }
         }
 
         void WriteTypeName (TypeSpec typeSpec)

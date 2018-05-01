@@ -129,56 +129,12 @@ namespace Xamarin.Interactive.Core
             }
         }
 
-        public interface IModifier
-        {
-            StringBuilder Append (StringBuilder builder);
-        }
-
-        [JsonObject]
-        public struct ArrayModifier : IModifier
-        {
-            public bool IsBound { get; }
-            public int Dimension { get; }
-
-            [JsonConstructor]
-            public ArrayModifier (bool isBound, int dimension)
-            {
-                IsBound = isBound;
-                Dimension = dimension;
-            }
-
-            public StringBuilder Append (StringBuilder builder)
-            {
-                if (IsBound)
-                    return builder.Append ("[*]");
-
-                return builder
-                    .Append ('[')
-                    .Append (',', Dimension - 1)
-                    .Append (']');
-            }
-
-            public override string ToString ()
-                => Append (new StringBuilder ()).ToString ();
-        }
-
-        [JsonObject]
-        public struct PointerModifier : IModifier
-        {
-            public StringBuilder Append (StringBuilder builder)
-                => builder.Append ('*');
-
-            public override string ToString ()
-                => Append (new StringBuilder ()).ToString ();
-        }
-
         public sealed class Builder
         {
             public TypeName Name { get; set; }
             public string AssemblyName { get; set; }
-            public bool IsByRef { get; set; }
             public List<TypeName> NestedNames { get; private set; }
-            public List<IModifier> Modifiers { get; private set; }
+            public List<Modifier> Modifiers { get; private set; }
             public List<TypeSpec> TypeArguments { get; private set; }
 
             public bool HasModifiers => Modifiers != null && Modifiers.Count > 0;
@@ -194,13 +150,8 @@ namespace Xamarin.Interactive.Core
                     (NestedNames ?? (NestedNames = new List<TypeName> ())).Add (name);
             }
 
-            public void AddModifier (IModifier modifier)
-            {
-                if (modifier == null)
-                    throw new ArgumentNullException (nameof (modifier));
-
-                (Modifiers ?? (Modifiers = new List<IModifier> ())).Add (modifier);
-            }
+            public void AddModifier (Modifier modifier)
+                => (Modifiers ?? (Modifiers = new List<Modifier> ())).Add (modifier);
 
             public void AddTypeArgument (TypeSpec typeArgument)
             {
@@ -214,35 +165,58 @@ namespace Xamarin.Interactive.Core
                 => new TypeSpec (
                     Name,
                     AssemblyName,
-                    IsByRef,
                     NestedNames,
                     Modifiers,
                     TypeArguments);
         }
 
+        /// <summary>
+        /// A modifier is either an array rank ([1,32] when cast to byte) or
+        /// a specified enum value (excluding 'None').
+        /// </summary>
+        /// <remarks>
+        /// This enum is designed to serialize nicely via Newtonsoft.Json's StringEnumConverter
+        /// for representation within TypeScript. It takes advantage of the fact that
+        /// array ranks greater than 32 are illegal, so we can pack other modifiers beyond
+        /// that value. Values for Pointer, ByRef, and BoundArray are arbitray yet inspired.
+        /// The only requirement is that they are greater 32.
+        ///
+        /// The TypeScript equivalent of this enum is:
+        /// <code>
+        /// type Modifier = number | 'Pointer' | 'ByRef' | 'BoundArray'
+        /// </code>
+        /// </remarks>
+        public enum Modifier : byte
+        {
+            None,
+            Pointer = (byte)'*',
+            ByRef = (byte)'&',
+            BoundArray = (byte)'@'
+        }
+
         public TypeName Name { get; }
         public string AssemblyName { get; }
-        public bool IsByRef { get; }
         public IReadOnlyList<TypeName> NestedNames { get; }
-        public IReadOnlyList<IModifier> Modifiers { get; }
+        public IReadOnlyList<Modifier> Modifiers { get; }
         public IReadOnlyList<TypeSpec> TypeArguments { get; }
 
         [JsonConstructor]
         public TypeSpec (
             TypeName name,
-            string assemblyName,
-            bool isByRef,
-            IReadOnlyList<TypeName> nestedNames,
-            IReadOnlyList<IModifier> modifiers,
-            IReadOnlyList<TypeSpec> typeArguments)
+            string assemblyName = null,
+            IReadOnlyList<TypeName> nestedNames = null,
+            IReadOnlyList<Modifier> modifiers = null,
+            IReadOnlyList<TypeSpec> typeArguments = null)
         {
             Name = name;
             AssemblyName = assemblyName;
-            IsByRef = isByRef;
             NestedNames = nestedNames ?? Array.Empty<TypeName> ();
-            Modifiers = modifiers ?? Array.Empty<IModifier> ();
+            Modifiers = modifiers ?? Array.Empty<Modifier> ();
             TypeArguments = typeArguments ?? Array.Empty<TypeSpec> ();
         }
+
+        public bool IsByRef ()
+            => Modifiers != null && Modifiers.Count > 0 && Modifiers [Modifiers.Count - 1] == Modifier.ByRef;
 
         public IEnumerable<TypeName> GetAllNames ()
         {
@@ -289,11 +263,18 @@ namespace Xamarin.Interactive.Core
 
         StringBuilder AppendModifiers (StringBuilder builder)
         {
-            foreach (var modifier in Modifiers)
-                modifier.Append (builder);
-
-            if (IsByRef)
-                builder.Append ('&');
+            foreach (var modifier in Modifiers) {
+                // 32 is the max array dimension in CTS/CLR
+                if ((byte)modifier <= 32)
+                    builder.Append ('[').Append (',', (byte)modifier - 1).Append (']');
+                else if (modifier == Modifier.BoundArray)
+                    builder.Append ("[*]");
+                else if (modifier == Modifier.Pointer || modifier == Modifier.ByRef)
+                    builder.Append ((char)modifier);
+                else
+                    throw new InvalidOperationException (
+                        $"Invalid modifier '{(char)modifier}' = {modifier}");
+            }
 
             return builder;
         }
@@ -374,6 +355,7 @@ namespace Xamarin.Interactive.Core
                 => new ArgumentException (message, "typeSpec");
 
             var typeSpec = new TypeSpec.Builder ();
+            var isByRef = false;
             var inModifiers = false;
             char c;
 
@@ -415,19 +397,19 @@ namespace Xamarin.Interactive.Core
                 switch (c) {
                 case '&':
                     reader.Read ();
-                    if (typeSpec.IsByRef)
+                    if (isByRef)
                         throw Error ("only one level of byref is allowed");
-                    typeSpec.IsByRef = true;
+                    typeSpec.AddModifier (Modifier.ByRef);
                     break;
                 case '*':
                     reader.Read ();
-                    if (typeSpec.IsByRef)
+                    if (isByRef)
                         throw Error ("pointer to byref is not allowed");
-                    typeSpec.AddModifier (new PointerModifier ());
+                    typeSpec.AddModifier (Modifier.Pointer);
                     break;
                 case '[':
                     reader.Read ();
-                    if (typeSpec.IsByRef)
+                    if (isByRef)
                         throw Error ("neither arrays nor generic types of byref are allowed");
 
                     if ((c = (char)reader.Peek ()) == Char.MaxValue)
@@ -435,7 +417,7 @@ namespace Xamarin.Interactive.Core
 
                     if (c == ',' || c == '*' || c == ']') {
                         var isBound = false;
-                        var dimension = 1;
+                        byte dimension = 1;
                         while ((c = (char)reader.Read ()) != Char.MaxValue) {
                             if (c == ']')
                                 break;
@@ -451,10 +433,13 @@ namespace Xamarin.Interactive.Core
                         if (c != ']')
                             throw Error ("expected ']' to close array specification");
 
-                        if (isBound && dimension > 1)
-                            throw Error ("multi-dimensional arrays cannot be bound");
-
-                        typeSpec.AddModifier (new ArrayModifier (isBound, dimension));
+                        if (isBound) {
+                            if (dimension > 1)
+                                throw Error ("multi-dimensional arrays cannot be bound");
+                            typeSpec.AddModifier (Modifier.BoundArray);
+                        } else {
+                            typeSpec.AddModifier ((Modifier)dimension);
+                        }
                     } else {
                         if (typeSpec.HasModifiers)
                             throw Error ("generic type arguments after an " +
