@@ -7,6 +7,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 
 using Xunit;
 
@@ -30,6 +31,9 @@ namespace Xamarin.Interactive.Tests
             Assert.Equal (typeSpecString, typeSpecString.ToString ());
             return typeSpec;
         }
+
+        static Type GetType (string typeSpec)
+            => Type.GetType (Regex.Replace (typeSpec, @"\s*", ""));
 
         [Theory]
         [InlineData ("A", null, "A")]
@@ -122,6 +126,26 @@ namespace Xamarin.Interactive.Tests
             Assert.Equal (typeArgumentCount, parsedTypeSpec.Name.TypeArgumentCount);
             Assert.Equal (typeArgumentCount, parsedTypeSpec.TypeArguments.Count);
         }
+
+        [Theory]
+        [InlineData (typeof ((int, string)))]
+        [InlineData (typeof ((int, string)[]))]
+        [InlineData (typeof ((int, List<string>[,,])[,,,]))]
+        public void GenericModified (Type type)
+            => AssertType (type);
+
+        [Theory]
+        [InlineData (@"
+            System.Tuple`3[
+                System.ValueTuple`2[
+                    System.Int32**[],
+                    System.String[]
+                ]*[]**[,]***[,,],
+                System.Int32,
+                System.String
+            ]*[][,,][]&")]
+        public void GenericModifiedIllegalCSharp (string typeSpec)
+            => AssertType (GetType (typeSpec));
 
         [Fact]
         public void GenericNested ()
