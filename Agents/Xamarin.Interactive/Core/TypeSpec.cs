@@ -9,6 +9,7 @@ using System;
 using System.IO;
 using System.Text;
 using System.Collections.Generic;
+using System.Reflection;
 
 using Newtonsoft.Json;
 
@@ -337,6 +338,10 @@ namespace Xamarin.Interactive.Core
 
         #region Parsing
 
+        // FIXME: Type.IsVariableBoundArray/Type.IsSZArray is missing in .NET Standard 2.0
+        static readonly PropertyInfo IsVariableBoundArray = typeof (Type)
+            .GetProperty (nameof (IsVariableBoundArray));
+
         public static TypeSpec Create (Type type, bool withAssemblyQualifiedNames = false)
         {
             if (type == null)
@@ -349,6 +354,27 @@ namespace Xamarin.Interactive.Core
             var assemblyQualifiedName = withAssemblyQualifiedNames
                 ? type.Assembly.FullName
                 : null;
+
+            // desugar the type to separate the unmodified type from its modifiers
+            // (e.g. 'System.Int32**[,,]&' -> 'System.Int32' + '**[,,]&' )
+            while (type.HasElementType) {
+                if (modifiers == null)
+                    modifiers = new List<Modifier> ();
+
+                if (type.IsByRef)
+                    modifiers.Insert (0, Modifier.ByRef);
+                else if (type.IsPointer)
+                    modifiers.Insert (0, Modifier.Pointer);
+                else if (type.IsArray) {
+                    var rank = type.GetArrayRank ();
+                    if (rank == 1 && (bool)IsVariableBoundArray.GetValue (type))
+                        modifiers.Insert (0, Modifier.BoundArray);
+                    else
+                        modifiers.Insert (0, (Modifier)(byte)rank);
+                }
+
+                type = type.GetElementType ();
+            }
 
             // handle generic type arguments for open (e.g <,>) and closed (e.g. <int, string>) types
             if (type.IsGenericType) {
@@ -367,31 +393,12 @@ namespace Xamarin.Interactive.Core
                 }
             }
 
-            // walk nested type chain and desugar
+            // walk nested type chain
             while (type != null) {
                 // only provide the namespace on the outer-most type
-                var @namespace = type.DeclaringType == null
-                    ? type.Namespace
-                    : null;
-
-                // desugar the type into modifiers and desugared type
-                while (type.HasElementType) {
-                    if (modifiers == null)
-                        modifiers = new List<Modifier> ();
-
-                    if (type.IsByRef)
-                        modifiers.Insert (0, Modifier.ByRef);
-                    else if (type.IsPointer)
-                        modifiers.Insert (0, Modifier.Pointer);
-                    else if (type.IsArray)
-                        modifiers.Insert (0, (Modifier)(byte)type.GetArrayRank ());
-
-                    type = type.GetElementType ();
-                }
-
-                // when fully desugared we will have just the root type name
-                // (e.g. 'System.Int32' and not 'System.Int32**[,,]&')
-                var typeName = TypeName.Parse (@namespace, type.Name);
+                var typeName = TypeName.Parse (
+                    type.DeclaringType == null ? type.Namespace : null,
+                    type.Name);
 
                 if (type.DeclaringType == null) {
                     outerTypeName = typeName;
