@@ -21,7 +21,7 @@ namespace Xamarin.Interactive.Tests
         {
             Assert.NotNull (type);
             Assert.Equal (type.ToString (), TypeSpec.Create (type).ToString ());
-            Assert.Equal (type.AssemblyQualifiedName, TypeSpec.Create (type, true).ToString ());
+            Assert.Equal (type.AssemblyQualifiedName, TypeSpec.Create (type).ToString (true));
         }
 
         static TypeSpec AssertType (string typeSpecString)
