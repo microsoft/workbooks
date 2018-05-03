@@ -33,6 +33,7 @@ using System.Runtime.CompilerServices;
 
 // code analysis
 [assembly: InternalsVisibleTo ("Xamarin.Interactive.CodeAnalysis")]
+[assembly: InternalsVisibleTo ("Xamarin.Interactive.CodeAnalysis.Tests")]
 
 // clients
 [assembly: InternalsVisibleTo ("workbook")]
