@@ -9,7 +9,6 @@
     <Import_RootNamespace>Xamarin.Interactive</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="NuGet.PackageManagement" Version="4.7.0-zlocal-35658" />
     <PackageReference Include="YamlDotNet" Version="4.3.0" />
     <PackageReference Include="CommonMark.NET" Version="0.15.1-abock-workbooks.1384619" />
     <PackageReference Include="Newtonsoft.Json" Version="11.0.1" />

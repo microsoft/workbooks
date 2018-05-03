@@ -16,6 +16,7 @@
 [assembly: InternalsVisibleTo ("Xamarin.Interactive.Client.Console")]
 [assembly: InternalsVisibleTo ("Xamarin.Interactive.Client.Desktop")]
 [assembly: InternalsVisibleTo ("Xamarin.Interactive.CodeAnalysis")]
+[assembly: InternalsVisibleTo ("Xamarin.Interactive.CodeAnalysis.Tests")]
 [assembly: InternalsVisibleTo ("Xamarin.Interactive.Console")]
 [assembly: InternalsVisibleTo ("Xamarin.Interactive.DotNetCore")]
 [assembly: InternalsVisibleTo ("Xamarin.Interactive.Forms")]
@@ -260,49 +261,6 @@ namespace Xamarin.Interactive.Events
         DateTime Timestamp {
             get;
         }
-    }
-}
-namespace Xamarin.Interactive.NuGet
-{
-    public sealed class InteractivePackageDescription
-    {
-        public string IdentityVersion {
-            get;
-        }
-
-        public bool IsExplicitlySelected {
-            get;
-        }
-
-        public string PackageId {
-            get;
-        }
-
-        public InteractivePackageSource Source {
-            get;
-        }
-
-        public string VersionRange {
-            get;
-        }
-
-        [JsonConstructor]
-        public InteractivePackageDescription (string packageId, string identityVersion = null, string versionRange = null, bool isExplicitlySelected = true, InteractivePackageSource source = null);
-
-        public SourceRepository GetSourceRepository ();
-    }
-    public sealed class InteractivePackageSource
-    {
-        public string Source {
-            get;
-        }
-
-        [JsonConstructor]
-        public InteractivePackageSource (string source);
-
-        public static InteractivePackageSource FromPackageSource (PackageSource packageSource);
-
-        public PackageSource ToPackageSource ();
     }
 }
 namespace Xamarin.Interactive.Rendering

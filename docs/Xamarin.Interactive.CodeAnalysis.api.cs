@@ -2,10 +2,44 @@
 [assembly: AssemblyCopyright ("Copyright 2016-2018 Microsoft. All rights reserved.\nCopyright 2014-2016 Xamarin Inc. All rights reserved.")]
 [assembly: AssemblyProduct ("Xamarin.Interactive.CodeAnalysis")]
 [assembly: AssemblyTitle ("Xamarin.Interactive.CodeAnalysis")]
+[assembly: InternalsVisibleTo ("Workbook Mac App (Desktop Profile)")]
+[assembly: InternalsVisibleTo ("Workbook Mac App (Mobile Profile)")]
+[assembly: InternalsVisibleTo ("workbook")]
+[assembly: InternalsVisibleTo ("workbooks-server")]
 [assembly: InternalsVisibleTo ("Xamarin Inspector")]
+[assembly: InternalsVisibleTo ("Xamarin Workbooks Agent (WPF)")]
 [assembly: InternalsVisibleTo ("Xamarin Workbooks")]
+[assembly: InternalsVisibleTo ("Xamarin.Interactive.Android")]
 [assembly: InternalsVisibleTo ("Xamarin.Interactive.Client")]
+[assembly: InternalsVisibleTo ("Xamarin.Interactive.Client.Console")]
+[assembly: InternalsVisibleTo ("Xamarin.Interactive.Client.Desktop")]
+[assembly: InternalsVisibleTo ("Xamarin.Interactive.CodeAnalysis")]
+[assembly: InternalsVisibleTo ("Xamarin.Interactive.CodeAnalysis.Tests")]
+[assembly: InternalsVisibleTo ("Xamarin.Interactive.Console")]
+[assembly: InternalsVisibleTo ("Xamarin.Interactive.DotNetCore")]
+[assembly: InternalsVisibleTo ("Xamarin.Interactive.Forms")]
+[assembly: InternalsVisibleTo ("Xamarin.Interactive.Forms.Android")]
+[assembly: InternalsVisibleTo ("Xamarin.Interactive.Forms.iOS")]
+[assembly: InternalsVisibleTo ("Xamarin.Interactive.iOS")]
+[assembly: InternalsVisibleTo ("Xamarin.Interactive.Mac.Desktop")]
+[assembly: InternalsVisibleTo ("Xamarin.Interactive.Mac.Mobile")]
+[assembly: InternalsVisibleTo ("Xamarin.Interactive.Telemetry.Server")]
 [assembly: InternalsVisibleTo ("Xamarin.Interactive.Tests")]
+[assembly: InternalsVisibleTo ("Xamarin.Interactive.Tests.Android")]
+[assembly: InternalsVisibleTo ("Xamarin.Interactive.Tests.Core")]
+[assembly: InternalsVisibleTo ("Xamarin.Interactive.Tests.Mac")]
+[assembly: InternalsVisibleTo ("Xamarin.Interactive.Tests.Windows")]
+[assembly: InternalsVisibleTo ("Xamarin.Interactive.VS")]
+[assembly: InternalsVisibleTo ("Xamarin.Interactive.Wpf")]
+[assembly: InternalsVisibleTo ("Xamarin.Interactive.XS")]
+[assembly: InternalsVisibleTo ("Xamarin.Workbooks.Android")]
+[assembly: InternalsVisibleTo ("Xamarin.Workbooks.Client.Android")]
+[assembly: InternalsVisibleTo ("Xamarin.Workbooks.Client.iOS")]
+[assembly: InternalsVisibleTo ("Xamarin.Workbooks.DotNetCore")]
+[assembly: InternalsVisibleTo ("Xamarin.Workbooks.Forms.Android")]
+[assembly: InternalsVisibleTo ("Xamarin.Workbooks.Forms.iOS")]
+[assembly: InternalsVisibleTo ("Xamarin.Workbooks.iOS")]
+[assembly: InternalsVisibleTo ("xic")]
 [assembly: TargetFramework (".NETStandard,Version=v2.0", FrameworkDisplayName = "")]
 namespace Xamarin.Interactive.CodeAnalysis
 {
@@ -531,5 +565,48 @@ namespace Xamarin.Interactive.CodeAnalysis.Resolving
         None = 0,
         ResolveReferences = 1,
         SkipGacCache = 2
+    }
+}
+namespace Xamarin.Interactive.NuGet
+{
+    public sealed class InteractivePackageDescription
+    {
+        public string IdentityVersion {
+            get;
+        }
+
+        public bool IsExplicitlySelected {
+            get;
+        }
+
+        public string PackageId {
+            get;
+        }
+
+        public InteractivePackageSource Source {
+            get;
+        }
+
+        public string VersionRange {
+            get;
+        }
+
+        [JsonConstructor]
+        public InteractivePackageDescription (string packageId, string identityVersion = null, string versionRange = null, bool isExplicitlySelected = true, InteractivePackageSource source = null);
+
+        public SourceRepository GetSourceRepository ();
+    }
+    public sealed class InteractivePackageSource
+    {
+        public string Source {
+            get;
+        }
+
+        [JsonConstructor]
+        public InteractivePackageSource (string source);
+
+        public static InteractivePackageSource FromPackageSource (PackageSource packageSource);
+
+        public PackageSource ToPackageSource ();
     }
 }

@@ -64,6 +64,7 @@ namespace Xamarin.Interactive.NuGet
         /// </summary>
         internal async Task InitializeAsync (
             Sdk targetSdk,
+            FilePath packageConfigDirectory,
             IEnumerable<InteractivePackageDescription> initialPackages = null,
             CancellationToken cancellationToken = default)
         {
@@ -79,11 +80,7 @@ namespace Xamarin.Interactive.NuGet
 
             packageManager = new InteractivePackageManager (
                 targetSdk.TargetFramework,
-                ClientApp
-                    .SharedInstance
-                    .Paths
-                    .CacheDirectory
-                    .Combine ("package-manager"));
+                packageConfigDirectory);
 
             var packages = (initialPackages ?? Array.Empty<InteractivePackageDescription> ())
                 .Concat (alreadyInstalledPackages)

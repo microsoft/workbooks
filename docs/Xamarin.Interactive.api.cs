@@ -15,6 +15,7 @@
 [assembly: InternalsVisibleTo ("Xamarin.Interactive.Client.Console")]
 [assembly: InternalsVisibleTo ("Xamarin.Interactive.Client.Desktop")]
 [assembly: InternalsVisibleTo ("Xamarin.Interactive.CodeAnalysis")]
+[assembly: InternalsVisibleTo ("Xamarin.Interactive.CodeAnalysis.Tests")]
 [assembly: InternalsVisibleTo ("Xamarin.Interactive.Console")]
 [assembly: InternalsVisibleTo ("Xamarin.Interactive.DotNetCore")]
 [assembly: InternalsVisibleTo ("Xamarin.Interactive.Forms")]

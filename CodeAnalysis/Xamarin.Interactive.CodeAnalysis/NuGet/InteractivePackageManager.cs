@@ -38,6 +38,8 @@ namespace Xamarin.Interactive.NuGet
     {
         const string TAG = nameof (InteractivePackageManager);
 
+        internal const string IntegrationPackageId = "Xamarin.Workbooks.Integration";
+
         internal static readonly InteractivePackageDescription FixedXamarinFormsPackageDescription
             = new InteractivePackageDescription ("Xamarin.Forms", "2.5.0.121934");
 
@@ -199,9 +201,8 @@ namespace Xamarin.Interactive.NuGet
                     overwriteRange: true);
             }
 
-            const string integrationPackage = PackageManagerViewModel.IntegrationPackageId;
-            if (PackageIdComparer.Equals (package.Identity.Id, integrationPackage)) {
-                Log.Warning (TAG, $"Refusing to add integration NuGet package {integrationPackage}.");
+            if (PackageIdComparer.Equals (package.Identity.Id, IntegrationPackageId)) {
+                Log.Warning (TAG, $"Refusing to add integration NuGet package {IntegrationPackageId}.");
                 return Array.Empty<InteractivePackage> ();
             }
 
