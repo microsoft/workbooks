@@ -11,9 +11,7 @@ using System.Text.RegularExpressions;
 
 using Xunit;
 
-using Xamarin.Interactive.Core;
-
-namespace Xamarin.Interactive.Tests
+namespace Xamarin.Interactive.Representations.Reflection
 {
     public sealed class TypeSpecTests
     {

@@ -760,126 +760,6 @@ namespace Xamarin.Interactive.Core
 
         public override string ToString ();
     }
-    [JsonObject]
-    public sealed class TypeSpec
-    {
-        public sealed class Builder
-        {
-            public string AssemblyName {
-                get;
-                set;
-            }
-
-            public bool HasModifiers {
-                get;
-            }
-
-            public List<TypeSpec.Modifier> Modifiers {
-                get;
-            }
-
-            public TypeSpec.TypeName Name {
-                get;
-                set;
-            }
-
-            public List<TypeSpec.TypeName> NestedNames {
-                get;
-            }
-
-            public List<TypeSpec> TypeArguments {
-                get;
-            }
-
-            public Builder ();
-
-            public void AddModifier (TypeSpec.Modifier modifier);
-
-            public void AddName (TypeSpec.TypeName name);
-
-            public void AddTypeArgument (TypeSpec typeArgument);
-
-            public TypeSpec Build ();
-        }
-
-        public enum Modifier : byte
-        {
-            None,
-            Pointer = 42,
-            ByRef = 38,
-            BoundArray = 64
-        }
-
-        [JsonObject]
-        public struct TypeName : IEquatable<TypeSpec.TypeName>
-        {
-            public string Name {
-                get;
-            }
-
-            public string Namespace {
-                get;
-            }
-
-            public int TypeArgumentCount {
-                get;
-            }
-
-            [JsonConstructor]
-            public TypeName (string @namespace, string name, int typeArgumentCount = 0);
-
-            public bool Equals (TypeSpec.TypeName other);
-
-            public override bool Equals (object obj);
-
-            public override int GetHashCode ();
-
-            public static TypeSpec.TypeName Parse (string @namespace, string name);
-
-            public static TypeSpec.TypeName Parse (string name);
-
-            public override string ToString ();
-        }
-
-        public string AssemblyName {
-            get;
-        }
-
-        public IReadOnlyList<TypeSpec.Modifier> Modifiers {
-            get;
-        }
-
-        public TypeSpec.TypeName Name {
-            get;
-        }
-
-        public IReadOnlyList<TypeSpec.TypeName> NestedNames {
-            get;
-        }
-
-        public IReadOnlyList<TypeSpec> TypeArguments {
-            get;
-        }
-
-        [JsonConstructor]
-        public TypeSpec (TypeSpec.TypeName name, string assemblyName = null, IReadOnlyList<TypeSpec.TypeName> nestedNames = null, IReadOnlyList<TypeSpec.Modifier> modifiers = null, IReadOnlyList<TypeSpec> typeArguments = null);
-
-        public static TypeSpec Create (Type type, bool withAssemblyQualifiedNames = false);
-
-        public string DumpToString ();
-
-        public StringBuilder DumpToString (StringBuilder builder, int depth);
-
-        public IEnumerable<TypeSpec.TypeName> GetAllNames ();
-
-        public bool IsByRef ();
-
-        public static TypeSpec Parse (string typeSpec);
-
-        public static TypeSpec.Builder ParseBuilder (string typeSpec);
-
-        public override string ToString ();
-    }
 }
 namespace Xamarin.Interactive.Logging
 {
@@ -1612,5 +1492,123 @@ namespace Xamarin.Interactive.Representations.Reflection
         public static TypeNode Create (Type type);
 
         public override string ToString ();
+    }
+    [JsonObject]
+    public sealed class TypeSpec
+    {
+        public sealed class Builder
+        {
+            public string AssemblyName {
+                get;
+                set;
+            }
+
+            public bool HasModifiers {
+                get;
+            }
+
+            public List<TypeSpec.Modifier> Modifiers {
+                get;
+            }
+
+            public TypeSpec.TypeName Name {
+                get;
+                set;
+            }
+
+            public List<TypeSpec.TypeName> NestedNames {
+                get;
+            }
+
+            public List<TypeSpec> TypeArguments {
+                get;
+            }
+
+            public Builder ();
+
+            public void AddModifier (TypeSpec.Modifier modifier);
+
+            public void AddName (TypeSpec.TypeName name);
+
+            public void AddTypeArgument (TypeSpec typeArgument);
+
+            public TypeSpec Build ();
+        }
+
+        public enum Modifier : byte
+        {
+            None,
+            Pointer = 42,
+            ByRef = 38,
+            BoundArray = 64
+        }
+
+        [JsonObject]
+        public struct TypeName : IEquatable<TypeSpec.TypeName>
+        {
+            public string Name {
+                get;
+            }
+
+            public string Namespace {
+                get;
+            }
+
+            public int TypeArgumentCount {
+                get;
+            }
+
+            [JsonConstructor]
+            public TypeName (string @namespace, string name, int typeArgumentCount = 0);
+
+            public bool Equals (TypeSpec.TypeName other);
+
+            public override bool Equals (object obj);
+
+            public override int GetHashCode ();
+
+            public static TypeSpec.TypeName Parse (string @namespace, string name);
+
+            public static TypeSpec.TypeName Parse (string name);
+
+            public override string ToString ();
+        }
+
+        public string AssemblyName {
+            get;
+        }
+
+        public IReadOnlyList<TypeSpec.Modifier> Modifiers {
+            get;
+        }
+
+        public TypeSpec.TypeName Name {
+            get;
+        }
+
+        public IReadOnlyList<TypeSpec.TypeName> NestedNames {
+            get;
+        }
+
+        public IReadOnlyList<TypeSpec> TypeArguments {
+            get;
+        }
+
+        [JsonConstructor]
+        public TypeSpec (TypeSpec.TypeName name, string assemblyName = null, IReadOnlyList<TypeSpec.TypeName> nestedNames = null, IReadOnlyList<TypeSpec.Modifier> modifiers = null, IReadOnlyList<TypeSpec> typeArguments = null);
+
+        public static TypeSpec Create (Type type);
+
+        public IEnumerable<TypeSpec.TypeName> GetAllNames ();
+
+        public bool IsByRef ();
+
+        public static TypeSpec Parse (string typeSpec);
+
+        public static TypeSpec.Builder ParseBuilder (string typeSpec);
+
+        public override string ToString ();
+
+        public string ToString (bool withAssemblyQualifiedName);
     }
 }

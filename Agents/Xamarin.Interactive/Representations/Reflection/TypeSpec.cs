@@ -14,7 +14,7 @@ using System.Reflection;
 
 using Newtonsoft.Json;
 
-namespace Xamarin.Interactive.Core
+namespace Xamarin.Interactive.Representations.Reflection
 {
     [JsonObject]
     public sealed class TypeSpec
