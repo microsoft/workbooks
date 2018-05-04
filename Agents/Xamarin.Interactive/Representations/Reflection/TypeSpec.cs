@@ -8,12 +8,13 @@
 using System;
 using System.IO;
 using System.Text;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Reflection;
 
 using Newtonsoft.Json;
 
-namespace Xamarin.Interactive.Core
+namespace Xamarin.Interactive.Representations.Reflection
 {
     [JsonObject]
     public sealed class TypeSpec
@@ -251,7 +252,7 @@ namespace Xamarin.Interactive.Core
             return builder;
         }
 
-        StringBuilder AppendTypeArguments (StringBuilder builder)
+        StringBuilder AppendTypeArguments (StringBuilder builder, bool withAssemblyQualifiedName, int depth)
         {
             if (TypeArguments == null || TypeArguments.Count == 0)
                 return builder;
@@ -263,10 +264,10 @@ namespace Xamarin.Interactive.Core
                 if (builder.Length > startPos)
                     builder.Append (',');
 
-                if (String.IsNullOrEmpty (typeArgument.AssemblyName))
-                    typeArgument.AppendFullTypeSpec (builder);
-                else
-                    typeArgument.AppendFullTypeSpec (builder.Append ('[')).Append (']');
+                typeArgument.AppendFullTypeSpec (
+                    builder,
+                    withAssemblyQualifiedName,
+                    depth + 1);
             }
 
             builder.Append (']');
@@ -294,45 +295,35 @@ namespace Xamarin.Interactive.Core
             return builder;
         }
 
-        StringBuilder AppendAssemblyName (StringBuilder builder)
+        StringBuilder AppendFullTypeSpec (StringBuilder builder, bool withAssemblyQualifiedName, int depth)
         {
-            if (!String.IsNullOrEmpty (AssemblyName))
-                builder.Append (", ").Append (AssemblyName);
+            if (withAssemblyQualifiedName && depth > 0)
+                builder.Append ('[');
 
-            return builder;
-        }
-
-        StringBuilder AppendFullTypeSpec (StringBuilder builder)
-            => AppendAssemblyName (
-                AppendModifiers (
-                    AppendTypeArguments (
-                        AppendFullName (
-                            builder
-                        )
-                    )
-                )
+            AppendModifiers (
+                AppendTypeArguments (
+                    AppendFullName (builder),
+                    withAssemblyQualifiedName,
+                    depth)
             );
 
-        public override string ToString ()
-            => AppendFullTypeSpec (new StringBuilder ()).ToString ();
-
-        public string DumpToString ()
-            => DumpToString (new StringBuilder (), 0).ToString ();
-
-        public StringBuilder DumpToString (StringBuilder builder, int depth)
-        {
-            AppendFullName (builder.Append (' ', depth * 2));
-
-            if (AssemblyName != null)
-                builder.Append (", [").Append (AssemblyName).Append (']');
-
-            builder.AppendLine ();
-
-            foreach (var typeArgument in TypeArguments)
-                typeArgument.DumpToString (builder, depth + 1);
+            if (withAssemblyQualifiedName) {
+                builder.Append (", ").Append (AssemblyName);
+                if (depth > 0)
+                    builder.Append (']');
+            }
 
             return builder;
         }
+
+        public override string ToString ()
+            => ToString (false);
+
+        public string ToString (bool withAssemblyQualifiedName)
+            => AppendFullTypeSpec (
+                new StringBuilder (),
+                withAssemblyQualifiedName && !string.IsNullOrEmpty (AssemblyName),
+                depth: 0).ToString ();
 
         #endregion
 
@@ -342,18 +333,22 @@ namespace Xamarin.Interactive.Core
         static readonly PropertyInfo IsVariableBoundArray = typeof (Type)
             .GetProperty (nameof (IsVariableBoundArray));
 
-        public static TypeSpec Create (Type type, bool withAssemblyQualifiedNames = false)
+        static readonly ConcurrentDictionary<Type, TypeSpec> typeSpecCache
+            = new ConcurrentDictionary<Type, TypeSpec> ();
+
+        public static TypeSpec Create (Type type)
         {
             if (type == null)
                 throw new ArgumentNullException (nameof (type));
+
+            var originalType = type;
+            if (typeSpecCache.TryGetValue (originalType, out var typeSpec))
+                return typeSpec;
 
             TypeName outerTypeName = default;
             List<TypeName> nestedNames = null;
             List<Modifier> modifiers = null;
             List<TypeSpec> typeArgumentList = null;
-            var assemblyQualifiedName = withAssemblyQualifiedNames
-                ? type.Assembly.FullName
-                : null;
 
             // desugar the type to separate the unmodified type from its modifiers
             // (e.g. 'System.Int32**[,,]&' -> 'System.Int32' + '**[,,]&' )
@@ -383,9 +378,7 @@ namespace Xamarin.Interactive.Core
                 foreach (var typeArgument in type.GetGenericArguments ()) {
                     if (type.IsConstructedGenericType)
                         // recurse into constructed type arguments
-                        typeArgumentList.Add (Create (
-                            typeArgument,
-                            withAssemblyQualifiedNames));
+                        typeArgumentList.Add (Create (typeArgument));
                     else
                         // open generics simply have a type name
                         typeArgumentList.Add (new TypeSpec (
@@ -412,12 +405,16 @@ namespace Xamarin.Interactive.Core
                 type = type.DeclaringType;
             }
 
-            return new TypeSpec (
+            typeSpec = new TypeSpec (
                 outerTypeName,
-                assemblyQualifiedName,
+                originalType.Assembly.FullName,
                 nestedNames,
                 modifiers,
                 typeArgumentList);
+
+            typeSpecCache [originalType] = typeSpec;
+
+            return typeSpec;
         }
 
         public static TypeSpec Parse (string typeSpec)

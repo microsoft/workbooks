@@ -9,8 +9,9 @@ import * as React from 'react'
 import {
     Calendar,
     DayOfWeek
-} from 'office-ui-fabric-react/lib/Calendar';
-import { CodeCellResult } from '../evaluation';
+} from 'office-ui-fabric-react/lib/Calendar'
+import { randomReactKey } from '../utils'
+import { CodeCellResult } from '../evaluation'
 import { ResultRenderer, ResultRendererRepresentation } from '../rendering'
 
 export default function CalendarRendererFactory(result: CodeCellResult) {
@@ -23,6 +24,7 @@ export default function CalendarRendererFactory(result: CodeCellResult) {
 class CalendarRenderer implements ResultRenderer {
     getRepresentations(result: CodeCellResult) {
         return [{
+            key: randomReactKey(),
             displayName: 'Calendar',
             component: CalendarRepresentation,
             componentProps: {

@@ -13,6 +13,7 @@ import {
     getRepresentationsOfType,
     getFirstRepresentationOfType
 } from '../rendering'
+import { randomReactKey } from '../utils'
 import {
     Image,
     IImageProps,
@@ -50,6 +51,7 @@ class ImageRenderer implements ResultRenderer {
                 continue;
 
             reps.push({
+                key: randomReactKey(),
                 displayName: 'Image',
                 component: ImageRepresentation,
                 componentProps: {

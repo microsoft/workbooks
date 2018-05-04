@@ -15,6 +15,7 @@ import ImageRendererFactory from './renderers/ImageRenderer'
 import VerbatimHtmlRendererFactory from './renderers/VerbatimHtmlRenderer'
 import TestRendererFactory from './renderers/TestRenderer'
 import InteractiveObjectRendererFactory from './renderers/InteractiveObjectRenderer'
+import TypeSpecRendererFactory from './renderers/TypeSystemRenderers';
 
 export class ResultRendererRegistry {
     private rendererFactories: ResultRendererFactory[] = []
@@ -40,6 +41,7 @@ export class ResultRendererRegistry {
         registry.register(CalendarRendererFactory)
         registry.register(ImageRendererFactory)
         registry.register(VerbatimHtmlRendererFactory)
+        registry.register(TypeSpecRendererFactory)
 
         // These are 'catch all' and should always be last
         // registry.register(InteractiveObjectRendererFactory)

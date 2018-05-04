@@ -6,7 +6,8 @@
 // Licensed under the MIT License.
 
 import * as React from 'react'
-import { CodeCellResult } from '../evaluation';
+import { randomReactKey } from '../utils'
+import { CodeCellResult } from '../evaluation'
 import {
     ResultRenderer,
     ResultRendererRepresentation,
@@ -43,6 +44,7 @@ class ToStringRenderer implements ResultRenderer {
             // over the XCB UI.
             for (const format of value.formats) {
                 reps.push({
+                    key: randomReactKey(),
                     displayName: format.name,
                     component: ToStringRepresentation,
                     componentProps: {

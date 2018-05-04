@@ -6,9 +6,13 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.SignalR;
 
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Logging;
+
+using Newtonsoft.Json;
 
 using Xamarin.Interactive.CodeAnalysis;
 using Xamarin.Interactive.CodeAnalysis.Evaluating;
@@ -32,9 +36,18 @@ namespace Xamarin.Interactive.Client.Web.Hubs
     sealed class InteractiveSessionHub : Hub
     {
         readonly IMemoryCache memoryCache;
+        readonly IHostingEnvironment hostingEnvironment;
+        readonly ILogger<InteractiveSessionHub> logger;
 
-        public InteractiveSessionHub (IMemoryCache memoryCache)
-            => this.memoryCache = memoryCache;
+        public InteractiveSessionHub (
+            IMemoryCache memoryCache,
+            IHostingEnvironment hostingEnvironment,
+            ILogger<InteractiveSessionHub> logger)
+        {
+            this.memoryCache = memoryCache;
+            this.hostingEnvironment = hostingEnvironment;
+            this.logger = logger;
+        }
 
         public override Task OnConnectedAsync ()
         {
@@ -64,7 +77,20 @@ namespace Xamarin.Interactive.Client.Web.Hubs
             => WorkbookAppInstallation.All;
 
         public IObservable<InteractiveSessionEvent> ObserveSessionEvents ()
-            => GetSession ().Events;
+        {
+            var events = GetSession ().Events;
+
+            if (hostingEnvironment.IsDevelopment ()) {
+                var settings = new Serialization.ExternalInteractiveJsonSerializerSettings ();
+                events.Subscribe (new Observer<InteractiveSessionEvent> (evnt => {
+                    logger.LogDebug (
+                        "posting session event: {0}",
+                        JsonConvert.SerializeObject (evnt, settings));
+                }));
+            }
+
+            return events;
+        }
 
         public Task InitializeSession (InteractiveSessionDescription sessionDescription)
             => GetSession ().InitializeAsync (

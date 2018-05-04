@@ -46,7 +46,7 @@ namespace Xamarin.Interactive.Serialization
             }
 
             static CustomAttributeData GetCustomAttributeNamed (MemberInfo member, string name)
-                    => member.CustomAttributes.FirstOrDefault (a => a.AttributeType.Name == name);
+                => member.CustomAttributes.FirstOrDefault (a => a.AttributeType.Name == name);
 
             static ConstructorInfo GetAttributeConstructor (Type objectType)
                 => objectType
@@ -139,7 +139,7 @@ namespace Xamarin.Interactive.Serialization
 
         sealed class MonacoAwareStringEnumConverter : StringEnumConverter
         {
-                public override bool CanConvert (Type objectType)
+            public override bool CanConvert (Type objectType)
                 => base.CanConvert (objectType) &&
                     objectType.GetCustomAttribute<MonacoSerializableAttribute> () == null;
         }

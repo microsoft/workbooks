@@ -25,6 +25,7 @@ namespace Xamarin.Interactive.Representations.Reflection
         void VisitExceptionNode (ExceptionNode exception);
         void VisitStackTrace (StackTrace stackTrace);
         void VisitStackFrame (StackFrame stackFrame);
+        void VisitTypeNode (TypeNode type);
         void VisitMethod (Method method);
         void VisitProperty (Property property);
         void VisitField (Field field);
@@ -171,6 +172,10 @@ namespace Xamarin.Interactive.Representations.Reflection
             } else
                 writer.WriteLine ("<0x{0:x5} + 0x{1:x5}> <unknown method>",
                     stackFrame.NativeAddress, stackFrame.NativeOffset);
+        }
+
+        public virtual void VisitTypeNode (TypeNode type)
+        {
         }
 
         public virtual void VisitMethod (Method method)
@@ -405,6 +410,42 @@ namespace Xamarin.Interactive.Representations.Reflection
         }
 
         public abstract void AcceptVisitor (IReflectionRemotingVisitor visitor);
+    }
+
+    [JsonObject]
+    public sealed class TypeNode : Node
+    {
+        public TypeSpec TypeName { get; }
+        public IReadOnlyList<ITypeMember> Members { get; }
+
+        [JsonConstructor]
+        public TypeNode (
+            TypeSpec typeName,
+            IReadOnlyList<ITypeMember> members)
+        {
+            TypeName = typeName;
+            Members = members;
+        }
+
+        public static TypeNode Create (Type type)
+        {
+            if (type == null)
+                return null;
+
+            return new TypeNode (
+                TypeSpec.Create (type),
+                null);
+        }
+
+        public override void AcceptVisitor (IReflectionRemotingVisitor visitor)
+            => visitor.VisitTypeNode (this);
+
+        public override string ToString ()
+        {
+            var writer = new StringWriter ();
+            AcceptVisitor (new CSharpWriter (writer));
+            return writer.ToString ();
+        }
     }
 
     [JsonObject]
