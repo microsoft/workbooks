@@ -32,8 +32,8 @@ interface StyleButtonState {
 
 class StyleButton extends React.Component<StyleButtonProps, StyleButtonState> {
     onToggle: (e: any) => void;
-    constructor() {
-        super()
+    constructor(props: StyleButtonProps) {
+        super(props)
         this.onToggle = (e) => {
             e.preventDefault()
             this.props.onToggle(this.props.style)

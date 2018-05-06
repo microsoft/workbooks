@@ -10,9 +10,9 @@
   version "1.7.48"
   resolved "https://registry.yarnpkg.com/@microsoft/load-themed-styles/-/load-themed-styles-1.7.48.tgz#ac85ae08ac84da07c0aa8e040517ff09974f788f"
 
-"@types/draft-js@^0.10.20":
-  version "0.10.22"
-  resolved "https://registry.yarnpkg.com/@types/draft-js/-/draft-js-0.10.22.tgz#1b962a9760cbda44bc16977f5e8f5950c291aaa5"
+"@types/draft-js@^0.10.22":
+  version "0.10.23"
+  resolved "https://registry.yarnpkg.com/@types/draft-js/-/draft-js-0.10.23.tgz#c313e5e2d6d1b707c18317882b9415975890f3bd"
   dependencies:
     "@types/react" "*"
     immutable "^3.8.1"
@@ -47,10 +47,11 @@
   version "15.5.2"
   resolved "https://registry.yarnpkg.com/@types/prop-types/-/prop-types-15.5.2.tgz#3c6b8dceb2906cc87fe4358e809f9d20c8d59be1"
 
-"@types/react-dom@15.5.1":
-  version "15.5.1"
-  resolved "https://registry.yarnpkg.com/@types/react-dom/-/react-dom-15.5.1.tgz#f3c3e14c682785923c7d64583537df319442dec1"
+"@types/react-dom@16.0.5":
+  version "16.0.5"
+  resolved "https://registry.yarnpkg.com/@types/react-dom/-/react-dom-16.0.5.tgz#a757457662e3819409229e8f86795ff37b371f96"
   dependencies:
+    "@types/node" "*"
     "@types/react" "*"
 
 "@types/react-hot-loader@3.0.3":
@@ -59,9 +60,9 @@
   dependencies:
     "@types/react" "*"
 
-"@types/react-router-dom@4.0.5":
-  version "4.0.5"
-  resolved "https://registry.yarnpkg.com/@types/react-router-dom/-/react-router-dom-4.0.5.tgz#638f89ca9053a0f3937d1604f2ed63dac6172ece"
+"@types/react-router-dom@4.2.6":
+  version "4.2.6"
+  resolved "https://registry.yarnpkg.com/@types/react-router-dom/-/react-router-dom-4.2.6.tgz#9f7eb3c0e6661a9607d878ff8675cc4ea95cd276"
   dependencies:
     "@types/history" "*"
     "@types/react" "*"
@@ -74,9 +75,9 @@
     "@types/history" "*"
     "@types/react" "*"
 
-"@types/react-router@4.0.12":
-  version "4.0.12"
-  resolved "https://registry.yarnpkg.com/@types/react-router/-/react-router-4.0.12.tgz#7ccf3433741393e22ede149b5cd733abfe594ffc"
+"@types/react-router@4.0.24":
+  version "4.0.24"
+  resolved "https://registry.yarnpkg.com/@types/react-router/-/react-router-4.0.24.tgz#e378e84186522216ae36cea12313965e190cd55f"
   dependencies:
     "@types/history" "*"
     "@types/react" "*"
@@ -85,9 +86,11 @@
   version "16.1.0"
   resolved "https://registry.yarnpkg.com/@types/react/-/react-16.1.0.tgz#6c0e9955ce73f332b4a1948d45decaf18c764c6e"
 
-"@types/react@^15.5.1":
-  version "15.6.15"
-  resolved "https://registry.yarnpkg.com/@types/react/-/react-15.6.15.tgz#1856f932120311aa566f91e6d0c6e613d6448236"
+"@types/react@^16.3.13":
+  version "16.3.13"
+  resolved "https://registry.yarnpkg.com/@types/react/-/react-16.3.13.tgz#47d466462b774556c1174ea0eda22c0578643362"
+  dependencies:
+    csstype "^2.2.0"
 
 "@types/to-markdown@^3.0.0":
   version "3.0.0"
@@ -103,34 +106,33 @@
   version "1.13.0"
   resolved "https://registry.yarnpkg.com/@types/webpack-env/-/webpack-env-1.13.0.tgz#3044381647e11ee973c5af2e925323930f691d80"
 
-"@uifabric/icons@>=5.7.0 <6.0.0":
-  version "5.7.0"
-  resolved "https://registry.yarnpkg.com/@uifabric/icons/-/icons-5.7.0.tgz#b15e783d7485963d269fdac44ffea32b59484670"
+"@uifabric/icons@>=5.7.1 <6.0.0":
+  version "5.7.1"
+  resolved "https://registry.yarnpkg.com/@uifabric/icons/-/icons-5.7.1.tgz#31e0552586213267b3a5871426297795cdb77726"
   dependencies:
-    "@uifabric/styling" ">=5.21.0 <6.0.0"
+    "@uifabric/styling" ">=5.23.1 <6.0.0"
     tslib "^1.7.1"
 
-"@uifabric/merge-styles@>=5.14.0 <6.0.0":
-  version "5.14.0"
-  resolved "https://registry.yarnpkg.com/@uifabric/merge-styles/-/merge-styles-5.14.0.tgz#a11e27a89d4eed53528a56e43d165325e088de4e"
+"@uifabric/merge-styles@>=5.17.0 <6.0.0":
+  version "5.17.0"
+  resolved "https://registry.yarnpkg.com/@uifabric/merge-styles/-/merge-styles-5.17.0.tgz#96de616cb9fa5c05a79ac18ff96db9fe5644f2d2"
   dependencies:
     tslib "^1.7.1"
 
-"@uifabric/styling@>=5.21.0 <6.0.0":
-  version "5.21.0"
-  resolved "https://registry.yarnpkg.com/@uifabric/styling/-/styling-5.21.0.tgz#9a97aeb092361ee0a56ec039d4b052be33f68f70"
+"@uifabric/styling@>=5.23.1 <6.0.0", "@uifabric/styling@>=5.30.1 <6.0.0":
+  version "5.30.1"
+  resolved "https://registry.yarnpkg.com/@uifabric/styling/-/styling-5.30.1.tgz#5f70e9ebf3713133d7be7a7981473c6713b5e37c"
   dependencies:
     "@microsoft/load-themed-styles" "^1.7.13"
-    "@uifabric/merge-styles" ">=5.14.0 <6.0.0"
-    "@uifabric/utilities" ">=5.21.0 <6.0.0"
+    "@uifabric/merge-styles" ">=5.17.0 <6.0.0"
+    "@uifabric/utilities" ">=5.30.1 <6.0.0"
     tslib "^1.7.1"
 
-"@uifabric/utilities@>=5.21.0 <6.0.0", "@uifabric/utilities@>=5.22.0 <6.0.0":
-  version "5.22.0"
-  resolved "https://registry.yarnpkg.com/@uifabric/utilities/-/utilities-5.22.0.tgz#e5b0ce879df818002e6ae9409d1521f6bf6c0ce3"
+"@uifabric/utilities@>=5.30.1 <6.0.0":
+  version "5.30.1"
+  resolved "https://registry.yarnpkg.com/@uifabric/utilities/-/utilities-5.30.1.tgz#765625e9d4dc60956dc13343b7b392dca39a7aed"
   dependencies:
-    "@microsoft/load-themed-styles" "^1.7.13"
-    "@uifabric/merge-styles" ">=5.14.0 <6.0.0"
+    "@uifabric/merge-styles" ">=5.17.0 <6.0.0"
     prop-types "^15.5.10"
     tslib "^1.7.1"
 
@@ -954,8 +956,8 @@ core-js@^1.0.0:
   resolved "https://registry.yarnpkg.com/core-js/-/core-js-1.2.7.tgz#652294c14651db28fa93bd2d5ff2983a4f08c636"
 
 core-js@^2.4.0:
-  version "2.5.4"
-  resolved "https://registry.yarnpkg.com/core-js/-/core-js-2.5.4.tgz#f2c8bf181f2a80b92f360121429ce63a2f0aeae0"
+  version "2.5.5"
+  resolved "https://registry.yarnpkg.com/core-js/-/core-js-2.5.5.tgz#b14dde936c640c0579a6b50cabcc132dd6127e3b"
 
 core-js@~2.3.0:
   version "2.3.0"
@@ -991,14 +993,6 @@ create-hmac@^1.1.0, create-hmac@^1.1.2, create-hmac@^1.1.4:
     ripemd160 "^2.0.0"
     safe-buffer "^5.0.1"
     sha.js "^2.4.8"
-
-create-react-class@^15.6.0:
-  version "15.6.3"
-  resolved "https://registry.yarnpkg.com/create-react-class/-/create-react-class-15.6.3.tgz#2d73237fb3f970ae6ebe011a9e66f46dbca80036"
-  dependencies:
-    fbjs "^0.8.9"
-    loose-envify "^1.3.1"
-    object-assign "^4.1.1"
 
 cross-spawn@^3.0.0:
   version "3.0.1"
@@ -1123,6 +1117,10 @@ cssom@0.3.x, "cssom@>= 0.3.2 < 0.4.0":
   resolved "https://registry.yarnpkg.com/cssstyle/-/cssstyle-0.2.37.tgz#541097234cb2513c83ceed3acddc27ff27987d54"
   dependencies:
     cssom "0.3.x"
+
+csstype@^2.2.0:
+  version "2.4.2"
+  resolved "https://registry.yarnpkg.com/csstype/-/csstype-2.4.2.tgz#158e36c69566bf968da63d0ba14eda1c20e8643a"
 
 currently-unhandled@^0.4.1:
   version "0.4.1"
@@ -1253,15 +1251,16 @@ draft-js-export-html@^1.2.0:
   dependencies:
     draft-js-utils "^1.2.0"
 
-draft-js-markdown-plugin@^1.1.1:
-  version "1.3.0"
-  resolved "https://registry.yarnpkg.com/draft-js-markdown-plugin/-/draft-js-markdown-plugin-1.3.0.tgz#6b57d7ffe18ff285e1650cdabe79d6e659f41b70"
+draft-js-markdown-plugin@^1.4.4:
+  version "1.4.4"
+  resolved "https://registry.yarnpkg.com/draft-js-markdown-plugin/-/draft-js-markdown-plugin-1.4.4.tgz#d3ca991edbec40aebf70c51c4209aca80eb2fd4b"
   dependencies:
     decorate-component-with-props "^1.0.2"
-    draft-js "~0.10.1"
+    draft-js "^0.10.4"
     draft-js-checkable-list-item "^2.0.5"
     draft-js-prism-plugin "^0.1.1"
     immutable "~3.7.4"
+    react-click-outside "^3.0.1"
 
 draft-js-modifiers@^0.1.5:
   version "0.1.5"
@@ -1270,12 +1269,12 @@ draft-js-modifiers@^0.1.5:
     draft-js "~0.10.0"
     immutable "~3.7.4"
 
-draft-js-plugins-editor@^2.0.4:
-  version "2.0.4"
-  resolved "https://registry.yarnpkg.com/draft-js-plugins-editor/-/draft-js-plugins-editor-2.0.4.tgz#ab7178de886d6d11f9f43a448c844da6266053e0"
+draft-js-plugins-editor@^2.0.8:
+  version "2.0.8"
+  resolved "https://registry.yarnpkg.com/draft-js-plugins-editor/-/draft-js-plugins-editor-2.0.8.tgz#88ae7aee777381d2a77f39ceb672e4101f4075df"
   dependencies:
     decorate-component-with-props "^1.0.2"
-    find-with-regex "^1.0.2"
+    find-with-regex "^1.1.3"
     immutable "~3.7.4"
     prop-types "^15.5.8"
     union-class-names "^1.0.0"
@@ -1298,7 +1297,7 @@ draft-js-utils@^1.2.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/draft-js-utils/-/draft-js-utils-1.2.0.tgz#f5cb23eb167325ffed3d79882fdc317721d2fd12"
 
-draft-js@^0.10.5, draft-js@~0.10.0, draft-js@~0.10.1:
+draft-js@^0.10.4, draft-js@^0.10.5, draft-js@~0.10.0:
   version "0.10.5"
   resolved "https://registry.yarnpkg.com/draft-js/-/draft-js-0.10.5.tgz#bfa9beb018fe0533dbb08d6675c371a6b08fa742"
   dependencies:
@@ -1529,7 +1528,7 @@ fastparse@^1.1.1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/fastparse/-/fastparse-1.1.1.tgz#d1e2643b38a94d7583b479060e6c4affc94071f8"
 
-fbjs@^0.8.15, fbjs@^0.8.16, fbjs@^0.8.9:
+fbjs@^0.8.15, fbjs@^0.8.16:
   version "0.8.16"
   resolved "https://registry.yarnpkg.com/fbjs/-/fbjs-0.8.16.tgz#5e67432f550dc41b572bf55847b8aca64e5337db"
   dependencies:
@@ -1593,9 +1592,9 @@ find-up@^2.1.0:
   dependencies:
     locate-path "^2.0.0"
 
-find-with-regex@^1.0.2:
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/find-with-regex/-/find-with-regex-1.0.2.tgz#d3b36286539f14c527e31f194159c6d251651a45"
+find-with-regex@^1.1.3:
+  version "1.1.3"
+  resolved "https://registry.yarnpkg.com/find-with-regex/-/find-with-regex-1.1.3.tgz#d6c6f2debee898d36b6a77e05709b13dd5dc8a26"
 
 flatten@^1.0.2:
   version "1.0.2"
@@ -1934,7 +1933,7 @@ hawk@~6.0.2:
     hoek "4.x.x"
     sntp "2.x.x"
 
-history@^4.5.1, history@^4.7.2:
+history@^4.7.2:
   version "4.7.2"
   resolved "https://registry.yarnpkg.com/history/-/history-4.7.2.tgz#22b5c7f31633c5b8021c7f4a8a954ac139ee8d5b"
   dependencies:
@@ -1960,7 +1959,7 @@ hoek@4.x.x:
   version "4.2.1"
   resolved "https://registry.yarnpkg.com/hoek/-/hoek-4.2.1.tgz#9634502aa12c445dd5a7c5734b572bb8738aacbb"
 
-hoist-non-react-statics@^2.3.0:
+hoist-non-react-statics@^2.1.1, hoist-non-react-statics@^2.3.0:
   version "2.5.0"
   resolved "https://registry.yarnpkg.com/hoist-non-react-statics/-/hoist-non-react-statics-2.5.0.tgz#d2ca2dfc19c5a91c5a6615ce8e564ef0347e2a40"
 
@@ -2537,9 +2536,13 @@ lodash.uniq@^4.5.0:
   version "4.5.0"
   resolved "https://registry.yarnpkg.com/lodash.uniq/-/lodash.uniq-4.5.0.tgz#d0225373aeb652adc1bc82e4945339a842754773"
 
-lodash@^4.0.0, lodash@^4.13.1, lodash@^4.14.0, lodash@^4.17.4, lodash@^4.6.1, lodash@~4.17.4:
+lodash@^4.0.0, lodash@^4.13.1, lodash@^4.14.0, lodash@^4.17.4, lodash@~4.17.4:
   version "4.17.5"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.5.tgz#99a92d65c0272debe8c96b6057bc8fbfa3bed511"
+
+lodash@^4.6.1:
+  version "4.17.10"
+  resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.10.tgz#1b7793cf7259ea38fb3661d4d38b3260af8ae4e7"
 
 longest@^1.0.1:
   version "1.0.1"
@@ -2976,15 +2979,15 @@ object.pick@^1.3.0:
   dependencies:
     isobject "^3.0.1"
 
-office-ui-fabric-react@^5.58.0:
-  version "5.74.0"
-  resolved "https://registry.yarnpkg.com/office-ui-fabric-react/-/office-ui-fabric-react-5.74.0.tgz#b51e6efa51c7a86e05836cac1642175e107fbee6"
+office-ui-fabric-react@^5.95.0:
+  version "5.96.0"
+  resolved "https://registry.yarnpkg.com/office-ui-fabric-react/-/office-ui-fabric-react-5.96.0.tgz#88555f0f1540b0646a80c97ec9f7de785d2c7f45"
   dependencies:
     "@microsoft/load-themed-styles" "^1.7.13"
-    "@uifabric/icons" ">=5.7.0 <6.0.0"
-    "@uifabric/merge-styles" ">=5.14.0 <6.0.0"
-    "@uifabric/styling" ">=5.21.0 <6.0.0"
-    "@uifabric/utilities" ">=5.22.0 <6.0.0"
+    "@uifabric/icons" ">=5.7.1 <6.0.0"
+    "@uifabric/merge-styles" ">=5.17.0 <6.0.0"
+    "@uifabric/styling" ">=5.30.1 <6.0.0"
+    "@uifabric/utilities" ">=5.30.1 <6.0.0"
     prop-types "^15.5.10"
     tslib "^1.7.1"
 
@@ -3574,18 +3577,24 @@ rc@^1.1.7:
     minimist "^1.2.0"
     strip-json-comments "~2.0.1"
 
+react-click-outside@^3.0.1:
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/react-click-outside/-/react-click-outside-3.0.1.tgz#6e77e84d2f17afaaac26dbad743cbbf909f5e24c"
+  dependencies:
+    hoist-non-react-statics "^2.1.1"
+
 react-deep-force-update@^2.0.1:
   version "2.1.1"
   resolved "https://registry.yarnpkg.com/react-deep-force-update/-/react-deep-force-update-2.1.1.tgz#8ea4263cd6455a050b37445b3f08fd839d86e909"
 
-react-dom@15.6.1:
-  version "15.6.1"
-  resolved "https://registry.yarnpkg.com/react-dom/-/react-dom-15.6.1.tgz#2cb0ed4191038e53c209eb3a79a23e2a4cf99470"
+react-dom@16.3.2:
+  version "16.3.2"
+  resolved "https://registry.yarnpkg.com/react-dom/-/react-dom-16.3.2.tgz#cb90f107e09536d683d84ed5d4888e9640e0e4df"
   dependencies:
-    fbjs "^0.8.9"
+    fbjs "^0.8.16"
     loose-envify "^1.1.0"
-    object-assign "^4.1.0"
-    prop-types "^15.5.10"
+    object-assign "^4.1.1"
+    prop-types "^15.6.0"
 
 react-hot-loader@3.0.0-beta.7:
   version "3.0.0-beta.7"
@@ -3604,16 +3613,18 @@ react-proxy@^3.0.0-alpha.0:
   dependencies:
     lodash "^4.6.1"
 
-react-router-dom@4.1.1:
-  version "4.1.1"
-  resolved "https://registry.yarnpkg.com/react-router-dom/-/react-router-dom-4.1.1.tgz#3021ade1f2c160af97cf94e25594c5f294583025"
+react-router-dom@4.2.2:
+  version "4.2.2"
+  resolved "https://registry.yarnpkg.com/react-router-dom/-/react-router-dom-4.2.2.tgz#c8a81df3adc58bba8a76782e946cbd4eae649b8d"
   dependencies:
-    history "^4.5.1"
+    history "^4.7.2"
+    invariant "^2.2.2"
     loose-envify "^1.3.1"
     prop-types "^15.5.4"
-    react-router "^4.1.1"
+    react-router "^4.2.0"
+    warning "^3.0.0"
 
-react-router@^4.1.1:
+react-router@^4.2.0:
   version "4.2.0"
   resolved "https://registry.yarnpkg.com/react-router/-/react-router-4.2.0.tgz#61f7b3e3770daeb24062dae3eedef1b054155986"
   dependencies:
@@ -3634,15 +3645,14 @@ react@*:
     object-assign "^4.1.1"
     prop-types "^15.6.0"
 
-react@15.6.1:
-  version "15.6.1"
-  resolved "https://registry.yarnpkg.com/react/-/react-15.6.1.tgz#baa8434ec6780bde997cdc380b79cd33b96393df"
+react@16.3.2:
+  version "16.3.2"
+  resolved "https://registry.yarnpkg.com/react/-/react-16.3.2.tgz#fdc8420398533a1e58872f59091b272ce2f91ea9"
   dependencies:
-    create-react-class "^15.6.0"
-    fbjs "^0.8.9"
+    fbjs "^0.8.16"
     loose-envify "^1.1.0"
-    object-assign "^4.1.0"
-    prop-types "^15.5.10"
+    object-assign "^4.1.1"
+    prop-types "^15.6.0"
 
 read-pkg-up@^1.0.1:
   version "1.0.1"
@@ -3692,8 +3702,8 @@ readdirp@^2.0.0:
     set-immediate-shim "^1.0.1"
 
 redbox-react@^1.3.6:
-  version "1.5.0"
-  resolved "https://registry.yarnpkg.com/redbox-react/-/redbox-react-1.5.0.tgz#04dab11557d26651bf3562a67c22ace56c5d3967"
+  version "1.6.0"
+  resolved "https://registry.yarnpkg.com/redbox-react/-/redbox-react-1.6.0.tgz#e753ac02595bc1bf695b3935889a4f5b1b5a21a1"
   dependencies:
     error-stack-parser "^1.3.6"
     object-assign "^4.0.1"

@@ -56,6 +56,8 @@ export class MonacoCellEditor extends React.Component<MonacoCellEditorProps, Mon
 
     componentDidMount() {
         const monacoContainer = ReactDOM.findDOMNode(this)
+        if (!(monacoContainer instanceof Element))
+            throw 'monacoContainer is not an Element'
         this.editor = this.buildEditor(monacoContainer)
         this.props.blockProps.setModelId(this.editor.getModel().id)
         this.props.blockProps.subscribeToEditor((message: EditorMessage) => {
@@ -90,6 +92,7 @@ export class MonacoCellEditor extends React.Component<MonacoCellEditorProps, Mon
 
     buildEditor(elem: Element) {
         const targetElem = document.createElement("div")
+
         const editor = monaco.editor.create(targetElem, {
             value: this.props.block.text,
             language: "csharp",
@@ -371,8 +374,11 @@ export class MonacoCellEditor extends React.Component<MonacoCellEditorProps, Mon
         this.editor!.setSelection(selection)
     }
 
-    getClientWidth() {
-        return ReactDOM.findDOMNode(this).clientWidth
+    getClientWidth(): number {
+        const node = ReactDOM.findDOMNode(this)
+        if (node instanceof Element)
+            return node.clientWidth
+        return 0
     }
 
     getEditorLines() {
