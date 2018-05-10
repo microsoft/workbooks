@@ -2,7 +2,7 @@
   {
     "Kind": "GitRepo",
     "Name": "https://github.com/xamarin/workbooks-proprietary",
-    "Version": "master",
+    "Version": "1.4-release",
     "Path": "workbooks-proprietary"
   },
   {
