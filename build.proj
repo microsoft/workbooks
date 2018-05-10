@@ -86,7 +86,7 @@
   <Target Name="BuildAndTest">
     <MSBuild
       Projects="$(MSBuildProjectFile)"
-      Targets="UpdateBuildInfo;Build;Package;TestRegressions"
+      Targets="UpdateBuildInfo;Build;Package;Test"
       Properties="Configuration=Release"/>
     <Message Text="Congratulations! Here's an ounce of confidence in your pull request!" Importance="high"/>
   </Target>
@@ -121,6 +121,10 @@
     Xamarin_Build_ReadAllProperties;
     _ResolveToolPaths;
     _NpmInstall"/>
+
+  <!-- 1.4 does not need this yet, but build def still calls it -->
+  <Target Name="Restore">
+  </Target>
 
   <!-- Build and Clean use the same _Build* targets since the only difference is the Target passed to each csproj/sln.
        We use MSBuild instead of CallTarget as an easy way to pass along said Target. Also, Rebuild requires calling
@@ -591,7 +595,7 @@
     <Copy SourceFiles="$(PdbArchiveName)" DestinationFiles="$(PackageOutputDir)$(PdbArchiveName)" />
   </Target>
 
-  <Target Name="TestRegressions">
+  <Target Name="Test">
     <PropertyGroup Condition="'$(SolutionPlatform)' == 'macOS'">
       <TestDriver>Clients\Xamarin.Interactive.Client.Mac\bin\$(Configuration)\Xamarin Workbooks.app\Contents\MacOS\Xamarin Workbooks</TestDriver>
     </PropertyGroup>
