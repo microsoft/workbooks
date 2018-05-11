@@ -12,7 +12,7 @@ using Newtonsoft.Json;
 namespace Xamarin.Interactive.Representations
 {
     [JsonObject]
-    public sealed class Rectangle : IRepresentationObject
+    public sealed class Rectangle
     {
         [JsonConstructor]
         public Rectangle (double x, double y, double width, double height)

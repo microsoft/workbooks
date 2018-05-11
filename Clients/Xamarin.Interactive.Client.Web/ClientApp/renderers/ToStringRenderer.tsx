@@ -6,22 +6,17 @@
 // Licensed under the MIT License.
 
 import * as React from 'react'
-import { CodeCellResult } from '../evaluation';
+import { randomReactKey } from '../utils'
+import { CodeCellResult } from '../evaluation'
 import {
     ResultRenderer,
     ResultRendererRepresentation,
     getFirstRepresentationOfType
 } from '../rendering'
 
-const RepresentationName = 'ToStringRepresentation'
+export const ToStringRepresentationDataTypeName = 'Xamarin.Interactive.Representations.ToStringRepresentation'
 
-export default function ToStringRendererFactory(result: CodeCellResult) {
-    return getFirstRepresentationOfType(result, RepresentationName)
-        ? new ToStringRenderer
-        : null
-}
-
-interface ToStringRepresentationData {
+export interface ToStringRepresentationData {
     $type: string
     formats: {
         name: string,
@@ -29,10 +24,18 @@ interface ToStringRepresentationData {
     }[]
 }
 
+export default function ToStringRendererFactory(result: CodeCellResult) {
+    return getFirstRepresentationOfType(result, ToStringRepresentationDataTypeName)
+        ? new ToStringRenderer
+        : null
+}
+
 class ToStringRenderer implements ResultRenderer {
     getRepresentations(result: CodeCellResult) {
         const reps: ResultRendererRepresentation[] = []
-        const value = getFirstRepresentationOfType<ToStringRepresentationData>(result, RepresentationName)
+        const value = getFirstRepresentationOfType<ToStringRepresentationData>(
+            result,
+            ToStringRepresentationDataTypeName)
 
         if (value) {
             // TODO: some way to toggle between current culture (what we're using now,
@@ -41,6 +44,7 @@ class ToStringRenderer implements ResultRenderer {
             // over the XCB UI.
             for (const format of value.formats) {
                 reps.push({
+                    key: randomReactKey(),
                     displayName: format.name,
                     component: ToStringRepresentation,
                     componentProps: {

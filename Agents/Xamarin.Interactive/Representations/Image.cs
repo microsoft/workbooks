@@ -17,7 +17,7 @@ using Newtonsoft.Json;
 namespace Xamarin.Interactive.Representations
 {
     [JsonObject]
-    public sealed class Image : IRepresentationObject
+    public sealed class Image
     {
         public static Image FromSvg (string svgData, int width = 0, int height = 0)
             => new Image (

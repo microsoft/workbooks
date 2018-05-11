@@ -6,6 +6,7 @@
 // Licensed under the MIT License.
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
@@ -101,6 +102,8 @@ namespace Xamarin.Interactive.CodeAnalysis.Evaluating
 
             NotifyEvaluationEnvironmentChanged (evaluationEnvironment);
             NotifyEvaluationContextManagerChanged (evaluationContextManager);
+
+            Events.Subscribe (new Observer<ICodeCellEvent> (OnCodeCellEvent));
         }
 
         internal void NotifyEvaluationEnvironmentChanged (EvaluationEnvironment evaluationEnvironment)
@@ -374,14 +377,15 @@ namespace Xamarin.Interactive.CodeAnalysis.Evaluating
                     evaluatableCodeCell.CodeCellId,
                     status,
                     evaluationModel.ShouldMaybeStartNewCodeCell &&
-                    evaluatableCodeCell.CodeCellId == targetCodeCellId,
+                        status == EvaluationStatus.Success &&
+                        evaluatableCodeCell.CodeCellId == targetCodeCellId,
                     evaluatableCodeCell.Diagnostics);
 
                 events.Observers.OnNext (lastCellFinishedEvent);
 
                 switch (status) {
-                case CodeCellEvaluationStatus.ErrorDiagnostic:
-                case CodeCellEvaluationStatus.Disconnected:
+                case EvaluationStatus.ErrorDiagnostic:
+                case EvaluationStatus.Disconnected:
                     return lastCellFinishedEvent;
                 }
             }
@@ -389,7 +393,22 @@ namespace Xamarin.Interactive.CodeAnalysis.Evaluating
             return lastCellFinishedEvent;
         }
 
-        async Task<CodeCellEvaluationStatus> CoreEvaluateCodeCellAsync (
+        readonly ConcurrentDictionary<CodeCellId, TaskCompletionSource<EvaluationStatus>> evaluationAwaiters
+            = new ConcurrentDictionary<CodeCellId, TaskCompletionSource<EvaluationStatus>> ();
+
+        void OnCodeCellEvent (ICodeCellEvent evnt)
+        {
+            if (evnt is Evaluation evaluation)
+                NotifyEvaluationComplete (evaluation.CodeCellId, evaluation.Status);
+        }
+
+        public void NotifyEvaluationComplete (CodeCellId targetCodeCellId, EvaluationStatus status)
+        {
+            if (evaluationAwaiters.TryRemove (targetCodeCellId, out var awaiter))
+                awaiter.SetResult (status);
+        }
+
+        async Task<EvaluationStatus> CoreEvaluateCodeCellAsync (
             CodeCellState codeCellState,
             CancellationToken cancellationToken = default)
         {
@@ -399,49 +418,43 @@ namespace Xamarin.Interactive.CodeAnalysis.Evaluating
                         DiagnosticSeverity.Error,
                         "Cannot evaluate: not connected to agent.")
                 };
-                return CodeCellEvaluationStatus.Disconnected;
+                return EvaluationStatus.Disconnected;
             }
 
+            var evaluationCompletion = new TaskCompletionSource<EvaluationStatus> ();
+            if (!evaluationAwaiters.TryAdd (codeCellState.CodeCellId, evaluationCompletion))
+                throw new Exception ($"This is already being evaluated: {codeCellState.CodeCellId}");
+
             Compilation compilation = null;
-            IReadOnlyList<Diagnostic> diagnostics = null;
-            ExceptionNode exception = null;
+
+            compilation = await workspace.EmitCellCompilationAsync (
+                codeCellState.CodeCellId,
+                evaluationEnvironment,
+                cancellationToken);
+
+            codeCellState.Diagnostics = await workspace.GetCellDiagnosticsAsync (
+                codeCellState.CodeCellId,
+                cancellationToken);
+
+            if (codeCellState.Diagnostics.Any (d => d.Severity == DiagnosticSeverity.Error))
+                return EvaluationStatus.ErrorDiagnostic;
+
+            var integrationAssemblies = compilation
+                .References
+                .Where (ra => ra.HasIntegration)
+                .ToArray ();
 
             try {
-                compilation = await workspace.EmitCellCompilationAsync (
-                    codeCellState.CodeCellId,
-                    evaluationEnvironment,
-                    cancellationToken);
-
-                diagnostics = await workspace.GetCellDiagnosticsAsync (
-                    codeCellState.CodeCellId,
-                    cancellationToken);
-
-                var integrationAssemblies = compilation
-                    .References
-                    .Where (ra => ra.HasIntegration)
-                    .ToArray ();
-
                 if (integrationAssemblies.Length > 0)
                     await evaluationContextManager.LoadAssembliesAsync (
                         TargetCompilationConfiguration.EvaluationContextId,
                         integrationAssemblies,
                         cancellationToken);
 
-                // FIXME: this is where we'd LoadWorkbookDependencyAsync
-            } catch (Exception e) {
-                exception = ExceptionNode.Create (e);
-            }
-
-            codeCellState.Diagnostics = diagnostics;
-
-            try {
-                if (compilation != null)
-                    await evaluationContextManager.EvaluateAsync (
-                        TargetCompilationConfiguration.EvaluationContextId,
-                        compilation,
-                        cancellationToken);
-            } catch (XipErrorMessageException e) {
-                exception = e.XipErrorMessage.Exception;
+                await evaluationContextManager.EvaluateAsync (
+                    TargetCompilationConfiguration.EvaluationContextId,
+                    compilation,
+                    cancellationToken);
             } catch (Exception e) {
                 Log.Error (TAG, "marking agent as terminated", e);
                 codeCellState.AgentTerminatedWhileEvaluating = true;
@@ -454,50 +467,15 @@ namespace Xamarin.Interactive.CodeAnalysis.Evaluating
                 };
             }
 
-            CodeCellEvaluationStatus evaluationStatus;
+            var evaluationStatus = await evaluationCompletion.Task;
 
-            if (exception != null) {
-                events.Observers.OnNext (new Evaluation (
-                    codeCellState.CodeCellId,
-                    EvaluationResultHandling.Replace,
-                    FilterException (exception)));
-                evaluationStatus = CodeCellEvaluationStatus.EvaluationException;
-            } else if (diagnostics.Any (d => d.Severity == DiagnosticSeverity.Error)) {
-                return CodeCellEvaluationStatus.ErrorDiagnostic;
-            } else if (codeCellState.AgentTerminatedWhileEvaluating) {
-                evaluationStatus = CodeCellEvaluationStatus.Disconnected;
-            } else {
-                evaluationStatus = CodeCellEvaluationStatus.Success;
-            }
+            if (codeCellState.AgentTerminatedWhileEvaluating)
+                evaluationStatus = EvaluationStatus.Disconnected;
 
             codeCellState.IsDirty = false;
             codeCellState.EvaluationCount++;
 
             return evaluationStatus;
-        }
-
-        /// <summary>
-        /// Dicards the captured traces and frames that are a result of compiler-generated
-        /// code to host the submission so we only render frames the user might actually expect.
-        /// </summary>
-        internal static ExceptionNode FilterException (ExceptionNode exception)
-        {
-            try {
-                var capturedTraces = exception?.StackTrace?.CapturedTraces;
-                if (capturedTraces == null || capturedTraces.Count != 2)
-                    return exception;
-
-                var submissionTrace = capturedTraces [0];
-                exception.StackTrace = exception.StackTrace.WithCapturedTraces (new [] {
-                    submissionTrace.WithFrames (
-                        submissionTrace.Frames.Take (submissionTrace.Frames.Count - 1))
-                });
-
-                return exception;
-            } catch (Exception e) {
-                Log.Error (TAG, $"error filtering ExceptionNode [[{exception}]]", e);
-                return exception;
-            }
         }
     }
 }

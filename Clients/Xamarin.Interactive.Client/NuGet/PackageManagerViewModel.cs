@@ -19,7 +19,6 @@ namespace Xamarin.Interactive.NuGet
     class PackageManagerViewModel
     {
         const string TAG = nameof (PackageManagerViewModel);
-        public const string IntegrationPackageId = "Xamarin.Workbooks.Integration";
 
         readonly ClientSession clientSession;
         readonly IPackageManagerView packageManagerView;
@@ -91,7 +90,7 @@ namespace Xamarin.Interactive.NuGet
 
                         resultSetSize++;
 
-                        if (searchMetadata.Identity.Id == IntegrationPackageId)
+                        if (searchMetadata.Identity.Id == InteractivePackageManager.IntegrationPackageId)
                             continue;
 
                         // In the future, pass the full metadata to the views so they can show

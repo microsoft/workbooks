@@ -8,6 +8,7 @@
 import { HubConnection } from '@aspnet/signalr'
 import * as catalog from './i18n'
 import { Event } from './utils/Events'
+import { resolveJsonReferences } from './utils/JsonRefs'
 import { CodeCellResult, CapturedOutputSegment, ICodeCellEvent, CodeCellUpdate } from './evaluation'
 import { Message, StatusUIAction, StatusUIActionWithMessage, MessageKind, MessageSeverity } from './messages'
 
@@ -124,6 +125,8 @@ export class WorkbookSession {
     }
 
     onSessionEventReceived(event: SessionEvent): void {
+        event = resolveJsonReferences(event)
+
         console.log('WorkbookSession::onSessionEventReceived: %O, data: %O', event.kind, event.data)
 
         this.sessionEvent.dispatch(event)

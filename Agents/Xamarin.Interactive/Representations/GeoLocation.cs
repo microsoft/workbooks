@@ -13,7 +13,7 @@ using Newtonsoft.Json;
 namespace Xamarin.Interactive.Representations
 {
     [JsonObject]
-    public sealed class GeoLocation : IRepresentationObject
+    public sealed class GeoLocation
     {
         [JsonConstructor]
         public GeoLocation (

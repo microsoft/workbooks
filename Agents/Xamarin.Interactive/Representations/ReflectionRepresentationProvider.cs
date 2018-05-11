@@ -25,7 +25,7 @@ namespace Xamarin.Interactive.Representations
             yield return ProvideSingleRepresentation (obj);
         }
 
-        IRepresentationObject ProvideSingleRepresentation (object obj)
+        object ProvideSingleRepresentation (object obj)
         {
             var type = obj.GetType ();
 

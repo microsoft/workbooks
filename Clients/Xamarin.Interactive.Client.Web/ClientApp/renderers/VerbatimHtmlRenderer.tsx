@@ -7,49 +7,52 @@
 
 import * as React from 'react'
 import * as ReactDOM from 'react-dom'
+import { randomReactKey } from '../utils'
 import { CodeCellResult } from '../evaluation'
 import {
     ResultRenderer,
-    ResultRendererRepresentation
+    ResultRendererRepresentation,
+    getFirstRepresentationOfType
 } from '../rendering'
+import {
+    ToStringRepresentationDataTypeName,
+    ToStringRepresentationData
+ } from './ToStringRenderer'
 
-const xirType = 'Xamarin.Interactive.Representations.VerbatimHtml'
+const RepresentationTypeName = 'Xamarin.Interactive.Representations.VerbatimHtml'
 
 export default function VerbatimHtmlRendererFactory(result: CodeCellResult) {
-    return result.resultRepresentations &&
-        result.resultRepresentations.some(r => r.$type === xirType)
+    return getFirstRepresentationOfType(result, RepresentationTypeName)
         ? new VerbatimHtmlRenderer
         : null
 }
 
-interface VerbatimHtmlValue {
-    $toString: string
-}
-
 class VerbatimHtmlRenderer implements ResultRenderer {
     getRepresentations(result: CodeCellResult) {
-        const reps: ResultRendererRepresentation[] = []
+        // VerbatimHtml on the C# side intentionally does not expose the HTML data
+        // to serialization since we will always send a ToStringRepresentation. This
+        // avoids sending duplicate data across the wire.
+        //
+        // So, grab the ToStringRepresentation and render that as HTML instead.
+        const rep = getFirstRepresentationOfType<ToStringRepresentationData>(
+            result,
+            ToStringRepresentationDataTypeName)
 
-        if (!result.resultRepresentations)
-            return reps
-
-        for (const value of result.resultRepresentations) {
-            if (value.$type === xirType)
-                reps.push({
-                    displayName: 'HTML',
-                    component: VerbatimHtmlRepresentation,
-                    componentProps: {
-                        value: value as VerbatimHtmlValue
-                    }
-                })
-        }
-
-        return reps
+        if (rep)
+            return [{
+                key: randomReactKey(),
+                displayName: 'HTML',
+                component: VerbatimHtmlRepresentation,
+                componentProps: {
+                    value: rep.formats[0].value
+                }
+            }]
+        return []
     }
 }
 
 class VerbatimHtmlRepresentation extends React.Component<
-    { value: VerbatimHtmlValue },
+    { value: string },
     { width: number, height: number }> {
     constructor(props: any) {
         super(props)
@@ -65,7 +68,7 @@ class VerbatimHtmlRepresentation extends React.Component<
                 className='renderer-VerbatimHtmlRepresentation-container'
                 seamless={true}
                 sandbox='allow-scripts allow-same-origin'
-                srcDoc={this.props.value.$toString}
+                srcDoc={this.props.value}
                 style={{
                     border: 'none',
                     width: `${this.state.width}px`,

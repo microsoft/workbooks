@@ -32,7 +32,7 @@ namespace Xamarin.Interactive.Client.Console
     {
         static LanguageDescription language;
         static CodeCellId lastCodeCellId;
-        static CodeCellEvaluationStatus lastCellEvaluationStatus;
+        static EvaluationStatus lastCellEvaluationStatus;
         static Spinner evalSpinner;
         static bool dumpEvaluationJson;
 
@@ -129,9 +129,10 @@ namespace Xamarin.Interactive.Client.Console
 
             CodeCellId cellId = default;
 
-            var editor = new LineEditor ("xic");
-            editor.BeforeRenderPrompt = () => ForegroundColor = ConsoleColor.Yellow;
-            editor.AfterRenderPrompt = () => ResetColor ();
+            var editor = new SafeLineEditor (
+                "xic",
+                () => ForegroundColor = ConsoleColor.Yellow,
+                ResetColor);
 
             // At this point we have the following in order, ready to serve:
             //
@@ -148,9 +149,7 @@ namespace Xamarin.Interactive.Client.Console
                 cellId = await session.EvaluationService.InsertCodeCellAsync ();
 
                 for (int i = 0; true; i++) {
-                    var deltaBuffer = editor.Edit (
-                        GetPrompt (i > 0),
-                        null);
+                    var deltaBuffer = editor.Edit (GetPrompt (i > 0));
 
                     var existingBuffer = await session.WorkspaceService.GetCellBufferAsync (cellId);
 
@@ -166,7 +165,7 @@ namespace Xamarin.Interactive.Client.Console
 
                 // if the evaluation was not successful, remove the cell so it's not internally
                 // re-evaluated (which would continue to yield the same failures)
-                if (finishedEvent.Status != CodeCellEvaluationStatus.Success)
+                if (finishedEvent.Status != EvaluationStatus.Success)
                     await session.EvaluationService.RemoveCodeCellAsync (finishedEvent.CodeCellId);
             }
         }
@@ -224,7 +223,7 @@ namespace Xamarin.Interactive.Client.Console
 
                 await session.EvaluationService.EvaluateAsync (lastCodeCellId);
 
-                if (lastCellEvaluationStatus != CodeCellEvaluationStatus.Success)
+                if (lastCellEvaluationStatus != EvaluationStatus.Success)
                     break;
             }
 
@@ -283,13 +282,13 @@ namespace Xamarin.Interactive.Client.Console
                 lastCellEvaluationStatus = finishedEvent.Status;
 
                 switch (finishedEvent.Status) {
-                case CodeCellEvaluationStatus.Disconnected:
+                case EvaluationStatus.Disconnected:
                     RenderError ("Agent was disconnected while evaluating cell");
                     break;
-                case CodeCellEvaluationStatus.Interrupted:
+                case EvaluationStatus.Interrupted:
                     RenderError ("Evaluation was aborted");
                     break;
-                case CodeCellEvaluationStatus.EvaluationException:
+                case EvaluationStatus.EvaluationException:
                     RenderError ("An exception was thrown while evaluating cell");
                     break;
                 }
@@ -430,6 +429,45 @@ namespace Xamarin.Interactive.Client.Console
             runContext.RunOnCurrentThread ();
 
             return mainTask.GetAwaiter ().GetResult ();
+        }
+
+        /// <summary>
+        /// When running under lldb and any other environments where terminal info is
+        /// messed up, the normal LineEditor will break. Assume we're in a bad environment
+        /// if the console window size is 0 (in any dimension) and fall back to a basic
+        /// Console.ReadLine.
+        /// </summary>
+        sealed class SafeLineEditor
+        {
+            readonly Action beforeRenderPrompt;
+            readonly Action afterRenderPrompt;
+            readonly LineEditor lineEditor;
+
+            public SafeLineEditor (
+                string name,
+                Action beforeRenderPrompt = null,
+                Action afterRenderPrompt = null)
+            {
+                if (System.Console.WindowWidth > 0 && System.Console.WindowHeight > 0)
+                    lineEditor = new LineEditor (name) {
+                        BeforeRenderPrompt = beforeRenderPrompt,
+                        AfterRenderPrompt = afterRenderPrompt
+                    };
+
+                this.beforeRenderPrompt = beforeRenderPrompt;
+                this.afterRenderPrompt = afterRenderPrompt;
+            }
+
+            public string Edit (string prompt)
+            {
+                if (lineEditor != null)
+                    return lineEditor.Edit (prompt, null);
+
+                beforeRenderPrompt?.Invoke ();
+                System.Console.Write (prompt);
+                afterRenderPrompt?.Invoke ();
+                return System.Console.ReadLine ();
+            }
         }
     }
 }

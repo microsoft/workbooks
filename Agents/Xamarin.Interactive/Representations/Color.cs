@@ -12,7 +12,7 @@ using Newtonsoft.Json;
 namespace Xamarin.Interactive.Representations
 {
     [JsonObject]
-    public sealed class Color : IRepresentationObject, IEquatable<Color>
+    public sealed class Color : IEquatable<Color>
     {
         public ColorSpace ColorSpace { get; }
 

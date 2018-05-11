@@ -46,6 +46,9 @@ namespace Xamarin.Interactive.ConsoleAgent
             {
             }
 
+            protected override object CreateGlobalState ()
+                => new EvaluationContextGlobalObject ((ConsoleAgent)Context);
+
             internal override void LoadExternalDependencies (
                 Assembly loadedAssembly,
                 IReadOnlyList<AssemblyDependency> externalDependencies)

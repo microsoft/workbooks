@@ -45,19 +45,28 @@ export interface ResultRenderer {
 export type ResultRendererFactory = (result: CodeCellResult) => ResultRenderer | null
 
 export interface ResultRendererRepresentation {
+    key: string
     displayName: string
     component: any
     componentProps?: {}
     order?: number
-    options?: ResultRendererRepresentationOptions,
+    options?: ResultRendererRepresentationOptions
 }
 
-export function getFirstRepresentationOfType<T = {}>(result: CodeCellResult, typeName: string): T | null {
+export function getRepresentationsOfType<T = {}>(result: CodeCellResult, typeName: string): T[] {
+    const reps = []
     if (result && result.resultRepresentations) {
         for (const representation of result.resultRepresentations) {
             if (representation && representation.$type === typeName)
-                return representation
+                reps.push(representation)
         }
     }
-    return null
+    return reps
+}
+
+export function getFirstRepresentationOfType<T = {}>(result: CodeCellResult, typeName: string): T | null {
+    const reps = getRepresentationsOfType<T>(result, typeName)
+    return reps && reps.length > 0
+        ? reps[0]
+        : null
 }

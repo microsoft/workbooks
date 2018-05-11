@@ -3,13 +3,19 @@
 
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.SignalR;
 
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Logging;
+
+using Newtonsoft.Json;
 
 using Xamarin.Interactive.CodeAnalysis;
+using Xamarin.Interactive.CodeAnalysis.Evaluating;
 using Xamarin.Interactive.CodeAnalysis.Events;
 using Xamarin.Interactive.CodeAnalysis.Models;
 using Xamarin.Interactive.NuGet;
@@ -30,9 +36,18 @@ namespace Xamarin.Interactive.Client.Web.Hubs
     sealed class InteractiveSessionHub : Hub
     {
         readonly IMemoryCache memoryCache;
+        readonly IHostingEnvironment hostingEnvironment;
+        readonly ILogger<InteractiveSessionHub> logger;
 
-        public InteractiveSessionHub (IMemoryCache memoryCache)
-            => this.memoryCache = memoryCache;
+        public InteractiveSessionHub (
+            IMemoryCache memoryCache,
+            IHostingEnvironment hostingEnvironment,
+            ILogger<InteractiveSessionHub> logger)
+        {
+            this.memoryCache = memoryCache;
+            this.hostingEnvironment = hostingEnvironment;
+            this.logger = logger;
+        }
 
         public override Task OnConnectedAsync ()
         {
@@ -62,7 +77,20 @@ namespace Xamarin.Interactive.Client.Web.Hubs
             => WorkbookAppInstallation.All;
 
         public IObservable<InteractiveSessionEvent> ObserveSessionEvents ()
-            => GetSession ().Events;
+        {
+            var events = GetSession ().Events;
+
+            if (hostingEnvironment.IsDevelopment ()) {
+                var settings = new Serialization.ExternalInteractiveJsonSerializerSettings ();
+                events.Subscribe (new Observer<InteractiveSessionEvent> (evnt => {
+                    logger.LogDebug (
+                        "posting session event: {0}",
+                        JsonConvert.SerializeObject (evnt, settings));
+                }));
+            }
+
+            return events;
+        }
 
         public Task InitializeSession (InteractiveSessionDescription sessionDescription)
             => GetSession ().InitializeAsync (
@@ -93,6 +121,11 @@ namespace Xamarin.Interactive.Client.Web.Hubs
                 evaluateAll,
                 Context.Connection.ConnectionAbortedToken);
 
+        public void NotifyEvaluationComplete (string targetCodeCellId, EvaluationStatus status)
+            => GetSession ().EvaluationService.NotifyEvaluationComplete (
+                targetCodeCellId,
+                status);
+
         public Task<Hover> GetHover (
             string codeCellId,
             Position position)
@@ -101,13 +134,21 @@ namespace Xamarin.Interactive.Client.Web.Hubs
                 position,
                 Context.Connection.ConnectionAbortedToken);
 
-        public Task<IEnumerable<CompletionItem>> GetCompletions (
+        public async Task<IEnumerable<CompletionItem>> GetCompletions (
             CodeCellId codeCellId,
             Position position)
-            => GetSession ().WorkspaceService.GetCompletionsAsync (
-                codeCellId,
-                position,
-                Context.Connection.ConnectionAbortedToken);
+        {
+            var cancellationToken = Context.Connection.ConnectionAbortedToken;
+
+            try {
+                return await GetSession ().WorkspaceService.GetCompletionsAsync (
+                    codeCellId,
+                    position,
+                    cancellationToken);
+            } catch (TaskCanceledException) when (!cancellationToken.IsCancellationRequested) {
+                return Array.Empty<CompletionItem> ();
+            }
+        }
 
         public Task<SignatureHelp> GetSignatureHelp (
             CodeCellId codeCellId,

@@ -93,7 +93,8 @@ namespace Xamarin.Interactive.PropertyEditor
             var isEnumValue = representation is EnumValue;
             var value = UnpackValue (representation, Editor);
             var valueType = value?.GetType ();
-            var isInterestingValue = valueType != typeof (string) || representation is IRepresentationObject;
+            var isInterestingValue = valueType != typeof (string) ||
+                representation?.GetType ().GetCustomAttribute<Newtonsoft.Json.JsonObjectAttribute> () != null;
 
             if (type == null && isEnumValue)
                 type = valueType;

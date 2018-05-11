@@ -9,8 +9,11 @@ import * as React from 'react'
 import { CodeCellResult } from '../evaluation'
 import {
     ResultRenderer,
-    ResultRendererRepresentation
+    ResultRendererRepresentation,
+    getRepresentationsOfType,
+    getFirstRepresentationOfType
 } from '../rendering'
+import { randomReactKey } from '../utils'
 import {
     Image,
     IImageProps,
@@ -19,17 +22,21 @@ import {
 
 import './ImageRenderer.scss'
 
+const RepresentationName = 'Xamarin.Interactive.Representations.Image'
+
 export default function ImageRendererFactory(result: CodeCellResult) {
-    return result.resultRepresentations &&
-        result.resultRepresentations.some(r => r.$type === "Xamarin.Interactive.Representations.Image")
+    return getFirstRepresentationOfType(result, RepresentationName)
         ? new ImageRenderer
         : null
 }
 
-interface ImageValue {
+interface ImageData {
     $type: string
     format: string
-    data: string
+    data: {
+        $type: 'System.Byte[]'
+        $value: string
+    }
     width: number
     height: number
     scale: number
@@ -37,24 +44,18 @@ interface ImageValue {
 
 class ImageRenderer implements ResultRenderer {
     getRepresentations(result: CodeCellResult) {
-        const reps: ResultRendererRepresentation[] = []
+        const reps = []
 
-        if (!result.resultRepresentations)
-            return reps
-
-        for (const value of result.resultRepresentations) {
-            if (value.$type !== "Xamarin.Interactive.Representations.Image")
-                continue
-
-            const image = (value as ImageValue)
-            if (!image.format)
+        for (const image of getRepresentationsOfType<ImageData>(result, RepresentationName)) {
+            if (!image.format || !image.data)
                 continue;
 
             reps.push({
+                key: randomReactKey(),
                 displayName: 'Image',
                 component: ImageRepresentation,
                 componentProps: {
-                    value: "Image",
+                    value: 'Image',
                     image: image
                 }
             })
@@ -64,7 +65,7 @@ class ImageRenderer implements ResultRenderer {
     }
 }
 
-class ImageRepresentation extends React.Component<{ value: string, image: ImageValue }> {
+class ImageRepresentation extends React.Component<{ value: string, image: ImageData }> {
     render() {
         const image = this.props.image;
         const size = image.width > 0 ? { width: image.width, height: image.height} : {}
@@ -72,7 +73,9 @@ class ImageRepresentation extends React.Component<{ value: string, image: ImageV
             imageFit: ImageFit.contain,
             maximizeFrame: true
         }
-        const src = image.format === "uri" ? atob(image.data) : `data:${image.format};base64,${image.data}`
+        const src = image.format === 'Uri'
+            ? atob(image.data.$value)
+            : `data:${image.format};base64,${image.data.$value}`
 
         // FIXME: Fabric's <Image> is causing some strange clipping with at least SVG
         // return <Image src={src} {...imageProps} {...size} />

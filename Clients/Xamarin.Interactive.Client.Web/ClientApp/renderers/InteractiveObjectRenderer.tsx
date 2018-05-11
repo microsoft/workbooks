@@ -4,7 +4,9 @@
 //
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
+
 import * as React from 'react'
+import { randomReactKey } from '../utils'
 import { CodeCellResult } from '../evaluation';
 import { ResultRenderer, ResultRendererRepresentation } from '../rendering'
 
@@ -34,6 +36,7 @@ class InteractiveObjectRenderer implements ResultRenderer {
             const interactiveObject = value as InteractiveObjectValue;
 
             reps.push({
+                key: randomReactKey(),
                 displayName: 'Object Properties',
                 component: InteractiveObjectRepresentation,
                 componentProps: {

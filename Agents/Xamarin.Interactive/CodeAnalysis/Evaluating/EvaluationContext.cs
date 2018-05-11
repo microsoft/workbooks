@@ -69,8 +69,8 @@ namespace Xamarin.Interactive.CodeAnalysis.Evaluating
                 .Concat (compilation.References ?? new AssemblyDefinition [] { }))
                 Host.LoadExternalDependencies (null, assembly?.ExternalDependencies);
 
+            var status = EvaluationStatus.Success;
             Exception evaluationException = null;
-            ExceptionNode evaluationExceptionToReturn = null;
 
             var inFlight = EvaluationInFlight.Create (compilation);
 
@@ -91,7 +91,6 @@ namespace Xamarin.Interactive.CodeAnalysis.Evaluating
             currentRunThread.CurrentUICulture = InteractiveCulture.CurrentUICulture;
 
             initializedIntegration = false;
-            var interrupted = false;
 
             try {
                 // We _only_ want to capture exceptions from user-code here but
@@ -103,22 +102,20 @@ namespace Xamarin.Interactive.CodeAnalysis.Evaluating
                 stopwatch.Start ();
                 inFlight = inFlight.With (originalValue: await CoreEvaluateAsync (compilation, cancellationToken));
             } catch (AggregateException e) when (e.InnerExceptions?.Count == 1) {
-                evaluationException = e;
                 // the Roslyn-emitted script delegates are async, so all exceptions
                 // raised within a delegate should be AggregateException; if there's
                 // just one inner exception, unwind it since the async nature of the
                 // script delegates is a REPL implementation detail.
-                evaluationExceptionToReturn = ExceptionNode.Create (e.InnerExceptions [0]);
+                evaluationException = e.InnerExceptions [0];
             } catch (ThreadAbortException e) {
                 evaluationException = e;
-                interrupted = true;
+                status = EvaluationStatus.Interrupted;
                 Thread.ResetAbort ();
             } catch (ThreadInterruptedException e) {
                 evaluationException = e;
-                interrupted = true;
+                status = EvaluationStatus.Interrupted;
             } catch (Exception e) {
                 evaluationException = e;
-                evaluationExceptionToReturn = ExceptionNode.Create (e);
             } finally {
                 stopwatch.Stop ();
                 currentRunThread = null;
@@ -131,20 +128,32 @@ namespace Xamarin.Interactive.CodeAnalysis.Evaluating
                 Console.SetError (savedStderr);
             }
 
+            var resultHandling = EvaluationResultHandling.Replace;
+            object result;
+
+            if (evaluationException == null) {
+                result = inFlight.OriginalValue;
+
+                if (status == EvaluationStatus.Interrupted || (result == null && !compilation.IsResultAnExpression))
+                    resultHandling = EvaluationResultHandling.Ignore;
+            } else if (status == EvaluationStatus.Interrupted) {
+                result = null;
+            } else {
+                result = evaluationException;
+                status = EvaluationStatus.EvaluationException;
+            }
+
             var evaluation = new Evaluation (
                 compilation.CodeCellId,
-                interrupted || (inFlight.OriginalValue == null && !compilation.IsResultAnExpression)
-                    ? EvaluationResultHandling.Ignore
-                    : EvaluationResultHandling.Replace,
+                status,
+                resultHandling,
                 // an exception in the call to Prepare should not be explicitly caught
                 // here (see above) since it'll be handled at a higher level and can be
                 // flagged as being a bug in our code since this method should never throw.
-                Host.RepresentationManager.Prepare (inFlight.OriginalValue),
-                evaluationExceptionToReturn,
+                Host.RepresentationManager.Prepare (result),
                 stopwatch.Elapsed,
                 InteractiveCulture.CurrentCulture.LCID,
                 InteractiveCulture.CurrentUICulture.LCID,
-                interrupted,
                 initializedIntegration,
                 loadedAssemblies.ToArray ());
 

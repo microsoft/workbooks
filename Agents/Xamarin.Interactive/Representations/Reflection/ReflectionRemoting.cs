@@ -14,15 +14,18 @@ using System.Security;
 using System.Text;
 using System.Text.RegularExpressions;
 
+using Newtonsoft.Json;
+
 using Xamarin.Interactive.Core;
 
 namespace Xamarin.Interactive.Representations.Reflection
 {
-    interface IReflectionRemotingVisitor
+    public interface IReflectionRemotingVisitor
     {
         void VisitExceptionNode (ExceptionNode exception);
         void VisitStackTrace (StackTrace stackTrace);
         void VisitStackFrame (StackFrame stackFrame);
+        void VisitTypeNode (TypeNode type);
         void VisitMethod (Method method);
         void VisitProperty (Property property);
         void VisitField (Field field);
@@ -30,81 +33,52 @@ namespace Xamarin.Interactive.Representations.Reflection
         void VisitTypeSpec (TypeSpec typeSpec);
     }
 
-    class CSharpWriter : IReflectionRemotingVisitor
+    public class CSharpWriter : IReflectionRemotingVisitor
     {
         public class TokenWriter
         {
             readonly TextWriter writer;
 
             public TokenWriter (TextWriter writer)
-            {
-                if (writer == null)
-                    throw new ArgumentNullException (nameof (writer));
-
-                this.writer = writer;
-            }
+                => this.writer = writer
+                    ?? throw new ArgumentNullException (nameof (writer));
 
             public virtual void WriteKeyword (string keyword)
-            {
-                writer.Write (keyword);
-            }
+                => writer.Write (keyword);
 
             public virtual void WriteNamespace (string @namespace)
-            {
-                writer.Write (@namespace);
-            }
+                => writer.Write (@namespace);
 
             public virtual void WriteMemberName (string memberName)
-            {
-                writer.Write (memberName);
-            }
+                => writer.Write (memberName);
 
             public virtual void WriteParameterName (string parameterName)
-            {
-                writer.Write (parameterName);
-            }
+                => writer.Write (parameterName);
 
             public virtual void WriteTypeName (string typeName)
-            {
-                writer.Write (typeName);
-            }
+                => writer.Write (typeName);
 
             public virtual void WriteTypeModifier (string modifier)
-            {
-                writer.Write (modifier);
-            }
+                => writer.Write (modifier);
 
             public virtual void Write (char c)
-            {
-                writer.Write (c);
-            }
+                => writer.Write (c);
 
             public virtual void Write (int n)
-            {
-                writer.Write (n);
-            }
+                => writer.Write (n);
 
             public virtual void Write (string s, params object [] formatArgs)
-            {
-                writer.Write (s, formatArgs);
-            }
+                => writer.Write (s, formatArgs);
 
             public virtual void WriteLine (string s, params object [] formatArgs)
-            {
-                writer.WriteLine (s, formatArgs);
-            }
+                => writer.WriteLine (s, formatArgs);
 
             public virtual void WriteLine ()
-            {
-                writer.WriteLine ();
-            }
+                => writer.WriteLine ();
         }
 
         readonly TokenWriter writer;
-
-        protected TokenWriter Writer {
-            get { return writer; }
-        }
+        protected TokenWriter Writer => writer;
 
         public bool WriteLanguageKeywords { get; set; }
         public bool WriteTypeBeforeMemberName { get; set; } = true;
@@ -198,6 +172,10 @@ namespace Xamarin.Interactive.Representations.Reflection
             } else
                 writer.WriteLine ("<0x{0:x5} + 0x{1:x5}> <unknown method>",
                     stackFrame.NativeAddress, stackFrame.NativeOffset);
+        }
+
+        public virtual void VisitTypeNode (TypeNode type)
+        {
         }
 
         public virtual void VisitMethod (Method method)
@@ -294,7 +272,7 @@ namespace Xamarin.Interactive.Representations.Reflection
             if (parameter.IsOut) {
                 writer.WriteKeyword ("out");
                 writer.Write (' ');
-            } else if (parameter.Type.IsByRef) {
+            } else if (parameter.Type.IsByRef ()) {
                 writer.WriteKeyword ("ref");
                 writer.Write (' ');
             }
@@ -308,24 +286,41 @@ namespace Xamarin.Interactive.Representations.Reflection
         }
 
         public virtual void VisitDeclaringTypeSpec (TypeSpec typeSpec)
-        {
-            VisitTypeSpec (typeSpec, true);
-        }
+            => VisitTypeSpec (typeSpec, true);
 
         public void VisitTypeSpec (TypeSpec typeSpec)
-        {
-            VisitTypeSpec (typeSpec, true);
-        }
+            => VisitTypeSpec (typeSpec, true);
 
         public virtual void VisitTypeSpec (TypeSpec typeSpec, bool writeByRefModifier)
         {
             WriteTypeName (typeSpec);
 
-            foreach (var modifier in typeSpec.Modifiers)
-                writer.WriteTypeModifier (modifier.ToString ());
+            if (typeSpec.Modifiers == null)
+                return;
 
-            if (typeSpec.IsByRef && writeByRefModifier)
-                writer.WriteTypeModifier ("&");
+            foreach (var modifier in typeSpec.Modifiers) {
+                switch (modifier) {
+                case TypeSpec.Modifier.Pointer:
+                    writer.WriteTypeModifier ("*");
+                    break;
+                case TypeSpec.Modifier.ByRef:
+                    if (writeByRefModifier)
+                        writer.WriteTypeModifier ("&");
+                    break;
+                case TypeSpec.Modifier.BoundArray:
+                    writer.WriteTypeModifier ("[*]");
+                    break;
+                default:
+                    var rank = (byte)modifier;
+                    if (rank >= 1 && rank <= 32)
+                        writer.WriteTypeModifier ($"[{new string(',', rank - 1)}]");
+                    else
+                        throw new ArgumentOutOfRangeException (
+                            $"invalid modifier: {modifier}",
+                            nameof (typeSpec));
+                    break;
+                }
+            }
         }
 
         void WriteTypeName (TypeSpec typeSpec)
@@ -384,7 +379,7 @@ namespace Xamarin.Interactive.Representations.Reflection
             int typeNamesConsumed = 0;
             int typeArgIndex = 0;
 
-            foreach (var name in typeSpec.AllNames) {
+            foreach (var name in typeSpec.GetAllNames ()) {
                 if (!name.Name.StartsWith ("🐵", StringComparison.Ordinal)) {
                     if (typeNamesConsumed++ > 0)
                         writer.Write ('.');
@@ -408,8 +403,7 @@ namespace Xamarin.Interactive.Representations.Reflection
         }
     }
 
-    [Serializable]
-    abstract class Node
+    public abstract class Node
     {
         internal Node ()
         {
@@ -418,31 +412,33 @@ namespace Xamarin.Interactive.Representations.Reflection
         public abstract void AcceptVisitor (IReflectionRemotingVisitor visitor);
     }
 
-    [Serializable]
-    sealed class ExceptionNode : Node
+    [JsonObject]
+    public sealed class TypeNode : Node
     {
-        public TypeSpec Type { get; set; }
-        public string Message { get; set; }
-        public StackTrace StackTrace { get; set; }
-        public ExceptionNode InnerException { get; set; }
+        public TypeSpec TypeName { get; }
+        public IReadOnlyList<ITypeMember> Members { get; }
 
-        public static ExceptionNode Create (Exception exception)
+        [JsonConstructor]
+        public TypeNode (
+            TypeSpec typeName,
+            IReadOnlyList<ITypeMember> members)
         {
-            if (exception == null)
+            TypeName = typeName;
+            Members = members;
+        }
+
+        public static TypeNode Create (Type type)
+        {
+            if (type == null)
                 return null;
 
-            return new ExceptionNode {
-                Type = TypeSpec.Parse (exception.GetType ()),
-                Message = exception.Message,
-                InnerException = ExceptionNode.Create (exception.InnerException),
-                StackTrace = StackTrace.Create (new System.Diagnostics.StackTrace (exception, true))
-            };
+            return new TypeNode (
+                TypeSpec.Create (type),
+                null);
         }
 
         public override void AcceptVisitor (IReflectionRemotingVisitor visitor)
-        {
-            visitor.VisitExceptionNode (this);
-        }
+            => visitor.VisitTypeNode (this);
 
         public override string ToString ()
         {
@@ -452,107 +448,157 @@ namespace Xamarin.Interactive.Representations.Reflection
         }
     }
 
-    [Serializable]
-    sealed class StackTrace : Node
+    [JsonObject]
+    public sealed class ExceptionNode : Node
     {
-        StackFrame [] frames;
-        public IReadOnlyList<StackFrame> Frames {
-            get { return frames; }
-        }
+        public TypeSpec Type { get; }
+        public string Message { get; }
+        public StackTrace StackTrace { get; }
+        public ExceptionNode InnerException { get; }
 
-        StackTrace [] capturedTraces;
-        public IReadOnlyList<StackTrace> CapturedTraces {
-            get { return capturedTraces; }
-        }
-
-        public static StackTrace Create (System.Diagnostics.StackTrace trace)
+        [JsonConstructor]
+        public ExceptionNode (
+            TypeSpec type,
+            string message,
+            StackTrace stackTrace,
+            ExceptionNode innerException)
         {
-            return new StackTrace {
-                frames = trace.GetFrames ()?.Select (StackFrame.Create)?.ToArray (),
-                capturedTraces = trace.GetCapturedTraces ()?.Select (StackTrace.Create)?.ToArray ()
-            };
+            Type = type;
+            Message = message;
+            StackTrace = stackTrace;
+            InnerException = innerException;
+        }
+
+        public static ExceptionNode Create (Exception exception)
+        {
+            if (exception == null)
+                return null;
+
+            return new ExceptionNode (
+                TypeSpec.Create (exception.GetType ()),
+                exception.Message,
+                StackTrace.Create (new System.Diagnostics.StackTrace (exception, true)),
+                ExceptionNode.Create (exception.InnerException));
         }
 
         public override void AcceptVisitor (IReflectionRemotingVisitor visitor)
-        {
-            visitor.VisitStackTrace (this);
-        }
+            => visitor.VisitExceptionNode (this);
 
-        public StackTrace WithFramesAndCapturedTraces (IEnumerable<StackFrame> frames,
-            IEnumerable<StackTrace> capturedTraces)
+        public override string ToString ()
         {
-            return new StackTrace {
-                frames = frames?.ToArray (),
-                capturedTraces = capturedTraces?.ToArray ()
-            };
-        }
-
-        public StackTrace WithFrames (IEnumerable<StackFrame> frames)
-        {
-            return new StackTrace {
-                frames = frames?.ToArray (),
-                capturedTraces = this.capturedTraces?.ToArray ()
-            };
-        }
-
-        public StackTrace WithCapturedTraces (IEnumerable<StackTrace> capturedTraces)
-        {
-            return new StackTrace {
-                frames = this.frames?.ToArray (),
-                capturedTraces = capturedTraces?.ToArray ()
-            };
+            var writer = new StringWriter ();
+            AcceptVisitor (new CSharpWriter (writer));
+            return writer.ToString ();
         }
     }
 
-    [Serializable]
-    sealed class StackFrame : Node
+    [JsonObject]
+    public sealed class StackTrace : Node
     {
-        public string FileName { get; set; }
-        public int Line { get; set; }
-        public int Column { get; set; }
-        public int ILOffset { get; set; }
-        public ITypeMember Member { get; set; }
-        public Method InternalMethod { get; set; }
-        public int NativeOffset { get; set; }
-        public long NativeAddress { get; set; }
-        public uint MethodIndex { get; set; }
-        public bool IsTaskAwaiter { get; set; }
+        public IReadOnlyList<StackFrame> Frames { get; }
+        public IReadOnlyList<StackTrace> CapturedTraces { get; }
+
+        [JsonConstructor]
+        public StackTrace (
+            IReadOnlyList<StackFrame> frames,
+            IReadOnlyList<StackTrace> capturedTraces)
+        {
+            Frames = frames;
+            CapturedTraces = capturedTraces;
+        }
+
+        public static StackTrace Create (System.Diagnostics.StackTrace trace)
+            => new StackTrace (
+                trace.GetFrames ()?.Select (StackFrame.Create)?.ToArray (),
+                trace.GetCapturedTraces ()?.Select (StackTrace.Create)?.ToArray ());
+
+        public override void AcceptVisitor (IReflectionRemotingVisitor visitor)
+            => visitor.VisitStackTrace (this);
+
+        public StackTrace WithFrames (IEnumerable<StackFrame> frames)
+            => new StackTrace (frames?.ToArray (), CapturedTraces);
+
+        public StackTrace WithCapturedTraces (IEnumerable<StackTrace> capturedTraces)
+            => new StackTrace (Frames, capturedTraces?.ToArray ());
+    }
+
+    [JsonObject]
+    public sealed class StackFrame : Node
+    {
+        public string FileName { get; }
+        public int Line { get; }
+        public int Column { get; }
+        public int ILOffset { get; }
+        public int NativeOffset { get; }
+        public long NativeAddress { get; }
+        public uint MethodIndex { get; }
+        public bool IsTaskAwaiter { get; }
+        public Method InternalMethod { get; }
+        public ITypeMember Member { get; }
+
+        [JsonConstructor]
+        public StackFrame (
+            string fileName,
+            int line,
+            int column,
+            int ilOffset,
+            int nativeOffset,
+            long nativeAddress,
+            uint methodIndex,
+            bool isTaskAwaiter,
+            Method internalMethod,
+            ITypeMember member)
+        {
+            FileName = fileName;
+            Line = line;
+            Column = column;
+            ILOffset = ilOffset;
+            NativeOffset = nativeOffset;
+            NativeAddress = nativeAddress;
+            MethodIndex = methodIndex;
+            IsTaskAwaiter = isTaskAwaiter;
+            InternalMethod = internalMethod;
+            Member = member;
+        }
 
         public static StackFrame Create (System.Diagnostics.StackFrame frame)
         {
             if (frame == null)
                 return null;
 
-            var frameNode = new StackFrame {
-                Line = frame.GetFileLineNumber (),
-                Column = frame.GetFileColumnNumber (),
-                ILOffset = frame.GetILOffset (),
-                NativeOffset = frame.GetNativeOffset (),
-                NativeAddress = frame.GetMethodAddress (),
-                InternalMethod = ParseInternalMethodName (frame.GetInternalMethodName ()),
-                MethodIndex = frame.GetMethodIndex ()
-            };
+            string fileName = null;
+            bool isTaskAwaiter = false;
+            ITypeMember member = null;
 
             try {
-                frameNode.FileName = frame.GetFileName ();
+                fileName = frame.GetFileName ();
             } catch (SecurityException) {
                 // CAS check failure
             }
 
             var method = frame.GetMethod ();
-            if (method == null)
-                return frameNode;
+            if (method != null) {
+                isTaskAwaiter = method.DeclaringType.IsTaskAwaiter () ||
+                    method.DeclaringType.DeclaringType.IsTaskAwaiter ();
 
-            frameNode.IsTaskAwaiter = method.DeclaringType.IsTaskAwaiter () ||
-                method.DeclaringType.DeclaringType.IsTaskAwaiter ();
+                var property = GetPropertyForMethodAccessor (method);
+                if (property != null)
+                    member = Property.Create (property);
+                else
+                    member = Method.Create (method);
+            }
 
-            var property = GetPropertyForMethodAccessor (method);
-            if (property != null)
-                frameNode.Member = Property.Create (property);
-            else
-                frameNode.Member = Method.Create (method);
-
-            return frameNode;
+            return new StackFrame (
+                fileName,
+                frame.GetFileLineNumber (),
+                frame.GetFileColumnNumber (),
+                frame.GetILOffset (),
+                frame.GetNativeOffset (),
+                frame.GetMethodAddress (),
+                frame.GetMethodIndex (),
+                isTaskAwaiter,
+                ParseInternalMethodName (frame.GetInternalMethodName ()),
+                member);
         }
 
         static readonly Regex wrapperMethodPreamble = new Regex (@"^\(wrapper ([a-z\-]+)\) ");
@@ -563,10 +609,14 @@ namespace Xamarin.Interactive.Representations.Reflection
             if (name == null)
                 return null;
 
-            var method = new Method ();
+            string methodName = null;
+            string methodWrapperType = null;
+            List<Parameter> methodParameters = null;
+            TypeSpec methodReturnType = null;
+            TypeSpec methodDeclaringType = null;
 
             name = wrapperMethodPreamble.Replace (name, ev => {
-                method.WrapperType = ev.Groups [1].Value;
+                methodWrapperType = ev.Groups [1].Value;
                 return String.Empty;
             });
 
@@ -575,14 +625,14 @@ namespace Xamarin.Interactive.Representations.Reflection
 
             for (int i = 0; i < name.Length; i++) {
                 var c = name [i];
-                if (method.DeclaringType == null && c == ':') {
-                    method.DeclaringType = TypeSpec.Parse (builder.ToString ());
+                if (methodDeclaringType == null && c == ':') {
+                    methodDeclaringType = TypeSpec.Parse (builder.ToString ());
                     builder.Clear ();
-                } else if (method.DeclaringType != null && method.Name == null && c == '(') {
-                    method.Name = builder.ToString ().Trim ();
+                } else if (methodDeclaringType != null && methodName == null && c == '(') {
+                    methodName = builder.ToString ().Trim ();
                     builder.Clear ();
                 } else if ((c == ',' && depth == 0) || (i == name.Length - 1 && c == ')')) {
-                    var typeSpec = TypeSpec.Parse (builder.ToString ().Trim ());
+                    var typeSpec = TypeSpec.ParseBuilder (builder.ToString ().Trim ());
                     // mono_method_get_name_full writes C# keywords, so
                     // we need to translate them back to full type names
                     switch (typeSpec.Name.ToString ()) {
@@ -639,12 +689,12 @@ namespace Xamarin.Interactive.Representations.Reflection
                         break;
                     }
 
-                    if (method.ReturnType == null)
-                        method.ReturnType = typeSpec;
-                    else {
-                        if (method.Parameters == null)
-                            method.Parameters = new List<Parameter> ();
-                        method.Parameters.Add (new Parameter { Type = typeSpec });
+                    if (methodReturnType == null) {
+                        methodReturnType = typeSpec.Build ();
+                    } else {
+                        if (methodParameters == null)
+                            methodParameters = new List<Parameter> ();
+                        methodParameters.Add (new Parameter (typeSpec.Build ()));
                     }
                     builder.Clear ();
                 } else {
@@ -656,10 +706,16 @@ namespace Xamarin.Interactive.Representations.Reflection
                 }
             }
 
-            if (method.Name == null)
+            if (methodName == null)
                 return null;
 
-            return method;
+            return new Method (
+                methodName,
+                methodWrapperType,
+                methodDeclaringType,
+                methodReturnType,
+                null,
+                methodParameters);
         }
 
         static PropertyInfo GetPropertyForMethodAccessor (MethodBase method)
@@ -680,167 +736,219 @@ namespace Xamarin.Interactive.Representations.Reflection
         }
 
         public override void AcceptVisitor (IReflectionRemotingVisitor visitor)
-        {
-            visitor.VisitStackFrame (this);
-        }
+            => visitor.VisitStackFrame (this);
     }
 
-    interface ITypeMember
+    public interface ITypeMember
     {
         TypeSpec DeclaringType { get; }
         string Name { get; }
         void AcceptVisitor (IReflectionRemotingVisitor visitor);
     }
 
-    static class TypeMember
+    public static class TypeMember
     {
         public static ITypeMember Create (MemberInfo memberInfo)
         {
-            if (memberInfo is MethodBase)
-                return Method.Create ((MethodBase)memberInfo);
-
-            if (memberInfo is PropertyInfo)
-                return Property.Create ((PropertyInfo)memberInfo);
-
-            if (memberInfo is FieldInfo)
-                return Field.Create ((FieldInfo)memberInfo);
+            switch (memberInfo) {
+            case MethodBase methodBase:
+                return Method.Create (methodBase);
+            case PropertyInfo propertyInfo:
+                return Property.Create (propertyInfo);
+            case FieldInfo fieldInfo:
+                return Field.Create (fieldInfo);
+            }
 
             throw new ArgumentException (
-                $"cannot convert {memberInfo.GetType()} to ITypeMember", nameof(memberInfo));
+                $"cannot convert {memberInfo.GetType()} to {nameof (ITypeMember)}", nameof(memberInfo));
         }
     }
 
-    [Serializable]
-    sealed class Parameter : Node
+    [JsonObject]
+    public sealed class Parameter : Node
     {
-        public string Name { get; set; }
-        public TypeSpec Type { get; set; }
-        public bool IsOut { get; set; }
-        public bool IsRetval { get; set; }
-        public bool HasDefaultValue { get; set; }
-        public object DefaultValue { get; set; }
+        public string Name { get; }
+        public TypeSpec Type { get; }
+        public bool IsOut { get; }
+        public bool IsRetval { get; }
+        public bool HasDefaultValue { get; }
+        public object DefaultValue { get; }
+
+        [JsonConstructor]
+        public Parameter (
+            TypeSpec type,
+            string name = default,
+            bool isOut = default,
+            bool isRetval = default,
+            bool hasDefaultValue = default,
+            object defaultValue = default)
+        {
+            Name = name;
+            Type = type;
+            IsOut = isOut;
+            IsRetval = isRetval;
+            HasDefaultValue = hasDefaultValue;
+            DefaultValue = defaultValue;
+        }
 
         public static Parameter Create (ParameterInfo parameter)
         {
             if (parameter == null)
                 return null;
 
-            return new Parameter {
-                Name = parameter.Name,
-                Type = TypeSpec.Parse (parameter.ParameterType),
-                IsOut = parameter.IsOut,
-                IsRetval = parameter.IsRetval,
-                HasDefaultValue = parameter.HasDefaultValue,
+            return new Parameter (
+                TypeSpec.Create (parameter.ParameterType),
+                parameter.Name,
+                parameter.IsOut,
+                parameter.IsRetval,
+                parameter.HasDefaultValue,
                 // DefaultValue can be DBNull when HasDefaultValue is false. We should avoid
                 // serializing that type as it is not serializable in .NET Core 2.0. In general,
                 // there is no need to serialize whatever is in DefaultValue in this case.
-                DefaultValue = parameter.HasDefaultValue ? parameter.DefaultValue : null
-            };
+                parameter.HasDefaultValue
+                    ? parameter.DefaultValue
+                    : null);
         }
 
         public override void AcceptVisitor (IReflectionRemotingVisitor visitor)
-        {
-            visitor.VisitParameter (this);
-        }
+            => visitor.VisitParameter (this);
     }
 
-    [Serializable]
-    sealed class Method : Node, ITypeMember
+    [JsonObject]
+    public sealed class Method : Node, ITypeMember
     {
-        public string Name { get; set; }
-        public string WrapperType { get; set; }
-        public TypeSpec DeclaringType { get; set; }
-        public TypeSpec ReturnType { get; set; }
-        public List<TypeSpec> TypeArguments { get; set; }
-        public List<Parameter> Parameters { get; set; }
+        public string Name { get; }
+        public string WrapperType { get; }
+        public TypeSpec DeclaringType { get; }
+        public TypeSpec ReturnType { get; }
+        public IReadOnlyList<TypeSpec> TypeArguments { get; }
+        public IReadOnlyList<Parameter> Parameters { get; }
+
+        [JsonConstructor]
+        public Method (
+            string name,
+            string wrapperType,
+            TypeSpec declaringType,
+            TypeSpec returnType,
+            IReadOnlyList<TypeSpec> typeArguments,
+            IReadOnlyList<Parameter> parameters)
+        {
+            Name = name;
+            WrapperType = wrapperType;
+            DeclaringType = declaringType;
+            ReturnType = returnType;
+            TypeArguments = typeArguments;
+            Parameters = parameters;
+        }
 
         public static Method Create (MethodBase method)
         {
             if (method == null)
                 return null;
 
-            var methodNode = new Method {
-                Name = method.Name,
-                DeclaringType = TypeSpec.Parse (method.DeclaringType)
-            };
+            TypeSpec returnType = null;
+            if (method is MethodInfo methodInfo)
+                returnType = TypeSpec.Create (methodInfo.ReturnType);
 
-            var methodInfo = method as MethodInfo;
-            if (methodInfo != null)
-                methodNode.ReturnType = TypeSpec.Parse (methodInfo.ReturnType);
-
+            List<TypeSpec> typeArguments = null;
             if (method.IsGenericMethod)
-                methodNode.TypeArguments = method
+                typeArguments = method
                     .GetGenericArguments ()
-                    .Select (t => TypeSpec.Parse (t))
+                    .Select (t => TypeSpec.Create (t))
                     .ToListOrNullIfEmpty ();
 
-            var parameters = method.GetParameters ();
-            if (parameters?.Length > 0)
-                methodNode.Parameters = parameters.Select (Parameter.Create).ToListOrNullIfEmpty ();
-
-            return methodNode;
+            return new Method (
+                method.Name,
+                null,
+                TypeSpec.Create (method.DeclaringType),
+                returnType,
+                typeArguments,
+                method
+                    .GetParameters ()
+                    ?.Select (Parameter.Create)
+                    .ToListOrNullIfEmpty ());
         }
 
         public override void AcceptVisitor (IReflectionRemotingVisitor visitor)
-        {
-            visitor.VisitMethod (this);
-        }
+            => visitor.VisitMethod (this);
     }
 
-    [Serializable]
-    sealed class Field : Node, ITypeMember
+    [JsonObject]
+    public sealed class Field : Node, ITypeMember
     {
-        public string Name { get; set; }
-        public TypeSpec DeclaringType { get; set; }
-        public TypeSpec FieldType { get; set; }
-        public FieldAttributes Attributes { get; set; }
+        public string Name { get; }
+        public TypeSpec DeclaringType { get; }
+        public TypeSpec FieldType { get; }
+        public FieldAttributes Attributes { get; }
+
+        [JsonConstructor]
+        public Field (
+            string name,
+            TypeSpec declaringType,
+            TypeSpec fieldType,
+            FieldAttributes attributes)
+        {
+            Name = name;
+            DeclaringType = declaringType;
+            FieldType = fieldType;
+            Attributes = attributes;
+        }
 
         public static Field Create (FieldInfo field)
         {
             if (field == null)
                 return null;
 
-            return new Field {
-                Name = field.Name,
-                DeclaringType = TypeSpec.Parse (field.DeclaringType),
-                FieldType = TypeSpec.Parse (field.FieldType),
-                Attributes = field.Attributes
-            };
+            return new Field (
+                field.Name,
+                TypeSpec.Create (field.DeclaringType),
+                TypeSpec.Create (field.FieldType),
+                field.Attributes);
         }
 
         public override void AcceptVisitor (IReflectionRemotingVisitor visitor)
-        {
-            visitor.VisitField (this);
-        }
+            => visitor.VisitField (this);
     }
 
-    [Serializable]
-    sealed class Property : Node, ITypeMember
+    [JsonObject]
+    public sealed class Property : Node, ITypeMember
     {
-        public string Name { get; set; }
-        public TypeSpec DeclaringType { get; set; }
-        public TypeSpec PropertyType { get; set; }
-        public Method Getter { get; set; }
-        public Method Setter { get; set; }
+        public string Name { get; }
+        public TypeSpec DeclaringType { get; }
+        public TypeSpec PropertyType { get; }
+        public Method Getter { get; }
+        public Method Setter { get; }
+
+        [JsonConstructor]
+        public Property (
+            string name,
+            TypeSpec declaringType,
+            TypeSpec propertyType,
+            Method getter,
+            Method setter)
+        {
+            Name = name;
+            DeclaringType = declaringType;
+            PropertyType = propertyType;
+            Getter = getter;
+            Setter = setter;
+        }
 
         public static Property Create (PropertyInfo property)
         {
             if (property == null)
                 return null;
 
-            return new Property {
-                Name = property.Name,
-                DeclaringType = TypeSpec.Parse (property.DeclaringType),
-                PropertyType = TypeSpec.Parse (property.PropertyType),
-                Getter = Method.Create (property.GetGetMethod (true)),
-                Setter = Method.Create (property.GetSetMethod (true))
-            };
+            return new Property (
+                property.Name,
+                TypeSpec.Create (property.DeclaringType),
+                TypeSpec.Create (property.PropertyType),
+                Method.Create (property.GetGetMethod (true)),
+                Method.Create (property.GetSetMethod (true)));
         }
 
         public override void AcceptVisitor (IReflectionRemotingVisitor visitor)
-        {
-            visitor.VisitProperty (this);
-        }
+            => visitor.VisitProperty (this);
     }
 
     static class EnumerableExtensions
