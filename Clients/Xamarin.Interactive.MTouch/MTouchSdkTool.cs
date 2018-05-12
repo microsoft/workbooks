@@ -28,6 +28,7 @@ namespace Xamarin.Interactive.MTouch
         const string XamarinStudioMlaunchPath = "/Applications/Xamarin Studio.app/Contents/Resources/lib/monodevelop/" +
             "AddIns/MonoDevelop.IPhone/mlaunch.app/Contents/MacOS/mlaunch";
         const string XamariniOSMlaunchPath = "/Library/Frameworks/Xamarin.iOS.framework/Versions/Current/bin/mlaunch";
+        const string DefaultSdkRoot = "/Applications/Xcode.app/Contents/Developer";
 
         public static readonly Version RequiredMinimumXcodeVersion = new Version (9, 0);
 
@@ -68,7 +69,8 @@ namespace Xamarin.Interactive.MTouch
 
         public static string GetXcodeSdkRoot ()
         {
-            var sdkRoot = GetXamarinStudioXcodeSdkRoot () ?? GetXcodeSelectXcodeSdkRoot ();
+            // Mimicking VSmac behavior, xcode-select is checked last
+            var sdkRoot = GetXamarinStudioXcodeSdkRoot () ?? GetDefaultXCodeSdkRoot () ?? GetXcodeSelectXcodeSdkRoot ();
             if (sdkRoot == null)
                 throw new Exception (Catalog.SharedStrings.XcodeNotFoundMessage);
             return sdkRoot;
@@ -91,6 +93,9 @@ namespace Xamarin.Interactive.MTouch
                 return null;
             }
         }
+
+        static string GetDefaultXCodeSdkRoot ()
+            => Directory.Exists (DefaultSdkRoot) ? DefaultSdkRoot : null;
 
         static string GetXcodeSelectXcodeSdkRoot ()
         {
