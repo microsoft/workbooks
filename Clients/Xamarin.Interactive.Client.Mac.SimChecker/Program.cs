@@ -14,6 +14,18 @@ using System.Threading.Tasks;
 using Xamarin.Interactive.Logging;
 using Xamarin.Interactive.MTouch;
 
+// Define these for LogEntry since we do not actually need Newtonsoft.Json in simchecker.
+namespace Newtonsoft.Json
+{
+    sealed class JsonObjectAttribute : Attribute
+    {
+    }
+
+    sealed class JsonConstructorAttribute : Attribute
+    {
+    }
+}
+
 namespace Xamarin.Interactive.Mac.SimChecker
 {
     public class Program

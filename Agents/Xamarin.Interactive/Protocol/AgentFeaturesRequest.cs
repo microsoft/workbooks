@@ -14,6 +14,11 @@ namespace Xamarin.Interactive.Protocol
     [JsonObject]
     sealed class AgentFeaturesRequest : MainThreadRequest<AgentFeatures>
     {
+        [JsonConstructor]
+        public AgentFeaturesRequest ()
+        {
+        }
+
         protected override Task<AgentFeatures> HandleAsync (Agent agent)
             => Task.FromResult(new AgentFeatures (agent
                 .ViewHierarchyHandlerManager
