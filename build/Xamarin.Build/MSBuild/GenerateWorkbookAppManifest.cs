@@ -31,6 +31,7 @@ namespace Xamarin.MSBuild
         public string AppPath { get; set; }
 
         public string AppManagerAssembly { get; set; }
+        public string AgentTicketAssembly { get; set; }
 
         public string [] AssemblySearchPaths { get; set; }
 
@@ -102,6 +103,7 @@ namespace Xamarin.MSBuild
                     icon = Icon,
                     appPath = Pathify (AppPath),
                     appManagerAssembly = Pathify (AppManagerAssembly),
+                    agentTicketAssembly = Pathify (AgentTicketAssembly),
                     sdk = new {
                         name = SdkName,
                         profile = SdkProfile,

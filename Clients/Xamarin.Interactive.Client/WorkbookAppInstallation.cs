@@ -36,9 +36,33 @@ namespace Xamarin.Interactive
             typeof (WorkbookAppInstallation).Assembly
         };
 
+        static readonly Assembly [] ticketProvidersAssemblies = processManagerAssemblies;
+
         static bool registeredDefaultProcessManagers;
+        static bool registeredDefaultTicketProviders;
 
         static HashSet<AgentProcessRegistrationAttribute> processManagers;
+        static HashSet<AgentTicketRegistrationAttribute> ticketProviders;
+
+        public static void RegisterTicketProviders (Assembly assembly)
+        {
+            if (ticketProviders == null)
+                ticketProviders = new HashSet<AgentTicketRegistrationAttribute> ();
+
+            foreach (var attribute in assembly
+                .GetCustomAttributes (typeof (AgentTicketRegistrationAttribute), false)
+                .Cast<AgentTicketRegistrationAttribute> ())
+                ticketProviders.Add (attribute);
+        }
+
+        static void RegisterDefaultTicketProviders ()
+        {
+            if (!registeredDefaultTicketProviders) {
+                registeredDefaultTicketProviders = true;
+                foreach (var assembly in ticketProvidersAssemblies)
+                    RegisterTicketProviders (assembly);
+            }
+        }
 
         public static void RegisterProcessManagers (Assembly assembly)
         {
@@ -94,6 +118,7 @@ namespace Xamarin.Interactive
         #pragma warning restore 0618
 
         readonly IAgentProcessManager processManager;
+        readonly Type ticketType;
 
         public string Id { get; }
 
@@ -133,6 +158,7 @@ namespace Xamarin.Interactive
             Sdk sdk,
             string appPath,
             string appManagerAssembly,
+            string ticketProviderAssembly,
             int order)
         {
             Id = id ?? throw new ArgumentNullException (nameof (id));
@@ -157,6 +183,11 @@ namespace Xamarin.Interactive
             else
                 RegisterProcessManagers (Assembly.LoadFrom (appManagerAssembly));
 
+            if (ticketProviderAssembly == null)
+                RegisterDefaultTicketProviders ();
+            else
+                RegisterTicketProviders (Assembly.LoadFrom (ticketProviderAssembly));
+
             var processType = processManagers
                 .FirstOrDefault (r => r.WorkbookAppId == Id)
                 ?.ProcessType;
@@ -170,9 +201,19 @@ namespace Xamarin.Interactive
             } catch (Exception e) {
                 throw new Exception (
                     $"Unable to instantiate AgentProcessManager with {processType.FullName} " +
-                         $"for workbook app ID '{Id}'",
+                        $"for workbook app ID '{Id}'",
                     e);
             }
+
+            ticketType = ticketProviders
+                .FirstOrDefault (r => r.WorkbookAppId == Id)
+                ?.TicketType;
+
+            if (ticketType != null && !typeof (IAgentTicket).IsAssignableFrom (ticketType))
+                throw new Exception (
+                    $"Workbook app with ID {Id} registered invalid ticket type, ticket type must be " +
+                    $"assignable to IAgentTicket"
+                );
         }
 
         public async Task<IAgentTicket> RequestAgentTicketAsync (
@@ -183,6 +224,13 @@ namespace Xamarin.Interactive
         {
             if (processManager == null)
                 return null;
+
+            if (ticketType != null)
+                return (IAgentTicket)Activator.CreateInstance (
+                    ticketType,
+                    processManager,
+                    messageService,
+                    disconnectedHandler);
 
             var ticket = new AgentProcessTicket (
                 processManager,
@@ -312,6 +360,7 @@ namespace Xamarin.Interactive
                 sdk,
                 appPath,
                 Pathify (appJson.GetValue ("appManagerAssembly")?.Value<string> ())?.SingleOrDefault (),
+                Pathify (appJson.GetValue ("ticketProviderAssembly")?.Value<string> ())?.SingleOrDefault (),
                 order);
         }
     }

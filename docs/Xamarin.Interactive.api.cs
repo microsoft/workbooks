@@ -438,7 +438,7 @@ namespace Xamarin.Interactive.CodeAnalysis.Evaluating
             get;
         }
 
-        public IAgentSynchronizationContext SynchronizationContexts {
+        public virtual IAgentSynchronizationContext SynchronizationContexts {
             get;
         }
 
