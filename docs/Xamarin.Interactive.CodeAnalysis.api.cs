@@ -39,6 +39,7 @@
 [assembly: InternalsVisibleTo ("Xamarin.Workbooks.Forms.Android")]
 [assembly: InternalsVisibleTo ("Xamarin.Workbooks.Forms.iOS")]
 [assembly: InternalsVisibleTo ("Xamarin.Workbooks.iOS")]
+[assembly: InternalsVisibleTo ("Xamarin.Workbooks.WebAssembly")]
 [assembly: InternalsVisibleTo ("xic")]
 [assembly: TargetFramework (".NETStandard,Version=v2.0", FrameworkDisplayName = "")]
 namespace Xamarin.Interactive.CodeAnalysis

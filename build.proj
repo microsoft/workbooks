@@ -27,6 +27,7 @@
       <ProjectsToBuild Include="Clients\Xamarin.Interactive.Client.Web\*.csproj">
         <HasPackageTarget>true</HasPackageTarget>
       </ProjectsToBuild>
+      <ProjectsToBuild Include="WorkbookApps\Xamarin.Workbooks.WebAssembly\*.csproj" />
     </ItemGroup>
   </Target>
 

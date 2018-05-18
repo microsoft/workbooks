@@ -9,8 +9,10 @@ import { HubConnection } from '@aspnet/signalr'
 import * as catalog from './i18n'
 import { Event } from './utils/Events'
 import { resolveJsonReferences } from './utils/JsonRefs'
-import { CodeCellResult, CapturedOutputSegment, ICodeCellEvent, CodeCellUpdate } from './evaluation'
+import { isSafari } from "./utils"
+import { CodeCellResult, CapturedOutputSegment, ICodeCellEvent, CodeCellUpdate, CodeCellEventType } from './evaluation'
 import { Message, StatusUIAction, StatusUIActionWithMessage, MessageKind, MessageSeverity } from './messages'
+import { WebAssemblyAgentContainer } from './WebAssemblyAgentContainer';
 
 export type SdkId = string
 
@@ -68,8 +70,11 @@ export interface PackageDescription {
     source?: PackageSource
 }
 
+const wasmWorkbookId: string = "webassembly-monowebassembly"
+
 export class WorkbookSession {
     private hubConnection = new HubConnection('/session')
+    private wasmContainer: WebAssemblyAgentContainer | null = null
 
     readonly sessionEvent: Event<WorkbookSession, SessionEvent>
     readonly statusUIActionEvent: Event<WorkbookSession, StatusUIActionWithMessage>
@@ -95,6 +100,20 @@ export class WorkbookSession {
         this._availableWorkbookTargets = <WorkbookTarget[]>await this.hubConnection.invoke(
             'GetAvailableWorkbookTargets')
 
+        // Mono WASM crashes Safari so hard that even when loaded in an iframe, as we do,
+        // the entire page crashes (the parent page, the frame, everything)—it looks like
+        // the rendering process is just crashing. Remove WASM from the available targets,
+        // if we're on Safari.
+        if (isSafari()) {
+            const webAssemblyTargetIndex = this._availableWorkbookTargets.findIndex(wt => {
+                return wt.id === wasmWorkbookId
+            })
+
+            // Splice modifies the array in place.
+            if (webAssemblyTargetIndex !== -1)
+                this._availableWorkbookTargets.splice(webAssemblyTargetIndex, 1)
+        }
+
         console.log('GetAvailableWorkbookTargets: %O', this.availableWorkbookTargets)
 
         this.hubConnection.stream('ObserveSessionEvents')
@@ -115,6 +134,18 @@ export class WorkbookSession {
                 },
                 targetPlatformIdentifier: description
             }
+
+        // If we've kicked off WASM mode, initialize it, otherwise tear down the frame and message channel
+        // if they were set up.
+        if (description.targetPlatformIdentifier === wasmWorkbookId) {
+            this.wasmContainer = new WebAssemblyAgentContainer(this)
+            document.body.appendChild(this.wasmContainer.wasmFrame)
+        } else {
+            if (this.wasmContainer) {
+                this.wasmContainer.dispose()
+                this.wasmContainer = null
+            }
+        }
 
         this.sessionEvent.dispatch({
             kind: SessionEventKind.WorkbookTargetChanged,
@@ -140,17 +171,31 @@ export class WorkbookSession {
             }
         }
 
+        const { $type } = (event.data || <any>{});
         switch (event.kind) {
             case SessionEventKind.Evaluation:
-                this.codeCellEvent.dispatch(<ICodeCellEvent>event.data)
+                const codeCellEvent = <ICodeCellEvent>event.data
+                this.codeCellEvent.dispatch(codeCellEvent)
+
+                if ($type && $type === CodeCellEventType.Compilation && this.wasmContainer)
+                    this.wasmContainer.pushWasmMessage(event)
                 return
             case SessionEventKind.ConnectingToAgent:
                 message.message!.text = catalog.getString('Connecting to agent…')
                 break
             case SessionEventKind.InitializingWorkspace:
                 message.message!.text = catalog.getString('Initializing workspace…')
+
+                if ($type && $type === CodeCellEventType.TargetCompilationConfiguration && this.wasmContainer)
+                    this.wasmContainer.pushWasmMessage(event)
                 break
             case SessionEventKind.Ready:
+                // If the WebAssembly agent is selected, Ready will be fired almost immediately
+                // from the backend, but the agent actually isn't ready yet and that message
+                // should be ignored.
+                if (this.wasmContainer && this.wasmContainer.wasmFrameLoaded)
+                    return
+
                 message.action = StatusUIAction.DisplayIdle
                 break
             case SessionEventKind.AgentDisconnected:
@@ -173,6 +218,10 @@ export class WorkbookSession {
 
     disconnect(): Promise<void> {
         return this.hubConnection.stop()
+    }
+
+    notifyEvaluationComplete(codeCellId: string, status: string): void {
+        this.hubConnection.invoke('NotifyEvaluationComplete', codeCellId, status)
     }
 
     insertCodeCell(buffer: string, relativeToCodeCellId: string | null): Promise<string> {

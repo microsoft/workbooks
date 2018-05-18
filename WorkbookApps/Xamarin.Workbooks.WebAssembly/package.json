@@ -1,0 +1,14 @@
+{
+  "name": "Xamarin.Interactive.WebAssembly",
+  "private": true,
+  "version": "0.0.0",
+  "devDependencies": {
+    "@types/webpack-env": "1.13.0",
+    "awesome-typescript-loader": "3.2.1",
+    "isomorphic-fetch": "2.2.1",
+    "typescript": "^2.8.0",
+    "webpack": "2.5.1"
+  },
+  "dependencies": {
+  }
+}

@@ -14,6 +14,7 @@ using Microsoft.Extensions.Logging;
 
 using Newtonsoft.Json;
 
+using Xamarin.Interactive.Client.Web.WebAssembly;
 using Xamarin.Interactive.CodeAnalysis;
 using Xamarin.Interactive.CodeAnalysis.Evaluating;
 using Xamarin.Interactive.CodeAnalysis.Events;
@@ -38,15 +39,18 @@ namespace Xamarin.Interactive.Client.Web.Hubs
         readonly IMemoryCache memoryCache;
         readonly IHostingEnvironment hostingEnvironment;
         readonly ILogger<InteractiveSessionHub> logger;
+        readonly ReferenceWhitelist referenceWhitelist;
 
         public InteractiveSessionHub (
             IMemoryCache memoryCache,
             IHostingEnvironment hostingEnvironment,
-            ILogger<InteractiveSessionHub> logger)
+            ILogger<InteractiveSessionHub> logger,
+            ReferenceWhitelist referenceWhitelist)
         {
             this.memoryCache = memoryCache;
             this.hostingEnvironment = hostingEnvironment;
             this.logger = logger;
+            this.referenceWhitelist = referenceWhitelist;
         }
 
         public override Task OnConnectedAsync ()
@@ -80,22 +84,31 @@ namespace Xamarin.Interactive.Client.Web.Hubs
         {
             var events = GetSession ().Events;
 
-            if (hostingEnvironment.IsDevelopment ()) {
-                var settings = new Serialization.ExternalInteractiveJsonSerializerSettings ();
-                events.Subscribe (new Observer<InteractiveSessionEvent> (evnt => {
+            events.Subscribe (new Observer<InteractiveSessionEvent> (evnt => {
+                if (hostingEnvironment.IsDevelopment ()) {
+                    var settings = new Serialization.ExternalInteractiveJsonSerializerSettings ();
                     logger.LogDebug (
                         "posting session event: {0}",
                         JsonConvert.SerializeObject (evnt, settings));
-                }));
-            }
+                }
+
+                if (evnt.Data is Compilation compilation)
+                    compilation.References.ForEach (assemblyDefinition => {
+                        if (assemblyDefinition.Content.Location.Exists)
+                            referenceWhitelist.Add (assemblyDefinition.Content.Location);
+                    });
+            }));
 
             return events;
         }
 
         public Task InitializeSession (InteractiveSessionDescription sessionDescription)
-            => GetSession ().InitializeAsync (
+        {
+            referenceWhitelist.Clear ();
+            return GetSession ().InitializeAsync (
                 sessionDescription,
                 Context.Connection.ConnectionAbortedToken);
+        }
 
         public Task<CodeCellId> InsertCodeCell (
             string initialBuffer,

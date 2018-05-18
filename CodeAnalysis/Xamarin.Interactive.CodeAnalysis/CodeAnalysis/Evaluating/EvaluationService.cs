@@ -383,6 +383,9 @@ namespace Xamarin.Interactive.CodeAnalysis.Evaluating
 
                 events.Observers.OnNext (lastCellFinishedEvent);
 
+                if (status != EvaluationStatus.Success)
+                    NotifyEvaluationComplete (evaluatableCodeCell.CodeCellId, status);
+
                 switch (status) {
                 case EvaluationStatus.ErrorDiagnostic:
                 case EvaluationStatus.Disconnected:

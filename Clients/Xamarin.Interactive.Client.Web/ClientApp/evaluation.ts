@@ -33,7 +33,9 @@ export const enum CodeCellEventType {
     EvaluationStarted = 'Xamarin.Interactive.CodeAnalysis.Events.CodeCellEvaluationStartedEvent',
     EvaluationFinished = 'Xamarin.Interactive.CodeAnalysis.Events.CodeCellEvaluationFinishedEvent',
     Evaluation = 'Xamarin.Interactive.CodeAnalysis.Evaluating.Evaluation',
-    CapturedOutputSegment = 'Xamarin.Interactive.CodeAnalysis.CapturedOutputSegment'
+    CapturedOutputSegment = 'Xamarin.Interactive.CodeAnalysis.CapturedOutputSegment',
+    Compilation = 'Xamarin.Interactive.CodeAnalysis.Compilation',
+    TargetCompilationConfiguration = 'Xamarin.Interactive.CodeAnalysis.TargetCompilationConfiguration'
 }
 
 export interface ICodeCellEvent {

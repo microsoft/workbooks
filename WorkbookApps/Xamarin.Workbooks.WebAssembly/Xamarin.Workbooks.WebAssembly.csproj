@@ -1,0 +1,15 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Library</OutputType>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Agents\Xamarin.Interactive\Xamarin.Interactive.csproj" />
+    <PackageReference Include="Mono.WebAssembly.Sdk" Version="5.15.0-wasm-0686aa0" />
+  </ItemGroup>
+
+  <Import Project="Build.targets" />
+</Project>
