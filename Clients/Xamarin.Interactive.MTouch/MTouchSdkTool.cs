@@ -28,7 +28,7 @@ namespace Xamarin.Interactive.MTouch
         const string XamarinStudioMlaunchPath = "/Applications/Xamarin Studio.app/Contents/Resources/lib/monodevelop/" +
             "AddIns/MonoDevelop.IPhone/mlaunch.app/Contents/MacOS/mlaunch";
         const string XamariniOSMlaunchPath = "/Library/Frameworks/Xamarin.iOS.framework/Versions/Current/bin/mlaunch";
-        const string DefaultSdkRoot = "/Applications/Xcode.app/Contents/Developer";
+        const string DefaultSdkRoot = "/Applications/Xcode.app";
 
         public static readonly Version RequiredMinimumXcodeVersion = new Version (9, 0);
 
