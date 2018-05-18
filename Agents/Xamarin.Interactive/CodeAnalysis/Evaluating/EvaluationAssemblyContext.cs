@@ -71,16 +71,17 @@ namespace Xamarin.Interactive.CodeAnalysis.Evaluating
         Assembly HandleAssemblyResolve (object sender, ResolveEventArgs args)
         {
             Log.Verbose (TAG, $"Handling assembly resolve event for {args.Name}.");
-            Log.Verbose (TAG, $".NET Assembly map contents: ");
-            foreach (var key in netAssemblyMap.Keys)
-                Log.Verbose (TAG, $"    {key}");
 
             Assembly netAssembly;
+            Log.Verbose (TAG, $"Looking up {args.Name} in compiled assembly map.");
             if (netAssemblyMap.TryGetValue (new AssemblyName (args.Name), out netAssembly))
                 return netAssembly;
 
             AssemblyDefinition assembly;
-            if (assemblyMap.TryGetValue (new AssemblyName (args.Name).Name, out assembly)) {
+            var shortName = new AssemblyName (args.Name).Name;
+
+            Log.Verbose (TAG, $"Looking up {shortName} in assembly definition map.");
+            if (assemblyMap.TryGetValue (shortName, out assembly)) {
                 if (args.RequestingAssembly?.ReflectionOnly == true) {
                     if (File.Exists (assembly.Content.Location))
                         return Assembly.ReflectionOnlyLoadFrom (assembly.Content.Location);
@@ -88,9 +89,12 @@ namespace Xamarin.Interactive.CodeAnalysis.Evaluating
                     if (assembly.Content.PEImage != null)
                         return Assembly.ReflectionOnlyLoad (assembly.Content.PEImage);
 
-                    throw new Exception (
-                        $"Could not reflection-only load assembly {args.Name}, location " +
+                    Log.Verbose (
+                        TAG,
+                        $"Could not reflection-only load assembly {args.Name}, location {assembly.Content.Location} " +
                         "did not exist and PEImage was not sent.");
+
+                    return null;
                 }
 
                 Assembly loadedAsm;
@@ -108,12 +112,16 @@ namespace Xamarin.Interactive.CodeAnalysis.Evaluating
                     loadedAsm = null;
 
                 if (loadedAsm == null)
-                    throw new Exception ($"Could not load assembly {args.Name}, location did not " +
+                    Log.Verbose (
+                        TAG,
+                        $"Could not load assembly {args.Name}, location {assembly.Content.Location} did not " +
                         "exist and PEImage was not sent.");
 
                 AssemblyResolvedHandler?.Invoke (loadedAsm, assembly);
                 return loadedAsm;
             }
+
+            Log.Verbose (TAG, $"Could not find {args.Name} in any assembly map.");
 
             return null;
         }

@@ -107,6 +107,10 @@ namespace Xamarin.Interactive.Session
                 sessionKind,
                 cancellationToken).ConfigureAwait (false);
 
+            PostEvent (
+                InitializingWorkspace,
+                workspaceConfiguration.CompilationConfiguration);
+
             var workspaceService = await WorkspaceServiceFactory.CreateWorkspaceServiceAsync (
                 sessionDescription.LanguageDescription,
                 workspaceConfiguration,

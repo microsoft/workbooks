@@ -18,6 +18,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 using Xamarin.Interactive.Client.Web.Hosting;
 using Xamarin.Interactive.Client.Web.Hubs;
+using Xamarin.Interactive.Client.Web.WebAssembly;
 using Xamarin.Interactive.Serialization;
 
 namespace Xamarin.Interactive.Client.Web
@@ -25,9 +26,7 @@ namespace Xamarin.Interactive.Client.Web
     public sealed class Startup
     {
         public Startup (IConfiguration configuration)
-        {
-            Configuration = configuration;
-        }
+            => Configuration = configuration;
 
         public IConfiguration Configuration { get; }
 
@@ -40,6 +39,7 @@ namespace Xamarin.Interactive.Client.Web
                 WorkbookAppInstallation.RegisterSearchPath (searchPath);
 
             services.AddSingleton (new WebClientAppContainer ());
+            services.AddSingleton (new ReferenceWhitelist ());
 
             services.AddMemoryCache ();
             services.AddMvc ();
@@ -67,8 +67,8 @@ namespace Xamarin.Interactive.Client.Web
             }
 
             app.UseMonacoMuting ();
-
             app.UseStaticFiles ();
+            app.UseWasmStaticFiles ();
 
             app.UseSignalR (routes => {
                 routes.MapHub<InteractiveSessionHub> ("/session");

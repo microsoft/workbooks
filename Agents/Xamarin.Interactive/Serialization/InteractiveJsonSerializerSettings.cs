@@ -73,6 +73,8 @@ namespace Xamarin.Interactive.Serialization
                 return contract;
             }
 
+            #endif
+
             protected override JsonProperty CreateProperty (
                 MemberInfo member,
                 MemberSerialization memberSerialization)
@@ -82,8 +84,6 @@ namespace Xamarin.Interactive.Serialization
                     property.DefaultValueHandling = DefaultValueHandling.Include;
                 return property;
             }
-
-            #endif
         }
 
         sealed class InteractiveJsonBinder : ISerializationBinder

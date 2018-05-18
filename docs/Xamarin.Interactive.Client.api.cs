@@ -1,5 +1,6 @@
 [assembly: AgentProcessRegistration ("console", typeof(ConsoleAgentProcess))]
 [assembly: AgentProcessRegistration ("console-netcore", typeof(DotNetCoreAgentProcess))]
+[assembly: AgentProcessRegistration ("webassembly-monowebassembly", typeof(WebAssemblyAgentProcess))]
 [assembly: AssemblyConfiguration ("Release")]
 [assembly: AssemblyCopyright ("Copyright 2016-2018 Microsoft. All rights reserved.\nCopyright 2014-2016 Xamarin Inc. All rights reserved.")]
 [assembly: AssemblyProduct ("Xamarin.Interactive.Client")]
@@ -41,6 +42,7 @@
 [assembly: InternalsVisibleTo ("Xamarin.Workbooks.Forms.Android")]
 [assembly: InternalsVisibleTo ("Xamarin.Workbooks.Forms.iOS")]
 [assembly: InternalsVisibleTo ("Xamarin.Workbooks.iOS")]
+[assembly: InternalsVisibleTo ("Xamarin.Workbooks.WebAssembly")]
 [assembly: InternalsVisibleTo ("xic")]
 [assembly: TargetFramework (".NETStandard,Version=v2.0", FrameworkDisplayName = "")]
 namespace CommonMark.Formatters

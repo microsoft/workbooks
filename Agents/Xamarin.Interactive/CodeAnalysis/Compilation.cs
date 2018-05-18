@@ -11,12 +11,13 @@ using System.Collections.Generic;
 using Newtonsoft.Json;
 
 using Xamarin.Interactive.CodeAnalysis.Evaluating;
+using Xamarin.Interactive.CodeAnalysis.Events;
 using Xamarin.Interactive.CodeAnalysis.Resolving;
 
 namespace Xamarin.Interactive.CodeAnalysis
 {
     [JsonObject]
-    public sealed class Compilation
+    public sealed class Compilation : ICodeCellEvent
     {
         public CodeCellId CodeCellId { get; }
         public int SubmissionNumber { get; }

@@ -18,8 +18,11 @@ namespace Xamarin.Interactive.CodeAnalysis.Evaluating
         EvaluationContextId (Guid id)
             => this.id = id;
 
+        // TODO: This doesn't use == comparison to workaround a bug in the Mono
+        // interpreter (https://github.com/mono/mono/issues/8494). Revert this
+        // to its old form once we bump the WASM SDK to include that fix. - brajkovic
         public bool Equals (EvaluationContextId id)
-            => id.id == this.id;
+            => this.id.Equals (id.id);
 
         public override bool Equals (object obj)
             => obj is EvaluationContextId id && Equals (id);

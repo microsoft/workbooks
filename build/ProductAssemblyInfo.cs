@@ -61,6 +61,7 @@ using System.Runtime.CompilerServices;
 [assembly: InternalsVisibleTo ("Workbook Mac App (Desktop Profile)")]
 [assembly: InternalsVisibleTo ("Workbook Mac App (Mobile Profile)")]
 [assembly: InternalsVisibleTo ("Xamarin Workbooks Agent (WPF)")]
+[assembly: InternalsVisibleTo ("Xamarin.Workbooks.WebAssembly")]
 
 // workbook app client integrations
 [assembly: InternalsVisibleTo ("Xamarin.Workbooks.Client.iOS")]

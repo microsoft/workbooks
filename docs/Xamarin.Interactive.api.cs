@@ -40,6 +40,7 @@
 [assembly: InternalsVisibleTo ("Xamarin.Workbooks.Forms.Android")]
 [assembly: InternalsVisibleTo ("Xamarin.Workbooks.Forms.iOS")]
 [assembly: InternalsVisibleTo ("Xamarin.Workbooks.iOS")]
+[assembly: InternalsVisibleTo ("Xamarin.Workbooks.WebAssembly")]
 [assembly: InternalsVisibleTo ("xic")]
 [assembly: TargetFramework (".NETStandard,Version=v2.0", FrameworkDisplayName = "")]
 namespace Xamarin.Interactive
@@ -216,7 +217,7 @@ namespace Xamarin.Interactive.CodeAnalysis
         public override string ToString ();
     }
     [JsonObject]
-    public sealed class Compilation
+    public sealed class Compilation : ICodeCellEvent
     {
         public CodeCellId CodeCellId {
             get;
@@ -438,7 +439,7 @@ namespace Xamarin.Interactive.CodeAnalysis.Evaluating
             get;
         }
 
-        public IAgentSynchronizationContext SynchronizationContexts {
+        public virtual IAgentSynchronizationContext SynchronizationContexts {
             get;
         }
 

@@ -65,8 +65,9 @@ namespace Xamarin.Interactive.CodeAnalysis.Evaluating
         readonly Observable<ICodeCellEvent> events = new Observable<ICodeCellEvent> ();
         public IObservable<ICodeCellEvent> Events => events;
 
-        public IAgentSynchronizationContext SynchronizationContexts { get; }
-            = new AgentSynchronizationContext ();
+        readonly Lazy<AgentSynchronizationContext> agentSynchronizationContext
+            = new Lazy<AgentSynchronizationContext> ();
+        public virtual IAgentSynchronizationContext SynchronizationContexts => agentSynchronizationContext.Value;
 
         readonly IList<Action> resetStateHandlers = new List<Action> ();
 

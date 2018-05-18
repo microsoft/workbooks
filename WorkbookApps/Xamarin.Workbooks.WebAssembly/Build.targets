@@ -1,0 +1,101 @@
+<Project>
+  <Import Project="..\..\WorkbookApps\WorkbookApp.targets" />
+
+  <PropertyGroup>
+    <Node Condition="'$(Node)' == ''">node</Node>
+    <Yarn Condition="'$(Yarn)' == ''">yarn</Yarn>
+    <YarnInstall>&quot;$(Yarn)&quot; install --non-interactive</YarnInstall>
+  </PropertyGroup>
+
+  <Target
+    Name="YarnInstall"
+    Condition="!Exists('node_modules')">
+    <Message Importance="high" Text="Performing first-run yarn install..."/>
+    <Exec Command="$(YarnInstall)"/>
+  </Target>
+
+  <Target
+    Name="DebugRunWebpack"
+    BeforeTargets="Build"
+    DependsOnTargets="YarnInstall"
+    Condition="'$(Configuration)' == 'Debug'">
+    <Exec Command="&quot;$(Node)&quot; node_modules/webpack/bin/webpack.js"/>
+  </Target>
+
+  <Target
+    Name="ReleaseRunWebpack"
+    BeforeTargets="Build"
+    DependsOnTargets="YarnInstall"
+    Condition="'$(Configuration)' == 'Release'">
+    <Exec Command="&quot;$(Node)&quot; node_modules/webpack/bin/webpack.js --env.prod"/>
+  </Target>
+
+  <Target
+    Name="Install"
+    DependsOnTargets="Publish"
+    AfterTargets="Build">
+    <ItemGroup>
+      <InstallFiles Include="$(OutputPath)\publish\**\Xamarin.*"/>
+      <WebAssemblyRuntimeTargetFiles Include="$(InstallDir)WebAssembly\Runtime\*" />
+      <WebAssemblyAgentRuntimeFiles Include="$(MSBuildThisFileDirectory)Client\dist\*.*" />
+    </ItemGroup>
+
+    <!-- Clean up some JS files that need to always be matching debug/release. -->
+    <Delete Files="@(WebAssemblyRuntimeTargetFiles)" />
+
+    <GenerateWorkbookAppManifest
+      ManifestOutputPath="$(InstallDir)workbookapps.json"
+      Flavor="WebAssembly"
+      Order="9000"
+      Icon="project-console"
+      AppPath="WebAssembly"
+      SdkName="Mono WebAssembly"
+      SdkVersion=""
+      AssemblySearchPaths="WebAssembly;WebAssembly\BCL;WebAssembly\BCL\Facades"
+      TargetFrameworkIdentifier="$(TargetFrameworkIdentifier)"
+      TargetFrameworkVersion="$(TargetFrameworkVersion)"/>
+
+    <!-- Copy WASM BCL into the install dir -->
+    <Copy
+      SkipUnchangedFiles="true"
+      SourceFiles="@(WebAssemblySdkBclFiles)"
+      DestinationFolder="$(InstallDir)WebAssembly\BCL\%(RecursiveDir)"/>
+
+    <!-- Copy the WASM agent over. -->
+    <Copy
+      SkipUnchangedFiles="true"
+      SourceFiles="@(InstallFiles)"
+      DestinationFolder="$(InstallDir)WebAssembly"/>
+
+    <!-- Copy the WASM "runtime" files, namely mono.js/mono.wasm and our WASM client JS. -->
+    <Copy
+      SkipUnchangedFiles="true"
+      SourceFiles="@(WebAssemblySdkRuntimeFiles)"
+      DestinationFolder="$(InstallDir)WebAssembly\Runtime\%(RecursiveDir)"/>
+    <Copy
+      SkipUnchangedFiles="true"
+      SourceFiles="@(WebAssemblyAgentRuntimeFiles)"
+      DestinationFolder="$(InstallDir)WebAssembly\Runtime\%(RecursiveDir)"/>
+
+    <!-- Fix mono.js so that the runtime is "relocatable" -->
+    <ItemGroup>
+      <!-- Debug -->
+      <Replacement Include="var wasmTextFile = 'mono.wast'">
+        <Value>var wasmTextFile = '/wasm/runtime/mono.wast'</Value>
+      </Replacement>
+      <Replacement Include="var wasmBinaryFile = 'mono.wasm'">
+        <Value>var wasmBinaryFile = '/wasm/runtime/mono.wasm'</Value>
+      </Replacement>
+      <!-- Release -->
+      <Replacement Include="var wasmBinaryFile=&quot;mono.wasm&quot;">
+        <Value>var wasmBinaryFile=&quot;/wasm/runtime/mono.wasm&quot;</Value>
+      </Replacement>
+      <Replacement Include="var wasmTextFile=&quot;mono.wast&quot;">
+        <Value>var wasmTextFile=&quot;/wasm/runtime/mono.wast&quot;</Value>
+      </Replacement>
+    </ItemGroup>
+    <FindReplaceInFiles
+      Files="$(InstallDir)WebAssembly\Runtime\mono.js"
+      Replacements="@(Replacement)"/>
+  </Target>
+</Project>

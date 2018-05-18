@@ -16,6 +16,9 @@ namespace Xamarin.Interactive.Client.Web.Controllers
         public IActionResult Index ()
             => View ();
 
+        public IActionResult Wasm ()
+            => View ();
+
         public IActionResult Error ()
         {
             ViewData ["RequestId"] = Activity.Current?.Id ?? HttpContext.TraceIdentifier;
