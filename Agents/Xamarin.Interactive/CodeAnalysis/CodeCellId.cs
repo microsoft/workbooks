@@ -34,8 +34,11 @@ namespace Xamarin.Interactive.CodeAnalysis
             Id = id;
         }
 
+        // TODO: This doesn't use == comparison to workaround a bug in the Mono
+        // interpreter (https://github.com/mono/mono/issues/8494). Revert this
+        // to its old form once we bump the WASM SDK to include that fix. - brajkovic
         public bool Equals (CodeCellId id)
-            => id.ProjectId == ProjectId && id.Id == Id;
+            => id.ProjectId.Equals (ProjectId) && id.Id.Equals (Id);
 
         public override bool Equals (object obj)
             => obj is CodeCellId id && Equals (id);
