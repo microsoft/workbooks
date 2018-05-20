@@ -31,7 +31,10 @@ namespace Xamarin.Interactive.Client.AgentProcesses
 
         public IWorkbookAppInstallation WorkbookApp { get; }
 
-        public event EventHandler UnexpectedlyTerminated;
+        event EventHandler IAgentProcess.UnexpectedlyTerminated {
+            add { }
+            remove { }
+        }
 
         public WebAssemblyAgentProcess (IWorkbookAppInstallation workbookApp)
             => WorkbookApp = workbookApp ?? throw new ArgumentNullException (nameof (workbookApp));
