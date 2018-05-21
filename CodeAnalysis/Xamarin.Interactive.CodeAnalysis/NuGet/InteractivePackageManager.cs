@@ -41,7 +41,7 @@ namespace Xamarin.Interactive.NuGet
         internal const string IntegrationPackageId = "Xamarin.Workbooks.Integration";
 
         internal static readonly InteractivePackageDescription FixedXamarinFormsPackageDescription
-            = new InteractivePackageDescription ("Xamarin.Forms", "2.5.0.121934");
+            = new InteractivePackageDescription ("Xamarin.Forms", "3.0.0.482510");
 
         internal static readonly PackageIdentity FixedXamarinFormsPackageIdentity
             = FixedXamarinFormsPackageDescription.ToPackageIdentity ();
