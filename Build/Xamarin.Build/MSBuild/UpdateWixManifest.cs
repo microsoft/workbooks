@@ -43,7 +43,7 @@ namespace Xamarin.MSBuild
         public bool FailOnManifestChanges { get; set; } = true;
         public bool UseHashForId { get; set; } = false;
 
-        static readonly Regex AllowedWixIdCharactersRegex = new Regex ("[^a-zA-Z\\._]", RegexOptions.Compiled);
+        static readonly Regex AllowedWixIdCharactersRegex = new Regex ("[^a-zA-Z0-9\\._]", RegexOptions.Compiled);
         static readonly XNamespace WiXNamespace = "http://schemas.microsoft.com/wix/2006/wi";
         static readonly SHA1 Hasher = SHA1.Create ();
 
