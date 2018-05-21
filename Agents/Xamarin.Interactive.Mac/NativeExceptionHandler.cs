@@ -47,7 +47,7 @@ namespace Xamarin.Interactive.Unified
 
         static IntPtr ObjCExceptionPreprocessor (IntPtr exceptionPtr)
         {
-            throw new TrappedNativeException (Runtime.GetNSObject<NSException> (exceptionPtr));
+            throw new TrappedNativeException (ObjCRuntime.Runtime.GetNSObject<NSException> (exceptionPtr));
         }
 
         public static IDisposable Trap ()
