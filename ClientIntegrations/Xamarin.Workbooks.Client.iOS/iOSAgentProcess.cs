@@ -8,6 +8,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -166,7 +167,7 @@ namespace Xamarin.Interactive.Client.AgentProcesses
             }
 
             var localSimChecker = InteractiveInstallation.Default.LocateSimChecker ();
-            var simCheckerPath = $"{macTempPath}/Xamarin.Interactive.Mac.SimChecker.exe";
+            var simCheckerPath = $"{macTempPath}/{Path.GetFileName (localSimChecker)}";
 
             // This file is really small, so copying it fresh every time is OK.
             try {

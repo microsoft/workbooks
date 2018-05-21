@@ -15,7 +15,9 @@ using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Serialization;
 
+using Xamarin.Interactive.Collections.PropertyList;
 using Xamarin.Interactive.I18N;
+using Xamarin.Interactive.Logging;
 
 namespace Xamarin.Interactive.MTouch
 {
@@ -46,31 +48,10 @@ namespace Xamarin.Interactive.MTouch
             throw new MlaunchNotFoundException ();
         }
 
-        static string RunTool (string fileName, string arguments)
-        {
-            var proc = new Process {
-                StartInfo = new ProcessStartInfo {
-                    FileName = fileName,
-                    Arguments = arguments,
-                    UseShellExecute = false,
-                    RedirectStandardOutput = true,
-                    RedirectStandardError = true
-                }
-            };
-
-            proc.Start ();
-            proc.WaitForExit ();
-
-            if (proc.ExitCode == 0)
-                return proc.StandardOutput.ReadToEnd ();
-
-            throw new Exception ($"'{fileName} {arguments}' exited with exit code {proc.ExitCode}");
-        }
-
-        public static string GetXcodeSdkRoot ()
+        public static async Task<string> GetXcodeSdkRootAsync ()
         {
             // Mimicking VSmac behavior, xcode-select is checked last
-            var sdkRoot = GetXamarinStudioXcodeSdkRoot () ?? GetDefaultXCodeSdkRoot () ?? GetXcodeSelectXcodeSdkRoot ();
+            var sdkRoot = GetXamarinStudioXcodeSdkRoot () ?? GetDefaultXCodeSdkRoot () ?? (await GetXcodeSelectXcodeSdkRootAsync ());
             if (sdkRoot == null)
                 throw new Exception (Catalog.SharedStrings.XcodeNotFoundMessage);
             return sdkRoot;
@@ -79,17 +60,15 @@ namespace Xamarin.Interactive.MTouch
         public static Version GetXcodeVersion (string sdkRoot)
         {
             try {
-                var plistXml = RunTool (
-                    "plutil",
-                    $"-extract CFBundleShortVersionString xml1 \"{sdkRoot}/Contents/Info.plist\" -o -");
-
-                var doc = new XmlDocument ();
-                doc.LoadXml (plistXml);
-                var shortVersion = doc.SelectSingleNode ("/plist/string/text()")?.Value;
+                var pDict = PlistDictionary.Load (Path.Combine (
+                    sdkRoot,
+                    "Contents",
+                    "Info.plist"));
+                var shortVersion = (string)pDict ["CFBundleShortVersionString"];
 
                 return Version.Parse (shortVersion);
             } catch (Exception e) {
-                Console.Error.WriteLine (e);
+                Log.Error (TAG, e);
                 return null;
             }
         }
@@ -97,10 +76,10 @@ namespace Xamarin.Interactive.MTouch
         static string GetDefaultXCodeSdkRoot ()
             => Directory.Exists (DefaultSdkRoot) ? DefaultSdkRoot : null;
 
-        static string GetXcodeSelectXcodeSdkRoot ()
+        static async Task<string> GetXcodeSelectXcodeSdkRootAsync ()
         {
             try {
-                var path = RunTool ("xcode-select", "-p");
+                var path = await RunToolWithRetriesAsync ("xcode-select", "-p");
 
                 while (path != null && Path.GetExtension (path) != ".app")
                     path = Path.GetDirectoryName (path);
@@ -108,7 +87,7 @@ namespace Xamarin.Interactive.MTouch
                 if (Directory.Exists (path))
                     return path;
             } catch (Exception e) {
-                Console.Error.WriteLine (e);
+                Log.Error (TAG, e);
             }
 
             return null;
@@ -127,24 +106,19 @@ namespace Xamarin.Interactive.MTouch
                 return null;
 
             try {
-                var plistXml = RunTool (
-                    "plutil",
-                    $"-extract AppleSdkRoot xml1 \"{settingsPlistPath}\" -o -");
-
-                var doc = new XmlDocument ();
-                doc.LoadXml (plistXml);
-                var path = doc.SelectSingleNode ("/plist/string/text()")?.Value;
+                var pDict = PlistDictionary.Load (settingsPlistPath);
+                var path = (string)pDict ["AppleSdkRoot"];
 
                 if (Directory.Exists (path))
                     return path;
             } catch (Exception e) {
-                Console.Error.WriteLine (e);
+                Log.Error (TAG, e);
             }
 
             return null;
         }
 
-        public static Task<MTouchListSimXml> MtouchListSimAsync (string sdkRoot)
+        public static async Task<MTouchListSimXml> MtouchListSimAsync (string sdkRoot)
         {
             if (sdkRoot == null)
                 throw new ArgumentNullException (nameof (sdkRoot));
@@ -155,33 +129,15 @@ namespace Xamarin.Interactive.MTouch
             var tmpFile = Path.GetTempFileName ();
             var sdkRootArgs = $"-sdkroot \"{sdkRoot}\"";
 
-            var mtouchProc = new Process {
-                StartInfo = new ProcessStartInfo {
-                    FileName = mlaunchPath,
-                    Arguments = $"{sdkRootArgs} --listsim=\"{tmpFile}\"",
-                },
-                EnableRaisingEvents = true,
-            };
+            await RunToolWithRetriesAsync (
+                mlaunchPath,
+                $"{sdkRootArgs} --listsim=\"{tmpFile}\"");
 
-            mtouchProc.Exited += (o, args) => {
-                try {
-                    if (mtouchProc.ExitCode != 0) {
-                        taskSource.TrySetException (new Exception ("mlaunch failed"));
-                        return;
-                    }
+            var x = new XmlSerializer (typeof (MTouchListSimXml));
+            var mtouchInfo = x.Deserialize (File.OpenRead (tmpFile)) as MTouchListSimXml;
+            File.Delete (tmpFile);
 
-                    var x = new XmlSerializer (typeof (MTouchListSimXml));
-                    var mtouchInfo = x.Deserialize (File.OpenRead (tmpFile)) as MTouchListSimXml;
-                    File.Delete (tmpFile);
-
-                    taskSource.TrySetResult (mtouchInfo);
-                } catch (Exception e) {
-                    taskSource.TrySetException (e);
-                }
-            };
-
-            mtouchProc.Start ();
-            return taskSource.Task;
+            return mtouchInfo;
         }
 
         public static IEnumerable<MTouchListSimXml.SimDeviceElement> GetCompatibleDevices (MTouchListSimXml mtouchInfo)
@@ -201,6 +157,77 @@ namespace Xamarin.Interactive.MTouch
                 where t.ProductFamilyId == "IPhone"
                 where t.Supports64Bits
                 select d;
+        }
+
+        /// <summary>
+        /// Runs a process, and returns its output
+        /// </summary>
+        /// <param name="timeout">How many milliseconds to wait before throwing TimeoutException.</param>
+        static Task<string> RunToolAsync (string fileName, string arguments, int timeout = 5000)
+        {
+            var tcs = new TaskCompletionSource<string> ();
+
+            var proc = new Process {
+                StartInfo = new ProcessStartInfo {
+                    FileName = fileName,
+                    Arguments = arguments,
+                    UseShellExecute = false,
+                    RedirectStandardOutput = true,
+                    RedirectStandardError = true
+                },
+                EnableRaisingEvents = true
+            };
+
+            proc.Exited += (o, args) => {
+                if (proc.ExitCode == 0) {
+                    try {
+                        tcs.TrySetResult (proc.StandardOutput.ReadToEnd ());
+                    } catch (Exception e) {
+                        tcs.TrySetException (e);
+                    }
+                } else
+                    tcs.TrySetException (new Exception ($"'{fileName} {arguments}' exited with exit code {proc.ExitCode}"));
+            };
+
+            Log.Info (TAG, $"{fileName} {arguments}");
+            proc.Start ();
+
+            if (timeout > 0) {
+                Task.Run (() =>  {
+                    if (!proc.WaitForExit (timeout)) {
+                        Log.Info (TAG, $"TIMEOUT {fileName} {arguments}");
+                        tcs.TrySetException (new TimeoutException ());
+                        proc.Kill ();
+                    }
+                });
+            }
+
+            return tcs.Task;
+        }
+
+        /// <summary>
+        /// Runs a process, and returns its output. Can retry execution if timeouts occur.
+        /// Does not retry on non-timeout errors.
+        /// </summary>
+        /// <param name="timeoutRetries">How many times to retry execution before throwing TimeoutException.</param>
+        /// <param name="timeout">How many milliseconds to wait before aborting and trying again.</param>
+        static async Task<string> RunToolWithRetriesAsync (
+            string fileName,
+            string arguments,
+            int timeoutRetries = 3,
+            int timeout = 5000)
+        {
+            for (var i = 0; i < timeoutRetries; i++) {
+                try {
+                    return await RunToolAsync (fileName, arguments, timeout);
+                } catch (TimeoutException e) {
+                    if (i < (timeoutRetries - 1))
+                        Log.Info (TAG, $"Failed with {e.GetType ()}, retrying");
+                    else
+                        throw;
+                }
+            }
+            throw new Exception ($"Giving up on {fileName} after ${timeoutRetries} timeouts");
         }
     }
 }
