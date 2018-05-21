@@ -11,7 +11,7 @@ cache:
 build_script:
 - cmd: msbuild Build.proj /p:Configuration=Release /t:UpdateBuildInfo,Build,Package
 test_script:
-- cmd: msbuild Build.proj /t:TestRegressions /p:Configuration=Release
+- cmd: msbuild Build.proj /t:Test /p:Configuration=Release
 artifacts:
 - path: _artifacts\*.msi
   name: Installer
