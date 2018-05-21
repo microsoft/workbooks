@@ -1,17 +1,18 @@
 version: '{branch}-{build}-no-release'
-image: Visual Studio 2017 Preview
+image: Visual Studio 2017
+environment:
+  nodejs_version: "8"
 install:
-- cmd: >-
-    git submodule sync
-
-    git submodule update --recursive --init
+- cmd: git submodule sync
+- cmd: git submodule update --recursive --init
+- ps: Install-Product node $env:nodejs_version
 cache:
 - node_modules
 - '%USERPROFILE%\.nuget\packages'
 build_script:
 - cmd: msbuild Build.proj /p:Configuration=Release /t:UpdateBuildInfo,Build,Package
 test_script:
-- cmd: msbuild Build.proj /t:TestRegressions /p:Configuration=Release
+- cmd: msbuild Build.proj /t:Test /p:Configuration=Release
 artifacts:
 - path: _artifacts\*.msi
   name: Installer

@@ -14,6 +14,9 @@
   
   <ItemGroup>
     <BundleFxAssemblies Include="$(MonoFrameworkPath)/*.dll" />
+    <BundleFxAssemblies Remove="$(MonoFrameworkPath)/Java.Interop.Tools.*.dll" />
+    <BundleFxAssemblies Remove="$(MonoFrameworkPath)/Xamarin.Android.Cecil*.dll" />
+    <BundleFxAssemblies Remove="$(MonoFrameworkPath)/Xamarin.Android.Tools.*.dll" />
   </ItemGroup>
   
   <ItemGroup>
