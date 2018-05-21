@@ -28,7 +28,7 @@ namespace Xamarin.Interactive.Client.Web.Controllers
             => this.referenceWhitelist = referenceWhitelist;
 
         [Route ("get")]
-        public async Task<ActionResult> GetAssembly (string path)
+        public ActionResult GetAssembly (string path)
         {
             path = Uri.UnescapeDataString (path);
             var filePath = new FilePath (path);
