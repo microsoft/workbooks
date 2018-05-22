@@ -73,7 +73,7 @@ namespace Xamarin.Interactive.CodeAnalysis.Evaluating
 
         public void Add (AssemblyDependency externalDependency)
         {
-            ExternalDependencyMap [externalDependency.Location.Name] = externalDependency.Location;
+            ExternalDependencyMap [externalDependency.Name] = externalDependency.Location;
         }
     }
 }
