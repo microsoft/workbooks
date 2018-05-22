@@ -43,7 +43,8 @@
     <Compile Include="ToolsFiles.wxs" />
     <Compile Include="iOSWorkbookAppFiles.wxs" />
     <Compile Include="AndroidAgentAppAssemblies.wxs" />
-    <Compile Include="DotNetCoreAgentAppFiles.wxs" />
+    <Compile Include="DotNetCoreAgentAppFiles-win-x86.wxs" />
+    <Compile Include="DotNetCoreAgentAppFiles-win-x64.wxs" />
   </ItemGroup>
   <ItemGroup>
     <WixExtension Include="WixVSExtension">
