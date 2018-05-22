@@ -72,9 +72,6 @@ namespace Xamarin.Interactive.DotNetCore
             {
                 Log.Info (TAG, $"Requested unmanaged DLL load for {unmanagedDllName}.");
 
-                // HACK: Try a bunch of names here…
-                unmanagedDllName = unmanagedDllName + ".dylib";
-
                 if (!evaluationAssemblyContext.ExternalDependencyMap.ContainsKey (unmanagedDllName)) {
                     Log.Info (TAG, $"Don't know where to load this from, falling back to base.");
                     return base.LoadUnmanagedDll (unmanagedDllName);
