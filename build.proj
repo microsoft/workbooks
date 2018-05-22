@@ -180,8 +180,10 @@
     Name="Restore"
     DependsOnTargets="@(ProfileTargets)">
     <Message Importance="High" Text="Restoring NuGet packages for $(SolutionFileRelative)..."/>
+    <!-- See https://github.com/Microsoft/msbuild/issues/2455 -->
     <MSBuild
       Projects="$(SolutionFile)"
+      Properties="_TrickyTricky=SoWeDontNeedRestoreFlag"
       Targets="Restore"/>
   </Target>
 
