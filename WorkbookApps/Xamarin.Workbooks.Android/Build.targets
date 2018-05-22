@@ -35,6 +35,25 @@
       SourceFiles="@(FrameworkFiles)"
       DestinationFolder="$(InstallDir)Android\Framework\%(RecursiveDir)"/>
 
+    <!--
+      Once again, Xamarin.Android has removed something from its Framework
+      bundle in a newer version that was previously there. Because AppVeyor
+      and VSTS are not exactly in sync, this file exists in the AppVeyor build
+      but no longer in the VSTS build (which results in a failure because the
+      file is declared in the WiX manifest, but doesn't exist).
+
+      This one makes sense - System.Runtime.InteropServices.RuntimeInformation
+      is a facade. It now only exists in the Facades directory, where previously
+      it was both in the main framework directory *and* the Facades directory.
+
+      History log for similar problems with Xamarin.Android:
+
+      March 23, 2018 - System.Reflection.Primitives.dll:
+        https://github.com/Microsoft/workbooks/commit/08ec163e4fcccbf45305dd52f0bef21c2b44dd2d
+    -->
+    <Delete
+      Files="$(InstallDir)Android\Framework\System.Runtime.InteropServices.RuntimeInformation.dll"/>
+
     <!-- Android workbook app files -->
     <UpdateWixManifest
       SourceDirectory="$(InstallDir)Android\Framework"
