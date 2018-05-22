@@ -109,49 +109,37 @@ namespace Xamarin.Interactive.Unified
         {
             represented = null;
 
-            if (TryFindMatchingRepresentation<CGColor, Color> (
+            if (TryConvertRepresentation<CGColor, Color> (
                 representedType,
                 representations,
-                out var color)) {
-                represented = new CGColor (
-                    (nfloat)color.Red,
-                    (nfloat)color.Green,
-                    (nfloat)color.Blue,
-                    (nfloat)color.Alpha);
-                return true;
-            }
+                out represented,
+                c => new CGColor (
+                    (nfloat)c.Red,
+                    (nfloat)c.Green,
+                    (nfloat)c.Blue,
+                    (nfloat)c.Alpha)))
+               return true;
 
-            if (TryFindMatchingRepresentation<CGSize, Size> (
+            if (TryConvertRepresentation<CGSize, Size> (
                 representedType,
                 representations,
-                out var size)) {
-                represented = new CGSize (
-                    size.Width,
-                    size.Height);
+                out represented,
+                s => new CGSize (s.Width, s.Height)))
                 return true;
-            }
 
-            if (TryFindMatchingRepresentation<CGRect, Rectangle> (
+            if (TryConvertRepresentation<CGRect, Rectangle> (
                 representedType,
                 representations,
-                out var rect)) {
-                represented = new CGRect (
-                    rect.X,
-                    rect.Y,
-                    rect.Width,
-                    rect.Height);
+                out represented,
+                r => new CGRect (r.X, r.Y, r.Width, r.Height)))
                 return true;
-            }
 
-            if (TryFindMatchingRepresentation<CGPoint, Point> (
+            if (TryConvertRepresentation<CGPoint, Point> (
                 representedType,
                 representations,
-                out var point)) {
-                represented = new CGPoint (
-                    point.X,
-                    point.Y);
+                out represented,
+                p => new CGPoint (x: p.X, y: p.Y)))
                 return true;
-            }
 
             return base.TryConvertFromRepresentation (
                 representedType,

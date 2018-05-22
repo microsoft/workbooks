@@ -112,57 +112,54 @@ namespace Xamarin.Interactive.Wpf
         {
             represented = null;
 
-            if (TryFindMatchingRepresentation<SW.Size, XIR.Size> (
+            if (TryConvertRepresentation<SW.Size, XIR.Size> (
                 representedType,
                 representations,
-                out var size)) {
-                represented = new SW.Size (size.Width, size.Height);
+                out represented,
+                size => new SW.Size (
+                    width: size.Width,
+                    height: size.Height)))
                 return true;
-            }
 
-            if (TryFindMatchingRepresentation<SW.Rect, XIR.Rectangle> (
+            if (TryConvertRepresentation<SW.Rect, XIR.Rectangle> (
                 representedType,
                 representations,
-                out var rectangle)) {
-                represented = new SW.Rect (
-                    rectangle.X,
-                    rectangle.Y,
-                    rectangle.Width,
-                    rectangle.Height);
+                out represented,
+                rectangle => new SW.Rect (
+                    x: rectangle.X,
+                    y: rectangle.Y,
+                    width: rectangle.Width,
+                    height: rectangle.Height)))
                 return true;
-            }
 
-            if (TryFindMatchingRepresentation<SW.Point, XIR.Point> (
+            if (TryConvertRepresentation<SW.Point, XIR.Point> (
                 representedType,
                 representations,
-                out var point)) {
-                represented = new SW.Point (point.X, point.Y);
+                out represented, 
+                point => new SW.Point (x: point.X, y: point.Y)))
                 return true;
-            }
 
-            if (TryFindMatchingRepresentation<SW.Thickness, XIR.Thickness> (
+            if (TryConvertRepresentation<SW.Thickness, XIR.Thickness> (
                 representedType,
                 representations,
-                out var thickness)) {
-                represented = new SW.Thickness (
-                    thickness.Left,
-                    thickness.Top,
-                    thickness.Right,
-                    thickness.Bottom);
+                out represented,
+                thickness => new SW.Thickness (
+                    left: thickness.Left,
+                    top: thickness.Top,
+                    right: thickness.Right,
+                    bottom: thickness.Bottom)))
                 return true;
-            }
 
-            if (TryFindMatchingRepresentation<SWM.Color, XIR.Color> (
+            if (TryConvertRepresentation<SWM.Color, XIR.Color> (
                 representedType,
                 representations,
-                out var color)) {
-                represented = SWM.Color.FromArgb (
-                    (byte)(color.Alpha * 255),
-                    (byte)(color.Red * 255),
-                    (byte)(color.Green * 255),
-                    (byte)(color.Blue * 255));
+                out represented,
+                color => SWM.Color.FromArgb (
+                    a: (byte)(color.Alpha * 255),
+                    r: (byte)(color.Red * 255),
+                    g: (byte)(color.Green * 255),
+                    b: (byte)(color.Blue * 255))))
                 return true;
-            }
 
             return base.TryConvertFromRepresentation (
                 representedType,

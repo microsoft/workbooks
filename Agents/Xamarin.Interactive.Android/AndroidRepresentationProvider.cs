@@ -47,18 +47,16 @@ namespace Xamarin.Interactive.Android
             object [] representations,
             out object represented)
         {
-            Color color;
-            if (TryFindMatchingRepresentation<AG.Color, Color> (
+            if (TryConvertRepresentation<AG.Color, Color> (
                 representedType,
                 representations,
-                out color)) {
-                represented = new AG.Color (
-                    (byte)(color.Red * 255),
-                    (byte)(color.Green * 255),
-                    (byte)(color.Blue * 255),
-                    (byte)(color.Alpha * 255));
+                out represented,
+                color => new AG.Color (
+                    r: (byte)(color.Red * 255),
+                    g: (byte)(color.Green * 255),
+                    b: (byte)(color.Blue * 255),
+                    a: (byte)(color.Alpha * 255))))
                 return true;
-            }
 
             return base.TryConvertFromRepresentation (
                 representedType,
