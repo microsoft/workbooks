@@ -62,6 +62,8 @@ namespace Xamarin.MSBuild
                     Path.GetDirectoryName (fullSourceDirectoryName),
                     Path.GetFileName (RenameBaseDirectoryTo));
 
+                if (Directory.Exists (sourceDirectoryName))
+                    Directory.Delete (sourceDirectoryName, recursive: true);
                 Directory.Move (fullSourceDirectoryName, sourceDirectoryName);
             }
 
@@ -71,6 +73,8 @@ namespace Xamarin.MSBuild
                 DestinationArchiveFileName);
 
             Directory.CreateDirectory (Path.GetDirectoryName (DestinationArchiveFileName));
+            if (File.Exists (DestinationArchiveFileName))
+                File.Delete (DestinationArchiveFileName);
 
             ZipFile.CreateFromDirectory (
                 sourceDirectoryName,
