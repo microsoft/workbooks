@@ -1,21 +1,35 @@
 <Project>
   <Import Project="..\WorkbookApp.targets" />
 
-  <PropertyGroup>
-    <RuntimeIdentifier Condition=" '$(OS)' != 'Unix' ">win-x86</RuntimeIdentifier>
-    <RuntimeIdentifier Condition=" '$(OS)' == 'Unix' ">osx.10.11-x64</RuntimeIdentifier>
-  </PropertyGroup>
+  <Target
+    Name="InstallAll"
+    AfterTargets="Build">
+    <ItemGroup>
+      <RuntimeIdentifierItems Include="$(RuntimeIdentifiers)"/>
+    </ItemGroup>
+    <MSBuild
+      Projects="$(MSBuildProjectFullPath)"
+      Targets="Install"
+      Properties="BuildProjectReferences=false;RuntimeIdentifier=%(RuntimeIdentifierItems.Identity)"/>
+  </Target>
 
   <Target
     Name="Install"
-    AfterTargets="Build"
-    DependsOnTargets="Publish">
+    DependsOnTargets="
+      CoreBuild;
+      ResolveReferences;
+      ComputeAndCopyFilesToPublishDirectory;
+      GeneratePublishDependencyFile;
+      GeneratePublishRuntimeConfigurationFile">
     <ItemGroup>
       <InstallFiles Include="$(OutputPath)\publish\**\*"/>
     </ItemGroup>
 
     <PropertyGroup>
-      <AppFileExtension Condition=" '$(OS)' == 'Windows_NT' ">.exe</AppFileExtension>
+      <RelativeInstallDir>DotNetCore\$(RuntimeIdentifier)\</RelativeInstallDir>
+      <ManifestInstallDir>DotNetCore\{rid}\</ManifestInstallDir>
+      <AppFileExtension Condition="$([MSBuild]::IsOsPlatform('Windows'))">.exe</AppFileExtension>
+      <WixSafeRuntimeIdentifier>$(RuntimeIdentifier.Replace('-',''))</WixSafeRuntimeIdentifier>
     </PropertyGroup>
 
     <GenerateWorkbookAppManifest
@@ -23,8 +37,8 @@
       Flavor="Console"
       Order="200"
       Icon="project-netcore-console"
-      AppPath="DotNetCore\$(AssemblyName)$(AppFileExtension)"
-      AssemblySearchPaths="DotNetCore"
+      AppPath="$(ManifestInstallDir)$(AssemblyName)$(AppFileExtension)"
+      AssemblySearchPaths="$(ManifestInstallDir)"
       SdkName=".NET Core"
       SdkVersion="@GlobalJsonSdkVersion,..\..\global.json"
       TargetFrameworkIdentifier="$(TargetFrameworkIdentifier)"
@@ -33,19 +47,20 @@
     <Copy
       SkipUnchangedFiles="true"
       SourceFiles="@(InstallFiles)"
-      DestinationFolder="$(InstallDir)DotNetCore\%(RecursiveDir)"/>
+      DestinationFolder="$(InstallDir)$(RelativeInstallDir)%(RecursiveDir)"/>
 
     <Exec
-      Condition=" '$(OS)' == 'Unix' And $(RuntimeIdentifier.StartsWith('osx'))"
-      Command="chmod +x &quot;$(InstallDir)DotNetCore/$(AssemblyName)&quot;"
+      Condition="$([MSBuild]::IsOSUnixLike()) And !$(RuntimeIdentifier.StartsWith('win'))"
+      Command="chmod +x &quot;$([MSBuild]::NormalizePath($(InstallDir)$(RelativeInstallDir)$(AssemblyName)))&quot;"
       />
 
     <UpdateWixManifest
-      SourceDirectory="$(InstallDir)DotNetCore"
-      InputManifestPath="..\..\Package\Windows\DotNetCoreAgentAppFiles.wxs"
+      Condition="$([MSBuild]::IsOsPlatform('Windows'))"
+      SourceDirectory="$(InstallDir)$(RelativeInstallDir)"
+      InputManifestPath="..\..\Package\Windows\DotNetCoreAgentAppFiles-$(RuntimeIdentifier).wxs"
       DirectoryVariable="DotNetCoreAssembliesDir"
-      ComponentGroupId="DotNetCoreAgentAppComponents"
-      IdPrefix="DotNetCoreAgentApp"
+      ComponentGroupId="DotNetCoreAgentAppComponents$(WixSafeRuntimeIdentifier)"
+      IdPrefix="DNCAgentApp$(WixSafeRuntimeIdentifier)"
       IncludedExtensions="dll;json;exe"/>
   </Target>
 </Project>
