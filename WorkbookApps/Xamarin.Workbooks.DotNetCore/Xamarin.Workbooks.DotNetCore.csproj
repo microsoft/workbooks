@@ -2,7 +2,9 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp2.0</TargetFramework>
-    <RuntimeIdentifiers>win-x86;osx.10.11-x64</RuntimeIdentifiers>
+    <RuntimeIdentifiers Condition="$([MSBuild]::IsOsPlatform('Windows'))">win-x86;win-x64</RuntimeIdentifiers>
+    <RuntimeIdentifiers Condition="$([MSBuild]::IsOsPlatform('OSX'))">osx.10.11-x64</RuntimeIdentifiers>
+    <RuntimeIdentifiers Condition="$([MSBuild]::IsOsPlatform('Linux'))">linux-x64</RuntimeIdentifiers>
   </PropertyGroup>
 
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
