@@ -91,6 +91,37 @@ namespace Xamarin.Interactive
 
         SynchronizationContext PushContext (SynchronizationContext context);
     }
+    [Serializable]
+    public struct Runtime : IEquatable<Runtime>
+    {
+        public Architecture? Architecture {
+            get;
+        }
+
+        public static Runtime CurrentProcessRuntime {
+            get;
+        }
+
+        public OSPlatform OSPlatform {
+            get;
+        }
+
+        public string RuntimeIdentifier {
+            get;
+        }
+
+        public Runtime (OSPlatform osPlatform, Architecture? architecture = null, string runtimeIdentifier = null);
+
+        public bool Equals (Runtime other);
+
+        public override bool Equals (object obj);
+
+        public override int GetHashCode ();
+
+        public override string ToString ();
+
+        public Runtime WithRuntimeIdentifier (string runtimeIdentifier);
+    }
 }
 namespace Xamarin.Interactive.CodeAnalysis
 {

@@ -40,7 +40,7 @@ namespace Xamarin.Interactive.iOS
                 return null;
 
             var ptr = IntPtr_objc_msgSend (app.Handle, Selectors.statusBarWindow.Handle);
-            return ptr != IntPtr.Zero ? (UIWindow)Runtime.GetNSObject (ptr) : null;
+            return ptr != IntPtr.Zero ? (UIWindow)ObjCRuntime.Runtime.GetNSObject (ptr) : null;
         }
 
         public static void TryHideStatusClockView (this UIApplication app)
