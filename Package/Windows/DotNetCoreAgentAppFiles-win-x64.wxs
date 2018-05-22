@@ -1,0 +1,663 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <Fragment>
+    <!-- Build our own target directory path here because WiX is wrong about .NET Core projects. It wants to do `bin\x86\<Configuration>`. -->
+    <?define DotNetCoreAssembliesDir="..\..\_build\$(var.Configuration)\WorkbookApps\DotNetCore\win-x64" ?>
+    <ComponentGroup Id="DotNetCoreAgentAppComponentswinx64" Directory="DotNetCoreAgentAppInstallFolderwinx64">
+      <Component Id="DNCAgentAppwinx64.api_ms_win_core_console_l1_1_0.dll" Guid="312248D1-49A1-4A9D-B2DA-7C263742504C">
+        <File Id="DNCAgentAppwinx64.api_ms_win_core_console_l1_1_0.dll" Source="$(var.DotNetCoreAssembliesDir)\api-ms-win-core-console-l1-1-0.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.api_ms_win_core_datetime_l1_1_0.dll" Guid="9168CFC1-BE85-438C-A22C-3A4D65826E91">
+        <File Id="DNCAgentAppwinx64.api_ms_win_core_datetime_l1_1_0.dll" Source="$(var.DotNetCoreAssembliesDir)\api-ms-win-core-datetime-l1-1-0.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.api_ms_win_core_debug_l1_1_0.dll" Guid="FF85C862-3058-43E9-B64E-7538EB737D89">
+        <File Id="DNCAgentAppwinx64.api_ms_win_core_debug_l1_1_0.dll" Source="$(var.DotNetCoreAssembliesDir)\api-ms-win-core-debug-l1-1-0.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.api_ms_win_core_errorhandling_l1_1_0.dll" Guid="9F9C95B0-CB69-417B-86F7-10D9AE3E3B5A">
+        <File Id="DNCAgentAppwinx64.api_ms_win_core_errorhandling_l1_1_0.dll" Source="$(var.DotNetCoreAssembliesDir)\api-ms-win-core-errorhandling-l1-1-0.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.api_ms_win_core_file_l1_1_0.dll" Guid="35DB8E46-3020-4A77-B85F-CA25C9C95449">
+        <File Id="DNCAgentAppwinx64.api_ms_win_core_file_l1_1_0.dll" Source="$(var.DotNetCoreAssembliesDir)\api-ms-win-core-file-l1-1-0.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.api_ms_win_core_file_l1_2_0.dll" Guid="CDEF4DB4-FF28-4EEA-A0FC-3C78A10E1A7C">
+        <File Id="DNCAgentAppwinx64.api_ms_win_core_file_l1_2_0.dll" Source="$(var.DotNetCoreAssembliesDir)\api-ms-win-core-file-l1-2-0.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.api_ms_win_core_file_l2_1_0.dll" Guid="05A20A6D-7B1A-482A-AD70-A84E67D1F7CA">
+        <File Id="DNCAgentAppwinx64.api_ms_win_core_file_l2_1_0.dll" Source="$(var.DotNetCoreAssembliesDir)\api-ms-win-core-file-l2-1-0.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.api_ms_win_core_handle_l1_1_0.dll" Guid="0BC1A99F-FAA1-4A57-9795-1E6C22122D21">
+        <File Id="DNCAgentAppwinx64.api_ms_win_core_handle_l1_1_0.dll" Source="$(var.DotNetCoreAssembliesDir)\api-ms-win-core-handle-l1-1-0.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.api_ms_win_core_heap_l1_1_0.dll" Guid="BCCCF743-0563-4C13-99AA-5A33B041A59B">
+        <File Id="DNCAgentAppwinx64.api_ms_win_core_heap_l1_1_0.dll" Source="$(var.DotNetCoreAssembliesDir)\api-ms-win-core-heap-l1-1-0.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.api_ms_win_core_interlocked_l1_1_0.dll" Guid="91203671-A4C5-495E-AACE-315DE1D8E96A">
+        <File Id="DNCAgentAppwinx64.api_ms_win_core_interlocked_l1_1_0.dll" Source="$(var.DotNetCoreAssembliesDir)\api-ms-win-core-interlocked-l1-1-0.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.api_ms_win_core_libraryloader_l1_1_0.dll" Guid="CFF11D02-3C0F-4E2A-AB88-905629B8D634">
+        <File Id="DNCAgentAppwinx64.api_ms_win_core_libraryloader_l1_1_0.dll" Source="$(var.DotNetCoreAssembliesDir)\api-ms-win-core-libraryloader-l1-1-0.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.api_ms_win_core_localization_l1_2_0.dll" Guid="78B80D73-BFB2-4AAC-AB60-74AC4C86AE9B">
+        <File Id="DNCAgentAppwinx64.api_ms_win_core_localization_l1_2_0.dll" Source="$(var.DotNetCoreAssembliesDir)\api-ms-win-core-localization-l1-2-0.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.api_ms_win_core_memory_l1_1_0.dll" Guid="F88CAD2F-3BB6-4549-AC25-511E0CA51752">
+        <File Id="DNCAgentAppwinx64.api_ms_win_core_memory_l1_1_0.dll" Source="$(var.DotNetCoreAssembliesDir)\api-ms-win-core-memory-l1-1-0.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.api_ms_win_core_namedpipe_l1_1_0.dll" Guid="AFB9ABA6-3ADE-4D26-9DAD-AE356F98BE24">
+        <File Id="DNCAgentAppwinx64.api_ms_win_core_namedpipe_l1_1_0.dll" Source="$(var.DotNetCoreAssembliesDir)\api-ms-win-core-namedpipe-l1-1-0.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.api_ms_win_core_processenvironment_l1_1_0.dll" Guid="41E8B17A-7374-44CD-BEA4-9F30C8F0148E">
+        <File Id="DNCAgentAppwinx64.api_ms_win_core_processenvironment_l1_1_0.dll" Source="$(var.DotNetCoreAssembliesDir)\api-ms-win-core-processenvironment-l1-1-0.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.api_ms_win_core_processthreads_l1_1_0.dll" Guid="853E31A0-AE0C-43B3-A47B-185D83FD63EE">
+        <File Id="DNCAgentAppwinx64.api_ms_win_core_processthreads_l1_1_0.dll" Source="$(var.DotNetCoreAssembliesDir)\api-ms-win-core-processthreads-l1-1-0.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.api_ms_win_core_processthreads_l1_1_1.dll" Guid="67DB510E-0C3D-41E9-A321-D43D3BBBA95A">
+        <File Id="DNCAgentAppwinx64.api_ms_win_core_processthreads_l1_1_1.dll" Source="$(var.DotNetCoreAssembliesDir)\api-ms-win-core-processthreads-l1-1-1.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.api_ms_win_core_profile_l1_1_0.dll" Guid="11F28ED5-03B0-4869-A6B7-D94FEDE69843">
+        <File Id="DNCAgentAppwinx64.api_ms_win_core_profile_l1_1_0.dll" Source="$(var.DotNetCoreAssembliesDir)\api-ms-win-core-profile-l1-1-0.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.api_ms_win_core_rtlsupport_l1_1_0.dll" Guid="905567E1-58D5-4085-8B57-C840526F4F0A">
+        <File Id="DNCAgentAppwinx64.api_ms_win_core_rtlsupport_l1_1_0.dll" Source="$(var.DotNetCoreAssembliesDir)\api-ms-win-core-rtlsupport-l1-1-0.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.api_ms_win_core_string_l1_1_0.dll" Guid="2279B770-3531-4E15-BA40-3CD012CE6D52">
+        <File Id="DNCAgentAppwinx64.api_ms_win_core_string_l1_1_0.dll" Source="$(var.DotNetCoreAssembliesDir)\api-ms-win-core-string-l1-1-0.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.api_ms_win_core_synch_l1_1_0.dll" Guid="969BCD92-B7E6-49BA-B46A-A2A3649CAF6E">
+        <File Id="DNCAgentAppwinx64.api_ms_win_core_synch_l1_1_0.dll" Source="$(var.DotNetCoreAssembliesDir)\api-ms-win-core-synch-l1-1-0.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.api_ms_win_core_synch_l1_2_0.dll" Guid="FFC12BA9-3F6F-48EC-873E-06B21C256BD9">
+        <File Id="DNCAgentAppwinx64.api_ms_win_core_synch_l1_2_0.dll" Source="$(var.DotNetCoreAssembliesDir)\api-ms-win-core-synch-l1-2-0.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.api_ms_win_core_sysinfo_l1_1_0.dll" Guid="85C7CEDC-0B85-4E55-BF64-6216B723C0C3">
+        <File Id="DNCAgentAppwinx64.api_ms_win_core_sysinfo_l1_1_0.dll" Source="$(var.DotNetCoreAssembliesDir)\api-ms-win-core-sysinfo-l1-1-0.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.api_ms_win_core_timezone_l1_1_0.dll" Guid="EB671E82-8A44-4682-AEE6-4A41EF980D6E">
+        <File Id="DNCAgentAppwinx64.api_ms_win_core_timezone_l1_1_0.dll" Source="$(var.DotNetCoreAssembliesDir)\api-ms-win-core-timezone-l1-1-0.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.api_ms_win_core_util_l1_1_0.dll" Guid="5F478C51-88B0-435F-B44B-0DA60191E9A2">
+        <File Id="DNCAgentAppwinx64.api_ms_win_core_util_l1_1_0.dll" Source="$(var.DotNetCoreAssembliesDir)\api-ms-win-core-util-l1-1-0.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.api_ms_win_crt_conio_l1_1_0.dll" Guid="3E85B4CB-1D1A-4A6B-8AAF-E72D715F5016">
+        <File Id="DNCAgentAppwinx64.api_ms_win_crt_conio_l1_1_0.dll" Source="$(var.DotNetCoreAssembliesDir)\api-ms-win-crt-conio-l1-1-0.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.api_ms_win_crt_convert_l1_1_0.dll" Guid="2054275D-02EF-4AC7-809C-4277D2AE0D62">
+        <File Id="DNCAgentAppwinx64.api_ms_win_crt_convert_l1_1_0.dll" Source="$(var.DotNetCoreAssembliesDir)\api-ms-win-crt-convert-l1-1-0.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.api_ms_win_crt_environment_l1_1_0.dll" Guid="51014192-2764-493C-8EDF-5356E1958C49">
+        <File Id="DNCAgentAppwinx64.api_ms_win_crt_environment_l1_1_0.dll" Source="$(var.DotNetCoreAssembliesDir)\api-ms-win-crt-environment-l1-1-0.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.api_ms_win_crt_filesystem_l1_1_0.dll" Guid="05F71420-C870-4F6F-AE1D-2F8C8E259318">
+        <File Id="DNCAgentAppwinx64.api_ms_win_crt_filesystem_l1_1_0.dll" Source="$(var.DotNetCoreAssembliesDir)\api-ms-win-crt-filesystem-l1-1-0.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.api_ms_win_crt_heap_l1_1_0.dll" Guid="9EFE9C77-E989-47CC-AE21-D92F4267AED7">
+        <File Id="DNCAgentAppwinx64.api_ms_win_crt_heap_l1_1_0.dll" Source="$(var.DotNetCoreAssembliesDir)\api-ms-win-crt-heap-l1-1-0.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.api_ms_win_crt_locale_l1_1_0.dll" Guid="72E11DE5-0E50-4F27-98C0-7D2D14D58182">
+        <File Id="DNCAgentAppwinx64.api_ms_win_crt_locale_l1_1_0.dll" Source="$(var.DotNetCoreAssembliesDir)\api-ms-win-crt-locale-l1-1-0.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.api_ms_win_crt_math_l1_1_0.dll" Guid="DDD76B69-A543-4D93-9816-4747A9FE2163">
+        <File Id="DNCAgentAppwinx64.api_ms_win_crt_math_l1_1_0.dll" Source="$(var.DotNetCoreAssembliesDir)\api-ms-win-crt-math-l1-1-0.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.api_ms_win_crt_multibyte_l1_1_0.dll" Guid="4352C306-5343-4DC4-A487-44B9DBAAC9B4">
+        <File Id="DNCAgentAppwinx64.api_ms_win_crt_multibyte_l1_1_0.dll" Source="$(var.DotNetCoreAssembliesDir)\api-ms-win-crt-multibyte-l1-1-0.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.api_ms_win_crt_private_l1_1_0.dll" Guid="D0482D4A-CCCE-4A7F-A2BD-266612C15280">
+        <File Id="DNCAgentAppwinx64.api_ms_win_crt_private_l1_1_0.dll" Source="$(var.DotNetCoreAssembliesDir)\api-ms-win-crt-private-l1-1-0.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.api_ms_win_crt_process_l1_1_0.dll" Guid="9FA2CE48-48CD-4639-8190-60991E01B1D7">
+        <File Id="DNCAgentAppwinx64.api_ms_win_crt_process_l1_1_0.dll" Source="$(var.DotNetCoreAssembliesDir)\api-ms-win-crt-process-l1-1-0.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.api_ms_win_crt_runtime_l1_1_0.dll" Guid="A53F58FD-BE41-4E34-94F2-A63772710030">
+        <File Id="DNCAgentAppwinx64.api_ms_win_crt_runtime_l1_1_0.dll" Source="$(var.DotNetCoreAssembliesDir)\api-ms-win-crt-runtime-l1-1-0.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.api_ms_win_crt_stdio_l1_1_0.dll" Guid="266FF797-9A52-49D6-BFF8-85F6EF0A4184">
+        <File Id="DNCAgentAppwinx64.api_ms_win_crt_stdio_l1_1_0.dll" Source="$(var.DotNetCoreAssembliesDir)\api-ms-win-crt-stdio-l1-1-0.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.api_ms_win_crt_string_l1_1_0.dll" Guid="DAF5F246-7575-43E6-B789-0F2ED2B653EF">
+        <File Id="DNCAgentAppwinx64.api_ms_win_crt_string_l1_1_0.dll" Source="$(var.DotNetCoreAssembliesDir)\api-ms-win-crt-string-l1-1-0.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.api_ms_win_crt_time_l1_1_0.dll" Guid="C79904B5-F121-436F-9655-ACBE28E1E554">
+        <File Id="DNCAgentAppwinx64.api_ms_win_crt_time_l1_1_0.dll" Source="$(var.DotNetCoreAssembliesDir)\api-ms-win-crt-time-l1-1-0.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.api_ms_win_crt_utility_l1_1_0.dll" Guid="07243946-A097-44C4-A6C5-AC1A225653E7">
+        <File Id="DNCAgentAppwinx64.api_ms_win_crt_utility_l1_1_0.dll" Source="$(var.DotNetCoreAssembliesDir)\api-ms-win-crt-utility-l1-1-0.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.clrcompression.dll" Guid="526B7C71-6261-4F37-9589-E9A47E3F341C">
+        <File Id="DNCAgentAppwinx64.clrcompression.dll" Source="$(var.DotNetCoreAssembliesDir)\clrcompression.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.clretwrc.dll" Guid="C823B867-9409-4157-8445-3E7D31647BF5">
+        <File Id="DNCAgentAppwinx64.clretwrc.dll" Source="$(var.DotNetCoreAssembliesDir)\clretwrc.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.clrjit.dll" Guid="1FA57103-CD5C-4CF0-897D-DF136A7A50B4">
+        <File Id="DNCAgentAppwinx64.clrjit.dll" Source="$(var.DotNetCoreAssembliesDir)\clrjit.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.coreclr.dll" Guid="C2055A48-1C9D-4A8C-9397-E7FAF158A20A">
+        <File Id="DNCAgentAppwinx64.coreclr.dll" Source="$(var.DotNetCoreAssembliesDir)\coreclr.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.dbgshim.dll" Guid="F0CB8836-1F6E-4BF7-9CA0-1EF6A4E32DA8">
+        <File Id="DNCAgentAppwinx64.dbgshim.dll" Source="$(var.DotNetCoreAssembliesDir)\dbgshim.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.hostfxr.dll" Guid="DB986251-2267-49D6-8FEE-8D6DE680F120">
+        <File Id="DNCAgentAppwinx64.hostfxr.dll" Source="$(var.DotNetCoreAssembliesDir)\hostfxr.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.hostpolicy.dll" Guid="B501B4BC-03C6-4B79-8D32-D3849AC6FFD5">
+        <File Id="DNCAgentAppwinx64.hostpolicy.dll" Source="$(var.DotNetCoreAssembliesDir)\hostpolicy.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.Microsoft.CSharp.dll" Guid="86BCD00C-DBD1-47E4-BBB1-00B1421CAFDF">
+        <File Id="DNCAgentAppwinx64.Microsoft.CSharp.dll" Source="$(var.DotNetCoreAssembliesDir)\Microsoft.CSharp.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.Microsoft.DiaSymReader.Native.amd64.dll" Guid="843E904E-696E-4778-B88C-3AD3B0109499">
+        <File Id="DNCAgentAppwinx64.Microsoft.DiaSymReader.Native.amd64.dll" Source="$(var.DotNetCoreAssembliesDir)\Microsoft.DiaSymReader.Native.amd64.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.Microsoft.VisualBasic.dll" Guid="3F0F4652-D9C5-4343-A2B2-E9EE7F2C9FEB">
+        <File Id="DNCAgentAppwinx64.Microsoft.VisualBasic.dll" Source="$(var.DotNetCoreAssembliesDir)\Microsoft.VisualBasic.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.Microsoft.Win32.Primitives.dll" Guid="C9364E9D-75CC-48F3-B1C1-D35C531800FD">
+        <File Id="DNCAgentAppwinx64.Microsoft.Win32.Primitives.dll" Source="$(var.DotNetCoreAssembliesDir)\Microsoft.Win32.Primitives.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.Microsoft.Win32.Registry.dll" Guid="4EA6AFD1-2750-4AEC-97D1-E56AE808487A">
+        <File Id="DNCAgentAppwinx64.Microsoft.Win32.Registry.dll" Source="$(var.DotNetCoreAssembliesDir)\Microsoft.Win32.Registry.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.mscordaccore.dll" Guid="2BC15C7C-A29D-4464-9426-8E9B5A84C93E">
+        <File Id="DNCAgentAppwinx64.mscordaccore.dll" Source="$(var.DotNetCoreAssembliesDir)\mscordaccore.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.mscordaccore_amd64_amd64_4.6.00001.0.dll" Guid="1FF04645-C245-44F7-8C09-00F9F5EA8F8D">
+        <File Id="DNCAgentAppwinx64.mscordaccore_amd64_amd64_4.6.00001.0.dll" Source="$(var.DotNetCoreAssembliesDir)\mscordaccore_amd64_amd64_4.6.00001.0.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.mscordbi.dll" Guid="19AEE1AA-5B99-4825-A88F-56F9CDD2485C">
+        <File Id="DNCAgentAppwinx64.mscordbi.dll" Source="$(var.DotNetCoreAssembliesDir)\mscordbi.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.mscorlib.dll" Guid="48E8D0A1-BEC9-470D-AABF-5BA65CB19BC4">
+        <File Id="DNCAgentAppwinx64.mscorlib.dll" Source="$(var.DotNetCoreAssembliesDir)\mscorlib.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.mscorrc.debug.dll" Guid="5E2BEEF0-9CD6-400E-8A4A-56DBB05E3A96">
+        <File Id="DNCAgentAppwinx64.mscorrc.debug.dll" Source="$(var.DotNetCoreAssembliesDir)\mscorrc.debug.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.mscorrc.dll" Guid="89B389F1-0ED8-4FF3-A9C0-D90428305A38">
+        <File Id="DNCAgentAppwinx64.mscorrc.dll" Source="$(var.DotNetCoreAssembliesDir)\mscorrc.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.netstandard.dll" Guid="CEED5789-A988-410A-8B5C-9F1393ECF4F1">
+        <File Id="DNCAgentAppwinx64.netstandard.dll" Source="$(var.DotNetCoreAssembliesDir)\netstandard.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.sos.dll" Guid="445EAE02-B61E-4612-B33C-0AB37BD5E89C">
+        <File Id="DNCAgentAppwinx64.sos.dll" Source="$(var.DotNetCoreAssembliesDir)\sos.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.SOS.NETCore.dll" Guid="9E7B3F4F-3ECE-4A2B-A681-91E7B8800EF4">
+        <File Id="DNCAgentAppwinx64.SOS.NETCore.dll" Source="$(var.DotNetCoreAssembliesDir)\SOS.NETCore.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.sos_amd64_amd64_4.6.00001.0.dll" Guid="D5C66A48-4CB5-4D3C-8DB3-BCED120674C5">
+        <File Id="DNCAgentAppwinx64.sos_amd64_amd64_4.6.00001.0.dll" Source="$(var.DotNetCoreAssembliesDir)\sos_amd64_amd64_4.6.00001.0.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.System.AppContext.dll" Guid="E01E4D9A-8552-42CD-930C-00A61AEC399B">
+        <File Id="DNCAgentAppwinx64.System.AppContext.dll" Source="$(var.DotNetCoreAssembliesDir)\System.AppContext.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.System.Buffers.dll" Guid="2607D254-97B9-4C7D-A7E7-3CAB2D7841EE">
+        <File Id="DNCAgentAppwinx64.System.Buffers.dll" Source="$(var.DotNetCoreAssembliesDir)\System.Buffers.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.System.Collections.Concurrent.dll" Guid="6735B127-9E07-417A-A814-C366087877F4">
+        <File Id="DNCAgentAppwinx64.System.Collections.Concurrent.dll" Source="$(var.DotNetCoreAssembliesDir)\System.Collections.Concurrent.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.System.Collections.dll" Guid="3E184280-7652-443F-824A-776852BD9B33">
+        <File Id="DNCAgentAppwinx64.System.Collections.dll" Source="$(var.DotNetCoreAssembliesDir)\System.Collections.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.System.Collections.Immutable.dll" Guid="9F7DB004-5C05-46C7-864A-DBFFB80F8874">
+        <File Id="DNCAgentAppwinx64.System.Collections.Immutable.dll" Source="$(var.DotNetCoreAssembliesDir)\System.Collections.Immutable.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.System.Collections.NonGeneric.dll" Guid="B9BBDA92-F476-4701-A1E4-3D67B861DEFC">
+        <File Id="DNCAgentAppwinx64.System.Collections.NonGeneric.dll" Source="$(var.DotNetCoreAssembliesDir)\System.Collections.NonGeneric.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.System.Collections.Specialized.dll" Guid="44651935-D104-4C82-A376-1E24BBD8CC73">
+        <File Id="DNCAgentAppwinx64.System.Collections.Specialized.dll" Source="$(var.DotNetCoreAssembliesDir)\System.Collections.Specialized.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.System.ComponentModel.Annotations.dll" Guid="F6A70DCD-5DD0-42EE-9707-DC699DB87B56">
+        <File Id="DNCAgentAppwinx64.System.ComponentModel.Annotations.dll" Source="$(var.DotNetCoreAssembliesDir)\System.ComponentModel.Annotations.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.System.ComponentModel.Composition.dll" Guid="23A8E407-75E3-465A-BEEE-28B6D4668BFE">
+        <File Id="DNCAgentAppwinx64.System.ComponentModel.Composition.dll" Source="$(var.DotNetCoreAssembliesDir)\System.ComponentModel.Composition.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.System.ComponentModel.DataAnnotations.dll" Guid="91C71AA7-868E-42A2-AD99-A54211011457">
+        <File Id="DNCAgentAppwinx64.System.ComponentModel.DataAnnotations.dll" Source="$(var.DotNetCoreAssembliesDir)\System.ComponentModel.DataAnnotations.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.System.ComponentModel.dll" Guid="E5F2133A-2071-4D66-8DCD-4CA0B712E004">
+        <File Id="DNCAgentAppwinx64.System.ComponentModel.dll" Source="$(var.DotNetCoreAssembliesDir)\System.ComponentModel.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.System.ComponentModel.EventBasedAsync.dll" Guid="6862DB07-D556-4BB6-A591-3B3D78631885">
+        <File Id="DNCAgentAppwinx64.System.ComponentModel.EventBasedAsync.dll" Source="$(var.DotNetCoreAssembliesDir)\System.ComponentModel.EventBasedAsync.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.System.ComponentModel.Primitives.dll" Guid="BBC8D463-A528-4C95-93E5-8C8D6B76BCCB">
+        <File Id="DNCAgentAppwinx64.System.ComponentModel.Primitives.dll" Source="$(var.DotNetCoreAssembliesDir)\System.ComponentModel.Primitives.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.System.ComponentModel.TypeConverter.dll" Guid="842A2B7C-A05C-4EB5-800A-D6FCF1A4924B">
+        <File Id="DNCAgentAppwinx64.System.ComponentModel.TypeConverter.dll" Source="$(var.DotNetCoreAssembliesDir)\System.ComponentModel.TypeConverter.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.System.Configuration.dll" Guid="B90AE08C-C2C5-47A0-A279-FA2076BDACF7">
+        <File Id="DNCAgentAppwinx64.System.Configuration.dll" Source="$(var.DotNetCoreAssembliesDir)\System.Configuration.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.System.Console.dll" Guid="04F26BA2-8BD4-408A-9C5F-F9B1A6085F28">
+        <File Id="DNCAgentAppwinx64.System.Console.dll" Source="$(var.DotNetCoreAssembliesDir)\System.Console.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.System.Core.dll" Guid="509B5B70-1BCB-4EAA-8177-8853FB3D7F3B">
+        <File Id="DNCAgentAppwinx64.System.Core.dll" Source="$(var.DotNetCoreAssembliesDir)\System.Core.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.System.Data.Common.dll" Guid="61BC227B-23B8-4A5C-A5B5-C1F74E6B3C76">
+        <File Id="DNCAgentAppwinx64.System.Data.Common.dll" Source="$(var.DotNetCoreAssembliesDir)\System.Data.Common.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.System.Data.dll" Guid="EA4C3DC6-B0EF-4655-92DD-A85867E880DE">
+        <File Id="DNCAgentAppwinx64.System.Data.dll" Source="$(var.DotNetCoreAssembliesDir)\System.Data.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.System.Diagnostics.Contracts.dll" Guid="B104571F-9CCC-47D4-9DFD-300718084495">
+        <File Id="DNCAgentAppwinx64.System.Diagnostics.Contracts.dll" Source="$(var.DotNetCoreAssembliesDir)\System.Diagnostics.Contracts.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.System.Diagnostics.Debug.dll" Guid="343B858E-DA11-4F29-981D-4EBBB6D6FA31">
+        <File Id="DNCAgentAppwinx64.System.Diagnostics.Debug.dll" Source="$(var.DotNetCoreAssembliesDir)\System.Diagnostics.Debug.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.System.Diagnostics.DiagnosticSource.dll" Guid="6C7BEFA8-29A3-40BE-A219-B9CC120086CE">
+        <File Id="DNCAgentAppwinx64.System.Diagnostics.DiagnosticSource.dll" Source="$(var.DotNetCoreAssembliesDir)\System.Diagnostics.DiagnosticSource.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.System.Diagnostics.FileVersionInfo.dll" Guid="B48AA034-2F3F-4464-9F30-5CD5509D6D1F">
+        <File Id="DNCAgentAppwinx64.System.Diagnostics.FileVersionInfo.dll" Source="$(var.DotNetCoreAssembliesDir)\System.Diagnostics.FileVersionInfo.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.System.Diagnostics.Process.dll" Guid="47E6AB0F-7DFA-492C-8950-99C34F7CA88D">
+        <File Id="DNCAgentAppwinx64.System.Diagnostics.Process.dll" Source="$(var.DotNetCoreAssembliesDir)\System.Diagnostics.Process.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.System.Diagnostics.StackTrace.dll" Guid="F32F8165-95C3-4AB4-BC68-86DFF2C9F386">
+        <File Id="DNCAgentAppwinx64.System.Diagnostics.StackTrace.dll" Source="$(var.DotNetCoreAssembliesDir)\System.Diagnostics.StackTrace.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.System.Diagnostics.TextWriterTraceListener.dll" Guid="B502191C-D8D5-40B5-9A84-D69390127464">
+        <File Id="DNCAgentAppwinx64.System.Diagnostics.TextWriterTraceListener.dll" Source="$(var.DotNetCoreAssembliesDir)\System.Diagnostics.TextWriterTraceListener.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.System.Diagnostics.Tools.dll" Guid="B37BD2EC-083D-43E9-A1D4-243D4994D44D">
+        <File Id="DNCAgentAppwinx64.System.Diagnostics.Tools.dll" Source="$(var.DotNetCoreAssembliesDir)\System.Diagnostics.Tools.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.System.Diagnostics.TraceSource.dll" Guid="F08B66FE-EDD1-42CF-B458-26D041C92CDE">
+        <File Id="DNCAgentAppwinx64.System.Diagnostics.TraceSource.dll" Source="$(var.DotNetCoreAssembliesDir)\System.Diagnostics.TraceSource.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.System.Diagnostics.Tracing.dll" Guid="393EE869-CBD7-42A6-A1F8-64938DD9912F">
+        <File Id="DNCAgentAppwinx64.System.Diagnostics.Tracing.dll" Source="$(var.DotNetCoreAssembliesDir)\System.Diagnostics.Tracing.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.System.dll" Guid="2F6E4930-69D0-4FC2-BB9B-B374B4E0A96F">
+        <File Id="DNCAgentAppwinx64.System.dll" Source="$(var.DotNetCoreAssembliesDir)\System.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.System.Drawing.dll" Guid="43715EC1-450E-4A0E-B319-C058E529E5A4">
+        <File Id="DNCAgentAppwinx64.System.Drawing.dll" Source="$(var.DotNetCoreAssembliesDir)\System.Drawing.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.System.Drawing.Primitives.dll" Guid="96E01793-EDF7-47C6-9E92-20CDCDBF0787">
+        <File Id="DNCAgentAppwinx64.System.Drawing.Primitives.dll" Source="$(var.DotNetCoreAssembliesDir)\System.Drawing.Primitives.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.System.Dynamic.Runtime.dll" Guid="DDB9E8F8-26EA-47A3-AFEE-3B8A68A71504">
+        <File Id="DNCAgentAppwinx64.System.Dynamic.Runtime.dll" Source="$(var.DotNetCoreAssembliesDir)\System.Dynamic.Runtime.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.System.Globalization.Calendars.dll" Guid="E87C160E-61D9-4667-A9C9-33288BE3448F">
+        <File Id="DNCAgentAppwinx64.System.Globalization.Calendars.dll" Source="$(var.DotNetCoreAssembliesDir)\System.Globalization.Calendars.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.System.Globalization.dll" Guid="32DC739C-C05D-4513-A258-F7356582FFBA">
+        <File Id="DNCAgentAppwinx64.System.Globalization.dll" Source="$(var.DotNetCoreAssembliesDir)\System.Globalization.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.System.Globalization.Extensions.dll" Guid="0A49E3D3-52B2-4DF2-BA76-1F579AA8DF04">
+        <File Id="DNCAgentAppwinx64.System.Globalization.Extensions.dll" Source="$(var.DotNetCoreAssembliesDir)\System.Globalization.Extensions.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.System.IO.Compression.dll" Guid="995349E7-9624-4110-8944-3F38F7667131">
+        <File Id="DNCAgentAppwinx64.System.IO.Compression.dll" Source="$(var.DotNetCoreAssembliesDir)\System.IO.Compression.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.System.IO.Compression.FileSystem.dll" Guid="609A5A1F-24B7-49EB-AF35-7893CB509346">
+        <File Id="DNCAgentAppwinx64.System.IO.Compression.FileSystem.dll" Source="$(var.DotNetCoreAssembliesDir)\System.IO.Compression.FileSystem.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.System.IO.Compression.ZipFile.dll" Guid="AA61A265-CD16-4AA7-857F-AA1EE85A966D">
+        <File Id="DNCAgentAppwinx64.System.IO.Compression.ZipFile.dll" Source="$(var.DotNetCoreAssembliesDir)\System.IO.Compression.ZipFile.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.System.IO.dll" Guid="040695BB-43C1-43F9-9086-B170B5F46DFA">
+        <File Id="DNCAgentAppwinx64.System.IO.dll" Source="$(var.DotNetCoreAssembliesDir)\System.IO.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.System.IO.FileSystem.AccessControl.dll" Guid="C73F5AB3-7607-4DF4-BEB2-D918C0634E12">
+        <File Id="DNCAgentAppwinx64.System.IO.FileSystem.AccessControl.dll" Source="$(var.DotNetCoreAssembliesDir)\System.IO.FileSystem.AccessControl.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.System.IO.FileSystem.dll" Guid="E657B662-FD50-4722-BF85-0D8FA2EABEF5">
+        <File Id="DNCAgentAppwinx64.System.IO.FileSystem.dll" Source="$(var.DotNetCoreAssembliesDir)\System.IO.FileSystem.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.System.IO.FileSystem.DriveInfo.dll" Guid="8C34E144-C7F3-46DA-AE9A-97352BB5F3EC">
+        <File Id="DNCAgentAppwinx64.System.IO.FileSystem.DriveInfo.dll" Source="$(var.DotNetCoreAssembliesDir)\System.IO.FileSystem.DriveInfo.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.System.IO.FileSystem.Primitives.dll" Guid="6AEAABE4-21F9-4123-A3DB-C775DBA479EB">
+        <File Id="DNCAgentAppwinx64.System.IO.FileSystem.Primitives.dll" Source="$(var.DotNetCoreAssembliesDir)\System.IO.FileSystem.Primitives.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.System.IO.FileSystem.Watcher.dll" Guid="FF5D5B01-1D14-4ECF-A9F7-8EC61A9C567C">
+        <File Id="DNCAgentAppwinx64.System.IO.FileSystem.Watcher.dll" Source="$(var.DotNetCoreAssembliesDir)\System.IO.FileSystem.Watcher.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.System.IO.IsolatedStorage.dll" Guid="A8390300-3CE1-48D1-A127-A7E00F9B0F1D">
+        <File Id="DNCAgentAppwinx64.System.IO.IsolatedStorage.dll" Source="$(var.DotNetCoreAssembliesDir)\System.IO.IsolatedStorage.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.System.IO.MemoryMappedFiles.dll" Guid="A24D0BCD-2F8A-46E3-A73B-63C0D480F421">
+        <File Id="DNCAgentAppwinx64.System.IO.MemoryMappedFiles.dll" Source="$(var.DotNetCoreAssembliesDir)\System.IO.MemoryMappedFiles.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.System.IO.Pipes.dll" Guid="485DE162-CF10-4404-8B39-514737116CEF">
+        <File Id="DNCAgentAppwinx64.System.IO.Pipes.dll" Source="$(var.DotNetCoreAssembliesDir)\System.IO.Pipes.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.System.IO.UnmanagedMemoryStream.dll" Guid="4D5AC338-92A3-4A2D-8F98-D317D37F4EA7">
+        <File Id="DNCAgentAppwinx64.System.IO.UnmanagedMemoryStream.dll" Source="$(var.DotNetCoreAssembliesDir)\System.IO.UnmanagedMemoryStream.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.System.Linq.dll" Guid="5DE221C2-BEED-4DB2-B39D-57177090C3C8">
+        <File Id="DNCAgentAppwinx64.System.Linq.dll" Source="$(var.DotNetCoreAssembliesDir)\System.Linq.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.System.Linq.Expressions.dll" Guid="AD51A910-E003-4C3B-BA82-9306E50C25F5">
+        <File Id="DNCAgentAppwinx64.System.Linq.Expressions.dll" Source="$(var.DotNetCoreAssembliesDir)\System.Linq.Expressions.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.System.Linq.Parallel.dll" Guid="88F5F0C1-B09B-465E-906C-4602A5B2D01C">
+        <File Id="DNCAgentAppwinx64.System.Linq.Parallel.dll" Source="$(var.DotNetCoreAssembliesDir)\System.Linq.Parallel.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.System.Linq.Queryable.dll" Guid="BA62B296-F4FC-4F19-B96E-0552703DC1F0">
+        <File Id="DNCAgentAppwinx64.System.Linq.Queryable.dll" Source="$(var.DotNetCoreAssembliesDir)\System.Linq.Queryable.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.System.Net.dll" Guid="8E048676-E395-4C7A-A701-9BBAF87435C1">
+        <File Id="DNCAgentAppwinx64.System.Net.dll" Source="$(var.DotNetCoreAssembliesDir)\System.Net.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.System.Net.Http.dll" Guid="67427D0E-D621-469C-BFDA-65CB9B9A7390">
+        <File Id="DNCAgentAppwinx64.System.Net.Http.dll" Source="$(var.DotNetCoreAssembliesDir)\System.Net.Http.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.System.Net.HttpListener.dll" Guid="6936BF5D-B3E1-44E0-97A5-C8103BE0639F">
+        <File Id="DNCAgentAppwinx64.System.Net.HttpListener.dll" Source="$(var.DotNetCoreAssembliesDir)\System.Net.HttpListener.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.System.Net.Mail.dll" Guid="E69422CA-DD6D-48DB-AF43-90A5534AE844">
+        <File Id="DNCAgentAppwinx64.System.Net.Mail.dll" Source="$(var.DotNetCoreAssembliesDir)\System.Net.Mail.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.System.Net.NameResolution.dll" Guid="7CB46207-336C-4A4E-8FD0-80431A944A91">
+        <File Id="DNCAgentAppwinx64.System.Net.NameResolution.dll" Source="$(var.DotNetCoreAssembliesDir)\System.Net.NameResolution.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.System.Net.NetworkInformation.dll" Guid="8C6E0274-207E-41F3-BD16-F0F16B645C6A">
+        <File Id="DNCAgentAppwinx64.System.Net.NetworkInformation.dll" Source="$(var.DotNetCoreAssembliesDir)\System.Net.NetworkInformation.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.System.Net.Ping.dll" Guid="F3ED0E79-3341-4B99-84F1-8FF7FFC1A32F">
+        <File Id="DNCAgentAppwinx64.System.Net.Ping.dll" Source="$(var.DotNetCoreAssembliesDir)\System.Net.Ping.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.System.Net.Primitives.dll" Guid="3F69C355-E282-414C-89B1-5639B0AE7C44">
+        <File Id="DNCAgentAppwinx64.System.Net.Primitives.dll" Source="$(var.DotNetCoreAssembliesDir)\System.Net.Primitives.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.System.Net.Requests.dll" Guid="64568B5E-AB4A-49A4-8E5E-98B4FCC5D473">
+        <File Id="DNCAgentAppwinx64.System.Net.Requests.dll" Source="$(var.DotNetCoreAssembliesDir)\System.Net.Requests.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.System.Net.Security.dll" Guid="5B5226B0-5089-471F-86C5-F61B4F8D9C13">
+        <File Id="DNCAgentAppwinx64.System.Net.Security.dll" Source="$(var.DotNetCoreAssembliesDir)\System.Net.Security.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.System.Net.ServicePoint.dll" Guid="806B19F6-922B-4C0D-9457-23B7FC5A8960">
+        <File Id="DNCAgentAppwinx64.System.Net.ServicePoint.dll" Source="$(var.DotNetCoreAssembliesDir)\System.Net.ServicePoint.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.System.Net.Sockets.dll" Guid="F4AB1146-E0A3-43F6-B8F6-DEF5DF115139">
+        <File Id="DNCAgentAppwinx64.System.Net.Sockets.dll" Source="$(var.DotNetCoreAssembliesDir)\System.Net.Sockets.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.System.Net.WebClient.dll" Guid="B6798422-2754-454D-B30E-CD789501BB27">
+        <File Id="DNCAgentAppwinx64.System.Net.WebClient.dll" Source="$(var.DotNetCoreAssembliesDir)\System.Net.WebClient.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.System.Net.WebHeaderCollection.dll" Guid="04315651-20BD-4534-ADE6-325512B04EB0">
+        <File Id="DNCAgentAppwinx64.System.Net.WebHeaderCollection.dll" Source="$(var.DotNetCoreAssembliesDir)\System.Net.WebHeaderCollection.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.System.Net.WebProxy.dll" Guid="784205F9-3513-41CF-8137-35BDAAF5A78C">
+        <File Id="DNCAgentAppwinx64.System.Net.WebProxy.dll" Source="$(var.DotNetCoreAssembliesDir)\System.Net.WebProxy.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.System.Net.WebSockets.Client.dll" Guid="36EDE906-E9D1-438F-98BC-703FE25D3E7B">
+        <File Id="DNCAgentAppwinx64.System.Net.WebSockets.Client.dll" Source="$(var.DotNetCoreAssembliesDir)\System.Net.WebSockets.Client.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.System.Net.WebSockets.dll" Guid="CCF2EE4C-893F-4EA1-8165-5BA031657B40">
+        <File Id="DNCAgentAppwinx64.System.Net.WebSockets.dll" Source="$(var.DotNetCoreAssembliesDir)\System.Net.WebSockets.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.System.Numerics.dll" Guid="CC9DAAFC-F026-431A-8815-525CBE177525">
+        <File Id="DNCAgentAppwinx64.System.Numerics.dll" Source="$(var.DotNetCoreAssembliesDir)\System.Numerics.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.System.Numerics.Vectors.dll" Guid="E05EC4AE-3911-4496-AF42-1F9CCAE30430">
+        <File Id="DNCAgentAppwinx64.System.Numerics.Vectors.dll" Source="$(var.DotNetCoreAssembliesDir)\System.Numerics.Vectors.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.System.ObjectModel.dll" Guid="1E83B970-6EF1-47C6-B6AD-D7E08FCBD4BA">
+        <File Id="DNCAgentAppwinx64.System.ObjectModel.dll" Source="$(var.DotNetCoreAssembliesDir)\System.ObjectModel.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.System.Private.CoreLib.dll" Guid="AEAC3FA0-1FC8-4059-9702-0171274F4531">
+        <File Id="DNCAgentAppwinx64.System.Private.CoreLib.dll" Source="$(var.DotNetCoreAssembliesDir)\System.Private.CoreLib.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.System.Private.DataContractSerialization.dll" Guid="B98D8554-9E27-4375-92E1-06571907C0AA">
+        <File Id="DNCAgentAppwinx64.System.Private.DataContractSerialization.dll" Source="$(var.DotNetCoreAssembliesDir)\System.Private.DataContractSerialization.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.System.Private.Uri.dll" Guid="1933A46D-B73F-4137-A2D0-E01AE1C16824">
+        <File Id="DNCAgentAppwinx64.System.Private.Uri.dll" Source="$(var.DotNetCoreAssembliesDir)\System.Private.Uri.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.System.Private.Xml.dll" Guid="FE1A93A5-C582-48C9-BD18-809DDEE10C18">
+        <File Id="DNCAgentAppwinx64.System.Private.Xml.dll" Source="$(var.DotNetCoreAssembliesDir)\System.Private.Xml.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.System.Private.Xml.Linq.dll" Guid="DDCA3D90-EB62-499A-81BA-DC76A0A97152">
+        <File Id="DNCAgentAppwinx64.System.Private.Xml.Linq.dll" Source="$(var.DotNetCoreAssembliesDir)\System.Private.Xml.Linq.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.System.Reflection.DispatchProxy.dll" Guid="B850F51C-D214-4808-B91C-A4315B68B812">
+        <File Id="DNCAgentAppwinx64.System.Reflection.DispatchProxy.dll" Source="$(var.DotNetCoreAssembliesDir)\System.Reflection.DispatchProxy.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.System.Reflection.dll" Guid="58225447-EC87-4BC9-8A00-80346E04019C">
+        <File Id="DNCAgentAppwinx64.System.Reflection.dll" Source="$(var.DotNetCoreAssembliesDir)\System.Reflection.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.System.Reflection.Emit.dll" Guid="7CEEB509-E595-44B2-B3D3-54FD0BABD871">
+        <File Id="DNCAgentAppwinx64.System.Reflection.Emit.dll" Source="$(var.DotNetCoreAssembliesDir)\System.Reflection.Emit.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.System.Reflection.Emit.ILGeneration.dll" Guid="E9360F1C-2547-4EDB-8789-F38DFA49FB8C">
+        <File Id="DNCAgentAppwinx64.System.Reflection.Emit.ILGeneration.dll" Source="$(var.DotNetCoreAssembliesDir)\System.Reflection.Emit.ILGeneration.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.System.Reflection.Emit.Lightweight.dll" Guid="B6A02CE0-28BB-4FC1-9AD1-40DB4095E6D7">
+        <File Id="DNCAgentAppwinx64.System.Reflection.Emit.Lightweight.dll" Source="$(var.DotNetCoreAssembliesDir)\System.Reflection.Emit.Lightweight.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.System.Reflection.Extensions.dll" Guid="4087403E-4D05-4CF8-891C-74A1B7954961">
+        <File Id="DNCAgentAppwinx64.System.Reflection.Extensions.dll" Source="$(var.DotNetCoreAssembliesDir)\System.Reflection.Extensions.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.System.Reflection.Metadata.dll" Guid="FD6373AA-D645-48AB-9F20-1296124F781B">
+        <File Id="DNCAgentAppwinx64.System.Reflection.Metadata.dll" Source="$(var.DotNetCoreAssembliesDir)\System.Reflection.Metadata.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.System.Reflection.Primitives.dll" Guid="CF258A4F-42FA-40CD-BC57-36EBBBB0C953">
+        <File Id="DNCAgentAppwinx64.System.Reflection.Primitives.dll" Source="$(var.DotNetCoreAssembliesDir)\System.Reflection.Primitives.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.System.Reflection.TypeExtensions.dll" Guid="3FD13706-1F80-4A09-ADEE-24CE8E08CF38">
+        <File Id="DNCAgentAppwinx64.System.Reflection.TypeExtensions.dll" Source="$(var.DotNetCoreAssembliesDir)\System.Reflection.TypeExtensions.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.System.Resources.Reader.dll" Guid="697EBAF8-1E13-45B4-98B3-2C26C6DC5C45">
+        <File Id="DNCAgentAppwinx64.System.Resources.Reader.dll" Source="$(var.DotNetCoreAssembliesDir)\System.Resources.Reader.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.System.Resources.ResourceManager.dll" Guid="2D6C53B7-948E-44CA-9D45-484778781F45">
+        <File Id="DNCAgentAppwinx64.System.Resources.ResourceManager.dll" Source="$(var.DotNetCoreAssembliesDir)\System.Resources.ResourceManager.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.System.Resources.Writer.dll" Guid="3C9271EF-4484-42F7-BA0B-F6484A636DA2">
+        <File Id="DNCAgentAppwinx64.System.Resources.Writer.dll" Source="$(var.DotNetCoreAssembliesDir)\System.Resources.Writer.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.System.Runtime.CompilerServices.VisualC.dll" Guid="3AD92D3E-130B-4F39-9C99-C69597E0B3F2">
+        <File Id="DNCAgentAppwinx64.System.Runtime.CompilerServices.VisualC.dll" Source="$(var.DotNetCoreAssembliesDir)\System.Runtime.CompilerServices.VisualC.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.System.Runtime.dll" Guid="91E974B3-FAAA-4B9C-9774-E236FE35C237">
+        <File Id="DNCAgentAppwinx64.System.Runtime.dll" Source="$(var.DotNetCoreAssembliesDir)\System.Runtime.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.System.Runtime.Extensions.dll" Guid="8002C0FB-D826-4C2B-9067-707FB975789B">
+        <File Id="DNCAgentAppwinx64.System.Runtime.Extensions.dll" Source="$(var.DotNetCoreAssembliesDir)\System.Runtime.Extensions.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.System.Runtime.Handles.dll" Guid="A97E45DA-F2B7-4777-9A02-192FC9366C4C">
+        <File Id="DNCAgentAppwinx64.System.Runtime.Handles.dll" Source="$(var.DotNetCoreAssembliesDir)\System.Runtime.Handles.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.System.Runtime.InteropServices.dll" Guid="4C0C4A99-E252-44D1-8443-B02AEA49DC20">
+        <File Id="DNCAgentAppwinx64.System.Runtime.InteropServices.dll" Source="$(var.DotNetCoreAssembliesDir)\System.Runtime.InteropServices.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.System.Runtime.InteropServices.RuntimeInformation.dll" Guid="0F3042E0-409E-4052-B0C9-C6A65A4777FA">
+        <File Id="DNCAgentAppwinx64.System.Runtime.InteropServices.RuntimeInformation.dll" Source="$(var.DotNetCoreAssembliesDir)\System.Runtime.InteropServices.RuntimeInformation.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.System.Runtime.InteropServices.WindowsRuntime.dll" Guid="6F84CF5B-F353-449F-9686-78885A6977BF">
+        <File Id="DNCAgentAppwinx64.System.Runtime.InteropServices.WindowsRuntime.dll" Source="$(var.DotNetCoreAssembliesDir)\System.Runtime.InteropServices.WindowsRuntime.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.System.Runtime.Loader.dll" Guid="4785FBBF-D7E2-4BEE-8CBA-BAA6B2968E97">
+        <File Id="DNCAgentAppwinx64.System.Runtime.Loader.dll" Source="$(var.DotNetCoreAssembliesDir)\System.Runtime.Loader.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.System.Runtime.Numerics.dll" Guid="C7880864-56B3-4F7C-9000-6D5D22B0B664">
+        <File Id="DNCAgentAppwinx64.System.Runtime.Numerics.dll" Source="$(var.DotNetCoreAssembliesDir)\System.Runtime.Numerics.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.System.Runtime.Serialization.dll" Guid="E379A9D3-932B-4808-8050-531389107838">
+        <File Id="DNCAgentAppwinx64.System.Runtime.Serialization.dll" Source="$(var.DotNetCoreAssembliesDir)\System.Runtime.Serialization.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.System.Runtime.Serialization.Formatters.dll" Guid="986FC8C4-2B45-480E-826F-2DB88C696073">
+        <File Id="DNCAgentAppwinx64.System.Runtime.Serialization.Formatters.dll" Source="$(var.DotNetCoreAssembliesDir)\System.Runtime.Serialization.Formatters.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.System.Runtime.Serialization.Json.dll" Guid="E398F629-303C-44F2-8A44-C7C8D3CF3E49">
+        <File Id="DNCAgentAppwinx64.System.Runtime.Serialization.Json.dll" Source="$(var.DotNetCoreAssembliesDir)\System.Runtime.Serialization.Json.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.System.Runtime.Serialization.Primitives.dll" Guid="7EC63115-45F8-4C11-B630-046B5E8BCB01">
+        <File Id="DNCAgentAppwinx64.System.Runtime.Serialization.Primitives.dll" Source="$(var.DotNetCoreAssembliesDir)\System.Runtime.Serialization.Primitives.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.System.Runtime.Serialization.Xml.dll" Guid="0C2F035E-0AC2-438B-BB37-2AB585A980CA">
+        <File Id="DNCAgentAppwinx64.System.Runtime.Serialization.Xml.dll" Source="$(var.DotNetCoreAssembliesDir)\System.Runtime.Serialization.Xml.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.System.Security.AccessControl.dll" Guid="D68B362A-E51E-4187-BEB8-9245E3A98F0A">
+        <File Id="DNCAgentAppwinx64.System.Security.AccessControl.dll" Source="$(var.DotNetCoreAssembliesDir)\System.Security.AccessControl.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.System.Security.Claims.dll" Guid="4ACCA596-749B-4D97-87BF-3888C71E09D3">
+        <File Id="DNCAgentAppwinx64.System.Security.Claims.dll" Source="$(var.DotNetCoreAssembliesDir)\System.Security.Claims.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.System.Security.Cryptography.Algorithms.dll" Guid="C2FA34ED-5A34-489B-99D2-68CA88EC22DA">
+        <File Id="DNCAgentAppwinx64.System.Security.Cryptography.Algorithms.dll" Source="$(var.DotNetCoreAssembliesDir)\System.Security.Cryptography.Algorithms.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.System.Security.Cryptography.Cng.dll" Guid="3D273FDD-5511-4E45-B5F6-9A5730D406A5">
+        <File Id="DNCAgentAppwinx64.System.Security.Cryptography.Cng.dll" Source="$(var.DotNetCoreAssembliesDir)\System.Security.Cryptography.Cng.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.System.Security.Cryptography.Csp.dll" Guid="7F9016E2-4977-4DBD-A92C-8D0DEBA0FA21">
+        <File Id="DNCAgentAppwinx64.System.Security.Cryptography.Csp.dll" Source="$(var.DotNetCoreAssembliesDir)\System.Security.Cryptography.Csp.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.System.Security.Cryptography.Encoding.dll" Guid="5F241388-DE1F-4B56-9AC3-20BECFBF8F94">
+        <File Id="DNCAgentAppwinx64.System.Security.Cryptography.Encoding.dll" Source="$(var.DotNetCoreAssembliesDir)\System.Security.Cryptography.Encoding.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.System.Security.Cryptography.OpenSsl.dll" Guid="B85D132C-A917-4763-AC97-1D14A08F9F4E">
+        <File Id="DNCAgentAppwinx64.System.Security.Cryptography.OpenSsl.dll" Source="$(var.DotNetCoreAssembliesDir)\System.Security.Cryptography.OpenSsl.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.System.Security.Cryptography.Primitives.dll" Guid="3DD72221-A898-4927-8BD7-4E509F3BDA40">
+        <File Id="DNCAgentAppwinx64.System.Security.Cryptography.Primitives.dll" Source="$(var.DotNetCoreAssembliesDir)\System.Security.Cryptography.Primitives.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.System.Security.Cryptography.X509Certificates.dll" Guid="61621DC2-0C8C-451E-A350-0070CDFE6906">
+        <File Id="DNCAgentAppwinx64.System.Security.Cryptography.X509Certificates.dll" Source="$(var.DotNetCoreAssembliesDir)\System.Security.Cryptography.X509Certificates.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.System.Security.dll" Guid="70039D66-4DD2-4E52-88EB-488F24052171">
+        <File Id="DNCAgentAppwinx64.System.Security.dll" Source="$(var.DotNetCoreAssembliesDir)\System.Security.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.System.Security.Permissions.dll" Guid="F83FDF1E-6EAC-4BB3-B8AB-CA4C0EBB7AA0">
+        <File Id="DNCAgentAppwinx64.System.Security.Permissions.dll" Source="$(var.DotNetCoreAssembliesDir)\System.Security.Permissions.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.System.Security.Principal.dll" Guid="BE9E9A09-D7C7-4365-A22E-18CC3DCDAAC6">
+        <File Id="DNCAgentAppwinx64.System.Security.Principal.dll" Source="$(var.DotNetCoreAssembliesDir)\System.Security.Principal.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.System.Security.Principal.Windows.dll" Guid="ECD965A9-59E7-4431-826C-F903896920B7">
+        <File Id="DNCAgentAppwinx64.System.Security.Principal.Windows.dll" Source="$(var.DotNetCoreAssembliesDir)\System.Security.Principal.Windows.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.System.Security.SecureString.dll" Guid="6ED5C208-8743-4F4A-B0D8-2145203FC580">
+        <File Id="DNCAgentAppwinx64.System.Security.SecureString.dll" Source="$(var.DotNetCoreAssembliesDir)\System.Security.SecureString.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.System.ServiceModel.Web.dll" Guid="F85659A1-7FB5-4EA1-B079-C7C1F985BB5C">
+        <File Id="DNCAgentAppwinx64.System.ServiceModel.Web.dll" Source="$(var.DotNetCoreAssembliesDir)\System.ServiceModel.Web.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.System.ServiceProcess.dll" Guid="2C71CFED-8686-45FF-9C12-BF6CFED7D91B">
+        <File Id="DNCAgentAppwinx64.System.ServiceProcess.dll" Source="$(var.DotNetCoreAssembliesDir)\System.ServiceProcess.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.System.Text.Encoding.dll" Guid="39FBAEE7-436B-4BA2-A562-81DBD304FB97">
+        <File Id="DNCAgentAppwinx64.System.Text.Encoding.dll" Source="$(var.DotNetCoreAssembliesDir)\System.Text.Encoding.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.System.Text.Encoding.Extensions.dll" Guid="B6CFFC3A-ABB3-45CA-982C-5979A948A95B">
+        <File Id="DNCAgentAppwinx64.System.Text.Encoding.Extensions.dll" Source="$(var.DotNetCoreAssembliesDir)\System.Text.Encoding.Extensions.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.System.Text.RegularExpressions.dll" Guid="352033E1-D7B0-4989-AB2C-97F5CFD1CB05">
+        <File Id="DNCAgentAppwinx64.System.Text.RegularExpressions.dll" Source="$(var.DotNetCoreAssembliesDir)\System.Text.RegularExpressions.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.System.Threading.AccessControl.dll" Guid="A6F827C0-702D-4BB2-8107-A45CC42622D8">
+        <File Id="DNCAgentAppwinx64.System.Threading.AccessControl.dll" Source="$(var.DotNetCoreAssembliesDir)\System.Threading.AccessControl.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.System.Threading.dll" Guid="7AD399EF-1B95-4A52-B3E3-4D4AEEE46C6A">
+        <File Id="DNCAgentAppwinx64.System.Threading.dll" Source="$(var.DotNetCoreAssembliesDir)\System.Threading.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.System.Threading.Overlapped.dll" Guid="D07C0D12-62D3-4CDE-A87E-2C33F01A8759">
+        <File Id="DNCAgentAppwinx64.System.Threading.Overlapped.dll" Source="$(var.DotNetCoreAssembliesDir)\System.Threading.Overlapped.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.System.Threading.Tasks.Dataflow.dll" Guid="E5D31E71-8785-48A6-B2B8-7F1AA579970B">
+        <File Id="DNCAgentAppwinx64.System.Threading.Tasks.Dataflow.dll" Source="$(var.DotNetCoreAssembliesDir)\System.Threading.Tasks.Dataflow.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.System.Threading.Tasks.dll" Guid="F572378F-C71F-44B8-B6C3-2996DA147CD6">
+        <File Id="DNCAgentAppwinx64.System.Threading.Tasks.dll" Source="$(var.DotNetCoreAssembliesDir)\System.Threading.Tasks.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.System.Threading.Tasks.Extensions.dll" Guid="C8A52F07-D12C-484A-B570-C7BE9D97DB59">
+        <File Id="DNCAgentAppwinx64.System.Threading.Tasks.Extensions.dll" Source="$(var.DotNetCoreAssembliesDir)\System.Threading.Tasks.Extensions.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.System.Threading.Tasks.Parallel.dll" Guid="F88BFF86-38CA-4A38-B54B-9C161B464E06">
+        <File Id="DNCAgentAppwinx64.System.Threading.Tasks.Parallel.dll" Source="$(var.DotNetCoreAssembliesDir)\System.Threading.Tasks.Parallel.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.System.Threading.Thread.dll" Guid="0A7B3703-8C35-4F1F-929A-79FC9CA60373">
+        <File Id="DNCAgentAppwinx64.System.Threading.Thread.dll" Source="$(var.DotNetCoreAssembliesDir)\System.Threading.Thread.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.System.Threading.ThreadPool.dll" Guid="FE9DCEB4-C828-4764-A1B5-05CC48E9E1EB">
+        <File Id="DNCAgentAppwinx64.System.Threading.ThreadPool.dll" Source="$(var.DotNetCoreAssembliesDir)\System.Threading.ThreadPool.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.System.Threading.Timer.dll" Guid="2FCB9330-C852-4C81-BFBA-EF5590E9C902">
+        <File Id="DNCAgentAppwinx64.System.Threading.Timer.dll" Source="$(var.DotNetCoreAssembliesDir)\System.Threading.Timer.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.System.Transactions.dll" Guid="E4FC3DB9-B8B5-43DB-BE7B-98211561E85A">
+        <File Id="DNCAgentAppwinx64.System.Transactions.dll" Source="$(var.DotNetCoreAssembliesDir)\System.Transactions.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.System.Transactions.Local.dll" Guid="78ADD40B-19BD-4FF5-8DE9-28A2C551F108">
+        <File Id="DNCAgentAppwinx64.System.Transactions.Local.dll" Source="$(var.DotNetCoreAssembliesDir)\System.Transactions.Local.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.System.ValueTuple.dll" Guid="FF3A4C20-AF1F-4734-96EF-2F0019C2BDA8">
+        <File Id="DNCAgentAppwinx64.System.ValueTuple.dll" Source="$(var.DotNetCoreAssembliesDir)\System.ValueTuple.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.System.Web.dll" Guid="9D6B7FA5-7B79-42A9-B8F0-AC4F34977BAA">
+        <File Id="DNCAgentAppwinx64.System.Web.dll" Source="$(var.DotNetCoreAssembliesDir)\System.Web.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.System.Web.HttpUtility.dll" Guid="6BFFE61F-2E19-48B4-B774-1328F7F3E0B3">
+        <File Id="DNCAgentAppwinx64.System.Web.HttpUtility.dll" Source="$(var.DotNetCoreAssembliesDir)\System.Web.HttpUtility.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.System.Windows.dll" Guid="440EE6DB-28F4-4F66-A58A-A213D695D316">
+        <File Id="DNCAgentAppwinx64.System.Windows.dll" Source="$(var.DotNetCoreAssembliesDir)\System.Windows.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.System.Xml.dll" Guid="6BD09C2C-C304-4775-A3AD-CCDF14B45334">
+        <File Id="DNCAgentAppwinx64.System.Xml.dll" Source="$(var.DotNetCoreAssembliesDir)\System.Xml.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.System.Xml.Linq.dll" Guid="93913EC3-BD49-4516-B908-50B46298D4FF">
+        <File Id="DNCAgentAppwinx64.System.Xml.Linq.dll" Source="$(var.DotNetCoreAssembliesDir)\System.Xml.Linq.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.System.Xml.ReaderWriter.dll" Guid="B76200D1-4268-42F5-8A8E-253EEC251BD7">
+        <File Id="DNCAgentAppwinx64.System.Xml.ReaderWriter.dll" Source="$(var.DotNetCoreAssembliesDir)\System.Xml.ReaderWriter.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.System.Xml.Serialization.dll" Guid="79F4EFBC-B77A-4237-B4DB-A166C48CA1EE">
+        <File Id="DNCAgentAppwinx64.System.Xml.Serialization.dll" Source="$(var.DotNetCoreAssembliesDir)\System.Xml.Serialization.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.System.Xml.XDocument.dll" Guid="945CCDA0-87BB-47FE-AB8E-21F0B1691864">
+        <File Id="DNCAgentAppwinx64.System.Xml.XDocument.dll" Source="$(var.DotNetCoreAssembliesDir)\System.Xml.XDocument.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.System.Xml.XmlDocument.dll" Guid="A3475B6F-52DD-444B-999E-CBBF4F95AC0E">
+        <File Id="DNCAgentAppwinx64.System.Xml.XmlDocument.dll" Source="$(var.DotNetCoreAssembliesDir)\System.Xml.XmlDocument.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.System.Xml.XmlSerializer.dll" Guid="F396BB59-33EA-4C8F-8F64-C00F46526758">
+        <File Id="DNCAgentAppwinx64.System.Xml.XmlSerializer.dll" Source="$(var.DotNetCoreAssembliesDir)\System.Xml.XmlSerializer.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.System.Xml.XPath.dll" Guid="0E4F6475-63EB-4BDA-BC2E-6723C3875035">
+        <File Id="DNCAgentAppwinx64.System.Xml.XPath.dll" Source="$(var.DotNetCoreAssembliesDir)\System.Xml.XPath.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.System.Xml.XPath.XDocument.dll" Guid="9E1E37B3-1C38-4263-8DF5-B9F3C78006B4">
+        <File Id="DNCAgentAppwinx64.System.Xml.XPath.XDocument.dll" Source="$(var.DotNetCoreAssembliesDir)\System.Xml.XPath.XDocument.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.ucrtbase.dll" Guid="389351BC-711E-40AA-B1CA-52E9AFC10006">
+        <File Id="DNCAgentAppwinx64.ucrtbase.dll" Source="$(var.DotNetCoreAssembliesDir)\ucrtbase.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.WindowsBase.dll" Guid="C335507B-A1FF-4F6D-811D-AFC40E7E81CE">
+        <File Id="DNCAgentAppwinx64.WindowsBase.dll" Source="$(var.DotNetCoreAssembliesDir)\WindowsBase.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.Xamarin.Interactive.dll" Guid="6050BFF5-0565-4362-915F-5C8238D37E14">
+        <File Id="DNCAgentAppwinx64.Xamarin.Interactive.dll" Source="$(var.DotNetCoreAssembliesDir)\Xamarin.Interactive.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.Xamarin.Interactive.DotNetCore.dll" Guid="A65962ED-C716-4A0A-8D9E-FFEEE95FAF02">
+        <File Id="DNCAgentAppwinx64.Xamarin.Interactive.DotNetCore.dll" Source="$(var.DotNetCoreAssembliesDir)\Xamarin.Interactive.DotNetCore.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.Xamarin.Workbooks.DotNetCore.dll" Guid="EEDE9980-7E50-4A03-9A47-74EE3BCCAF7F">
+        <File Id="DNCAgentAppwinx64.Xamarin.Workbooks.DotNetCore.dll" Source="$(var.DotNetCoreAssembliesDir)\Xamarin.Workbooks.DotNetCore.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.Xamarin.Workbooks.DotNetCore.deps.json" Guid="890CE963-6BF3-4AD9-8F7A-BE5CC569A416">
+        <File Id="DNCAgentAppwinx64.Xamarin.Workbooks.DotNetCore.deps.json" Source="$(var.DotNetCoreAssembliesDir)\Xamarin.Workbooks.DotNetCore.deps.json" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.Xamarin.Workbooks.DotNetCore.runtimeconfig.json" Guid="46FFA24F-6C36-47BF-AC03-32AD72A49583">
+        <File Id="DNCAgentAppwinx64.Xamarin.Workbooks.DotNetCore.runtimeconfig.json" Source="$(var.DotNetCoreAssembliesDir)\Xamarin.Workbooks.DotNetCore.runtimeconfig.json" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.Xamarin.Workbooks.DotNetCore.exe" Guid="3E99628F-5591-4C47-A1F0-6A27404532A0">
+        <File Id="DNCAgentAppwinx64.Xamarin.Workbooks.DotNetCore.exe" Source="$(var.DotNetCoreAssembliesDir)\Xamarin.Workbooks.DotNetCore.exe" />
+      </Component>
+    </ComponentGroup>
+  </Fragment>
+</Wix>

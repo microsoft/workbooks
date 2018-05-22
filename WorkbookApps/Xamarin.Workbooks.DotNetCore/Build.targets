@@ -27,7 +27,9 @@
 
     <PropertyGroup>
       <RelativeInstallDir>DotNetCore\$(RuntimeIdentifier)\</RelativeInstallDir>
+      <ManifestInstallDir>DotNetCore\{rid}\</ManifestInstallDir>
       <AppFileExtension Condition="$([MSBuild]::IsOsPlatform('Windows'))">.exe</AppFileExtension>
+      <WixSafeRuntimeIdentifier>$(RuntimeIdentifier.Replace('-',''))</WixSafeRuntimeIdentifier>
     </PropertyGroup>
 
     <GenerateWorkbookAppManifest
@@ -35,8 +37,8 @@
       Flavor="Console"
       Order="200"
       Icon="project-netcore-console"
-      AppPath="$(RelativeInstallDir)$(AssemblyName)$(AppFileExtension)"
-      AssemblySearchPaths="$(RelativeInstallDir)"
+      AppPath="$(ManifestInstallDir)$(AssemblyName)$(AppFileExtension)"
+      AssemblySearchPaths="$(ManifestInstallDir)"
       SdkName=".NET Core"
       SdkVersion="@GlobalJsonSdkVersion,..\..\global.json"
       TargetFrameworkIdentifier="$(TargetFrameworkIdentifier)"
@@ -53,11 +55,12 @@
       />
 
     <UpdateWixManifest
+      Condition="$([MSBuild]::IsOsPlatform('Windows'))"
       SourceDirectory="$(InstallDir)$(RelativeInstallDir)"
-      InputManifestPath="..\..\Package\Windows\DotNetCoreAgentAppFiles.wxs"
+      InputManifestPath="..\..\Package\Windows\DotNetCoreAgentAppFiles-$(RuntimeIdentifier).wxs"
       DirectoryVariable="DotNetCoreAssembliesDir"
-      ComponentGroupId="DotNetCoreAgentAppComponents"
-      IdPrefix="DotNetCoreAgentApp"
+      ComponentGroupId="DotNetCoreAgentAppComponents$(WixSafeRuntimeIdentifier)"
+      IdPrefix="DNCAgentApp$(WixSafeRuntimeIdentifier)"
       IncludedExtensions="dll;json;exe"/>
   </Target>
 </Project>

@@ -56,7 +56,8 @@
       <ComponentGroupRef Id="ClientReplMonacoEditorWorkerResources" />
       <ComponentGroupRef Id="ClientReplMonacoEditorBasicLanguagesSrcResources" />
       <ComponentGroupRef Id="ClientReplMonacoEditorVsEditorResources" />
-      <ComponentGroupRef Id="DotNetCoreAgentAppComponents"/>
+      <ComponentGroupRef Id="DotNetCoreAgentAppComponentswinx86"/>
+      <ComponentGroupRef Id="DotNetCoreAgentAppComponentswinx64"/>
       <ComponentGroupRef Id="DotNetCoreAgentComponents"/>
 
       <?ifdef iOSSupport ?>
