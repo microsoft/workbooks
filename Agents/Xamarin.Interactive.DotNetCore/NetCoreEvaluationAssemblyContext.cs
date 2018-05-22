@@ -68,6 +68,9 @@ namespace Xamarin.Interactive.DotNetCore
                 return null;
             }
 
+            internal Assembly InternalLoadByName (AssemblyName assemblyName)
+                => Load (assemblyName);
+
             protected override IntPtr LoadUnmanagedDll (string unmanagedDllName)
             {
                 Log.Info (TAG, $"Requested unmanaged DLL load for {unmanagedDllName}.");
@@ -106,6 +109,6 @@ namespace Xamarin.Interactive.DotNetCore
             => assemblyLoadContext.LoadExternalDependency (dependency);
 
         Assembly HandleAssemblyResolve (AssemblyLoadContext loadContext, AssemblyName assemblyName)
-            => assemblyLoadContext.LoadFromAssemblyName (assemblyName);
+            => assemblyLoadContext.InternalLoadByName (assemblyName);
     }
 }
