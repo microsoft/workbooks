@@ -76,6 +76,38 @@ namespace Xamarin.Interactive
         SynchronizationContext PushContext (SynchronizationContext context);
     }
     [JsonObject]
+    public struct Runtime : IEquatable<Runtime>
+    {
+        public Architecture? Architecture {
+            get;
+        }
+
+        public static Runtime CurrentProcessRuntime {
+            get;
+        }
+
+        public OSPlatform OSPlatform {
+            get;
+        }
+
+        public string RuntimeIdentifier {
+            get;
+        }
+
+        [JsonConstructor]
+        public Runtime (OSPlatform osPlatform, Architecture? architecture = null, string runtimeIdentifier = null);
+
+        public bool Equals (Runtime other);
+
+        public override bool Equals (object obj);
+
+        public override int GetHashCode ();
+
+        public override string ToString ();
+
+        public Runtime WithRuntimeIdentifier (string runtimeIdentifier);
+    }
+    [JsonObject]
     public sealed class Sdk
     {
         public IReadOnlyList<string> AssemblySearchPaths {
@@ -274,6 +306,10 @@ namespace Xamarin.Interactive.CodeAnalysis
         }
 
         public IReadOnlyList<AssemblyDefinition> InitialReferences {
+            get;
+        }
+
+        public Runtime Runtime {
             get;
         }
 

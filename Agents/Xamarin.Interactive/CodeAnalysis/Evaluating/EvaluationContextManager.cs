@@ -113,6 +113,7 @@ namespace Xamarin.Interactive.CodeAnalysis.Evaluating
             var globalStateObject = CreateGlobalState ();
 
             targetCompilationConfiguration = targetCompilationConfiguration.With (
+                runtime: Runtime.CurrentProcessRuntime,
                 defaultImports: defaultImports);
 
             targetCompilationConfiguration = PrepareTargetCompilationConfiguration (

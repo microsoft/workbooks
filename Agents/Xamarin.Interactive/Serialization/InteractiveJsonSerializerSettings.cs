@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Runtime.Serialization;
 using System.Runtime.Versioning;
 
@@ -122,6 +123,7 @@ namespace Xamarin.Interactive.Serialization
             Converters.Add (new CodeCellIdConverter ());
             Converters.Add (new EvaluationContextIdConverter ());
             Converters.Add (new SdkIdConverter ());
+            Converters.Add (new OSPlatformConverter ());
             Converters.Add (new FrameworkNameConverter ());
             Converters.Add (new IRepresentedTypeConverter ());
 
@@ -161,6 +163,13 @@ namespace Xamarin.Interactive.Serialization
             protected override SdkId GetValue (string value) => (SdkId)value;
             protected override string GetString (SdkId value) => (string)value;
         }
+
+        sealed class OSPlatformConverter : StringConverter<OSPlatform>
+        {
+            protected override OSPlatform GetValue (string value) => OSPlatform.Create (value.ToUpperInvariant ());
+            protected override string GetString (OSPlatform value) => value.ToString ();
+        }
+
         sealed class FrameworkNameConverter : StringConverter<FrameworkName>
         {
             protected override FrameworkName GetValue (string value) => new FrameworkName (value);
