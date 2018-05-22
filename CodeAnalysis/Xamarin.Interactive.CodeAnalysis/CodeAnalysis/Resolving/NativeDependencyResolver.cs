@@ -61,8 +61,13 @@ namespace Xamarin.Interactive.CodeAnalysis.Resolving
         {
             CompilationConfiguration = compilationConfiguration;
 
-            // Agents always send an architecture value via the TCC.
-            agentArchitecture = compilationConfiguration.Runtime.Architecture.Value;
+            if (compilationConfiguration != null)
+                // Agents always send an architecture value via the TCC.
+                agentArchitecture = compilationConfiguration.Runtime.Architecture.Value;
+            else
+                // This case is reached when we create a resolver with null configuration from
+                // GacCache, in which case we can stick with the current process architecture.
+                agentArchitecture = RuntimeInformation.ProcessArchitecture;
         }
 
         protected override ResolvedAssembly ParseAssembly (
