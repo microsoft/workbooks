@@ -18,6 +18,7 @@ namespace Xamarin.Interactive.CodeAnalysis
             IReadOnlyList<string> assemblySearchPaths = null)
             => new TargetCompilationConfiguration (
                 default,
+                default,
                 HostEnvironment.OS,
                 default,
                 default,
@@ -27,6 +28,7 @@ namespace Xamarin.Interactive.CodeAnalysis
                 new List<string> (assemblySearchPaths ?? Array.Empty<string> ()),
                 default);
 
+        public Runtime Runtime { get; }
         public Sdk Sdk { get; }
         internal HostOS CompilationOS { get; }
         public EvaluationContextId EvaluationContextId { get; }
@@ -39,6 +41,7 @@ namespace Xamarin.Interactive.CodeAnalysis
 
         [JsonConstructor]
         TargetCompilationConfiguration (
+            Runtime runtime,
             Sdk sdk,
             HostOS compilationOS,
             EvaluationContextId evaluationContextId,
@@ -49,6 +52,7 @@ namespace Xamarin.Interactive.CodeAnalysis
             IReadOnlyList<string> assemblySearchPaths,
             bool includePEImagesInDependencyResolution)
         {
+            Runtime = runtime;
             Sdk = sdk;
             CompilationOS = compilationOS;
             EvaluationContextId = evaluationContextId;
@@ -61,6 +65,7 @@ namespace Xamarin.Interactive.CodeAnalysis
         }
 
         internal TargetCompilationConfiguration With (
+            Optional<Runtime> runtime = default,
             Optional<Sdk> sdk = default,
             Optional<HostOS> compilationOS = default,
             Optional<EvaluationContextId> evaluationContextId = default,
@@ -71,6 +76,7 @@ namespace Xamarin.Interactive.CodeAnalysis
             Optional<IReadOnlyList<string>> assemblySearchPaths = default,
             Optional<bool> includePEImagesInDependencyResolution = default)
             => new TargetCompilationConfiguration (
+                runtime.GetValueOrDefault (Runtime),
                 sdk.GetValueOrDefault (Sdk),
                 compilationOS.GetValueOrDefault (CompilationOS),
                 evaluationContextId.GetValueOrDefault (EvaluationContextId),

@@ -309,6 +309,10 @@ namespace Xamarin.Interactive.CodeAnalysis
             get;
         }
 
+        public Runtime Runtime {
+            get;
+        }
+
         public Sdk Sdk {
             get;
         }
