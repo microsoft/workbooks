@@ -50,7 +50,10 @@
             <Directory Id="AgentAppInstallFolder" Name="WorkbookApps">
               <Directory Id="ConsoleAgentInstallFolder" Name="Console"/>
               <Directory Id="WpfAgentAppInstallFolder" Name="WPF"/>
-              <Directory Id="DotNetCoreAgentAppInstallFolder" Name="DotNetCore"/>
+              <Directory Id="DotNetCoreAgentAppInstallFolder" Name="DotNetCore">
+                <Directory Id="DotNetCoreAgentAppInstallFolderwinx86" Name="win-x86"/>
+                <Directory Id="DotNetCoreAgentAppInstallFolderwinx64" Name="win-x64"/>
+              </Directory>
               <Directory Id="iOSAgentAppInstallFolder" Name="iOS">
                 <Directory Id="iOSAgentAppClientIntegrationInstallFolder" Name="ClientIntegration"/>
                 <Directory Id="iOSAgentAppRootInstallFolder" Name="Xamarin.Workbooks.iOS.app">

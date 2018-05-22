@@ -60,7 +60,9 @@ namespace Xamarin.Interactive
             }
         }
 
-        static readonly List<Func<string, string>> pathMappers = new List<Func<string, string>> ();
+        static readonly List<Func<string, string>> pathMappers = new List<Func<string, string>> {
+            path => path.Replace ("{rid}", Runtime.CurrentProcessRuntime.RuntimeIdentifier),
+        };
 
         static readonly List<string> searchPaths = new List<string> ();
 
