@@ -180,12 +180,13 @@
             TabStripPlacement="Top"
             SelectedIndex="{Binding ViewModel.SelectedPane, Mode=TwoWay}"
             SelectionChanged="HandleSelectedPaneChanged"
-            MouseDown="HandleTabControlMouseDown">
+            MouseDown="HandleTabControlMouseDown"
+            AutomationProperties.AutomationId="SessionWindowTabControl">
             <TabControl.Resources>
                 <Style BasedOn="{StaticResource PrimaryContentTabPanel}" TargetType="{x:Type TabPanel}"/>
                 <Style BasedOn="{StaticResource PrimaryContentTabItem}" TargetType="{x:Type TabItem}"/>
             </TabControl.Resources>
-            <TabItem Header="{Binding ViewModel.IsInspector, Converter={StaticResource replHeaderConverter}}">
+            <TabItem Header="{Binding ViewModel.IsInspector, Converter={StaticResource replHeaderConverter}}" AutomationProperties.AutomationId="WorkbooksTabItem">
                 <Grid
                     Margin="0,0,0,5">
                     <Grid.ColumnDefinitions>
@@ -255,8 +256,9 @@
                     <WebBrowser
                         Grid.Column="2"
                         Grid.ColumnSpan="2"
-                        x:Name="replWebView"
+                        x:Name="replWebView" 
                         AutomationProperties.Name="{Binding ViewModel.IsInspector, Converter={StaticResource replHeaderConverter}, StringFormat={}{0} editor}"
+                        AutomationProperties.AutomationId="WorkbookWebBrowser"
                         PreviewKeyDown="ReplWebView_OnPreviewKeyDown"/>
                 </Grid>
             </TabItem>
