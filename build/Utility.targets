@@ -184,6 +184,7 @@
       <PolicheckInput Remove="**\*.g.*" />
       <PolicheckInput Remove="**\Lorem Ipsum.txt" />
       <PolicheckInput Remove="**\*.bin" />
+      <PolicheckInput Remove="**\license.rtf" />
     </ItemGroup>
     <PropertyGroup>
       <PolicheckInputFile>$(TopDirectory)PolicheckInput.txt</PolicheckInputFile>
