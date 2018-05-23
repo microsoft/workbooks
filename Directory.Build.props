@@ -16,6 +16,7 @@
 
   <PropertyGroup Condition="$(ShouldApplyProjectProperties) And '$(MSBuildProjectExtension)' == '.csproj'">
     <LangVersion>latest</LangVersion>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 
     <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
     <GenerateAssemblyFileVersionAttribute>false</GenerateAssemblyFileVersionAttribute>

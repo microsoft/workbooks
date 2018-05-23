@@ -145,7 +145,7 @@ namespace Xamarin.Interactive.Android
             chosenView = null;
 
             if (highlightedView != null) {
-                highlightedView.SetBackgroundDrawable (highlightedViewOriginalBackground);
+                highlightedView.Background = highlightedViewOriginalBackground;
                 highlightedView = null;
                 highlightedViewOriginalBackground = null;
             }
@@ -172,7 +172,7 @@ namespace Xamarin.Interactive.Android
                     highlightedBackground =
                         new LayerDrawable (new [] { highlightedViewOriginalBackground, gd });
 
-                highlightedView.SetBackgroundDrawable (highlightedBackground);
+                highlightedView.Background = highlightedBackground;
             }
 
             chosenView = new AndroidInspectView (view, withSubviews: false);
