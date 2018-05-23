@@ -214,6 +214,7 @@ Copyright 2017 Microsoft. All rights reserved.
       <PolicheckInput Remove="**\*.g.*" />
       <PolicheckInput Remove="**\Lorem Ipsum.txt" />
       <PolicheckInput Remove="**\*.bin" />
+      <PolicheckInput Remove="**\license.rtf" />
     </ItemGroup>
     <PropertyGroup>
       <PolicheckInputFile>$(MSBuildThisFileDirectory)..\PolicheckInput.txt</PolicheckInputFile>
