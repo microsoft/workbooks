@@ -178,9 +178,6 @@
       <Component Id="iOSWorkbookApp.System.Globalization.Extensions.dll" Guid="27ED654B-1B2F-4546-95AD-2021999138FE">
         <File Id="iOSWorkbookApp.System.Globalization.Extensions.dll" Source="$(var.iOSWorkbookAppDir)\System.Globalization.Extensions.dll" />
       </Component>
-      <Component Id="iOSWorkbookApp.System.Runtime.InteropServices.RuntimeInformation.dll" Guid="186DB0D5-E23A-4F07-BAF8-14E8D4116F45">
-        <File Id="iOSWorkbookApp.System.Runtime.InteropServices.RuntimeInformation.dll" Source="$(var.iOSWorkbookAppDir)\System.Runtime.InteropServices.RuntimeInformation.dll" />
-      </Component>
       <Component Id="iOSWorkbookApp.System.Runtime.Serialization.Primitives.dll" Guid="C7ADA62D-8042-4673-8CED-39825AC04804">
         <File Id="iOSWorkbookApp.System.Runtime.Serialization.Primitives.dll" Source="$(var.iOSWorkbookAppDir)\System.Runtime.Serialization.Primitives.dll" />
       </Component>
@@ -619,6 +616,12 @@
       </Component>
       <Component Id="File957a64dc0529d7d7b7d772068bb88a78b2fab699" Guid="F3662CE4-F12D-4107-9479-1D341E6724A2">
         <File Id="File957a64dc0529d7d7b7d772068bb88a78b2fab699" Source="$(var.iOSWorkbookAppFacadesDir)\System.Security.Cryptography.RandomNumberGenerator.dll" />
+      </Component>
+      <Component Id="Filedc35ffdeee911ab35a9c529f28d6c7940a8c2b7f" Guid="E2261791-2B25-414F-B9D7-E70C516AC919">
+        <File Id="Filedc35ffdeee911ab35a9c529f28d6c7940a8c2b7f" Source="$(var.iOSWorkbookAppFacadesDir)\System.Drawing.Common.dll" />
+      </Component>
+      <Component Id="Filee5e3ae844ff3e59992413e819fc24858fd5cb003" Guid="0329E4AF-5880-49D7-B496-99B1DF26CAC1">
+        <File Id="Filee5e3ae844ff3e59992413e819fc24858fd5cb003" Source="$(var.iOSWorkbookAppFacadesDir)\System.Memory.dll" />
       </Component>
     </ComponentGroup>
     <ComponentGroup Id="iOSWorkbookAppClientIntegrationComponents" Directory="iOSAgentAppClientIntegrationInstallFolder">

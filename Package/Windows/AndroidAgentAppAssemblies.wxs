@@ -650,9 +650,6 @@
       <Component Id="AndroidAgentApp.System.Globalization.Extensions.dll" Guid="6EC8BBB0-4309-45C5-9B7E-42809C958AF5">
         <File Id="AndroidAgentApp.System.Globalization.Extensions.dll" Source="$(var.AndroidAppAssembliesDir)\System.Globalization.Extensions.dll" />
       </Component>
-      <Component Id="AndroidAgentApp.System.Runtime.InteropServices.RuntimeInformation.dll" Guid="4FC9F01D-7021-4FCE-A3E0-5D21B16D46AE">
-        <File Id="AndroidAgentApp.System.Runtime.InteropServices.RuntimeInformation.dll" Source="$(var.AndroidAppAssembliesDir)\System.Runtime.InteropServices.RuntimeInformation.dll" />
-      </Component>
       <Component Id="AndroidAgentApp.System.Runtime.Serialization.Primitives.dll" Guid="99FAADCE-D106-4B0D-9E99-F2B23736B131">
         <File Id="AndroidAgentApp.System.Runtime.Serialization.Primitives.dll" Source="$(var.AndroidAppAssembliesDir)\System.Runtime.Serialization.Primitives.dll" />
       </Component>
