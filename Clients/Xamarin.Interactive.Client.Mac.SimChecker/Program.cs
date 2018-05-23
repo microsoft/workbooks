@@ -9,14 +9,16 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 
+using Xamarin.Interactive.Logging;
 using Xamarin.Interactive.MTouch;
 
 namespace Xamarin.Interactive.Mac.SimChecker
 {
     public class Program
     {
-        public static void Main (string[] args)
+        public static async Task Main (string[] args)
         {
             if (args.Length == 1 && args [0] == "--version") {
                 Console.WriteLine (BuildInfo.VersionString);
@@ -24,9 +26,11 @@ namespace Xamarin.Interactive.Mac.SimChecker
                 return;
             }
 
+            Log.Initialize (new LogProvider (LogLevel.Debug));
+
             string sdkRoot;
             try {
-                sdkRoot = MTouchSdkTool.GetXcodeSdkRoot ();
+                sdkRoot = await MTouchSdkTool.GetXcodeSdkRootAsync ();
             } catch (Exception e) {
                 Console.Error.WriteLine (e.Message);
                 Environment.Exit (100); // Xcode not configured in XS or not installed at /Applications/Xcode.app
@@ -41,7 +45,7 @@ namespace Xamarin.Interactive.Mac.SimChecker
 
             MTouchListSimXml mtouchList;
             try {
-                mtouchList = MTouchSdkTool.MtouchListSimAsync (sdkRoot).Result;
+                mtouchList = await MTouchSdkTool.MtouchListSimAsync (sdkRoot);
             } catch (Exception e) {
                 e = (e as AggregateException)?.InnerExceptions?.FirstOrDefault () ?? e;
                 Console.Error.WriteLine (e.Message);

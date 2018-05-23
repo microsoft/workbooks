@@ -1,53 +1,17 @@
-<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{D495E2AE-BF3E-444B-B3D6-91EF14293831}</ProjectGuid>
+    <TargetFramework>net461</TargetFramework>
     <OutputType>Exe</OutputType>
-    <RootNamespace>Xamarin.Interactive.Mac.SimChecker</RootNamespace>
-    <AssemblyName>Xamarin.Interactive.Mac.SimChecker</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
-    <ProductVersion>8.0.30703</ProductVersion>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug</OutputPath>
-    <DefineConstants>DEBUG;CATALOG_API_ONLY</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <ExternalConsole>true</ExternalConsole>
-    <PlatformTarget>x64</PlatformTarget>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release</OutputPath>
     <DefineConstants>CATALOG_API_ONLY</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <ExternalConsole>true</ExternalConsole>
-    <PlatformTarget>x64</PlatformTarget>
   </PropertyGroup>
+
   <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.Xml.Serialization" />
-    <Reference Include="System.Xml" />
+    <Compile Include="..\..\Agents\Xamarin.Interactive\BuildInfo.cs" />
+    <Compile Include="..\..\Agents\Xamarin.Interactive\Collections\PropertyList.cs" />
+    <Compile Include="..\..\Agents\Xamarin.Interactive\I18N\Catalog.cs" />
+    <Compile Include="..\..\Agents\Xamarin.Interactive\Versioning\ReleaseVersion.cs" />
+    <Compile Include="..\..\Agents\Xamarin.Interactive\Logging\**\*.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Program.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="..\..\Agents\Xamarin.Interactive\BuildInfo.cs">
-      <Link>BuildInfo.cs</Link>
-    </Compile>
-    <Compile Include="..\..\Agents\Xamarin.Interactive\I18N\Catalog.cs">
-      <Link>Catalog.cs</Link>
-    </Compile>
-    <Compile Include="..\..\Agents\Xamarin.Interactive\Versioning\ReleaseVersion.cs">
-      <Link>ReleaseVersion.cs</Link>
-    </Compile>
-  </ItemGroup>
+
   <Import Project="..\Xamarin.Interactive.MTouch\Xamarin.Interactive.MTouch.projitems" Label="Shared" Condition="Exists('..\Xamarin.Interactive.MTouch\Xamarin.Interactive.MTouch.projitems')" />
-  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>
