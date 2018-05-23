@@ -61,7 +61,46 @@ namespace Xamarin.Interactive.Reflection
             if (path.Name == "Microsoft.AspNetCore.Server.Kestrel.Transport.Libuv.dll")
                 nativeDependencies.AddRange (GetKestrelLibuvDependencies (path));
 
+            if (path.Name == "Microsoft.ML.FastTree.dll")
+                nativeDependencies.AddRange (GetMsMlDependencies (path, "FastTreeNative"));
+
+            if (path.Name == "Microsoft.ML.CpuMath.dll")
+                nativeDependencies.AddRange (GetMsMlDependencies (path, "CpuMathNative"));
+
             return resolvedAssembly.WithExternalDependencies (nativeDependencies);
+        }
+
+        IEnumerable<ExternalDependency> GetMsMlDependencies (FilePath path, string libName)
+        {
+            var packageDirectoryPath = path.ParentDirectory.ParentDirectory.ParentDirectory;
+
+            var isMac = InteractiveInstallation.Default.IsMac;
+            var architecture = Environment.Is64BitProcess
+                ? "x64"
+                : "x86";
+
+            string runtimeName, nativeLibName;
+            switch (AgentType) {
+            case AgentType.WPF:
+            case AgentType.Console:
+            case AgentType.MacNet45:
+            case AgentType.MacMobile:
+            case AgentType.DotNetCore:
+                nativeLibName = isMac? $"lib{libName}.dylib" : $"{libName}.dll";
+                runtimeName = (isMac? "osx" : "win") + $"-{architecture}";
+                break;
+            default:
+                yield break;
+            }
+
+            var nativeLibraryPath = packageDirectoryPath.Combine (
+                "runtimes",
+                runtimeName,
+                "native",
+                nativeLibName);
+
+            if (nativeLibraryPath.FileExists)
+                yield return new NativeDependency (nativeLibraryPath.Name, nativeLibraryPath);
         }
 
         IEnumerable<ExternalDependency> GetKestrelLibuvDependencies (FilePath path)
