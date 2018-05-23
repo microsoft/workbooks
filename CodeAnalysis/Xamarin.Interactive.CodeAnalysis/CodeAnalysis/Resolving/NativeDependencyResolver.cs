@@ -53,6 +53,15 @@ namespace Xamarin.Interactive.CodeAnalysis.Resolving
             </configuration>
         ";
 
+        const string msmlDllMap = @"
+            <configuration>
+                <dllmap dll='CpuMathNative' os='osx' cpu='x86-64' wordize='64' target='../../runtimes/osx-64/native/libCpuMathNative.dylib'/>
+                <dllmap dll='FastTreeNative' os='osx' cpu='x86-64' wordsize='64' target='../../runtimes/osx-64/native/libFastTreeNative.dylib'/>
+                <dllmap dll='CpuMathNative' os='windows' cpu='x86-64' wordize='64' target='../../runtimes/osx-64/native/CpuMathNative.dll'/>
+                <dllmap dll='FastTreeNative' os='windows' cpu='x86-64' wordsize='64' target='../../runtimes/osx-64/native/FastTreeNative.dll'/>
+            </configuration>
+        ";
+
         readonly Architecture agentArchitecture;
 
         internal TargetCompilationConfiguration CompilationConfiguration { get; }
@@ -105,6 +114,10 @@ namespace Xamarin.Interactive.CodeAnalysis.Resolving
                     break;
                 case "Microsoft.AspNetCore.Server.Kestrel.Transport.Libuv.dll":
                     dllMap.LoadXml (GetKestrelDllMap (path));
+                    break;
+                case "Microsoft.ML.CpuMath.dll":
+                case "Microsoft.ML.FastTree.dll":
+                    dllMap.LoadXml (msmlDllMap);
                     break;
                 }
             }
