@@ -19,7 +19,7 @@ namespace Xamarin.Interactive.CodeAnalysis.Evaluating
     // seems to use fully-qualified-except-no-version names. As submission assemblies
     // aren't versioned, don't have a culture, and don't have a public key token, treating
     // the name in a case insensitive way is fine.
-    sealed class AssemblyNameInsensitiveNameOnlyComparer : IEqualityComparer<AssemblyName>
+    sealed class AssemblyNameInsensitiveNameOnlyComparer : IEqualityComparer<AssemblyName>, IComparer<AssemblyName>
     {
         public static bool Equals (string x, string y)
             => string.Equals (x, y, StringComparison.OrdinalIgnoreCase);
@@ -27,7 +27,7 @@ namespace Xamarin.Interactive.CodeAnalysis.Evaluating
         public static bool Equals (AssemblyName x, AssemblyName y)
             => Equals (x?.Name, y?.Name);
 
-        public static readonly IEqualityComparer<AssemblyName> Default
+        public static readonly IComparer<AssemblyName> Default
             = new AssemblyNameInsensitiveNameOnlyComparer ();
 
         bool IEqualityComparer<AssemblyName>.Equals (AssemblyName x, AssemblyName y)
@@ -35,5 +35,29 @@ namespace Xamarin.Interactive.CodeAnalysis.Evaluating
 
         int IEqualityComparer<AssemblyName>.GetHashCode (AssemblyName obj)
             => obj?.Name == null ? 0 : obj.Name.GetHashCode ();
+
+        public int Compare (AssemblyName x, AssemblyName y)
+            => string.Compare (x?.Name, y?.Name, StringComparison.OrdinalIgnoreCase);
+    }
+
+    sealed class AssemblyNameFullNameComparer : IEqualityComparer<AssemblyName>, IComparer<AssemblyName>
+    {
+        public static bool Equals (string x, string y)
+            => string.Equals (x, y, StringComparison.OrdinalIgnoreCase);
+
+        public static bool Equals (AssemblyName x, AssemblyName y)
+            => Equals (x?.Name, y?.Name);
+
+        public static readonly IComparer<AssemblyName> Default
+            = new AssemblyNameFullNameComparer ();
+
+        bool IEqualityComparer<AssemblyName>.Equals (AssemblyName x, AssemblyName y)
+            => Equals (x?.FullName, y?.FullName);
+
+        int IEqualityComparer<AssemblyName>.GetHashCode (AssemblyName obj)
+            => obj?.Name == null ? 0 : obj.Name.GetHashCode ();
+
+        public int Compare (AssemblyName x, AssemblyName y)
+            => string.Compare (x?.FullName, y?.FullName);
     }
 }

@@ -35,37 +35,45 @@ namespace Xamarin.Interactive.DotNetCore
             {
                 Log.Info (TAG, $"Requested assembly load for {assemblyName}.");
 
-                if (evaluationAssemblyContext.NetAssemblyMap.TryGetValue (assemblyName, out var netAssembly))
+                if (evaluationAssemblyContext.CompilationAssemblyMap.TryGetValue (assemblyName, out var netAssembly))
                     return netAssembly;
 
-                if (evaluationAssemblyContext.AssemblyMap.TryGetValue (assemblyName.Name, out var assemblyDefinition)) {
-                    Assembly loadedAsm;
+                if (evaluationAssemblyContext.ReferencedAssemblyMap.TryGetValue (assemblyName, out var assemblyDefinition))
+                    return LoadAssemblyFromAssemblyDefinition (assemblyName, assemblyDefinition);
 
-                    if (File.Exists (assemblyDefinition.Content.Location))
-                        loadedAsm = LoadFromAssemblyPath (assemblyDefinition.Content.Location);
-                    else if (assemblyDefinition.Content.PEImage != null) {
-                        var imageStream = new MemoryStream (assemblyDefinition.Content.PEImage);
-                        if (assemblyDefinition.Content.DebugSymbols != null) {
-                            var symStream = new MemoryStream (assemblyDefinition.Content.DebugSymbols);
-                            loadedAsm = LoadFromStream (imageStream, symStream);
-                        }
-                        loadedAsm = LoadFromStream (imageStream);
-                    } else
-                        loadedAsm = null;
-
-                    if (loadedAsm == null) {
-                        Log.Warning (
-                            TAG,
-                            $"Could not load assembly {assemblyName}, location {assemblyDefinition.Content.Location} did not " +
-                            "exist and PEImage was not sent.");
-                        return null;
-                    }
-
-                    evaluationAssemblyContext.AssemblyResolvedHandler?.Invoke (loadedAsm, assemblyDefinition);
-                    return loadedAsm;
-                }
+                Log.Warning (
+                    TAG,
+                    $"Could not load assembly {assemblyName}, it wasn't present in any list of assemblies.");
 
                 return null;
+            }
+
+            Assembly LoadAssemblyFromAssemblyDefinition (AssemblyName assemblyName, AssemblyDefinition assemblyDefinition)
+            {
+                Assembly loadedAsm;
+
+                if (File.Exists (assemblyDefinition.Content.Location)) {
+                    loadedAsm = LoadFromAssemblyPath (assemblyDefinition.Content.Location);
+                    Log.Info (TAG, $"Loaded assembly {loadedAsm} from {assemblyDefinition.Content.Location}.");
+                } else if (assemblyDefinition.Content.PEImage != null) {
+                    var imageStream = new MemoryStream (assemblyDefinition.Content.PEImage);
+                    if (assemblyDefinition.Content.DebugSymbols != null) {
+                        var symStream = new MemoryStream (assemblyDefinition.Content.DebugSymbols);
+                        loadedAsm = LoadFromStream (imageStream, symStream);
+                    }
+                    loadedAsm = LoadFromStream (imageStream);
+                    Log.Info (TAG, $"Loaded assembly {loadedAsm} from sent PE image.");
+                } else {
+                    Log.Warning (
+                        TAG,
+                        $"Could not load assembly {assemblyName}, location {assemblyDefinition.Content.Location} did not " +
+                        "exist and PEImage was not sent.");
+                    return null;
+                }
+
+                evaluationAssemblyContext.AssemblyResolvedHandler?.Invoke (loadedAsm, assemblyDefinition);
+
+                return loadedAsm;
             }
 
             internal Assembly InternalLoadByName (AssemblyName assemblyName)

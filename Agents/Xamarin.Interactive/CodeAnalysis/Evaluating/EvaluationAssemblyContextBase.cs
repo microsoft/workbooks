@@ -21,16 +21,16 @@ namespace Xamarin.Interactive.CodeAnalysis.Evaluating
     {
         const string TAG = nameof (EvaluationAssemblyContextBase);
 
-        protected Dictionary<string, AssemblyDefinition> AssemblyMap { get; }
-            = new Dictionary<string, AssemblyDefinition> (
-                StringComparer.OrdinalIgnoreCase);
-
-        protected Dictionary<AssemblyName, Assembly> NetAssemblyMap { get; }
-            = new Dictionary<AssemblyName, Assembly> (
+        protected IDictionary<AssemblyName, AssemblyDefinition> ReferencedAssemblyMap { get; }
+            = new SortedDictionary<AssemblyName, AssemblyDefinition> (
                 AssemblyNameInsensitiveNameOnlyComparer.Default);
 
-        protected Dictionary<string, FilePath> ExternalDependencyMap { get; }
-            = new Dictionary<string, FilePath> (
+        protected IDictionary<AssemblyName, Assembly> CompilationAssemblyMap { get; }
+            = new SortedDictionary<AssemblyName, Assembly> (
+                AssemblyNameInsensitiveNameOnlyComparer.Default);
+
+        protected IDictionary<string, FilePath> ExternalDependencyMap { get; }
+            = new SortedDictionary<string, FilePath> (
                 StringComparer.OrdinalIgnoreCase);
 
         public Action<Assembly, AssemblyDefinition> AssemblyResolvedHandler { get; set; }
@@ -60,7 +60,7 @@ namespace Xamarin.Interactive.CodeAnalysis.Evaluating
             if (assembly == null)
                 throw new ArgumentNullException (nameof (assembly));
 
-            AssemblyMap [assembly.Name.Name] = assembly;
+            ReferencedAssemblyMap [assembly.Name] = assembly;
         }
 
         public void Add (Assembly assembly)
@@ -68,7 +68,7 @@ namespace Xamarin.Interactive.CodeAnalysis.Evaluating
             if (assembly == null)
                 throw new ArgumentNullException (nameof (assembly));
 
-            NetAssemblyMap [assembly.GetName ()] = assembly;
+            CompilationAssemblyMap [assembly.GetName ()] = assembly;
         }
 
         public void Add (AssemblyDependency externalDependency)

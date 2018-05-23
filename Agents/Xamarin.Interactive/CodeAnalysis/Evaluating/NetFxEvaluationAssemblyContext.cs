@@ -36,11 +36,11 @@ namespace Xamarin.Interactive.CodeAnalysis.Evaluating
         Assembly LoadAssemblyFromName (string assemblyName, Assembly requestingAssembly)
         {
             Assembly netAssembly;
-            if (NetAssemblyMap.TryGetValue (new AssemblyName (assemblyName), out netAssembly))
+            if (CompilationAssemblyMap.TryGetValue (new AssemblyName (assemblyName), out netAssembly))
                 return netAssembly;
 
             AssemblyDefinition assembly;
-            if (AssemblyMap.TryGetValue (new AssemblyName (assemblyName).Name, out assembly)) {
+            if (ReferencedAssemblyMap.TryGetValue (new AssemblyName (assemblyName), out assembly)) {
                 if (requestingAssembly?.ReflectionOnly == true) {
                     if (File.Exists (assembly.Content.Location))
                         return Assembly.ReflectionOnlyLoadFrom (assembly.Content.Location);
