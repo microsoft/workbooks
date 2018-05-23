@@ -91,29 +91,6 @@ namespace Xamarin.Interactive.Compilation
 
             var deps = dependencyResolver.Resolve (new [] { new FilePath (formsAssembly) });
 
-            // Now dig out the resolved assembly that is Xamarin.Forms.Core, and compare it to the
-            // default ref.
-            var resolvedFormsAssembly = deps.FirstOrDefault (d => d.AssemblyName.Name == "Xamarin.Forms.Core");
-            if (resolvedFormsAssembly == null) {
-                Log.Warning (TAG,
-                    "Cannot enable Forms integration because Forms cannot be " +
-                    "resolved. Check log for assembly search path issues.");
-                return;
-            }
-            var ourVersion = resolvedFormsAssembly.AssemblyName.Version;
-            var theirVersion = formsVersion;
-
-            if (ourVersion.Major != theirVersion.Major) {
-                Log.Warning (
-                    TAG,
-                    "Assembly version mismatch between app's Xamarin.Forms.Core and" +
-                    $"our referenced Xamarin.Forms.Core. Our version: {ourVersion}, " +
-                    $"their version: {theirVersion}. Won't load Xamarin.Forms agent " +
-                    "integration, as it probably won't work."
-                );
-                return;
-            }
-
             var assembliesToLoad = deps.Select (dep => {
                 var peImage = includePeImage ? GetFileBytes (dep.Path) : null;
                 var syms = includePeImage ? GetDebugSymbolsFromAssemblyPath (dep.Path) : null;

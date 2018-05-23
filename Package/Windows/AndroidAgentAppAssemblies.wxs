@@ -611,20 +611,11 @@
       <Component Id="AndroidAgentApp.System.Collections.dll" Guid="EBF7F64E-5D71-4C1E-8B42-D8D1373DA72C">
         <File Id="AndroidAgentApp.System.Collections.dll" Source="$(var.AndroidAppAssembliesDir)\System.Collections.dll" />
       </Component>
-      <Component Id="AndroidAgentApp.System.ComponentModel.dll" Guid="15EF00B0-202F-4F32-B319-8802264B0085">
-        <File Id="AndroidAgentApp.System.ComponentModel.dll" Source="$(var.AndroidAppAssembliesDir)\System.ComponentModel.dll" />
-      </Component>
       <Component Id="AndroidAgentApp.System.Diagnostics.Debug.dll" Guid="17EF15CA-6880-4836-9246-20284E820865">
         <File Id="AndroidAgentApp.System.Diagnostics.Debug.dll" Source="$(var.AndroidAppAssembliesDir)\System.Diagnostics.Debug.dll" />
       </Component>
       <Component Id="AndroidAgentApp.System.Dynamic.Runtime.dll" Guid="5D36D55C-E583-419C-86CD-E59E154781F9">
         <File Id="AndroidAgentApp.System.Dynamic.Runtime.dll" Source="$(var.AndroidAppAssembliesDir)\System.Dynamic.Runtime.dll" />
-      </Component>
-      <Component Id="AndroidAgentApp.System.Globalization.dll" Guid="4ED9E8DD-0297-4675-A452-8F99C085FDDA">
-        <File Id="AndroidAgentApp.System.Globalization.dll" Source="$(var.AndroidAppAssembliesDir)\System.Globalization.dll" />
-      </Component>
-      <Component Id="AndroidAgentApp.System.IO.dll" Guid="43A925B4-5B2F-48AC-BFFC-50418E7C2FF9">
-        <File Id="AndroidAgentApp.System.IO.dll" Source="$(var.AndroidAppAssembliesDir)\System.IO.dll" />
       </Component>
       <Component Id="AndroidAgentApp.System.Linq.Expressions.dll" Guid="A8735D36-6204-47AF-8D65-6EA0778B60AF">
         <File Id="AndroidAgentApp.System.Linq.Expressions.dll" Source="$(var.AndroidAppAssembliesDir)\System.Linq.Expressions.dll" />
@@ -650,26 +641,14 @@
       <Component Id="AndroidAgentApp.System.Runtime.dll" Guid="CEC36B65-C22C-463B-BF82-83D4EF94C9B2">
         <File Id="AndroidAgentApp.System.Runtime.dll" Source="$(var.AndroidAppAssembliesDir)\System.Runtime.dll" />
       </Component>
-      <Component Id="AndroidAgentApp.System.Text.RegularExpressions.dll" Guid="203AD343-E0BA-4C88-A704-8902B18AF115">
-        <File Id="AndroidAgentApp.System.Text.RegularExpressions.dll" Source="$(var.AndroidAppAssembliesDir)\System.Text.RegularExpressions.dll" />
-      </Component>
-      <Component Id="AndroidAgentApp.System.Threading.Tasks.dll" Guid="1CF6A7BE-2732-4432-A0AB-5DA8D74CD07C">
-        <File Id="AndroidAgentApp.System.Threading.Tasks.dll" Source="$(var.AndroidAppAssembliesDir)\System.Threading.Tasks.dll" />
-      </Component>
       <Component Id="AndroidAgentApp.System.Threading.dll" Guid="29E7A20B-0139-4650-B18A-6ECDEBA5234A">
         <File Id="AndroidAgentApp.System.Threading.dll" Source="$(var.AndroidAppAssembliesDir)\System.Threading.dll" />
-      </Component>
-      <Component Id="AndroidAgentApp.System.Xml.ReaderWriter.dll" Guid="3EAAD511-5DA5-4C80-8807-6718F28D76B1">
-        <File Id="AndroidAgentApp.System.Xml.ReaderWriter.dll" Source="$(var.AndroidAppAssembliesDir)\System.Xml.ReaderWriter.dll" />
       </Component>
       <Component Id="AndroidAgentApp.System.Diagnostics.StackTrace.dll" Guid="6EE8BBCE-8BBF-4C02-9E38-55AA5182FA25">
         <File Id="AndroidAgentApp.System.Diagnostics.StackTrace.dll" Source="$(var.AndroidAppAssembliesDir)\System.Diagnostics.StackTrace.dll" />
       </Component>
       <Component Id="AndroidAgentApp.System.Globalization.Extensions.dll" Guid="6EC8BBB0-4309-45C5-9B7E-42809C958AF5">
         <File Id="AndroidAgentApp.System.Globalization.Extensions.dll" Source="$(var.AndroidAppAssembliesDir)\System.Globalization.Extensions.dll" />
-      </Component>
-      <Component Id="AndroidAgentApp.System.Runtime.InteropServices.RuntimeInformation.dll" Guid="4FC9F01D-7021-4FCE-A3E0-5D21B16D46AE">
-        <File Id="AndroidAgentApp.System.Runtime.InteropServices.RuntimeInformation.dll" Source="$(var.AndroidAppAssembliesDir)\System.Runtime.InteropServices.RuntimeInformation.dll" />
       </Component>
       <Component Id="AndroidAgentApp.System.Runtime.Serialization.Primitives.dll" Guid="99FAADCE-D106-4B0D-9E99-F2B23736B131">
         <File Id="AndroidAgentApp.System.Runtime.Serialization.Primitives.dll" Source="$(var.AndroidAppAssembliesDir)\System.Runtime.Serialization.Primitives.dll" />
