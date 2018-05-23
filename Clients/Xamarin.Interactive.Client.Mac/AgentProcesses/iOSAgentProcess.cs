@@ -102,7 +102,7 @@ namespace Xamarin.Interactive.Client.AgentProcesses
         async Task InitializeXcodeSdkAsync (IMessageService messageService)
         {
             try {
-                sdkRoot = MTouchSdkTool.GetXcodeSdkRoot ();
+                sdkRoot = await MTouchSdkTool.GetXcodeSdkRootAsync ();
             } catch (Exception e) {
                 Log.Error (TAG, e);
             }

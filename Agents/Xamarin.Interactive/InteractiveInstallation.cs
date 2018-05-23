@@ -106,7 +106,7 @@ namespace Xamarin.Interactive
                 searchPaths.Add (Path.Combine (
                     BuildPath, "Clients", "Xamarin.Interactive.Client.Mac.SimChecker"));
 
-            simCheckerExecutablePaths = LocateFiles (searchPaths, "Xamarin.Interactive.Mac.SimChecker.exe").ToList ();
+            simCheckerExecutablePaths = LocateFiles (searchPaths, "Xamarin.Interactive.Client.Mac.SimChecker.exe").ToList ();
             return simCheckerExecutablePaths;
         }
 
