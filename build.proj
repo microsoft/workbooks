@@ -1,4 +1,4 @@
-<Project InitialTargets="Configure" DefaultTargets="Restore;Build">
+<Project InitialTargets="Configure" DefaultTargets="Build">
   <Import Project="Directory.Build.props"/>
   <Import Project="Directory.Build.targets"/>
   <Import Project="build\Environment.targets"/>
@@ -16,6 +16,7 @@
     <SolutionFile>$(MSBuildThisFileDirectory)build\Xamarin.Interactive.sln</SolutionFile>
     <SolutionFileRelative>$([MSBuild]::MakeRelative($(MSBuildThisFileDirectory), $(SolutionFile)))</SolutionFileRelative>
     <SolutionBasePath>$([System.IO.Path]::GetDirectoryName($(SolutionFile)))\</SolutionBasePath>
+    <RestoreStampFile>$([MSBuild]::NormalizePath('$(MSBuildThisFileDirectory)_build\Restore.stamp'))</RestoreStampFile>
   </PropertyGroup>
 
   <!-- Profiles -->
@@ -167,6 +168,14 @@
   <!-- Solution Targets -->
 
   <Target
+    Name="CheckRestore"
+    BeforeTargets="Build">
+    <Error
+      Condition="!Exists('$(RestoreStampFile)')"
+      Text="When building with MSBuild directly, The 'Restore' target must be run first. Run 'msbuild /restore' or 'msbuild /t:Restore'."/>
+  </Target>
+
+  <Target
     Name="Build"
     DependsOnTargets="@(ProfileTargets)">
     <Exec Condition="$(IsWindows) And Exists('$(Adb)')" Command="$(Adb) kill-server"/>
@@ -183,6 +192,10 @@
     <MSBuild
       Projects="$(SolutionFile)"
       Targets="Restore"/>
+    <WriteLinesToFile
+      File="$(RestoreStampFile)"
+      Overwrite="true"
+      Lines="$([System.DateTime]::Now)"/>
   </Target>
 
   <!-- Profile Targets -->
