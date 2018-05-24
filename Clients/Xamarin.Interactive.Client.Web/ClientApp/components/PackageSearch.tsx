@@ -6,6 +6,7 @@ import { PrimaryButton } from 'office-ui-fabric-react/lib/Button'
 import { Panel, PanelType } from 'office-ui-fabric-react/lib/Panel'
 import { SearchBox } from 'office-ui-fabric-react/lib/SearchBox'
 import { Icon } from 'office-ui-fabric-react/lib/Icon'
+import 'isomorphic-fetch'
 
 import './PackageSearch.scss'
 
