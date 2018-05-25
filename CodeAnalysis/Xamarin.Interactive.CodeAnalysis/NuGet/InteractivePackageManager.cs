@@ -230,45 +230,44 @@ namespace Xamarin.Interactive.NuGet
             SourceCacheContext cacheContext,
             CancellationToken cancellationToken)
         {
+            packages = packages.ToList ();
+
+            // NOTE: This path is typically empty. It could in theory contain nuget.config
+            // settings files, but really we just use it to satisfy nuget API that requires
+            // paths, even when they are never used.
+            var rootPath = packageConfigDirectory;
+
+            // Set up a project spec similar to what you would see in a project.json.
+            // This is sufficient for the dependency graph work done within RestoreCommand.
             var restoreContext = new RestoreArgs {
                 CacheContext = cacheContext,
                 Log = Logger,
             };
 
-            // NOTE: This path is typically empty. It could in theory contain nuget.config settings
-            //       files, but really we just use it to satisfy nuget API that requires paths,
-            //       even when they are never used.
-            var rootPath = packageConfigDirectory;
-            var globalPath = restoreContext.GetEffectiveGlobalPackagesFolder (rootPath, settings);
-            var fallbackPaths = restoreContext.GetEffectiveFallbackPackageFolders (settings);
+            var restoreResult = await new RestoreCommand (
+                new RestoreRequest (
+                    new PackageSpec (new [] {
+                        new TargetFrameworkInformation {
+                            FrameworkName = TargetFramework,
+                            Dependencies = packages
+                                .Select (ToLibraryDependency)
+                                .ToList ()
+                        }
+                    }) {
+                        Name = project.Name,
+                        FilePath = rootPath,
+                    },
+                    new RestoreCommandProvidersCache ()
+                        .GetOrCreate (
+                            restoreContext.GetEffectiveGlobalPackagesFolder (rootPath, settings),
+                            restoreContext.GetEffectiveFallbackPackageFolders (settings),
+                            SourceRepositories,
+                            cacheContext,
+                            Logger),
+                    cacheContext,
+                    Logger)).ExecuteAsync (cancellationToken).ConfigureAwait (false);
 
-            var providerCache = new RestoreCommandProvidersCache ();
-            var restoreProviders = providerCache.GetOrCreate (
-                globalPath,
-                fallbackPaths,
-                SourceRepositories,
-                cacheContext,
-                Logger);
-
-            packages = packages.ToList ();
-
-            // Set up a project spec similar to what you would see in a project.json.
-            // This is sufficient for the dependency graph work done within RestoreCommand.
-            var targetFrameworkInformation = new TargetFrameworkInformation {
-                FrameworkName = TargetFramework,
-                Dependencies = packages.Select (ToLibraryDependency).ToList (),
-            };
-
-            var projectSpec = new PackageSpec (new [] { targetFrameworkInformation }) {
-                Name = project.Name,
-                FilePath = rootPath,
-            };
-
-            var restoreRequest = new RestoreRequest (projectSpec, restoreProviders, cacheContext, Logger);
-            var restoreCommand = new RestoreCommand (restoreRequest);
-            var result = await restoreCommand.ExecuteAsync (cancellationToken);
-
-            if (!result.Success)
+            if (!restoreResult.Success)
                 return false;
 
             project.ResetInstallationContext ();
@@ -278,7 +277,7 @@ namespace Xamarin.Interactive.NuGet
             //
             // All resolved packages, including the explicit inputs and their dependencies, are
             // available as LockFileLibrary instances.
-            foreach (var library in result.LockFile.Libraries)
+            foreach (var library in restoreResult.LockFile.Libraries)
                 project.InstallationContext.AddInstalledPackage (
                     GetInteractivePackageFromLibrary (library, project, packages));
 
