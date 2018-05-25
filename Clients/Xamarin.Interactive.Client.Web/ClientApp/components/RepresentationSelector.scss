@@ -1,0 +1,40 @@
+// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License.
+
+@import '../css/theme.scss';
+
+.RepresentationSelector {
+
+  .Dropdown {
+    display: flex;
+    color: $representationSelectorColor;
+
+    text-align: right;
+
+    * {
+      cursor: pointer;
+      user-select: none;
+      @include codeFont;
+    }
+
+    .DropdownButton {
+      border-bottom: 1px solid transparent;
+    }
+
+    &.DropdownActive .DropdownButton,
+    .DropdownButton:hover,
+    li:hover {
+      color: $representationSelectorActiveColor;
+    }
+
+    .DropdownButtonExpander svg {
+      color: $representationSelectorColor;
+      transform: rotate(-90deg);
+      transition: transform 0.25s ease-in-out;
+    }
+
+    &.DropdownActive .DropdownButton .DropdownButtonExpander svg {
+      transform: rotate(0deg);
+    }
+  }
+}

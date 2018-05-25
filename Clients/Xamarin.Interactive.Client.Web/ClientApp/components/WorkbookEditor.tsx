@@ -142,7 +142,7 @@ export class WorkbookEditor extends React.Component<WorkbooksEditorProps, Workbo
                 editable: false,
                 props: {
                     shellContext: this.props.shellContext,
-                    rendererRegistry: this.props.shellContext.rendererRegistry,
+                    representationRegistry: this.props.shellContext.representationRegistry,
                     sendEditorMessage: (message: EditorMessage) => this.sendMessage(message),
                     cellMapper: this,
                     codeCellId,

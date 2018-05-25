@@ -4,9 +4,9 @@
 $fgColorError: #f56d4f;
 $fgColorWarning: #f38f00;
 
-$codeFontFamily: Menlo, Monaco, "Courier New", monospace;
-$codeFontSize: 12px;
-$codeLineHeight: $codeFontSize + 2 * 2px;
+$codeFontFamily: Menlo, Monaco, Consolas, "Courier New", monospace;
+$codeFontSize: 14px;
+$codeLineHeight: $codeFontSize * 1.5;
 
 @mixin codeFont() {
   font-family: $codeFontFamily;
@@ -19,9 +19,11 @@ $codeLineHeight: $codeFontSize + 2 * 2px;
   max-height: calc(#{$codeLineHeight} * #{$maxLineCount} + (#{$codeLineHeight} - #{$codeFontSize}) / 2);
 }
 
-$cellBorderColor: #ccc;
-
 $cellEditorBorderColor: #ddd;
-$cellEditorBackground: #fafafa;
+$cellEditorBackground: #f7f7f7;
 
-$cellCancelButtonTextColor: #c00;
+$representationSelectorColor: #777;
+$representationSelectorActiveColor: #222;
+
+$themePrimary: #5c2d91;
+$themeCancel: #a80000;

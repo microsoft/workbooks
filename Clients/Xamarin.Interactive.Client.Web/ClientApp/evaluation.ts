@@ -68,6 +68,7 @@ export interface CodeCellUpdate extends ICodeCellEvent {
 }
 
 export interface CodeCellResult extends ICodeCellEvent  {
+    status: CodeCellEvaluationStatus
     resultHandling: CodeCellResultHandling
     resultType: string | null
     resultRepresentations: any[]

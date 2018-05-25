@@ -9,22 +9,56 @@
 
 $margin: 8px;
 $padding: $margin / 2;
+$borderColor: darken($cellEditorBackground, 20%);
 
 .CodeCell-container {
-  border: 1px solid $cellBorderColor;
-  padding: 0.5em;
   cursor: default;
   margin: 1em 0;
-
-  .ms-Dropdown-container {
-    cursor: pointer;
-  }
+  border-left: 1px solid $borderColor;
 
   .CodeCell-editor-container {
-    margin-bottom: $margin;
+    position: relative;
     padding: $padding;
-    border: 1px solid $cellEditorBorderColor;
     background: $cellEditorBackground;
+
+    .CodeCell-actions-container {
+      position: absolute;
+      z-index: 500;
+      bottom: 0;
+      right: 0;
+
+      button {
+        position: absolute;
+        right: $padding;
+        bottom: $padding * 1.5;
+
+        .CodeCell-Running-Cancel-Group {
+          visibility: hidden;
+        }
+
+        &:hover {
+          .CodeCell-Running-Cancel-Group {
+            visibility: visible;
+            color: $themeCancel;
+          }
+
+          .CodeCell-Running-Group {
+            visibility: hidden;
+          }
+        }
+      }
+
+      svg .CodeCell-Running-Ring1,
+      svg .CodeCell-Running-Ring3 {
+        animation: spin-cw 1s linear infinite;
+        transform-origin: 50% 50%;
+      }
+
+      svg .CodeCell-Running-Ring2 {
+        animation: spin-ccw 1s linear infinite;
+        transform-origin: 50% 50%;
+      }
+    }
   }
 
   .CodeCell-diagnostics-container {
@@ -57,54 +91,26 @@ $padding: $margin / 2;
   }
 
   .CodeCell-captured-output-container {
-    border: 1px dotted $cellEditorBorderColor;
-    padding: $padding;
+    border-bottom: 1px dotted $cellEditorBorderColor;
+    background: lighten($cellEditorBackground, 2%);
   }
 
-  .CodeCell-results-container {
+  .CodeCell-results-container,
+  .CodeCell-captured-output-container {
     margin-bottom: $margin;
 
-    .CodeCell-result {
+    .CodeCell-representation {
       display: flex;
-      align-items: flex-end;
-      flex-wrap: wrap-reverse;
 
-      .CodeCell-result-renderer-container {
-        padding-right: 1em;
+      .RepresentationSelector {
+        margin-left: calc(-10vw - 1em);
+        width: 10vw;
       }
-    }
-  }
 
-  .CodeCell-actions-container {
-    .actions {
-      display: flex;
-      flex-direction: row;
-      align-items: stretch;
-    }
-
-    .ms-Button,
-    .ms-Button-label,
-    .ms-Button-icon {
-      padding: 0;
-      margin: 0;
-    }
-
-    .CancelButton:hover,
-    .CancelButton:hover * {
-      color: $cellCancelButtonTextColor;
-    }
-
-    .ms-Button {
-      height: 22px;
-    }
-
-    .ms-Button-label {
-      padding-left: 4px;
-    }
-
-    .ms-ProgressIndicator {
-      padding-left: 8px;
-      flex-grow: 1;
+      .CodeCell-representation-renderer-container {
+        flex-grow: 1;
+        padding-left: calc(1em + #{$padding});
+      }
     }
   }
 }

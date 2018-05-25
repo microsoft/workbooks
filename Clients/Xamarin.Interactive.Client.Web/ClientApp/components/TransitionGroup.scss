@@ -1,0 +1,17 @@
+// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License.
+
+$transitionDuration: 150ms;
+
+.TransitionGroup {
+  transition: opacity $transitionDuration ease-out, max-height $transitionDuration ease-out;
+  overflow: hidden;
+
+  opacity: 1;
+
+  &.TransitionGroupHidden {
+    transition: max-height $transitionDuration ease-in, opacity $transitionDuration ease-in;
+    opacity: 0;
+    max-height: 0 !important;
+  }
+}

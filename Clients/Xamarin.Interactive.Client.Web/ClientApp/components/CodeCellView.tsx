@@ -5,40 +5,26 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
-import * as React from 'react';
-import * as ReactDOM from 'react-dom';
+import * as React from 'react'
+import * as ReactDOM from 'react-dom'
+import * as Immutable from 'immutable'
 
-import { ActionButton } from 'office-ui-fabric-react/lib/Button';
 import { ProgressIndicator } from 'office-ui-fabric-react/lib/ProgressIndicator';
 import {
     Spinner,
     SpinnerSize
 } from 'office-ui-fabric-react/lib/Spinner';
-import {
-    Dropdown,
-    IDropdown,
-    DropdownMenuItemType,
-    IDropdownOption
-} from 'office-ui-fabric-react/lib/Dropdown';
 
 import { randomReactKey } from '../utils'
+import { Dropdown } from './Dropdown'
+import { ActionButton } from './ActionButton'
 import { EditorMessage, EditorMessageType } from '../utils/EditorMessages'
 import { CodeCellResult, CodeCellResultHandling, Diagnostic, CapturedOutputSegment } from '../evaluation'
-import { ResultRendererRepresentation } from '../rendering'
-import { ResultRendererRegistry } from '../ResultRendererRegistry'
-import { CapturedOutputView } from './CapturedOutputView'
+import { Representation, RepresentationRegistry } from '../rendering'
+import createCapturedOutputRepresentation from '../renderers/CapturedOutputRenderer'
+import { RepresentationSelector } from './RepresentationSelector'
 
 import './CodeCellView.scss'
-
-export interface ResultRendererRepresentationMap {
-    [key: string]: ResultRendererRepresentation
-}
-
-export interface CodeCellResultRendererState {
-    result: CodeCellResult
-    representations: ResultRendererRepresentationMap
-    selectedRepresentationKey: string
-}
 
 export const enum CodeCellViewStatus {
     Unbound,
@@ -47,14 +33,46 @@ export const enum CodeCellViewStatus {
     Aborting
 }
 
+interface RepresentationViewProps {
+    rootRepresentation: Representation
+}
+
+interface RepresentationViewState {
+    selectedRepresentation?: Representation
+}
+
+class RepresentationView extends React.PureComponent<RepresentationViewProps, RepresentationViewState> {
+    constructor(props: RepresentationViewProps) {
+        super(props)
+        this.state = {}
+    }
+
+    render() {
+        return (
+            <div className='CodeCell-representation'>
+                <RepresentationSelector
+                    key={`representation-selector:${this.props.rootRepresentation.key}`}
+                    rootRepresentation={this.props.rootRepresentation}
+                    onRenderRepresentation={selectedRepresentation => this.setState({ selectedRepresentation })}/>
+                <div className='CodeCell-representation-renderer-container'>
+                    {this.state.selectedRepresentation && this.state.selectedRepresentation.component &&
+                        <this.state.selectedRepresentation.component
+                            key={`render-component:${this.state.selectedRepresentation.key}`}
+                            {... this.state.selectedRepresentation.componentProps}/>}
+                </div>
+            </div>
+        )
+    }
+}
+
 export interface CodeCellViewProps {
-    rendererRegistry: ResultRendererRegistry
+    representationRegistry: RepresentationRegistry
 }
 
 export interface CodeCellViewState {
     status: CodeCellViewStatus
     capturedOutput: CapturedOutputSegment[]
-    results: CodeCellResultRendererState[]
+    results: JSX.Element[]
     diagnostics: Diagnostic[]
 }
 
@@ -63,76 +81,48 @@ export abstract class CodeCellView<
     TCodeCellViewState extends CodeCellViewState = CodeCellViewState>
     extends React.Component<TCodeCellViewProps, TCodeCellViewState> {
 
-    protected abstract getRendererRegistry(): ResultRendererRegistry
-    protected abstract abortEvaluation(): Promise<void>
+    protected abstract getRepresentationRegistry(): RepresentationRegistry
     protected abstract startEvaluation(): Promise<void>
+    protected abstract abortEvaluation(): Promise<void>
     protected abstract renderEditor(): any
 
     protected setStateFromResult(result: CodeCellResult, resultHandling?: CodeCellResultHandling) {
-        const reps = this
-            .getRendererRegistry()
-            .getRenderers(result)
-            .map(r => r.getRepresentations(result))
+        const rootRepresentation = this
+            .getRepresentationRegistry()
+            .getRepresentations(result)
 
-        const flatReps = reps.length === 0
-            ? []
-            : reps.reduce((a, b) => a.concat(b))
+        const resultView = rootRepresentation && <RepresentationView
+            key={rootRepresentation.key}
+            rootRepresentation={rootRepresentation}/>
 
-        const mapReps: ResultRendererRepresentationMap = {}
-        flatReps.map(rep => mapReps[rep.key] = rep)
-
-        const rendererState = {
-            result: result,
-            representations: mapReps,
-            selectedRepresentationKey: flatReps[0].key
-        }
-
-        if (!resultHandling)
-            resultHandling = result.resultHandling
-
-        switch (resultHandling) {
+        switch (resultHandling || result.resultHandling) {
             case CodeCellResultHandling.Append:
-                this.setState({
-                    results: this.state.results.concat(rendererState)
-                })
+                if (resultView)
+                    this.setState({ results: this.state.results.concat(resultView) })
                 break
             case CodeCellResultHandling.Replace:
             default:
-                this.setState({
-                    results: [rendererState]
-                })
+                this.setState({ results: resultView ? [resultView] : [] })
                 break
         }
     }
 
     private renderActions() {
         switch (this.state.status) {
-            case CodeCellViewStatus.Unbound:
-                return null
             case CodeCellViewStatus.Evaluating:
-                return (
-                    <div className='actions'>
-                        <ActionButton
-                            className='CancelButton'
-                            iconProps={{ iconName: 'Cancel' }}
-                            onClick={e => this.abortEvaluation()}>
-                            Cancel
-                        </ActionButton>
-                        <ProgressIndicator />
-                     </div>
-                )
             case CodeCellViewStatus.Aborting:
-                return <div>Aborting...</div>
+                return <ActionButton
+                    iconName="CodeCell-Running"
+                    title="Cancel Cell Evaluation"
+                    onClick={() => this.abortEvaluation()}/>
             case CodeCellViewStatus.Ready:
-                return (
-                    <ActionButton
-                        iconProps={{ iconName: 'Play' }}
-                        onClick={e => this.startEvaluation()}>
-                        Run
-                    </ActionButton>
-                )
+                return <ActionButton
+                    iconName="CodeCell-Run"
+                    title="Evaluate Cell"
+                    onClick={() => this.startEvaluation()}/>
         }
-        return <div/>
+
+        return false
     }
 
     render() {
@@ -140,6 +130,9 @@ export abstract class CodeCellView<
             <div className="CodeCell-container">
                 <div className="CodeCell-editor-container">
                     {this.renderEditor()}
+                    <div className="CodeCell-actions-container">
+                        {this.renderActions()}
+                    </div>
                 </div>
                 <div className="CodeCell-diagnostics-container">
                     <ul>
@@ -168,50 +161,16 @@ export abstract class CodeCellView<
                 </div>
                 {this.state.capturedOutput.length > 0 &&
                     <div className="CodeCell-captured-output-container">
-                        <CapturedOutputView segments={this.state.capturedOutput} />
+                        <RepresentationView
+                            rootRepresentation={{
+                                key: `CapturedOutput:${this.state.capturedOutput.length}`,
+                                displayName: '_root',
+                                children: Immutable.List(
+                                    [createCapturedOutputRepresentation(this.state.capturedOutput)])
+                            }}/>
                     </div>}
                 <div className="CodeCell-results-container">
-                    {this.state.results.map((resultState, i) => {
-                        const representationKeys = Object.keys(resultState.representations)
-                        if (representationKeys.length === 0)
-                            return
-                        const dropdownOptions = representationKeys.length > 1
-                            ? representationKeys.map(key => {
-                                return {
-                                    key: key,
-                                    text: resultState.representations[key].displayName
-                                }
-                            })
-                            : null
-
-                        let repElem = null
-                        if (resultState.selectedRepresentationKey) {
-                            const rep = resultState.representations[resultState.selectedRepresentationKey]
-                            repElem = <rep.component
-                                key={rep.key}
-                                {...rep.componentProps}/>
-                        }
-
-                        return (
-                            <div
-                                key={i}
-                                className="CodeCell-result">
-                                <div className="CodeCell-result-renderer-container">
-                                    {repElem}
-                                </div>
-                                {dropdownOptions && <Dropdown
-                                    options={dropdownOptions}
-                                    defaultSelectedKey={dropdownOptions[0].key}
-                                    onChanged={item => {
-                                        resultState.selectedRepresentationKey = item.key as string
-                                        this.setState(this.state)
-                                    }}/>}
-                            </div>
-                        )
-                    })}
-                </div>
-                <div className="CodeCell-actions-container">
-                    {this.renderActions()}
+                    {this.state.results}
                 </div>
             </div>
         );
@@ -258,8 +217,8 @@ export class MockedCodeCellView extends CodeCellView<MockedCodeCellProps> {
         this.setStateFromPendingResult()
     }
 
-    protected getRendererRegistry(): ResultRendererRegistry {
-        return this.props.rendererRegistry
+    protected getRepresentationRegistry(): RepresentationRegistry {
+        return this.props.representationRegistry
     }
 
     protected async startEvaluation(): Promise<void> {

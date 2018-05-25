@@ -10,28 +10,18 @@ import {
     Calendar,
     DayOfWeek
 } from 'office-ui-fabric-react/lib/Calendar'
-import { randomReactKey } from '../utils'
 import { CodeCellResult } from '../evaluation'
-import { ResultRenderer, ResultRendererRepresentation } from '../rendering'
+import { createComponentRepresentation } from '../rendering'
 
-export default function CalendarRendererFactory(result: CodeCellResult) {
-    return result.resultType === 'System.DateTime' &&
-        typeof result.resultRepresentations[0] === 'string'
-        ? new CalendarRenderer
-        : null
-}
-
-class CalendarRenderer implements ResultRenderer {
-    getRepresentations(result: CodeCellResult) {
-        return [{
-            key: randomReactKey(),
-            displayName: 'Calendar',
-            component: CalendarRepresentation,
-            componentProps: {
+export default function createCalenderRepresentation(result: CodeCellResult) {
+    if (result.resultType === 'System.DateTime' && typeof result.resultRepresentations[0] === 'string')
+        return createComponentRepresentation(
+            'Calendar',
+            CalendarRenderer,
+            {
                 value: new Date(result.resultRepresentations[0])
-            }
-        }]
-    }
+            })
+    return null
 }
 
 const DayPickerStrings = {
@@ -88,7 +78,7 @@ const DayPickerStrings = {
     goToToday: 'Go to today'
 }
 
-class CalendarRepresentation extends React.Component<{ value: Date }> {
+class CalendarRenderer extends React.Component<{ value: Date }> {
     render() {
         return <Calendar
             strings={DayPickerStrings}
