@@ -85,8 +85,8 @@ namespace Xamarin.Interactive.Client.Mac
         void RemovePackage (NSObject sender, RoutedCommand.ParameterProxy parameter)
         {
             var node = (NuGetPackageNode)parameter.Value;
-            Session.Workbook.Packages.RemovePackage (
-                (InteractivePackage)node.RepresentedObject);
+            Session.Workbook.Packages.RemoveAsync (
+                (InteractivePackage)node.RepresentedObject).Forget ();
         }
 
         #endregion

@@ -568,7 +568,7 @@ namespace Xamarin.Interactive.Client.Windows
             var package = (args.Parameter as NuGetPackageNode)?.RepresentedObject as InteractivePackage;
 
             if (package != null)
-                Session.Workbook.Packages.RemovePackage (package);
+                Session.Workbook.Packages.RemoveAsync (package).Forget ();
         }
 
         void OnAddPackageCommandExecuted (object sender, ExecutedRoutedEventArgs args)

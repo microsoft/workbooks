@@ -89,13 +89,11 @@ namespace Xamarin.Interactive.CodeAnalysis.Resolving
         public async Task TestNativeLibraries ()
         {
             var project = CreatePackageManager (TargetFrameworks.Xamarin_iOS_1_0);
-            await project.InstallPackageAsync (
+            await project.InstallAsync (
                 new InteractivePackage (new PackageIdentity ("UrhoSharp", new NuGetVersion ("1.0.410"))),
-                sourceRepository: null, // use default
                 cancellationToken: CancellationToken.None);
-            await project.InstallPackageAsync (
+            await project.InstallAsync (
                 new InteractivePackage (new PackageIdentity ("SkiaSharp", new NuGetVersion ("1.49.1.0"))),
-                sourceRepository: null, // use default
                 cancellationToken: CancellationToken.None);
 
             var resolvedAssemblies = Resolve (
@@ -133,7 +131,7 @@ namespace Xamarin.Interactive.CodeAnalysis.Resolving
                 new InteractivePackage ("Newtonsoft.Json", VersionRange.Parse ("8.0.3"))
             };
 
-            await project.RestorePackagesAsync (packagesToInstall, CancellationToken.None);
+            await project.RestoreAsync (packagesToInstall, CancellationToken.None);
 
             // Ensure the specified Newtonsoft.Json is the one that gets installed
             var installedNewtonsoftJson = project.InstalledPackages.Where (p => p.Identity.Id == "Newtonsoft.Json");

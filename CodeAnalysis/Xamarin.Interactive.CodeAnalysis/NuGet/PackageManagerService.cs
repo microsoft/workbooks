@@ -63,6 +63,7 @@ namespace Xamarin.Interactive.NuGet
         /// <see cref="Sdk"/> for a given <see cref="Session.InteractiveSession"/> has changed.
         /// </summary>
         internal async Task InitializeAsync (
+            Runtime targetRuntime,
             Sdk targetSdk,
             FilePath packageConfigDirectory,
             IEnumerable<InteractivePackageDescription> initialPackages = null,
@@ -79,6 +80,7 @@ namespace Xamarin.Interactive.NuGet
                     .ToImmutableArray ();
 
             packageManager = new InteractivePackageManager (
+                targetRuntime.RuntimeIdentifier,
                 targetSdk.TargetFramework,
                 packageConfigDirectory);
 
@@ -134,13 +136,13 @@ namespace Xamarin.Interactive.NuGet
 
             var package = packageDescription.ToInteractivePackage ();
 
-            var installedPackages = await packageManager.InstallPackageAsync (
+            var installedPackages = await packageManager.InstallAsync (
                 package,
-                packageDescription.GetSourceRepository (),
                 cancellationToken);
             // TODO: Should probably alert user that the package is already installed.
             //       Should we add a fresh #r for the package in case that's what they're trying to get?
             //       A feel good thing?
+            // !!!!! FIXME: need to compare before/after package sets
             if (installedPackages.Count == 0)
                 return;
 
@@ -187,11 +189,11 @@ namespace Xamarin.Interactive.NuGet
             IEnumerable<InteractivePackageDescription> packages,
             CancellationToken cancellationToken = default)
         {
-            await packageManager.RestorePackagesAsync (
+            var installedPackages = await packageManager.RestoreAsync (
                 packages.Select (package => package.ToInteractivePackage ()),
                 cancellationToken);
 
-            foreach (var package in packageManager.InstalledPackages) {
+            foreach (var package in installedPackages) {
                 ReferencePackageInWorkspace (package);
                 await ReferenceTopLevelPackageAsync (package, cancellationToken);
             }

@@ -11,7 +11,6 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.ComponentModel;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Runtime.Versioning;
 using System.Threading;
 using System.Threading.Tasks;
@@ -27,7 +26,6 @@ using NuGet.Packaging.Core;
 using NuGet.ProjectModel;
 using NuGet.Protocol;
 using NuGet.Protocol.Core.Types;
-using NuGet.Resolver;
 
 using Xamarin.Interactive.Core;
 using Xamarin.Interactive.Logging;
@@ -57,12 +55,12 @@ namespace Xamarin.Interactive.NuGet
             .WithComparer (PackageIdComparer.Default);
 
         ImmutableArray<InteractivePackage> sortedInstalledPackages = ImmutableArray<InteractivePackage>.Empty;
+        public ImmutableArray<InteractivePackage> InstalledPackages => sortedInstalledPackages;
 
+        public string RuntimeIdentifier { get; }
         public NuGetFramework TargetFramework { get; }
         public ImmutableArray<SourceRepository> SourceRepositories { get; }
         public ILogger Logger { get; }
-
-        public ImmutableArray<InteractivePackage> InstalledPackages => sortedInstalledPackages;
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -149,181 +147,85 @@ namespace Xamarin.Interactive.NuGet
             project = new InteractiveNuGetProject (TargetFramework, settings);
         }
 
-        void NotifyPropertyChanged ([CallerMemberName] string propertyName = null)
-            => PropertyChanged?.Invoke (this, new PropertyChangedEventArgs (propertyName));
+        public FilePath GetPackageInstallPath (InteractivePackage package)
+            => project.GetInstalledPath (package.Identity);
 
-        void UpdateInstalledPackages ()
+        public Task<IReadOnlyList<InteractivePackage>> RemoveAsync (
+            InteractivePackage package,
+            CancellationToken cancellationToken = default)
+            => RemoveAsync (
+                installedPackages.Remove (package),
+                cancellationToken);
+
+        public Task<IReadOnlyList<InteractivePackage>> RemoveAsync (
+            IEnumerable<InteractivePackage> packages,
+            CancellationToken cancellationToken = default)
+            => RestoreAsync (
+                installedPackages.Except (packages),
+                cancellationToken);
+
+        public Task<IReadOnlyList<InteractivePackage>> InstallAsync (
+            InteractivePackage package,
+            CancellationToken cancellationToken = default)
+            => InstallAsync (
+                installedPackages.Add (package),
+                cancellationToken);
+
+        public Task<IReadOnlyList<InteractivePackage>> InstallAsync (
+            IEnumerable<InteractivePackage> packages,
+            CancellationToken cancellationToken = default)
+            => RestoreAsync (
+                installedPackages.Union (packages),
+                cancellationToken);
+
+        public Task<IReadOnlyList<InteractivePackage>> RestoreAsync (
+            IEnumerable<InteractivePackage> packages,
+            CancellationToken cancellationToken = default)
+            => RestoreAsync (
+                packages,
+                false,
+                cancellationToken);
+
+        public async Task<IReadOnlyList<InteractivePackage>> RestoreAsync (
+            IEnumerable<InteractivePackage> packages,
+            bool forceRestore,
+            CancellationToken cancellationToken = default)
         {
+            if (!forceRestore && installedPackages
+                .WithComparer (PackageIdVersionComparer.Default)
+                .SetEquals (packages))
+                return sortedInstalledPackages;
+
+            using (var cacheContext = new SourceCacheContext ()) {
+                if (!(await RestoreAsync (
+                    FixupPackages (packages, log: true),
+                    cacheContext,
+                    cancellationToken).ConfigureAwait (false)))
+                    return sortedInstalledPackages;
+            }
+
+            installedPackages = project.InstallationContext.InstalledPackages;
+
             sortedInstalledPackages = installedPackages
                 .OrderBy (p => p.Identity.Id)
                 .ToImmutableArray ();
 
-            MainThread.Post (() => NotifyPropertyChanged (nameof (InstalledPackages)));
+            // Initiate another restore against the packages we just restored. This
+            // allows TryFixupPackage to run against any newly restored packages,
+            // and if any fixups were applied (due to transitive dependencies not
+            // able to be fixed up on the previous pass), restore again with the
+            // new fixups applied. This will happen recursively until no packages
+            // need fixing.
+           await RestoreAsync (
+                FixupPackages (installedPackages, log: false),
+                cancellationToken).ConfigureAwait (false);
+
+            PropertyChanged?.Invoke (this, new PropertyChangedEventArgs (nameof (InstalledPackages)));
+
+            return sortedInstalledPackages;
         }
 
-        public void RemovePackage (InteractivePackage package)
-        {
-            if (package == null)
-                return;
-
-            installedPackages = installedPackages.Remove (package);
-
-            UpdateInstalledPackages ();
-        }
-
-        public FilePath GetPackageInstallPath (InteractivePackage package)
-            => project.GetInstalledPath (package.Identity);
-
-        /// <summary>
-        /// Install a NuGet package. Returns all newly installed packages.
-        /// </summary>
-        public async Task<IReadOnlyCollection<InteractivePackage>> InstallPackageAsync (
-            InteractivePackage package,
-            SourceRepository sourceRepository,
-            CancellationToken cancellationToken)
-        {
-            if (package == null)
-                throw new ArgumentNullException (nameof (package));
-            if (!package.Identity.HasVersion)
-                throw new ArgumentException ("PackageIdentity.Version must be set");
-
-            // TODO: File upstream issue about exception if primary source repo is offline.
-            //       Shouldn't secondary source repos kick in? Our current work around is to
-            //       pass the source repo from search to install, but that's not perfect.
-            sourceRepository = sourceRepository ?? SourceRepositories [0];
-
-            project.ResetInstallationContext ();
-
-            // Just need to apply one fixup here
-            if (PackageIdComparer.Equals (package.Identity.Id, FixedXamarinFormsPackageIdentity.Id) &&
-                package.Identity.Version != FixedXamarinFormsPackageIdentity.Version) {
-                Log.Warning (
-                    TAG,
-                    $"Replacing requested Xamarin.Forms version {package.Identity.Version} with " +
-                    $"required version {FixedXamarinFormsPackageIdentity.Version}.");
-                package = package.WithVersion (
-                    FixedXamarinFormsPackageIdentity.Version,
-                    overwriteRange: true);
-            }
-
-            if (PackageIdComparer.Equals (package.Identity.Id, IntegrationPackageId)) {
-                Log.Warning (TAG, $"Refusing to add integration NuGet package {IntegrationPackageId}.");
-                return Array.Empty<InteractivePackage> ();
-            }
-
-            var resolutionContext = new ResolutionContext (
-                DependencyBehavior.Lowest, // IDEs only use Highest if upgrading
-                includePrelease: true,
-                includeUnlisted: true,
-                versionConstraints: VersionConstraints.None);
-
-            // Although there is a single repo associated with the package being installed,
-            // dependency resolution will also look into the secondary sources. In some cases,
-            // this can greatly slow down installation. For the primary case of searching for
-            // packages in nuget.org, prevent the package manager from using secondary sources
-            // for resolution.
-            //
-            // It is important to pass an empty enumerable, because if we pass null, the package
-            // manager will determine secondary sources based on the NuGet configuration.
-            var secondarySources =
-                sourceRepository == SourceRepositories [0]
-                ? Enumerable.Empty<SourceRepository> ()
-                : SourceRepositories.Where (r => r != sourceRepository).ToArray ();
-
-            // There does not appear to be a way to hook into or override functionality of the
-            // NuGetPackageManager or PackageResolver classes. In order to mess with package
-            // resolution, we need to either write a lot of code, proxy the sources, or intercede
-            // via preview installation actions.
-            //
-            // Here we do the latter, though it is not the best general-purpose approach. It works
-            // fine for replacing one single package that we know a LOT about. If that package's
-            // dependencies continually changed, we'd be better off with another approach.
-            var previewInstallActions = await packageManager.PreviewInstallPackageAsync (
-                project,
-                package.Identity,
-                resolutionContext,
-                projectContext,
-                sourceRepository,
-                secondarySources,
-                cancellationToken);
-
-            var installActions = new List<NuGetProjectAction> ();
-            foreach (var action in previewInstallActions) {
-                // If the installed package has a dependency on Xamarin.Forms, make sure the version
-                // that gets installed is our preferred version. Force it to install from the primary
-                // source repository, because we can't assume that version is available everywhere.
-                //
-                // TODO: Consider adding a search or something to see if we can use the specified source
-                //       instead. Could be handy if nuget.org is down or the user is offline and using
-                //       a local repo.
-                if (action.PackageIdentity.Id == FixedXamarinFormsPackageIdentity.Id)
-                    installActions.Add (NuGetProjectAction.CreateInstallProjectAction (
-                        FixedXamarinFormsPackageIdentity,
-                        SourceRepositories [0],
-                        action.Project));
-                else
-                    installActions.Add (action);
-            }
-
-            // We follow the modern behavior of .NET Core and do not actually install packages anywhere.
-            // Instead, we ultimately reference them out of the user's global package cache (by default,
-            // ~/.nuget/packages). Our NuGetProject implementation simply collects package assembly
-            // references (and potentially other necessary files) and populates them back into the
-            // InteractiveInstallationContext.
-            using (var sourceCacheContext = new SourceCacheContext ())
-                await packageManager.ExecuteNuGetProjectActionsAsync (
-                    project,
-                    installActions,
-                    projectContext,
-                    sourceCacheContext,
-                    cancellationToken);
-
-            // Identify which packages were not already noted as installed, or have been upgraded now
-            var newlyInstalledPackages = new List<InteractivePackage> ();
-            foreach (var newPackage in project.InstallationContext.InstalledPackages) {
-                InteractivePackage finalNewPackage;
-                var foundInstalledMatch = installedPackages.TryGetValue (
-                    newPackage,
-                    out finalNewPackage);
-
-                if (!foundInstalledMatch ||
-                    newPackage.Identity.Version > finalNewPackage.Identity.Version) {
-
-                    // Make sure we have a reference to a matching explicit InteractivePackage if it
-                    // exists, so that we can persist the original SupportedVersionRange
-                    if (!foundInstalledMatch)
-                        finalNewPackage = PackageIdComparer.Equals (package, newPackage)
-                            ? package
-                            : newPackage;
-
-                    finalNewPackage = newPackage
-                        .WithIsExplicit (finalNewPackage.IsExplicit)
-                        .WithSupportedVersionRange (finalNewPackage.SupportedVersionRange);
-
-                    newlyInstalledPackages.Add (finalNewPackage);
-                    installedPackages = installedPackages
-                        .Remove (finalNewPackage)
-                        .Add (finalNewPackage);
-                    UpdateInstalledPackages ();
-                }
-            }
-
-            return newlyInstalledPackages;
-        }
-
-        public Task RestorePackagesAsync (
-            IEnumerable<InteractivePackage> packages,
-            CancellationToken cancellationToken)
-        {
-            using (var cacheContext = new SourceCacheContext ()) {
-                return RestorePackagesAsync (
-                    packages,
-                    cacheContext,
-                    cancellationToken);
-            }
-        }
-
-        async Task RestorePackagesAsync (
+        async Task<bool> RestoreAsync (
             IEnumerable<InteractivePackage> packages,
             SourceCacheContext cacheContext,
             CancellationToken cancellationToken)
@@ -348,13 +250,15 @@ namespace Xamarin.Interactive.NuGet
                 cacheContext,
                 Logger);
 
+            packages = packages.ToList ();
+
             // Set up a project spec similar to what you would see in a project.json.
             // This is sufficient for the dependency graph work done within RestoreCommand.
-            // TODO: XF version pinning during restore?
             var targetFrameworkInformation = new TargetFrameworkInformation {
                 FrameworkName = TargetFramework,
                 Dependencies = packages.Select (ToLibraryDependency).ToList (),
             };
+
             var projectSpec = new PackageSpec (new [] { targetFrameworkInformation }) {
                 Name = project.Name,
                 FilePath = rootPath,
@@ -365,7 +269,7 @@ namespace Xamarin.Interactive.NuGet
             var result = await restoreCommand.ExecuteAsync (cancellationToken);
 
             if (!result.Success)
-                return;
+                return false;
 
             project.ResetInstallationContext ();
 
@@ -378,8 +282,7 @@ namespace Xamarin.Interactive.NuGet
                 project.InstallationContext.AddInstalledPackage (
                     GetInteractivePackageFromLibrary (library, project, packages));
 
-            installedPackages = project.InstallationContext.InstalledPackages;
-            UpdateInstalledPackages ();
+            return true;
         }
 
         /// <summary>
@@ -439,6 +342,40 @@ namespace Xamarin.Interactive.NuGet
                 isExplicit: originalInputPackage?.IsExplicit == true,
                 assemblyReferences: assemblyReferences,
                 supportedVersionRange: originalInputPackage?.SupportedVersionRange);
+        }
+
+        static IEnumerable<InteractivePackage> FixupPackages (IEnumerable<InteractivePackage> packages, bool log)
+            => packages
+                .Select (package => {
+                    TryFixupPackage (ref package, log);
+                    return package;
+                })
+                .Where (package => package != null);
+
+        static bool TryFixupPackage (ref InteractivePackage package, bool log)
+        {
+            if (PackageIdComparer.Equals (package.Identity.Id, IntegrationPackageId)) {
+                if (log)
+                    Log.Warning (TAG, $"Refusing to add integration NuGet package {IntegrationPackageId}.");
+                package = null;
+                return true;
+            }
+
+            // Pin Xamarin.Forms to what we have in the Xamarin.Forms workbook apps
+            if (PackageIdComparer.Equals (package.Identity.Id, FixedXamarinFormsPackageIdentity.Id) &&
+                package.Identity.Version != FixedXamarinFormsPackageIdentity.Version) {
+                if (log)
+                    Log.Warning (
+                        TAG,
+                        $"Replacing requested Xamarin.Forms version {package.Identity.Version} with " +
+                        $"required version {FixedXamarinFormsPackageIdentity.Version}.");
+                package = package.WithVersion (
+                    FixedXamarinFormsPackageIdentity.Version,
+                    overwriteRange: true);
+                return true;
+            }
+
+            return false;
         }
 
         static LibraryDependency ToLibraryDependency (InteractivePackage package)

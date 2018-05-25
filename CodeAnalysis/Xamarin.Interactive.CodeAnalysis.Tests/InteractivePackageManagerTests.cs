@@ -51,7 +51,7 @@ namespace Xamarin.Interactive.NuGet
             FrameworkNames.Net_4_6_1,
         };
 
-        static InteractivePackageManager CreatePackageManager (FrameworkName targetFramework)
+        internal static InteractivePackageManager CreatePackageManager (FrameworkName targetFramework)
         {
             var rootPath = new DotNetFileSystem ().GetTempDirectory ("tests");
             var localRepositoryDirectory = rootPath.Combine ("NuGet", "package-cache");
@@ -113,11 +113,10 @@ namespace Xamarin.Interactive.NuGet
         public async Task BadXamarinFormsDependencyIsRewritten ()
         {
             var project = CreatePackageManager (FrameworkNames.Xamarin_iOS_1_0);
-            await project.InstallPackageAsync (
+            await project.InstallAsync (
                 new InteractivePackage (new PackageIdentity (
                     "Xamarin.Forms.Dynamic",
                     new NuGetVersion (0, 1, 18, "pre"))),
-                sourceRepository: null, // use default
                 cancellationToken: CancellationToken.None);
 
             Assert.InRange (project.InstalledPackages.Count (), 3, int.MaxValue);
@@ -148,11 +147,10 @@ namespace Xamarin.Interactive.NuGet
         public async Task IntegrationPackageIsNotInstalled ()
         {
             var project = CreatePackageManager (FrameworkNames.Net_4_6_1);
-            await project.InstallPackageAsync (
+            await project.InstallAsync (
                 new InteractivePackage (new PackageIdentity (
                     InteractivePackageManager.IntegrationPackageId,
                     new NuGetVersion (1, 0, 0, string.Empty))),
-                sourceRepository: null, // use default
                 cancellationToken: CancellationToken.None);
 
             Assert.Empty (project.InstalledPackages.Where (
@@ -173,7 +171,7 @@ namespace Xamarin.Interactive.NuGet
                     VersionRange.Parse ("[2.*,)")),
             };
 
-            await project.RestorePackagesAsync (explicitPackages, CancellationToken.None);
+            await project.RestoreAsync (explicitPackages, CancellationToken.None);
 
             var mccWorkspacesPackage = project.InstalledPackages.Single (
                 p => p.Identity.Id == explicitPackages [0].Identity.Id);
@@ -216,9 +214,8 @@ namespace Xamarin.Interactive.NuGet
         public async Task CanInstall (FrameworkName targetFramework, PackageInstallData data)
         {
             var project = CreatePackageManager (targetFramework);
-            await project.InstallPackageAsync (
+            await project.InstallAsync (
                 new InteractivePackage (new PackageIdentity (data.Id, data.VersionToInstall)),
-                sourceRepository: null, // use default
                 cancellationToken: CancellationToken.None);
 
             Assert.Collection (
