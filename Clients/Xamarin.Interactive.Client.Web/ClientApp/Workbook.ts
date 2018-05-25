@@ -144,8 +144,8 @@ export class Workbook {
             rawMetadata = Object.assign({}, rawMetadata)
 
         const hasMatchingUti = (!rawMetadata.uti || rawMetadata.uti.toLowerCase() === defaultUti);
-        if (checkUti && hasMatchingUti)
-            throw new Error("Invalid manifest");
+        if (checkUti && !hasMatchingUti)
+            throw new Error("Invalid manifest")
         else
             delete rawMetadata.uti
 
@@ -181,6 +181,9 @@ export class Workbook {
         // Map the list of platforms in the workbook to the actual workbook targets. Filter
         // out any undefineds (the trailing `filter(_ => _)` call).
         finalMetadata.platforms = List(platforms.concat(platform).map(workbookPlatform => {
+            if (!workbookPlatform)
+                return undefined
+
             const matchingTarget = workbookSession.availableWorkbookTargets.find(value => {
                 return value.id === getWorkbookTargetIdFromPlatform(workbookPlatform)
             })
