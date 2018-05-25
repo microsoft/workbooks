@@ -71,5 +71,20 @@ namespace Xamarin.Interactive
                 });
 #endif
         }
+
+        public static T PrintfDebugBreak<T> (this T t, string message = null, bool launch = false)
+        {
+            PrintfDebug (t, message);
+            if (launch)
+                Debugger.Launch ();
+            Debugger.Break ();
+            return t;
+        }
+
+        public static T PrintfDebug<T> (this T t, string message = null)
+        {
+            Console.WriteLine ($"🌮 {message ?? "¯\\_(ツ)_/¯"}: {(t == null ? "(null)" : $"{t} is {t.GetType ()}")}");
+            return t;
+        }
     }
 }
