@@ -59,6 +59,7 @@ namespace Xamarin.Interactive.CodeAnalysis.Resolving
             }
 
             return new InteractivePackageManager (
+                null,
                 targetFramework,
                 localRepositoryDirectory);
         }

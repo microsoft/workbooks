@@ -13,10 +13,12 @@ namespace Xamarin.Interactive.NuGet
     {
         public static Task InitializeAsync (
             this PackageManagerService service,
+            Runtime targetRuntime,
             Sdk targetSdk,
             IEnumerable<InteractivePackageDescription> initialPackages = null,
             CancellationToken cancellationToken = default)
             => service.InitializeAsync (
+                targetRuntime,
                 targetSdk,
                 ClientApp
                     .SharedInstance

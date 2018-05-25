@@ -62,6 +62,7 @@ namespace Xamarin.Interactive.NuGet
             }
 
             return new InteractivePackageManager (
+                null,
                 targetFramework,
                 localRepositoryDirectory);
         }

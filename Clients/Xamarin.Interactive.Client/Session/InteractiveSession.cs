@@ -123,19 +123,15 @@ namespace Xamarin.Interactive.Session
             evaluationService.NotifyEvaluationContextManagerChanged (
                 state.AgentConnection.Api.EvaluationContextManager);
 
-            PackageManagerService packageManagerService = null;
-
-            if (State.WorkbookApp?.Sdk != null) {
-                packageManagerService = new PackageManagerService (
-                    workspaceService.Configuration.DependencyResolver,
-                    evaluationService,
-                    PackageManager_GetAgentConnectionHandler);
-
-                await packageManagerService.InitializeAsync (
-                    state.WorkbookApp.Sdk,
-                    state.PackageManagerService?.GetInstalledPackages (),
-                    cancellationToken).ConfigureAwait (false);
-            }
+            var packageManagerService = new PackageManagerService (
+                workspaceService.Configuration.DependencyResolver,
+                evaluationService,
+                PackageManager_GetAgentConnectionHandler);
+            await packageManagerService.InitializeAsync (
+                workspaceConfiguration.CompilationConfiguration.Runtime,
+                workspaceConfiguration.CompilationConfiguration.Sdk,
+                state.PackageManagerService?.GetInstalledPackages (),
+                cancellationToken).ConfigureAwait (false);
 
             State.EvaluationService.eventObserver?.Dispose ();
 

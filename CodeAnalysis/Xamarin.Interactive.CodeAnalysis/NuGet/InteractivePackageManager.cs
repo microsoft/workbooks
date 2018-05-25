@@ -69,17 +69,22 @@ namespace Xamarin.Interactive.NuGet
         /// <param name="packageConfigDirectory">A directory where the package manager can store temporary
         /// files, and where nuget.config settings files could be placed specific to Workbooks.</param>
         public InteractivePackageManager (
+            string runtimeIdentifier,
             FrameworkName targetFramework,
             FilePath packageConfigDirectory)
         {
             if (targetFramework == null)
                 throw new ArgumentNullException (nameof (targetFramework));
+
             if (packageConfigDirectory.IsNull)
                 throw new ArgumentNullException (nameof (packageConfigDirectory));
+
+            RuntimeIdentifier = runtimeIdentifier;
 
             TargetFramework = NuGetFramework.ParseFrameworkName (
                 targetFramework.FullName,
                 DefaultFrameworkNameProvider.Instance);
+
             this.packageConfigDirectory = packageConfigDirectory;
 
             Logger = new InteractivePackageLogger ();

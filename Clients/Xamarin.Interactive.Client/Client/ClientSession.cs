@@ -361,7 +361,8 @@ namespace Xamarin.Interactive.Client
                     Message.CreateInfoStatus (
                         Catalog.GetString ("Restoring packages…"), showSpinner: true)))
                     await PackageManager?.InitializeAsync (
-                        WorkbookApp.Sdk,
+                        CompilationWorkspace.Configuration.CompilationConfiguration.Runtime,
+                        CompilationWorkspace.Configuration.CompilationConfiguration.Sdk,
                         Workbook
                             .Pages
                             .SelectMany (page => page.Packages),
