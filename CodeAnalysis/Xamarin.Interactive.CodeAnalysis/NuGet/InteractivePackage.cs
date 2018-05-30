@@ -1,14 +1,10 @@
-//
-// Author:
-//   Aaron Bockover <abock@xamarin.com>
-//
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
 using System;
 using System.Collections.Generic;
-using System.Collections.Immutable;
 
+using NuGet.LibraryModel;
 using NuGet.Packaging.Core;
 using NuGet.Versioning;
 
@@ -19,108 +15,70 @@ namespace Xamarin.Interactive.NuGet
     sealed class InteractivePackage
     {
         /// <summary>
-        /// The NuGet package identity contains the package ID and (if set) the NuGetVersion.
-        /// Typically the NuGetVersion will not be set if this package came from the manifest
-        /// and has not been updated via package restore.
+        /// The resolved/installed identity for a package. If set, takes precedence
+        /// over <see cref="PackageReference"/> when performing a restore operation.
         /// </summary>
         public PackageIdentity Identity { get; }
 
         /// <summary>
-        /// The supported versions specified in the workbook manifest.
-        /// https://docs.microsoft.com/en-us/nuget/create-packages/dependency-versions#version-ranges
+        /// If set, represents the user-supplied description of a package to restore,
+        /// from which <see cref="Identity"/> will be computed.
         /// </summary>
-        public VersionRange SupportedVersionRange { get; }
-
-        public ImmutableList<FilePath> AssemblyReferences { get; }
-        public bool IsExplicit { get; }
+        public InteractivePackageDescription PackageReference { get; }
 
         /// <summary>
-        /// Construct an InteractivePackage from the workbook manifest. Identity.Version will not be set.
-        /// Restoring this package will return a new instance with the installed version set.
+        /// The set of fully resolved assembly reference paths for the package after
+        /// it has been restored.
         /// </summary>
-        /// <param name="id">The NuGet package ID.</param>
-        /// <param name="supportedVersionRange">The supported versions specified in the manifest.</param>
-        /// <param name="isExplicit">Indicates that this is a user-specified package, and should persist
-        /// in the manifest. Defaults to true. False indicates that this is a dependency or some other
-        /// hidden package for the workbook.</param>
-        public InteractivePackage (string id, VersionRange supportedVersionRange, bool isExplicit = true)
-            : this (new PackageIdentity (id, null), isExplicit, null, supportedVersionRange)
-        {
-            if (supportedVersionRange == null)
-                throw new ArgumentNullException (nameof (supportedVersionRange));
-        }
+        public IReadOnlyList<FilePath> AssemblyReferences { get; }
 
         public InteractivePackage (
-            PackageIdentity packageIdentity,
-            bool isExplicit = true,
-            ImmutableList<FilePath> assemblyReferences = null,
-            VersionRange supportedVersionRange = null)
+            PackageIdentity identity,
+            InteractivePackageDescription packageReference,
+            IReadOnlyList<FilePath> assemblyReferences)
         {
-            if (packageIdentity == null)
-                throw new ArgumentNullException (nameof (packageIdentity));
+            if (identity != null && !identity.HasVersion)
+                throw new ArgumentException (
+                    "identity must have a Version",
+                    nameof (identity));
 
-            Identity = packageIdentity;
-            IsExplicit = isExplicit;
-            AssemblyReferences = assemblyReferences ?? ImmutableList<FilePath>.Empty;
+            if (identity == null && packageReference.Equals (default))
+                throw new ArgumentNullException (
+                    $"must provide either a {nameof (identity)} or a {nameof (packageReference)}");
 
-            if (supportedVersionRange != null || Identity.Version == null)
-                SupportedVersionRange = supportedVersionRange;
-            else
-                // Use Parse to force VersionRange.OriginalString to be set, so we
-                // don't end up writing "[9.0.1, )]" instead of "9.0.1" to manifest
-                SupportedVersionRange = VersionRange.Parse (Identity.Version.ToNormalizedString ());
+            Identity = identity;
+            PackageReference = packageReference;
+            AssemblyReferences = assemblyReferences;
         }
 
-        public InteractivePackage AddAssemblyReference (
-            FilePath assemblyReferencePath)
+        internal LibraryDependency ToLibraryDependency ()
         {
-            if (assemblyReferencePath.IsNull)
-                return this;
+            LibraryRange ToLibraryRange ()
+            {
+                if (Identity != null)
+                    return new LibraryRange (
+                        Identity.Id,
+                        new VersionRange (Identity.Version),
+                        LibraryDependencyTarget.Package);
 
-            if (AssemblyReferences.Contains (assemblyReferencePath))
-                return this;
+                if (string.IsNullOrEmpty (PackageReference.VersionRange))
+                    return new LibraryRange (
+                        PackageReference.PackageId,
+                        LibraryDependencyTarget.Package);
 
-            return new InteractivePackage (
-                Identity,
-                IsExplicit,
-                AssemblyReferences.Add (assemblyReferencePath),
-                SupportedVersionRange);
+                return new LibraryRange (
+                    PackageReference.PackageId,
+                    VersionRange.Parse (PackageReference.VersionRange),
+                    LibraryDependencyTarget.Package);
+            }
+
+            return new LibraryDependency {
+                AutoReferenced = PackageReference.Equals (default),
+                LibraryRange = ToLibraryRange ()
+            };
         }
 
-        public InteractivePackage WithIsExplicit (bool isExplicit)
-        {
-            if (isExplicit == IsExplicit)
-                return this;
-
-            return new InteractivePackage (
-                Identity,
-                isExplicit,
-                AssemblyReferences,
-                SupportedVersionRange);
-        }
-
-        public InteractivePackage WithSupportedVersionRange (VersionRange supportedVersionRange)
-        {
-            if (SupportedVersionRange == supportedVersionRange)
-                return this;
-
-            return new InteractivePackage (
-                Identity,
-                IsExplicit,
-                AssemblyReferences,
-                supportedVersionRange);
-        }
-
-        public InteractivePackage WithVersion (NuGetVersion version, bool overwriteRange = false)
-        {
-            if (Identity.Version == version)
-                return this;
-
-            return new InteractivePackage (
-                new PackageIdentity (Identity.Id, version),
-                IsExplicit,
-                AssemblyReferences,
-                overwriteRange ? null : SupportedVersionRange);
-        }
+        public static InteractivePackage FromPackageReference (InteractivePackageDescription packageReference)
+            => new InteractivePackage (null, packageReference, null);
     }
 }

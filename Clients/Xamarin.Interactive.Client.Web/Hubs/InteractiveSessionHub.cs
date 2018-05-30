@@ -178,7 +178,7 @@ namespace Xamarin.Interactive.Client.Web.Hubs
             await packageManagerService.InstallAsync (
                 packages,
                 Context.Connection.ConnectionAbortedToken);
-            return packageManagerService.GetInstalledPackages ();
+            return packageManagerService.PackageReferences;
         }
 
         public async Task<IReadOnlyList<InteractivePackageDescription>> RestorePackages (
@@ -188,7 +188,7 @@ namespace Xamarin.Interactive.Client.Web.Hubs
             await packageManagerService.RestoreAsync (
                 packages,
                 Context.Connection.ConnectionAbortedToken);
-            return packageManagerService.GetInstalledPackages ();
+            return packageManagerService.PackageReferences;
         }
     }
 }

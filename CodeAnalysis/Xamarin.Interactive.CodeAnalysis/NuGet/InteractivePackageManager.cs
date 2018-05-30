@@ -9,7 +9,6 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.ComponentModel;
 using System.Linq;
 using System.Runtime.Versioning;
 using System.Threading;
@@ -19,20 +18,19 @@ using NuGet.Commands;
 using NuGet.Common;
 using NuGet.Configuration;
 using NuGet.Frameworks;
-using NuGet.LibraryModel;
 using NuGet.PackageManagement;
-using NuGet.Packaging;
 using NuGet.Packaging.Core;
 using NuGet.ProjectModel;
 using NuGet.Protocol;
 using NuGet.Protocol.Core.Types;
+using NuGet.Versioning;
 
 using Xamarin.Interactive.Core;
 using Xamarin.Interactive.Logging;
 
 namespace Xamarin.Interactive.NuGet
 {
-    sealed class InteractivePackageManager : INotifyPropertyChanged
+    sealed class InteractivePackageManager
     {
         const string TAG = nameof (InteractivePackageManager);
 
@@ -42,7 +40,9 @@ namespace Xamarin.Interactive.NuGet
             = new InteractivePackageDescription ("Xamarin.Forms", "3.0.0.482510");
 
         internal static readonly PackageIdentity FixedXamarinFormsPackageIdentity
-            = FixedXamarinFormsPackageDescription.ToPackageIdentity ();
+            = new PackageIdentity (
+                FixedXamarinFormsPackageDescription.PackageId,
+                NuGetVersion.Parse (FixedXamarinFormsPackageDescription.VersionRange));
 
         readonly NuGetPackageManager packageManager;
         readonly InteractivePackageProjectContext projectContext;
@@ -50,19 +50,10 @@ namespace Xamarin.Interactive.NuGet
         readonly ISettings settings;
         readonly FilePath packageConfigDirectory;
 
-        ImmutableHashSet<InteractivePackage> installedPackages = ImmutableHashSet<InteractivePackage>
-            .Empty
-            .WithComparer (PackageIdComparer.Default);
-
-        ImmutableArray<InteractivePackage> sortedInstalledPackages = ImmutableArray<InteractivePackage>.Empty;
-        public ImmutableArray<InteractivePackage> InstalledPackages => sortedInstalledPackages;
-
         public string RuntimeIdentifier { get; }
         public NuGetFramework TargetFramework { get; }
         public ImmutableArray<SourceRepository> SourceRepositories { get; }
         public ILogger Logger { get; }
-
-        public event PropertyChangedEventHandler PropertyChanged;
 
         /// <param name="packageConfigDirectory">A directory where the package manager can store temporary
         /// files, and where nuget.config settings files could be placed specific to Workbooks.</param>
@@ -147,91 +138,88 @@ namespace Xamarin.Interactive.NuGet
             project = new InteractiveNuGetProject (TargetFramework, settings);
         }
 
-        public FilePath GetPackageInstallPath (InteractivePackage package)
-            => project.GetInstalledPath (package.Identity);
-
-        public Task<IReadOnlyList<InteractivePackage>> RemoveAsync (
-            InteractivePackage package,
-            CancellationToken cancellationToken = default)
-            => RemoveAsync (
-                installedPackages.Remove (package),
-                cancellationToken);
-
-        public Task<IReadOnlyList<InteractivePackage>> RemoveAsync (
-            IEnumerable<InteractivePackage> packages,
-            CancellationToken cancellationToken = default)
-            => RestoreAsync (
-                installedPackages.Except (packages),
-                cancellationToken);
-
-        public Task<IReadOnlyList<InteractivePackage>> InstallAsync (
-            InteractivePackage package,
-            CancellationToken cancellationToken = default)
-            => InstallAsync (
-                installedPackages.Add (package),
-                cancellationToken);
-
-        public Task<IReadOnlyList<InteractivePackage>> InstallAsync (
-            IEnumerable<InteractivePackage> packages,
-            CancellationToken cancellationToken = default)
-            => RestoreAsync (
-                installedPackages.Union (packages),
-                cancellationToken);
-
-        public Task<IReadOnlyList<InteractivePackage>> RestoreAsync (
-            IEnumerable<InteractivePackage> packages,
-            CancellationToken cancellationToken = default)
-            => RestoreAsync (
-                packages,
-                false,
-                cancellationToken);
-
         public async Task<IReadOnlyList<InteractivePackage>> RestoreAsync (
-            IEnumerable<InteractivePackage> packages,
-            bool forceRestore,
+            PackageReferenceList packageReferences,
             CancellationToken cancellationToken = default)
         {
-            if (!forceRestore && installedPackages
-                .WithComparer (PackageIdVersionComparer.Default)
-                .SetEquals (packages))
-                return sortedInstalledPackages;
+            (bool restoreNeeded, IReadOnlyList<InteractivePackage> packages) restoreOperation = (
+                true,
+                packageReferences
+                    .Select (InteractivePackage.FromPackageReference)
+                    .ToList ());
 
-            using (var cacheContext = new SourceCacheContext ()) {
-                if (!(await RestoreAsync (
-                    FixupPackages (packages, log: true),
-                    cacheContext,
-                    cancellationToken).ConfigureAwait (false)))
-                    return sortedInstalledPackages;
+            int i = 0;
+            while (restoreOperation.restoreNeeded) {
+                using (var cacheContext = new SourceCacheContext ())
+                    restoreOperation = await RestoreAsync (
+                        packageReferences,
+                        restoreOperation.packages,
+                        cacheContext,
+                        cancellationToken).ConfigureAwait (false);
+
+                if (++i >= 10) {
+                    Log.Warning (TAG, "Restore has reached the maximum number of restore attempts; " +
+                        "package fixups may not be applicable to this graph");
+                    break;
+                }
             }
 
-            installedPackages = project.InstallationContext.InstalledPackages;
-
-            sortedInstalledPackages = installedPackages
-                .OrderBy (p => p.Identity.Id)
-                .ToImmutableArray ();
-
-            // Initiate another restore against the packages we just restored. This
-            // allows TryFixupPackage to run against any newly restored packages,
-            // and if any fixups were applied (due to transitive dependencies not
-            // able to be fixed up on the previous pass), restore again with the
-            // new fixups applied. This will happen recursively until no packages
-            // need fixing.
-           await RestoreAsync (
-                FixupPackages (installedPackages, log: false),
-                cancellationToken).ConfigureAwait (false);
-
-            PropertyChanged?.Invoke (this, new PropertyChangedEventArgs (nameof (InstalledPackages)));
-
-            return sortedInstalledPackages;
+            return restoreOperation.packages;
         }
 
-        async Task<bool> RestoreAsync (
+        async Task<(bool fixesApplied, IReadOnlyList<InteractivePackage>)> RestoreAsync (
+            PackageReferenceList packageReferences,
             IEnumerable<InteractivePackage> packages,
             SourceCacheContext cacheContext,
             CancellationToken cancellationToken)
         {
-            packages = packages.ToList ();
+            var restoreTarget = await RestoreAsync (
+                packages,
+                cacheContext,
+                cancellationToken).ConfigureAwait (false);
 
+            if (restoreTarget == null)
+                return (false, Array.Empty<InteractivePackage> ());
+
+            var fixesApplied = false;
+            var restoredPackages = ImmutableList.CreateBuilder<InteractivePackage> ();
+
+            foreach (var library in restoreTarget.Libraries) {
+                var packageIdentity = new PackageIdentity (library.Name, library.Version);
+                var assemblyReferences = ImmutableList<FilePath>.Empty;
+
+                if (TryFixupPackage (ref packageIdentity)) {
+                    fixesApplied = true;
+                    if (packageIdentity == null)
+                        continue;
+                } else {
+                    var packageInstallPath = project.GetInstalledPath (packageIdentity);
+                    var compileTimeAssemblies = library.CompileTimeAssemblies.ToImmutableHashSet ();
+                    assemblyReferences = library
+                        .CompileTimeAssemblies
+                        .Select (assembly => packageInstallPath.Combine (assembly.Path))
+                        .Where (path => path.Name != "_._")
+                        .ToImmutableList ();
+                }
+
+                packageReferences.TryGetValue (
+                    packageIdentity.Id,
+                    out var userPackageReference);
+
+                restoredPackages.Add (new InteractivePackage (
+                    packageIdentity,
+                    userPackageReference,
+                    assemblyReferences));
+            }
+
+            return (fixesApplied, restoredPackages.ToImmutable ());
+        }
+
+        async Task<LockFileTarget> RestoreAsync (
+            IEnumerable<InteractivePackage> packages,
+            SourceCacheContext cacheContext,
+            CancellationToken cancellationToken)
+        {
             // NOTE: This path is typically empty. It could in theory contain nuget.config
             // settings files, but really we just use it to satisfy nuget API that requires
             // paths, even when they are never used.
@@ -241,148 +229,68 @@ namespace Xamarin.Interactive.NuGet
             // This is sufficient for the dependency graph work done within RestoreCommand.
             var restoreContext = new RestoreArgs {
                 CacheContext = cacheContext,
-                Log = Logger,
+                Log = Logger
             };
 
-            var restoreResult = await new RestoreCommand (
-                new RestoreRequest (
-                    new PackageSpec (new [] {
-                        new TargetFrameworkInformation {
-                            FrameworkName = TargetFramework,
-                            Dependencies = packages
-                                .Select (ToLibraryDependency)
-                                .ToList ()
-                        }
-                    }) {
-                        Name = project.Name,
-                        FilePath = rootPath,
-                    },
-                    new RestoreCommandProvidersCache ()
-                        .GetOrCreate (
-                            restoreContext.GetEffectiveGlobalPackagesFolder (rootPath, settings),
-                            restoreContext.GetEffectiveFallbackPackageFolders (settings),
-                            SourceRepositories,
-                            cacheContext,
-                            Logger),
-                    cacheContext,
-                    Logger)).ExecuteAsync (cancellationToken).ConfigureAwait (false);
+            var restoreRequest = new RestoreRequest (
+                new PackageSpec (new [] {
+                    new TargetFrameworkInformation {
+                        FrameworkName = TargetFramework,
+                        Dependencies = packages
+                            .Select (package => package.ToLibraryDependency ())
+                            .ToList ()
+                    }
+                }) {
+                    Name = project.Name,
+                    FilePath = rootPath,
+                },
+                new RestoreCommandProvidersCache ()
+                    .GetOrCreate (
+                        restoreContext.GetEffectiveGlobalPackagesFolder (rootPath, settings),
+                        restoreContext.GetEffectiveFallbackPackageFolders (settings),
+                        SourceRepositories,
+                        cacheContext,
+                        Logger),
+                cacheContext,
+                Logger);
+
+            if (RuntimeIdentifier != null)
+                restoreRequest.RequestedRuntimes.Add (RuntimeIdentifier);
+
+            var restoreResult = await new RestoreCommand (restoreRequest)
+                .ExecuteAsync (cancellationToken)
+                .ConfigureAwait (false);
 
             if (!restoreResult.Success)
-                return false;
-
-            project.ResetInstallationContext ();
-
-            // As with installation, restore simply ensures that packages are present in the user's
-            // global package cache. We reference them out of there just like .NET core projects do.
-            //
-            // All resolved packages, including the explicit inputs and their dependencies, are
-            // available as LockFileLibrary instances.
-            foreach (var library in restoreResult.LockFile.Libraries)
-                project.InstallationContext.AddInstalledPackage (
-                    GetInteractivePackageFromLibrary (library, project, packages));
-
-            return true;
-        }
-
-        /// <summary>
-        /// Get an InteractivePackage for a restored NuGet package, populated with assembly references from the
-        /// user's global package cache.
-        /// </summary>
-        /// <returns>An InteractivePackage with populated assembly references, or null if the LockFileLibrary
-        /// is not of type "package".</returns>
-        /// <param name="inputPackages">Input to RestorePackagesAsync, used to ensure the returned package
-        /// has the same SupportedVersionRange as the requested package and to determine if this is a
-        /// user-specified package or a dependency.</param>
-        static InteractivePackage GetInteractivePackageFromLibrary (
-            LockFileLibrary library,
-            InteractiveNuGetProject project,
-            IEnumerable<InteractivePackage> inputPackages)
-        {
-            if (library.Type != "package") // TODO: where does this string come from?
                 return null;
 
-            var packageIdentity = new PackageIdentity (library.Name, library.Version);
-
-            // All package files are listed within result.LockFile.Libraries[i].Files, but there are no
-            // utilities to pick out framework-specific files. Using package readers probably slows
-            // restore down but for now it's less code and more consistency.
-            using (var packageReader = new PackageFolderReader (project.GetInstalledPath (packageIdentity)))
-                return GetInteractivePackageFromReader (packageReader, project, inputPackages);
+            return restoreResult.LockFile.GetTarget (TargetFramework, RuntimeIdentifier)
+                ?? restoreResult.LockFile.Targets.FirstOrDefault ();
         }
 
-        /// <summary>
-        /// Get an InteractivePackage with populated assembly references from a restored NuGet package.
-        /// </summary>
-        /// <param name="inputPackages">Input to RestorePackagesAsync, used to ensure the returned package
-        /// has the same SupportedVersionRange as the requested package, and to determine if this is a
-        /// user-specified package or a dependency.</param>
-        static InteractivePackage GetInteractivePackageFromReader (
-            PackageReaderBase packageReader,
-            InteractiveNuGetProject project,
-            IEnumerable<InteractivePackage> inputPackages)
+        static bool TryFixupPackage (ref PackageIdentity identity)
         {
-            ImmutableList<FilePath> assemblyReferences = null;
-            var fx = project.TargetFramework;
-            var packageIdentity = packageReader.GetIdentity ();
-
-            if (packageReader
-                .GetSupportedFrameworks ()
-                .Any (f => DefaultCompatibilityProvider.Instance.IsCompatible (fx, f)))
-                assemblyReferences =
-                    project.GetPackageAssemblyReferences (packageReader, packageIdentity);
-
-            var originalInputPackage = inputPackages.FirstOrDefault (
-                p => PackageIdComparer.Equals (p.Identity, packageIdentity));
-
-            // Persist original VersionRange to what gets in the installed package list so that
-            // the same original version range string gets written to the manifest on save
-            return new InteractivePackage (
-                packageIdentity,
-                isExplicit: originalInputPackage?.IsExplicit == true,
-                assemblyReferences: assemblyReferences,
-                supportedVersionRange: originalInputPackage?.SupportedVersionRange);
-        }
-
-        static IEnumerable<InteractivePackage> FixupPackages (IEnumerable<InteractivePackage> packages, bool log)
-            => packages
-                .Select (package => {
-                    TryFixupPackage (ref package, log);
-                    return package;
-                })
-                .Where (package => package != null);
-
-        static bool TryFixupPackage (ref InteractivePackage package, bool log)
-        {
-            if (PackageIdComparer.Equals (package.Identity.Id, IntegrationPackageId)) {
-                if (log)
-                    Log.Warning (TAG, $"Refusing to add integration NuGet package {IntegrationPackageId}.");
-                package = null;
+            if (PackageIdComparer.Equals (identity.Id, IntegrationPackageId)) {
+                Log.Warning (TAG, $"Refusing to add integration NuGet package {IntegrationPackageId}.");
+                identity = null;
                 return true;
             }
 
             // Pin Xamarin.Forms to what we have in the Xamarin.Forms workbook apps
-            if (PackageIdComparer.Equals (package.Identity.Id, FixedXamarinFormsPackageIdentity.Id) &&
-                package.Identity.Version != FixedXamarinFormsPackageIdentity.Version) {
-                if (log)
-                    Log.Warning (
-                        TAG,
-                        $"Replacing requested Xamarin.Forms version {package.Identity.Version} with " +
-                        $"required version {FixedXamarinFormsPackageIdentity.Version}.");
-                package = package.WithVersion (
-                    FixedXamarinFormsPackageIdentity.Version,
-                    overwriteRange: true);
+            if (PackageIdComparer.Equals (identity.Id, FixedXamarinFormsPackageIdentity.Id) &&
+                identity.Version != FixedXamarinFormsPackageIdentity.Version) {
+                Log.Warning (
+                    TAG,
+                    $"Replacing requested Xamarin.Forms version {identity.Version} with " +
+                    $"required version {FixedXamarinFormsPackageIdentity.Version}.");
+
+                identity = new PackageIdentity (
+                    identity.Id,
+                    FixedXamarinFormsPackageIdentity.Version);
                 return true;
             }
 
             return false;
         }
-
-        static LibraryDependency ToLibraryDependency (InteractivePackage package)
-            => new LibraryDependency {
-                LibraryRange = new LibraryRange (
-                    package.Identity.Id,
-                    package.SupportedVersionRange,
-                    LibraryDependencyTarget.Package),
-            };
     }
 }

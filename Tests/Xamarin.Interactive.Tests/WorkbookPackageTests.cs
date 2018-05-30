@@ -32,7 +32,7 @@ namespace Xamarin.Interactive.Tests
     {
         public static void Save (this WorkbookPackage workbookPackage, FilePath path)
         {
-            var saveOperation = workbookPackage.CreateSaveOperation (null);
+            var saveOperation = workbookPackage.CreateSaveOperation (null, null);
             saveOperation.Destination = path;
             workbookPackage.Save (saveOperation);
         }

@@ -95,7 +95,6 @@ namespace Xamarin.Interactive.Workbook.Models
 
         public TreeNode TreeNode { get; }
 
-        readonly NuGetPackagesNode nugetPackagesNode = new NuGetPackagesNode ();
         readonly Collections.ObservableCollection<FileNode> filesystem =
             new Collections.ObservableCollection<FileNode> ();
 
@@ -108,23 +107,6 @@ namespace Xamarin.Interactive.Workbook.Models
 
         public ImmutableArray<AgentType> PlatformTargets { get; private set; }
             = ImmutableArray<AgentType>.Empty;
-
-        InteractivePackageManager packages;
-        public InteractivePackageManager Packages {
-            get { return packages; }
-            set {
-                if (packages == value)
-                    return;
-
-                if (packages != null)
-                    packages.PropertyChanged -= Packages_PropertyChanged;
-
-                packages = value;
-
-                if (packages != null)
-                    packages.PropertyChanged += Packages_PropertyChanged;
-            }
-        }
 
         public string DefaultTitle => logicalPath.Exists
             ? logicalPath.NameWithoutExtension
@@ -154,7 +136,6 @@ namespace Xamarin.Interactive.Workbook.Models
             logicalPath = pendingOpenPath;
 
             var children = new Collections.AggregateObservableCollection<TreeNode> ();
-            children.AddSource (new [] { nugetPackagesNode });
             children.AddSource (filesystem);
 
             TreeNode = new WorkbookTitledNode (this) {
@@ -174,12 +155,6 @@ namespace Xamarin.Interactive.Workbook.Models
                     break;
                 }
             }
-        }
-
-        void Packages_PropertyChanged (object sender, PropertyChangedEventArgs e)
-        {
-            if (e.PropertyName == nameof (InteractivePackageManager.InstalledPackages))
-                nugetPackagesNode.UpdateChildren (Packages.InstalledPackages.Where (p => p.IsExplicit));
         }
 
         public IReadOnlyList<LanguageDescription> GetLanguageDescriptions ()
@@ -398,10 +373,12 @@ namespace Xamarin.Interactive.Workbook.Models
 
             public WorkbookSaveOptions Options { get; set; }
             public FilePath Destination { get; set; }
+            public PackageReferenceList PackageReferences { get; set; }
         }
 
         public IWorkbookSaveOperation CreateSaveOperation (
-            IWorkspaceService workspace)
+            IWorkspaceService workspace,
+            PackageManagerService packageManager)
         {
             var dependencies = new WorkbookDependencyCollector ().Visit (this);
             var onlyPage = dependencies.SingleOrDefault ();
@@ -416,6 +393,7 @@ namespace Xamarin.Interactive.Workbook.Models
             return new SaveOperation {
                 Destination = logicalPath,
                 AllDependencies = dependencies,
+                PackageReferences = packageManager?.PackageReferences,
                 OnlyPage = onlyPage.Key,
                 OnlyPageHasDependencies = onlyPage.Key != null && onlyPage.Value.Count > 0,
                 Options = SaveOptions
@@ -447,7 +425,7 @@ namespace Xamarin.Interactive.Workbook.Models
                     : logicalPath;
 
                 using (var writer = new StreamWriter (writePath))
-                    saveOperation.OnlyPage.Write (writer, Packages);
+                    saveOperation.OnlyPage.Write (writer, operation.PackageReferences);
 
                 WorkingPath = logicalPath;
                 return;
@@ -468,7 +446,7 @@ namespace Xamarin.Interactive.Workbook.Models
 
             foreach (var page in saveOperation.AllDependencies) {
                 using (var writer = new StreamWriter (logicalPath.Combine (page.Key.Path)))
-                    page.Key.Write (writer, Packages);
+                    page.Key.Write (writer, operation.PackageReferences);
 
                 foreach (var dep in page.Value) {
                     var sourcePath = sourceBasePath.Combine (dep);

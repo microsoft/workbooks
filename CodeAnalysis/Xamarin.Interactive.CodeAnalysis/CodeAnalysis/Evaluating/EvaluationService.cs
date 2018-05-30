@@ -9,6 +9,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -19,6 +20,7 @@ using Xamarin.Interactive.CodeAnalysis.Events;
 using Xamarin.Interactive.CodeAnalysis.Models;
 using Xamarin.Interactive.I18N;
 using Xamarin.Interactive.Logging;
+using Xamarin.Interactive.NuGet;
 using Xamarin.Interactive.Protocol;
 using Xamarin.Interactive.Representations;
 using Xamarin.Interactive.Representations.Reflection;
@@ -73,6 +75,7 @@ namespace Xamarin.Interactive.CodeAnalysis.Evaluating
         readonly Inhibitor evaluationInhibitor = new Inhibitor ();
 
         readonly IWorkspaceService workspace;
+        readonly PackageManagerService packageManager;
 
         EvaluationEnvironment evaluationEnvironment;
         IEvaluationContextManager evaluationContextManager;
@@ -94,17 +97,25 @@ namespace Xamarin.Interactive.CodeAnalysis.Evaluating
 
         public EvaluationService (
             IWorkspaceService workspace,
+            PackageManagerService packageManager,
             EvaluationEnvironment evaluationEnvironment,
             IEvaluationContextManager evaluationContextManager = null)
         {
             this.workspace = workspace
                 ?? throw new ArgumentNullException (nameof (workspace));
 
+            this.packageManager = packageManager;
+            if (packageManager != null)
+                packageManager.PropertyChanged += HandlePackageManagerPropertyChanged;
+
             NotifyEvaluationEnvironmentChanged (evaluationEnvironment);
             NotifyEvaluationContextManagerChanged (evaluationContextManager);
 
             Events.Subscribe (new Observer<ICodeCellEvent> (OnCodeCellEvent));
         }
+
+        void HandlePackageManagerPropertyChanged (object sender, PropertyChangedEventArgs e)
+            => UpdatePackagesAsync (packageManager.InstalledPackages).Forget ();
 
         internal void NotifyEvaluationEnvironmentChanged (EvaluationEnvironment evaluationEnvironment)
         {
@@ -131,6 +142,8 @@ namespace Xamarin.Interactive.CodeAnalysis.Evaluating
         public void Dispose ()
         {
             evaluationInhibitor.Dispose ();
+            if (packageManager != null)
+                packageManager.PropertyChanged -= HandlePackageManagerPropertyChanged;
         }
 
         public void OutdateAllCodeCells ()
@@ -149,14 +162,12 @@ namespace Xamarin.Interactive.CodeAnalysis.Evaluating
         public Task EvaluateAllAsync (CancellationToken cancellationToken = default)
             => EvaluateAsync (evaluateAll: true, cancellationToken: cancellationToken);
 
-        public async Task<bool> AddTopLevelReferencesAsync (
-            IReadOnlyList<string> references,
+        async Task UpdatePackagesAsync (
+            IReadOnlyList<InteractivePackage> packages,
             CancellationToken cancellationToken = default)
         {
-            if (references == null || references.Count == 0)
-                return false;
-
-            var buffer = new StringBuilder ();
+            if (packages == null || packages.Count == 0)
+                return;
 
             if (nugetReferenceCellId == default) {
                 var firstCodeCellId = workspace
@@ -168,26 +179,24 @@ namespace Xamarin.Interactive.CodeAnalysis.Evaluating
                     firstCodeCellId,
                     true,
                     cancellationToken);
-            } else {
-                buffer.Append (await workspace.GetCellBufferAsync (
-                    nugetReferenceCellId,
-                    cancellationToken));
             }
 
-            // TODO: Prevent dupes. Return false if no changes made
-            foreach (var reference in references) {
+            var buffer = new StringBuilder ();
+
+            foreach (var reference in packages.SelectMany (package => package.AssemblyReferences)) {
                 if (buffer.Length > 0)
                     buffer.Append ("\n");
 
                 buffer
-                    .Append ("#r \"")
+                    .Append ("#r \"nugetref:")
                     .Append (reference)
                     .Append ("\"");
             }
 
             workspace.SetCellBuffer (nugetReferenceCellId, buffer.ToString ());
 
-            return true;
+            var cell = cellStates [nugetReferenceCellId];
+            cell.IsDirty = true;
         }
 
         #endregion

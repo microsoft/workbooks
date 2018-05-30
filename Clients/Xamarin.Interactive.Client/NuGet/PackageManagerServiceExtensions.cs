@@ -18,8 +18,8 @@ namespace Xamarin.Interactive.NuGet
             IEnumerable<InteractivePackageDescription> initialPackages = null,
             CancellationToken cancellationToken = default)
             => service.InitializeAsync (
-                targetRuntime,
-                targetSdk,
+                targetRuntime.RuntimeIdentifier,
+                targetSdk?.TargetFramework,
                 ClientApp
                     .SharedInstance
                     .Paths

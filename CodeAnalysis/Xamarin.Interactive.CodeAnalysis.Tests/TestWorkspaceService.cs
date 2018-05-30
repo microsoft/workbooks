@@ -3,14 +3,12 @@
 
 using System;
 using System.Collections.Generic;
-using System.Collections.Immutable;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 
-using Xamarin.Interactive.CodeAnalysis.Evaluating;
-using Xamarin.Interactive.CodeAnalysis.Models;
-using Xamarin.Interactive.CodeAnalysis.Resolving;
+using Xamarin.Interactive.Core;
 
 [assembly: Xamarin.Interactive.CodeAnalysis.WorkspaceService (
     "testlang",
@@ -21,7 +19,7 @@ namespace Xamarin.Interactive.CodeAnalysis
     /// <summary>
     /// Intended as a base class for unit testing.
     /// </summary>
-    public class TestWorkspaceService : IWorkspaceService
+    public class TestWorkspaceService : WorkspaceServiceBase
     {
         public sealed class Activator : IWorkspaceServiceActivator
         {
@@ -32,71 +30,27 @@ namespace Xamarin.Interactive.CodeAnalysis
                 => Task.FromResult<IWorkspaceService> (new TestWorkspaceService (configuration));
         }
 
-        public WorkspaceConfiguration Configuration { get; }
+        readonly List<FilePath> packageAssemblyReferences = new List<FilePath> ();
+        public IReadOnlyList<FilePath> PackageAssemblyReferences => packageAssemblyReferences;
 
-        public TestWorkspaceService (WorkspaceConfiguration configuration)
-            => Configuration = configuration;
+        public TestWorkspaceService (WorkspaceConfiguration configuration = null)
+            : base (configuration)
+        {
+        }
 
-        public virtual IReadOnlyList<CodeCellId> GetTopologicallySortedCellIds ()
-            => throw new NotImplementedException ();
+        static readonly Regex nugetRef = new Regex (@"#r\s+\""nugetref:([^\""]+)\""");
 
-        public virtual CodeCellId InsertCell (
-            CodeCellId previousCellId,
-            CodeCellId nextCellId)
-            => throw new NotImplementedException ();
+        protected override void OnCellUpdated (CellData cellData)
+        {
+            if (GetTopologicallySortedCellIds ().First () == cellData.Id) {
+                packageAssemblyReferences.Clear ();
 
-        public virtual void RemoveCell (CodeCellId cellId, CodeCellId nextCellId)
-            => throw new NotImplementedException ();
-
-        public virtual Task<string> GetCellBufferAsync (
-            CodeCellId cellId,
-            CancellationToken cancellationToken = default)
-            => throw new NotImplementedException ();
-
-        public virtual void SetCellBuffer (CodeCellId cellId, string buffer)
-            => throw new NotImplementedException ();
-
-        public bool IsCellComplete (CodeCellId cellId)
-            => throw new NotImplementedException ();
-
-        public Task<bool> IsCellOutdatedAsync (
-            CodeCellId cellId,
-            CancellationToken cancellationToken = default)
-            => throw new NotImplementedException ();
-
-        public Task<IReadOnlyList<Diagnostic>> GetCellDiagnosticsAsync (
-            CodeCellId cellId,
-            CancellationToken cancellationToken = default)
-            => throw new NotImplementedException ();
-
-        public virtual Task<Compilation> EmitCellCompilationAsync (
-            CodeCellId cellId,
-            EvaluationEnvironment evaluationEnvironment,
-            CancellationToken cancellationToken = default)
-            => throw new NotImplementedException ();
-
-        #region IntelliNonsense
-
-        public Task<IEnumerable<CompletionItem>> GetCompletionsAsync (
-            CodeCellId cellId,
-            Position position,
-            CancellationToken cancellationToken = default)
-            => throw new NotImplementedException ();
-
-        public Task<Hover> GetHoverAsync (
-            CodeCellId cellId,
-            Position position,
-            CancellationToken cancellationToken = default)
-            => throw new NotImplementedException ();
-
-        public Task<SignatureHelp> GetSignatureHelpAsync (
-            CodeCellId cellId,
-            Position position, CancellationToken cancellationToken = default)
-            => throw new NotImplementedException ();
-
-        #endregion
-
-        public IEnumerable<ExternalDependency> GetExternalDependencies ()
-            => throw new NotImplementedException ();
+                foreach (var line in cellData.Buffer?.Split ('\n') ?? Array.Empty<string> ()) {
+                    var assembly = nugetRef.Match (line);
+                    if (assembly.Success)
+                        packageAssemblyReferences.Add (assembly.Groups [1].Value);
+                }
+            }
+        }
     }
 }

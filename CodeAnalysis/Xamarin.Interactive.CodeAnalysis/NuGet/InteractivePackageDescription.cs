@@ -3,82 +3,51 @@
 
 using System;
 
-using Newtonsoft.Json;
-
 using NuGet.Packaging.Core;
 using NuGet.Protocol.Core.Types;
 using NuGet.Versioning;
 
+using NVR = NuGet.Versioning.VersionRange;
+
 namespace Xamarin.Interactive.NuGet
 {
-    public sealed class InteractivePackageDescription
+    public struct InteractivePackageDescription : IEquatable<InteractivePackageDescription>
     {
         public string PackageId { get; }
-        public string IdentityVersion { get; }
         public string VersionRange { get; }
-        public bool IsExplicitlySelected { get; }
-        public InteractivePackageSource Source { get; }
 
-        [JsonConstructor]
         public InteractivePackageDescription (
             string packageId,
-            string identityVersion = null,
-            string versionRange = null,
-            bool isExplicitlySelected = true,
-            InteractivePackageSource source = null)
+            string versionRange)
         {
             PackageId = packageId
                 ?? throw new ArgumentNullException (nameof (packageId));
 
-            IdentityVersion = identityVersion;
             VersionRange = versionRange;
-            IsExplicitlySelected = isExplicitlySelected;
-            Source = source;
         }
 
-        public SourceRepository GetSourceRepository ()
-            => null;
+        public bool Equals (InteractivePackageDescription other)
+        {
+            if (!PackageIdComparer.Equals (PackageId, other.PackageId))
+                return false;
 
-        internal static InteractivePackageDescription FromInteractivePackage (InteractivePackage package)
-            => new InteractivePackageDescription (
-                package.Identity.Id,
-                package.Identity.HasVersion
-                    ? package.Identity.Version.ToString ()
-                    : null,
-                package.SupportedVersionRange == null
-                    ? null
-                    : package.SupportedVersionRange.OriginalString
-                        ?? package.SupportedVersionRange.ToNormalizedString (),
-                package.IsExplicit);
+            return VersionRange == other.VersionRange || (NVR.TryParse (VersionRange, out var a) ==
+                NVR.TryParse (other.VersionRange, out var b) && a?.Equals (b) == true);
+        }
 
-        internal InteractivePackage ToInteractivePackage ()
-            => VersionRange == null
-                ? new InteractivePackage (
-                    ToPackageIdentity (),
-                    IsExplicitlySelected)
-                : new InteractivePackage (
-                    PackageId,
-                    global::NuGet.Versioning.VersionRange.Parse (VersionRange),
-                    IsExplicitlySelected);
+        public override int GetHashCode ()
+            => Hash.Combine (PackageId, VersionRange);
 
-        internal PackageIdentity ToPackageIdentity ()
-            => new PackageIdentity (
-                PackageId,
-                IdentityVersion == null
-                    ? null
-                    : NuGetVersion.Parse (IdentityVersion));
+        public void Deconstruct (out string packageId, out string versionRange)
+        {
+            packageId = PackageId;
+            versionRange = VersionRange;
+        }
 
-        internal static InteractivePackageDescription FromPackageViewModel (PackageViewModel package)
-            => new InteractivePackageDescription (
-                package.Package.Id,
-                package.Package.HasVersion
-                    ? package.Package.Version.ToString ()
-                    : null,
-                null,
-                true,
-                InteractivePackageSource.FromPackageSource (package.SourceRepository?.PackageSource));
+        public override string ToString ()
+            => string.IsNullOrEmpty (VersionRange) ? PackageId : $"{PackageId}.{VersionRange}";
 
-        internal PackageViewModel ToPackageViewModel ()
-            => new PackageViewModel (ToPackageIdentity ());
+        public static implicit operator InteractivePackageDescription ((string packageId, string version) description)
+            => new InteractivePackageDescription (description.packageId, description.version);
     }
 }

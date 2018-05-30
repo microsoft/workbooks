@@ -6,27 +6,21 @@
 // Licensed under the MIT License.
 
 using System;
+using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
-using System.IO;
 using System.Runtime.Versioning;
-using System.Threading;
 using System.Threading.Tasks;
 
-using NuGet.Packaging.Core;
 using NuGet.Versioning;
 
-using NUnit.Framework;
-
-using Should;
+using Xunit;
 
 using Xamarin.Interactive.Core;
-using Xamarin.Interactive.IO;
 using Xamarin.Interactive.NuGet;
 
 namespace Xamarin.Interactive.CodeAnalysis.Resolving
 {
-    [TestFixture]
     public class DependencyResolverTests
     {
         static class TargetFrameworks
@@ -48,25 +42,9 @@ namespace Xamarin.Interactive.CodeAnalysis.Resolving
                 FrameworkNames.Xamarin_iOS_1_0,
                 Array.Empty<string> ()));
 
-        static InteractivePackageManager CreatePackageManager (FrameworkName targetFramework)
-        {
-            var rootPath = ClientApp.SharedInstance.FileSystem.GetTempDirectory ("tests");
-            var localRepositoryDirectory = rootPath.Combine ("NuGet", "package-cache");
-
-            try {
-                Directory.Delete (localRepositoryDirectory, recursive: true);
-            } catch (DirectoryNotFoundException) {
-            }
-
-            return new InteractivePackageManager (
-                null,
-                targetFramework,
-                localRepositoryDirectory);
-        }
-
         static ImmutableArray<ResolvedAssembly> Resolve (
             TargetCompilationConfiguration configuration,
-            InteractivePackageManager project,
+            IReadOnlyList<InteractivePackage> installedPackages,
             FilePath frameworkPath)
         {
             var result = ImmutableArray<ResolvedAssembly>.Empty;
@@ -76,8 +54,7 @@ namespace Xamarin.Interactive.CodeAnalysis.Resolving
                 return result = new NativeDependencyResolver (configuration)
                     .AddAssemblySearchPath (frameworkPath.Combine ("Facades"))
                     .AddAssemblySearchPath (frameworkPath)
-                    .Resolve (project.InstalledPackages.SelectMany (
-                        p => p.AssemblyReferences));
+                    .Resolve (installedPackages.SelectMany (p => p.AssemblyReferences));
             } finally {
                 stopwatch.Stop ();
                 Console.WriteLine ("DependencyResolver.Resolve: {0} in {1}s",
@@ -85,136 +62,114 @@ namespace Xamarin.Interactive.CodeAnalysis.Resolving
             }
         }
 
-        [Test]
+        [Fact]
         public async Task TestNativeLibraries ()
         {
-            var project = CreatePackageManager (TargetFrameworks.Xamarin_iOS_1_0);
-            await project.InstallAsync (
-                new InteractivePackage (new PackageIdentity ("UrhoSharp", new NuGetVersion ("1.0.410"))),
-                cancellationToken: CancellationToken.None);
-            await project.InstallAsync (
-                new InteractivePackage (new PackageIdentity ("SkiaSharp", new NuGetVersion ("1.49.1.0"))),
-                cancellationToken: CancellationToken.None);
+            var installedPackages = await InteractivePackageManagerTests
+                .CreatePackageManager (TargetFrameworks.Xamarin_iOS_1_0)
+                .RestoreAsync (PackageReferenceList.Create (
+                    ("UrhoSharp", "1.0.410"),
+                    ("SkiaSharp", "1.49.1.0")));
 
             var resolvedAssemblies = Resolve (
                 iosConfiguration,
-                project,
+                installedPackages,
                 TargetFrameworks.Xamarin_iOS_1_0_FrameworkPath);
 
-            resolvedAssemblies.Length.ShouldBeGreaterThan (0);
+            Assert.NotEmpty (resolvedAssemblies);
 
-            resolvedAssemblies
-                .First (a => a.AssemblyName.Name == "Urho")
-                .ExternalDependencies
-                .OfType<NativeDependency> ()
-                .First ()
-                .Name
-                .ShouldEqual ("Urho.framework");
+            Assert.Equal (
+                "Urho.framework",
+                resolvedAssemblies
+                    .First (a => a.AssemblyName.Name == "Urho")
+                    .ExternalDependencies
+                    .OfType<NativeDependency> ()
+                    .First ()
+                    .Name);
 
-            resolvedAssemblies
-                .First (a => a.AssemblyName.Name == "SkiaSharp")
-                .ExternalDependencies
-                .OfType<NativeDependency> ()
-                .First ()
-                .Name
-                .ShouldEqual ("libskia_ios.framework");
+            Assert.Equal (
+                "libskia_ios.framework",
+                resolvedAssemblies
+                    .First (a => a.AssemblyName.Name == "SkiaSharp")
+                    .ExternalDependencies
+                    .OfType<NativeDependency> ()
+                    .First ()
+                    .Name);
         }
 
-        [Test]
+        [Fact]
         public async Task TestPackageResolution ()
         {
-            var project = CreatePackageManager (TargetFrameworks.Xamarin_iOS_1_0);
-
-            var packagesToInstall = new [] {
-                new InteractivePackage ("akavache", VersionRange.Parse ("4.1.2")),
-                new InteractivePackage ("Microsoft.Azure.Mobile.Client", VersionRange.Parse ("2.0.1")),
-                new InteractivePackage ("Newtonsoft.Json", VersionRange.Parse ("8.0.3"))
-            };
-
-            await project.RestoreAsync (packagesToInstall, CancellationToken.None);
+            var installedPackages = await InteractivePackageManagerTests
+                .CreatePackageManager (TargetFrameworks.Xamarin_iOS_1_0)
+                .RestoreAsync (PackageReferenceList.Create (
+                    ("akavache", "4.1.2"),
+                    ("Microsoft.Azure.Mobile.Client", "2.0.1"),
+                    ("Newtonsoft.Json", "8.0.3")));
 
             // Ensure the specified Newtonsoft.Json is the one that gets installed
-            var installedNewtonsoftJson = project.InstalledPackages.Where (p => p.Identity.Id == "Newtonsoft.Json");
-            installedNewtonsoftJson.Count ().ShouldEqual (1);
-            installedNewtonsoftJson
-                .Single ()
-                .Identity
-                .Version
-                .ShouldEqual (new NuGetVersion ("8.0.3"));
+            var installedNewtonsoftJson = installedPackages.Where (p => p.Identity.Id == "Newtonsoft.Json");
+            Assert.Collection (
+                installedNewtonsoftJson,
+                package => {
+                    Assert.Equal (new NuGetVersion ("8.0.3"), package.Identity.Version);
+                    Assert.Equal (new Version (8, 0, 3, 0), package.Identity.Version.Version);
+                });
 
             var resolvedAssemblies = Resolve (
                 iosConfiguration,
-                project,
+                installedPackages,
                 TargetFrameworks.Xamarin_iOS_1_0_FrameworkPath);
 
-            resolvedAssemblies.Length.ShouldBeGreaterThan (0);
+            Assert.NotEmpty (resolvedAssemblies);
 
             // Ensure the specified Newtonsoft.Json is the one that gets resolved
             var newtonsoftJson = resolvedAssemblies.Where (r => r.AssemblyName.Name == "Newtonsoft.Json");
-            newtonsoftJson.Count ().ShouldEqual (1);
-            newtonsoftJson
-                .Single ()
-                .AssemblyName
-                .Version
-                .ShouldEqual (new Version (8, 0, 0, 0));
-            newtonsoftJson
-                .Single ()
-                .Path
-                .ParentDirectory // $profile
-                .ParentDirectory // 'lib'
-                .ParentDirectory // $nupkg_root
-                .Name
-                .ShouldEqual ("8.0.3");
-
-            var newtonsoftJsonPackage = project.InstalledPackages.Where (p => p.Identity.Id == "Newtonsoft.Json");
-            newtonsoftJsonPackage.Count ().ShouldEqual (1);
-            newtonsoftJsonPackage
-                .First ()
-                .Identity
-                .Version
-                .Version
-                .ShouldEqual (new Version (8, 0, 3, 0));
+            Assert.Collection (
+                newtonsoftJson,
+                assembly => {
+                    Assert.Equal (new Version (8, 0, 0, 0), assembly.AssemblyName.Version);
+                    Assert.Equal (
+                        "8.0.3",
+                        assembly
+                            .Path
+                            .ParentDirectory // $profile
+                            .ParentDirectory // 'lib'
+                            .ParentDirectory // $nupkg_root
+                            .Name);
+                });
         }
 
-        [Test]
+        [Fact]
         public void ResolveByAbsolutePath ()
         {
             FilePath path = typeof (DependencyResolver).Assembly.Location;
-            new DependencyResolver ()
-                .Resolve (new [] { path })
-                .Length
-                .ShouldBeGreaterThan (1);
+            Assert.NotEmpty (new DependencyResolver ().Resolve (new [] { path }));
         }
 
-        [Test]
+        [Fact]
         public void ResolveByRelativePath ()
         {
             FilePath path = typeof (DependencyResolver).Assembly.Location;
-            new DependencyResolver { BaseDirectory = path.ParentDirectory }
+            Assert.NotEmpty (new DependencyResolver { BaseDirectory = path.ParentDirectory }
                 .Resolve (new [] {
                     new FilePath ("..").Combine (
                         path.ParentDirectory.Name,
                         (FilePath)path.Name)
-                })
-                .Length
-                .ShouldBeGreaterThan (1);
+                }));
         }
 
-        [Test]
+        [Fact]
         public void ResolveByFileNameOnly ()
         {
             FilePath path = typeof (DependencyResolver).Assembly.Location;
 
-            new DependencyResolver ()
+            Assert.NotEmpty (new DependencyResolver ()
                 .AddAssemblySearchPath (path.ParentDirectory)
-                .Resolve (new [] { (FilePath)path.Name })
-                .Length
-                .ShouldBeGreaterThan (1);
+                .Resolve (new [] { (FilePath)path.Name }));
 
-            new DependencyResolver { BaseDirectory = path.ParentDirectory }
-                .Resolve (new [] { (FilePath)path.Name })
-                .Length
-                .ShouldBeGreaterThan (1);
+            Assert.NotEmpty (new DependencyResolver { BaseDirectory = path.ParentDirectory }
+                .Resolve (new [] { (FilePath)path.Name }));
         }
     }
 }

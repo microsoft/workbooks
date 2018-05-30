@@ -66,6 +66,13 @@ namespace Xamarin.Interactive.CodeAnalysis.Roslyn
         public override ImmutableArray<PortableExecutableReference> ResolveReference (
             string reference, string baseFilePath, MetadataReferenceProperties properties)
         {
+            const string nugetRefScheme = "nugetref:";
+            if (reference.StartsWith (nugetRefScheme, StringComparison.OrdinalIgnoreCase)) {
+                reference = reference.Substring (nugetRefScheme.Length);
+                return ImmutableArray<PortableExecutableReference>.Empty.Add (
+                    PortableExecutableReference.CreateFromFile (reference, properties));
+            }
+
             // Attempt to resolve by file name (will be combined with the
             // DependencyResolver.BaseFilePath and checked as a file),
             // then by assembly name.

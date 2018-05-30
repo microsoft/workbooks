@@ -331,22 +331,11 @@ namespace Xamarin.Interactive.Client
                     if (EvaluationService == null) {
                         var evaluationService = new EvaluationService (
                             CompilationWorkspace,
+                            PackageManager = new PackageManagerService (),
                             new EvaluationEnvironment (WorkingDirectory));
                         evaluationService.NotifyEvaluationContextManagerChanged (Agent.Api.EvaluationContextManager);
                         EvaluationService = evaluationService;
                     }
-
-                    if (SessionKind == ClientSessionKind.Workbook)
-                        PackageManager = new PackageManagerService (
-                            CompilationWorkspace.Configuration.DependencyResolver,
-                            EvaluationService,
-                            async (refreshForAgentIntegration, cancellationToken) => {
-                                if (refreshForAgentIntegration)
-                                    await RefreshForAgentIntegration ();
-                                return Agent;
-                            });
-                    else
-                        PackageManager = null;
                 }
             } catch (Exception e) {
                 Log.Error (TAG, e);
@@ -365,7 +354,7 @@ namespace Xamarin.Interactive.Client
                         CompilationWorkspace.Configuration.CompilationConfiguration.Sdk,
                         Workbook
                             .Pages
-                            .SelectMany (page => page.Packages),
+                            .SelectMany (page => page.PackageReferences),
                         CancellationToken);
             } catch (Exception e) {
                 Log.Error (TAG, e);
@@ -600,7 +589,9 @@ namespace Xamarin.Interactive.Client
         public IWorkbookSaveOperation CreateWorkbookSaveOperation ()
         {
             AssertWorkbookSession ();
-            return Workbook.CreateSaveOperation (CompilationWorkspace);
+            return Workbook.CreateSaveOperation (
+                CompilationWorkspace,
+                PackageManager);
         }
 
         public void SaveWorkbook (IWorkbookSaveOperation saveOperation)

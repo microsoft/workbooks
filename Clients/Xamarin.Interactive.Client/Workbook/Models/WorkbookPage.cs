@@ -31,7 +31,7 @@ namespace Xamarin.Interactive.Workbook.Models
 
         public Guid Guid => Manifest.Guid;
         public ImmutableArray<AgentType> PlatformTargets => Manifest.PlatformTargets;
-        public ImmutableArray<InteractivePackageDescription> Packages => Manifest.Packages;
+        public PackageReferenceList PackageReferences => Manifest.PackageReferences;
 
         public FileNode TreeNode { get; }
         public TableOfContentsNode TableOfContents { get; }
@@ -87,7 +87,7 @@ namespace Xamarin.Interactive.Workbook.Models
         void NotifyPropertyChanged ([CallerMemberName] string propertyName = null)
             => PropertyChanged?.Invoke (this, new PropertyChangedEventArgs (propertyName));
 
-        public void Write (TextWriter writer, InteractivePackageManager packageManager)
+        public void Write (TextWriter writer, PackageReferenceList packageReferences)
         {
             if (writer == null)
                 throw new ArgumentNullException (nameof (writer));
@@ -102,12 +102,7 @@ namespace Xamarin.Interactive.Workbook.Models
             }
 
             Manifest.Title = title;
-
-            if (packageManager?.InstalledPackages != null)
-                Manifest.Packages = packageManager
-                    .InstalledPackages
-                    .Select (InteractivePackageDescription.FromInteractivePackage)
-                    .ToImmutableArray ();
+            Manifest.PackageReferences = packageReferences;
 
             manifestCell.Buffer.Value = Manifest.ToString ();
 
