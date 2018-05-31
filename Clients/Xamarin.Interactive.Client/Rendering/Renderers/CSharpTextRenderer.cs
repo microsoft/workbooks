@@ -116,7 +116,7 @@ namespace Xamarin.Interactive.Rendering.Renderers
             else
                 Writer.Write ("<div class=\"exception inner\">");
 
-            Writer.Write ("<h1 onclick=\"exceptionToggle(this)\">");
+            Writer.Write ("<h1 onclick=\"xiexports.exceptionToggle(this)\">");
 
             VisitTypeSpec (exception.Type);
 
