@@ -57,20 +57,27 @@ namespace Xamarin.Interactive.CodeAnalysis
         public EvaluationAssemblyContext ()
         {
             AppDomain.CurrentDomain.AssemblyResolve += HandleAssemblyResolve;
+            AppDomain.CurrentDomain.AssemblyLoad += HandleAssemblyLoad;
         }
 
         public void Dispose ()
         {
             AppDomain.CurrentDomain.AssemblyResolve -= HandleAssemblyResolve;
+            AppDomain.CurrentDomain.AssemblyLoad -= HandleAssemblyLoad;
             GC.SuppressFinalize (this);
+        }
+
+        void HandleAssemblyLoad (object sender, AssemblyLoadEventArgs args)
+        {
+            var assemblyName = args.LoadedAssembly.GetName ();
+            Log.Verbose (TAG, $"Handling assembly load event for {assemblyName}.");
+            if (assemblyMap.TryGetValue (assemblyName.Name, out AssemblyDefinition assemblyDefinition))
+                AssemblyResolvedHandler?.Invoke (args.LoadedAssembly, assemblyDefinition);
         }
 
         Assembly HandleAssemblyResolve (object sender, ResolveEventArgs args)
         {
             Log.Verbose (TAG, $"Handling assembly resolve event for {args.Name}.");
-            Log.Verbose (TAG, $".NET Assembly map contents: ");
-            foreach (var key in netAssemblyMap.Keys)
-                Log.Verbose (TAG, $"    {key}");
 
             Assembly netAssembly;
             if (netAssemblyMap.TryGetValue (new AssemblyName (args.Name), out netAssembly))
