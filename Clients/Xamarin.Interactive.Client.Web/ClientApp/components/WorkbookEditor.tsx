@@ -51,11 +51,12 @@ type DraftBlockType = "header-one" | "header-two" | "header-three" | "header-fou
 | "unordered-list-item" | "ordered-list-item" | "unstyled";
 
 export class WorkbookEditor extends React.Component<WorkbooksEditorProps, WorkbooksEditorState> implements MonacoCellMapper {
+    private readonly editorContainer: React.RefObject<HTMLDivElement> = React.createRef<HTMLDivElement>()
+
     subscriptors: ((m: EditorMessage) => void)[];
     monacoProviderTickets: monaco.IDisposable[] = [];
     cellIdMappings: WorkbookCellIdMapping[] = [];
     focusedCodeEditors: Set<string> = Set()
-    editorContainer: HTMLDivElement | null = null
 
     constructor(props: WorkbooksEditorProps) {
         super(props);
@@ -110,7 +111,7 @@ export class WorkbookEditor extends React.Component<WorkbooksEditorProps, Workbo
         (this.refs.editor as any).focus();
 
         // Only do this if the editor container was clicked.
-        if (e && this.editorContainer && e.target === this.editorContainer) {
+        if (e && this.editorContainer.current && e.target === this.editorContainer.current) {
             // Select the last block
             let editorState = this.state.editorState;
             const currentContent = editorState.getCurrentContent();
@@ -508,7 +509,10 @@ export class WorkbookEditor extends React.Component<WorkbooksEditorProps, Workbo
 
     render() {
         return (
-            <div className='WorkbookEditor-container' ref={div => this.editorContainer = div} onClick={(e) => this.focus(e)}>
+            <div
+                ref={this.editorContainer}
+                className='WorkbookEditor-container'
+                onClick={(e) => this.focus(e)}>
                 <Editor
                     ref="editor"
                     placeholder="Author content in markdown and use ``` to insert a new code cell"
