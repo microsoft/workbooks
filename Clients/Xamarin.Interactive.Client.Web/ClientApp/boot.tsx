@@ -5,7 +5,8 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
-import './boot.scss'
+import 'es6-shim';
+import './boot.scss';
 import 'draft-js/dist/Draft.css';
 
 import * as React from 'react';
