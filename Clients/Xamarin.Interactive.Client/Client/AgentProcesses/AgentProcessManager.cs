@@ -165,7 +165,6 @@ namespace Xamarin.Interactive.Client.AgentProcesses
 
                 var identifyAgentRequest = ClientApp
                     .SharedInstance
-                    .WebServer
                     .AgentIdentificationManager
                     .GetAgentIdentityRequest (cancellationToken);
 
@@ -178,7 +177,6 @@ namespace Xamarin.Interactive.Client.AgentProcesses
                 LogStartStatus (ticket, "requesting agent identity");
                 agentProcessState.AgentIdentity = await ClientApp
                     .SharedInstance
-                    .WebServer
                     .AgentIdentificationManager
                     .GetAgentIdentityAsync (identifyAgentRequest).ConfigureAwait (false);
 
@@ -213,7 +211,7 @@ namespace Xamarin.Interactive.Client.AgentProcesses
                 return agentProcessState;
             } catch (Exception e) {
                 Log.Error (TAG, nameof (StartAsync), e);
-                throw e;
+                throw;
             } finally {
                 startWait.Release ();
             }

@@ -71,9 +71,21 @@ namespace Xamarin.Interactive.Client.Web.Hosting
             => new WebFileSystem ();
 
         protected override ClientWebServer CreateClientWebServer ()
-            => new ClientWebServer (FilePath.Empty);
+            => null;
 
         protected override UpdaterService CreateUpdaterService ()
             => null;
+
+        AgentIdentificationManager agentIdentificationManager;
+        public override AgentIdentificationManager AgentIdentificationManager => agentIdentificationManager;
+
+        public void CreateAgentIdentificationManager (Uri baseUri)
+        {
+            if (this.agentIdentificationManager != null)
+                throw new InvalidOperationException (
+                    $"{nameof (CreateAgentIdentificationManager)} has already been invoked");
+
+            this.agentIdentificationManager = new AgentIdentificationManager (baseUri);
+        }
     }
 }

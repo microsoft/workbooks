@@ -69,6 +69,9 @@ namespace Xamarin.Interactive
         protected abstract ClientWebServer CreateClientWebServer ();
         protected abstract UpdaterService CreateUpdaterService ();
 
+        public virtual AgentIdentificationManager AgentIdentificationManager
+            => WebServer?.AgentIdentificationManager;
+
         sealed class InitializeException<T> : Exception
         {
             public InitializeException (string createMethod)
@@ -133,9 +136,7 @@ namespace Xamarin.Interactive
 
             Log.SetLogLevel (Prefs.Logging.Level.GetValue ());
 
-            WebServer = CreateClientWebServer ()
-                ?? throw new InitializeException<ClientWebServer> (
-                    nameof (CreateClientWebServer));
+            WebServer = CreateClientWebServer ();
 
             Updater = CreateUpdaterService ();
 

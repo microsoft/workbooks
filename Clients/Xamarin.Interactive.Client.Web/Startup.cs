@@ -66,6 +66,14 @@ namespace Xamarin.Interactive.Client.Web
                 app.UseExceptionHandler ("/Home/Error");
             }
 
+            app.Use ((context, next) => {
+                if (ClientApp.SharedInstance.AgentIdentificationManager == null)
+                    ((WebClientApp)ClientApp.SharedInstance).CreateAgentIdentificationManager (
+                        new Uri ($"{context.Request.Scheme}://{context.Request.Host}/api/identify"));
+
+                return next ();
+            });
+
             app.UseMonacoMuting ();
             app.UseStaticFiles ();
             app.UseWasmStaticFiles ();

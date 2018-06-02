@@ -79,7 +79,7 @@ export class WorkbookCommandBar extends React.Component<WorkbookCommandBarProps,
         function createWorkbookTargetItem(target: WorkbookTarget): IContextualMenuItem {
             return {
                 key: target.id,
-                name: `${target.sdk.name} ${target.sdk.version}`,
+                name: target.sdk.name + (target.sdk.version ? ` ${target.sdk.version}` : '')
             }
         }
 
@@ -156,13 +156,13 @@ export class WorkbookCommandBar extends React.Component<WorkbookCommandBarProps,
                     onClick: this.props.saveWorkbook
                 }
             ],
-            farItems: [
-                {
-                    key: 'dumpDraftState',
-                    icon: 'Rocket',
-                    onClick: this.props.dumpDraftState
-                }
-            ]
+            // farItems: [
+            //     {
+            //         key: 'dumpDraftState',
+            //         icon: 'Rocket',
+            //         onClick: this.props.dumpDraftState
+            //     }
+            // ]
         }
 
         return (
