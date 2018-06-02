@@ -43,6 +43,12 @@
     <!-- Clean up some JS files that need to always be matching debug/release. -->
     <Delete Files="@(WebAssemblyRuntimeTargetFiles)" />
 
+    <ItemGroup>
+      <MonoWasmVersion
+        Condition="'%(Identity)' == 'Mono.WebAssembly.Sdk'"
+        Include="%(PackageReference.Version)"/>
+    </ItemGroup>
+
     <GenerateWorkbookAppManifest
       ManifestOutputPath="$(InstallDir)workbookapps.json"
       Flavor="WebAssembly"
@@ -50,7 +56,7 @@
       Icon="project-console"
       AppPath="WebAssembly"
       SdkName="Mono WebAssembly"
-      SdkVersion=""
+      SdkVersion="@(MonoWasmVersion)"
       AssemblySearchPaths="WebAssembly;WebAssembly\BCL;WebAssembly\BCL\Facades"
       TargetFrameworkIdentifier="$(TargetFrameworkIdentifier)"
       TargetFrameworkVersion="$(TargetFrameworkVersion)"/>
