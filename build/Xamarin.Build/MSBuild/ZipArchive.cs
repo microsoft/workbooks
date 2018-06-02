@@ -27,6 +27,8 @@ namespace Xamarin.MSBuild
 
         public string RenameBaseDirectoryTo { get; set; }
 
+        public bool IncludeBaseDirectory { get; set; } = true;
+
         public override bool Execute ()
         {
             if (SourceFiles == null && SourceDirectoryName == null) {
@@ -80,7 +82,7 @@ namespace Xamarin.MSBuild
                 sourceDirectoryName,
                 DestinationArchiveFileName,
                 CompressionLevel.Optimal,
-                includeBaseDirectory: true);
+                includeBaseDirectory: IncludeBaseDirectory);
 
             return true;
         }
