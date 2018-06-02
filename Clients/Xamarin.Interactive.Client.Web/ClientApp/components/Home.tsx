@@ -11,6 +11,6 @@ import { WorkbookShell } from './WorkbookShell';
 
 export class Home extends React.Component<RouteComponentProps<{}>, {}> {
     public render() {
-        return <WorkbookShell />
+        return <WorkbookShell/>
     }
 }
