@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -78,7 +79,13 @@ namespace Xamarin.Interactive.Client.Web.Hubs
             => memoryCache.Get<InteractiveSession> (Context.ConnectionId);
 
         public IEnumerable<WorkbookAppInstallation> GetAvailableWorkbookTargets ()
-            => WorkbookAppInstallation.All;
+        {
+            // If running in Azure, restrict to just the WASM workbook app
+            if (Environment.GetEnvironmentVariable ("WEBSITE_INSTANCE_ID") != null)
+                return WorkbookAppInstallation.All.Where (app => app.Id == "webassembly-monowebassembly");
+            else
+                return WorkbookAppInstallation.All;
+        }
 
         public IObservable<InteractiveSessionEvent> ObserveSessionEvents ()
         {
