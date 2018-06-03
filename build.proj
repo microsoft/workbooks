@@ -181,8 +181,7 @@
     <Exec Condition="$(IsWindows) And Exists('$(Adb)')" Command="$(Adb) kill-server"/>
     <Exec Condition="$(IsMac)" Command="xcrun -k"/>
     <MSBuild
-      Projects="$(SolutionFile)"
-      Targets="Build"/>
+      Projects="$(SolutionFile)"/>
   </Target>
 
   <Target
