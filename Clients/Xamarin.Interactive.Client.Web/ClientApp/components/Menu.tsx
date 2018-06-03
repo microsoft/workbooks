@@ -12,10 +12,16 @@ export const styleMap = {
     },
 };
 
-export function getBlockStyle(block: Draft.ContentBlock): string {
+export function getBlockStyle(block: Draft.ContentBlock): string | undefined {
     switch (block.getType()) {
-        case 'blockquote': return 'RichEditor-blockquote';
-        default: return "";
+        case 'blockquote': return 'Draft-Block-BlockQuote'
+        case 'header-one': return 'Draft-Block-H1'
+        case 'header-two': return 'Draft-Block-H2'
+        case 'header-three': return 'Draft-Block-H3'
+        case 'header-four': return 'Draft-Block-H4'
+        case 'header-five': return 'Draft-Block-H5'
+        case 'header-six': return 'Draft-Block-H6'
+        default: return 'Draft-Block-Default';
     }
 }
 
