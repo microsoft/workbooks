@@ -9,11 +9,12 @@
 
 import * as React from 'react'
 import * as ReactDOM from 'react-dom'
-import { osMac } from '../utils'
+import { osMac, debounce } from '../utils'
 import { SelectionState } from 'draft-js'
 import { EditorMessage, EditorMessageType, EditorKeys } from '../utils/EditorMessages'
 import { CodeCellUpdate, DiagnosticSeverity } from '../evaluation'
 
+const theme = require('../css/theme.scss')
 import './MonacoCellEditor.scss'
 
 export interface MonacoCellEditorProps {
@@ -44,10 +45,34 @@ enum ViewEventType {
 }
 
 export class MonacoCellEditor extends React.Component<MonacoCellEditorProps, MonacoCellEditorState> {
-    private windowResizeHandler: any;
-    private editor?: monaco.editor.ICodeEditor;
+    private windowResizeHandler: any
     private lastUpdateResponse: CodeCellUpdate | null = null
     private markedTextIds: string[] = []
+
+    private editor?: monaco.editor.ICodeEditor
+
+    private editorOptions: monaco.editor.IEditorConstructionOptions = {
+        language: "csharp",
+        scrollBeyondLastLine: false,
+        roundedSelection: false,
+        overviewRulerLanes: 0, // 0 = hide overview ruler
+        formatOnType: true,
+        contextmenu: false,
+        cursorBlinking: 'phase',
+        renderIndentGuides: false,
+        minimap: {
+            enabled: false
+        },
+        scrollbar: {
+            // must explicitly hide scrollbars so they don't interfere with mouse events
+            horizontal: 'hidden',
+            vertical: 'hidden',
+            handleMouseWheel: false,
+            useShadows: false,
+        }
+    }
+
+    private debouncedUpdateLayout = debounce(this.updateLayout.bind(this), 250)
 
     constructor(props: MonacoCellEditorProps) {
         super(props)
@@ -89,30 +114,14 @@ export class MonacoCellEditor extends React.Component<MonacoCellEditorProps, Mon
     }
 
     buildEditor(elem: Element) {
+        this.editorOptions.value = this.props.block.text
+        this.setFont(undefined, undefined, true)
+        this.setWordWrap(true, true)
+        this.setShowLineNumbers(true, true)
+        this.updateOptions()
+
         const targetElem = document.createElement("div")
-        const editor = monaco.editor.create(targetElem, {
-            value: this.props.block.text,
-            language: "csharp",
-            scrollBeyondLastLine: false,
-            roundedSelection: false,
-            overviewRulerLanes: 0, // 0 = hide overview ruler
-            wordWrap: "on",
-            formatOnType: true,
-            lineNumbers: "on",
-            lineDecorationsWidth: 8,
-            contextmenu: false,
-            cursorBlinking: 'phase',
-            minimap: {
-                enabled: false
-            },
-            scrollbar: {
-                // must explicitly hide scrollbars so they don't interfere with mouse events
-                horizontal: 'hidden',
-                vertical: 'hidden',
-                handleMouseWheel: false,
-                useShadows: false,
-            }
-        })
+        const editor = monaco.editor.create(targetElem, this.editorOptions)
 
         editor.onDidChangeModelContent((e) => {
             this.syncContent()
@@ -311,7 +320,7 @@ export class MonacoCellEditor extends React.Component<MonacoCellEditorProps, Mon
         }
     }
 
-    updateLayout() {
+    private updateLayout() {
         let clientWidth = this.getClientWidth()
         let fontSize = this.editor!.getConfiguration().fontInfo.fontSize || 0
         this.editor!.layout({
@@ -387,4 +396,56 @@ export class MonacoCellEditor extends React.Component<MonacoCellEditorProps, Mon
     getContent() {
         return this.editor!.getModel().getValue()
     }
+
+    // #region Configurable Options
+
+    setReadOnly(readOnly: boolean, deferUpdate: boolean = false) {
+        this.editorOptions.readOnly = readOnly
+
+        if (!deferUpdate)
+            this.updateOptions()
+    }
+
+    setFont(fontFamily?: string, fontSize?: number, deferUpdate: boolean = false) {
+        fontFamily = fontFamily || 'Menlo, Monaco, Consolas, "Courier New", monospace'
+        fontSize = fontSize || 14
+
+        this.editorOptions.fontFamily = fontFamily
+        this.editorOptions.fontSize = fontSize
+        this.editorOptions.lineHeight = fontSize * 1.5
+
+        if (!deferUpdate)
+            this.updateOptions()
+    }
+
+    setWordWrap(wrapLongLines: boolean, deferUpdate: boolean = false) {
+        this.editorOptions.wordWrap = wrapLongLines ? "on" : "off"
+        if (this.editorOptions.scrollbar)
+            this.editorOptions.scrollbar.horizontal = wrapLongLines ? "hidden" : "auto"
+
+        if (!deferUpdate)
+            this.updateOptions()
+    }
+
+    setShowLineNumbers(showLineNumbers: boolean, deferUpdate: boolean = false) {
+        this.editorOptions.lineNumbersMinChars = 1
+        if (showLineNumbers) {
+            this.editorOptions.lineNumbers = 'on'
+            this.editorOptions.lineDecorationsWidth = 8
+        } else {
+            this.editorOptions.lineNumbers = 'off'
+            this.editorOptions.lineDecorationsWidth = 0
+        }
+
+        if (!deferUpdate)
+            this.updateOptions()
+    }
+
+    private updateOptions() {
+        if (this.editor)
+            this.editor.updateOptions(this.editorOptions)
+        this.debouncedUpdateLayout()
+    }
+
+    // #endregion
 }
