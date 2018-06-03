@@ -50,19 +50,22 @@ namespace Xamarin.ProcessControl
         public Action<StreamWriter> InputHandler { get; }
         public ExecFlags Flags { get; }
         public string WorkingDirectory { get; }
+        public IReadOnlyDictionary<string, string> EnvironmentVariables { get; }
 
         public Exec (
             ProcessArguments arguments,
             ExecFlags flags = None,
             Action<ConsoleRedirection.Segment> outputHandler = null,
             Action<StreamWriter> inputHandler = null,
-            string workingDirectory = null)
+            string workingDirectory = null,
+            IReadOnlyDictionary<string, string> environmentVariables = null)
             : this (
                 arguments,
                 flags,
                 outputHandler == null ? null : new ConsoleRedirection (outputHandler),
                 inputHandler,
-                workingDirectory)
+                workingDirectory,
+                environmentVariables)
         {
         }
 
@@ -71,7 +74,8 @@ namespace Xamarin.ProcessControl
             ExecFlags flags = None,
             ConsoleRedirection outputRedirection = null,
             Action<StreamWriter> inputHandler = null,
-            string workingDirectory = null)
+            string workingDirectory = null,
+            IReadOnlyDictionary<string, string> environmentVariables = null)
         {
             Arguments = arguments;
 
@@ -103,6 +107,7 @@ namespace Xamarin.ProcessControl
                     nameof (flags));
 
             WorkingDirectory = workingDirectory;
+            EnvironmentVariables = environmentVariables ?? new Dictionary<string, string> ();
 
             id = lastId++;
         }
@@ -145,6 +150,9 @@ namespace Xamarin.ProcessControl
                     WorkingDirectory = WorkingDirectory
                 }
             };
+
+            foreach (var pair in EnvironmentVariables)
+                proc.StartInfo.EnvironmentVariables.Add (pair.Key, pair.Value);
 
             Log?.Invoke (null, new ExecLog (id, Flags, arguments));
 
