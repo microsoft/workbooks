@@ -69,6 +69,10 @@ namespace Xamarin.Interactive.CodeAnalysis.Evaluating
             = new Lazy<AgentSynchronizationContext> ();
         public virtual IAgentSynchronizationContext SynchronizationContexts => agentSynchronizationContext.Value;
 
+        readonly Lazy<NetFxEvaluationAssemblyContext> evaluationAssemblyContext
+            = new Lazy<NetFxEvaluationAssemblyContext> ();
+        private protected virtual EvaluationAssemblyContextBase AssemblyContext => evaluationAssemblyContext.Value;
+
         readonly IList<Action> resetStateHandlers = new List<Action> ();
 
         public EvaluationContextManager (
@@ -125,6 +129,7 @@ namespace Xamarin.Interactive.CodeAnalysis.Evaluating
 
             var evaluationContext = new EvaluationContext (
                 this,
+                AssemblyContext,
                 globalStateObject);
 
             if (globalStateObject is EvaluationContextGlobalObject evaluationContextGlobalObject)

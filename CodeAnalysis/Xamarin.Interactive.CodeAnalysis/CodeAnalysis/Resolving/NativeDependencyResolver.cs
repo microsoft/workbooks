@@ -5,23 +5,62 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
-using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Reflection.Metadata;
 using System.Reflection.PortableExecutable;
 using System.Runtime.InteropServices;
 
+using NuGet.Packaging;
+using NuGet.Versioning;
+
 using Xamarin.Interactive.Core;
 using Xamarin.Interactive.Logging;
+using Xamarin.Interactive.NuGet;
 
 namespace Xamarin.Interactive.CodeAnalysis.Resolving
 {
     public class NativeDependencyResolver : DependencyResolver
     {
         const string TAG = nameof (NativeDependencyResolver);
+
+        const string skiaSharpDllMap = @"
+            <configuration>
+              <dllmap dll='libSkiaSharp.dylib' os='osx' target='../../runtimes/osx/native/libSkiaSharp.dylib'/>
+              <dllmap dll='libSkiaSharp' os='windows' cpu='x86-64' wordsize='64' target='../../runtimes/win7-x64/native/libSkiaSharp.dll'/>
+              <!-- On x86, or x86-64 w/ a 32-bit word size, pick the 32-bit libSkiaSharp. -->
+              <dllmap dll='libSkiaSharp' os='windows' cpu='x86,x86-64' wordsize='32' target='../../runtimes/win7-x86/native/libSkiaSharp.dll'/>
+            </configuration>
+        ";
+
+        const string urhoSharpDllMap = @"
+            <configuration>
+              <dllmap dll='mono-urho' os='osx' target='../../native/Mac/libmono-urho.dylib'/>
+              <dllmap dll='mono-urho' os='windows' cpu='x86-64' wordsize='64' target='../../native/Win64_DirectX/mono-urho.dll'/>
+              <!-- On x86, or x86-64 w/ a 32-bit word size, pick the 32-bit libSkiaSharp. -->
+              <dllmap dll='mono-urho' os='windows' cpu='x86,x86-64' wordsize='32' target='../../native/Win32_DirectX/mono-urho.dll'/>
+            </configuration>
+        ";
+
+        const string libuvDllMap = @"
+            <configuration>
+                <dllmap dll='libuv' os='osx' target='{0}/runtimes/osx/native/libuv.dylib'/>
+                <dllmap dll='libuv' os='windows' cpu='x86-64' wordsize='64' target='{0}/runtimes/win-x64/native/libuv.dll'/>
+                <dllmap dll='libuv' os='windows' cpu='x86,x86-64' wordsize='32' target='{0}/runtimes/win-x86/native/libuv.dll'/>
+            </configuration>
+        ";
+
+        const string msmlDllMap = @"
+            <configuration>
+                <dllmap dll='CpuMathNative' os='osx' cpu='x86-64' wordize='64' target='../../runtimes/osx-64/native/libCpuMathNative.dylib'/>
+                <dllmap dll='FastTreeNative' os='osx' cpu='x86-64' wordsize='64' target='../../runtimes/osx-64/native/libFastTreeNative.dylib'/>
+                <dllmap dll='CpuMathNative' os='windows' cpu='x86-64' wordize='64' target='../../runtimes/osx-64/native/CpuMathNative.dll'/>
+                <dllmap dll='FastTreeNative' os='windows' cpu='x86-64' wordsize='64' target='../../runtimes/osx-64/native/FastTreeNative.dll'/>
+            </configuration>
+        ";
 
         readonly Architecture agentArchitecture;
 
@@ -31,10 +70,13 @@ namespace Xamarin.Interactive.CodeAnalysis.Resolving
         {
             CompilationConfiguration = compilationConfiguration;
 
-            agentArchitecture = Environment.Is64BitProcess &&
-                (HostEnvironment.OS != HostOS.Windows || compilationConfiguration.Sdk.IsNot (SdkId.ConsoleNetCore))
-                ? Architecture.X64
-                : Architecture.X86;
+            if (compilationConfiguration != null)
+                // Agents always send an architecture value via the TCC.
+                agentArchitecture = compilationConfiguration.Runtime.Architecture.Value;
+            else
+                // This case is reached when we create a resolver with null configuration from
+                // GacCache, in which case we can stick with the current process architecture.
+                agentArchitecture = RuntimeInformation.ProcessArchitecture;
         }
 
         protected override ResolvedAssembly ParseAssembly (
@@ -54,27 +96,42 @@ namespace Xamarin.Interactive.CodeAnalysis.Resolving
                         peReader,
                         metadataReader));
 
-#if false
 
-            // HACK: Hard-code hacks for SkiaSharp.
-            if (path.Name == "SkiaSharp.dll")
-                nativeDependencies.AddRange (GetSkiaSharpDependencies (path));
+            var dllMap = new DllMap (CompilationConfiguration.Runtime);
 
-            // HACK: Hard-code hacks for UrhoSharp.
-            if (path.Name == "Urho.dll")
-                nativeDependencies.AddRange (GetUrhoSharpDependencies (path));
+            // Is there a config file next to the assembly? Use that.
+            // TODO: Check user prefs path or something so that users can write DllMaps
+            var configPath = path + ".config";
+            if (File.Exists (configPath))
+                dllMap.Load (configPath);
+            else {
+                switch (path.Name) {
+                case "SkiaSharp.dll":
+                    dllMap.LoadXml (skiaSharpDllMap);
+                    break;
+                case "UrhoSharp.dll":
+                    dllMap.LoadXml (urhoSharpDllMap);
+                    break;
+                case "Microsoft.AspNetCore.Server.Kestrel.Transport.Libuv.dll":
+                    dllMap.LoadXml (GetKestrelDllMap (path));
+                    break;
+                case "Microsoft.ML.CpuMath.dll":
+                case "Microsoft.ML.FastTree.dll":
+                    dllMap.LoadXml (msmlDllMap);
+                    break;
+                }
+            }
 
-            if (path.Name == "Microsoft.AspNetCore.Server.Kestrel.Transport.Libuv.dll")
-                nativeDependencies.AddRange (GetKestrelLibuvDependencies (path));
-
-#endif
+            nativeDependencies.AddRange (
+                dllMap.Select (mapping =>
+                    new NativeDependency (
+                        mapping.Key.LibraryName,
+                        path.ParentDirectory.Combine(mapping.Value.LibraryName).FullPath)));
 
             return resolvedAssembly.WithExternalDependencies (nativeDependencies);
         }
 
-#if false
-
-        IEnumerable<ExternalDependency> GetKestrelLibuvDependencies (FilePath path)
+        string GetKestrelDllMap (FilePath path)
         {
             var packageDirectoryPath = path.ParentDirectory.ParentDirectory.ParentDirectory;
 
@@ -98,143 +155,8 @@ namespace Xamarin.Interactive.CodeAnalysis.Resolving
                 .FindBestMatch (libuvVersions);
 
             var libuvPackagePath = libuvPackagesPath.Combine (libuvDependencyVersion.ToString ());
-
-            var architecture = agentArchitecture.ToString ().ToLowerInvariant ();
-            var isMac = false;
-
-            switch (HostEnvironment.OS) {
-            case HostOS.Windows:
-                break;
-            case HostOS.macOS:
-                isMac = true;
-                break;
-            default:
-                yield break;
-            }
-
-            string runtimeName, nativeLibName;
-            switch (AgentType) {
-            case AgentType.WPF:
-                // We need the win7-<bitness> library here.
-                nativeLibName = "libuv.dll";
-                runtimeName = $"win-{architecture}";
-                break;
-            case AgentType.Console:
-            case AgentType.MacNet45:
-            case AgentType.MacMobile:
-            case AgentType.DotNetCore:
-                nativeLibName = isMac ? "libuv.dylib" : "libuv.dll";
-                runtimeName = isMac ? "osx" : $"win-{architecture}";
-                break;
-            default:
-                yield break;
-            }
-
-            var nativeLibraryPath = libuvPackagePath.Combine (
-                "runtimes",
-                runtimeName,
-                "native",
-                nativeLibName
-            );
-
-            if (nativeLibraryPath.FileExists)
-                yield return new NativeDependency (nativeLibraryPath.Name, nativeLibraryPath);
+            return string.Format (libuvDllMap, libuvPackagePath);
         }
-
-        IEnumerable<ExternalDependency> GetSkiaSharpDependencies (FilePath path)
-        {
-            var packageDirectoryPath = path.ParentDirectory.ParentDirectory.ParentDirectory;
-
-            var architecture = agentArchitecture.ToString ().ToLowerInvariant ();
-            var isMac = false;
-
-            switch (HostEnvironment.OS) {
-            case HostOS.Windows:
-                break;
-            case HostOS.macOS:
-                isMac = true;
-                break;
-            default:
-                yield break;
-            }
-
-            string runtimeName, nativeLibName;
-            switch (AgentType) {
-            case AgentType.WPF:
-                // We need the win7-<bitness> library here.
-                nativeLibName = "libSkiaSharp.dll";
-                runtimeName = $"win7-{architecture}";
-                break;
-            case AgentType.Console:
-            case AgentType.MacNet45:
-            case AgentType.MacMobile:
-            case AgentType.DotNetCore:
-                nativeLibName = isMac ? "libSkiaSharp.dylib" : "libSkiaSharp.dll";
-                runtimeName = isMac ? "osx" : $"win7-{architecture}";
-                break;
-            default:
-                yield break;
-            }
-
-            var nativeLibraryPath = packageDirectoryPath.Combine (
-                "runtimes",
-                runtimeName,
-                "native",
-                nativeLibName
-            );
-
-            if (nativeLibraryPath.FileExists)
-                yield return new NativeDependency (nativeLibraryPath.Name, nativeLibraryPath);
-        }
-
-        IEnumerable<ExternalDependency> GetUrhoSharpDependencies (FilePath path)
-        {
-            var packageDirectoryPath = path.ParentDirectory.ParentDirectory.ParentDirectory;
-
-            var architecture = agentArchitecture == Architecture.X64 ? "64" : "32";
-            var isMac = false;
-
-            switch (HostEnvironment.OS) {
-            case HostOS.Windows:
-                break;
-            case HostOS.macOS:
-                isMac = true;
-                break;
-            default:
-                yield break;
-            }
-
-            var nativeLibName = isMac ? "libmono-urho.dylib" : "mono-urho.dll";
-
-            string runtimeName;
-            switch (AgentType) {
-            case AgentType.WPF:
-                runtimeName = $"Win{architecture}";
-                break;
-            case AgentType.MacNet45:
-            case AgentType.MacMobile:
-            case AgentType.Console:
-            case AgentType.DotNetCore:
-                runtimeName = isMac ? "Mac" : $"Win{architecture}";
-                break;
-            case AgentType.Android:
-                nativeLibName = "libmono-urho.so";
-                yield break;
-            default:
-                yield break;
-            }
-
-            var nativeLibraryPath = packageDirectoryPath.Combine (
-                "native",
-                runtimeName,
-                nativeLibName
-            );
-
-            if (nativeLibraryPath.FileExists)
-                yield return new NativeDependency (nativeLibraryPath.Name, nativeLibraryPath);
-        }
-
-#endif
 
         IEnumerable<ExternalDependency> GetEmbeddedFrameworks (
             ResolveOperation resolveOperation,

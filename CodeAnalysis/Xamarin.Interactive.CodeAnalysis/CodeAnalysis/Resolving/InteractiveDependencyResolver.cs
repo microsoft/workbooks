@@ -16,14 +16,8 @@ using System.Threading.Tasks;
 using System.Reflection.Metadata;
 using System.Reflection.PortableExecutable;
 
-using Microsoft.CodeAnalysis;
-
-using Xamarin.Interactive.CodeAnalysis;
 using Xamarin.Interactive.Core;
 using Xamarin.Interactive.Logging;
-
-using AssemblyIdentity = Xamarin.Interactive.CodeAnalysis.Resolving.AssemblyIdentity;
-using AssemblyDefinition = Xamarin.Interactive.CodeAnalysis.Resolving.AssemblyDefinition;
 
 namespace Xamarin.Interactive.CodeAnalysis.Resolving
 {
@@ -125,11 +119,7 @@ namespace Xamarin.Interactive.CodeAnalysis.Resolving
                     .Select (r => {
                         var syms = includePeImages ? GetDebugSymbolsFromAssemblyPath (r.Path) : null;
                         var peImage = includePeImages ? GetFileBytes (r.Path) : null;
-                        var externalDeps = r.ExternalDependencies
-                            .Select (d => new AssemblyDependency (
-                                d.Location,
-                                includePeImages ? GetFileBytes (d.Location) : null))
-                            .ToArray ();
+                        var externalDeps = GetExternalDependencies (r, includePeImages);
                         return new AssemblyDefinition (
                             r.AssemblyName,
                             r.Path,
@@ -147,6 +137,20 @@ namespace Xamarin.Interactive.CodeAnalysis.Resolving
 
                 return resolvedReferences;
             }, cancellationToken);
+        }
+
+        static AssemblyDependency [] GetExternalDependencies (ResolvedAssembly resolvedAssembly, bool includePeImages)
+        {
+            var externalDependencies = new AssemblyDependency [resolvedAssembly.ExternalDependencies.Length];
+            for (var i = 0; i < resolvedAssembly.ExternalDependencies.Length; i++) {
+                var externalDep = resolvedAssembly.ExternalDependencies [i];
+
+                externalDependencies [i] = new AssemblyDependency (
+                    (externalDep is NativeDependency nativeDep) ? nativeDep.Name : null,
+                    externalDep.Location,
+                    includePeImages ? GetFileBytes (externalDep.Location) : null);
+            }
+            return externalDependencies;
         }
 
         public static byte [] GetFileBytes (FilePath path)

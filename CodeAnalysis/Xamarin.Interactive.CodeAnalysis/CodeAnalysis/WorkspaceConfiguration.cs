@@ -152,7 +152,7 @@ namespace Xamarin.Interactive.CodeAnalysis
                 return typeof (object);
             }
 
-            using (var assemblyContext = new EvaluationAssemblyContext ()) {
+            using (var assemblyContext = new NetFxEvaluationAssemblyContext ()) {
                 string globalStateAssemblyCachePath = null;
                 if (configuration.GlobalStateType.Assembly.Content.PEImage != null)
                     globalStateAssemblyCachePath =

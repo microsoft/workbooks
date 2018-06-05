@@ -32,16 +32,20 @@ namespace Xamarin.Interactive.CodeAnalysis.Evaluating
         public IObservable<ICodeCellEvent> Events => events;
 
         public EvaluationContextManager Host { get; }
-        internal EvaluationAssemblyContext AssemblyContext { get; }
+        internal EvaluationAssemblyContextBase AssemblyContext { get; }
 
         internal EvaluationContext (
             EvaluationContextManager host,
+            EvaluationAssemblyContextBase assemblyContext,
             object globalState)
         {
             Host = host
                 ?? throw new ArgumentNullException (nameof (host));
 
-            AssemblyContext = new EvaluationAssemblyContext (HandleAssemblyResolved);
+            AssemblyContext = assemblyContext
+                ?? throw new ArgumentNullException (nameof (assemblyContext));
+
+            AssemblyContext.AssemblyResolvedHandler = HandleAssemblyResolved;
 
             submissionStates = new [] { globalState, null };
         }

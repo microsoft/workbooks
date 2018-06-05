@@ -50,10 +50,16 @@ namespace Xamarin.Interactive.DotNetCore
                 "CS1685"
             };
 
+            readonly NetCoreEvaluationAssemblyContext evaluationAssemblyContext
+                = new NetCoreEvaluationAssemblyContext ();
+
             internal DotNetCoreEvaluationContextManager (DotNetCoreAgent agent)
                 : base (agent.RepresentationManager, agent)
             {
             }
+
+            private protected override EvaluationAssemblyContextBase AssemblyContext
+                => evaluationAssemblyContext;
 
             protected override object CreateGlobalState ()
                 => new EvaluationContextGlobalObject ((DotNetCoreAgent)Context);
@@ -76,12 +82,7 @@ namespace Xamarin.Interactive.DotNetCore
                 foreach (var externalDep in externalDependencies) {
                     try {
                         Log.Debug (TAG, $"Loading external dependency from {externalDep.Location}…");
-                        if (MacIntegration.IsMac) {
-                            // Don't do anything for now on Mac, nothing we've tried
-                            // so far works. :(
-                        } else {
-                            WindowsSupport.LoadLibrary (externalDep.Location);
-                        }
+                        evaluationAssemblyContext.Add (externalDep);
                     } catch (Exception e) {
                         Log.Error (TAG, "Could not load external dependency.", e);
                     }
