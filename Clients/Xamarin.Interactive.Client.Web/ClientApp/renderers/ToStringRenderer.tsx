@@ -10,6 +10,8 @@ import {
     createComponentRepresentation
 } from '../rendering'
 
+import './ToStringRenderer.scss'
+
 export const ToStringRepresentationDataTypeName = 'Xamarin.Interactive.Representations.ToStringRepresentation'
 
 export interface ToStringRepresentationData {
@@ -28,16 +30,12 @@ export default function createToStringRepresentation(result: CodeCellResult): Re
     if (!value)
         return null
 
-    const rr = createContainerRepresentation(
+    return createContainerRepresentation(
         'ToString',
         value.formats.map(format => createComponentRepresentation(
             format.name,
             ToStringRenderer,
             { value: format.value })))
-
-        console.log("CREATED REP: %O", rr)
-
-        return rr
 }
 
 class ToStringRenderer extends React.Component<{ value: string }> {

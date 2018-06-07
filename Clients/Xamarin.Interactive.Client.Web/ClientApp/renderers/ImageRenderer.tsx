@@ -39,10 +39,9 @@ export default function createImageRepresentation(result: CodeCellResult) {
 class ImageRepresentation extends React.Component<ImageData> {
     render() {
         const image = this.props;
-        const size = image.width > 0 ? { width: image.width, height: image.height} : {}
         const src = image.format === 'Uri'
             ? atob(image.data.$value)
             : `data:${image.format};base64,${image.data.$value}`
-        return <img className='renderer-ImageRepresentation-container' src={src}/>
+        return <img src={src}/>
     }
 }

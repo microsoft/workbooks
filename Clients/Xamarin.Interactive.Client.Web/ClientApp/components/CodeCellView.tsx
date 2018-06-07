@@ -41,10 +41,20 @@ interface RepresentationViewState {
     selectedRepresentation?: Representation
 }
 
-class RepresentationView extends React.PureComponent<RepresentationViewProps, RepresentationViewState> {
+class RepresentationView extends React.Component<RepresentationViewProps, RepresentationViewState> {
     constructor(props: RepresentationViewProps) {
         super(props)
         this.state = {}
+    }
+
+    shouldComponentUpdate(nextProps: RepresentationViewProps, nextState: RepresentationViewState) {
+        function getKey(representation: Representation | undefined) {
+            if (representation)
+                return representation.key
+            return undefined
+        }
+
+        return getKey(this.state.selectedRepresentation) !== getKey(nextState.selectedRepresentation)
     }
 
     render() {
@@ -54,12 +64,13 @@ class RepresentationView extends React.PureComponent<RepresentationViewProps, Re
                     key={`representation-selector:${this.props.rootRepresentation.key}`}
                     rootRepresentation={this.props.rootRepresentation}
                     onRenderRepresentation={selectedRepresentation => this.setState({ selectedRepresentation })}/>
-                <div className='CodeCell-representation-renderer-container'>
-                    {this.state.selectedRepresentation && this.state.selectedRepresentation.component &&
+                {this.state.selectedRepresentation && this.state.selectedRepresentation.component &&
+                    <div className={`CodeCell-representation-renderer-container CodeCell-representation-${this.state.selectedRepresentation.component.name}`}>
                         <this.state.selectedRepresentation.component
                             key={`render-component:${this.state.selectedRepresentation.key}`}
-                            {... this.state.selectedRepresentation.componentProps}/>}
-                </div>
+                            {... this.state.selectedRepresentation.componentProps}/>
+                    </div>
+                }
             </div>
         )
     }

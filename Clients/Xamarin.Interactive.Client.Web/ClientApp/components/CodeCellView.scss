@@ -98,18 +98,26 @@ $borderColor: darken($cellEditorBackground, 20%);
   .CodeCell-results-container,
   .CodeCell-captured-output-container {
     margin-bottom: $margin;
+    padding: 0;
 
     .CodeCell-representation {
       display: flex;
 
       .RepresentationSelector {
-        margin-left: calc(-10vw - 1em);
+        flex-shrink: 0;
+        margin-left: calc(-10vw - #{$padding});
+        padding: $padding $padding 0 0;
         width: 10vw;
+
+        .DropdownButton {
+          padding-top: calc((1.5em - 1.0em) / 2);
+        }
       }
 
       .CodeCell-representation-renderer-container {
         flex-grow: 1;
-        padding-left: calc(1em + #{$padding});
+        padding: $padding 0 0 $padding;
+        margin: 0;
       }
     }
   }

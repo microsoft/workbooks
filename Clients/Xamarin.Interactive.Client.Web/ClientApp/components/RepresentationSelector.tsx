@@ -109,13 +109,14 @@ export class RepresentationSelector extends React.PureComponent<
 
         const inSelectionPath = selectedPath[0].key === representation.key
 
-        dropdowns.push(<Dropdown
-            className={classNames({'SelectedRepresentation': inSelectionPath})}
-            ref={elem => transitionHeight(elem, inSelectionPath)}
-            key={dropdowns.length}
-            options={options}
-            defaultSelectedKey={inSelectionPath && selectedPath.length > 1 ? selectedPath[1].key : undefined}
-            onChanged={this.onSelectedKeyChanged}/>)
+        if (options.length > 1)
+            dropdowns.push(<Dropdown
+                className={classNames({'SelectedRepresentation': inSelectionPath})}
+                ref={elem => transitionHeight(elem, inSelectionPath)}
+                key={dropdowns.length}
+                options={options}
+                defaultSelectedKey={inSelectionPath && selectedPath.length > 1 ? selectedPath[1].key : undefined}
+                onChanged={this.onSelectedKeyChanged}/>)
 
         representation.children.forEach(child => {
             this.renderDropdowns(

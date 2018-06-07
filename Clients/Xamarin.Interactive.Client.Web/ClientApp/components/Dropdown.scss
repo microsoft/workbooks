@@ -16,7 +16,19 @@
 
   button {
     border: none;
+    margin: 0;
+    padding: 0;
+    width: auto;
+    overflow: visible;
     text-align: inherit;
+
+    background: inherit;
+    color: inherit;
+    font: inherit;
+    line-height: normal;
+    -webkit-font-smoothing: inherit;
+    -moz-osx-font-smoothing: inherit;
+    -webkit-appearance: none;
 
     .DropdownButtonExpander {
       svg {
