@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 
 using DiffPlex;
 using DiffPlex.DiffBuilder;
@@ -46,6 +47,22 @@ namespace Xamarin.Interactive.Tests
         // if we have no groups or only an 'unchanged' group, then there is no diff
         public bool HasDiff => FirstGroup != null &&
             (FirstGroup.Type != ChangeType.Unchanged || FirstGroup.Next != null);
+
+        static string ToString (IEnumerable<object> lines)
+            => string.Join ("\n", lines.Select (line => line?.ToString () ?? string.Empty));
+
+        public DiffRenderer (
+            IEnumerable<object> oldTextLines,
+            IEnumerable<object> newTextLines,
+            int maxContextLines = 3,
+            int tabWidth = 8)
+            : this (
+                ToString (oldTextLines),
+                ToString (newTextLines),
+                maxContextLines,
+                tabWidth)
+        {
+        }
 
         public DiffRenderer (string oldText, string newText, int maxContextLines = 3, int tabWidth = 8)
         {
@@ -94,6 +111,13 @@ namespace Xamarin.Interactive.Tests
             }
 
             return lineWidth;
+        }
+
+        public override string ToString ()
+        {
+            var writer = new StringWriter ();
+            Write (writer);
+            return writer.ToString ();
         }
 
         public void Write (TextWriter writer)

@@ -4,8 +4,11 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
+using System.Runtime.Versioning;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -20,7 +23,7 @@ using static Xamarin.Interactive.CodeAnalysis.Resolving.InteractiveDependencyRes
 
 namespace Xamarin.Interactive.NuGet
 {
-    sealed class PackageManagerService
+    public sealed class PackageManagerService : INotifyPropertyChanged
     {
         const string TAG = nameof (PackageManagerService);
 
@@ -32,170 +35,96 @@ namespace Xamarin.Interactive.NuGet
             "FormsViewGroup"
         };
 
-        internal delegate Task<IAgentConnection> GetAgentConnectionHandler (
-            bool refreshForAgentIntegration,
-            CancellationToken cancellationToken);
-
-        readonly IEvaluationService evaluationService;
-        readonly DependencyResolver dependencyResolver;
-        readonly GetAgentConnectionHandler getAgentConnectionHandler;
-
         InteractivePackageManager packageManager;
 
-        public PackageManagerService (
-            DependencyResolver dependencyResolver,
-            IEvaluationService evaluationService,
-            GetAgentConnectionHandler getAgentConnectionHandler)
-        {
-            this.evaluationService = evaluationService
-                ?? throw new ArgumentNullException (nameof (evaluationService));
-
-            this.dependencyResolver = dependencyResolver
-                ?? throw new ArgumentNullException (nameof (dependencyResolver));
-
-            this.getAgentConnectionHandler = getAgentConnectionHandler
-                ?? throw new ArgumentNullException (nameof (getAgentConnectionHandler));
+        PackageReferenceList packageReferences = PackageReferenceList.Empty;
+        public PackageReferenceList PackageReferences {
+            get => packageReferences;
+            set {
+                if (packageReferences != value) {
+                    packageReferences = value;
+                    NotifyPropertyChanged ();
+                }
+            }
         }
+
+        IReadOnlyList<InteractivePackage> installedPackages;
+        internal IReadOnlyList<InteractivePackage> InstalledPackages {
+            get => installedPackages;
+            set {
+                if (installedPackages != value) {
+                    installedPackages = value;
+                    NotifyPropertyChanged ();
+                }
+            }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        void NotifyPropertyChanged ([CallerMemberName] string propertyName = null)
+            => PropertyChanged?.Invoke (this, new PropertyChangedEventArgs (propertyName));
 
         /// <summary>
         /// [Re]initializes all package management state. This should be invoked whenever
         /// any of <see cref="IWorkspaceService"/>, <see cref="IAgentConnection"/>, or
         /// <see cref="Sdk"/> for a given <see cref="Session.InteractiveSession"/> has changed.
         /// </summary>
-        internal async Task InitializeAsync (
-            Sdk targetSdk,
+        public Task InitializeAsync (
+            string runtimeIdentifier,
+            FrameworkName targetFramework,
             FilePath packageConfigDirectory,
-            IEnumerable<InteractivePackageDescription> initialPackages = null,
+            IEnumerable<InteractivePackageDescription> initialPackageReferences = null,
             CancellationToken cancellationToken = default)
         {
-            if (targetSdk == null)
-                throw new ArgumentNullException (nameof (targetSdk));
-
-            var alreadyInstalledPackages = packageManager == null
-                ? ImmutableArray<InteractivePackageDescription>.Empty
-                : packageManager
-                    .InstalledPackages
-                    .Select (InteractivePackageDescription.FromInteractivePackage)
-                    .ToImmutableArray ();
+            if (targetFramework == null)
+                throw new ArgumentNullException (nameof (targetFramework));
 
             packageManager = new InteractivePackageManager (
-                targetSdk.TargetFramework,
+                runtimeIdentifier,
+                targetFramework,
                 packageConfigDirectory);
 
-            var packages = (initialPackages ?? Array.Empty<InteractivePackageDescription> ())
-                .Concat (alreadyInstalledPackages)
-                .Where (p => p.IsExplicitlySelected)
-                .Distinct (PackageIdComparer.Default)
-                .ToArray ();
-
-            if (packages.Length == 0)
-                return;
-
-            await RestoreAsync (packages, cancellationToken);
-
-            var agent = await getAgentConnectionHandler (false, cancellationToken);
-
-            foreach (var package in packageManager.InstalledPackages)
-                await LoadPackageIntegrationsAsync (
-                    agent.Type,
-                    evaluationService.TargetCompilationConfiguration,
-                    agent.Api.EvaluationContextManager,
-                    package,
-                    cancellationToken);
-        }
-
-        /// <summary>
-        /// Install a set of NuGet packages and make them available for use in the <see cref="EvaluationService"/>.
-        /// </summary>
-        public async Task InstallAsync (
-            IEnumerable<InteractivePackageDescription> packageDescriptions,
-            CancellationToken cancellationToken = default)
-        {
-            if (packageDescriptions == null)
-                throw new ArgumentNullException (nameof (packageDescriptions));
-
-            foreach (var packageDescription in packageDescriptions) {
-                await InstallAsync (packageDescription, cancellationToken);
-                cancellationToken.ThrowIfCancellationRequested ();
-            }
-        }
-
-        /// <summary>
-        /// Install a NuGet package and make it available for use in the <see cref="EvaluationService"/>.
-        /// </summary>
-        public async Task InstallAsync (
-            InteractivePackageDescription packageDescription,
-            CancellationToken cancellationToken = default)
-        {
-            if (packageDescription.PackageId == null)
-                throw new ArgumentException (
-                    $"{nameof (packageDescription.PackageId)} property cannot be null",
-                    nameof (packageDescription));
-
-            var package = packageDescription.ToInteractivePackage ();
-
-            var installedPackages = await packageManager.InstallPackageAsync (
-                package,
-                packageDescription.GetSourceRepository (),
+            return RestoreAsync (
+                initialPackageReferences,
                 cancellationToken);
-            // TODO: Should probably alert user that the package is already installed.
-            //       Should we add a fresh #r for the package in case that's what they're trying to get?
-            //       A feel good thing?
-            if (installedPackages.Count == 0)
-                return;
-
-            var agent = await getAgentConnectionHandler (false, cancellationToken);
-
-            foreach (var installedPackage in installedPackages) {
-                ReferencePackageInWorkspace (installedPackage);
-                await LoadPackageIntegrationsAsync (
-                    agent.Type,
-                    evaluationService.TargetCompilationConfiguration,
-                    agent.Api.EvaluationContextManager,
-                    installedPackage,
-                    cancellationToken);
-            }
-
-            // TODO: Figure out metapackages. Install Microsoft.AspNet.SignalR, for example,
-            //       and no #r submission gets generated, so all the workspace reference stuff
-            //       above fails to bring in references to dependnet assemblies automatically.
-            //       User must type them out themselves.
-            //
-            //       This was busted in our NuGet 2.x code as well.
-            package = installedPackages.FirstOrDefault (
-                p => PackageIdComparer.Equals (p, package));
-
-            // TODO: Same issue as installedPackages.Count == 0. What do we want to tell user?
-            //       probably they tried to install a package they already had installed, and
-            //       maybe it bumped a shared dep (which is why installedPackages is non-empty).
-            if (package == null)
-                return;
-
-            if (await ReferenceTopLevelPackageAsync (package, cancellationToken)) {
-                evaluationService.OutdateAllCodeCells ();
-                await evaluationService.EvaluateAllAsync (cancellationToken);
-            }
         }
 
-        public IReadOnlyList<InteractivePackageDescription> GetInstalledPackages ()
-            => packageManager
-                .InstalledPackages
-                .Select (InteractivePackageDescription.FromInteractivePackage)
-                .ToImmutableList ();
-
-        public async Task RestoreAsync (
-            IEnumerable<InteractivePackageDescription> packages,
+        public Task InstallAsync (
+            InteractivePackageDescription packageReference,
             CancellationToken cancellationToken = default)
-        {
-            await packageManager.RestorePackagesAsync (
-                packages.Select (package => package.ToInteractivePackage ()),
+            => RestoreAsync (
+                this.packageReferences.AddOrUpdate (packageReference),
                 cancellationToken);
 
-            foreach (var package in packageManager.InstalledPackages) {
-                ReferencePackageInWorkspace (package);
-                await ReferenceTopLevelPackageAsync (package, cancellationToken);
+        public Task InstallAsync (
+            IEnumerable<InteractivePackageDescription> packageReferences,
+            CancellationToken cancellationToken = default)
+            => RestoreAsync (
+                this.packageReferences.AddOrUpdate (packageReferences
+                    ?? Enumerable.Empty<InteractivePackageDescription> ()),
+                cancellationToken);
+
+        public Task RestoreAsync (
+            IEnumerable<InteractivePackageDescription> packageReferences,
+            CancellationToken cancellationToken = default)
+            => RestoreAsync (
+                this.packageReferences.ReplaceAllWith (packageReferences
+                    ?? Enumerable.Empty<InteractivePackageDescription> ()),
+                cancellationToken);
+
+        async Task RestoreAsync (
+            PackageReferenceList packageReferences,
+            CancellationToken cancellationToken = default)
+        {
+            if (PackageReferences != packageReferences) {
+                PackageReferences = packageReferences;
+                InstalledPackages = await packageManager.RestoreAsync (
+                    packageReferences,
+                    cancellationToken).ConfigureAwait (false);
             }
         }
+
+        #if false
 
         async Task LoadPackageIntegrationsAsync (
             AgentType agentType,
@@ -317,5 +246,7 @@ namespace Xamarin.Interactive.NuGet
                 return false;
             }
         }
+
+        #endif
     }
 }

@@ -136,22 +136,6 @@
     <Compile Include="ViewInspector\InspectViewNode.cs" />
     <Compile Include="ViewInspector\InspectViewMaterial.cs" />
     <Compile Include="ViewInspector\SceneKitDolly.cs" />
-    <Compile Include="PackageManagerWindow.cs" />
-    <Compile Include="PackageManagerWindow.designer.cs">
-      <DependentUpon>PackageManagerWindow.cs</DependentUpon>
-    </Compile>
-    <Compile Include="PackageManagerWindowController.cs" />
-    <Compile Include="PackageManagerWindowController.designer.cs">
-      <DependentUpon>PackageManagerWindowController.cs</DependentUpon>
-    </Compile>
-    <Compile Include="PackageAddWindow.cs" />
-    <Compile Include="PackageAddWindow.designer.cs">
-      <DependentUpon>PackageAddWindow.cs</DependentUpon>
-    </Compile>
-    <Compile Include="PackageAddWindowController.cs" />
-    <Compile Include="PackageAddWindowController.designer.cs">
-      <DependentUpon>PackageAddWindowController.cs</DependentUpon>
-    </Compile>
     <Compile Include="Roslyn\RoslynWorkspaceExplorerWindow.cs" />
     <Compile Include="Roslyn\RoslynWorkspaceExplorerWindow.designer.cs">
       <DependentUpon>Roslyn\RoslynWorkspaceExplorerWindow.cs</DependentUpon>
@@ -328,8 +312,6 @@
   <ItemGroup>
     <InterfaceDefinition Include="LogWindow.xib" />
     <InterfaceDefinition Include="AboutWindow.xib" />
-    <InterfaceDefinition Include="PackageManagerWindow.xib" />
-    <InterfaceDefinition Include="PackageAddWindow.xib" />
     <InterfaceDefinition Include="Roslyn\RoslynWorkspaceExplorerWindow.xib" />
     <InterfaceDefinition Include="Main.storyboard" />
     <InterfaceDefinition Include="Updater.storyboard" />

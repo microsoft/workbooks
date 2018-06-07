@@ -33,6 +33,7 @@ namespace Xamarin.Interactive.CodeAnalysis.Roslyn
 
             var evaluationService = new EvaluationService (
                 workspaceService,
+                null,
                 default,
                 evaluationContextManager);
 

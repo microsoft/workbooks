@@ -71,22 +71,11 @@ namespace Xamarin.Interactive.Client.Mac
         [Export ("addPackage:")]
         void AddPackage (NSObject sender)
         {
-            var packageManagerWindowController = new PackageManagerWindowController (Session);
-
-            packageManagerWindowController.Window.WillClose += (o, e) =>
-                View.Window.EndSheet (packageManagerWindowController.Window);
-
-            View.Window.BeginSheet (
-                packageManagerWindowController.Window,
-                result => packageManagerWindowController.Dispose ());
         }
 
         [Export ("RoutedCommand_Execute_NuGetPackageNode_Remove:parameter:")]
         void RemovePackage (NSObject sender, RoutedCommand.ParameterProxy parameter)
         {
-            var node = (NuGetPackageNode)parameter.Value;
-            Session.Workbook.Packages.RemovePackage (
-                (InteractivePackage)node.RepresentedObject);
         }
 
         #endregion

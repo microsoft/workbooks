@@ -205,7 +205,7 @@ namespace Xamarin.Interactive.Client.Console
 
             // restore NuGet packages
             await session.PackageManagerService.RestoreAsync (
-                workbook.Pages.SelectMany (page => page.Packages));
+                workbook.Pages.SelectMany (page => page.PackageReferences));
 
             // insert and evaluate cells in the workbook
             foreach (var cell in workbook.IndexPage.Contents.OfType<CodeCell> ()) {

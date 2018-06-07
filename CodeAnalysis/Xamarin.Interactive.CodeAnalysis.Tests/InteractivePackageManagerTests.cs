@@ -51,7 +51,7 @@ namespace Xamarin.Interactive.NuGet
             FrameworkNames.Net_4_6_1,
         };
 
-        static InteractivePackageManager CreatePackageManager (FrameworkName targetFramework)
+        internal static InteractivePackageManager CreatePackageManager (FrameworkName targetFramework)
         {
             var rootPath = new DotNetFileSystem ().GetTempDirectory ("tests");
             var localRepositoryDirectory = rootPath.Combine ("NuGet", "package-cache");
@@ -62,6 +62,7 @@ namespace Xamarin.Interactive.NuGet
             }
 
             return new InteractivePackageManager (
+                null,
                 targetFramework,
                 localRepositoryDirectory);
         }
@@ -111,32 +112,26 @@ namespace Xamarin.Interactive.NuGet
         [Fact]
         public async Task BadXamarinFormsDependencyIsRewritten ()
         {
-            var project = CreatePackageManager (FrameworkNames.Xamarin_iOS_1_0);
-            await project.InstallPackageAsync (
-                new InteractivePackage (new PackageIdentity (
-                    "Xamarin.Forms.Dynamic",
-                    new NuGetVersion (0, 1, 18, "pre"))),
-                sourceRepository: null, // use default
-                cancellationToken: CancellationToken.None);
+            var installedPackages = await CreatePackageManager (FrameworkNames.Xamarin_iOS_1_0)
+                .RestoreAsync (PackageReferenceList.Create (
+                    ("Xamarin.Forms.Dynamic", "0.1.18-pre")));
 
-            Assert.InRange (project.InstalledPackages.Count (), 3, int.MaxValue);
+            Assert.InRange (installedPackages.Count, 3, int.MaxValue);
 
             Assert.Collection (
-                project.InstalledPackages.Where (p => p.Identity.Id == "Xamarin.Forms.Dynamic"),
+                installedPackages.Where (p => p.Identity.Id == "Xamarin.Forms.Dynamic"),
                 package => Assert.Equal (
                     new NuGetVersion (0, 1, 18, "pre"),
                     package.Identity.Version));
 
             Assert.Collection (
-                project
-                    .InstalledPackages
-                    .Where (p => p.Identity.Id == InteractivePackageManager.FixedXamarinFormsPackageIdentity.Id),
+                installedPackages.Where (p => p.Identity.Id == InteractivePackageManager.FixedXamarinFormsPackageIdentity.Id),
                 package => Assert.Equal (
                     InteractivePackageManager.FixedXamarinFormsPackageIdentity.Version,
                     package.Identity.Version));
 
             Assert.Collection (
-                project.InstalledPackages.Where (p => p.Identity.Id == "Newtonsoft.Json"),
+                installedPackages.Where (p => p.Identity.Id == "Newtonsoft.Json"),
                 package => Assert.InRange (
                     package.Identity.Version,
                     new NuGetVersion (7, 0, 1, string.Empty),
@@ -146,87 +141,69 @@ namespace Xamarin.Interactive.NuGet
         [Fact]
         public async Task IntegrationPackageIsNotInstalled ()
         {
-            var project = CreatePackageManager (FrameworkNames.Net_4_6_1);
-            await project.InstallPackageAsync (
-                new InteractivePackage (new PackageIdentity (
-                    InteractivePackageManager.IntegrationPackageId,
-                    new NuGetVersion (1, 0, 0, string.Empty))),
-                sourceRepository: null, // use default
-                cancellationToken: CancellationToken.None);
+            var installedPackages = await CreatePackageManager (FrameworkNames.Net_4_6_1)
+                .RestoreAsync (PackageReferenceList.Create (
+                    (InteractivePackageManager.IntegrationPackageId, "1.0.0-rc5")));
 
-            Assert.Empty (project.InstalledPackages.Where (
+            Assert.Empty (installedPackages.Where (
                 p => p.Identity.Id == InteractivePackageManager.IntegrationPackageId));
         }
 
         [Fact]
         public async Task TestRoslynRestore ()
         {
-            var project = CreatePackageManager (FrameworkNames.Net_4_6_1);
+            var packageReferences = PackageReferenceList.Create (
+                ("Microsoft.CodeAnalysis.CSharp.Workspaces", "2.1.*"),
+                ("Microsoft.CodeAnalysis.Common", "[2.*,)"));
 
-            var explicitPackages = new [] {
-                new InteractivePackage (
-                    "Microsoft.CodeAnalysis.CSharp.Workspaces",
-                    VersionRange.Parse ("2.1.*")),
-                new InteractivePackage (
-                    "Microsoft.CodeAnalysis.Common",
-                    VersionRange.Parse ("[2.*,)")),
-            };
+            var installedPackages = await CreatePackageManager (FrameworkNames.Net_4_6_1)
+                .RestoreAsync (packageReferences);
 
-            await project.RestorePackagesAsync (explicitPackages, CancellationToken.None);
-
-            var mccWorkspacesPackage = project.InstalledPackages.Single (
-                p => p.Identity.Id == explicitPackages [0].Identity.Id);
+            var mccWorkspacesPackage = installedPackages.Single (
+                p => p.Identity.Id == packageReferences [0].PackageId);
             Assert.NotEqual (
-                explicitPackages [0],
-                mccWorkspacesPackage);
+                packageReferences [0].VersionRange,
+                mccWorkspacesPackage.Identity.Version.OriginalVersion);
             Assert.Equal (
-                explicitPackages [0].SupportedVersionRange.OriginalString,
-                mccWorkspacesPackage.SupportedVersionRange.OriginalString);
-            Assert.True (mccWorkspacesPackage.IsExplicit);
+                packageReferences [0].VersionRange,
+                mccWorkspacesPackage.PackageReference.VersionRange);
             Assert.NotEmpty (mccWorkspacesPackage.AssemblyReferences);
 
-            var mcCommonPackage = project.InstalledPackages.Single (
-                p => p.Identity.Id == explicitPackages [1].Identity.Id);
+            var mcCommonPackage = installedPackages.Single (
+                p => p.Identity.Id == packageReferences [1].PackageId);
             Assert.NotEqual (
-                explicitPackages [1],
-                mcCommonPackage);
+                packageReferences [1].VersionRange,
+                mcCommonPackage.Identity.Version.OriginalVersion);
             Assert.Equal (
-                explicitPackages [1].SupportedVersionRange.OriginalString,
-                mcCommonPackage.SupportedVersionRange.OriginalString);
-            Assert.True (mcCommonPackage.IsExplicit);
+                packageReferences [1].VersionRange,
+                mcCommonPackage.PackageReference.VersionRange);
             Assert.NotEmpty (mcCommonPackage.AssemblyReferences);
 
             // Demonstrate that assemblies are still gathered for non-explicit dependencies
-            var mcCsharpPackage = project.InstalledPackages.Single (
+            var mcCsharpPackage = installedPackages.Single (
                 p => p.Identity.Id == "Microsoft.CodeAnalysis.CSharp");
-            Assert.False (mcCsharpPackage.IsExplicit);
             Assert.NotEmpty (mcCsharpPackage.AssemblyReferences);
 
-            Assert.Equal (48, project.InstalledPackages.Length);
-
-            Assert.True (project
-                .InstalledPackages
-                .Where (p => p != mccWorkspacesPackage && p != mcCommonPackage)
-                .All (p => p.IsExplicit == false));
+            Assert.Equal (48, installedPackages.Count);
         }
 
         [Theory]
         [MemberData (nameof (GetNuGetTestCases))]
         public async Task CanInstall (FrameworkName targetFramework, PackageInstallData data)
         {
-            var project = CreatePackageManager (targetFramework);
-            await project.InstallPackageAsync (
-                new InteractivePackage (new PackageIdentity (data.Id, data.VersionToInstall)),
-                sourceRepository: null, // use default
-                cancellationToken: CancellationToken.None);
-
+            var installedPackages = await CreatePackageManager (targetFramework)
+                .RestoreAsync (PackageReferenceList.Create (
+                    (data.Id, data.VersionToInstall.ToFullString ())));
             Assert.Collection (
-                project.InstalledPackages.Where (
+                installedPackages.Where (
                     p => PackageIdComparer.Equals (p.Identity.Id, data.Id)),
                 package => {
-                    Assert.True (package.IsExplicit);
-                    Assert.Equal (data.ExpectedInstalled, package.Identity.Version);
-                    Assert.Equal (new VersionRange (data.ExpectedInstalled), package.SupportedVersionRange);
+                    Assert.Equal (
+                        data.ExpectedInstalled,
+                        package.Identity.Version);
+                    Assert.Equal (
+                        new VersionRange (data.VersionToInstall),
+                        VersionRange.Parse (package.PackageReference.VersionRange));
                 });
         }
     }

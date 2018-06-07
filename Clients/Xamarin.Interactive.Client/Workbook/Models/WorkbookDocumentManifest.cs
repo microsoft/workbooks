@@ -32,7 +32,7 @@ namespace Xamarin.Interactive.Workbook.Models
         public Guid Guid { get; set; }
         public string Title { get; set; }
         public ImmutableArray<AgentType> PlatformTargets { get; set; }
-        public ImmutableArray<InteractivePackageDescription> Packages { get; set; }
+        public PackageReferenceList PackageReferences { get; set; }
 
         public WorkbookDocumentManifest ()
         {
@@ -41,10 +41,9 @@ namespace Xamarin.Interactive.Workbook.Models
 
         public void Write (TextWriter writer)
         {
-            if (Packages.Length > 0)
+            if (PackageReferences.Count > 0)
                 Properties.InsertOrUpdate (0, "packages", new List<object> (
-                    Packages
-                        .Where (package => package.IsExplicitlySelected)
+                    PackageReferences
                         .Select (package => new OrderedDictionary {
                             ["id"] = package.PackageId,
                             ["version"] = package.VersionRange
@@ -157,7 +156,7 @@ namespace Xamarin.Interactive.Workbook.Models
 
             Title = ReadStringProperty ("title");
             PlatformTargets = ReadTargetPlatforms ().Distinct ().ToImmutableArray ();
-            Packages = ReadPackages ().ToImmutableArray ();
+            PackageReferences = PackageReferenceList.Create (ReadPackages ());
         }
 
         static bool TryParseTargetPlatform (string targetPlatformName, out AgentType targetPlatform)

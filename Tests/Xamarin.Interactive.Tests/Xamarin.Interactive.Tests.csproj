@@ -5,10 +5,10 @@
   <ItemGroup>
     <PackageReference Include="Xamarin.GuiUnitNg" Version="3.8.1.1" />
     <PackageReference Include="Should" Version="1.1.20" />
-    <PackageReference Include="DiffPlex" Version="1.4.1" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Tools\ApiDump\ApiDump.csproj" />
+    <ProjectReference Include="..\..\Agents\Xamarin.Interactive.Tests.Helpers\Xamarin.Interactive.Tests.Helpers.csproj" />
     <ProjectReference Include="..\..\CodeAnalysis\Xamarin.Interactive.CodeAnalysis\Xamarin.Interactive.CodeAnalysis.csproj" />
     <ProjectReference Include="..\..\Clients\Xamarin.Interactive.Client.Desktop\Xamarin.Interactive.Client.Desktop.csproj" />
   </ItemGroup>

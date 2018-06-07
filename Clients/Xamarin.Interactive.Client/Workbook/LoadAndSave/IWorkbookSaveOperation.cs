@@ -6,6 +6,7 @@
 // Licensed under the MIT License.
 
 using Xamarin.Interactive.Core;
+using Xamarin.Interactive.NuGet;
 
 namespace Xamarin.Interactive.Workbook.LoadAndSave
 {
@@ -13,6 +14,7 @@ namespace Xamarin.Interactive.Workbook.LoadAndSave
     {
         WorkbookSaveOptions SupportedOptions { get; }
         WorkbookSaveOptions Options { get; set; }
+        PackageReferenceList PackageReferences { get; set; }
         FilePath Destination { get; set; }
     }
 }
