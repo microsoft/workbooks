@@ -23,7 +23,7 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Features" Version="2.3.0" />
     <PackageReference Include="NuGet.PackageManagement" Version="4.3.0" />
-    <PackageReference Include="YamlDotNet" Version="4.0.0" />
+    <PackageReference Include="YamlDotNet" Version="4.3.1" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Agents\Xamarin.Interactive\Xamarin.Interactive.csproj" />

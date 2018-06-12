@@ -133,7 +133,7 @@
   {
     "Kind": "NuGet",
     "Name": "YamlDotNet",
-    "Version": "4.0.0",
+    "Version": "4.3.1",
     "DependentProjects": [
       "Xamarin.Interactive.Client"
     ]
