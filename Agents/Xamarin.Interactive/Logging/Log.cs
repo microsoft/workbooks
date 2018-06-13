@@ -50,7 +50,6 @@ namespace Xamarin.Interactive.Logging
             LogLevel level,
             string tag,
             string message,
-            Exception exception = null,
             [CallerMemberName] string callerMemberName = null,
             [CallerFilePath] string callerFilePath = null,
             [CallerLineNumber] int callerLineNumber = 0)
@@ -59,7 +58,7 @@ namespace Xamarin.Interactive.Logging
                 LogFlags.None,
                 tag,
                 message,
-                exception,
+                null,
                 callerMemberName,
                 callerFilePath,
                 callerLineNumber);

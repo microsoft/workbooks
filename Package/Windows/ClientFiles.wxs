@@ -462,6 +462,12 @@
       <Component Id="Newtonsoft.Json.dll" Guid="E046F4A3-2799-4E0D-923A-A4EA841405BF">
         <File Id="Newtonsoft.Json.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\Newtonsoft.Json.dll" />
       </Component>
+      <Component Id="Microsoft.ApplicationInsights.dll" Guid="84D42B81-6314-4694-B737-6DD6F4FCB203">
+        <File Id="Microsoft.ApplicationInsights.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\Microsoft.ApplicationInsights.dll" />
+      </Component>
+      <Component Id="System.Diagnostics.DiagnosticSource.dll" Guid="1E23AA5D-D9D4-4C0C-8A8E-714E5F952CF3">
+        <File Id="System.Diagnostics.DiagnosticSource.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\System.Diagnostics.DiagnosticSource.dll" />
+      </Component>
     </ComponentGroup>
     <ComponentGroup Id="ClientReplEditorResources" Directory="InspectorResourcesReplEditorFolder">
       <Component Id="editor.css" Guid="C9070752-B1DA-4918-81BD-3DA8869D9A62">
