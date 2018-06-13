@@ -6,18 +6,18 @@
 // Licensed under the MIT License.
 
 using System;
-using System.IO;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Net.Http.Headers;
+using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Runtime.Serialization;
 using System.Threading.Tasks;
 
-using Newtonsoft.Json;
+using Microsoft.ApplicationInsights;
+
+using Microsoft.DotNet.Cli.Telemetry;
 
 using Xamarin.Interactive.Logging;
 using Xamarin.Interactive.Preferences;
+using Xamarin.Interactive.SystemInformation;
 using Xamarin.Interactive.Telemetry.Models;
 
 namespace Xamarin.Interactive.Telemetry
@@ -25,13 +25,14 @@ namespace Xamarin.Interactive.Telemetry
     sealed class Client
     {
         const string TAG = nameof (Telemetry);
-        const string DefaultTelemetryEndpoint = "@TELEMETRY_API_URL@";
+
+        readonly ImmutableDictionary<string, string> commonProperties;
 
         bool enabled;
-        HttpClient httpClient;
         int eventsSent;
+        TelemetryClient appInsightsClient;
 
-        public Client ()
+        public Client (Guid sessionid, HostEnvironment host)
         {
             if (Interactive.Client.CommandLineTool.TestDriver.ShouldRun)
                 return;
@@ -39,59 +40,30 @@ namespace Xamarin.Interactive.Telemetry
             PreferenceStore.Default.Subscribe (ObservePreferenceChange);
 
             try {
-                var telemetryEndpoint = DefaultTelemetryEndpoint;
-
-                if (BuildInfo.IsLocalDebugBuild) {
-                    try {
-                        var serverProc = SystemInformation
-                            .SystemProcessInfo
-                            .GetAllProcesses ()
-                            .FirstOrDefault (proc =>
-                                 proc.ExecPath.EndsWith (
-                                     "dotnet",
-                                     StringComparison.Ordinal) &&
-                                 proc.Arguments.Any (a => a.EndsWith (
-                                     "/Xamarin.Interactive.Telemetry.Server.dll",
-                                     StringComparison.Ordinal)));
-
-                        if (serverProc != null)
-                            // FIXME: server process to provide endpoint somehow
-                            telemetryEndpoint = "http://localhost:5000/api/";
-                    } catch {
-                    }
-                }
-
-                if (!Prefs.Telemetry.Enabled.GetValue () ||
-                    !Uri.TryCreate (telemetryEndpoint, UriKind.Absolute, out var telemetryApiUri)) {
+                if (!Prefs.Telemetry.Enabled.GetValue ()) {
                     Log.Info (TAG, "Telemetry is disabled");
                     return;
                 }
 
                 enabled = true;
 
-                httpClient = new HttpClient {
-                    BaseAddress = telemetryApiUri
-                };
+                appInsightsClient = new TelemetryClient ();
+                appInsightsClient.InstrumentationKey = "@TELEMETRY_INSTRUMENTATION_KEY@";
+                appInsightsClient.Context.Session.Id = sessionid.ToString ();
+                appInsightsClient.Context.Device.OperatingSystem = host.OSName.ToString ();
 
-                httpClient.DefaultRequestHeaders.UserAgent.Add (
-                    new ProductInfoHeaderValue (
-                        "XamarinInteractiveTelemetry",
-                        BuildInfo.VersionString));
-            } catch (Exception e) {
-                Log.Error (TAG, "Unable to create HttpClient for telemetry", e);
-            }
-        }
+                commonProperties = new Dictionary<string, string> {
+                    { "Product Version", BuildInfo.VersionString },
+                    { "Build Hash", BuildInfo.Hash },
+                    { "OS Name", host.OSName.ToString () },
+                    { "OS Version", host.OSVersion.ToString () },
+                    { "Word Size", IntPtr.Size.ToString () },
+                    { "CPU Word Size", (Environment.Is64BitOperatingSystem ? 8 : 4).ToString () },
+                    { "Machine ID", Sha256Hasher.Hash (MacAddressGetter.GetMacAddress ())}
+                }.ToImmutableDictionary ();
 
-        void DisableTelemetry ()
-        {
-            // when we receive a 403, we've shut down the DocumentDB service
-            // and have switched over to VS Telemetry in a newer release,
-            // so disable telemetry now.
-            try {
-                httpClient = null;
-                enabled = false;
             } catch (Exception e) {
-                Log.Error (TAG, e);
+                Log.Error (TAG, "Unable to create AppInsights client for telemetry", e);
             }
         }
 
@@ -101,8 +73,8 @@ namespace Xamarin.Interactive.Telemetry
                 enabled = Prefs.Telemetry.Enabled.GetValue ();
                 if (!enabled) {
                     Log.Info (TAG, "Telemetry disabled.");
-                    httpClient = null;
-                } else if (httpClient == null) {
+                    appInsightsClient = null;
+                } else if (appInsightsClient == null) {
                     Log.Info (TAG, "Telemetry will be enabled after restart.");
                 }
             }
@@ -110,7 +82,7 @@ namespace Xamarin.Interactive.Telemetry
 
         public void Post (ITelemetryEvent evnt)
         {
-            if (httpClient == null || !enabled)
+            if (appInsightsClient == null || !enabled)
                 return;
 
             PostEventAsync (evnt).Forget ();
@@ -139,95 +111,18 @@ namespace Xamarin.Interactive.Telemetry
 
         async Task PostEventOnceAsync (ITelemetryEvent evnt)
         {
-            var response = await httpClient.PostAsync (
-                "logEvent",
-                new EventObjectStreamContent (this, evnt));
+            var props = new Dictionary<string, string> (commonProperties);
+            foreach (var pair in evnt.GetProperties ())
+                props [pair.Key] = pair.Value;
 
-            if (response.StatusCode == HttpStatusCode.Forbidden) {
-                Log.Info (TAG, "Disabling telemetry at service's direction (403).");
-                DisableTelemetry ();
-                return;
-            }
-
-            response.EnsureSuccessStatusCode ();
+            appInsightsClient.TrackEvent (
+                evnt.GetType ().Name,
+                properties: props);
+            appInsightsClient.Flush ();
 
             eventsSent++;
 
             Log.Verbose (TAG, $"({eventsSent}): {evnt}");
-        }
-
-        sealed class EventObjectStreamContent : HttpContent
-        {
-            sealed class ModelBinder : SerializationBinder
-            {
-                public override void BindToName (Type serializedType, out string assemblyName, out string typeName)
-                {
-                    assemblyName = null;
-                    typeName = serializedType.Name;
-                }
-
-                public override Type BindToType (string assemblyName, string typeName)
-                    => throw new NotImplementedException ();
-            }
-
-            static readonly JsonSerializer serializer = new JsonSerializer {
-                Binder = new ModelBinder (),
-                TypeNameHandling = TypeNameHandling.Objects,
-                NullValueHandling = NullValueHandling.Ignore,
-                DefaultValueHandling = DefaultValueHandling.Ignore,
-                Formatting = Formatting.Indented
-            };
-
-            Client client;
-            ITelemetryEvent evnt;
-
-            public EventObjectStreamContent (Client client, ITelemetryEvent evnt)
-            {
-                this.client = client
-                    ?? throw new ArgumentNullException (nameof (client));
-
-                this.evnt = evnt
-                    ?? throw new ArgumentNullException (nameof (evnt));
-
-                EnsureHeaders ();
-            }
-
-            void EnsureHeaders ()
-            {
-                // Mono's HttpContent seems to re-allocate 'Headers' some time after
-                // the constructor finishes, clobbering anything configured during
-                // the constructor. However, it seems to write them on the first call
-                // to Stream.Write for the Stream passed to SerializeToStreamAsync,
-                // so the fix on Mono is to configure Headers before writing to the
-                // stream. This however is not the behavior of .NET, which requires
-                // Headers to be configured in the constructor (it likely writes them
-                // explicitly to the stream before calling SerializeToStreamAsync,
-                // and not as an implementation of the Stream itself. So do both.
-                Headers.ContentType = new MediaTypeHeaderValue ("application/json");
-            }
-
-            protected override Task SerializeToStreamAsync (Stream stream, TransportContext context)
-            {
-                EnsureHeaders ();
-
-                var writer = new StreamWriter (stream);
-
-                try {
-                    serializer.Serialize (writer, evnt);
-                } catch (Exception e) {
-                    throw new SerializationException ("bad use of JsonTextWriter / JsonSerializer", e);
-                }
-
-                writer.Flush ();
-
-                return Task.CompletedTask;
-            }
-
-            protected override bool TryComputeLength (out long length)
-            {
-                length = -1;
-                return false;
-            }
         }
     }
 }
