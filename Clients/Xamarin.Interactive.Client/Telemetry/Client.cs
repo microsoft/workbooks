@@ -6,18 +6,23 @@
 // Licensed under the MIT License.
 
 using System;
-using System.IO;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Runtime.Serialization;
+using System.Collections.Generic;
+using System.Reflection;
+using System.Runtime.InteropServices;
+using System.Threading;
 using System.Threading.Tasks;
 
-using Newtonsoft.Json;
+using Microsoft.ApplicationInsights;
+using Microsoft.ApplicationInsights.Channel;
+using Microsoft.ApplicationInsights.DataContracts;
+using Microsoft.ApplicationInsights.Extensibility;
 
+using Microsoft.DotNet.Cli.Telemetry;
+
+using Xamarin.Interactive.Client.Updater;
 using Xamarin.Interactive.Logging;
 using Xamarin.Interactive.Preferences;
+using Xamarin.Interactive.SystemInformation;
 using Xamarin.Interactive.Telemetry.Models;
 
 namespace Xamarin.Interactive.Telemetry
@@ -25,13 +30,16 @@ namespace Xamarin.Interactive.Telemetry
     sealed class Client
     {
         const string TAG = nameof (Telemetry);
-        const string DefaultTelemetryEndpoint = "@TELEMETRY_API_URL@";
+        const string ProducerNamespace = "workbooks/client/";
+
+        static readonly TimeSpan defaultFlushTimeout = TimeSpan.FromSeconds (5);
 
         bool enabled;
-        HttpClient httpClient;
         int eventsSent;
+        TelemetryClient appInsightsClient;
+        InMemoryChannel channel;
 
-        public Client ()
+        public Client (Guid sessionid, HostEnvironment host, UpdaterService updater)
         {
             if (Interactive.Client.CommandLineTool.TestDriver.ShouldRun)
                 return;
@@ -39,59 +47,79 @@ namespace Xamarin.Interactive.Telemetry
             PreferenceStore.Default.Subscribe (ObservePreferenceChange);
 
             try {
-                var telemetryEndpoint = DefaultTelemetryEndpoint;
-
-                if (BuildInfo.IsLocalDebugBuild) {
-                    try {
-                        var serverProc = SystemInformation
-                            .SystemProcessInfo
-                            .GetAllProcesses ()
-                            .FirstOrDefault (proc =>
-                                 proc.ExecPath.EndsWith (
-                                     "dotnet",
-                                     StringComparison.Ordinal) &&
-                                 proc.Arguments.Any (a => a.EndsWith (
-                                     "/Xamarin.Interactive.Telemetry.Server.dll",
-                                     StringComparison.Ordinal)));
-
-                        if (serverProc != null)
-                            // FIXME: server process to provide endpoint somehow
-                            telemetryEndpoint = "http://localhost:5000/api/";
-                    } catch {
-                    }
-                }
-
-                if (!Prefs.Telemetry.Enabled.GetValue () ||
-                    !Uri.TryCreate (telemetryEndpoint, UriKind.Absolute, out var telemetryApiUri)) {
+                if (!Prefs.Telemetry.Enabled.GetValue ()) {
                     Log.Info (TAG, "Telemetry is disabled");
                     return;
                 }
 
-                enabled = true;
-
-                httpClient = new HttpClient {
-                    BaseAddress = telemetryApiUri
+                // InMemoryChannel is the default channel, but we set it up manually here so we can tweak several
+                // default settings that are undesirable for desktop apps.
+                channel = new InMemoryChannel {
+                    // Defaults to 30s, but since we are changing buffer.Capacity to 1, we can make this infinite and
+                    // avoid pointlessly waking up InMemoryTransmitter's Runner.
+                    SendingInterval = Timeout.InfiniteTimeSpan,
                 };
 
-                httpClient.DefaultRequestHeaders.UserAgent.Add (
-                    new ProductInfoHeaderValue (
-                        "XamarinInteractiveTelemetry",
-                        BuildInfo.VersionString));
-            } catch (Exception e) {
-                Log.Error (TAG, "Unable to create HttpClient for telemetry", e);
-            }
-        }
+                // There is no reasonable public API for changing the buffer capacity at this time.
+                // You can achieve it by turning on DeveloperMode, but that has other consequences.
+                // So we reflect.
+                //
+                // The default Capacity is 500, which is far too large for us (and perhaps most non-server apps).
+                // We want to avoid having to perform a blocking Flush call on the UI thread, and since our events
+                // are currently few and far between, we set Capacity to 1 to essentially get auto-flush.
+                var channelBuffer = typeof (InMemoryChannel)
+                    .GetField ("buffer", BindingFlags.NonPublic | BindingFlags.Instance)
+                    .GetValue (channel);
+                channelBuffer
+                    .GetType ()
+                    .GetProperty ("Capacity", BindingFlags.Public | BindingFlags.Instance)
+                    .SetValue (channelBuffer, 1);
 
-        void DisableTelemetry ()
-        {
-            // when we receive a 403, we've shut down the DocumentDB service
-            // and have switched over to VS Telemetry in a newer release,
-            // so disable telemetry now.
-            try {
-                httpClient = null;
-                enabled = false;
+                var config = new TelemetryConfiguration ("@TELEMETRY_INSTRUMENTATION_KEY@", channel);
+
+                appInsightsClient = new TelemetryClient (config);
+
+                appInsightsClient.Context.Session.Id = sessionid.ToString ();
+                appInsightsClient.Context.Device.OperatingSystem = host.OSName.ToString ();
+
+                // TODO: Make these GlobalProperties when we bump to 2.7.0-beta3 or later
+                var globalProperties = appInsightsClient.Context.Properties;
+                globalProperties.Add (
+                    "Product Version",
+                    BuildInfo.VersionString);
+                globalProperties.Add (
+                    "Build Hash",
+                    BuildInfo.Hash);
+                globalProperties.Add (
+                    "OS Platform",
+                    Runtime.CurrentProcessRuntime.OSPlatform.ToString ());
+                globalProperties.Add (
+                    "OS Architecture",
+                    RuntimeInformation.OSArchitecture.ToString ());
+                globalProperties.Add (
+                    "Process Architecture",
+                    Runtime.CurrentProcessRuntime.Architecture.ToString ());
+                globalProperties.Add (
+                    "Runtime Identifier",
+                    Runtime.CurrentProcessRuntime.RuntimeIdentifier);
+                globalProperties.Add (
+                    "OS Version",
+                    host.OSVersion.ToString ());
+                globalProperties.Add (
+                    "Release Candidate Level",
+                    ((byte)BuildInfo.Version.CandidateLevel).ToString ());
+                globalProperties.Add (
+                    "Release Candidate Level Name",
+                    BuildInfo.Version.CandidateLevel.ToString ().ToLowerInvariant ());
+                globalProperties.Add (
+                    "Machine ID",
+                    Sha256Hasher.Hash (MacAddressGetter.GetMacAddress ()));
+                globalProperties.Add (
+                    "Update Channel", updater.UpdateChannel);
+
+                enabled = true;
             } catch (Exception e) {
-                Log.Error (TAG, e);
+                LogErrorWithoutTelemetry (e, "Unable to create AppInsights client for telemetry");
             }
         }
 
@@ -101,133 +129,101 @@ namespace Xamarin.Interactive.Telemetry
                 enabled = Prefs.Telemetry.Enabled.GetValue ();
                 if (!enabled) {
                     Log.Info (TAG, "Telemetry disabled.");
-                    httpClient = null;
-                } else if (httpClient == null) {
+                    appInsightsClient = null;
+                    // Not bothering to Dispose channel, because that will trigger a synchronous Flush
+                    channel = null;
+                } else if (appInsightsClient == null) {
                     Log.Info (TAG, "Telemetry will be enabled after restart.");
                 }
             }
         }
 
-        public void Post (ITelemetryEvent evnt)
+        public void Post (Exception exception, LogEntry logEntry = default (LogEntry))
         {
-            if (httpClient == null || !enabled)
+            if (exception == null)
+                throw new ArgumentNullException (nameof (exception));
+
+            if (appInsightsClient == null || !enabled)
                 return;
 
-            PostEventAsync (evnt).Forget ();
+            if (logEntry.Exception == null || logEntry.Flags.HasFlag (LogFlags.SkipTelemetry))
+                return;
+
+            try {
+                var exceptionTelemetry = new ExceptionTelemetry (exception);
+
+                exceptionTelemetry.Properties.Add ("XIExceptionTag", logEntry.Tag);
+                exceptionTelemetry.Properties.Add ("XIExceptionMessage", logEntry.Message);
+                exceptionTelemetry.Properties.Add ("XIExceptionCallerMemberName", logEntry.CallerMemberName);
+                exceptionTelemetry.Properties.Add ("XIExceptionCallerFilePath", logEntry.CallerFilePath);
+                exceptionTelemetry.Properties.Add ("XIExceptionCallerLineNumber", logEntry.CallerLineNumber.ToString ());
+
+                appInsightsClient.TrackException (exceptionTelemetry);
+            } catch (Exception e) {
+                LogErrorWithoutTelemetry (e, "Error tracking exception");
+            }
         }
 
-        async Task PostEventAsync (ITelemetryEvent evnt)
+        public void Post (string eventName, IEnumerable<KeyValuePair<string, string>> properties = null)
         {
-#pragma warning disable 0168
-            for (int i = 0; i < 10; i++) {
-                try {
-                    await PostEventOnceAsync (evnt);
-                    return;
-                } catch (SerializationException e) {
-                    Log.Error (TAG, e);
-                    return;
-                } catch (Exception e) {
-#if DEBUG
-                    Log.Error (TAG, $"attempt {i} failed", e);
-#endif
+            if (string.IsNullOrEmpty (eventName))
+                throw new ArgumentNullException (nameof (eventName));
+
+            if (appInsightsClient == null || !enabled)
+                return;
+
+            try {
+                var eventTelemetry = new EventTelemetry (ProducerNamespace + eventName);
+                if (properties != null) {
+                    foreach (var pair in properties)
+                        eventTelemetry.Properties.Add (pair);
                 }
 
-                await Task.Delay (TimeSpan.FromMilliseconds (Math.Pow (2, i) * 100));
-#pragma warning restore 0168
-            }
-        }
-
-        async Task PostEventOnceAsync (ITelemetryEvent evnt)
-        {
-            var response = await httpClient.PostAsync (
-                "logEvent",
-                new EventObjectStreamContent (this, evnt));
-
-            if (response.StatusCode == HttpStatusCode.Forbidden) {
-                Log.Info (TAG, "Disabling telemetry at service's direction (403).");
-                DisableTelemetry ();
+                appInsightsClient.TrackEvent (eventTelemetry);
+            } catch (Exception e) {
+                LogErrorWithoutTelemetry (e);
                 return;
             }
-
-            response.EnsureSuccessStatusCode ();
 
             eventsSent++;
 
-            Log.Verbose (TAG, $"({eventsSent}): {evnt}");
+            Log.Verbose (TAG, $"({eventsSent}): {eventName}");
         }
 
-        sealed class EventObjectStreamContent : HttpContent
+        public void Post (ITelemetryEvent evnt)
         {
-            sealed class ModelBinder : SerializationBinder
-            {
-                public override void BindToName (Type serializedType, out string assemblyName, out string typeName)
-                {
-                    assemblyName = null;
-                    typeName = serializedType.Name;
-                }
+            if (evnt == null)
+                throw new ArgumentNullException (nameof (evnt));
 
-                public override Type BindToType (string assemblyName, string typeName)
-                    => throw new NotImplementedException ();
-            }
+            Post (evnt.GetType ().Name, evnt.GetProperties ());
+        }
 
-            static readonly JsonSerializer serializer = new JsonSerializer {
-                Binder = new ModelBinder (),
-                TypeNameHandling = TypeNameHandling.Objects,
-                NullValueHandling = NullValueHandling.Ignore,
-                DefaultValueHandling = DefaultValueHandling.Ignore,
-                Formatting = Formatting.Indented
-            };
+        /// <summary>
+        /// Flush queued telemetry events synchronously.
+        /// </summary>
+        /// <param name="timeout">Defaults to 5 seconds.</param>
+        public void BlockingFlush (Optional<TimeSpan> timeout = default (Optional<TimeSpan>))
+        {
+            if (channel == null || !enabled)
+                return;
 
-            Client client;
-            ITelemetryEvent evnt;
+            var flushTimeout = timeout.GetValueOrDefault (defaultFlushTimeout);
 
-            public EventObjectStreamContent (Client client, ITelemetryEvent evnt)
-            {
-                this.client = client
-                    ?? throw new ArgumentNullException (nameof (client));
+            // Flush can block indefinitely, despite the timeout. This has been
+            // observed when network connectivity is lost during an app run.
+            // Run Flush defensively on a background thread to avoid this.
+            Task.Run (() => channel?.Flush (flushTimeout)).Wait (flushTimeout);
+        }
 
-                this.evnt = evnt
-                    ?? throw new ArgumentNullException (nameof (evnt));
-
-                EnsureHeaders ();
-            }
-
-            void EnsureHeaders ()
-            {
-                // Mono's HttpContent seems to re-allocate 'Headers' some time after
-                // the constructor finishes, clobbering anything configured during
-                // the constructor. However, it seems to write them on the first call
-                // to Stream.Write for the Stream passed to SerializeToStreamAsync,
-                // so the fix on Mono is to configure Headers before writing to the
-                // stream. This however is not the behavior of .NET, which requires
-                // Headers to be configured in the constructor (it likely writes them
-                // explicitly to the stream before calling SerializeToStreamAsync,
-                // and not as an implementation of the Stream itself. So do both.
-                Headers.ContentType = new MediaTypeHeaderValue ("application/json");
-            }
-
-            protected override Task SerializeToStreamAsync (Stream stream, TransportContext context)
-            {
-                EnsureHeaders ();
-
-                var writer = new StreamWriter (stream);
-
-                try {
-                    serializer.Serialize (writer, evnt);
-                } catch (Exception e) {
-                    throw new SerializationException ("bad use of JsonTextWriter / JsonSerializer", e);
-                }
-
-                writer.Flush ();
-
-                return Task.CompletedTask;
-            }
-
-            protected override bool TryComputeLength (out long length)
-            {
-                length = -1;
-                return false;
-            }
+        void LogErrorWithoutTelemetry (Exception e, string message = null)
+        {
+            message = message ?? "exception";
+            Log.Commit (
+                LogLevel.Error,
+                LogFlags.SkipTelemetry,
+                TAG,
+                $"{message}: {e}",
+                e);
         }
     }
 }

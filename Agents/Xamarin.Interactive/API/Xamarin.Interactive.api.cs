@@ -33,7 +33,6 @@
 [assembly: InternalsVisibleTo ("Xamarin.Workbooks.Client.Android")]
 [assembly: InternalsVisibleTo ("Xamarin.Interactive.XS")]
 [assembly: InternalsVisibleTo ("Xamarin.Interactive.VS")]
-[assembly: InternalsVisibleTo ("Xamarin.Interactive.Telemetry.Server")]
 [assembly: TargetFramework (".NETStandard,Version=v2.0", FrameworkDisplayName = "")]
 [assembly: BuildInfo]
 namespace Xamarin.Interactive
@@ -353,6 +352,10 @@ namespace Xamarin.Interactive.Logging
         }
 
         public string CallerMemberName {
+            get;
+        }
+
+        public Exception Exception {
             get;
         }
 
