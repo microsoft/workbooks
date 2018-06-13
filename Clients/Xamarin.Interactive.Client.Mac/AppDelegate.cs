@@ -149,6 +149,9 @@ namespace Xamarin.Interactive.Client.Mac
             new SessionDocumentController ();
         }
 
+        public override void WillTerminate (NSNotification notification)
+            => ClientApp.SharedInstance?.NotifyWillTerminate ();
+
         #region Main Menu Actions
 
         [Export ("installCommandLineTool:")]

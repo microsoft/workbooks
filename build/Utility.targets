@@ -84,8 +84,8 @@
       <Replacement Include="@PACKAGE_BUILD_DATE@">
         <Value>$([System.DateTime]::UtcNow.ToString('r'))</Value>
       </Replacement>
-      <Replacement Include="@TELEMETRY_API_URL@">
-        <Value>$(TELEMETRY_API_URL)</Value>
+      <Replacement Include="@TELEMETRY_INSTRUMENTATION_KEY@">
+        <Value>$(TELEMETRY_INSTRUMENTATION_KEY)</Value>
       </Replacement>
     </ItemGroup>
     <FindReplaceInFiles

@@ -26,7 +26,6 @@
 [assembly: InternalsVisibleTo ("Xamarin.Interactive.iOS")]
 [assembly: InternalsVisibleTo ("Xamarin.Interactive.Mac.Desktop")]
 [assembly: InternalsVisibleTo ("Xamarin.Interactive.Mac.Mobile")]
-[assembly: InternalsVisibleTo ("Xamarin.Interactive.Telemetry.Server")]
 [assembly: InternalsVisibleTo ("Xamarin.Interactive.Tests")]
 [assembly: InternalsVisibleTo ("Xamarin.Interactive.Tests.Android")]
 [assembly: InternalsVisibleTo ("Xamarin.Interactive.Tests.Core")]

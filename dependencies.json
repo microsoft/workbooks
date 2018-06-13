@@ -42,6 +42,16 @@
   },
   {
     "Kind": "NuGet",
+    "Name": "Microsoft.ApplicationInsights",
+    "Version": "2.7.0-beta2",
+    "DependentProjects": [
+      "Xamarin.Interactive.Client"
+    ],
+    "LicenseUrl": "https://go.microsoft.com/fwlink/?LinkID=510709",
+    "ProjectUrl": "https://go.microsoft.com/fwlink/?LinkId=392727"
+  },
+  {
+    "Kind": "NuGet",
     "Name": "Microsoft.AspNetCore.App",
     "Version": "2.1.1",
     "DependentProjects": [

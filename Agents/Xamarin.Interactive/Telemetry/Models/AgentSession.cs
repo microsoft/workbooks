@@ -6,16 +6,39 @@
 // Licensed under the MIT License.
 
 using System;
+using System.Collections.Generic;
+
+using Xamarin.Interactive.Client;
 
 namespace Xamarin.Interactive.Telemetry.Models
 {
     sealed class AgentSession : ITelemetryEvent
     {
         public Guid AgentSessionId { get; set; }
-        public Guid AppSessionId { get; set; }
-        public AppSession AppSession { get; set; }
-        public DateTimeOffset Timestamp { get; set; }
-        public AgentSessionKind Kind { get; set; }
-        public string Flavor { get; set; }
+        public ClientSessionKind ClientKind { get; set; }
+        public string AgentFlavor { get; set; }
+        public string ExternalTelemetrySessionId { get; set; }
+
+        IEnumerable<KeyValuePair<string, string>> ITelemetryEvent.GetProperties ()
+        {
+            if (AgentSessionId != Guid.Empty)
+                yield return new KeyValuePair<string, string> (
+                    nameof (AgentSessionId),
+                    AgentSessionId.ToString ());
+
+            yield return new KeyValuePair<string, string> (
+                nameof (ClientKind),
+                ClientKind.ToString ());
+
+            if (!string.IsNullOrEmpty (AgentFlavor))
+                yield return new KeyValuePair<string, string> (
+                    nameof (AgentFlavor),
+                    AgentFlavor);
+            
+            if (!string.IsNullOrEmpty (ExternalTelemetrySessionId))
+                yield return new KeyValuePair<string, string> (
+                    nameof (ExternalTelemetrySessionId),
+                    ExternalTelemetrySessionId);
+        }
     }
 }

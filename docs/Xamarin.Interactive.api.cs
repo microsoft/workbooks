@@ -24,7 +24,6 @@
 [assembly: InternalsVisibleTo ("Xamarin.Interactive.iOS")]
 [assembly: InternalsVisibleTo ("Xamarin.Interactive.Mac.Desktop")]
 [assembly: InternalsVisibleTo ("Xamarin.Interactive.Mac.Mobile")]
-[assembly: InternalsVisibleTo ("Xamarin.Interactive.Telemetry.Server")]
 [assembly: InternalsVisibleTo ("Xamarin.Interactive.Tests")]
 [assembly: InternalsVisibleTo ("Xamarin.Interactive.Tests.Android")]
 [assembly: InternalsVisibleTo ("Xamarin.Interactive.Tests.Core")]
@@ -806,7 +805,7 @@ namespace Xamarin.Interactive.Logging
             get;
         }
 
-        public static void Commit (LogLevel level, string tag, string message, [CallerMemberName] string callerMemberName = null, [CallerFilePath] string callerFilePath = null, [CallerLineNumber] int callerLineNumber = 0);
+        public static void Commit (LogLevel level, string tag, string message, Exception exception = null, [CallerMemberName] string callerMemberName = null, [CallerFilePath] string callerFilePath = null, [CallerLineNumber] int callerLineNumber = 0);
 
         public static void Critical (string tag, Exception exception, [CallerMemberName] string callerMemberName = null, [CallerFilePath] string callerFilePath = null, [CallerLineNumber] int callerLineNumber = 0);
 
@@ -844,6 +843,10 @@ namespace Xamarin.Interactive.Logging
         }
 
         public string CallerMemberName {
+            get;
+        }
+
+        public Exception Exception {
             get;
         }
 

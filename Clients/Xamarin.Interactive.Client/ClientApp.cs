@@ -122,11 +122,13 @@ namespace Xamarin.Interactive
 
             PreferenceStore.Default = Preferences;
 
-            Telemetry = new Telemetry.Client ();
-
             Host = CreateHostEnvironment ()
                 ?? throw new InitializeException<ClientAppHostEnvironment> (
                     nameof (CreateHostEnvironment));
+
+            Updater = CreateUpdaterService ();
+
+            Telemetry = new Telemetry.Client (AppSessionId, Host, Updater);
 
             IssueReport = new IssueReport (Host);
 
@@ -137,8 +139,6 @@ namespace Xamarin.Interactive
             Log.SetLogLevel (Prefs.Logging.Level.GetValue ());
 
             WebServer = CreateClientWebServer ();
-
-            Updater = CreateUpdaterService ();
 
             if (asSharedInstance)
                 SharedInstance = this;
@@ -158,32 +158,11 @@ namespace Xamarin.Interactive
             OnInitialized ();
         }
 
+        public void NotifyWillTerminate ()
+            => Telemetry?.BlockingFlush ();
+
         void PostAppSessionStarted ()
-        {
-            var appSession = new Telemetry.Models.AppSession {
-                AppSessionId = AppSessionId,
-                Timestamp = DateTimeOffset.UtcNow,
-                Version = BuildInfo.VersionString,
-                BuildHash = BuildInfo.Hash,
-                UpdateChannel = Updater?.UpdateChannel,
-                OperatingSystem = new Telemetry.Models.OperatingSystem {
-                    Version = Host.OSVersion.ToString (),
-                    WordSize = (byte)IntPtr.Size,
-                    CpuWordSize = (byte)(Environment.Is64BitOperatingSystem ? 8 : 4)
-                }
-            };
-
-            switch (Host.OSName) {
-            case HostOS.macOS:
-                appSession.OperatingSystem.Name = Interactive.Telemetry.Models.OperatingSystemName.macOS;
-                break;
-            case HostOS.Windows:
-                appSession.OperatingSystem.Name = Interactive.Telemetry.Models.OperatingSystemName.Windows;
-                break;
-            }
-
-            appSession.Post ();
-        }
+            => Telemetry.Post ("AppSessionStarted");
 
         protected virtual void OnInitialized ()
         {
@@ -220,10 +199,12 @@ namespace Xamarin.Interactive
 
                 Log.EntryAdded += LogEntryAdded;
 
-                AppDomain.CurrentDomain.UnhandledException += (s, e) =>
+                AppDomain.CurrentDomain.UnhandledException += (s, e) => {
                     Log.Critical (
                         TAG + ":AppDomain.UnhandledException",
                         (Exception)e.ExceptionObject);
+                    Telemetry?.BlockingFlush ();
+                };
             } catch (Exception e) {
                 Log.Error (TAG, e);
             }
@@ -234,6 +215,9 @@ namespace Xamarin.Interactive
             var bytes = Utf8.GetBytes (entry + Environment.NewLine);
             logStream.Write (bytes, 0, bytes.Length);
             logStream.Flush ();
+
+            if (entry.Exception != null && Telemetry != null)
+                Telemetry.Post (entry.Exception, entry);
         }
 
         /// <summary>

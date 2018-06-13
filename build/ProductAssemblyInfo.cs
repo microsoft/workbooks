@@ -71,7 +71,4 @@ using System.Runtime.CompilerServices;
 [assembly: InternalsVisibleTo ("Xamarin.Interactive.XS")]
 [assembly: InternalsVisibleTo ("Xamarin.Interactive.VS")]
 
-// misc
-[assembly: InternalsVisibleTo ("Xamarin.Interactive.Telemetry.Server")]
-
 #endif
