@@ -1,5 +1,20 @@
 # Version @BUILD_DOCUMENTATION_VERSION@
 
+* Add initial support for [ML.NET][ml-net]
+  ([#303](https://github.com/Microsoft/workbooks/issues/303)).
+  - See our new [sample workbooks][ml-net-workbooks].
+  - Not yet supported on .NET Core on Mac.
+  - Console support on Mac requires a Mono release with
+    [this fix](https://github.com/mono/mono/issues/9033).
+* Add 64-bit .NET Core support on Windows.
+* Bump Xamarin.Forms support to 3.0.0.482510.
+* Fix a potential hang when loading an iOS workbook.
+* Change Xcode location behavior to match Visual Studio for Mac.
+  ([#249](https://github.com/Microsoft/workbooks/issues/249))
+* Fix expanding exception information in submission results.
+
+# Version 1.4.0
+
 Please refer to the [detailed release notes][docs-detailed-release-notes] and
 full product documentation for [Workbooks][docs-workbooks] and
 [Inspector][docs-inspector] for complete information.
@@ -108,3 +123,5 @@ on the following changes:
 [docs-detailed-release-notes]: https://developer.xamarin.com/releases/interactive/interactive-1.4/
 [docs-workbooks-logs]: https://developer.xamarin.com/guides/cross-platform/workbooks/install/#Log_Files
 [13-series]: https://developer.xamarin.com/releases/interactive/interactive-1.3
+[ml-net]: https://github.com/dotnet/machinelearning/
+[ml-net-workbooks]: https://github.com/xamarin/Workbooks/tree/master/machine-learning
