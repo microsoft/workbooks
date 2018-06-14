@@ -6,11 +6,16 @@
   - Not yet supported on .NET Core on Mac.
   - Console support on Mac requires a Mono release with
     [this fix](https://github.com/mono/mono/issues/9033).
+
 * Add 64-bit .NET Core support on Windows.
+
 * Bump Xamarin.Forms support to 3.0.0.482510.
-* Fix a potential hang when loading an iOS workbook.
+
+* Fix potential unresponsiveness when loading an iOS workbook.
+
 * Change Xcode location behavior to match Visual Studio for Mac.
   ([#249](https://github.com/Microsoft/workbooks/issues/249))
+
 * Fix expanding exception information in submission results.
 
 # Version 1.4.0
