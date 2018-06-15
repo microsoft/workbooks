@@ -1,10 +1,8 @@
 <Project>
   <Target
     Name="UpdateInvertedDependencies"
-    AfterTargets="Build">
-    <ItemGroup>
-      <Solution Include="$(MSBuildThisFileDirectory)..\*.sln"/>
-    </ItemGroup>
+    AfterTargets="Build"
+    Condition="!$(IsDotNetCoreMSBuild)">
     <ItemGroup>
       <NpmPackageJson Include="$(MSBuildThisFileDirectory)..\Clients\Xamarin.Interactive.Client\ClientApp\package.json"/>
       <NpmPackageJson Include="$(MSBuildThisFileDirectory)..\Clients\Xamarin.Interactive.Client.Web\package.json"/>
@@ -12,20 +10,29 @@
     <ItemGroup>
       <ExcludeProjectName Include="ApiDump"/>
       <ExcludeProjectName Include="ILFixer"/>
+      <ExcludeProjectName Include="CompilationIntegration"/>
       <ExcludeProjectName Include="Xamarin.Build"/>
       <ExcludeProjectName Include="Xamarin.CITooling"/>
       <ExcludeProjectName Include="Xamarin.CrossBrowser.Generator"/>
       <ExcludeProjectName Include="Xamarin.Interactive.Tests"/>
+      <ExcludeProjectName Include="Xamarin.Interactive.Client.Tests"/>
+      <ExcludeProjectName Include="Xamarin.Interactive.CodeAnalysis.Tests"/>
+      <ExcludeProjectName Include="Xamarin.Interactive.CodeAnalysis.Roslyn.Tests"/>
       <ExcludeProjectName Include="Xamarin.Interactive.Tests.Android"/>
       <ExcludeProjectName Include="Xamarin.Interactive.Tests.InspectorSupport.Mac"/>
       <ExcludeProjectName Include="Xamarin.Interactive.Tests.Mac"/>
       <ExcludeProjectName Include="Xamarin.Interactive.Tests.Windows"/>
     </ItemGroup>
+    <ItemGroup>
+      <ExcludePackageReference Include="Microsoft.NETCore.App"/>
+      <ExcludePackageReference Include="NETStandard.Library"/>
+    </ItemGroup>
     <UpdateInvertedDependencies
-      Solutions="@(Solution)"
+      WorkingDirectory="$(TopDirectory)"
       ExcludeProjectNames="@(ExcludeProjectName)"
+      ExcludePackageReferences="@(ExcludePackageReference)"
       NpmPackageJson="@(NpmPackageJson)"
-      OutputFile="$(MSBuildThisFileDirectory)..\dependencies.json"/>
+      JsonOutputFile="$(TopDirectory)dependencies.json"/>
   </Target>
 
   <Target

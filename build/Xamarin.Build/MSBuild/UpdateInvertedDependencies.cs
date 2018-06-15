@@ -7,9 +7,11 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 
+using Microsoft.Build.Evaluation;
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
 
@@ -18,47 +20,55 @@ using Newtonsoft.Json.Converters;
 
 namespace Xamarin.MSBuild
 {
-    using static MSBuildProjectFile;
-
     public sealed class UpdateInvertedDependencies : Task
     {
-        public string [] Solutions { get; set; }
+        public string WorkingDirectory { get; set; } = Environment.CurrentDirectory;
 
         public string [] NpmPackageJson { get; set; }
 
         public string [] ExcludeProjectNames { get; set; } = Array.Empty<string> ();
 
+        public string [] ExcludePackageReferences { get; set; } = Array.Empty<string> ();
+
         [Required]
-        public string OutputFile { get; set; }
+        public string JsonOutputFile { get; set; }
 
         IEnumerable<InvertedDependency> GetNuGetDependencies ()
         {
-            if (Solutions == null || Solutions.Length == 0)
-                return Array.Empty<InvertedDependency> ();
+            var packagesToProjects = new Dictionary<PackageReference, List<Project>> ();
 
-            var packagesToProjects = new Dictionary<PackageReference, List<MSBuildProjectFile>> ();
-
-            IEnumerable<PackageReference> SelectPackages (MSBuildProjectFile project)
+            IEnumerable<PackageReference> SelectPackages (Project project)
             {
-                project.Load ();
-                foreach (var packageReference in project.PackageReferences) {
-                    if (!packagesToProjects.TryGetValue (
-                        packageReference,
-                        out var projects)) {
-                        projects = new List<MSBuildProjectFile> ();
-                        packagesToProjects.Add (packageReference, projects);
-                    }
+                var packageReferences = project
+                    .GetItems ("PackageReference")
+                    .Select (pr => new PackageReference (
+                        pr.EvaluatedInclude,
+                        pr.GetMetadataValue ("Version")));
+
+                foreach (var packageReference in packageReferences) {
+                    if (ExcludePackageReferences.Any (excluded => string.Equals (
+                        excluded, packageReference.Id, StringComparison.OrdinalIgnoreCase)))
+                        continue;
+
+                    if (!packagesToProjects.TryGetValue (packageReference, out var projects))
+                        packagesToProjects.Add (packageReference, projects = new List<Project> ());
+
                     projects.Add (project);
+
                     yield return packageReference;
                 }
             }
 
-            return Solutions
-                .SelectMany (ParseProjectsInSolution)
-                .Where (project => !project.IsSolutionFolder &&
-                    !ExcludeProjectNames.Contains (project.Name))
-                .OrderBy (project => project.FullPath)
-                .Distinct (new FullPathComparer ())
+            var projectCollection = new ProjectCollection ();
+
+            return Exec.Run (
+                new ProcessStartInfo {
+                    FileName = "git",
+                    WorkingDirectory = WorkingDirectory
+                }, "ls-files", "--recurse-submodules", "*.csproj", "*.fsproj", "*.vbproj")
+                .Where (projectPath => !ExcludeProjectNames.Contains (Path.GetFileNameWithoutExtension (projectPath)))
+                .OrderBy (projectPath => projectPath)
+                .Select (projectPath => projectCollection.LoadProject (projectPath))
                 .SelectMany (SelectPackages)
                 .OrderBy (pr => pr)
                 .Distinct ()
@@ -67,7 +77,7 @@ namespace Xamarin.MSBuild
                     Name = packageReference.Id,
                     Version = packageReference.Version,
                     DependentProjects = packagesToProjects [packageReference]
-                        .Select (p => p.Name)
+                        .Select (p => Path.GetFileNameWithoutExtension (p.FullPath))
                         .ToArray ()
                 });
         }
@@ -111,17 +121,18 @@ namespace Xamarin.MSBuild
         {
             IEnumerable<InvertedDependency> invertedDependencies = Array.Empty<InvertedDependency> ();
 
-            if (File.Exists (OutputFile))
+            if (File.Exists (JsonOutputFile))
                 invertedDependencies = JsonConvert
-                    .DeserializeObject<InvertedDependency []> (File.ReadAllText (OutputFile))
+                    .DeserializeObject<InvertedDependency []> (File.ReadAllText (JsonOutputFile))
                     .Where (ShouldPreserve);
 
             invertedDependencies = invertedDependencies
                 .Concat (GetNuGetDependencies ())
                 .Concat (GetNpmDependencies ())
-                .Concat (GetGitSubmoduleDependencies ());
+                .Concat (GetGitSubmoduleDependencies ())
+                .ToList ();
 
-            using (var writer = new StreamWriter (OutputFile))
+            using (var writer = new StreamWriter (JsonOutputFile))
                 JsonSerializer.Create (new JsonSerializerSettings {
                     Formatting = Formatting.Indented,
                     NullValueHandling = NullValueHandling.Ignore
@@ -151,6 +162,47 @@ namespace Xamarin.MSBuild
             public string Version { get; set; }
             public string Path { get; set; }
             public string [] DependentProjects { get; set; }
+        }
+
+        struct PackageReference : IEquatable<PackageReference>, IComparable<PackageReference>
+        {
+            public string Id { get; }
+            public string Version { get; }
+
+            public PackageReference (string id, string version)
+            {
+                Id = id;
+                Version = version;
+            }
+
+            public void Deconstruct (out string id, out string version)
+            {
+                id = Id;
+                version = Version;
+            }
+
+            public override string ToString ()
+                => string.IsNullOrEmpty (Version) ? Id : $"{Id}/{Version}";
+
+            public int CompareTo (PackageReference other)
+            {
+                var idCompare = string.Compare (
+                    Id, other.Id, StringComparison.OrdinalIgnoreCase);
+                if (idCompare == 0)
+                    return string.Compare (
+                        Version, other.Version, StringComparison.OrdinalIgnoreCase);
+                return idCompare;
+            }
+
+            public bool Equals (PackageReference other)
+                => string.Equals (other.Id, Id, StringComparison.OrdinalIgnoreCase) &&
+                string.Equals (other.Version, Version, StringComparison.OrdinalIgnoreCase);
+
+            public override bool Equals (object obj)
+                => obj is PackageReference && Equals ((PackageReference)obj);
+
+            public override int GetHashCode ()
+                => Id?.GetHashCode () ?? 0 ^ Version?.GetHashCode () ?? 0;
         }
     }
 }
