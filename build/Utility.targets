@@ -34,7 +34,8 @@
       ExcludeProjectNames="@(ExcludeProjectName)"
       ExcludePackageReferences="@(ExcludePackageReference)"
       NpmPackageJson="@(NpmPackageJson)"
-      JsonOutputFile="$(TopDirectory)dependencies.json"/>
+      JsonOutputFile="$(TopDirectory)dependencies.json"
+      MarkdownOutputFile="$(TopDirectory)dependencies.md"/>
   </Target>
 
   <Target

@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Xml.Linq;
 
 using Microsoft.Build.Evaluation;
 using Microsoft.Build.Framework;
@@ -17,6 +18,8 @@ using Microsoft.Build.Utilities;
 
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
+
+using Xamarin.Interactive.Markdown;
 
 namespace Xamarin.MSBuild
 {
@@ -36,6 +39,8 @@ namespace Xamarin.MSBuild
 
         [Required]
         public string JsonOutputFile { get; set; }
+
+        public string MarkdownOutputFile { get; set; }
 
         IEnumerable<InvertedDependency> GetNuGetDependencies ()
         {
@@ -221,6 +226,42 @@ namespace Xamarin.MSBuild
                     Formatting = Formatting.Indented,
                     NullValueHandling = NullValueHandling.Ignore
                 }).Serialize (writer, invertedDependencies);
+
+            var links = new Dictionary<string, int> ();
+
+            string MarkdownLink (string linkText, string linkTarget, string nolinkText)
+            {
+                if (linkTarget == null)
+                    return nolinkText ?? linkText;
+
+                if (!links.TryGetValue (linkTarget, out var count))
+                    links.Add (linkTarget, count = links.Count + 1);
+
+                return $"[{linkText}][{count}]";
+            }
+
+            if (MarkdownOutputFile != null) {
+                var table = new MarkdownTable (
+                    "Dependencies",
+                    "Kind",
+                    "Name",
+                    "Version",
+                    "License");
+
+                foreach (var dependency in invertedDependencies)
+                    table.Add (
+                        dependency.Kind.ToString (),
+                        MarkdownLink (dependency.Name, dependency.ProjectUrl, dependency.Name),
+                        dependency.Version,
+                        MarkdownLink ("License", dependency.LicenseUrl, string.Empty));
+
+                using (var writer = new StreamWriter (MarkdownOutputFile)) {
+                    table.Render (writer);
+                    writer.WriteLine ();
+                    foreach (var link in links)
+                        writer.WriteLine ($"[{link.Value}]: {link.Key}");
+                }
+            }
 
             return true;
         }
