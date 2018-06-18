@@ -25,6 +25,7 @@ namespace Xamarin.Interactive.Telemetry
     sealed class Client
     {
         const string TAG = nameof (Telemetry);
+        const string ProducerNamespace = "workbooks/client/";
 
         readonly ImmutableDictionary<string, string> commonProperties;
 
@@ -116,7 +117,7 @@ namespace Xamarin.Interactive.Telemetry
                 props [pair.Key] = pair.Value;
 
             appInsightsClient.TrackEvent (
-                evnt.GetType ().Name,
+                ProducerNamespace + evnt.GetType ().Name,
                 properties: props);
             appInsightsClient.Flush ();
 
