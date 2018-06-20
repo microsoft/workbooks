@@ -2,9 +2,9 @@
 # yarn lockfile v1
 
 
-"@aspnet/signalr@=1.0.0-preview2-30131":
-  version "1.0.0-preview2-30131"
-  resolved "https://dotnet.myget.org/F/aspnetcore-dev/npm/@aspnet/signalr/-/@aspnet/signalr-1.0.0-preview2-30131.tgz#420bda14e987e2195aaf86b4feeb5a447f664980"
+"@aspnet/signalr@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@aspnet/signalr/-/signalr-1.0.0.tgz#26b10a32014a65c540cc5053cffa883c320788ce"
 
 "@microsoft/load-themed-styles@^1.7.13":
   version "1.7.48"

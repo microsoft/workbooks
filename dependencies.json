@@ -42,48 +42,8 @@
   },
   {
     "Kind": "NuGet",
-    "Name": "Microsoft.AspNetCore",
-    "Version": "2.0.2",
-    "DependentProjects": [
-      "Xamarin.Interactive.Client.Web"
-    ],
-    "LicenseUrl": "https://raw.githubusercontent.com/aspnet/Home/2.0.0/LICENSE.txt",
-    "ProjectUrl": "https://asp.net/"
-  },
-  {
-    "Kind": "NuGet",
-    "Name": "Microsoft.AspNetCore.Mvc",
-    "Version": "2.0.3",
-    "DependentProjects": [
-      "Xamarin.Interactive.Client.Web"
-    ],
-    "LicenseUrl": "https://raw.githubusercontent.com/aspnet/Home/2.0.0/LICENSE.txt",
-    "ProjectUrl": "https://asp.net/"
-  },
-  {
-    "Kind": "NuGet",
-    "Name": "Microsoft.AspNetCore.SignalR",
-    "Version": "1.0.0-preview2-30131",
-    "DependentProjects": [
-      "Xamarin.Interactive.Client.Web"
-    ],
-    "LicenseUrl": "https://raw.githubusercontent.com/aspnet/Home/2.0.0/LICENSE.txt",
-    "ProjectUrl": "https://asp.net/"
-  },
-  {
-    "Kind": "NuGet",
-    "Name": "Microsoft.AspNetCore.SpaServices",
-    "Version": "2.0.3",
-    "DependentProjects": [
-      "Xamarin.Interactive.Client.Web"
-    ],
-    "LicenseUrl": "https://raw.githubusercontent.com/aspnet/Home/2.0.0/LICENSE.txt",
-    "ProjectUrl": "https://asp.net/"
-  },
-  {
-    "Kind": "NuGet",
-    "Name": "Microsoft.AspNetCore.StaticFiles",
-    "Version": "2.0.2",
+    "Name": "Microsoft.AspNetCore.App",
+    "Version": "2.1.0",
     "DependentProjects": [
       "Xamarin.Interactive.Client.Web"
     ],

@@ -11,6 +11,8 @@ using System.Reflection;
 
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SpaServices.Webpack;
 
 using Microsoft.Extensions.Configuration;
@@ -42,7 +44,15 @@ namespace Xamarin.Interactive.Client.Web
             services.AddSingleton (new ReferenceWhitelist ());
 
             services.AddMemoryCache ();
-            services.AddMvc ();
+
+            services.Configure<CookiePolicyOptions> (options => {
+                options.CheckConsentNeeded = context => true;
+                options.MinimumSameSitePolicy = SameSiteMode.None;
+            });
+
+            services
+                .AddMvc ()
+                .SetCompatibilityVersion (CompatibilityVersion.Version_2_1);
 
             services
                 .AddSignalR ()
@@ -77,6 +87,7 @@ namespace Xamarin.Interactive.Client.Web
             app.UseMonacoMuting ();
             app.UseStaticFiles ();
             app.UseWasmStaticFiles ();
+            app.UseCookiePolicy ();
 
             app.UseSignalR (routes => {
                 routes.MapHub<InteractiveSessionHub> ("/session");

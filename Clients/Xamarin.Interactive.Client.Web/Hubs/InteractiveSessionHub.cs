@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using System.Threading.Channels;
 using System.Threading.Tasks;
 
 using Microsoft.AspNetCore.Hosting;
@@ -87,11 +88,12 @@ namespace Xamarin.Interactive.Client.Web.Hubs
                 return WorkbookAppInstallation.All;
         }
 
-        public IObservable<InteractiveSessionEvent> ObserveSessionEvents ()
+        public ChannelReader<InteractiveSessionEvent> ObserveSessionEvents ()
         {
-            var events = GetSession ().Events;
+            var channel = Channel.CreateUnbounded<InteractiveSessionEvent> ();
 
-            events.Subscribe (new Observer<InteractiveSessionEvent> (evnt => {
+            void OnNext (InteractiveSessionEvent evnt)
+            {
                 if (hostingEnvironment.IsDevelopment ()) {
                     var settings = new Serialization.ExternalInteractiveJsonSerializerSettings ();
                     logger.LogDebug (
@@ -104,9 +106,23 @@ namespace Xamarin.Interactive.Client.Web.Hubs
                         if (assemblyDefinition.Content.Location.Exists)
                             referenceWhitelist.Add (assemblyDefinition.Content.Location);
                     });
-            }));
 
-            return events;
+                channel.Writer.TryWrite (evnt);
+            }
+
+            var subscription = GetSession ().Events.Subscribe (new Observer<InteractiveSessionEvent> (
+                OnNext,
+                error => channel.Writer.TryComplete (error),
+                () => channel.Writer.TryComplete ()));
+
+            var abortRegistration = Context.ConnectionAborted.Register (() => channel.Writer.TryComplete ());
+
+            channel.Reader.Completion.ContinueWith (task => {
+                subscription.Dispose ();
+                abortRegistration.Dispose ();
+            });
+
+            return channel.Reader;
         }
 
         public Task InitializeSession (InteractiveSessionDescription sessionDescription)
@@ -114,7 +130,7 @@ namespace Xamarin.Interactive.Client.Web.Hubs
             referenceWhitelist.Clear ();
             return GetSession ().InitializeAsync (
                 sessionDescription,
-                Context.Connection.ConnectionAbortedToken);
+                Context.ConnectionAborted);
         }
 
         public Task<CodeCellId> InsertCodeCell (
@@ -125,7 +141,7 @@ namespace Xamarin.Interactive.Client.Web.Hubs
                 initialBuffer,
                 relativeToCodeCellId,
                 insertBefore,
-                Context.Connection.ConnectionAbortedToken);
+                Context.ConnectionAborted);
 
         public Task<CodeCellUpdatedEvent> UpdateCodeCell (
             string codeCellId,
@@ -133,13 +149,13 @@ namespace Xamarin.Interactive.Client.Web.Hubs
             => GetSession ().EvaluationService.UpdateCodeCellAsync (
                 codeCellId,
                 updatedBuffer,
-                Context.Connection.ConnectionAbortedToken);
+                Context.ConnectionAborted);
 
         public Task Evaluate (string targetCodeCellId, bool evaluateAll)
             => GetSession ().EvaluationService.EvaluateAsync (
                 targetCodeCellId,
                 evaluateAll,
-                Context.Connection.ConnectionAbortedToken);
+                Context.ConnectionAborted);
 
         public void NotifyEvaluationComplete (string targetCodeCellId, EvaluationStatus status)
             => GetSession ().EvaluationService.NotifyEvaluationComplete (
@@ -152,13 +168,13 @@ namespace Xamarin.Interactive.Client.Web.Hubs
             => GetSession ().WorkspaceService.GetHoverAsync (
                 codeCellId,
                 position,
-                Context.Connection.ConnectionAbortedToken);
+                Context.ConnectionAborted);
 
         public async Task<IEnumerable<CompletionItem>> GetCompletions (
             CodeCellId codeCellId,
             Position position)
         {
-            var cancellationToken = Context.Connection.ConnectionAbortedToken;
+            var cancellationToken = Context.ConnectionAborted;
 
             try {
                 return await GetSession ().WorkspaceService.GetCompletionsAsync (
@@ -176,7 +192,7 @@ namespace Xamarin.Interactive.Client.Web.Hubs
             => GetSession ().WorkspaceService.GetSignatureHelpAsync (
                 codeCellId,
                 position,
-                Context.Connection.ConnectionAbortedToken);
+                Context.ConnectionAborted);
 
         public async Task<IReadOnlyList<InteractivePackageDescription>> InstallPackages (
             IReadOnlyList<InteractivePackageDescription> packages)
@@ -184,7 +200,7 @@ namespace Xamarin.Interactive.Client.Web.Hubs
             var packageManagerService = GetSession ().PackageManagerService;
             await packageManagerService.InstallAsync (
                 packages,
-                Context.Connection.ConnectionAbortedToken);
+                Context.ConnectionAborted);
             return packageManagerService.GetInstalledPackages ();
         }
 
@@ -194,7 +210,7 @@ namespace Xamarin.Interactive.Client.Web.Hubs
             var packageManagerService = GetSession ().PackageManagerService;
             await packageManagerService.RestoreAsync (
                 packages,
-                Context.Connection.ConnectionAbortedToken);
+                Context.ConnectionAborted);
             return packageManagerService.GetInstalledPackages ();
         }
     }

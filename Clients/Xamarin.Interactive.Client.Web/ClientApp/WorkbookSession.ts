@@ -5,7 +5,7 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
-import { HubConnection } from '@aspnet/signalr'
+import { HubConnectionBuilder } from '@aspnet/signalr'
 import * as catalog from './i18n'
 import { Event } from './utils/Events'
 import { resolveJsonReferences } from './utils/JsonRefs'
@@ -73,7 +73,10 @@ export interface PackageDescription {
 const wasmWorkbookId: string = "webassembly-monowebassembly"
 
 export class WorkbookSession {
-    private hubConnection = new HubConnection('/session')
+    private hubConnection = new HubConnectionBuilder()
+        .withUrl('/session')
+        .build()
+
     private wasmContainer: WebAssemblyAgentContainer | null = null
 
     readonly sessionEvent: Event<WorkbookSession, SessionEvent>
@@ -119,6 +122,7 @@ export class WorkbookSession {
         this.hubConnection.stream('ObserveSessionEvents')
             .subscribe({
                 next: <(event: {}) => void>this.onSessionEventReceived,
+                error: _ => { },
                 complete: this.onSessionEventsComplete
             })
 
