@@ -6,12 +6,19 @@
     "Path": "workbooks-proprietary"
   },
   {
+    "Kind": "GitSubmodule",
+    "Name": "External/Xamarin.PropertyEditing",
+    "Version": "1ad39236886f30dded16811e588ae4accddc4a19"
+  },
+  {
     "Kind": "NuGet",
     "Name": "CommonMark.NET",
     "Version": "0.15.1-abock-workbooks.1384619",
     "DependentProjects": [
       "Xamarin.Interactive.Client"
-    ]
+    ],
+    "LicenseUrl": "https://raw.githubusercontent.com/Knagis/CommonMark.NET/master/LICENSE.md",
+    "ProjectUrl": "https://github.com/Knagis/CommonMark.NET/"
   },
   {
     "Kind": "NuGet",
@@ -19,7 +26,9 @@
     "Version": "1.5.0",
     "DependentProjects": [
       "Xamarin.Interactive.Client.Windows"
-    ]
+    ],
+    "LicenseUrl": "https://github.com/MahApps/MahApps.Metro/blob/master/LICENSE",
+    "ProjectUrl": "https://github.com/MahApps/MahApps.Metro"
   },
   {
     "Kind": "NuGet",
@@ -27,7 +36,9 @@
     "Version": "1.9.1",
     "DependentProjects": [
       "Xamarin.Interactive.Client.Windows"
-    ]
+    ],
+    "LicenseUrl": "https://opensource.org/licenses/MIT",
+    "ProjectUrl": "https://github.com/MahApps/MahApps.Metro.IconPacks"
   },
   {
     "Kind": "NuGet",
@@ -35,7 +46,9 @@
     "Version": "2.0.2",
     "DependentProjects": [
       "Xamarin.Interactive.Client.Web"
-    ]
+    ],
+    "LicenseUrl": "https://raw.githubusercontent.com/aspnet/Home/2.0.0/LICENSE.txt",
+    "ProjectUrl": "https://asp.net/"
   },
   {
     "Kind": "NuGet",
@@ -43,7 +56,9 @@
     "Version": "2.0.3",
     "DependentProjects": [
       "Xamarin.Interactive.Client.Web"
-    ]
+    ],
+    "LicenseUrl": "https://raw.githubusercontent.com/aspnet/Home/2.0.0/LICENSE.txt",
+    "ProjectUrl": "https://asp.net/"
   },
   {
     "Kind": "NuGet",
@@ -51,7 +66,9 @@
     "Version": "1.0.0-preview2-30131",
     "DependentProjects": [
       "Xamarin.Interactive.Client.Web"
-    ]
+    ],
+    "LicenseUrl": "https://raw.githubusercontent.com/aspnet/Home/2.0.0/LICENSE.txt",
+    "ProjectUrl": "https://asp.net/"
   },
   {
     "Kind": "NuGet",
@@ -59,7 +76,9 @@
     "Version": "2.0.3",
     "DependentProjects": [
       "Xamarin.Interactive.Client.Web"
-    ]
+    ],
+    "LicenseUrl": "https://raw.githubusercontent.com/aspnet/Home/2.0.0/LICENSE.txt",
+    "ProjectUrl": "https://asp.net/"
   },
   {
     "Kind": "NuGet",
@@ -67,7 +86,9 @@
     "Version": "2.0.2",
     "DependentProjects": [
       "Xamarin.Interactive.Client.Web"
-    ]
+    ],
+    "LicenseUrl": "https://raw.githubusercontent.com/aspnet/Home/2.0.0/LICENSE.txt",
+    "ProjectUrl": "https://asp.net/"
   },
   {
     "Kind": "NuGet",
@@ -75,23 +96,19 @@
     "Version": "2.6.1",
     "DependentProjects": [
       "Xamarin.Interactive.Client.Mac"
-    ]
+    ],
+    "LicenseUrl": "http://go.microsoft.com/fwlink/?LinkId=529443",
+    "ProjectUrl": "http://msdn.com/roslyn"
   },
   {
     "Kind": "NuGet",
-    "Name": "Microsoft.NET.Test.Sdk",
-    "Version": "15.5.0",
+    "Name": "Microsoft.CodeAnalysis.CSharp.Features",
+    "Version": "2.6.1",
     "DependentProjects": [
-      "Xamarin.Interactive.Tests.Core"
-    ]
-  },
-  {
-    "Kind": "NuGet",
-    "Name": "Mono.Cecil",
-    "Version": "0.10.0-beta6",
-    "DependentProjects": [
-      "CompilationIntegration"
-    ]
+      "Xamarin.Interactive.CodeAnalysis.Roslyn"
+    ],
+    "LicenseUrl": "http://go.microsoft.com/fwlink/?LinkId=529443",
+    "ProjectUrl": "http://msdn.com/roslyn"
   },
   {
     "Kind": "NuGet",
@@ -101,7 +118,18 @@
       "Xamarin.Interactive.Client.Console",
       "Xamarin.Interactive.Client.Web",
       "InstallerVerifier"
-    ]
+    ],
+    "LicenseUrl": "https://github.com/xamarin/XamarinComponents/blob/master/XPlat/Mono.Options/License.md",
+    "ProjectUrl": "https://github.com/xamarin/XamarinComponents/tree/master/XPlat/Mono.Options"
+  },
+  {
+    "Kind": "NuGet",
+    "Name": "Mono.WebAssembly.Sdk",
+    "Version": "5.15.0-wasm-0686aa0",
+    "DependentProjects": [
+      "Xamarin.Workbooks.WebAssembly"
+    ],
+    "ProjectUrl": "https://github.com/mono/mono"
   },
   {
     "Kind": "NuGet",
@@ -109,25 +137,31 @@
     "Version": "4.0.5150.10665",
     "DependentProjects": [
       "Xamarin.Interactive.Client.Windows"
-    ]
+    ],
+    "ProjectUrl": "http://globalmousekeyhook.codeplex.com/"
   },
   {
     "Kind": "NuGet",
     "Name": "Newtonsoft.Json",
     "Version": "11.0.1",
     "DependentProjects": [
+      "Xamarin.Interactive",
       "Xamarin.Workbooks.Client.iOS",
       "Xamarin.Interactive.Client",
+      "Xamarin.Interactive.CodeAnalysis",
       "InstallerVerifier"
-    ]
+    ],
+    "LicenseUrl": "https://raw.github.com/JamesNK/Newtonsoft.Json/master/LICENSE.md",
+    "ProjectUrl": "https://www.newtonsoft.com/json"
   },
   {
     "Kind": "NuGet",
     "Name": "NuGet.PackageManagement",
     "Version": "4.7.0-zlocal-35658",
     "DependentProjects": [
-      "Xamarin.Interactive.Client"
-    ]
+      "Xamarin.Interactive.CodeAnalysis"
+    ],
+    "LicenseUrl": "https://raw.githubusercontent.com/NuGet/NuGet.Client/dev/LICENSE.txt"
   },
   {
     "Kind": "NuGet",
@@ -135,7 +169,9 @@
     "Version": "3.1.1",
     "DependentProjects": [
       "InstallerVerifier"
-    ]
+    ],
+    "LicenseUrl": "https://www.apache.org/licenses/LICENSE-2.0",
+    "ProjectUrl": "https://github.com/serilog/serilog-sinks-console"
   },
   {
     "Kind": "NuGet",
@@ -143,7 +179,29 @@
     "Version": "2016.0.0",
     "DependentProjects": [
       "Xamarin.Workbooks.Client.iOS"
-    ]
+    ],
+    "LicenseUrl": "https://github.com/sshnet/SSH.NET/blob/master/LICENSE",
+    "ProjectUrl": "https://github.com/sshnet/SSH.NET/"
+  },
+  {
+    "Kind": "NuGet",
+    "Name": "System.Collections.Immutable",
+    "Version": "1.3.1",
+    "DependentProjects": [
+      "Xamarin.Interactive.CodeAnalysis"
+    ],
+    "LicenseUrl": "http://go.microsoft.com/fwlink/?LinkId=329770",
+    "ProjectUrl": "https://dot.net/"
+  },
+  {
+    "Kind": "NuGet",
+    "Name": "System.Reflection.Metadata",
+    "Version": "1.4.2",
+    "DependentProjects": [
+      "Xamarin.Interactive.CodeAnalysis"
+    ],
+    "LicenseUrl": "http://go.microsoft.com/fwlink/?LinkId=329770",
+    "ProjectUrl": "https://dot.net/"
   },
   {
     "Kind": "NuGet",
@@ -151,7 +209,9 @@
     "Version": "4.4.0",
     "DependentProjects": [
       "Xamarin.Workbooks.DotNetCore"
-    ]
+    ],
+    "LicenseUrl": "https://github.com/dotnet/corefx/blob/master/LICENSE.TXT",
+    "ProjectUrl": "https://dot.net/"
   },
   {
     "Kind": "NuGet",
@@ -159,7 +219,9 @@
     "Version": "4.4.0",
     "DependentProjects": [
       "Xamarin.Workbooks.DotNetCore"
-    ]
+    ],
+    "LicenseUrl": "https://github.com/dotnet/corefx/blob/master/LICENSE.TXT",
+    "ProjectUrl": "https://dot.net/"
   },
   {
     "Kind": "NuGet",
@@ -168,7 +230,9 @@
     "DependentProjects": [
       "Xamarin.Interactive.Console",
       "Xamarin.Workbooks.Wpf"
-    ]
+    ],
+    "LicenseUrl": "https://github.com/dotnet/corefx/blob/master/LICENSE.TXT",
+    "ProjectUrl": "https://dot.net/"
   },
   {
     "Kind": "NuGet",
@@ -176,7 +240,8 @@
     "Version": "1.1.0",
     "DependentProjects": [
       "Xamarin.Interactive.Client.Windows"
-    ]
+    ],
+    "ProjectUrl": "https://github.com/mono/WindowsAPICodePack"
   },
   {
     "Kind": "NuGet",
@@ -187,23 +252,9 @@
       "Xamarin.Interactive.Forms.iOS",
       "Xamarin.Interactive.Forms",
       "Xamarin.Workbooks.Android"
-    ]
-  },
-  {
-    "Kind": "NuGet",
-    "Name": "xunit",
-    "Version": "2.3.1",
-    "DependentProjects": [
-      "Xamarin.Interactive.Tests.Core"
-    ]
-  },
-  {
-    "Kind": "NuGet",
-    "Name": "xunit.runner.visualstudio",
-    "Version": "2.3.1",
-    "DependentProjects": [
-      "Xamarin.Interactive.Tests.Core"
-    ]
+    ],
+    "LicenseUrl": "http://aka.ms/xamarin-forms-license",
+    "ProjectUrl": "http://xamarin.com/forms"
   },
   {
     "Kind": "NuGet",
@@ -211,7 +262,9 @@
     "Version": "4.3.0",
     "DependentProjects": [
       "Xamarin.Interactive.Client"
-    ]
+    ],
+    "LicenseUrl": "https://github.com/aaubry/YamlDotNet/blob/master/LICENSE",
+    "ProjectUrl": "https://github.com/aaubry/YamlDotNet/wiki"
   },
   {
     "Kind": "Npm",
@@ -235,6 +288,11 @@
   },
   {
     "Kind": "Npm",
+    "Name": "es6-shim",
+    "Version": "^0.35.3"
+  },
+  {
+    "Kind": "Npm",
     "Name": "file-saver",
     "Version": "^1.3.3"
   },
@@ -247,6 +305,11 @@
     "Kind": "Npm",
     "Name": "immutable",
     "Version": "^3.8.2"
+  },
+  {
+    "Kind": "Npm",
+    "Name": "jszip",
+    "Version": "^3.1.5"
   },
   {
     "Kind": "Npm",
@@ -282,10 +345,5 @@
     "Kind": "Npm",
     "Name": "uuid",
     "Version": "^3.2.1"
-  },
-  {
-    "Kind": "GitSubmodule",
-    "Name": "External/Xamarin.PropertyEditing",
-    "Version": "1ad39236886f30dded16811e588ae4accddc4a19"
   }
 ]

@@ -16,17 +16,22 @@ namespace Xamarin
     static class Exec
     {
         public static List<string> Run (string fileName, params string [] arguments)
-            => Run (fileName, (IEnumerable<string>)arguments);
+            => Run (new ProcessStartInfo { FileName = fileName }, arguments);
 
         public static List<string> Run (string fileName, IEnumerable<string> arguments)
+            => Run (new ProcessStartInfo { FileName = fileName }, arguments);
+
+        public static List<string> Run (ProcessStartInfo processStartInfo, params string [] arguments)
+            => Run (processStartInfo, (IEnumerable<string>)arguments);
+
+        public static List<string> Run (ProcessStartInfo processStartInfo, IEnumerable<string> arguments)
         {
-            var proc = Process.Start (new ProcessStartInfo {
-                FileName = fileName,
-                Arguments = String.Join (" ", arguments.Select (QuoteArgument)),
-                UseShellExecute = false,
-                RedirectStandardError = false,
-                RedirectStandardOutput = true
-            });
+            processStartInfo.Arguments = QuoteArguments (arguments);
+            processStartInfo.UseShellExecute = false;
+            processStartInfo.RedirectStandardError = false;
+            processStartInfo.RedirectStandardOutput = true;
+
+            var proc = Process.Start (processStartInfo);
 
             var output = new List<string> ();
 
@@ -42,6 +47,9 @@ namespace Xamarin
 
             return output;
         }
+
+        public static string QuoteArguments (IEnumerable<string> arguments)
+            => string.Join (" ", arguments.Select (QuoteArgument));
 
         public static string QuoteArgument (string argument)
         {

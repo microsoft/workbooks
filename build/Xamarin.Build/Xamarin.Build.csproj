@@ -27,6 +27,9 @@
     <Compile Include="..\..\Agents\Xamarin.Interactive\Versioning\ReleaseVersion.cs">
       <Link>ReleaseVersion.cs</Link>
     </Compile>
+    <Compile Include="..\..\Clients\Xamarin.Interactive.Client\Markdown\MarkdownTable.cs">
+      <Link>MarkdownTable.cs</Link>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Compile Update="MSBuild\PolicheckHtmlTemplate.cs">
