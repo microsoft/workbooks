@@ -21,7 +21,7 @@
     <Reference Include="netstandard" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Features" Version="2.3.0" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Features" Version="2.8.2" />
     <PackageReference Include="NuGet.PackageManagement" Version="4.3.0" />
     <PackageReference Include="YamlDotNet" Version="4.3.1" />
   </ItemGroup>
