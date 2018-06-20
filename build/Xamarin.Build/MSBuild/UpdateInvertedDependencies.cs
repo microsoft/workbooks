@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
 using System.Xml.Linq;
 
 using Microsoft.Build.Evaluation;
@@ -42,10 +43,32 @@ namespace Xamarin.MSBuild
 
         public string MarkdownOutputFile { get; set; }
 
+        sealed class NuGetResource
+        {
+            [JsonProperty ("@id")]
+            public string Id { get; set; }
+
+            [JsonProperty ("@type")]
+            public string Type { get; set; }
+
+            [JsonProperty ("comment")]
+            public string Comment { get; set; }
+        }
+
+        sealed class NuGetResources
+        {
+            [JsonProperty ("version")]
+            public string Version { get; set; }
+
+            [JsonProperty ("resources")]
+            public NuGetResource [] Resources { get; set; }
+        }
+
         IEnumerable<InvertedDependency> GetNuGetDependencies ()
         {
             var packagesToProjects = new Dictionary<PackageReference, List<Project>> ();
             var packageRoots = new HashSet<string> ();
+            List<string> nugetFlatContainerBaseUris = null;
 
             IEnumerable<PackageReference> SelectPackages (Project project)
             {
@@ -73,12 +96,15 @@ namespace Xamarin.MSBuild
                 }
             }
 
-            string GetNuSpecPath (PackageReference packageReference)
-            {
-                var packagePath = Path.Combine (
+            string MakePackagePath (PackageReference packageReference)
+                => Path.Combine (
                     packageReference.Id,
                     packageReference.Version,
                     packageReference.Id + ".nuspec");
+
+            string GetNuSpecPath (PackageReference packageReference)
+            {
+                var packagePath = MakePackagePath (packageReference);
 
                 var searchPaths = new List<string> (packageRoots);
                 if (NuspecCacheDirectory != null)
@@ -92,42 +118,48 @@ namespace Xamarin.MSBuild
                     .FirstOrDefault (File.Exists);
             }
 
-            void InstallPackage (PackageReference packageReference)
+            void DownloadNuSpec (PackageReference packageReference)
             {
                 if (NuGetTool == null || NuspecCacheDirectory == null)
                     return;
 
-                var args = new List<string> {
-                    "install",
-                    "-NonInteractive",
-                    "-PackageSaveMode", "nuspec",
-                    "-OutputDirectory", NuspecCacheDirectory,
-                    packageReference.Id
-                };
-
-                if (!string.IsNullOrEmpty (packageReference.Version)) {
-                    args.Add ("-Version");
-                    args.Add (packageReference.Version);
+                if (nugetFlatContainerBaseUris == null) {
+                    var serializer = JsonSerializer.CreateDefault ();
+                    nugetFlatContainerBaseUris = Exec
+                        .Run (NuGetTool, "sources", "-Format", "Short")
+                        .Where (source => source.StartsWith ("E ", StringComparison.Ordinal))
+                        .Select (source => source.Substring (2))
+                        .Select (source => {
+                            using (var client = new HttpClient ())
+                            using (var stream = client.GetStreamAsync (source).GetAwaiter ().GetResult ())
+                            using (var streamReader = new StreamReader (stream))
+                            using (var jsonReader = new JsonTextReader (streamReader))
+                                return serializer
+                                    .Deserialize<NuGetResources> (jsonReader)
+                                    .Resources
+                                    .Where (resource => resource.Type == "PackageBaseAddress/3.0.0")
+                                    .Select (resource => resource.Id)
+                                    .SingleOrDefault ();
+                        })
+                        .Where (source => source != null)
+                        .ToList ();
                 }
 
-                var processStartInfo = new ProcessStartInfo {
-                    FileName = NuGetTool,
-                    WorkingDirectory = WorkingDirectory,
-                    Arguments = Exec.QuoteArguments (args)
-                };
+                foreach (var baseUri in nugetFlatContainerBaseUris) {
+                    var relativePath = MakePackagePath (packageReference).ToLowerInvariant ();
+                    var localPath = Path.Combine (NuspecCacheDirectory, relativePath);
+                    var uri = $"{baseUri}{relativePath.Replace (Path.DirectorySeparatorChar, '/')}";
 
-                Log.LogMessage (
-                    MessageImportance.High,
-                    "Installing {0}: {1} {2}",
-                    packageReference,
-                    processStartInfo.FileName,
-                    processStartInfo.Arguments);
-
-                var process = Process.Start (processStartInfo);
-                process.WaitForExit ();
-
-                if (process.ExitCode != 0)
-                    throw new Exception ("nuget install failed");
+                    try {
+                        using (var client = new HttpClient ())
+                        using (var stream = client.GetStreamAsync (uri).GetAwaiter ().GetResult ()) {
+                            Directory.CreateDirectory (Path.GetDirectoryName (localPath));
+                            using (var fileStream = File.Create (localPath))
+                                stream.CopyTo (fileStream);
+                        }
+                    } catch {
+                    }
+                }
             }
 
             var projectCollection = new ProjectCollection ();
@@ -155,7 +187,7 @@ namespace Xamarin.MSBuild
 
                     var nuspecPath = GetNuSpecPath (packageReference);
                     if (nuspecPath == null) {
-                        InstallPackage (packageReference);
+                        DownloadNuSpec (packageReference);
                         nuspecPath = GetNuSpecPath (packageReference);
                     }
 
