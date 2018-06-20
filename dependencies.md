@@ -13,6 +13,8 @@
 | NuGet        | [Microsoft.AspNetCore.StaticFiles][7]            | 2.0.2                                    | [License][8]  |
 | NuGet        | [Microsoft.CodeAnalysis.CSharp][9]               | 2.6.1                                    | [License][10] |
 | NuGet        | [Microsoft.CodeAnalysis.CSharp.Features][9]      | 2.6.1                                    | [License][10] |
+| NuGet        | [Microsoft.CodeAnalysis.CSharp][9]               | 2.8.2                                    | [License][10] |
+| NuGet        | [Microsoft.CodeAnalysis.CSharp.Features][9]      | 2.8.2                                    | [License][10] |
 | NuGet        | [Mono.Options][11]                               | 5.3.0.1                                  | [License][12] |
 | NuGet        | [Mono.WebAssembly.Sdk][13]                       | 5.15.0-wasm-0686aa0                      |               |
 | NuGet        | [MouseKeyboardActivityMonitor][14]               | 4.0.5150.10665                           |               |
@@ -53,7 +55,7 @@
 [6]: https://opensource.org/licenses/MIT
 [7]: https://asp.net/
 [8]: https://raw.githubusercontent.com/aspnet/Home/2.0.0/LICENSE.txt
-[9]: http://msdn.com/roslyn
+[9]: https://github.com/dotnet/roslyn
 [10]: http://go.microsoft.com/fwlink/?LinkId=529443
 [11]: https://github.com/xamarin/XamarinComponents/tree/master/XPlat/Mono.Options
 [12]: https://github.com/xamarin/XamarinComponents/blob/master/XPlat/Mono.Options/License.md
