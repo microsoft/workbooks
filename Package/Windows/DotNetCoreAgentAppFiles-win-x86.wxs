@@ -523,9 +523,6 @@
       <Component Id="DNCAgentAppwinx86.System.Security.dll" Guid="F271A32E-7D06-4654-9633-BAFD891847FE">
         <File Id="DNCAgentAppwinx86.System.Security.dll" Source="$(var.DotNetCoreAssembliesDir)\System.Security.dll" />
       </Component>
-      <Component Id="DNCAgentAppwinx86.System.Security.Permissions.dll" Guid="D487E972-874A-4863-B3C2-BB7F1D78051D">
-        <File Id="DNCAgentAppwinx86.System.Security.Permissions.dll" Source="$(var.DotNetCoreAssembliesDir)\System.Security.Permissions.dll" />
-      </Component>
       <Component Id="DNCAgentAppwinx86.System.Security.Principal.dll" Guid="86ECD0CF-CB31-40D8-9EE3-BB69FFEBB8F3">
         <File Id="DNCAgentAppwinx86.System.Security.Principal.dll" Source="$(var.DotNetCoreAssembliesDir)\System.Security.Principal.dll" />
       </Component>
@@ -549,9 +546,6 @@
       </Component>
       <Component Id="DNCAgentAppwinx86.System.Text.RegularExpressions.dll" Guid="783A0775-4D73-45B7-B18D-A2B129F37B98">
         <File Id="DNCAgentAppwinx86.System.Text.RegularExpressions.dll" Source="$(var.DotNetCoreAssembliesDir)\System.Text.RegularExpressions.dll" />
-      </Component>
-      <Component Id="DNCAgentAppwinx86.System.Threading.AccessControl.dll" Guid="B00975C9-9A43-44FA-B8C3-4D2E858FADBF">
-        <File Id="DNCAgentAppwinx86.System.Threading.AccessControl.dll" Source="$(var.DotNetCoreAssembliesDir)\System.Threading.AccessControl.dll" />
       </Component>
       <Component Id="DNCAgentAppwinx86.System.Threading.dll" Guid="FD58C6B3-BA08-4BF2-A2EC-147D7756FE21">
         <File Id="DNCAgentAppwinx86.System.Threading.dll" Source="$(var.DotNetCoreAssembliesDir)\System.Threading.dll" />

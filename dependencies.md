@@ -18,8 +18,6 @@
 | NuGet        | [SSH.NET][20]                                    | 2016.0.0                                 | [License][21] |
 | NuGet        | [System.Collections.Immutable][22]               | 1.3.1                                    | [License][23] |
 | NuGet        | [System.Reflection.Metadata][22]                 | 1.4.2                                    | [License][23] |
-| NuGet        | [System.Security.Permissions][22]                | 4.4.0                                    | [License][24] |
-| NuGet        | [System.Threading.AccessControl][22]             | 4.4.0                                    | [License][24] |
 | NuGet        | [System.ValueTuple][22]                          | 4.4.0                                    | [License][24] |
 | NuGet        | [WindowsAPICodePack-mono][25]                    | 1.1.0                                    |               |
 | NuGet        | [Xamarin.Forms][26]                              | 3.0.0.482510                             | [License][27] |

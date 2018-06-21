@@ -165,30 +165,9 @@
   },
   {
     "Kind": "NuGet",
-    "Name": "System.Security.Permissions",
-    "Version": "4.4.0",
-    "DependentProjects": [
-      "Xamarin.Workbooks.DotNetCore"
-    ],
-    "LicenseUrl": "https://github.com/dotnet/corefx/blob/master/LICENSE.TXT",
-    "ProjectUrl": "https://dot.net/"
-  },
-  {
-    "Kind": "NuGet",
-    "Name": "System.Threading.AccessControl",
-    "Version": "4.4.0",
-    "DependentProjects": [
-      "Xamarin.Workbooks.DotNetCore"
-    ],
-    "LicenseUrl": "https://github.com/dotnet/corefx/blob/master/LICENSE.TXT",
-    "ProjectUrl": "https://dot.net/"
-  },
-  {
-    "Kind": "NuGet",
     "Name": "System.ValueTuple",
     "Version": "4.4.0",
     "DependentProjects": [
-      "Xamarin.Interactive.Console",
       "Xamarin.Workbooks.Wpf"
     ],
     "LicenseUrl": "https://github.com/dotnet/corefx/blob/master/LICENSE.TXT",
