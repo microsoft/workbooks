@@ -43,9 +43,6 @@
   <ItemGroup>
     <Compile Include="Program.cs" />
     <Compile Include="ConsoleAgent.cs" />
-    <Compile Include="MonoTouch.Hosting\KQueue.cs" />
-    <Compile Include="MonoTouch.Hosting\ProcessMonitor.cs" />
-    <Compile Include="MonoTouch.Hosting\KernelNotification.cs" />
     <Compile Include="MacIntegration.cs" />
   </ItemGroup>
   <ItemGroup>
