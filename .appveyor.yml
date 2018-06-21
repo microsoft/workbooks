@@ -6,9 +6,9 @@ install:
 - cmd: git submodule sync
 - cmd: git submodule update --recursive --init
 - ps: Install-Product node $env:nodejs_version
-cache:
-- node_modules
-- '%USERPROFILE%\.nuget\packages'
+- ps: .\build\provision_dotnetcore.ps1
+before_build:
+- cmd: dotnet --info
 build_script:
 - cmd: msbuild Build.proj /p:Configuration=Release /t:UpdateBuildInfo,Build,Package
 test_script:
@@ -16,3 +16,12 @@ test_script:
 artifacts:
 - path: _artifacts\*.msi
   name: Installer
+
+# Cache is disabled. Restoring a ~2GB zip file is ~2m slower
+# than just fetching everything from various CDNs as needed.
+#
+# cache:
+# - '%USERPROFILE%\.nuget\packages'
+# - Clients\Xamarin.Interactive.Client\ClientApp\node_modules
+# - Clients\Xamarin.Interactive.Client.Web\node_modules
+# - WorkbookApps\Xamarin.Workbooks.WebAssembly\node_modules
