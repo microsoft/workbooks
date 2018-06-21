@@ -32,7 +32,7 @@ namespace Xamarin.Interactive
             try {
                 var request = IdentifyAgentRequest.FromCommandLineArguments (Environment.GetCommandLineArgs ());
                 if (request != null && request.ProcessId >= 0) {
-                    if (Environment.OSVersion.Platform == PlatformID.Unix) {
+                    if (HostEnvironment.OS == HostOS.macOS) {
                         new Thread (() => {
                             MonoTouch.Hosting.ProcessMonitor.WaitPid (request.ProcessId);
                             Environment.Exit (0);
