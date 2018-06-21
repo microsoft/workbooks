@@ -11,7 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Mono.WebAssembly.Sdk" Version="5.15.0-wasm-0686aa0" />
+    <PackageReference Include="Mono.WebAssembly.Sdk" Version="5.15.0-wasm-e241e36" />
   </ItemGroup>
 
   <Import Project="Build.targets" />

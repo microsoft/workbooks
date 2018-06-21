@@ -10,7 +10,7 @@
 | NuGet        | [Microsoft.CodeAnalysis.CSharp][9]               | 2.8.2                                    | [License][10] |
 | NuGet        | [Microsoft.CodeAnalysis.CSharp.Features][9]      | 2.8.2                                    | [License][10] |
 | NuGet        | [Mono.Options][11]                               | 5.3.0.1                                  | [License][12] |
-| NuGet        | [Mono.WebAssembly.Sdk][13]                       | 5.15.0-wasm-0686aa0                      |               |
+| NuGet        | [Mono.WebAssembly.Sdk][13]                       | 5.15.0-wasm-e241e36                      |               |
 | NuGet        | [MouseKeyboardActivityMonitor][14]               | 4.0.5150.10665                           |               |
 | NuGet        | [Newtonsoft.Json][15]                            | 11.0.1                                   | [License][16] |
 | NuGet        | NuGet.PackageManagement                          | 4.7.0-zlocal-35658                       | [License][17] |
