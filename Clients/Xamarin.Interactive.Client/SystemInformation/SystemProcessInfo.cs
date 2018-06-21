@@ -34,8 +34,8 @@ namespace Xamarin.Interactive.SystemInformation
 
         static void EnsureBsd ()
         {
-            if (System.Environment.OSVersion.Platform != PlatformID.Unix)
-                throw new PlatformNotSupportedException ("not supported on non-Unix/BSD systems");
+            if (!RuntimeInformation.IsOSPlatform (OSPlatform.OSX))
+                throw new PlatformNotSupportedException ("not supported on non-BSD systems");
         }
 
         public static IReadOnlyList<int> GetAllProcessIds ()
