@@ -6,16 +6,22 @@
 // Licensed under the MIT License.
 
 using System;
+using System.Collections.Generic;
 
 namespace Xamarin.Interactive.Telemetry.Models
 {
     sealed class AppSession : ITelemetryEvent
     {
-        public Guid AppSessionId { get; set; }
-        public DateTimeOffset Timestamp { get; set; }
-        public string Version { get; set; }
-        public string BuildHash { get; set; }
         public string UpdateChannel { get; set; }
-        public OperatingSystem OperatingSystem { get; set; }
+
+        Dictionary<string, string> ITelemetryEvent.GetProperties ()
+        {
+            var dict = new Dictionary<string, string> ();
+
+            if (!string.IsNullOrEmpty (UpdateChannel))
+                dict.Add (nameof (UpdateChannel), UpdateChannel);
+
+            return dict;
+        }
     }
 }

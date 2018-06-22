@@ -119,11 +119,11 @@ namespace Xamarin.Interactive
 
             PreferenceStore.Default = Preferences;
 
-            Telemetry = new Telemetry.Client ();
-
             Host = CreateHostEnvironment ()
                 ?? throw new InitializeException<HostEnvironment> (
                     nameof (CreateHostEnvironment));
+
+            Telemetry = new Telemetry.Client (AppSessionId, Host);
 
             IssueReport = new IssueReport (Host);
 
@@ -162,26 +162,8 @@ namespace Xamarin.Interactive
         void PostAppSessionStarted ()
         {
             var appSession = new Telemetry.Models.AppSession {
-                AppSessionId = AppSessionId,
-                Timestamp = DateTimeOffset.UtcNow,
-                Version = BuildInfo.VersionString,
-                BuildHash = BuildInfo.Hash,
-                UpdateChannel = Updater?.UpdateChannel,
-                OperatingSystem = new Telemetry.Models.OperatingSystem {
-                    Version = Host.OSVersion.ToString (),
-                    WordSize = (byte)IntPtr.Size,
-                    CpuWordSize = (byte)(Environment.Is64BitOperatingSystem ? 8 : 4)
-                }
+                UpdateChannel = Updater?.UpdateChannel
             };
-
-            switch (Host.OSName) {
-            case HostOS.macOS:
-                appSession.OperatingSystem.Name = Interactive.Telemetry.Models.OperatingSystemName.macOS;
-                break;
-            case HostOS.Windows:
-                appSession.OperatingSystem.Name = Interactive.Telemetry.Models.OperatingSystemName.Windows;
-                break;
-            }
 
             appSession.Post ();
         }
