@@ -326,7 +326,7 @@ namespace Xamarin.Interactive.Compilation.Roslyn
         readonly ImmutableDictionary<string, ReportDiagnostic> initialDiagnosticOptions;
 
         readonly CSharpParseOptions parseOptions = new CSharpParseOptions (
-            LanguageVersion.CSharp7_1,
+            LanguageVersion.CSharp7_3,
             DocumentationMode.None,
             SourceCodeKind.Script);
 
@@ -500,7 +500,7 @@ namespace Xamarin.Interactive.Compilation.Roslyn
             workspace.RemoveProject (project.Id);
         }
 
-        const string assemblyNamePrefix = "🐵🐻";
+        const string assemblyNamePrefix = "🐵BEAR";
         static readonly byte [] assemblyNamePrefixBytes = Encoding.UTF8.GetBytes (assemblyNamePrefix);
 
         ProjectInfo CreateSubmissionProjectInfo ()
