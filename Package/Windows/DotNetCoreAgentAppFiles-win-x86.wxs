@@ -163,9 +163,6 @@
       <Component Id="DNCAgentAppwinx86.mscordaccore.dll" Guid="8306C968-91E2-4F81-8407-92843EED7675">
         <File Id="DNCAgentAppwinx86.mscordaccore.dll" Source="$(var.DotNetCoreAssembliesDir)\mscordaccore.dll" />
       </Component>
-      <Component Id="DNCAgentAppwinx86.mscordaccore_x86_x86_4.6.00001.0.dll" Guid="4A976A45-3ACB-491B-A359-D7D4B30397B4">
-        <File Id="DNCAgentAppwinx86.mscordaccore_x86_x86_4.6.00001.0.dll" Source="$(var.DotNetCoreAssembliesDir)\mscordaccore_x86_x86_4.6.00001.0.dll" />
-      </Component>
       <Component Id="DNCAgentAppwinx86.mscordbi.dll" Guid="AF33B4F5-9EEE-47A0-83D5-C5E994C0653D">
         <File Id="DNCAgentAppwinx86.mscordbi.dll" Source="$(var.DotNetCoreAssembliesDir)\mscordbi.dll" />
       </Component>
@@ -186,9 +183,6 @@
       </Component>
       <Component Id="DNCAgentAppwinx86.SOS.NETCore.dll" Guid="55236819-2918-4D3D-BD21-A69B1FB10E17">
         <File Id="DNCAgentAppwinx86.SOS.NETCore.dll" Source="$(var.DotNetCoreAssembliesDir)\SOS.NETCore.dll" />
-      </Component>
-      <Component Id="DNCAgentAppwinx86.sos_x86_x86_4.6.00001.0.dll" Guid="95A5384B-6613-48D2-98B9-AB85C4FB0703">
-        <File Id="DNCAgentAppwinx86.sos_x86_x86_4.6.00001.0.dll" Source="$(var.DotNetCoreAssembliesDir)\sos_x86_x86_4.6.00001.0.dll" />
       </Component>
       <Component Id="DNCAgentAppwinx86.System.AppContext.dll" Guid="997B1D04-A18E-49BA-83EF-2EC1E85FCB4F">
         <File Id="DNCAgentAppwinx86.System.AppContext.dll" Source="$(var.DotNetCoreAssembliesDir)\System.AppContext.dll" />
@@ -213,9 +207,6 @@
       </Component>
       <Component Id="DNCAgentAppwinx86.System.ComponentModel.Annotations.dll" Guid="8FAB39B7-293C-4935-8271-9FA3BF7AD9C8">
         <File Id="DNCAgentAppwinx86.System.ComponentModel.Annotations.dll" Source="$(var.DotNetCoreAssembliesDir)\System.ComponentModel.Annotations.dll" />
-      </Component>
-      <Component Id="DNCAgentAppwinx86.System.ComponentModel.Composition.dll" Guid="62F71ED5-3804-454F-BC52-58B34BD0429E">
-        <File Id="DNCAgentAppwinx86.System.ComponentModel.Composition.dll" Source="$(var.DotNetCoreAssembliesDir)\System.ComponentModel.Composition.dll" />
       </Component>
       <Component Id="DNCAgentAppwinx86.System.ComponentModel.DataAnnotations.dll" Guid="779A08CC-021A-4474-9186-9C9B4DF0B2B4">
         <File Id="DNCAgentAppwinx86.System.ComponentModel.DataAnnotations.dll" Source="$(var.DotNetCoreAssembliesDir)\System.ComponentModel.DataAnnotations.dll" />
@@ -532,9 +523,6 @@
       <Component Id="DNCAgentAppwinx86.System.Security.dll" Guid="F271A32E-7D06-4654-9633-BAFD891847FE">
         <File Id="DNCAgentAppwinx86.System.Security.dll" Source="$(var.DotNetCoreAssembliesDir)\System.Security.dll" />
       </Component>
-      <Component Id="DNCAgentAppwinx86.System.Security.Permissions.dll" Guid="D487E972-874A-4863-B3C2-BB7F1D78051D">
-        <File Id="DNCAgentAppwinx86.System.Security.Permissions.dll" Source="$(var.DotNetCoreAssembliesDir)\System.Security.Permissions.dll" />
-      </Component>
       <Component Id="DNCAgentAppwinx86.System.Security.Principal.dll" Guid="86ECD0CF-CB31-40D8-9EE3-BB69FFEBB8F3">
         <File Id="DNCAgentAppwinx86.System.Security.Principal.dll" Source="$(var.DotNetCoreAssembliesDir)\System.Security.Principal.dll" />
       </Component>
@@ -558,9 +546,6 @@
       </Component>
       <Component Id="DNCAgentAppwinx86.System.Text.RegularExpressions.dll" Guid="783A0775-4D73-45B7-B18D-A2B129F37B98">
         <File Id="DNCAgentAppwinx86.System.Text.RegularExpressions.dll" Source="$(var.DotNetCoreAssembliesDir)\System.Text.RegularExpressions.dll" />
-      </Component>
-      <Component Id="DNCAgentAppwinx86.System.Threading.AccessControl.dll" Guid="B00975C9-9A43-44FA-B8C3-4D2E858FADBF">
-        <File Id="DNCAgentAppwinx86.System.Threading.AccessControl.dll" Source="$(var.DotNetCoreAssembliesDir)\System.Threading.AccessControl.dll" />
       </Component>
       <Component Id="DNCAgentAppwinx86.System.Threading.dll" Guid="FD58C6B3-BA08-4BF2-A2EC-147D7756FE21">
         <File Id="DNCAgentAppwinx86.System.Threading.dll" Source="$(var.DotNetCoreAssembliesDir)\System.Threading.dll" />
@@ -657,6 +642,21 @@
       </Component>
       <Component Id="DNCAgentAppwinx86.Xamarin.Workbooks.DotNetCore.exe" Guid="24F80C39-466F-4AE0-941F-2CBED0C7BB44">
         <File Id="DNCAgentAppwinx86.Xamarin.Workbooks.DotNetCore.exe" Source="$(var.DotNetCoreAssembliesDir)\Xamarin.Workbooks.DotNetCore.exe" />
+      </Component>
+      <Component Id="DNCAgentAppwinx86.mscordaccore_x86_x86_4.6.26606.02.dll" Guid="71FA4ABD-646B-4EF6-931D-649E79EE11A2">
+        <File Id="DNCAgentAppwinx86.mscordaccore_x86_x86_4.6.26606.02.dll" Source="$(var.DotNetCoreAssembliesDir)\mscordaccore_x86_x86_4.6.26606.02.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx86.sos_x86_x86_4.6.26606.02.dll" Guid="257C7D51-8D96-45C7-A4F0-8D936D49D0AC">
+        <File Id="DNCAgentAppwinx86.sos_x86_x86_4.6.26606.02.dll" Source="$(var.DotNetCoreAssembliesDir)\sos_x86_x86_4.6.26606.02.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx86.System.IO.Compression.Brotli.dll" Guid="0DD2F34B-3537-48E6-BBE6-66C291FD0FCF">
+        <File Id="DNCAgentAppwinx86.System.IO.Compression.Brotli.dll" Source="$(var.DotNetCoreAssembliesDir)\System.IO.Compression.Brotli.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx86.System.IO.Pipes.AccessControl.dll" Guid="CEEE0D25-69D4-4C5A-8C06-3F83D94FC727">
+        <File Id="DNCAgentAppwinx86.System.IO.Pipes.AccessControl.dll" Source="$(var.DotNetCoreAssembliesDir)\System.IO.Pipes.AccessControl.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx86.System.Memory.dll" Guid="FDA9A09B-F94B-4509-BAB8-919511A724DF">
+        <File Id="DNCAgentAppwinx86.System.Memory.dll" Source="$(var.DotNetCoreAssembliesDir)\System.Memory.dll" />
       </Component>
     </ComponentGroup>
   </Fragment>

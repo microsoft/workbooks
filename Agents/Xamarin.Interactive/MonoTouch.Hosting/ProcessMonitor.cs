@@ -13,7 +13,7 @@ namespace MonoTouch.Hosting
     /// <summary>
     /// A utility class to wait on processes that are not necessarily child processes.
     /// </summary>
-    public static class ProcessMonitor
+    static class ProcessMonitor
     {
         /// <summary>
         /// Synchronously waits for the given PID and returns the exit code.

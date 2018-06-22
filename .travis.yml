@@ -1,12 +1,12 @@
 sudo: false
 language: csharp
 mono: none
-dotnet: 2.1.4
+dotnet: 2.1.301
 
 before_install:
-  - curl -o- -L https://yarnpkg.com/install.sh | bash -s -- --version 1.5.1
+  - curl -o- -L https://yarnpkg.com/install.sh | bash -s -- --version 1.7.0
   - export PATH=$HOME/.yarn/bin:$PATH
-  - curl -O -L https://dist.nuget.org/win-x86-commandline/v4.6.1/nuget.exe
+  - curl -O -L https://dist.nuget.org/win-x86-commandline/v4.6.2/nuget.exe
 
 cache:
   yarn: true

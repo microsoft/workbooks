@@ -6,7 +6,7 @@ steps:
 
 - task: DotNetCoreInstaller@0
   inputs:
-    version: 2.1.4
+    version: 2.1.301
   displayName: Install .NET Core
 
 - task: NodeTool@0
@@ -16,7 +16,7 @@ steps:
 
 - task: NuGetToolInstaller@0
   inputs:
-    versionSpec: 4.6.1
+    versionSpec: 4.6.2
   displayName: Install NuGet CLI
 
 - script: npm install -g yarn

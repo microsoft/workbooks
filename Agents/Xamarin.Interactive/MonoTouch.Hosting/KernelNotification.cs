@@ -13,10 +13,10 @@
 // distribute, sublicense, and/or sell copies of the Software, and to
 // permit persons to whom the Software is furnished to do so, subject to
 // the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be
 // included in all copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
 // EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
 // MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -37,13 +37,13 @@ namespace Darwin {
     }
 
     [StructLayout (LayoutKind.Sequential)]
-    public struct TimeSpec {
+    struct TimeSpec {
         public nint Seconds;
         public nint NanoSeconds;
     }
 
     [StructLayout (LayoutKind.Sequential)]
-    public struct KernelEvent {
+    struct KernelEvent {
         public IntPtr /* uintptr_tr */ Ident;
         public EventFilter /* int16_t */ Filter;
         public EventFlags /* uint16_t */ Flags;
@@ -53,7 +53,7 @@ namespace Darwin {
     }
 
     [Flags]
-    public enum EventFlags : ushort {
+    enum EventFlags : ushort {
         Add         = 0x0001,
         Delete      = 0x0002,
         Enable      = 0x0004,
@@ -72,7 +72,7 @@ namespace Darwin {
         Error       = 0x4000,
     }
 
-    public enum EventFilter : short {
+    enum EventFilter : short {
         Read = -1,
         Write = -2,
         Aio = -3,
@@ -87,7 +87,7 @@ namespace Darwin {
     }
 
     [Flags]
-    public enum FilterFlags : uint {
+    enum FilterFlags : uint {
         ReadPoll          = EventFlags.Flag0,
         ReadOutOfBand     = EventFlags.Flag1,
         ReadLowWaterMark  = 0x00000001,
@@ -141,7 +141,7 @@ namespace Darwin {
         TimerAbsolute     =   0x00000008,
     }
 
-    public class KernelQueue : IDisposable {
+    class KernelQueue : IDisposable {
         int handle;
 
         public IntPtr Handle { get { return (IntPtr) handle; } }

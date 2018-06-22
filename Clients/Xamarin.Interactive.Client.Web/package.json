@@ -40,7 +40,7 @@
     "webpack-hot-middleware": "2.18.2"
   },
   "dependencies": {
-    "@aspnet/signalr": "=1.0.0-preview2-30131",
+    "@aspnet/signalr": "^1.0.0",
     "draft-js": "^0.10.5",
     "draft-js-export-html": "^1.2.0",
     "draft-js-markdown-plugin": "^1.1.1",
