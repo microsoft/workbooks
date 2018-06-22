@@ -78,9 +78,6 @@
       <Component Id="Microsoft.CodeAnalysis.Workspaces.dll" Guid="D3D1B300-8D79-4580-BADA-E33410DA4E30">
         <File Id="Microsoft.CodeAnalysis.Workspaces.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\Microsoft.CodeAnalysis.Workspaces.dll" />
       </Component>
-      <Component Id="Esent.Interop.dll" Guid="132a38ac-373c-481a-859d-37b0ef4273c0">
-        <File Id="Esent.Interop.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\Esent.Interop.dll" />
-      </Component>
       <Component Id="Microsoft.CodeAnalysis.Workspaces.Desktop.dll" Guid="2ae220ab-b01e-49e5-8da9-2c0deacea1c0">
         <File Id="Microsoft.CodeAnalysis.Workspaces.Desktop.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\Microsoft.CodeAnalysis.Workspaces.Desktop.dll" />
       </Component>
