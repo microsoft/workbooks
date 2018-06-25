@@ -52,7 +52,7 @@ git submodule update --recursive --init
 Now simply run:
 
 ```bash
-msbuild
+msbuild /restore
 ```
 
 Or for the strict .NET Core subset:
@@ -76,7 +76,7 @@ Profiles are specified via the MSBuild `Profile` property and may be
 combined with a `+` delimiter:
 
 ```bash
-msbuild /p:Profile=Console+Web
+msbuild /restore /p:Profile=Console+Web
 ```
 
 | Name      | Description                               | Minimum Dependencies                                                             |
@@ -102,7 +102,7 @@ for subsequent runs. For example:
 
 ```bash
 # "Configure" and perform initial build:
-msbuild \
+msbuild /restore \
   /p:Profile=Web \
   /p:Configuration=Release \
   /p:WithoutXamarin=true
@@ -147,7 +147,7 @@ Once the connection completes, click OK to close all the dialogs. Then,
 build the `Release` configuration by running the following:
 
 ```bash
-msbuild Build.proj \
+msbuild \
   /p:MacBuildHostAddress="<hostname-or-ip-of-your-mac>" \
   /p:MacBuildHostUser="<mac-username>" \
   /p:Configuration=Release /t:Build,Install
