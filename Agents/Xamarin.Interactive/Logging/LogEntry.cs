@@ -19,6 +19,11 @@ namespace Xamarin.Interactive.Logging
         internal LogFlags Flags { get; }
         public string Tag { get; }
         public string Message { get; }
+
+        [NonSerialized]
+        readonly Exception exception;
+        public Exception Exception => exception;
+
         public string CallerMemberName { get; }
         public string CallerFilePath { get; }
         public int CallerLineNumber { get; }
@@ -31,6 +36,7 @@ namespace Xamarin.Interactive.Logging
             LogFlags flags,
             string tag,
             string message,
+            Exception exception,
             string callerMemberName,
             string callerFilePath,
             int callerLineNumber)
@@ -42,6 +48,7 @@ namespace Xamarin.Interactive.Logging
             Flags = flags;
             Tag = tag;
             Message = message;
+            this.exception = exception;
             CallerMemberName = callerMemberName;
             CallerFilePath = callerFilePath;
             CallerLineNumber = callerLineNumber;
@@ -56,6 +63,7 @@ namespace Xamarin.Interactive.Logging
                 Flags,
                 Tag,
                 Message,
+                Exception,
                 CallerMemberName,
                 CallerFilePath,
                 CallerLineNumber);
