@@ -64,6 +64,33 @@ namespace Xamarin.MSBuild
             public NuGetResource [] Resources { get; set; }
         }
 
+        HttpClient httpClient;
+
+        (Stream stream, string contentType) HttpGet (string uri)
+        {
+            if (httpClient == null)
+                httpClient = new HttpClient ();
+
+            Log.LogMessage ("-> HTTP GET {0}", uri);
+
+            var response = httpClient.GetAsync (uri).GetAwaiter ().GetResult ();
+
+            Log.LogMessage (
+                "   {0} ({1}) {2}: {3} {4} bytes",
+                response.StatusCode,
+                (int)response.StatusCode,
+                response.ReasonPhrase,
+                response.Content.Headers.ContentType,
+                response.Content.Headers.ContentLength);
+
+            response.EnsureSuccessStatusCode ();
+
+            return (
+                response.Content.ReadAsStreamAsync ().GetAwaiter ().GetResult (),
+                response.Content.Headers.ContentType.MediaType
+            );
+        }
+
         IEnumerable<InvertedDependency> GetNuGetDependencies ()
         {
             var packagesToProjects = new Dictionary<PackageReference, List<Project>> ();
@@ -130,8 +157,8 @@ namespace Xamarin.MSBuild
                         .Where (source => source.StartsWith ("E ", StringComparison.Ordinal))
                         .Select (source => source.Substring (2))
                         .Select (source => {
-                            using (var client = new HttpClient ())
-                            using (var stream = client.GetStreamAsync (source).GetAwaiter ().GetResult ())
+                            var (stream, contentType) = HttpGet (source);
+                            using (stream)
                             using (var streamReader = new StreamReader (stream))
                             using (var jsonReader = new JsonTextReader (streamReader))
                                 return serializer
@@ -151,13 +178,15 @@ namespace Xamarin.MSBuild
                     var uri = $"{baseUri}{relativePath.Replace (Path.DirectorySeparatorChar, '/')}";
 
                     try {
-                        using (var client = new HttpClient ())
-                        using (var stream = client.GetStreamAsync (uri).GetAwaiter ().GetResult ()) {
+                        var (stream, contentType) = HttpGet (uri);
+                        using (stream) {
                             Directory.CreateDirectory (Path.GetDirectoryName (localPath));
                             using (var fileStream = File.Create (localPath))
                                 stream.CopyTo (fileStream);
                         }
-                    } catch {
+
+                        break;
+                    } catch (HttpRequestException) {
                     }
                 }
             }
@@ -176,14 +205,15 @@ namespace Xamarin.MSBuild
                 .OrderBy (pr => pr)
                 .Distinct ()
                 .Select (packageReference => {
-                    var invertedDependency = new InvertedDependency {
-                        Kind = DependencyKind.NuGet,
-                        Name = packageReference.Id,
-                        Version = packageReference.Version,
-                        DependentProjects = packagesToProjects [packageReference]
-                            .Select (p => Path.GetFileNameWithoutExtension (p.FullPath))
-                            .ToArray ()
-                    };
+                    var invertedDependency = InvertedDependency.Create (
+                        this,
+                        DependencyKind.NuGet,
+                        packageReference.Id,
+                        packageReference.Version);
+
+                    invertedDependency.DependentProjects = packagesToProjects [packageReference]
+                        .Select (p => Path.GetFileNameWithoutExtension (p.FullPath))
+                        .ToArray ();
 
                     var nuspecPath = GetNuSpecPath (packageReference);
                     if (nuspecPath == null) {
@@ -192,6 +222,7 @@ namespace Xamarin.MSBuild
                     }
 
                     if (nuspecPath != null) {
+                        Log.LogMessage ("-> Parsing nuspec {0}", nuspecPath);
                         var nuspec = XDocument.Load (nuspecPath);
                         var ns = nuspec.Root.GetDefaultNamespace ();
                         var metadata = nuspec.Root.Element (ns + "metadata");
@@ -213,11 +244,12 @@ namespace Xamarin.MSBuild
                 .Root
                 .Element ("dependencies")
                 .Descendants ()
-                .Select (e => new InvertedDependency {
-                    Kind = DependencyKind.Npm,
-                    Name = e.Name.ToString (),
-                    Version = e.Value
-            })).OrderBy (e => e.Name).ThenBy (e => e.Version);
+                .Select (e => InvertedDependency.Create (
+                    this,
+                    DependencyKind.Npm,
+                    e.Name.ToString (),
+                    e.Value))
+                ).OrderBy (e => e.Name).ThenBy (e => e.Version);
         }
 
         IEnumerable<InvertedDependency> GetGitSubmoduleDependencies ()
@@ -230,12 +262,12 @@ namespace Xamarin.MSBuild
                 if (parts == null || parts.Length < 2)
                     continue;
 
-                yield return new InvertedDependency {
-                    Kind = DependencyKind.GitSubmodule,
-                    Name = parts [1],
-                    Version = parts [0]
-                };
-            };
+                yield return InvertedDependency.Create (
+                    this,
+                    DependencyKind.GitSubmodule,
+                    parts [1],
+                    parts [0]);
+            }
         }
 
         public override bool Execute ()
@@ -321,6 +353,26 @@ namespace Xamarin.MSBuild
             public string [] DependentProjects { get; set; }
             public string LicenseUrl { get; set; }
             public string ProjectUrl { get; set; }
+
+            public static InvertedDependency Create (
+                Task task,
+                DependencyKind kind,
+                string name,
+                string version)
+            {
+                task.Log.LogMessage (
+                    MessageImportance.High,
+                    "Processing {0} {1}/{2}",
+                    kind,
+                    name,
+                    version);
+
+               return new InvertedDependency {
+                    Kind = kind,
+                    Name = name,
+                    Version = version
+                };
+            }
         }
 
         struct PackageReference : IEquatable<PackageReference>, IComparable<PackageReference>
