@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Net.Http;
 using System.Xml.Linq;
@@ -21,6 +22,8 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 
 using Xamarin.Interactive.Markdown;
+
+using SIOCZipArchive = System.IO.Compression.ZipArchive;
 
 namespace Xamarin.MSBuild
 {
@@ -178,11 +181,29 @@ namespace Xamarin.MSBuild
                     var uri = $"{baseUri}{relativePath.Replace (Path.DirectorySeparatorChar, '/')}";
 
                     try {
+                        Directory.CreateDirectory (Path.GetDirectoryName (localPath));
+
                         var (stream, contentType) = HttpGet (uri);
                         using (stream) {
-                            Directory.CreateDirectory (Path.GetDirectoryName (localPath));
-                            using (var fileStream = File.Create (localPath))
-                                stream.CopyTo (fileStream);
+                            if (contentType.EndsWith ("/xml", StringComparison.OrdinalIgnoreCase)) {
+                                using (var fileStream = File.Create (localPath))
+                                    stream.CopyTo (fileStream);
+                            } else {
+                                // MyGet does not implement NuGet v3 PackageBaseAddress/3.0.0 at all and will
+                                // only and always return the nupkg as content and never the nuspec :(
+                                // https://twitter.com/MyGetTeam/status/1011688120121810944
+                                Log.LogMessage ("-> non-nuspec/XML detected; assuming nupkg archive");
+                                using (var archive = new SIOCZipArchive (stream, ZipArchiveMode.Read))
+                                    archive
+                                        .Entries
+                                        .First (entry => string.Equals (
+                                            entry.FullName,
+                                            packageReference.Id + ".nuspec",
+                                            StringComparison.OrdinalIgnoreCase))
+                                        .ExtractToFile (
+                                            localPath,
+                                            overwrite: true);
+                            }
                         }
 
                         break;
