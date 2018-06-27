@@ -160,16 +160,20 @@ namespace Xamarin.MSBuild
                         .Where (source => source.StartsWith ("E ", StringComparison.Ordinal))
                         .Select (source => source.Substring (2))
                         .Select (source => {
-                            var (stream, contentType) = HttpGet (source);
-                            using (stream)
-                            using (var streamReader = new StreamReader (stream))
-                            using (var jsonReader = new JsonTextReader (streamReader))
-                                return serializer
-                                    .Deserialize<NuGetResources> (jsonReader)
-                                    .Resources
-                                    .Where (resource => resource.Type == "PackageBaseAddress/3.0.0")
-                                    .Select (resource => resource.Id)
-                                    .SingleOrDefault ();
+                            try {
+                                var (stream, contentType) = HttpGet (source);
+                                using (stream)
+                                using (var streamReader = new StreamReader (stream))
+                                using (var jsonReader = new JsonTextReader (streamReader))
+                                    return serializer
+                                        .Deserialize<NuGetResources> (jsonReader)
+                                        .Resources
+                                        .Where (resource => resource.Type == "PackageBaseAddress/3.0.0")
+                                        .Select (resource => resource.Id)
+                                        .SingleOrDefault ();
+                            } catch (HttpRequestException) {
+                                return null;
+                            }
                         })
                         .Where (source => source != null)
                         .ToList ();
