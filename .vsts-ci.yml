@@ -5,9 +5,13 @@ steps:
 # VSTS+YAML like we do for our "big builds".
 
 - script: |
+    MONO_VERSION=5.12.0.273
+    MONO_PACKAGE="MonoFramework-MDK-${MONO_VERSION}.macos10.xamarin.universal.pkg"
+    curl -LO "https://dl.xamarin.com/MonoFrameworkMDK/Macx86/${MONO_PACKAGE}"
+    sudo installer -target / -pkg "${MONO_PACKAGE}"
     sudo build/select-mono.sh latest
   condition: and(succeeded(), eq(variables['agent.os'], 'darwin'))
-  displayName: Select Mono
+  displayName: Install Mono
 
 - task: DotNetCoreInstaller@0
   inputs:
