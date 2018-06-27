@@ -4,6 +4,11 @@ steps:
 # to keep them in sync. Ideally we'll be able to run Prov in
 # VSTS+YAML like we do for our "big builds".
 
+- script: |
+    sudo build/select-mono.sh latest
+  condition: and(succeeded(), eq(variables['agent.os'], 'darwin'))
+  displayName: Select Mono
+
 - task: DotNetCoreInstaller@0
   inputs:
     version: 2.1.301
