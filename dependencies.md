@@ -6,7 +6,7 @@
 | NuGet        | [CommonMark.NET][1]                              | 0.15.1-abock-workbooks.1384619           | [License][2]  |
 | NuGet        | [MahApps.Metro][3]                               | 1.5.0                                    | [License][4]  |
 | NuGet        | [MahApps.Metro.IconPacks.Material][5]            | 1.9.1                                    | [License][6]  |
-| NuGet        | [Microsoft.AspNetCore.App][7]                    | 2.1.0                                    | [License][8]  |
+| NuGet        | [Microsoft.AspNetCore.App][7]                    | 2.1.1                                    | [License][8]  |
 | NuGet        | [Microsoft.CodeAnalysis.CSharp][9]               | 2.8.2                                    | [License][10] |
 | NuGet        | [Microsoft.CodeAnalysis.CSharp.Features][9]      | 2.8.2                                    | [License][10] |
 | NuGet        | [Mono.Options][11]                               | 5.3.0.1                                  | [License][12] |
