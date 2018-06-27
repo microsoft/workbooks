@@ -21,7 +21,7 @@
 | NuGet        | [System.ValueTuple][22]                          | 4.4.0                                    | [License][24] |
 | NuGet        | [WindowsAPICodePack-mono][25]                    | 1.1.0                                    |               |
 | NuGet        | [Xamarin.Forms][26]                              | 3.0.0.482510                             | [License][27] |
-| NuGet        | [YamlDotNet][28]                                 | 4.3.0                                    | [License][29] |
+| NuGet        | [YamlDotNet][28]                                 | 4.3.1                                    | [License][29] |
 | Npm          | draft-js                                         | ^0.10.5                                  |               |
 | Npm          | draft-js-export-html                             | ^1.2.0                                   |               |
 | Npm          | draft-js-markdown-plugin                         | ^1.1.1                                   |               |

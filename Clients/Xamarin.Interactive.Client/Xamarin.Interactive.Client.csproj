@@ -9,9 +9,9 @@
     <Import_RootNamespace>Xamarin.Interactive</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="YamlDotNet" Version="4.3.0" />
     <PackageReference Include="CommonMark.NET" Version="0.15.1-abock-workbooks.1384619" />
     <PackageReference Include="Newtonsoft.Json" Version="11.0.1" />
+    <PackageReference Include="YamlDotNet" Version="4.3.1" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Agents\Xamarin.Interactive\Xamarin.Interactive.csproj" />
