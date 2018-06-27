@@ -457,6 +457,9 @@
       <Component Id="Xamarin.Interactive.CodeAnalysis.Roslyn.dll" Guid="CE76C8C5-A843-4091-A0C3-850EF72EDB2E">
         <File Id="Xamarin.Interactive.CodeAnalysis.Roslyn.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\Xamarin.Interactive.CodeAnalysis.Roslyn.dll" />
       </Component>
+      <Component Id="NuGet.Credentials.dll" Guid="D0599D71-CAC9-4BBD-A5AC-615AD7B863D0">
+        <File Id="NuGet.Credentials.dll" Source="$(var.Xamarin.Interactive.Client.Windows.TargetDir)\NuGet.Credentials.dll" />
+      </Component>
     </ComponentGroup>
     <ComponentGroup Id="ClientReplEditorResources" Directory="InspectorResourcesReplEditorFolder">
       <Component Id="editor.css" Guid="C9070752-B1DA-4918-81BD-3DA8869D9A62">
