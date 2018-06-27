@@ -16,6 +16,7 @@
   "Xamarin/Workbooks/Client/NuGet.Commands.dll": "oss",
   "Xamarin/Workbooks/Client/NuGet.Common.dll": "oss",
   "Xamarin/Workbooks/Client/NuGet.Configuration.dll": "oss",
+  "Xamarin/Workbooks/Client/NuGet.Credentials.dll": "oss",
   "Xamarin/Workbooks/Client/NuGet.DependencyResolver.Core.dll": "oss",
   "Xamarin/Workbooks/Client/NuGet.Frameworks.dll": "oss",
   "Xamarin/Workbooks/Client/NuGet.LibraryModel.dll": "oss",
