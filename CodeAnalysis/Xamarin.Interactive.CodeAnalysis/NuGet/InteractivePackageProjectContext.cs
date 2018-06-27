@@ -26,7 +26,8 @@ namespace Xamarin.Interactive.NuGet
                 PackageSaveMode.Defaultv3,
                 XmlDocFileSaveMode.None,
                 logger,
-                signedPackageVerifier: null);
+                signedPackageVerifier: null,
+                signedPackageVerifierSettings: null);
         }
 
         public NuGetActionType ActionType { get; set; }

@@ -117,7 +117,7 @@
   {
     "Kind": "NuGet",
     "Name": "NuGet.PackageManagement",
-    "Version": "4.7.0-zlocal-35658",
+    "Version": "4.8.0-workbooks",
     "DependentProjects": [
       "Xamarin.Interactive.CodeAnalysis"
     ],

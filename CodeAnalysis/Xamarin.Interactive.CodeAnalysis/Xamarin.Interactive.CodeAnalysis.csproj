@@ -11,7 +11,7 @@
     <PackageReference Include="Newtonsoft.Json" Version="11.0.1" />
     <PackageReference Include="System.Collections.Immutable" Version="1.3.1" />
     <PackageReference Include="System.Reflection.Metadata" Version="1.4.2" />
-    <PackageReference Include="NuGet.PackageManagement" Version="4.7.0-zlocal-35658" />
+    <PackageReference Include="NuGet.PackageManagement" Version="4.8.0-workbooks" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Agents\Xamarin.Interactive\Xamarin.Interactive.csproj" />

@@ -13,7 +13,7 @@
 | NuGet        | [Mono.WebAssembly.Sdk][13]                       | 5.15.0-wasm-e241e36                      |               |
 | NuGet        | [MouseKeyboardActivityMonitor][14]               | 4.0.5150.10665                           |               |
 | NuGet        | [Newtonsoft.Json][15]                            | 11.0.1                                   | [License][16] |
-| NuGet        | NuGet.PackageManagement                          | 4.7.0-zlocal-35658                       | [License][17] |
+| NuGet        | NuGet.PackageManagement                          | 4.8.0-workbooks                          | [License][17] |
 | NuGet        | [Serilog.Sinks.Console][18]                      | 3.1.1                                    | [License][19] |
 | NuGet        | [SSH.NET][20]                                    | 2016.0.0                                 | [License][21] |
 | NuGet        | [System.Collections.Immutable][22]               | 1.3.1                                    | [License][23] |
