@@ -201,7 +201,7 @@ namespace Xamarin.MSBuild
                     explicitConfiguration = SolutionConfiguration;
 
                 var explicitPlatform = project.GetPropertyValue ("Platform");
-                if (string.IsNullOrEmpty (explicitPlatform))
+                if (string.IsNullOrEmpty (explicitPlatform) || explicitPlatform == "AnyCPU")
                     explicitPlatform = SolutionPlatform;
 
                 parent.AddChild (
