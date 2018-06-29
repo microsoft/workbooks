@@ -39,6 +39,7 @@ namespace Xamarin.Interactive.Tests
                 "Test log.",
                 null,
                 null,
+                null,
                 0);
 
             lp.Commit (newLogEntry);
@@ -76,6 +77,7 @@ namespace Xamarin.Interactive.Tests
                     LogFlags.None,
                     null,
                     "Test log.",
+                    null,
                     null,
                     null,
                     0);

@@ -468,11 +468,16 @@ namespace Xamarin.Interactive.Client
 
             PostEvent (ClientSessionEventKind.AgentConnected);
 
+            // May be set by Inspector extensions to allow correlating client telemetry with IDE telemetry
+            var externalTelemetrySessionId = Uri
+                .Parameters
+                .FirstOrDefault (p => p.Key == "TelemetrySessionId")
+                .Value;
+
             new Telemetry.Models.AgentSession {
-                AppSessionId = ClientApp.SharedInstance.AppSessionId,
-                Timestamp = DateTimeOffset.UtcNow,
-                Flavor = agent.Identity.FlavorId,
-                Kind = (Telemetry.Models.AgentSessionKind)(int)SessionKind
+                AgentFlavor = agent.Identity.FlavorId,
+                ClientKind = SessionKind,
+                ExternalTelemetrySessionId = externalTelemetrySessionId
             }.Post ();
         }
 
