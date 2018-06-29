@@ -9,7 +9,7 @@ using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using System.Net.NetworkInformation;
 using System.ComponentModel;
-using Microsoft.DotNet.Cli.Utils;
+using Xamarin.ProcessControl;
 
 namespace Microsoft.DotNet.Cli.Telemetry
 {
@@ -64,18 +64,11 @@ namespace Microsoft.DotNet.Cli.Telemetry
 
         private static string GetIpCommandOutput()
         {
-            var ipResult = new ProcessStartInfo
+            try
             {
-                FileName = "ip",
-                Arguments = "link",
-                UseShellExecute = false
-            }.ExecuteAndCaptureOutput(out string ipStdOut, out string ipStdErr);
-
-            if (ipResult == 0)
-            {
-                return ipStdOut;
+                return string.Join (Environment.NewLine, Exec.Run ("ip", "link"));
             }
-            else
+            catch
             {
                 return null;
             }
@@ -85,17 +78,11 @@ namespace Microsoft.DotNet.Cli.Telemetry
         {
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
-                var result = new ProcessStartInfo
+                try
                 {
-                    FileName = "getmac.exe",
-                    UseShellExecute = false
-                }.ExecuteAndCaptureOutput(out string stdOut, out string stdErr);
-
-                if (result == 0)
-                {
-                    return stdOut;
+                    return string.Join (Environment.NewLine, Exec.Run ("getmac.exe"));
                 }
-                else
+                catch
                 {
                     return null;
                 }
@@ -104,32 +91,11 @@ namespace Microsoft.DotNet.Cli.Telemetry
             {
                 try
                 {
-                    var ifconfigResult = new ProcessStartInfo
-                    {
-                        FileName = "ifconfig",
-                        Arguments = "-a",
-                        UseShellExecute = false
-                    }.ExecuteAndCaptureOutput(out string ifconfigStdOut, out string ifconfigStdErr);
-
-                    if (ifconfigResult == 0)
-                    {
-                        return ifconfigStdOut;
-                    }
-                    else
-                    {
-                        return GetIpCommandOutput();
-                    }
+                    return string.Join (Environment.NewLine, Exec.Run ("ifconfig", "-a"));
                 }
-                catch (Win32Exception e)
+                catch
                 {
-                    if (e.NativeErrorCode == ErrorFileNotFound)
-                    {
-                        return GetIpCommandOutput();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    return GetIpCommandOutput ();
                 }
             }
         }
