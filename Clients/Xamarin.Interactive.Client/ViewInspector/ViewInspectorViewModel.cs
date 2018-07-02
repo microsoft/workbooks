@@ -178,11 +178,9 @@ namespace Xamarin.Interactive.Client.ViewInspector
         InspectView selectedView;
         public InspectView SelectedView {
             get { return selectedView; }
-            set {
+            private set {
                 if (selectedView != value) {
                     selectedView = value;
-                    if (selectedView != null)
-                        SelectView (selectedView, false, false);
                     OnPropertyChanged ();
                 }
             }
@@ -285,8 +283,14 @@ namespace Xamarin.Interactive.Client.ViewInspector
 
             RootView = root;
             RepresentedView = current;
-            if (setSelectedView)
+            if (setSelectedView) {
                 SelectedView = view;
+
+                if (!string.IsNullOrEmpty (view?.PublicCSharpType)
+                    && Session.SessionKind == ClientSessionKind.LiveInspection)
+                    Session.WorkbookPageViewModel.EvaluateAsync (
+                        $"var selectedView = GetObject<{view.PublicCSharpType}> (0x{view.Handle:x})").Forget ();
+            }
         }
 
         protected void UpdateSupportedHierarchies (IEnumerable<string> hierarchies)
