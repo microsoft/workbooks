@@ -417,6 +417,9 @@
       <Component Id="File7c924b556a379c985ff731694b77132a4b934459" Guid="6330E9A3-9BAB-4960-B4B4-C5BD35BFF869">
         <File Id="File7c924b556a379c985ff731694b77132a4b934459" Source="$(var.AndroidAppAssembliesFacadesDir)\System.Security.Cryptography.RandomNumberGenerator.dll" />
       </Component>
+      <Component Id="Filebfe5209cad006f91e774e76fa0f50803ad56dd2f" Guid="8C4517D7-5025-4E32-B789-5EE872284D85">
+        <File Id="Filebfe5209cad006f91e774e76fa0f50803ad56dd2f" Source="$(var.AndroidAppAssembliesFacadesDir)\System.Memory.dll" />
+      </Component>
     </ComponentGroup>
     <ComponentGroup Id="AndroidAgentAppAssembliesComponents" Directory="AndroidAgentAppAssembliesInstallFolder">
       <Component Id="AndroidAgentApp.mscorlib.dll" Guid="51700F63-5028-4197-9F82-717479E410C5">
