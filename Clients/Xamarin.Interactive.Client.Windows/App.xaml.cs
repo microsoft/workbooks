@@ -244,6 +244,9 @@ namespace Xamarin.Interactive.Client.Windows
 
         public bool CanShutdown => Windows.OfType<AgentSessionWindow> ().All (w => !w.IsDirty);
 
+        public void OnExit (object sender, ExitEventArgs args)
+            => ClientApp.SharedInstance?.NotifyWillTerminate ();
+
         public static void CheckNeedsExit ()
         {
             if (!Current.Windows.Cast<Window> ().Any (w => w.IsVisible))
