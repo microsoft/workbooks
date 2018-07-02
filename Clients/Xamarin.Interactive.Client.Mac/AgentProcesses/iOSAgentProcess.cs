@@ -146,9 +146,9 @@ namespace Xamarin.Interactive.Client.AgentProcesses
                 .Select (r => r.Name.Replace ("iOS ", ""))
                 .LastOrDefault ();
 
-            var compatibleDevices = MTouchSdkTool.GetCompatibleDevices (mtouchList);
-            simulatorDevice =
-                compatibleDevices.FirstOrDefault (d => d.Name == "iPhone X") ?? compatibleDevices.FirstOrDefault ();
+            simulatorDevice = MTouchSdkTool
+                .GetCompatibleDevices (mtouchList)
+                .FirstOrDefault ();
 
             if (simulatorDevice != null && defaultSdkVersion != null)
                 return;
