@@ -267,8 +267,8 @@ namespace Xamarin.Interactive.Client.ViewInspector
             if (withinExistingTree && RootView != null && view != null)
                 view = RootView.FindSelfOrChild (v => v.Handle == view.Handle);
 
-            var root = view?.Root;
-            var current = view;
+            var root = view?.Root ?? RootView;
+            var current = view ?? RepresentedView;
 
             // find the "window" to represent in the 3D view by either
             // using the root node of the tree for trees with real roots,
