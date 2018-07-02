@@ -33,10 +33,9 @@ namespace Xamarin.Interactive.Client.AgentProcesses
     {
         const string TAG = nameof (iOSAgentProcess);
 
-        const string simulatorDevice = "iphone,64";
-
         FilePath sdkRoot;
         string defaultSdkVersion;
+        MTouchListSimXml.SimDeviceElement simulatorDevice;
 
         NSTask mlaunchProcess;
         NSObject terminatedObserver;
@@ -72,7 +71,7 @@ namespace Xamarin.Interactive.Client.AgentProcesses
                 "-sdkroot", sdkRoot,
                 "-launchsim", WorkbookApp.AppPath,
                 "-sdk", defaultSdkVersion,
-                "-device", simulatorDevice
+                "-device", $":v2:udid={simulatorDevice.UDID}"
             };
 
             mlaunchArguments.AddRange (identifyAgentRequest
@@ -147,7 +146,11 @@ namespace Xamarin.Interactive.Client.AgentProcesses
                 .Select (r => r.Name.Replace ("iOS ", ""))
                 .LastOrDefault ();
 
-            if (defaultSdkVersion != null)
+            var compatibleDevices = MTouchSdkTool.GetCompatibleDevices (mtouchList);
+            simulatorDevice =
+                compatibleDevices.FirstOrDefault (d => d.Name == "iPhone X") ?? compatibleDevices.FirstOrDefault ();
+
+            if (simulatorDevice != null && defaultSdkVersion != null)
                 return;
 
             throw new UserPresentableException (Catalog.GetString ("No iOS simulators found."));

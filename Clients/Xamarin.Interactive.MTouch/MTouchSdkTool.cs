@@ -133,14 +133,20 @@ namespace Xamarin.Interactive.MTouch
                 mlaunchPath,
                 $"{sdkRootArgs} --listsim=\"{tmpFile}\"");
 
-            var x = new XmlSerializer (typeof (MTouchListSimXml));
-            var mtouchInfo = x.Deserialize (File.OpenRead (tmpFile)) as MTouchListSimXml;
+            var mtouchInfo = ReadFromXml (File.OpenRead (tmpFile));
             File.Delete (tmpFile);
 
             return mtouchInfo;
         }
 
-        public static IEnumerable<MTouchListSimXml.SimDeviceElement> GetCompatibleDevices (MTouchListSimXml mtouchInfo)
+        public static MTouchListSimXml ReadFromXml (Stream xmlStream)
+        {
+            if (xmlStream == null)
+                throw new ArgumentNullException (nameof (xmlStream));
+            return new XmlSerializer (typeof (MTouchListSimXml)).Deserialize (xmlStream) as MTouchListSimXml;
+        }
+
+        public static List<MTouchListSimXml.SimDeviceElement> GetCompatibleDevices (MTouchListSimXml mtouchInfo)
         {
             if (mtouchInfo == null)
                 throw new ArgumentNullException (nameof (mtouchInfo));
@@ -150,13 +156,14 @@ namespace Xamarin.Interactive.MTouch
             var iOSRuntime = simInfo.SupportedRuntimes
                 .LastOrDefault (r => r.Name.StartsWith ("iOS", StringComparison.OrdinalIgnoreCase));
 
-            return
+            var devices =
                 from d in simInfo.AvailableDevices
                 where d.SimRuntime == iOSRuntime.Identifier
                 join t in simInfo.SupportedDeviceTypes on d.SimDeviceType equals t.Identifier
                 where t.ProductFamilyId == "IPhone"
                 where t.Supports64Bits
                 select d;
+            return devices.ToList ();
         }
 
         /// <summary>

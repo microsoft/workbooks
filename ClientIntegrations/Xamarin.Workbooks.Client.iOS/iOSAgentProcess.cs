@@ -244,13 +244,13 @@ namespace Xamarin.Interactive.Client.AgentProcesses
                     simCheckerResult.Error);
             }
 
-            foreach (var resultLine in simCheckerResult.Result.Split (Environment.NewLine.ToCharArray (), StringSplitOptions.RemoveEmptyEntries)) {
-                var line = resultLine.Trim ();
-                if (line.StartsWith ("UDID: ")) {
-                    deviceUdid = line.Substring (6);
-                    break;
-                }
-            }
+            var mtouchList = MTouchSdkTool.ReadFromXml (
+                new MemoryStream (Encoding.UTF8.GetBytes (simCheckerResult.Result)));
+
+            var compatibleDevices = MTouchSdkTool.GetCompatibleDevices (mtouchList);
+            var simulatorDevice =
+                compatibleDevices.FirstOrDefault (d => d.Name == "iPhone X") ?? compatibleDevices.FirstOrDefault ();
+            deviceUdid = simulatorDevice?.UDID;
 
             if (deviceUdid == null)
                 throw new UserPresentableException (
