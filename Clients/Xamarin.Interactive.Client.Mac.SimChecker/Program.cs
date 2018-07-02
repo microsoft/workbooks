@@ -10,6 +10,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Xml;
+using System.Xml.Serialization;
 
 using Xamarin.Interactive.Logging;
 using Xamarin.Interactive.MTouch;
@@ -56,22 +58,15 @@ namespace Xamarin.Interactive.Mac.SimChecker
                 return;
             }
 
-            IEnumerable<MTouchListSimXml.SimDeviceElement> compatibleDevices;
             try {
-                compatibleDevices = MTouchSdkTool.GetCompatibleDevices (mtouchList);
+                // compatibleDevices = MTouchSdkTool.GetCompatibleDevices (mtouchList);
+                var x = new XmlSerializer (typeof (MTouchListSimXml));
+                x.Serialize (Console.Out, mtouchList);
             } catch (Exception e) {
                 Console.Error.WriteLine (e.Message);
                 Environment.Exit (103); // Invalid mlaunch output
                 return;
             }
-
-            var firstCompatibleDevice = compatibleDevices?.FirstOrDefault ();
-            if (firstCompatibleDevice == null) {
-                Console.Error.WriteLine ("No compatible simulator devices installed");
-                Environment.Exit (104); // No compatible sim listed by mlaunch
-            }
-
-            Console.WriteLine ($"UDID: {firstCompatibleDevice.UDID}");
         }
     }
 }
