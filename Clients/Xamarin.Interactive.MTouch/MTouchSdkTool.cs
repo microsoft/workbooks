@@ -162,6 +162,7 @@ namespace Xamarin.Interactive.MTouch
                 join t in simInfo.SupportedDeviceTypes on d.SimDeviceType equals t.Identifier
                 where t.ProductFamilyId == "IPhone"
                 where t.Supports64Bits
+                orderby d
                 select d;
             return devices.ToList ();
         }

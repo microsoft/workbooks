@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -247,10 +248,10 @@ namespace Xamarin.Interactive.Client.AgentProcesses
             var mtouchList = MTouchSdkTool.ReadFromXml (
                 new MemoryStream (Encoding.UTF8.GetBytes (simCheckerResult.Result)));
 
-            var compatibleDevices = MTouchSdkTool.GetCompatibleDevices (mtouchList);
-            var simulatorDevice =
-                compatibleDevices.FirstOrDefault (d => d.Name == "iPhone X") ?? compatibleDevices.FirstOrDefault ();
-            deviceUdid = simulatorDevice?.UDID;
+            deviceUdid = MTouchSdkTool
+                .GetCompatibleDevices (mtouchList)
+                .FirstOrDefault ()
+                ?.UDID;
 
             if (deviceUdid == null)
                 throw new UserPresentableException (
