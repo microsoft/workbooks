@@ -31,8 +31,7 @@ namespace Xamarin.Interactive.CodeAnalysis.Resolving
         {
             CompilationConfiguration = compilationConfiguration;
 
-            agentArchitecture = Environment.Is64BitProcess &&
-                (HostEnvironment.OS != HostOS.Windows || compilationConfiguration.Sdk.IsNot (SdkId.ConsoleNetCore))
+            agentArchitecture = Environment.Is64BitProcess
                 ? Architecture.X64
                 : Architecture.X86;
         }
