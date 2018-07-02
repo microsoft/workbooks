@@ -6,8 +6,10 @@
     </PropertyGroup>
     <MSBuild Projects="BuildBundle.proj" Targets="$(Targets)" Properties="WorkbookAppTarget=Modern;LSMinimumSystemVersion=10.11" />
     <MSBuild Projects="BuildBundle.proj" Targets="$(Targets)" Properties="WorkbookAppTarget=Modern;LSMinimumSystemVersion=10.12" />
+    <MSBuild Projects="BuildBundle.proj" Targets="$(Targets)" Properties="WorkbookAppTarget=Modern;LSMinimumSystemVersion=10.13" />
     <MSBuild Projects="BuildBundle.proj" Targets="$(Targets)" Properties="WorkbookAppTarget=Full;LSMinimumSystemVersion=10.11" />
     <MSBuild Projects="BuildBundle.proj" Targets="$(Targets)" Properties="WorkbookAppTarget=Full;LSMinimumSystemVersion=10.12" />
+    <MSBuild Projects="BuildBundle.proj" Targets="$(Targets)" Properties="WorkbookAppTarget=Full;LSMinimumSystemVersion=10.13" />
   </Target>
   <Target Name="_CleanBundles">
     <RemoveDir Directories="bin;obj" />
