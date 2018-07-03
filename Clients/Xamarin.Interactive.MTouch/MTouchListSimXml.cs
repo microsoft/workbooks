@@ -5,6 +5,7 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
+using System;
 using System.Xml.Serialization;
 
 namespace Xamarin.Interactive.MTouch
@@ -43,7 +44,7 @@ namespace Xamarin.Interactive.MTouch
             public bool Supports64Bits { get; set; }
         }
 
-        public class SimDeviceElement
+        public class SimDeviceElement : IComparable<SimDeviceElement>
         {
             [XmlAttribute]
             public string UDID { get; set; }
@@ -54,6 +55,19 @@ namespace Xamarin.Interactive.MTouch
             public string SimRuntime { get; set; }
 
             public string SimDeviceType { get; set; }
+
+            public int CompareTo (SimDeviceElement other)
+            {
+                if (other == null)
+                    return -1;
+
+                // NOTE: This is copied from IPhoneSimulatorExecutionTargetGroup in VSmac.
+                //
+                // Treating iPhone X (ten) as iPhone 10 makes it so 'iPhone 7 < iPhone 8 < iPhone X'
+                var name = Name.Replace ("X", "10");
+                var otherName = other.Name.Replace ("X", "10");
+                return string.Compare (name, otherName, StringComparison.OrdinalIgnoreCase);
+            }
         }
 
         public string SdkRoot { get; set; }
