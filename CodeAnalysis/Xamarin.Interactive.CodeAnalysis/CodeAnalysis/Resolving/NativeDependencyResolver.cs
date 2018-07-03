@@ -45,7 +45,7 @@ namespace Xamarin.Interactive.CodeAnalysis.Resolving
             var resolvedAssembly = base.ParseAssembly (resolveOperation, path, peReader, metadataReader);
             var nativeDependencies = new List<ExternalDependency> ();
 
-            if (CompilationConfiguration.Sdk.Is (SdkId.XamarinIos))
+            if (CompilationConfiguration != null && CompilationConfiguration.Sdk.Is (SdkId.XamarinIos))
                 nativeDependencies.AddRange (
                     GetEmbeddedFrameworks (
                         resolveOperation,
