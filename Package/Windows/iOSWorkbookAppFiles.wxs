@@ -620,9 +620,6 @@
       <Component Id="Filedc35ffdeee911ab35a9c529f28d6c7940a8c2b7f" Guid="E2261791-2B25-414F-B9D7-E70C516AC919">
         <File Id="Filedc35ffdeee911ab35a9c529f28d6c7940a8c2b7f" Source="$(var.iOSWorkbookAppFacadesDir)\System.Drawing.Common.dll" />
       </Component>
-      <Component Id="Filee5e3ae844ff3e59992413e819fc24858fd5cb003" Guid="0329E4AF-5880-49D7-B496-99B1DF26CAC1">
-        <File Id="Filee5e3ae844ff3e59992413e819fc24858fd5cb003" Source="$(var.iOSWorkbookAppFacadesDir)\System.Memory.dll" />
-      </Component>
       <Component Id="File3f7c7cc57914eb01c7b30f9f7e99571ae93d90e6" Guid="4074FEAE-813E-4CD0-93FD-071D87F86778">
         <File Id="File3f7c7cc57914eb01c7b30f9f7e99571ae93d90e6" Source="$(var.iOSWorkbookAppFacadesDir)\System.Resources.Reader.dll" />
       </Component>
