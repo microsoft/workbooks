@@ -438,11 +438,6 @@ namespace Xamarin.Interactive.Client.Windows
 
             propertyEditor.SelectedItems.Clear ();
             propertyEditor.SelectedItems.Add (remoteProperty);
-
-            if (!string.IsNullOrEmpty (view?.PublicCSharpType)
-                && Session.SessionKind == ClientSessionKind.LiveInspection)
-                await Session.EvaluationService.EvaluateAsync (
-                    $"var selectedView = GetObject<{view.PublicCSharpType}> (0x{view.Handle:x})");
         }
 
         void OnClearHistory (object sender, ExecutedRoutedEventArgs e)
