@@ -620,6 +620,15 @@
       <Component Id="File957a64dc0529d7d7b7d772068bb88a78b2fab699" Guid="F3662CE4-F12D-4107-9479-1D341E6724A2">
         <File Id="File957a64dc0529d7d7b7d772068bb88a78b2fab699" Source="$(var.iOSWorkbookAppFacadesDir)\System.Security.Cryptography.RandomNumberGenerator.dll" />
       </Component>
+      <Component Id="Filedc35ffdeee911ab35a9c529f28d6c7940a8c2b7f" Guid="E2261791-2B25-414F-B9D7-E70C516AC919">
+        <File Id="Filedc35ffdeee911ab35a9c529f28d6c7940a8c2b7f" Source="$(var.iOSWorkbookAppFacadesDir)\System.Drawing.Common.dll" />
+      </Component>
+      <Component Id="File3f7c7cc57914eb01c7b30f9f7e99571ae93d90e6" Guid="4074FEAE-813E-4CD0-93FD-071D87F86778">
+        <File Id="File3f7c7cc57914eb01c7b30f9f7e99571ae93d90e6" Source="$(var.iOSWorkbookAppFacadesDir)\System.Resources.Reader.dll" />
+      </Component>
+      <Component Id="File3e346d0091f83bb192105f4836979a016dc2f0ff" Guid="CB64341B-C200-43DA-BCAF-FD0312E73FB5">
+        <File Id="File3e346d0091f83bb192105f4836979a016dc2f0ff" Source="$(var.iOSWorkbookAppFacadesDir)\System.Resources.Writer.dll" />
+      </Component>
     </ComponentGroup>
     <ComponentGroup Id="iOSWorkbookAppClientIntegrationComponents" Directory="iOSAgentAppClientIntegrationInstallFolder">
       <Component Id="Filef9d331e1a8fb665602e4f328e687005046e96da4" Guid="680E50D5-E9F7-4D94-BAA5-96D0D2E76D8D">
