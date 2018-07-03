@@ -1,5 +1,12 @@
 # Version @BUILD_DOCUMENTATION_VERSION@
 
+* Fix setting `selectedView` in Inspector on Mac
+  ([#456](https://github.com/Microsoft/workbooks/issues/456)).
+
+* Fix possible crash when copying system info to clipboard on Windows.
+
+# Version 1.4.1
+
 * Add initial support for [ML.NET][ml-net]
   ([#303](https://github.com/Microsoft/workbooks/issues/303)).
   - See our new [sample workbooks][ml-net-workbooks].
