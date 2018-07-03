@@ -258,8 +258,7 @@ namespace Xamarin.Interactive.Client.AgentProcesses
                     Catalog.GetString (
                         "Unexpected error communicating with the Mac build host."),
                     Catalog.GetString (
-                        "Confirm you have the same version of Xamarin Workbooks " +
-                        "installed on both Mac and Windows."));
+                        "Check your Xcode, Xamarin, and Visual Studio configurations."));
         }
 
         static Message CreateInstallAlert (
