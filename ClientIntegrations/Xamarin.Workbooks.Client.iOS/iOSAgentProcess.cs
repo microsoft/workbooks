@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -244,21 +245,20 @@ namespace Xamarin.Interactive.Client.AgentProcesses
                     simCheckerResult.Error);
             }
 
-            foreach (var resultLine in simCheckerResult.Result.Split (Environment.NewLine.ToCharArray (), StringSplitOptions.RemoveEmptyEntries)) {
-                var line = resultLine.Trim ();
-                if (line.StartsWith ("UDID: ")) {
-                    deviceUdid = line.Substring (6);
-                    break;
-                }
-            }
+            var mtouchList = MTouchSdkTool.ReadFromXml (
+                new MemoryStream (Encoding.UTF8.GetBytes (simCheckerResult.Result)));
+
+            deviceUdid = MTouchSdkTool
+                .GetCompatibleDevices (mtouchList)
+                .FirstOrDefault ()
+                ?.UDID;
 
             if (deviceUdid == null)
                 throw new UserPresentableException (
                     Catalog.GetString (
                         "Unexpected error communicating with the Mac build host."),
                     Catalog.GetString (
-                        "Confirm you have the same version of Xamarin Workbooks " +
-                        "installed on both Mac and Windows."));
+                        "Check your Xcode, Xamarin, and Visual Studio configurations."));
         }
 
         static Message CreateInstallAlert (
