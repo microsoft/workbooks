@@ -99,6 +99,14 @@
       DestinationFolder="$(InspectorNuGetPayloadDirectory)Client\%(RecursiveDir)"/>
 
     <ItemGroup>
+      <ExtraRootFiles Include="$(ArtifactsBasePath)buildinfo"/>
+    </ItemGroup>
+    <Copy
+      SkipUnchangedFiles="true"
+      SourceFiles="@(ExtraRootFiles)"
+      DestinationFolder="$(InspectorNuGetPayloadDirectory)"/>
+
+    <ItemGroup>
       <AndroidAgentFiles Include="$(TopDirectory)Agents\Xamarin.Interactive.Android\bin\$(Configuration)\*\Xamarin.Interactive.Android.dll"/>
     </ItemGroup>
     <Copy
