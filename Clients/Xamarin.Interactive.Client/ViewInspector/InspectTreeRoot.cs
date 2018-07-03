@@ -115,7 +115,7 @@ namespace Xamarin.Interactive.Client.ViewInspector
                     return;
 
                 selectedNode = value;
-                model.SelectedView = selectedNode?.View;
+                model.SelectView (selectedNode?.View, false, true);
                 NotifyPropertyChanged ();
             }
             get {

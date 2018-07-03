@@ -178,11 +178,9 @@ namespace Xamarin.Interactive.Client.ViewInspector
         InspectView selectedView;
         public InspectView SelectedView {
             get { return selectedView; }
-            set {
+            private set {
                 if (selectedView != value) {
                     selectedView = value;
-                    if (selectedView != null)
-                        SelectView (selectedView, false, false);
                     OnPropertyChanged ();
                 }
             }
@@ -269,8 +267,8 @@ namespace Xamarin.Interactive.Client.ViewInspector
             if (withinExistingTree && RootView != null && view != null)
                 view = RootView.FindSelfOrChild (v => v.Handle == view.Handle);
 
-            var root = view?.Root;
-            var current = view;
+            var root = view?.Root ?? RootView;
+            var current = view ?? RepresentedView;
 
             // find the "window" to represent in the 3D view by either
             // using the root node of the tree for trees with real roots,
@@ -285,8 +283,14 @@ namespace Xamarin.Interactive.Client.ViewInspector
 
             RootView = root;
             RepresentedView = current;
-            if (setSelectedView)
+            if (setSelectedView) {
                 SelectedView = view;
+
+                if (!string.IsNullOrEmpty (view?.PublicCSharpType)
+                    && Session.SessionKind == ClientSessionKind.LiveInspection)
+                    Session.WorkbookPageViewModel.EvaluateAsync (
+                        $"var selectedView = GetObject<{view.PublicCSharpType}> (0x{view.Handle:x})").Forget ();
+            }
         }
 
         protected void UpdateSupportedHierarchies (IEnumerable<string> hierarchies)
