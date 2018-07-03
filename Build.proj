@@ -535,6 +535,14 @@
       SourceFiles="@(InspectorClientFiles)"
       DestinationFolder="$(InspectorNuGetPackageWindowsContentDir)Client\%(RecursiveDir)"/>
 
+    <ItemGroup>
+      <ExtraRootFiles Include="$(PackageOutputDir)buildinfo"/>
+    </ItemGroup>
+    <Copy
+      SkipUnchangedFiles="true"
+      SourceFiles="@(ExtraRootFiles)"
+      DestinationFolder="$(InspectorNuGetPackageWindowsContentDir)"/>
+
     <Copy
       SkipUnchangedFiles="true"
       SourceFiles="@(AndroidAgentFiles)"
