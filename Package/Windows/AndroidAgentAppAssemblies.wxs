@@ -417,9 +417,6 @@
       <Component Id="File7c924b556a379c985ff731694b77132a4b934459" Guid="6330E9A3-9BAB-4960-B4B4-C5BD35BFF869">
         <File Id="File7c924b556a379c985ff731694b77132a4b934459" Source="$(var.AndroidAppAssembliesFacadesDir)\System.Security.Cryptography.RandomNumberGenerator.dll" />
       </Component>
-      <Component Id="Filebfe5209cad006f91e774e76fa0f50803ad56dd2f" Guid="8C4517D7-5025-4E32-B789-5EE872284D85">
-        <File Id="Filebfe5209cad006f91e774e76fa0f50803ad56dd2f" Source="$(var.AndroidAppAssembliesFacadesDir)\System.Memory.dll" />
-      </Component>
       <Component Id="File51abc9c4ba3f8bc60d1cb0b74c09a4e41ea78100" Guid="D24AA733-2959-4C59-A567-22AD53F1CC57">
         <File Id="File51abc9c4ba3f8bc60d1cb0b74c09a4e41ea78100" Source="$(var.AndroidAppAssembliesFacadesDir)\System.Drawing.Common.dll" />
       </Component>
