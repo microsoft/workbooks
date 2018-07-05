@@ -138,7 +138,7 @@ namespace Xamarin.XamPub.MSBuild
                     ProcessFileBase<SymbolFile> (pdbPath)
                 };
 
-            releaseFile.UploadEnvironments = UploadEnvironments.ROQ;
+            releaseFile.UploadEnvironments = UploadEnvironments.ESRP;
 
             ProcessReleaseFile (releaseFile);
 
