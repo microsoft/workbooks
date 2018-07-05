@@ -19,5 +19,6 @@ namespace Xamarin.XamPub.Models
         XamarinUpdater = 1 << 3,
         XamarinInstaller = 1 << 4,
         XVSFeed = 1 << 5,
+        ESRP = 1 << 6
     }
 }
