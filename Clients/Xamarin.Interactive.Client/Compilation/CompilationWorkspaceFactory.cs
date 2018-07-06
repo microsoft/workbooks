@@ -17,6 +17,7 @@ using Xamarin.Interactive.Compilation.Roslyn;
 using Xamarin.Interactive.Core;
 using Xamarin.Interactive.Logging;
 using Xamarin.Interactive.Reflection;
+using Xamarin.Interactive.Representations.Reflection;
 
 using static Xamarin.Interactive.Compilation.InteractiveDependencyResolver;
 
@@ -145,6 +146,8 @@ namespace Xamarin.Interactive.Compilation
 
         static Assembly netStandardAssembly;
         static Assembly xiAssembly;
+        static Dictionary<RepresentedAssemblyName, Assembly> globalStateAssembliesByName =
+            new Dictionary<RepresentedAssemblyName, Assembly> ();
 
         static Type ResolveHostObjectType (
             InteractiveDependencyResolver dependencyResolver,
@@ -184,9 +187,16 @@ namespace Xamarin.Interactive.Compilation
                 Assembly globalStateAssembly;
                 if (globalStateAssemblyDef.Name.Name == "Xamarin.Interactive")
                     globalStateAssembly = xiAssembly;
-                else
-                    globalStateAssembly = Assembly.ReflectionOnlyLoadFrom (
-                        globalStateAssemblyCachePath ?? globalStateAssemblyDef.Content.Location);
+                else {
+                    // Cache assemblies in case subsequent agents lead us to try to load from a different location later.
+                    // For example, if you create an XF workbook, we'll resolve from the remote assembly cache. If you
+                    // then create a non-XF workbook, we'll resolve locally because PEImage doesn't get set for some reason.
+                    if (!globalStateAssembliesByName.TryGetValue (configuration.GlobalStateAssembly.Name, out globalStateAssembly)) {
+                        globalStateAssembly = Assembly.ReflectionOnlyLoadFrom (
+                            globalStateAssemblyCachePath ?? globalStateAssemblyDef.Content.Location);
+                        globalStateAssembliesByName [configuration.GlobalStateAssembly.Name] = globalStateAssembly;
+                    }
+                }
 
                 return globalStateAssembly.GetType (configuration.GlobalStateTypeName);
             }

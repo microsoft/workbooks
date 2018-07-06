@@ -38,6 +38,9 @@ namespace Xamarin.Interactive.CodeAnalysis
                 var globalStateType = evaluationContext.GlobalState.GetType ();
                 response.GlobalStateTypeName = globalStateType.FullName;
 
+                // TODO: Why is globalStateType.Assembly.Location null when you
+                //       create a non-XF workbook after creating an XF workbook?
+
                 // HACK: This is a temporary fix to get iOS agent/app assemblies sent to the
                 //       Windows client when using the remote sim.
                 var peImage = IncludePeImage && File.Exists (globalStateType.Assembly.Location)
