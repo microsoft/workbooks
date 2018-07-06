@@ -682,9 +682,12 @@ namespace Xamarin.Interactive.Representations.Reflection
                 | BindingFlags.Public
                 | BindingFlags.NonPublic;
 
-            var prop = method.DeclaringType.GetProperty (method.Name.Substring (4), bindingFlags);
-            if (prop != null && (prop.GetMethod == method || prop.SetMethod == method))
-                return prop;
+            try {
+                var prop = method.DeclaringType.GetProperty (method.Name.Substring (4), bindingFlags);
+                if (prop != null && (prop.GetMethod == method || prop.SetMethod == method))
+                    return prop;
+            } catch (AmbiguousMatchException) {
+            }
 
             return null;
         }
