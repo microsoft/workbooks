@@ -127,6 +127,12 @@ namespace Xamarin.Interactive.Representations.Reflection
             this.writer = writer;
         }
 
+        void WriteTypeBeforeMember (TypeSpec typeSpec)
+        {
+            if (WriteTypeBeforeMemberName && VisitDeclaringTypeSpec (typeSpec))
+                writer.Write ('.');
+        }
+
         public virtual void VisitExceptionNode (ExceptionNode exception)
         {
             VisitTypeSpec (exception.Type);
@@ -207,10 +213,7 @@ namespace Xamarin.Interactive.Representations.Reflection
                 writer.Write (' ');
             }
 
-            if (WriteTypeBeforeMemberName) {
-                VisitDeclaringTypeSpec (method.DeclaringType);
-                writer.Write ('.');
-            }
+            WriteTypeBeforeMember (method.DeclaringType);
 
             writer.WriteMemberName (method.Name);
 
@@ -249,10 +252,7 @@ namespace Xamarin.Interactive.Representations.Reflection
                 writer.Write (' ');
             }
 
-            if (WriteTypeBeforeMemberName) {
-                VisitDeclaringTypeSpec (field.DeclaringType);
-                writer.Write ('.');
-            }
+            WriteTypeBeforeMember (field.DeclaringType);
 
             writer.WriteMemberName (field.Name);
         }
@@ -264,10 +264,7 @@ namespace Xamarin.Interactive.Representations.Reflection
                 writer.Write (' ');
             }
 
-            if (WriteTypeBeforeMemberName) {
-                VisitDeclaringTypeSpec (property.DeclaringType);
-                writer.Write ('.');
-            }
+            WriteTypeBeforeMember (property.DeclaringType);
 
             writer.WriteMemberName (property.Name);
             writer.Write (' ');
@@ -307,28 +304,33 @@ namespace Xamarin.Interactive.Representations.Reflection
             }
         }
 
-        public virtual void VisitDeclaringTypeSpec (TypeSpec typeSpec)
-        {
-            VisitTypeSpec (typeSpec, true);
-        }
+        public virtual bool VisitDeclaringTypeSpec (TypeSpec typeSpec)
+            => VisitTypeSpec (typeSpec, true);
 
-        public void VisitTypeSpec (TypeSpec typeSpec)
-        {
-            VisitTypeSpec (typeSpec, true);
-        }
+        public bool VisitTypeSpec (TypeSpec typeSpec)
+            => VisitTypeSpec (typeSpec, true);
 
-        public virtual void VisitTypeSpec (TypeSpec typeSpec, bool writeByRefModifier)
-        {
-            WriteTypeName (typeSpec);
+        void IReflectionRemotingVisitor.VisitTypeSpec (TypeSpec typeSpec)
+            => VisitTypeSpec (typeSpec);
 
-            foreach (var modifier in typeSpec.Modifiers)
+        public virtual bool VisitTypeSpec (TypeSpec typeSpec, bool writeByRefModifier)
+        {
+            var anythingWritten = WriteTypeName (typeSpec);
+
+            foreach (var modifier in typeSpec.Modifiers) {
+                anythingWritten = true;
                 writer.WriteTypeModifier (modifier.ToString ());
+            }
 
-            if (typeSpec.IsByRef && writeByRefModifier)
+            if (typeSpec.IsByRef && writeByRefModifier) {
+                anythingWritten = true;
                 writer.WriteTypeModifier ("&");
+            }
+
+            return anythingWritten;
         }
 
-        void WriteTypeName (TypeSpec typeSpec)
+        bool WriteTypeName (TypeSpec typeSpec)
         {
             if (WriteLanguageKeywords && typeSpec.Name.Namespace == "System") {
                 switch (typeSpec.Name.Name) {
@@ -341,45 +343,49 @@ namespace Xamarin.Interactive.Representations.Reflection
                 case "String":
                 case "Object":
                     writer.WriteKeyword (typeSpec.Name.Name.ToLowerInvariant ());
-                    return;
+                    return true;
                 case "Boolean":
                     writer.WriteKeyword ("bool");
-                    return;
+                    return true;
                 case "Int16":
                     writer.WriteKeyword ("short");
-                    return;
+                    return true;
                 case "UInt16":
                     writer.WriteKeyword ("ushort");
-                    return;
+                    return true;
                 case "Int32":
                     writer.WriteKeyword ("int");
-                    return;
+                    return true;
                 case "UInt32":
                     writer.WriteKeyword ("uint");
-                    return;
+                    return true;
                 case "Int64":
                     writer.WriteKeyword ("long");
-                    return;
+                    return true;
                 case "UInt64":
                     writer.WriteKeyword ("ulong");
-                    return;
+                    return true;
                 case "Single":
                     writer.WriteKeyword ("float");
-                    return;
+                    return true;
                 case "nint":
                     writer.WriteKeyword ("nint");
-                    return;
+                    return true;
                 case "nuint":
                     writer.WriteKeyword ("nuint");
-                    return;
+                    return true;
                 case "nfloat":
                     writer.WriteKeyword ("nfloat");
-                    return;
+                    return true;
                 }
             }
 
-            if (typeSpec.Name.Namespace != null)
+            var anythingWritten = false;
+
+            if (typeSpec.Name.Namespace != null) {
+                anythingWritten = true;
                 writer.WriteNamespace (typeSpec.Name.Namespace + ".");
+            }
 
             int typeNamesConsumed = 0;
             int typeArgIndex = 0;
@@ -389,10 +395,12 @@ namespace Xamarin.Interactive.Representations.Reflection
                     if (typeNamesConsumed++ > 0)
                         writer.Write ('.');
 
+                    anythingWritten = true;
                     writer.WriteTypeName (name.Name);
                 }
 
                 if (name.TypeArgumentCount > 0) {
+                    anythingWritten = true;
                     writer.Write ('<');
                     for (var i = 0; i < name.TypeArgumentCount; i++, typeArgIndex++) {
                         if (i > 0) {
@@ -405,6 +413,8 @@ namespace Xamarin.Interactive.Representations.Reflection
                     writer.Write ('>');
                 }
             }
+
+            return anythingWritten;
         }
     }
 
