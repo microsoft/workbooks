@@ -276,9 +276,9 @@ Gw
                                 </connections>
                             </textField>
                             <button fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="pTJ-Gx-mtX">
-                                <rect key="frame" x="18" y="87" width="169" height="18"/>
+                                <rect key="frame" x="18" y="87" width="195" height="18"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                <buttonCell key="cell" type="check" title="Wrap long lines in code cell editors" bezelStyle="regularSquare" imagePosition="left" inset="2" id="5zo-g7-82A">
+                                <buttonCell key="cell" type="check" title="Wrap long lines in code cells" bezelStyle="regularSquare" imagePosition="left" inset="2" id="5zo-g7-82A">
                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
