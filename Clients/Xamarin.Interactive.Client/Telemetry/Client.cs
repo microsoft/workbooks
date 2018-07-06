@@ -81,6 +81,9 @@ namespace Xamarin.Interactive.Telemetry
 
                 appInsightsClient.Context.Session.Id = sessionid.ToString ();
                 appInsightsClient.Context.Device.OperatingSystem = host.OSName.ToString ();
+                appInsightsClient.Context.User.Id = Sha256Hasher.Hash (MacAddressGetter.GetMacAddress ());
+
+                Log.Info (TAG, $"Machine ID: {appInsightsClient.Context.User.Id}");
 
                 // TODO: Make these GlobalProperties when we bump to 2.7.0-beta3 or later
                 var globalProperties = appInsightsClient.Context.Properties;
@@ -113,7 +116,7 @@ namespace Xamarin.Interactive.Telemetry
                     BuildInfo.Version.CandidateLevel.ToString ().ToLowerInvariant ());
                 globalProperties.Add (
                     "Machine ID",
-                    Sha256Hasher.Hash (MacAddressGetter.GetMacAddress ()));
+                    appInsightsClient.Context.User.Id);
                 globalProperties.Add (
                     "Update Channel", updater.UpdateChannel);
 
