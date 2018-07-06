@@ -213,18 +213,20 @@ namespace Xamarin.Interactive.Rendering.Renderers
             Writer.WriteSpan ("parameter", () => base.VisitParameter (parameter));
         }
 
-        public override void VisitDeclaringTypeSpec (TypeSpec typeSpec)
+        public override bool VisitDeclaringTypeSpec (TypeSpec typeSpec)
         {
             Writer.ShouldWriteNamespace = true;
-            base.VisitDeclaringTypeSpec (typeSpec);
+            var anythingWritten = base.VisitDeclaringTypeSpec (typeSpec);
             Writer.ShouldWriteNamespace = false;
+            return anythingWritten;
         }
 
-        public override void VisitTypeSpec (TypeSpec typeSpec, bool writeByRefModifier)
+        public override bool VisitTypeSpec (TypeSpec typeSpec, bool writeByRefModifier)
         {
             var stringWriter = new StringWriter ();
             var csharpWriter = new CSharpWriter (stringWriter);
-            csharpWriter.VisitTypeSpec (typeSpec, writeByRefModifier);
+            if (!csharpWriter.VisitTypeSpec (typeSpec, writeByRefModifier))
+                return false;
 
             Writer.Write ("<span class=\"typespec\" title=\"");
             Writer.WriteEscaped (stringWriter.ToString ());
@@ -233,6 +235,8 @@ namespace Xamarin.Interactive.Rendering.Renderers
             base.VisitTypeSpec (typeSpec, writeByRefModifier);
 
             Writer.Write ("</span>");
+
+            return true;
         }
     }
 }
