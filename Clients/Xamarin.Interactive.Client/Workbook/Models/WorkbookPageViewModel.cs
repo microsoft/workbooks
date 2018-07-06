@@ -650,17 +650,39 @@ namespace Xamarin.Interactive.Workbook.Models
         /// </summary>
         static ExceptionNode FilterException (ExceptionNode exception)
         {
+            IEnumerable<StackFrame> FilterFrames (IReadOnlyList<StackFrame> frames)
+            {
+                foreach (var frame in frames ?? Array.Empty<StackFrame> ()) {
+                    var declaringType = frame.Member?.DeclaringType;
+                    if (declaringType?.Name.Namespace == null &&
+                        declaringType.Name.Name.StartsWith ("🐵", StringComparison.Ordinal)) {
+                        var nestedNames = declaringType.NestedNames;
+                        if (nestedNames != null &&
+                            nestedNames.Count > 0 &&
+                            nestedNames [0].Name.StartsWith ("<<Initialize>>", StringComparison.Ordinal))
+                            break;
+                    }
+
+                    yield return frame;
+                }
+            }
+
+            StackTrace FilterStackTrace (StackTrace stackTrace)
+            {
+                if (stackTrace == null)
+                    return null;
+
+                return stackTrace.WithFramesAndCapturedTraces (
+                    FilterFrames (stackTrace.Frames),
+                    stackTrace.CapturedTraces?.Select (FilterStackTrace));
+            }
+
+            if (exception == null)
+                return null;
+
             try {
-                var capturedTraces = exception?.StackTrace?.CapturedTraces;
-                if (capturedTraces == null || capturedTraces.Count != 2)
-                    return exception;
-
-                var submissionTrace = capturedTraces [0];
-                exception.StackTrace = exception.StackTrace.WithCapturedTraces (new [] {
-                    submissionTrace.WithFrames (
-                        submissionTrace.Frames.Take (submissionTrace.Frames.Count - 1))
-                });
-
+                exception.InnerException = FilterException (exception.InnerException);
+                exception.StackTrace = FilterStackTrace (exception.StackTrace);
                 return exception;
             } catch (Exception e) {
                 Log.Error (TAG, $"error filtering ExceptionNode [[{exception}]]", e);
