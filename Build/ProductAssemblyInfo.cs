@@ -9,7 +9,7 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 
 [assembly: AssemblyCopyright (
-    "Copyright 2016-2017 Microsoft. All rights reserved.\n" +
+    "Copyright 2016-2018 Microsoft. All rights reserved.\n" +
     "Copyright 2014-2016 Xamarin Inc. All rights reserved.")]
 [assembly: AssemblyVersion ("1.0.0.0")]
 
