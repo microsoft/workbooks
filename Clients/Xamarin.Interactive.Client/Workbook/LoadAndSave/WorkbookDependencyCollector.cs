@@ -85,7 +85,7 @@ namespace Xamarin.Interactive.Workbook.LoadAndSave
                     codeCell.Buffer.Value,
                     CSharpParseOptions.Default
                         .WithKind (SourceCodeKind.Script)
-                        .WithLanguageVersion (LanguageVersion.CSharp7_1))
+                        .WithLanguageVersion (LanguageVersion.CSharp7_3))
                 .GetRoot ()
                 .DescendantTrivia ()
                 .Where (trivia => trivia.HasStructure && (
