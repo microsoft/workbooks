@@ -158,7 +158,7 @@ namespace Xamarin.Interactive.Tests
                     VersionRange.Parse ("2.1.*")),
                 new InteractivePackage (
                     "Microsoft.CodeAnalysis.Common",
-                    VersionRange.Parse ("[2.*,)")),
+                    VersionRange.Parse ("[2.*,2.9)")),
             };
 
             await project.RestorePackagesAsync (explicitPackages, CancellationToken.None);
