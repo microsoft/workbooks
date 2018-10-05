@@ -8,6 +8,18 @@
 
 * Add support for C# 7.3.
 
+# Version 1.4.3
+
+* Fix crash at startup on Windows with .NET Framework 4.7.1 ([#488](https://github.com/Microsoft/workbooks/issues/488)).
+
+* Fix an issue when rendering some exceptions with frames that contain multiple members in a type with the same name ([#405](https://github.com/Microsoft/workbooks/issues/405)).
+
+* Fix an error loading Xamarin.Forms workbooks on iOS ([#486](https://github.com/Microsoft/workbooks/issues/486)).
+
+* Fix a label clipping issue in the preferences dialog on macOS ([#191](https://github.com/Microsoft/workbooks/issues/191)).
+
+# Version 1.4.2
+
 * Fix setting `selectedView` in Inspector on Mac
   ([#456](https://github.com/Microsoft/workbooks/issues/456)).
 
