@@ -102,11 +102,11 @@ namespace Xamarin.Interactive.Client.Mac
                     update => UpdateHandler (null, update));
 
             var helpMenu = NSApplication.SharedApplication.HelpMenu;
-            var appMenu = NSApplication.SharedApplication.MainMenu.ItemArray () [0].Submenu;
+            var appMenu = NSApplication.SharedApplication.MainMenu.Items [0].Submenu;
 
             if (ClientInfo.Flavor == ClientFlavor.Inspector) {
                 // Update menu items in app/help menus
-                foreach (var item in appMenu.ItemArray ().Concat (helpMenu.ItemArray ()))
+                foreach (var item in appMenu.Items.Concat (helpMenu.Items))
                     item.Title = item.Title.Replace ("Workbooks", "Inspector");
 
                 applicationShouldOpenUntitledFile = false;
