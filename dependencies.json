@@ -81,7 +81,7 @@
   {
     "Kind": "NuGet",
     "Name": "NuGet.PackageManagement",
-    "Version": "4.3.0",
+    "Version": "4.8.0",
     "DependentProjects": [
       "Xamarin.Interactive.Client"
     ]
@@ -141,7 +141,7 @@
   {
     "Kind": "NuGet",
     "Name": "YamlDotNet",
-    "Version": "4.3.1",
+    "Version": "5.2.1",
     "DependentProjects": [
       "Xamarin.Interactive.Client"
     ]
