@@ -263,11 +263,14 @@ namespace Xamarin.Interactive.NuGet
             // ~/.nuget/packages). Our NuGetProject implementation simply collects package assembly
             // references (and potentially other necessary files) and populates them back into the
             // InteractiveInstallationContext.
-            await packageManager.ExecuteNuGetProjectActionsAsync (
-                project,
-                installActions,
-                projectContext,
-                cancellationToken);
+            using (var cacheContext = new SourceCacheContext ()) {
+                await packageManager.ExecuteNuGetProjectActionsAsync (
+                    project,
+                    installActions,
+                    projectContext,
+                    cacheContext,
+                    cancellationToken);
+            }
 
             // Identify which packages were not already noted as installed, or have been upgraded now
             var newlyInstalledPackages = new List<InteractivePackage> ();
