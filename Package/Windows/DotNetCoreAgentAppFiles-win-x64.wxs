@@ -649,12 +649,6 @@
       <Component Id="DNCAgentAppwinx64.Xamarin.Workbooks.DotNetCore.exe" Guid="3E99628F-5591-4C47-A1F0-6A27404532A0">
         <File Id="DNCAgentAppwinx64.Xamarin.Workbooks.DotNetCore.exe" Source="$(var.DotNetCoreAssembliesDir)\Xamarin.Workbooks.DotNetCore.exe" />
       </Component>
-      <Component Id="DNCAgentAppwinx64.mscordaccore_amd64_amd64_4.6.26606.02.dll" Guid="9299485B-8850-4AE2-8CEC-FCA782566189">
-        <File Id="DNCAgentAppwinx64.mscordaccore_amd64_amd64_4.6.26606.02.dll" Source="$(var.DotNetCoreAssembliesDir)\mscordaccore_amd64_amd64_4.6.26606.02.dll" />
-      </Component>
-      <Component Id="DNCAgentAppwinx64.sos_amd64_amd64_4.6.26606.02.dll" Guid="30639274-7225-42DA-A76F-692A7F3E7D7A">
-        <File Id="DNCAgentAppwinx64.sos_amd64_amd64_4.6.26606.02.dll" Source="$(var.DotNetCoreAssembliesDir)\sos_amd64_amd64_4.6.26606.02.dll" />
-      </Component>
       <Component Id="DNCAgentAppwinx64.System.IO.Compression.Brotli.dll" Guid="4776A7E1-34E8-4674-BD6E-C69179CEDED8">
         <File Id="DNCAgentAppwinx64.System.IO.Compression.Brotli.dll" Source="$(var.DotNetCoreAssembliesDir)\System.IO.Compression.Brotli.dll" />
       </Component>
@@ -663,6 +657,12 @@
       </Component>
       <Component Id="DNCAgentAppwinx64.System.Memory.dll" Guid="47BAC2B8-DFCF-454A-AF21-B4ABF65E81B8">
         <File Id="DNCAgentAppwinx64.System.Memory.dll" Source="$(var.DotNetCoreAssembliesDir)\System.Memory.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.mscordaccore_amd64_amd64_4.6.26919.02.dll" Guid="F3F7AE1C-AA20-440C-A88A-818D25E32FDB">
+        <File Id="DNCAgentAppwinx64.mscordaccore_amd64_amd64_4.6.26919.02.dll" Source="$(var.DotNetCoreAssembliesDir)\mscordaccore_amd64_amd64_4.6.26919.02.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx64.sos_amd64_amd64_4.6.26919.02.dll" Guid="8C396D22-2DAB-4161-940C-26EED8C07082">
+        <File Id="DNCAgentAppwinx64.sos_amd64_amd64_4.6.26919.02.dll" Source="$(var.DotNetCoreAssembliesDir)\sos_amd64_amd64_4.6.26919.02.dll" />
       </Component>
     </ComponentGroup>
   </Fragment>

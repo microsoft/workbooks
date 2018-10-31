@@ -649,12 +649,6 @@
       <Component Id="DNCAgentAppwinx86.Xamarin.Workbooks.DotNetCore.exe" Guid="24F80C39-466F-4AE0-941F-2CBED0C7BB44">
         <File Id="DNCAgentAppwinx86.Xamarin.Workbooks.DotNetCore.exe" Source="$(var.DotNetCoreAssembliesDir)\Xamarin.Workbooks.DotNetCore.exe" />
       </Component>
-      <Component Id="DNCAgentAppwinx86.mscordaccore_x86_x86_4.6.26606.02.dll" Guid="71FA4ABD-646B-4EF6-931D-649E79EE11A2">
-        <File Id="DNCAgentAppwinx86.mscordaccore_x86_x86_4.6.26606.02.dll" Source="$(var.DotNetCoreAssembliesDir)\mscordaccore_x86_x86_4.6.26606.02.dll" />
-      </Component>
-      <Component Id="DNCAgentAppwinx86.sos_x86_x86_4.6.26606.02.dll" Guid="257C7D51-8D96-45C7-A4F0-8D936D49D0AC">
-        <File Id="DNCAgentAppwinx86.sos_x86_x86_4.6.26606.02.dll" Source="$(var.DotNetCoreAssembliesDir)\sos_x86_x86_4.6.26606.02.dll" />
-      </Component>
       <Component Id="DNCAgentAppwinx86.System.IO.Compression.Brotli.dll" Guid="0DD2F34B-3537-48E6-BBE6-66C291FD0FCF">
         <File Id="DNCAgentAppwinx86.System.IO.Compression.Brotli.dll" Source="$(var.DotNetCoreAssembliesDir)\System.IO.Compression.Brotli.dll" />
       </Component>
@@ -663,6 +657,15 @@
       </Component>
       <Component Id="DNCAgentAppwinx86.System.Memory.dll" Guid="FDA9A09B-F94B-4509-BAB8-919511A724DF">
         <File Id="DNCAgentAppwinx86.System.Memory.dll" Source="$(var.DotNetCoreAssembliesDir)\System.Memory.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx86.API_MS_Win_core_xstate_l2_1_0.dll" Guid="FFCB232C-EF7E-4878-B053-440124F8F73A">
+        <File Id="DNCAgentAppwinx86.API_MS_Win_core_xstate_l2_1_0.dll" Source="$(var.DotNetCoreAssembliesDir)\API-MS-Win-core-xstate-l2-1-0.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx86.mscordaccore_x86_x86_4.6.26919.02.dll" Guid="A0D41C8F-D039-4E38-9D17-F25874750DF0">
+        <File Id="DNCAgentAppwinx86.mscordaccore_x86_x86_4.6.26919.02.dll" Source="$(var.DotNetCoreAssembliesDir)\mscordaccore_x86_x86_4.6.26919.02.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx86.sos_x86_x86_4.6.26919.02.dll" Guid="3C109119-5560-4E84-A44C-F6D651C1DAAC">
+        <File Id="DNCAgentAppwinx86.sos_x86_x86_4.6.26919.02.dll" Source="$(var.DotNetCoreAssembliesDir)\sos_x86_x86_4.6.26919.02.dll" />
       </Component>
     </ComponentGroup>
   </Fragment>

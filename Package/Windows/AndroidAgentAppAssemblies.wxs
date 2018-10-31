@@ -614,66 +614,6 @@
       <Component Id="AndroidAgentApp.Mono.Android.dll" Guid="D49B3529-B45D-4FAC-A777-4F0CB5D9DA70">
         <File Id="AndroidAgentApp.Mono.Android.dll" Source="$(var.AndroidAppAssembliesDir)\Mono.Android.dll" />
       </Component>
-      <Component Id="AndroidAgentApp.System.Collections.Concurrent.dll" Guid="920F1B02-65C6-4B57-81B3-22A721759BB3">
-        <File Id="AndroidAgentApp.System.Collections.Concurrent.dll" Source="$(var.AndroidAppAssembliesDir)\System.Collections.Concurrent.dll" />
-      </Component>
-      <Component Id="AndroidAgentApp.System.Collections.dll" Guid="EBF7F64E-5D71-4C1E-8B42-D8D1373DA72C">
-        <File Id="AndroidAgentApp.System.Collections.dll" Source="$(var.AndroidAppAssembliesDir)\System.Collections.dll" />
-      </Component>
-      <Component Id="AndroidAgentApp.System.Diagnostics.Debug.dll" Guid="17EF15CA-6880-4836-9246-20284E820865">
-        <File Id="AndroidAgentApp.System.Diagnostics.Debug.dll" Source="$(var.AndroidAppAssembliesDir)\System.Diagnostics.Debug.dll" />
-      </Component>
-      <Component Id="AndroidAgentApp.System.Dynamic.Runtime.dll" Guid="5D36D55C-E583-419C-86CD-E59E154781F9">
-        <File Id="AndroidAgentApp.System.Dynamic.Runtime.dll" Source="$(var.AndroidAppAssembliesDir)\System.Dynamic.Runtime.dll" />
-      </Component>
-      <Component Id="AndroidAgentApp.System.Linq.Expressions.dll" Guid="A8735D36-6204-47AF-8D65-6EA0778B60AF">
-        <File Id="AndroidAgentApp.System.Linq.Expressions.dll" Source="$(var.AndroidAppAssembliesDir)\System.Linq.Expressions.dll" />
-      </Component>
-      <Component Id="AndroidAgentApp.System.Linq.dll" Guid="A8F407F8-D51F-4AD9-BD49-C59EB0E8DAB1">
-        <File Id="AndroidAgentApp.System.Linq.dll" Source="$(var.AndroidAppAssembliesDir)\System.Linq.dll" />
-      </Component>
-      <Component Id="AndroidAgentApp.System.ObjectModel.dll" Guid="2832B297-AD80-431E-BE0F-641964E95143">
-        <File Id="AndroidAgentApp.System.ObjectModel.dll" Source="$(var.AndroidAppAssembliesDir)\System.ObjectModel.dll" />
-      </Component>
-      <Component Id="AndroidAgentApp.System.Reflection.Extensions.dll" Guid="B4CE3442-3B54-4E37-B1CB-85CDA3A1FF1E">
-        <File Id="AndroidAgentApp.System.Reflection.Extensions.dll" Source="$(var.AndroidAppAssembliesDir)\System.Reflection.Extensions.dll" />
-      </Component>
-      <Component Id="AndroidAgentApp.System.Reflection.dll" Guid="71BDE82C-EF5B-45EC-87E0-D40728F81D29">
-        <File Id="AndroidAgentApp.System.Reflection.dll" Source="$(var.AndroidAppAssembliesDir)\System.Reflection.dll" />
-      </Component>
-      <Component Id="AndroidAgentApp.System.Runtime.Extensions.dll" Guid="EA95B5A4-DBD8-44B7-B880-FFA9D1DC7B70">
-        <File Id="AndroidAgentApp.System.Runtime.Extensions.dll" Source="$(var.AndroidAppAssembliesDir)\System.Runtime.Extensions.dll" />
-      </Component>
-      <Component Id="AndroidAgentApp.System.Runtime.InteropServices.dll" Guid="D0C1AAA3-FDC2-4D48-9A6C-7488D9F981B1">
-        <File Id="AndroidAgentApp.System.Runtime.InteropServices.dll" Source="$(var.AndroidAppAssembliesDir)\System.Runtime.InteropServices.dll" />
-      </Component>
-      <Component Id="AndroidAgentApp.System.Runtime.dll" Guid="CEC36B65-C22C-463B-BF82-83D4EF94C9B2">
-        <File Id="AndroidAgentApp.System.Runtime.dll" Source="$(var.AndroidAppAssembliesDir)\System.Runtime.dll" />
-      </Component>
-      <Component Id="AndroidAgentApp.System.Threading.dll" Guid="29E7A20B-0139-4650-B18A-6ECDEBA5234A">
-        <File Id="AndroidAgentApp.System.Threading.dll" Source="$(var.AndroidAppAssembliesDir)\System.Threading.dll" />
-      </Component>
-      <Component Id="AndroidAgentApp.System.Diagnostics.StackTrace.dll" Guid="6EE8BBCE-8BBF-4C02-9E38-55AA5182FA25">
-        <File Id="AndroidAgentApp.System.Diagnostics.StackTrace.dll" Source="$(var.AndroidAppAssembliesDir)\System.Diagnostics.StackTrace.dll" />
-      </Component>
-      <Component Id="AndroidAgentApp.System.Globalization.Extensions.dll" Guid="6EC8BBB0-4309-45C5-9B7E-42809C958AF5">
-        <File Id="AndroidAgentApp.System.Globalization.Extensions.dll" Source="$(var.AndroidAppAssembliesDir)\System.Globalization.Extensions.dll" />
-      </Component>
-      <Component Id="AndroidAgentApp.System.Runtime.Serialization.Primitives.dll" Guid="99FAADCE-D106-4B0D-9E99-F2B23736B131">
-        <File Id="AndroidAgentApp.System.Runtime.Serialization.Primitives.dll" Source="$(var.AndroidAppAssembliesDir)\System.Runtime.Serialization.Primitives.dll" />
-      </Component>
-      <Component Id="AndroidAgentApp.System.Runtime.Serialization.Xml.dll" Guid="554370CF-CBDC-46EA-AC62-0C6A353A73F9">
-        <File Id="AndroidAgentApp.System.Runtime.Serialization.Xml.dll" Source="$(var.AndroidAppAssembliesDir)\System.Runtime.Serialization.Xml.dll" />
-      </Component>
-      <Component Id="AndroidAgentApp.System.Security.Cryptography.Algorithms.dll" Guid="4C689B5D-E6FC-459C-A704-4F1933ADAD2A">
-        <File Id="AndroidAgentApp.System.Security.Cryptography.Algorithms.dll" Source="$(var.AndroidAppAssembliesDir)\System.Security.Cryptography.Algorithms.dll" />
-      </Component>
-      <Component Id="AndroidAgentApp.System.Security.SecureString.dll" Guid="7502FADF-C6CF-4EA5-8EE7-CCD3104C3263">
-        <File Id="AndroidAgentApp.System.Security.SecureString.dll" Source="$(var.AndroidAppAssembliesDir)\System.Security.SecureString.dll" />
-      </Component>
-      <Component Id="AndroidAgentApp.System.Xml.XPath.XDocument.dll" Guid="49E66DF6-0ED4-4609-A294-B1DDDC1AE283">
-        <File Id="AndroidAgentApp.System.Xml.XPath.XDocument.dll" Source="$(var.AndroidAppAssembliesDir)\System.Xml.XPath.XDocument.dll" />
-      </Component>
       <Component Id="AndroidAgentApp.netstandard.dll" Guid="E470B065-2E03-4AAB-A3D8-1714483D4B13">
         <File Id="AndroidAgentApp.netstandard.dll" Source="$(var.AndroidAppAssembliesDir)\netstandard.dll" />
       </Component>
@@ -700,9 +640,6 @@
       </Component>
       <Component Id="AndroidAgentApp.Xamarin.Android.Support.v_.Palette.dll" Guid="1268FB88-26C6-4A29-82C0-1874B9B371C2">
         <File Id="AndroidAgentApp.Xamarin.Android.Support.v_.Palette.dll" Source="$(var.AndroidAppAssembliesDir)\Xamarin.Android.Support.v7.Palette.dll" />
-      </Component>
-      <Component Id="AndroidAgentApp.System.Reflection.Primitives.dll" Guid="6E69ABC4-7BBB-49B5-B935-EA91ABA8D3D3">
-        <File Id="AndroidAgentApp.System.Reflection.Primitives.dll" Source="$(var.AndroidAppAssembliesDir)\System.Reflection.Primitives.dll" />
       </Component>
     </ComponentGroup>
     <ComponentGroup Id="AndroidAgentAppClientIntegrationComponents" Directory="AndroidAgentAppClientIntegrationInstallFolder">
