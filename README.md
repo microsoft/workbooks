@@ -1,7 +1,5 @@
 # Xamarin Workbooks
 
-[![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/Microsoft/workbooks)
-
 Xamarin Workbooks provide a blend of documentation and code that is perfect
 for experimentation, learning, and creating guides and teaching aids.
 
