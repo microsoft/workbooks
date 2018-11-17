@@ -9,6 +9,7 @@
 // Licensed under the MIT License.
 
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows.Controls.Primitives;
 using System.Diagnostics;
@@ -48,6 +49,7 @@ using Xamarin.PropertyEditing.Themes;
 using Xamarin.PropertyEditing.Windows;
 
 using XIR = Xamarin.Interactive.Remote;
+using System.Linq;
 
 namespace Xamarin.Interactive.Client.Windows
 {
@@ -134,34 +136,41 @@ namespace Xamarin.Interactive.Client.Windows
 
                 CommonFileDialogComboBox formatComboBox = null;
 
-                if (saveOperation.SupportedOptions.HasFlag (WorkbookSaveOptions.Archive)) {
-                    formatComboBox = new CommonFileDialogComboBox ();
+                var formatComboBoxLookup = new Dictionary<int, WorkbookSaveOptions> ();
+                var formatComboBoxReverseLookup = new Dictionary<WorkbookSaveOptions, int> ();
+
+                formatComboBox = new CommonFileDialogComboBox ();
+                if (saveOperation.SupportsSingleFileOption) {
+                    formatComboBoxLookup [formatComboBox.Items.Count] = WorkbookSaveOptions.SingleWorkbookFile;
+                    formatComboBoxReverseLookup [WorkbookSaveOptions.SingleWorkbookFile] = formatComboBox.Items.Count;
+                    formatComboBox.Items.Add (new CommonFileDialogComboBoxItem (
+                        Catalog.GetString ("Workbook File")));
+                }
+
+                if (saveOperation.SupportsMultiFileOptions) {
+                    formatComboBoxLookup [formatComboBox.Items.Count] = WorkbookSaveOptions.PackageDirectory;
+                    formatComboBoxReverseLookup [WorkbookSaveOptions.PackageDirectory] = formatComboBox.Items.Count;
                     formatComboBox.Items.Add (new CommonFileDialogComboBoxItem (
                         Catalog.GetString ("Package Directory")));
+                    formatComboBoxLookup [formatComboBox.Items.Count] = WorkbookSaveOptions.Archive;
+                    formatComboBoxReverseLookup [WorkbookSaveOptions.Archive] = formatComboBox.Items.Count;
                     formatComboBox.Items.Add (new CommonFileDialogComboBoxItem (
                         Catalog.GetString ("Archive")));
-                    formatComboBox.SelectedIndex = saveOperation.Options.HasFlag (
-                        WorkbookSaveOptions.Archive) ? 1 : 0;
-
-                    var formatGroup = new CommonFileDialogGroupBox ("Workbook Format:");
-                    formatGroup.Items.Add (formatComboBox);
-                    saveDialog.Controls.Add (formatGroup);
                 }
+
+                formatComboBox.SelectedIndex = formatComboBoxReverseLookup [saveOperation.SaveOption];
+
+                var formatGroup = new CommonFileDialogGroupBox ("Workbook Format:");
+                formatGroup.Items.Add (formatComboBox);
+                saveDialog.Controls.Add (formatGroup);
 
                 if (saveDialog.ShowDialog (this) != CommonFileDialogResult.Ok)
                     return false;
 
-                if (formatComboBox != null)
-                    switch (formatComboBox.SelectedIndex) {
-                    case 0:
-                        saveOperation.Options &= ~WorkbookSaveOptions.Archive;
-                        break;
-                    case 1:
-                        saveOperation.Options |= WorkbookSaveOptions.Archive;
-                        break;
-                    default:
-                        throw new IndexOutOfRangeException ();
-                    }
+                // TODO - we could put up some kind of warning for InvolesMultipleFiles
+                //       but saving as single workbook?
+
+                saveOperation.SaveOption = formatComboBoxLookup [formatComboBox.SelectedIndex];
 
                 savePath = saveDialog.FileName;
 

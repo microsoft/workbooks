@@ -249,7 +249,7 @@ namespace Xamarin.Interactive.Workbook.Models
             if (quarantineInfoHandler == null)
                 throw new ArgumentNullException (nameof (quarantineInfoHandler));
 
-            SaveOptions = WorkbookSaveOptions.None;
+            SaveOptions = WorkbookSaveOptions.SingleWorkbookFile;
             LogicalPath = openPath;
 
             QuarantineInfo quarantineInfo = null;
@@ -300,7 +300,7 @@ namespace Xamarin.Interactive.Workbook.Models
             if (isDirectory) {
                 indexPage.Path = indexPageFileName;
                 readPath = openPath.Combine (indexPage.Path);
-                openedFromDirectory = true;
+                SaveOptions = WorkbookSaveOptions.PackageDirectory;
             } else {
                 // If we are opening a file within a .workbook directory somewhere,
                 // actually open that directory. This is to mostly address issues
@@ -323,6 +323,7 @@ namespace Xamarin.Interactive.Workbook.Models
 
                 indexPage.Path = openPath.Name;
                 readPath = openPath;
+                SaveOptions = WorkbookSaveOptions.SingleWorkbookFile;
             }
 
             using (var stream = new FileStream (
@@ -361,7 +362,7 @@ namespace Xamarin.Interactive.Workbook.Models
 
             Open (extractPath, true, platformTargets);
 
-            SaveOptions |= WorkbookSaveOptions.Archive;
+            SaveOptions = WorkbookSaveOptions.Archive;
         }
 
         FilePath GetTempZipArchivePath ()
@@ -377,16 +378,28 @@ namespace Xamarin.Interactive.Workbook.Models
             public WorkbookPage OnlyPage;
             public bool OnlyPageHasDependencies;
 
-            public WorkbookSaveOptions SupportedOptions {
+            public bool InvolesMultipleFiles {
                 get {
-                    if (OnlyPage == null || OnlyPageHasDependencies)
-                        return WorkbookSaveOptions.Archive;
-
-                    return WorkbookSaveOptions.None;
+                    return (OnlyPage == null || OnlyPageHasDependencies);
                 }
             }
 
-            public WorkbookSaveOptions Options { get; set; }
+            public bool SupportsMultiFileOptions {
+                get {
+                    // actually it seems, we always can have multifile options...
+                    return true;
+                }
+            }
+
+            public bool SupportsSingleFileOption {
+                get {
+                    // actually it seems, we always can have singlefile options...
+                    // - or do I misunderstand what "OnlyPage == null" means...
+                    return true;
+                }
+            }
+
+            public WorkbookSaveOptions SaveOption { get; set; }
             public FilePath Destination { get; set; }
         }
 
@@ -400,7 +413,7 @@ namespace Xamarin.Interactive.Workbook.Models
                 AllDependencies = dependencies,
                 OnlyPage = onlyPage.Key,
                 OnlyPageHasDependencies = onlyPage.Key != null && onlyPage.Value.Count > 0,
-                Options = SaveOptions
+                SaveOption = SaveOptions
             };
         }
 
@@ -411,19 +424,13 @@ namespace Xamarin.Interactive.Workbook.Models
                 throw new ArgumentNullException (nameof (operation));
 
             LogicalPath = operation.Destination;
-            SaveOptions = WorkbookSaveOptions.None;
+            SaveOptions = operation.SaveOption;
 
-            if (IndexPage != null && IndexPage.IsUntitled)
+            if (IndexPage != null)
                 IndexPage.Title = LogicalPath.NameWithoutExtension;
 
-            if (saveOperation.OnlyPage != null &&
-                !saveOperation.OnlyPageHasDependencies &&
-                !openedFromDirectory) {
-                // The workbook package has only a single page with no relative
-                // dependencies. If the original path was a workbook directory,
-                // keep that format. If we originally opened from a workbook
-                // directory and our target save path is not a directory, keep
-                // that format. Otherwise, save the page as a single file.
+            if (saveOperation.SaveOption == WorkbookSaveOptions.SingleWorkbookFile) {
+                // This is a simple save... so we ignore dependencies
                 var writePath = logicalPath.DirectoryExists
                     ? logicalPath.Combine (saveOperation.OnlyPage.Path)
                     : logicalPath;
@@ -471,12 +478,12 @@ namespace Xamarin.Interactive.Workbook.Models
                 }
             }
 
-            if (saveOperation.Options.HasFlag (WorkbookSaveOptions.Archive))
+            if (saveOperation.SaveOption == WorkbookSaveOptions.Archive)
                 ArchiveDirectory (logicalPath);
 
             // For overwrite saves of archives, WorkingPath should continue
             // to point to the extracted directory in temp
-            if (!saveOperation.Options.HasFlag (WorkbookSaveOptions.Archive) ||
+            if ((saveOperation.SaveOption != WorkbookSaveOptions.Archive) ||
                 WorkingPath == null ||
                 !WorkingPath.Exists)
                 WorkingPath = logicalPath;
@@ -499,8 +506,6 @@ namespace Xamarin.Interactive.Workbook.Models
 
         void ArchiveDirectory (FilePath directory)
         {
-            SaveOptions |= WorkbookSaveOptions.Archive;
-
             var archivePath = GetTempZipArchivePath ();
 
             using (var stream = new FileStream (

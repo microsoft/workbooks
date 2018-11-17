@@ -664,6 +664,12 @@
       <Component Id="DNCAgentAppwinx86.System.Memory.dll" Guid="FDA9A09B-F94B-4509-BAB8-919511A724DF">
         <File Id="DNCAgentAppwinx86.System.Memory.dll" Source="$(var.DotNetCoreAssembliesDir)\System.Memory.dll" />
       </Component>
+      <Component Id="DNCAgentAppwinx86.mscordaccore_x86_x86_4.6.26515.07.dll" Guid="A79CC6CE-1A0A-4FCC-9EE9-B40A26274239">
+        <File Id="DNCAgentAppwinx86.mscordaccore_x86_x86_4.6.26515.07.dll" Source="$(var.DotNetCoreAssembliesDir)\mscordaccore_x86_x86_4.6.26515.07.dll" />
+      </Component>
+      <Component Id="DNCAgentAppwinx86.sos_x86_x86_4.6.26515.07.dll" Guid="B4810B78-BFF9-41CD-98FD-38674A4BB261">
+        <File Id="DNCAgentAppwinx86.sos_x86_x86_4.6.26515.07.dll" Source="$(var.DotNetCoreAssembliesDir)\sos_x86_x86_4.6.26515.07.dll" />
+      </Component>
     </ComponentGroup>
   </Fragment>
 </Wix>

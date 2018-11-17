@@ -9,11 +9,10 @@ using System;
 
 namespace Xamarin.Interactive.Workbook.LoadAndSave
 {
-    [Flags]
     enum WorkbookSaveOptions
     {
-        None = 0,
-        Archive = 1 << 0,
-        Sign = 1 << 1
+        SingleWorkbookFile = 0,
+        Archive = 1,
+        PackageDirectory = 2
     }
 }
