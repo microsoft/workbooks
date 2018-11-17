@@ -413,7 +413,7 @@ namespace Xamarin.Interactive.Workbook.Models
             LogicalPath = operation.Destination;
             SaveOptions = WorkbookSaveOptions.None;
 
-            if (IndexPage != null && IndexPage.IsUntitled)
+            if (IndexPage != null)
                 IndexPage.Title = LogicalPath.NameWithoutExtension;
 
             if (saveOperation.OnlyPage != null &&
