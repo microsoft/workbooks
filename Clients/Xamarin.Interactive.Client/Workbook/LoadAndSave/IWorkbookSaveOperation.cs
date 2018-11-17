@@ -11,8 +11,10 @@ namespace Xamarin.Interactive.Workbook.LoadAndSave
 {
     interface IWorkbookSaveOperation
     {
-        WorkbookSaveOptions SupportedOptions { get; }
-        WorkbookSaveOptions Options { get; set; }
+        bool SupportsMultiFileOptions { get; }
+        bool SupportsSingleFileOption { get; }
+        bool InvolesMultipleFiles { get; }
+        WorkbookSaveOptions SaveOption { get; set; }
         FilePath Destination { get; set; }
     }
 }
