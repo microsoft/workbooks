@@ -12,7 +12,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
-
+using Xamarin.Interactive;
 using Xamarin.Interactive.Core;
 using Xamarin.Interactive.Representations;
 using Xamarin.Interactive.Representations.Reflection;
@@ -145,6 +145,9 @@ namespace Xamarin.Interactive.CodeAnalysis
                 // captured output back to the client for rendering.
                 stopwatch.Start ();
                 result.Result = await CoreRunAsync (compilation, cancellationToken);
+                result.GlobalVariables = GetGlobalVariables ()?.Select(v =>
+                        new SimpleVariable() { FieldName  = v.Field.Name, Value = v.Value, ValueReadException = v.ValueReadException?.ToString() })
+                    .ToArray();
             } catch (AggregateException e) when (e.InnerExceptions?.Count == 1) {
                 evaluationException = e;
                 // the Roslyn-emitted script delegates are async, so all exceptions
@@ -237,13 +240,6 @@ namespace Xamarin.Interactive.CodeAnalysis
         void CapturedOutputWriter_SegmentCaptured (CapturedOutputSegment segment)
             => agent.MessageChannel.Push (segment);
 
-        public struct Variable
-        {
-            public FieldInfo Field { get; set; }
-            public object Value { get; set; }
-            public Exception ValueReadException { get; set; }
-        }
-
         public IReadOnlyCollection<Variable> GetGlobalVariables ()
         {
             var globalVars = new Dictionary<string, Variable> ();
@@ -275,5 +271,12 @@ namespace Xamarin.Interactive.CodeAnalysis
 
             return globalVars.Values as IReadOnlyCollection<Variable>;
         }
+    }
+
+    public struct Variable
+    {
+        public FieldInfo Field { get; set; }
+        public object Value { get; set; }
+        public Exception ValueReadException { get; set; }
     }
 }

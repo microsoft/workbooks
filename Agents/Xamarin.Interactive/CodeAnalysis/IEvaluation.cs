@@ -28,5 +28,12 @@ namespace Xamarin.Interactive.CodeAnalysis
         /// representation value.
         /// </summary>
         object Result { get; }
+        SimpleVariable [] GlobalVariables { get; }
+    }
+    public struct SimpleVariable
+    {
+        public string FieldName { get; set; }
+        public object Value { get; set; }
+        public string ValueReadException { get; set; }
     }
 }

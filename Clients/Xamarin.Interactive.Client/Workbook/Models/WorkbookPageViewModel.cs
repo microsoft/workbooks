@@ -8,6 +8,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Threading;
@@ -25,6 +26,8 @@ using Xamarin.Interactive.Protocol;
 using Xamarin.Interactive.Representations;
 using Xamarin.Interactive.Representations.Reflection;
 using Xamarin.Interactive.Workbook.Views;
+using StackFrame = Xamarin.Interactive.Representations.Reflection.StackFrame;
+using StackTrace = Xamarin.Interactive.Representations.Reflection.StackTrace;
 
 namespace Xamarin.Interactive.Workbook.Models
 {
@@ -615,10 +618,27 @@ namespace Xamarin.Interactive.Workbook.Models
                     result.ResultHandling);
         }
 
+        void UpdateGlobalVariables (SimpleVariable[] resultGlobalVariables)
+        {
+            if (resultGlobalVariables == null) {
+                Debug.WriteLine ("No Global Variables available...");
+                return;
+            } else {
+                Debug.WriteLine ("Global Variables available...");
+                Debug.WriteLine ("-----------------------------");
+                foreach (var v in resultGlobalVariables) {
+                    Debug.WriteLine($"{v.FieldName} {v.Value} {v.ValueReadException}");
+                }
+
+            }
+        }
+
         void RenderResult (Evaluation result)
         {
             if (result == null)
                 return;
+
+            UpdateGlobalVariables (result.GlobalVariables);
 
             var codeCellState = GetCodeCellStateById (result.CodeCellId);
             if (codeCellState == null)
