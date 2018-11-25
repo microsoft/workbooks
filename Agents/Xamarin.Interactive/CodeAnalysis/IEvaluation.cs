@@ -5,6 +5,8 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
+using System;
+
 namespace Xamarin.Interactive.CodeAnalysis
 {
     /// <summary>
@@ -30,6 +32,8 @@ namespace Xamarin.Interactive.CodeAnalysis
         object Result { get; }
         SimpleVariable [] GlobalVariables { get; }
     }
+
+    [Serializable]
     public struct SimpleVariable
     {
         public string FieldName { get; set; }

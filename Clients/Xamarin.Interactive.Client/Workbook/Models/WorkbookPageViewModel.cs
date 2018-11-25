@@ -159,6 +159,7 @@ namespace Xamarin.Interactive.Workbook.Models
 
         void LoadWorkbookCells ()
         {
+            CreateAndInsertGlobalsCell ();
             foreach (var cell in WorkbookPage.Contents) {
                 switch (cell) {
                 case CodeCell codeCell:
@@ -169,6 +170,14 @@ namespace Xamarin.Interactive.Workbook.Models
                     break;
                 }
             }
+        }
+
+        protected virtual void CreateAndInsertGlobalsCell ()
+        {
+        }
+
+        protected virtual void UpdateGlobals (SimpleVariable [] globals)
+        {
         }
 
         protected CodeCellState InsertCodeCell (Cell previousCell)
@@ -224,6 +233,7 @@ namespace Xamarin.Interactive.Workbook.Models
 
             InsertCellInViewModel (newCell, previousCell);
         }
+
 
         void InsertCellInDocumentModel (Cell newCell, Cell previousCell)
         {
@@ -629,8 +639,8 @@ namespace Xamarin.Interactive.Workbook.Models
                 foreach (var v in resultGlobalVariables) {
                     Debug.WriteLine($"{v.FieldName} {v.Value} {v.ValueReadException}");
                 }
-
             }
+            UpdateGlobals(resultGlobalVariables);
         }
 
         void RenderResult (Evaluation result)

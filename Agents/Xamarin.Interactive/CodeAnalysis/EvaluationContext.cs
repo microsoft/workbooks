@@ -145,8 +145,13 @@ namespace Xamarin.Interactive.CodeAnalysis
                 // captured output back to the client for rendering.
                 stopwatch.Start ();
                 result.Result = await CoreRunAsync (compilation, cancellationToken);
-                result.GlobalVariables = GetGlobalVariables ()?.Select(v =>
-                        new SimpleVariable() { FieldName  = v.Field.Name, Value = v.Value, ValueReadException = v.ValueReadException?.ToString() })
+                result.GlobalVariables = 
+                    GetGlobalVariables ()?.Select(v =>
+                        new SimpleVariable() {
+                            FieldName  = v.Field.Name,
+                            Value = agent.RepresentationManager.Prepare(v.Value),
+                            ValueReadException = v.ValueReadException?.ToString()
+                        })
                     .ToArray();
             } catch (AggregateException e) when (e.InnerExceptions?.Count == 1) {
                 evaluationException = e;
