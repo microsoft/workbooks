@@ -94,6 +94,12 @@
     <PackageReference Include="MouseKeyboardActivityMonitor">
       <Version>4.0.5150.10665</Version>
     </PackageReference>
+    <PackageReference Include="WindowsAPICodePack-Core">
+      <Version>1.1.2</Version>
+    </PackageReference>
+    <PackageReference Include="WindowsAPICodePack-Shell">
+      <Version>1.1.1</Version>
+    </PackageReference>
   </ItemGroup>
   <ItemGroup>
     <Page Include="App.xaml">
@@ -263,14 +269,6 @@
     <ProjectReference Include="..\..\External\CommonMark.NET\CommonMark\CommonMark.Base.csproj">
       <Project>{0fd4b1dd-45a8-4f02-beb0-5881cd512573}</Project>
       <Name>CommonMark.Base</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\External\WindowsAPICodePack\Core\Core.csproj">
-      <Project>{2e1fb0df-f9bb-4909-9f32-2d9d022a8e57}</Project>
-      <Name>Core</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\External\WindowsAPICodePack\Shell\Shell.csproj">
-      <Project>{aa0c00cb-8699-4f37-bfae-40ca87acc06d}</Project>
-      <Name>Shell</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\External\Xamarin.PropertyEditing\Xamarin.PropertyEditing.Windows\Xamarin.PropertyEditing.Windows.csproj">
       <Project>{60af04be-1b6b-411b-bcba-c95eafbd7ac0}</Project>

@@ -6,7 +6,7 @@
 // Licensed under the MIT License.
 
 using System;
-
+using System.Collections.Generic;
 using Xamarin.Interactive.Protocol;
 using Xamarin.Interactive.Representations.Reflection;
 
@@ -37,5 +37,6 @@ namespace Xamarin.Interactive.CodeAnalysis
         public int UICultureLCID { get; set; }
         public bool InitializedAgentIntegration { get; set; }
         public AssemblyDefinition [] LoadedAssemblies { get; set; }
+        public SimpleVariable[] GlobalVariables { get; set; }
     }
 }

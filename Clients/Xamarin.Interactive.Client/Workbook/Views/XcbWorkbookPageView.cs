@@ -196,6 +196,18 @@ namespace Xamarin.Interactive.Workbook.Views
             cell.View = view;
         }
 
+        GlobalsCellView _globalsCellView;
+
+        protected override void CreateAndInsertGlobalsCell ()
+        {
+            // not used... went a different way...
+        }
+
+        protected override void UpdateGlobals (SimpleVariable [] globals)
+        {
+            _globalsCellView?.RenderResult(CultureInfo.CurrentUICulture, globals);
+        }
+
         protected override void BindCodeCellToView (CodeCell cell, CodeCellState codeCellState)
         {
             var codeCellView = new CodeCellView (
@@ -336,7 +348,9 @@ namespace Xamarin.Interactive.Workbook.Views
         void AppendFirstCellActions (HtmlElement parentElem)
         {
             var document = webView.Document;
-            firstCellActionsArticle = document.CreateElement ("article");
+            _globalsCellView = new GlobalsCellView (webView.Document, rendererContext);
+            firstCellActionsArticle = _globalsCellView.RootElement;
+            //firstCellActionsArticle = document.CreateElement ("article");
             parentElem.AppendChild (firstCellActionsArticle);
 
             var firstCellActionsFooter = document.CreateElement ("footer");
