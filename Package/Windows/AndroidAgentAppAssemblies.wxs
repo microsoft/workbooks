@@ -712,6 +712,9 @@
       <Component Id="Fileda370fd90ac9f4cb2d5dd8d55c91c0de3c62cc03" Guid="66C684FD-BD8A-46E7-95A0-6E6527493AC1">
         <File Id="Fileda370fd90ac9f4cb2d5dd8d55c91c0de3c62cc03" Source="$(var.AndroidAppClientIntegrationDir)\Xamarin.AndroidTools.dll" />
       </Component>
+      <Component Id="File217a0dbaaf7d414cb2fcd6330608a6d5" Guid="2C527F4C-5DE9-4552-83A1-685F24EAB364">
+        <File Id="File217a0dbaaf7d414cb2fcd6330608a6d5" Source="$(var.AndroidAppClientIntegrationDir)\Xamarin.Android.Tools.AndroidSdk.dll" />
+      </Component>
       <Component Id="Fileba1a23da5059a68c349fb49fbefdbedb7bfdb45c" Guid="3E72E349-B520-4292-8790-88E96696F244">
         <File Id="Fileba1a23da5059a68c349fb49fbefdbedb7bfdb45c" Source="$(var.AndroidAppClientIntegrationDir)\Xamarin.Workbooks.Client.Android.dll" />
       </Component>
