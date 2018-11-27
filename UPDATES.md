@@ -18,6 +18,10 @@ This is a minor update to the [1.4 series][14-series].
 
 * Bump NuGet to 4.8.0 for increased package support.
 
+## Notable Bug Fixes
+
+* Support launching emulators with latest Android SDK.
+
 ## Known Issues
 
 * NuGet Limitations
