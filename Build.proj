@@ -221,7 +221,7 @@
     <MSBuild
       BuildInParallel="true"
       Projects="$(WixProject)"
-      Properties="$(MSBuildCommonProperties);BuildProjectReferences=false;InstallerDefineConstants=$(InstallerDefineConstants)"
+      Properties="$(MSBuildCommonProperties);RunWixToolsOutOfProc=true;BuildProjectReferences=false;InstallerDefineConstants=$(InstallerDefineConstants)"
       Targets="Build"/>
   </Target>
 

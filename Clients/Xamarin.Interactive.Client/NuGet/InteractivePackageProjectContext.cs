@@ -5,11 +5,14 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
+using System;
 using System.Globalization;
 using System.Xml.Linq;
 
 using NuGet.Common;
 using NuGet.Packaging;
+using NuGet.Packaging.PackageExtraction;
+using NuGet.Packaging.Signing;
 using NuGet.ProjectManagement;
 
 namespace Xamarin.Interactive.NuGet
@@ -21,9 +24,15 @@ namespace Xamarin.Interactive.NuGet
         public InteractivePackageProjectContext (ILogger logger)
         {
             this.logger = logger;
-            PackageExtractionContext = new PackageExtractionContext (logger) {
-                PackageSaveMode = PackageSaveMode.Defaultv3,
-            };
+
+
+            PackageExtractionContext = new PackageExtractionContext (
+                PackageSaveMode.Defaultv3,
+                PackageExtractionBehavior.XmlDocFileSaveMode,
+                logger,
+                new PackageSignatureVerifier (
+                    SignatureVerificationProviderFactory.GetSignatureVerificationProviders ()),
+                SignedPackageVerifierSettings.GetDefault ());
         }
 
         public NuGetActionType ActionType { get; set; }
@@ -36,7 +45,7 @@ namespace Xamarin.Interactive.NuGet
 
         public ISourceControlManagerProvider SourceControlManagerProvider => null;
 
-        public TelemetryServiceHelper TelemetryService { get; set; }
+        public Guid OperationId { get; set; }
 
         public void Log (MessageLevel level, string message, params object [] args)
         {

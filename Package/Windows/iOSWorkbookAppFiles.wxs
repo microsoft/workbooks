@@ -172,27 +172,6 @@
       <Component Id="iOSWorkbookApp.OpenTK__._.dll.config" Guid="3C0A4227-22F2-4112-AEF3-2E06F6CADADF">
         <File Id="iOSWorkbookApp.OpenTK__._.dll.config" Source="$(var.iOSWorkbookAppDir)\OpenTK-1.0.dll.config" />
       </Component>
-      <Component Id="iOSWorkbookApp.System.Diagnostics.StackTrace.dll" Guid="5BBCECEC-6F15-4E4B-B8FD-93547D1C7AA5">
-        <File Id="iOSWorkbookApp.System.Diagnostics.StackTrace.dll" Source="$(var.iOSWorkbookAppDir)\System.Diagnostics.StackTrace.dll" />
-      </Component>
-      <Component Id="iOSWorkbookApp.System.Globalization.Extensions.dll" Guid="27ED654B-1B2F-4546-95AD-2021999138FE">
-        <File Id="iOSWorkbookApp.System.Globalization.Extensions.dll" Source="$(var.iOSWorkbookAppDir)\System.Globalization.Extensions.dll" />
-      </Component>
-      <Component Id="iOSWorkbookApp.System.Runtime.Serialization.Primitives.dll" Guid="C7ADA62D-8042-4673-8CED-39825AC04804">
-        <File Id="iOSWorkbookApp.System.Runtime.Serialization.Primitives.dll" Source="$(var.iOSWorkbookAppDir)\System.Runtime.Serialization.Primitives.dll" />
-      </Component>
-      <Component Id="iOSWorkbookApp.System.Runtime.Serialization.Xml.dll" Guid="9DE82219-F38A-4B7A-9C62-A8FEA106D5CF">
-        <File Id="iOSWorkbookApp.System.Runtime.Serialization.Xml.dll" Source="$(var.iOSWorkbookAppDir)\System.Runtime.Serialization.Xml.dll" />
-      </Component>
-      <Component Id="iOSWorkbookApp.System.Security.Cryptography.Algorithms.dll" Guid="C02B77F2-3C8F-4CF8-AC7D-E5BD792E806C">
-        <File Id="iOSWorkbookApp.System.Security.Cryptography.Algorithms.dll" Source="$(var.iOSWorkbookAppDir)\System.Security.Cryptography.Algorithms.dll" />
-      </Component>
-      <Component Id="iOSWorkbookApp.System.Security.SecureString.dll" Guid="22526FD0-A47A-47C1-A0E2-B0900B889B58">
-        <File Id="iOSWorkbookApp.System.Security.SecureString.dll" Source="$(var.iOSWorkbookAppDir)\System.Security.SecureString.dll" />
-      </Component>
-      <Component Id="iOSWorkbookApp.System.Xml.XPath.XDocument.dll" Guid="EC1C4CFA-0552-4272-879C-B6CAA732C5F4">
-        <File Id="iOSWorkbookApp.System.Xml.XPath.XDocument.dll" Source="$(var.iOSWorkbookAppDir)\System.Xml.XPath.XDocument.dll" />
-      </Component>
     </ComponentGroup>
     <ComponentGroup Id="iOSWorkbookAppStoryboardComponents" Directory="iOSAgentAppStoryboardInstallFolder">
       <Component Id="iOSWorkbookAppStoryboard.BYZ_38_t0r_view_8bC_Xf_vdC.nib" Guid="D0B07659-99FC-4292-B727-6C214C066B55">
@@ -559,6 +538,9 @@
       </Component>
       <Component Id="iOSWorkbookAppFacades.System.Threading.Tasks.Parallel.dll" Guid="DFBF7210-0F01-47AB-80EE-DA174AA63CA5">
         <File Id="iOSWorkbookAppFacades.System.Threading.Tasks.Parallel.dll" Source="$(var.iOSWorkbookAppFacadesDir)\System.Threading.Tasks.Parallel.dll" />
+      </Component>
+      <Component Id="iOSWorkbookAppFacades.System.Threading.Tasks.Extensions.dll" Guid="54DE0A79-C6A1-4522-81B7-0B412DE66275">
+        <File Id="iOSWorkbookAppFacades.System.Threading.Tasks.Extensions.dll" Source="$(var.iOSWorkbookAppFacadesDir)\System.Threading.Tasks.Extensions.dll" />
       </Component>
       <Component Id="iOSWorkbookAppFacades.System.Threading.Tasks.dll" Guid="72E60627-15B9-45A0-ADBB-7F3519B5D855">
         <File Id="iOSWorkbookAppFacades.System.Threading.Tasks.dll" Source="$(var.iOSWorkbookAppFacadesDir)\System.Threading.Tasks.dll" />
