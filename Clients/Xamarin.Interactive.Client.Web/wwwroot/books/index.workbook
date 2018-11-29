@@ -1,0 +1,121 @@
+---
+uti: com.xamarin.workbook
+id: 995fe9a9-e0b2-43a8-ba39-7b2f4c5e3a6f
+title: CogTweetOcr
+platforms:
+- DotNetCore
+packages:
+- id: Newtonsoft.Json
+  version: 10.0.3
+---
+
+```csharp
+#r "Newtonsoft.Json"
+#load "AuthKeys.csx"
+```
+
+```csharp
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System.IO;
+using System.Text;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Text.RegularExpressions;
+
+HttpClient client = new HttpClient();
+
+var tweet = "https://twitter.com/zeynep/status/909421359117324288";
+
+// Parse the html with a regex. Don't ever do this 😉
+var sources = Regex.Matches (await client.GetStringAsync (tweet), "<img data-aria-label-part src=\"(.*)\" alt")
+    .Select (m => m.Groups[1].Value).Distinct ();
+
+var items = await Task.WhenAll (sources.Select (async (source) => new {
+    source,
+    imageData = await client.GetByteArrayAsync (source)
+}));
+```
+
+```csharp
+// Request parameters. A third optional parameter is "details"
+const string uriBase = "https://westcentralus.api.cognitive.microsoft.com/vision/v1.0/ocr";
+string requestParameters = "language=unk&detectOrientation=true";
+
+// Assemble the URI for the REST API Call.
+string uri = $"{uriBase}?{requestParameters}";
+
+async Task<string> OCR (byte [] imageBytes) 
+{
+    using (ByteArrayContent content = new ByteArrayContent(imageBytes))
+    {
+        content.Headers.Add ("Ocp-Apim-Subscription-Key", PersonalSubscriptions.CognitiveImageService);
+        content.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
+        var response = await client.PostAsync(uri, content);
+        return await response.Content.ReadAsStringAsync();
+    }
+}
+
+var analysis = await Task.WhenAll (items.Select (async (source) => new { 
+    source,
+    analysis = await OCR (source.imageData)
+}));
+```
+
+```csharp
+using Newtonsoft.Json;
+
+string ExtractText (string response) {
+    var json = JsonConvert.DeserializeAnonymousType(response, 
+        new { 
+            regions = new [] { new {
+                lines = new [] { new {
+                    words = new [] { new { 
+                        text = String.Empty
+                    }}
+                }}
+            }}
+        });
+    return json.regions.SelectMany (r => r.lines.Select (l => l.words.Select (w => w.text).Aggregate ((a, b) => a + " " + b))).Aggregate ((a, b) => a + "\n" + b);
+}
+```
+
+```csharp
+class Result {
+    public Xamarin.Interactive.Representations.Image image { get; set; }
+    public Xamarin.Interactive.Representations.VerbatimHtml text { get; set; }
+    public double sentiment { get; set; }
+}
+
+var conversions = analysis.Select (a => new Result {
+    image = Xamarin.Interactive.Representations.Image.FromData (a.source.imageData),
+    text = new Xamarin.Interactive.Representations.VerbatimHtml ($"<pre>{ExtractText (a.analysis)}</pre>")
+}).ToArray ();
+```
+
+```csharp
+async Task<double[]> Sentiment (string [] texts)
+{
+    string uri = "https://westus.api.cognitive.microsoft.com/text/analytics/v2.0/sentiment";
+    var documents = new { 
+        documents = Enumerable.Range (0, texts.Count()).Select (i => new {
+            language = "en",
+            id = i.ToString (),
+            text = texts[i]
+        }).ToArray ()
+    };
+    
+    using (var content = new StringContent (JsonConvert.SerializeObject (documents), System.Text.Encoding.Default, "text/json")) {
+        content.Headers.Add ("Ocp-Apim-Subscription-Key", PersonalSubscriptions.CognitiveTextService);
+        var response = await client.PostAsync (uri, content);
+        var contentText = await response.Content.ReadAsStringAsync();
+        return JsonConvert.DeserializeAnonymousType (contentText, new { documents = new [] { new { score = 0.0, id = "" }}}).documents.Select (d => d.score).ToArray();
+    }
+}
+
+var scores = await Sentiment (analysis.Select (a => ExtractText (a.analysis)).ToArray());
+for (var i = 0; i < conversions.Length; i++) {
+    conversions[i].sentiment = scores[i];
+}
+conversions
+```

@@ -21,18 +21,23 @@ import { StatusMessageBar } from './StatusMessageBar'
 import { StatusUIAction, MessageKind, MessageSeverity } from '../messages'
 
 import './WorkbookShell.scss'
-import { loadWorkbookFromString, loadWorkbookFromWorkbookPackage, loadWorkbookFromGist, Workbook } from '../Workbook';
+import { loadWorkbookFromString, loadWorkbookFromWorkbookPackage, loadWorkbookFromGist, loadWorkbookFromUrl, Workbook } from '../Workbook';
 
 export interface WorkbookShellContext {
     session: WorkbookSession
     rendererRegistry: ResultRendererRegistry
 }
 
+export interface WorkbookShellProps {
+    contentString?: string
+    contentUrl?: string
+}
+
 interface WorkbookShellState {
     isPackageDialogHidden: boolean
 }
 
-export class WorkbookShell extends React.Component<any, WorkbookShellState> {
+export class WorkbookShell extends React.Component<WorkbookShellProps, WorkbookShellState> {
     private shellContext: WorkbookShellContext
     private commandBar: WorkbookCommandBar | null = null
     private workbookEditor: WorkbookEditor | null = null
@@ -53,6 +58,7 @@ export class WorkbookShell extends React.Component<any, WorkbookShellState> {
         this.saveWorkbook = this.saveWorkbook.bind(this)
         this.dumpDraftState = this.dumpDraftState.bind(this)
         this.triggerGistPicker = this.triggerGistPicker.bind(this)
+        this.loadInitialContent = this.loadInitialContent.bind(this)
 
         this.shellContext = {
             session: new WorkbookSession,
@@ -67,10 +73,29 @@ export class WorkbookShell extends React.Component<any, WorkbookShellState> {
     private onSessionEvent(session: WorkbookSession, sessionEvent: SessionEvent) {
         if (sessionEvent.kind === SessionEventKind.Ready) {
             this.workspaceAvailable = true
-            if (this.workbookEditor)
-                this.workbookEditor.setUpInitialState()
+            if (this.workbookEditor && !this.props.contentString && !this.props.contentUrl) {
+                    this.workbookEditor.setUpInitialState()
+            }
+            // Fire and forget content load
+            this.loadInitialContent();
         } else {
             this.workspaceAvailable = false
+        }
+    }
+
+    async loadInitialContent() {
+        if (this.props.contentUrl && this.workbookEditor) {
+            if (this.props.contentUrl.startsWith('/api/gist'))
+                this.workbook = await loadWorkbookFromGist(this.shellContext.session, this.props.contentUrl)
+            else
+                this.workbook = await loadWorkbookFromUrl(this.shellContext.session, this.props.contentUrl)
+
+            await this.workbookEditor.loadNewContent(this.workbook.markdownContent)
+            this.restoreNuGetPackages()
+        } else if (this.props.contentString && this.workbookEditor) {
+            this.workbook = await loadWorkbookFromString (this.shellContext.session, "Aco", this.props.contentString)
+            await this.workbookEditor.loadNewContent(this.workbook.markdownContent)
+            this.restoreNuGetPackages()
         }
     }
 

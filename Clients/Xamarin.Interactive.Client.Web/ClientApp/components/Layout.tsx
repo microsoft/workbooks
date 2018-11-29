@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { Fabric } from 'office-ui-fabric-react/lib/Fabric';
 import { initializeIcons } from '@uifabric/icons';
+import 'office-ui-fabric-react/dist/css/fabric.css';
 
 initializeIcons();
 

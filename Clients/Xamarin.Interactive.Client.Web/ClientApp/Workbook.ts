@@ -39,6 +39,16 @@ export async function loadWorkbookFromString(workbookSession: WorkbookSession, f
     return new Workbook(workbookSession, fileName, content, data)
 }
 
+export async function loadWorkbookFromUrl(workbookSession: WorkbookSession, url: string): Promise<Workbook> {
+    var response = await fetch(url)
+
+    if (!response.ok)
+        throw new Error("Couldn't load the workbook")
+
+    var content = await response.text()
+    return await loadWorkbookFromString (workbookSession, url, content)
+}
+
 export async function loadWorkbookFromGist(workbookSession: WorkbookSession, gistUrl: string) : Promise<Workbook> {
     // TODO: Specify revision to load, specify root workbook file.
     const gistId = gistUrl.split('/').slice(-1)
@@ -55,7 +65,7 @@ export async function loadWorkbookFromGist(workbookSession: WorkbookSession, gis
     return await loadWorkbookFromWorkbookPackage(workbookSession, workbookPackage);
 }
 
-export async function loadWorkbookFromWorkbookPackage(workbookSession: WorkbookSession, workbookPackage: File): Promise<Workbook> {    
+export async function loadWorkbookFromWorkbookPackage(workbookSession: WorkbookSession, workbookPackage: File): Promise<Workbook> {
     const loadedZip = await loadAsync(workbookPackage)
     const workbookFiles = loadedZip.filter((path, file) => path.endsWith(".workbook"));
 

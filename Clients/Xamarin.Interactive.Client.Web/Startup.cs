@@ -14,8 +14,10 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SpaServices.Webpack;
+using Microsoft.AspNetCore.StaticFiles;
 
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.DependencyInjection;
 
 using Xamarin.Interactive.Client.Web.Hosting;
@@ -27,8 +29,12 @@ namespace Xamarin.Interactive.Client.Web
 {
     public sealed class Startup
     {
-        public Startup (IConfiguration configuration)
-            => Configuration = configuration;
+        IHostingEnvironment environment;
+        public Startup(IHostingEnvironment env)
+        {
+            environment = env;
+
+        }
 
         public IConfiguration Configuration { get; }
 
@@ -59,6 +65,8 @@ namespace Xamarin.Interactive.Client.Web
                 .AddJsonProtocol (options => {
                     options.PayloadSerializerSettings = new ExternalInteractiveJsonSerializerSettings ();
                 });
+
+            services.AddSingleton<IFileProvider> (environment.ContentRootFileProvider);
         }
 
         public void Configure (
@@ -66,6 +74,8 @@ namespace Xamarin.Interactive.Client.Web
             IHostingEnvironment env,
             IServiceProvider serviceProvider)
         {
+            environment = env;
+
             if (env.IsDevelopment ()) {
                 app.UseDeveloperExceptionPage ();
                 app.UseWebpackDevMiddleware (new WebpackDevMiddlewareOptions {
@@ -84,8 +94,11 @@ namespace Xamarin.Interactive.Client.Web
                 return next ();
             });
 
+            var provider = new FileExtensionContentTypeProvider();
+            provider.Mappings[".workbook"] = "application/workbook";
+
             app.UseMonacoMuting ();
-            app.UseStaticFiles ();
+            app.UseStaticFiles (new StaticFileOptions{ ContentTypeProvider = provider });
             app.UseWasmStaticFiles ();
             app.UseCookiePolicy ();
 
