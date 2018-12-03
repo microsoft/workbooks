@@ -1,5 +1,10 @@
 # Version @BUILD_DOCUMENTATION_VERSION@
 
+* Fix wrong error message being displayed when a Xamarin.Forms workbook fails to
+  connect due to emulator issues.
+
+# Version 1.5.0
+
 Please refer to the [detailed release notes][docs-detailed-release-notes] and
 full product documentation for [Workbooks][docs-workbooks] and
 [Inspector][docs-inspector] for complete information.

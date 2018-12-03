@@ -271,7 +271,9 @@ namespace Xamarin.Interactive.Client
                 return;
 
             if (initializeException == null) {
-                await InitializeAgentConnectionAsync ();
+                // When agent init fails, there should be a useful error message on the stack. Stop here.
+                if (!(await InitializeAgentConnectionAsync ()))
+                    return;
 
                 try {
                     await ConfigureNewWorkbookFeatures ();
@@ -305,20 +307,22 @@ namespace Xamarin.Interactive.Client
                 }));
         }
 
-        public async Task EnsureAgentConnectionAsync ()
+        public async Task<bool> EnsureAgentConnectionAsync ()
         {
-            if (!Agent.IsConnected)
-                await InitializeAgentConnectionAsync ();
+            if (Agent.IsConnected)
+                return true;
+
+            return await InitializeAgentConnectionAsync ();
         }
 
-        async Task InitializeAgentConnectionAsync ()
+        async Task<bool> InitializeAgentConnectionAsync ()
         {
             using (WorkbookPageViewModel.InhibitEvaluate ())
-                await DoInitalizeAgentConnectionAsync ();
+                return await DoInitalizeAgentConnectionAsync ();
         }
 
         // Only call from InitializeAgentConnectionAsync
-        async Task DoInitalizeAgentConnectionAsync ()
+        async Task<bool> DoInitalizeAgentConnectionAsync ()
         {
             try {
                 ResetAgentConnection ();
@@ -337,7 +341,7 @@ namespace Xamarin.Interactive.Client
                 ViewControllers.Messages.PushMessage (WithReconnectSessionAction (e
                     .ToAlertMessage (Catalog.GetString ("Unable to connect"))));
 
-                return;
+                return false;
             }
 
             try {
@@ -350,6 +354,8 @@ namespace Xamarin.Interactive.Client
                 ViewControllers.Messages.PushMessage (e
                     .ToAlertMessage (Catalog.GetString ("Unable to restore packages")));
             }
+
+            return true;
         }
 
         async Task<Exception> RunInitializers (IEnumerable<ClientSessionTask> initializers)
