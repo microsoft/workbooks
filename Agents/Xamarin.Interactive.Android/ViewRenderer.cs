@@ -12,6 +12,7 @@ using System.IO;
 using Java.Interop;
 
 using Android.Graphics;
+using Android.OS;
 using Android.Views;
 using GL = Android.Opengl;
 using Android.Runtime;
@@ -107,12 +108,18 @@ namespace Xamarin.Interactive.Android
 
         public static Bitmap Render (View view, bool skipChildren)
         {
-            var bitmap = RenderUsingCreateSnapshot (view, skipChildren);
+            Bitmap bitmap = null;
 
-            // Canvas drawing and drawing cache can't skip children,
-            // so don't pass the flag down to them.
-            if (bitmap == null)
-                bitmap = RenderUsingCanvasDrawing (view);
+            // createSnapshot signature changed in SDK 28, and requires fixes before we try using it again.
+            // Canvas Drawing also seems not to work for us in SDK 28.
+            if ((int)Build.VERSION.SdkInt < 28) {
+                bitmap = RenderUsingCreateSnapshot (view, skipChildren);
+
+                // Canvas drawing and drawing cache can't skip children,
+                // so don't pass the flag down to them.
+                if (bitmap == null)
+                    bitmap = RenderUsingCanvasDrawing (view);
+            }
 
             if (bitmap == null)
                 bitmap = RenderUsingDrawingCache (view);
