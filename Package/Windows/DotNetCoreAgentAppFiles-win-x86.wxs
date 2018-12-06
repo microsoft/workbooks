@@ -661,11 +661,11 @@
       <Component Id="DNCAgentAppwinx86.API_MS_Win_core_xstate_l2_1_0.dll" Guid="FFCB232C-EF7E-4878-B053-440124F8F73A">
         <File Id="DNCAgentAppwinx86.API_MS_Win_core_xstate_l2_1_0.dll" Source="$(var.DotNetCoreAssembliesDir)\API-MS-Win-core-xstate-l2-1-0.dll" />
       </Component>
-      <Component Id="DNCAgentAppwinx86.mscordaccore_x86_x86_4.6.27014.03.dll" Guid="5C3555AB-1922-4853-8355-A69726733DD7">
-        <File Id="DNCAgentAppwinx86.mscordaccore_x86_x86_4.6.27014.03.dll" Source="$(var.DotNetCoreAssembliesDir)\mscordaccore_x86_x86_4.6.27014.03.dll" />
+      <Component Id="DNCAgentAppwinx86.mscordaccore_x86_x86_4.6.27110.04.dll" Guid="654BEF3B-D73D-4D3F-85CF-19916E9E261B">
+        <File Id="DNCAgentAppwinx86.mscordaccore_x86_x86_4.6.27110.04.dll" Source="$(var.DotNetCoreAssembliesDir)\mscordaccore_x86_x86_4.6.27110.04.dll" />
       </Component>
-      <Component Id="DNCAgentAppwinx86.sos_x86_x86_4.6.27014.03.dll" Guid="4C797005-4C9A-4D1C-B4E3-B12B06B39355">
-        <File Id="DNCAgentAppwinx86.sos_x86_x86_4.6.27014.03.dll" Source="$(var.DotNetCoreAssembliesDir)\sos_x86_x86_4.6.27014.03.dll" />
+      <Component Id="DNCAgentAppwinx86.sos_x86_x86_4.6.27110.04.dll" Guid="9E655CC8-B86B-47A7-9CEB-AAA3583882E1">
+        <File Id="DNCAgentAppwinx86.sos_x86_x86_4.6.27110.04.dll" Source="$(var.DotNetCoreAssembliesDir)\sos_x86_x86_4.6.27110.04.dll" />
       </Component>
     </ComponentGroup>
   </Fragment>

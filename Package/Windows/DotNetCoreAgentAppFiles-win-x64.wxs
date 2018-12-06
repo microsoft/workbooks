@@ -658,11 +658,11 @@
       <Component Id="DNCAgentAppwinx64.System.Memory.dll" Guid="47BAC2B8-DFCF-454A-AF21-B4ABF65E81B8">
         <File Id="DNCAgentAppwinx64.System.Memory.dll" Source="$(var.DotNetCoreAssembliesDir)\System.Memory.dll" />
       </Component>
-      <Component Id="DNCAgentAppwinx64.mscordaccore_amd64_amd64_4.6.27014.03.dll" Guid="D83F5866-4DD7-464A-82A5-EBBCB95AEF1E">
-        <File Id="DNCAgentAppwinx64.mscordaccore_amd64_amd64_4.6.27014.03.dll" Source="$(var.DotNetCoreAssembliesDir)\mscordaccore_amd64_amd64_4.6.27014.03.dll" />
+      <Component Id="DNCAgentAppwinx64.mscordaccore_amd64_amd64_4.6.27110.04.dll" Guid="20E460C3-558C-4AD9-8680-04F249AA39D5">
+        <File Id="DNCAgentAppwinx64.mscordaccore_amd64_amd64_4.6.27110.04.dll" Source="$(var.DotNetCoreAssembliesDir)\mscordaccore_amd64_amd64_4.6.27110.04.dll" />
       </Component>
-      <Component Id="DNCAgentAppwinx64.sos_amd64_amd64_4.6.27014.03.dll" Guid="2E6F3CE8-4402-480C-A6F5-26948D524E7F">
-        <File Id="DNCAgentAppwinx64.sos_amd64_amd64_4.6.27014.03.dll" Source="$(var.DotNetCoreAssembliesDir)\sos_amd64_amd64_4.6.27014.03.dll" />
+      <Component Id="DNCAgentAppwinx64.sos_amd64_amd64_4.6.27110.04.dll" Guid="934DBFF7-E76D-45DA-B64D-7B854738CD99">
+        <File Id="DNCAgentAppwinx64.sos_amd64_amd64_4.6.27110.04.dll" Source="$(var.DotNetCoreAssembliesDir)\sos_amd64_amd64_4.6.27110.04.dll" />
       </Component>
     </ComponentGroup>
   </Fragment>
