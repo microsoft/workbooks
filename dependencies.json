@@ -169,6 +169,6 @@
   {
     "Kind": "GitSubmodule",
     "Name": "External/Xamarin.PropertyEditing",
-    "Version": "1ad39236886f30dded16811e588ae4accddc4a19"
+    "Version": "886696a1f478793b70d242749835baf2ef553a4f"
   }
 ]
