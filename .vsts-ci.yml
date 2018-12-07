@@ -4,6 +4,55 @@ steps:
 # to keep them in sync. Ideally we'll be able to run Prov in
 # VSTS+YAML like we do for our "big builds".
 
+- task: DotNetCoreInstaller@0
+  inputs:
+    version: 2.1.301
+  displayName: Install .NET Core
+
+- script: |
+    mkdir -p _build/provisionator
+    cat > _build/provisionator/InstallProvisionator.csproj <<EOF
+    <Project Sdk="Microsoft.NET.Sdk">
+      <PropertyGroup>
+        <TargetFramework>netcoreapp2.1</TargetFramework>
+        <RestorePackagesPath>.</RestorePackagesPath>
+        <RestoreProjectStyle>DotnetToolReference</RestoreProjectStyle>
+        <DisableImplicitFrameworkReferences>true</DisableImplicitFrameworkReferences>
+        <RestoreFallbackFolders>clear</RestoreFallbackFolders>
+        <RestoreAdditionalProjectFallbackFolders></RestoreAdditionalProjectFallbackFolders>
+        <RestoreAdditionalProjectFallbackFoldersExcludes></RestoreAdditionalProjectFallbackFoldersExcludes>
+        <DisableImplicitNuGetFallbackFolder>true</DisableImplicitNuGetFallbackFolder>
+      </PropertyGroup>
+      <ItemGroup>
+        <PackageReference Include="Xamarin.Provisionator" Version="*" />
+      </ItemGroup>
+    </Project>
+    EOF
+  displayName: Generate Provisionator Install Project
+
+- task: DotNetCoreCLI@2
+  inputs:
+    command: restore
+    projects: '_build/provisionator/InstallProvisionator.csproj'
+    vstsFeed: '5381e851-af0c-42dd-9383-9e0929b5c678'
+    includeNuGetOrg: false
+    noCache: true
+    restoreDirectory: '_build/provisionator/packages'
+  displayName: Restore Provisionator
+
+- script: 'find _build/provisionator/packages && exit 1'
+  displayName: Show all files
+
+- task: DotNetCoreCLI@2
+  inputs:
+    command: custom
+    custom: tool
+    arguments: 'install -g --add-source _build/provisionator/packages/ Xamarin.Provisionator'
+  displayName: Install Provisionator
+
+- script: 'find ~/.dotnet/tools && exit 1'
+  displayName: Show all files
+
 - script: |
     MONO_VERSION=5.12.0.273
     MONO_PACKAGE="MonoFramework-MDK-${MONO_VERSION}.macos10.xamarin.universal.pkg"
@@ -13,10 +62,8 @@ steps:
   condition: and(succeeded(), eq(variables['agent.os'], 'darwin'))
   displayName: Install Mono
 
-- task: DotNetCoreInstaller@0
-  inputs:
-    version: 2.1.301
-  displayName: Install .NET Core
+- script: provisionator
+  displayName: Run Provisionator
 
 - task: NodeTool@0
   inputs:
