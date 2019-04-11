@@ -1,0 +1,41 @@
+@import '../css/theme.scss';
+
+button.ActionButton {
+  &.Small {
+    $hitBounds: 4px;
+    $visibleSize: 16px;
+    $size: 2 * $hitBounds + $visibleSize;
+
+    width: $size;
+    height: $size;
+    padding: $hitBounds;
+    margin-bottom: -$hitBounds;
+    margin-right: -$hitBounds;
+  }
+
+  cursor: pointer;
+  color: $themePrimary;
+  background: transparent;
+  border: none;
+  margin: 0;
+  outline: none;
+
+  &:active {
+    outline: 1px dashed rgba($themePrimary, 0.4);
+  }
+
+  svg {
+    fill: currentColor;
+    stroke: currentColor;
+    width: 100%;
+    height: 100%;
+
+    @keyframes spin-cw {
+      100% { transform: rotate(360deg); }
+    }
+
+    @keyframes spin-ccw {
+      100% { transform: rotate(-360deg); }
+    }
+  }
+}

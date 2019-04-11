@@ -46,15 +46,6 @@ namespace Xamarin.Interactive.Serialization
                 };
             }
 
-            static CustomAttributeData GetCustomAttributeNamed (MemberInfo member, string name)
-                => member.CustomAttributes.FirstOrDefault (a => a.AttributeType.Name == name);
-
-            static ConstructorInfo GetAttributeConstructor (Type objectType)
-                => objectType
-                    .GetConstructors (BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
-                    .Where (c => GetCustomAttributeNamed (c, "JsonConstructorAttribute") != null)
-                    .SingleOrDefault ();
-
             #if EXTERNAL_INTERACTIVE_JSON_SERIALIZER_SETTINGS
 
             protected override JsonObjectContract CreateObjectContract (Type objectType)
@@ -62,7 +53,7 @@ namespace Xamarin.Interactive.Serialization
                 var contract = base.CreateObjectContract (objectType);
 
                 if (contract.OverrideCreator == null && !objectType.IsAbstract && !objectType.IsInterface) {
-                    var ctor = GetAttributeConstructor (objectType);
+                    var ctor = InteractiveJsonBinder.GetJsonConstructor (objectType);
                     if (ctor != null) {
                         contract.OverrideCreator = args => ctor.Invoke (args);
                         contract.CreatorParameters.Clear ();
@@ -89,6 +80,9 @@ namespace Xamarin.Interactive.Serialization
 
         sealed class InteractiveJsonBinder : ISerializationBinder
         {
+            readonly Dictionary<(string assemblyName, string typeName), Type> bindToTypeCache
+                = new Dictionary<(string, string), Type> ();
+
             public void BindToName (Type serializedType, out string assemblyName, out string typeName)
             {
                 assemblyName = null;
@@ -100,7 +94,44 @@ namespace Xamarin.Interactive.Serialization
             }
 
             public Type BindToType (string assemblyName, string typeName)
-                => RepresentedType.GetType (typeName);
+            {
+                // Bind only to types explicitly marked with [JsonObject].
+                // These attributed types imply they are safe for deserialization.
+
+                if (bindToTypeCache.TryGetValue ((assemblyName, typeName), out var type))
+                    return type;
+
+                type = RepresentedType.GetType (typeName);
+                if (type == null)
+                    return null;
+
+                foreach (var customAttribute in type.CustomAttributes) {
+                    switch (customAttribute.AttributeType.FullName) {
+                    case "Xamarin.Interactive.Json.JsonObjectAttribute":
+                    case "Newtonsoft.Json.JsonObjectAttribute":
+                        if (GetJsonConstructor (type) != null) {
+                            bindToTypeCache [(assemblyName, typeName)] = type;
+                            return type;
+                        }
+
+                        throw new InvalidOperationException (
+                            $"Not binding to '{typeName}, {assemblyName}'. " +
+                            "It is marked [JsonObject] but does not have a [JsonConstructor].");
+                    }
+                }
+
+                throw new InvalidOperationException (
+                    $"Not binding to '{typeName}, {assemblyName}'. It is not marked [JsonObject].");
+            }
+
+            static CustomAttributeData GetCustomAttributeNamed (MemberInfo member, string name)
+                => member.CustomAttributes.FirstOrDefault (a => a.AttributeType.Name == name);
+
+            public static ConstructorInfo GetJsonConstructor (Type objectType)
+                => objectType
+                    .GetConstructors (BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
+                    .Where (c => GetCustomAttributeNamed (c, "JsonConstructorAttribute") != null)
+                    .SingleOrDefault ();
         }
 
         public

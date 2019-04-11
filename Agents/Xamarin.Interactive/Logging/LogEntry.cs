@@ -7,9 +7,11 @@
 
 using System;
 
+using Newtonsoft.Json;
+
 namespace Xamarin.Interactive.Logging
 {
-    [Serializable]
+    [JsonObject]
     public struct LogEntry
     {
         internal string OwnerId { get; }
@@ -28,6 +30,7 @@ namespace Xamarin.Interactive.Logging
         public string CallerFilePath { get; }
         public int CallerLineNumber { get; }
 
+        [JsonConstructor]
         internal LogEntry (
             string ownerId,
             DateTime time,

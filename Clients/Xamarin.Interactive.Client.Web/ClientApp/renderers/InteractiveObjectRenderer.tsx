@@ -5,6 +5,8 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
+/*
+
 import * as React from 'react'
 import { randomReactKey } from '../utils'
 import { CodeCellResult } from '../evaluation';
@@ -54,3 +56,5 @@ class InteractiveObjectRepresentation extends React.Component<{ handle: string }
         return <code>{this.props.handle}</code>
     }
 }
+
+*/

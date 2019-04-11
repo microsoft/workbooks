@@ -1,16 +1,11 @@
-//
-// Author:
-//   Aaron Bockover <abock@microsoft.com>
-//
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
 import * as React from 'react'
 import { CodeCellResult } from '../evaluation';
 import {
-    ResultRenderer,
-    ResultRendererRepresentation,
-    getFirstRepresentationOfType
+    getFirstRepresentationOfType,
+    createComponentRepresentation
 } from '../rendering'
 import { randomReactKey } from '../utils'
 
@@ -42,38 +37,28 @@ interface TypeSpec {
     typeArguments?: TypeSpec[]
 }
 
-export default function TypeSpecRendererFactory(result: CodeCellResult) {
-    return getFirstRepresentationOfType(result, TypeNodeDataTypeName)
-        ? new TypeSpecRenderer
-        : null
+export default function createTypeRepresentation(result: CodeCellResult) {
+    const value = getFirstRepresentationOfType<Type>(
+        result,
+        TypeNodeDataTypeName)
+
+    if (!value)
+        return null
+
+    return createComponentRepresentation(
+        'Type',
+        TypeRenderer,
+        { value })
 }
 
-class TypeSpecRenderer implements ResultRenderer {
-    getRepresentations(result: CodeCellResult) {
-        const value = getFirstRepresentationOfType<Type>(
-            result,
-            TypeNodeDataTypeName)
-
-        if (value)
-            return [{
-                key: randomReactKey(),
-                displayName: 'Type',
-                component: TypeRepresentation,
-                componentProps: { value }
-            }]
-
-        return []
-    }
-}
-
-interface TypeNameRepresentationProps {
+interface TypeNameRendererProps {
     languageName: LanguageName
     typeName: TypeName
     typeArguments?: TypeSpec[]
     isNestedName?: boolean
 }
 
-class TypeNameRepresentation extends React.PureComponent<TypeNameRepresentationProps> {
+class TypeNameRenderer extends React.PureComponent<TypeNameRendererProps> {
     render(): JSX.Element {
         const typeArguments = (this.props.typeArguments && this.props.typeArguments.length > 0
             ? this.props.typeArguments
@@ -82,7 +67,7 @@ class TypeNameRepresentation extends React.PureComponent<TypeNameRepresentationP
                 return (
                     <span key={i}>
                         { i > 0 && ', '}
-                        { typeArgument && <TypeSpecRepresentation
+                        { typeArgument && <TypeSpecRenderer
                             languageName={this.props.languageName}
                             typeSpec={typeArgument}/> }
                     </span>
@@ -141,12 +126,12 @@ class TypeNameRepresentation extends React.PureComponent<TypeNameRepresentationP
     }
 }
 
-interface TypeSpecRepresentationProps {
+interface TypeSpecRendererProps {
     languageName: LanguageName
     typeSpec: TypeSpec
 }
 
-class TypeSpecRepresentation extends React.PureComponent<TypeSpecRepresentationProps> {
+class TypeSpecRenderer extends React.PureComponent<TypeSpecRendererProps> {
     render() {
         const ts = this.props.typeSpec
         let typeArgumentOffset = 0
@@ -160,7 +145,7 @@ class TypeSpecRepresentation extends React.PureComponent<TypeSpecRepresentationP
                 typeArgumentOffset += name.typeArgumentCount
             }
 
-            return <TypeNameRepresentation
+            return <TypeNameRenderer
                 key={i}
                 languageName={this.props.languageName}
                 typeName={name}
@@ -193,11 +178,11 @@ class TypeSpecRepresentation extends React.PureComponent<TypeSpecRepresentationP
     }
 }
 
-class TypeRepresentation extends React.Component<{ value: Type }> {
+class TypeRenderer extends React.Component<{ value: Type }> {
     render() {
         return (
             <code>
-                <TypeSpecRepresentation
+                <TypeSpecRenderer
                     languageName={'csharp'}
                     typeSpec={this.props.value.typeName}/>
             </code>

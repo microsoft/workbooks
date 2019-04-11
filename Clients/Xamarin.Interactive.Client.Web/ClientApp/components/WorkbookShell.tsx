@@ -15,7 +15,7 @@ import { osMac } from '../utils'
 import { WorkbookSession, SessionEvent, SessionEventKind, SdkId } from '../WorkbookSession'
 import { WorkbookCommandBar } from './WorkbookCommandBar'
 import { WorkbookEditor } from './WorkbookEditor'
-import { ResultRendererRegistry } from '../ResultRendererRegistry'
+import { RepresentationRegistry, createDefaultRegistry } from '../rendering'
 import { PackageSearch } from './PackageSearch'
 import { StatusMessageBar } from './StatusMessageBar'
 import { StatusUIAction, MessageKind, MessageSeverity } from '../messages'
@@ -25,7 +25,7 @@ import { loadWorkbookFromString, loadWorkbookFromWorkbookPackage, loadWorkbookFr
 
 export interface WorkbookShellContext {
     session: WorkbookSession
-    rendererRegistry: ResultRendererRegistry
+    representationRegistry: RepresentationRegistry
 }
 
 interface WorkbookShellState {
@@ -56,7 +56,7 @@ export class WorkbookShell extends React.Component<any, WorkbookShellState> {
 
         this.shellContext = {
             session: new WorkbookSession,
-            rendererRegistry: ResultRendererRegistry.createDefault()
+            representationRegistry: createDefaultRegistry()
         }
 
         this.state = {

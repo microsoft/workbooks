@@ -5,22 +5,52 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
+@import '../css/theme.scss';
+
+@import url('https://fonts.googleapis.com/css?family=Roboto+Condensed');
+
 .WorkbookEditor-container {
   display: flex;
   flex-flow: column;
   flex: 1 1 auto;
   overflow: auto;
 
-  padding: 1em 3em;
+  padding: 3em calc(15vw + 3em);
 
   cursor: text;
 
-  h1:first-child,
-  h2:first-child,
-  h3:first-child,
-  h4:first-child,
-  h5:first-child,
-  h6:first-child {
+  .Draft-Block-H1:first-child,
+  .Draft-Block-H2:first-child,
+  .Draft-Block-H3:first-child,
+  .Draft-Block-H4:first-child,
+  .Draft-Block-H5:first-child,
+  .Draft-Block-H6:first-child {
     margin-top: 0;
   }
+
+  .Draft-Block-H1,
+  .Draft-Block-H2,
+  .Draft-Block-H3,
+  .Draft-Block-H4,
+  .Draft-Block-H5,
+  .Draft-Block-H6 {
+    font-family: "Roboto Condensed", sans-serif;
+    margin-top: 1.5em;
+  }
+
+  .Draft-Block-Default,
+  .Draft-Block-BlockQuote {
+    font: 17px/1.5 "Iowan Old Style", "Apple Garamond", Baskerville, "Palatino Linotype", "Times New Roman", "Droid Serif", Times, "Source Serif Pro", serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+    margin-bottom: 1em;
+  }
+
+  .Draft-Block-BlockQuote {
+    padding: 1em;
+    margin: 0;
+    background: #deecf9;
+  }
+}
+
+code {
+  @include codeFont;
 }

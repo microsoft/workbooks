@@ -4,10 +4,18 @@
 import * as React from 'react'
 
 import { CapturedOutputSegment } from '../evaluation'
+import { createComponentRepresentation } from '../rendering'
 
-import './CapturedOutputView.scss'
+import './CapturedOutputRenderer.scss'
 
-export class CapturedOutputView extends React.Component<{ segments: CapturedOutputSegment[] }> {
+export default function createCapturedOutputRepresentation(segments: CapturedOutputSegment[]) {
+    return createComponentRepresentation(
+        'Console',
+        CapturedOutputRenderer,
+        { segments })
+}
+
+class CapturedOutputRenderer extends React.Component<{ segments: CapturedOutputSegment[] }> {
     render() {
         return (
             <div
@@ -18,8 +26,8 @@ export class CapturedOutputView extends React.Component<{ segments: CapturedOutp
                             key={key}
                             className={segment.fileDescriptor === 2 ? 'stderr' : 'stdout'}
                             ref={span => {
-                                if (span)
-                                    span.scrollIntoView({ behavior: 'smooth' })
+                                // if (span)
+                                //     span.scrollIntoView({ behavior: 'smooth' })
                             }}>
                             {segment.value}
                         </span>

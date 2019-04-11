@@ -831,7 +831,7 @@ namespace Xamarin.Interactive.Logging
 
         public static void Warning (string tag, string message, Exception exception, [CallerMemberName] string callerMemberName = null, [CallerFilePath] string callerFilePath = null, [CallerLineNumber] int callerLineNumber = 0);
     }
-    [Serializable]
+    [JsonObject]
     public struct LogEntry
     {
         public string CallerFilePath {

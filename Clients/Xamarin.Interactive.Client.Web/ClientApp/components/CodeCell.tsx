@@ -12,8 +12,7 @@ import { MonacoCellEditor, MonacoCellEditorProps } from './MonacoCellEditor'
 import { ContentBlock } from 'draft-js';
 import { EditorMessage } from '../utils/EditorMessages'
 import { WorkbookShellContext } from './WorkbookShell'
-import { ResultRendererRepresentation } from '../rendering';
-import { ResultRendererRegistry } from '../ResultRendererRegistry'
+import { RepresentationRegistry } from '../rendering'
 import { MonacoCellMapper } from '../utils/MonacoUtils'
 
 import {
@@ -37,7 +36,7 @@ import {
 interface CodeCellProps extends CodeCellViewProps {
     blockProps: {
         shellContext: WorkbookShellContext
-        rendererRegistry: ResultRendererRegistry
+        representationRegistry: RepresentationRegistry
         sendEditorMessage: (message: EditorMessage) => void
         cellMapper: MonacoCellMapper
         codeCellId: string
@@ -100,8 +99,8 @@ export class CodeCell extends CodeCellView<CodeCellProps, CodeCellState> {
         }
     }
 
-    protected getRendererRegistry(): ResultRendererRegistry {
-        return this.props.blockProps.rendererRegistry
+    protected getRepresentationRegistry(): RepresentationRegistry {
+        return this.props.blockProps.representationRegistry
     }
 
     protected sendEditorMessage(message: EditorMessage) {

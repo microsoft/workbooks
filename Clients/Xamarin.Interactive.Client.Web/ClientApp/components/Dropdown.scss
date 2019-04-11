@@ -1,0 +1,60 @@
+// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License.
+
+.Dropdown {
+  display: inline-flex;
+  flex-direction: column;
+
+  * {
+    margin: 0;
+    padding: 0;
+    outline: none;
+    font-size: 1em;
+    color: currentColor;
+    cursor: default;
+  }
+
+  button {
+    border: none;
+    margin: 0;
+    padding: 0;
+    width: auto;
+    overflow: visible;
+    text-align: inherit;
+
+    background: inherit;
+    color: inherit;
+    font: inherit;
+    line-height: normal;
+    -webkit-font-smoothing: inherit;
+    -moz-osx-font-smoothing: inherit;
+    -webkit-appearance: none;
+
+    .DropdownButtonExpander {
+      svg {
+        stroke: currentColor;
+        fill: currentColor;
+      }
+    }
+  }
+
+  button,
+  li {
+    display: flex;
+
+    div:first-child {
+      flex-grow: 1;
+    }
+
+    div:last-child {
+      flex-shrink: 1;
+      padding-left: 0.05rem;
+      width: 1em;
+      height: 1em;
+    }
+  }
+
+  ul {
+    list-style: none;
+  }
+}

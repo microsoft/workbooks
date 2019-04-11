@@ -112,13 +112,15 @@ export class StatusMessageBar extends React.Component<StatusMessageBarProps, Sta
         const leftBounds = leftCommands[leftCommands.length - 1].getBoundingClientRect()
 
         const rightCommands = sideCommands.getElementsByClassName('ms-CommandBarItem')
-        const rightBounds = rightCommands[rightCommands.length - 1].getBoundingClientRect()
+        const rightBounds = rightCommands.length > 0
+            ? rightCommands[rightCommands.length - 1].getBoundingClientRect().left
+            : sideCommands.getBoundingClientRect().right
 
         this.setState({
             bounds: {
                 top: leftBounds.top + 'px',
                 left: leftBounds.right + 'px',
-                width: (rightBounds.left - leftBounds.right) + 'px',
+                width: (rightBounds - leftBounds.right) + 'px',
                 height: leftBounds.height + 'px'
             }
         })
