@@ -50,7 +50,7 @@
     "gray-matter": "^3.1.1",
     "immutable": "^3.8.2",
     "jszip": "^3.1.5",
-    "markdown-it": "^8.4.1",
+    "markdown-it": "^12.3.2",
     "monaco-editor": "^0.10.1",
     "office-ui-fabric-react": "^5.58.0",
     "turndown": "^4.0.1",
