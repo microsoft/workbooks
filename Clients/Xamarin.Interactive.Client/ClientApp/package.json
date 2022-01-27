@@ -15,6 +15,6 @@
     "typescript": "=2.2.1",
     "tsify": "=3.0.1",
     "browserify": "=14.1.0",
-    "cached-path-relative": "=1.0.2"
+    "cached-path-relative": "=1.1.0"
   }
 }
